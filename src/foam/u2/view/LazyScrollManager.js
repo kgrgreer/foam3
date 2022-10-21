@@ -16,7 +16,7 @@
     'foam.dao.FnSink',
     'foam.core.Latch',
     'foam.dao.ProxyDAO',
-    'foam.mlang.sink.Count',
+    'foam.mlang.sink.Count'
   ],
 
   implements: [
@@ -101,7 +101,7 @@
         if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
         if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
-          this.currentTopPage_ ++;
+          this.currentTopPage_++;
         }
       }
     },
@@ -181,7 +181,7 @@
 
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.updateCount();
     },
 
@@ -207,8 +207,14 @@
       function handleIntersect(entries, observer) {
         self.onRowIntersect(entries, self);
       }
-      this.onDetach(resize.disconnect);
-      this.onDetach(this.rowObserver.disconnect);
+      this.onDetach(() => {
+        // might already be disconnected
+        try { resize.disconnect(); } catch(x) {}
+      });
+      this.onDetach(() => {
+        // might already be disconnected
+        try { this.rowObserver.disconnect(); } catch(x) {}
+      });
       this.onDetach(this.rootElement$.sub(this.updateRenderedPages_));
       this.onDetach(this.order$.sub(this.refresh));
       this.onDetach(this.groupBy$.sub(this.refresh));
@@ -231,10 +237,12 @@
         if ( page == 0 && this.currentTopPage_ != 0 ) {
           this.currentTopPage_ = 0;
           return;
-        } else if ( page == this.numPages_ - 1 && this.currentTopPage_ != this.numPages_ - this.NUM_PAGES_TO_RENDER ) {
+        }
+        if ( page == this.numPages_ - 1 && this.currentTopPage_ != this.numPages_ - this.NUM_PAGES_TO_RENDER ) {
           this.currentTopPage_ = this.numPages_ - this.NUM_PAGES_TO_RENDER;
           return;
-        } else if ( page != this.currentTopPage_ + 1 ) {
+        }
+        if ( page != this.currentTopPage_ + 1 ) {
           this.currentTopPage_ = page - 1;
           return;
         }
@@ -289,7 +297,7 @@
           this.clearPage(page)
         }
         Object.keys(self.renderedPages_).forEach(j => {
-          if ( j > page && self.renderedPages_[j] && !isSet ){
+          if ( j > page && self.renderedPages_[j] && !isSet ) {
             this.appendTo.insertBefore(e, self.renderedPages_[j]);
             isSet = true;
             // TODO: Figure out why scrolling to the top causes you to go to first page

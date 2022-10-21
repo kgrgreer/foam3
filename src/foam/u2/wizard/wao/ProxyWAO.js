@@ -13,7 +13,8 @@ foam.CLASS({
     {
       class: 'Proxy',
       of: 'foam.u2.wizard.wao.WAO',
-      name: 'delegate'
+      name: 'delegate',
+      factory: function() { return foam.u2.wizard.wao.NullWAO.create(); }
     }
   ]
 });

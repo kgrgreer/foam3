@@ -56,7 +56,8 @@ foam.CLASS({
     },
     {
       name: 'footerSection',
-      title: ''
+      title: '',
+      isAvailable: () => false
     }
   ],
 

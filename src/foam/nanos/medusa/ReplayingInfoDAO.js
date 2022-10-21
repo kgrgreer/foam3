@@ -14,8 +14,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM'
   ],
 
@@ -23,35 +23,13 @@ foam.CLASS({
     {
       name: 'updateIndex',
       class: 'Boolean'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'FObject'
-        },
-      ],
+      args: 'Context x, FObject obj',
       javaCode: `
       PM pm = PM.create(x, getClass().getSimpleName(), "put");
       try {
@@ -72,14 +50,6 @@ foam.CLASS({
         pm.log(x);
       }
       `
-    },
-    {
-      name: 'eof',
-      javaCode: `//nop`
-    },
-    {
-      name: 'reset',
-      javaCode: `//nop`
     }
   ]
 });

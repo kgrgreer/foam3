@@ -297,7 +297,7 @@
 
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.onDetach(this.table_$.sub(this.refresh));
       this.onDetach(this.table_$.dot('data').sub(this.refresh));
       this.onDetach(this.table_$.dot('updateValues').sub(this.refresh));

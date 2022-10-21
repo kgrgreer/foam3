@@ -205,6 +205,25 @@ if oldValue != nil {
 
 foam.CLASS({
   package: 'foam.dao',
+  name: 'PromisedDetachable',
+
+  properties: [
+    { name: 'promise', factory: function() { return this.Latch.create(); } }
+  ],
+
+  methods: [
+    function detach() {
+      this.promise.then(p => {
+        p.detach();
+        this.promise = null;
+      });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.dao',
   name: 'PromisedDAO',
   extends: 'foam.dao.AbstractDAO',
 
@@ -223,20 +242,9 @@ foam.CLASS({
       name: 'listen_',
       flags: ['js'],
       code: function(x, sink, predicate) {
-        // TODO(adamvy): Temporary hack to fix regression.  listen_
-        // didn't used to have a declared return type, as such it
-        // would return void when Promised, but a detachable when not.
-        //
-        // This sort of worked in that ProxyListener and others
-        // wouldn't throw an exception when undefined was returned,
-        // but will throw if a Promise is return.
-        //
-        // To fix this we should automagically return a
-        // PromisedDetachable as .detach() can be async since it has
-        // no return value.
-        this.promise.then(function(dao) {
-          dao.listen_(x, sink, predicate);
-        });
+        return foam.dao.PromisedDetachable.create({promise: this.promise.then(dao => {
+          return dao.listen_(x, sink, predicate);
+        })});
       }
     }
   ]
@@ -260,7 +268,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var objs = localStorage.getItem(this.name);
+      var objs = foam.localStorage.getItem(this.name);
       if ( objs ) this.array = foam.json.parseString(objs, this.__context__);
 
       this.on.put.sub(this.updated);
@@ -276,7 +284,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 100,
       code: function() {
-        localStorage.setItem(this.name, foam.json.stringify(this.array));
+        foam.localStorage.setItem(this.name, foam.json.stringify(this.array));
       }
     }
   ]

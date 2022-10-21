@@ -161,10 +161,10 @@ foam.CLASS({
     function render() {
       var self = this;
 
-      this.dao.on.sub(this.updateTotalCount);
-      this.dao.on.sub(function() {
-        self.updateSelectedCount(0, 0, 0, self.searchManager.filteredDAO$);
-      });
+      this.onDetach(this.dao.listen(foam.dao.FnSink.create({fn: () => {
+        this.updateTotalCount();
+        this.updateSelectedCount(0, 0, 0, this.searchManager.filteredDAO$);
+      }})));
 
       this.updateTotalCount();
 
@@ -182,7 +182,7 @@ foam.CLASS({
       var counter = this.filters.length;
 
       this.
-        addClass(self.myClass()).
+        addClass(this.myClass()).
         add(this.slot(function(filters) {
           this.searchManager.filteredDAO$.sub(self.updateSelectedCount);
           self.updateSelectedCount(0, 0, 0, this.searchManager.filteredDAO$);
@@ -225,11 +225,10 @@ foam.CLASS({
               dao: self.dao
             }, self, self.__subSubContext__.createSubContext({ memento: localM }));
 
-            this
-            .start()
-                .add(propView)
-                .addClass(self.myClass('filter'))
-              .end();
+            this.start()
+              .add(propView)
+              .addClass(self.myClass('filter'))
+            .end();
 
             if ( self.memento && m ) {
               if ( ! m.tail )
