@@ -4166,6 +4166,7 @@ foam.CLASS({
         sps.setString(getQuery());
         PStream ps = sps;
         ParserContext x = new ParserContextImpl();
+        x.set("X", getX());
         ps = parser.parse(ps, x);
         if (ps == null)
           return new False();
