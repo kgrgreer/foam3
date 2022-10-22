@@ -274,8 +274,8 @@ foam.CLASS({
     },
     {
       name: 'highScore',
-      factory: function() { return foam.localStorage.snakeHighScore == "null" ? 0 : foam.localStorage.snakeHighScore; },
-      postSet: function(_, score) { foam.localStorage.snakeHighScore = score; }
+      factory: function() { return globalThis.localStorage.snakeHighScore == "null" ? 0 : globalThis.localStorage.snakeHighScore; },
+      postSet: function(_, score) { globalThis.localStorage.snakeHighScore = score; }
     },
     {
       name: 'canvas',

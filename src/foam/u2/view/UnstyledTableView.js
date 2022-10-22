@@ -301,8 +301,8 @@ foam.CLASS({
     },
 
     function updateColumns() {
-      foam.localStorage.removeItem(this.of.id);
-      foam.localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => foam.String.isInstance(c) ? c : c.name )));
+      globalThis.localStorage.removeItem(this.of.id);
+      globalThis.localStorage.setItem(this.of.id, JSON.stringify(this.selectedColumnNames.map(c => foam.String.isInstance(c) ? c : c.name )));
 
       if ( ! this.memento )
         return;

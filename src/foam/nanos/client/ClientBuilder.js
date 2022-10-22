@@ -95,14 +95,14 @@ foam.CLASS({
             });
 
             var version = appConfig.version;
-            if ( 'CLIENT_VERSION' in foam.localStorage ) {
-              var oldVersion = foam.localStorage.CLIENT_VERSION;
+            if ( 'CLIENT_VERSION' in globalThis.localStorage ) {
+              var oldVersion = globalThis.localStorage.CLIENT_VERSION;
               if ( version != oldVersion ) {
-                foam.localStorage.CLIENT_VERSION = version;
+                globalThis.localStorage.CLIENT_VERSION = version;
                 location.reload(true);
               }
             } else {
-              foam.localStorage.CLIENT_VERSION = version;
+              globalThis.localStorage.CLIENT_VERSION = version;
             }
           });
 

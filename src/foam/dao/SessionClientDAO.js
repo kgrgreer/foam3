@@ -51,7 +51,7 @@ c.select().then(function(a1) {
       documentation: 'Session token / BEARER token',
       name: 'sessionId',
       class: 'String',
-      factory: function() { return this.jsSessionID || foam.localStorage.defaultSession; }
+      factory: function() { return this.jsSessionID || globalThis.localStorage.defaultSession; }
     }
   ],
 

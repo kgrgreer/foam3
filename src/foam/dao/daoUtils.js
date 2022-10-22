@@ -268,7 +268,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var objs = foam.localStorage.getItem(this.name);
+      var objs = globalThis.localStorage.getItem(this.name);
       if ( objs ) this.array = foam.json.parseString(objs, this.__context__);
 
       this.on.put.sub(this.updated);
@@ -284,7 +284,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 100,
       code: function() {
-        foam.localStorage.setItem(this.name, foam.json.stringify(this.array));
+        globalThis.localStorage.setItem(this.name, foam.json.stringify(this.array));
       }
     }
   ]

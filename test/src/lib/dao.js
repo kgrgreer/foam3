@@ -65,12 +65,12 @@ describe('LocalStorageDAO', function() {
 
   // Run the generic suite of DAO tests against it.
   genericDAOTestBattery(function(model) {
-    foam.localStorage.removeItem('_test_LS_generic_');
+    globalThis.localStorage.removeItem('_test_LS_generic_');
     return Promise.resolve(foam.dao.LocalStorageDAO.create({ name: '_test_LS_generic_', of: model }));
   });
 
   afterAll(function() {
-    foam.localStorage.clear();
+    globalThis.localStorage.clear();
   });
 
   // TODO: test nested objects when foam.json supports them
