@@ -28,8 +28,8 @@ foam.CLASS({
         } catch { };
 
         // Or localStorage, else generate a random id
-        return globalThis.localStorage[this.sessionName] ||
-            ( globalThis.localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        return localStorage[this.sessionName] ||
+            ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
        }
     },
     {

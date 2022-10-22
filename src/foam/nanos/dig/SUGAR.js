@@ -338,7 +338,7 @@ foam.CLASS({
       code: async function() {
         if ( this.sugarURL !== '' ) {
           var req = this.HTTPRequest.create({
-            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.sugarURL + '?data=' + this.postData+ '&sessionId=' + globalThis.localStorage.defaultSession,
+            url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.sugarURL + '?data=' + this.postData+ '&sessionId=' + localStorage.defaultSession,
             method: 'POST',
             contentType: 'url'
           }).send();

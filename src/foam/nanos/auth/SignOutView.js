@@ -33,7 +33,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.auth.logout().then(() => {
-        globalThis.localStorage.removeItem('defaultSession');
+        localStorage.removeItem('defaultSession');
         this.window.location.hash = '';
         this.window.location.reload();
       });
