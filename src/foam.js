@@ -123,22 +123,6 @@
       }
     },
     language: typeof navigator === 'undefined' ? 'en' : navigator.language,
-    localStorage: (function() {
-      try {
-        var test = '_test';
-        globalThis.localStorage.setItem(test, test);
-        globalThis.localStorage.removeItem(test);
-        return globalThis.localStorage;
-      } catch (e) {
-        var Storage = {
-          getItem:    function(k)    { return this[k] },
-          setItem:    function(k, v) { this[k] = v; },
-          removeItem: function(k)    { delete this[k]; },
-          clear:      function()     { for ( const k in this ) delete this[k];  }
-        };
-        return Object.create(Storage);
-      }
-    })(),
     next$UID: (function() {
       /* Return a unique id. */
       var id = 1;

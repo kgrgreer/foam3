@@ -473,7 +473,7 @@ foam.CLASS({
       }
 
       var url = this.address;
-      var sessionId = this.sessionID || foam.localStorage['defaultSession'];
+      var sessionId = this.sessionID || localStorage['defaultSession'];
       // attach session id if available
       if ( sessionId ) {
         url += '?sessionId=' + sessionId;
@@ -499,7 +499,7 @@ foam.CLASS({
       }
 
       var url = this.address + '/' + blob.id;
-      var sessionId = foam.localStorage['defaultSession'];
+      var sessionId = localStorage['defaultSession'];
       // attach session id if available
       if ( sessionId ) {
         url += '?sessionId=' + sessionId;
@@ -509,7 +509,7 @@ foam.CLASS({
 
     function find_(x, id) {
       var url = this.address + '/' + id;
-      var sessionId = foam.localStorage['defaultSession'];
+      var sessionId = localStorage['defaultSession'];
       // attach session id if available
       if ( sessionId ) {
         url += '?sessionId=' + sessionId;

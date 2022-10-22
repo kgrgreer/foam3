@@ -12,6 +12,7 @@ foam.POM({
     { name: "foam/core/stdlib",                                       flags: "js" },
     { name: "foam/core/events",                                       flags: "js" },
     { name: "foam/core/Context",                                      flags: "js" },
+    { name: "foam/core/LocalStorage",                                 flags: "js" },
     { name: "foam/core/Boot",                                         flags: "js" },
     { name: "foam/core/FObject",                                      flags: "js" },
     { name: "foam/core/Model",                                        flags: "js" },
