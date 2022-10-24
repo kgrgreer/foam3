@@ -53,6 +53,15 @@ foam.CLASS({
         delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
+    },
+    {
+      name: 'confirmationPassword',
+      section: 'resetPasswordSection'
+
+    },
+    {
+      name: 'newPassword',
+      section: 'resetPasswordSection'
     }
   ],
 
