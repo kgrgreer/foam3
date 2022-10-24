@@ -28,7 +28,8 @@
   ],
 
   constants: [
-    { name: 'TIMEOUT', type: 'Integer', value: 30 }
+    { name: 'TIMEOUT', type: 'Integer', value: 30 },
+    { name: 'VERIFY_EMAIL_TEMPLATE', type: 'String', value: 'verifyEmailByCode' }
   ],
 
   messages: [
@@ -72,13 +73,14 @@
       name: 'verifyByCode',
       javaCode: `
         User user = findUser(x, email, userName);
-        sendCode(x, user);
+        if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
+        sendCode(x, user, emailTemplate);
       `
     },
     {
       name: 'sendCode',
       type: 'Void',
-      args: 'Context x, User user',
+      args: 'Context x, User user, String emailTemplate',
       javaCode: `
         Calendar calendar = Calendar.getInstance();
         calendar.add(java.util.Calendar.MINUTE, this.TIMEOUT);
@@ -100,7 +102,7 @@
         args.put("code", code.getVerificationCode());
         args.put("expiry", code.getExpiry());
         args.put("templateSource", this.getClass().getName());
-        args.put("template", "verifyEmailByCode");
+        args.put("template", emailTemplate);
         message.setTemplateArguments(args);
         ((DAO) getX().get("emailMessageDAO")).put(message);
       `
@@ -117,7 +119,7 @@
           user.setEmailVerified(true);
           ((DAO) x.get("localUserDAO")).put(user);
         } else {
-          sendCode(x, user);
+          sendCode(x, user, this.VERIFY_EMAIL_TEMPLATE);
           throw new AuthenticationException(this.RESEND_MESSAGE);
         }
         return res;
