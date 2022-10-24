@@ -1104,8 +1104,9 @@ foam.CLASS({
   methods: [
     function detach() {
       this.SUPER();
-      this.instance_ = {};
-      this.private_  = {};
+      this.childNodes = [];
+      this.children   = [];
+      this.private_   = {};
     },
     function init() {
       /*
