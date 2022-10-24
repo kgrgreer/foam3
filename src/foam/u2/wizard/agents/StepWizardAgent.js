@@ -79,7 +79,8 @@ foam.CLASS({
         this.wizardController.autoPositionUpdates = false;
       }
 
-      if ( ! this.wizardController.wizardlets[this.wizardController.wizardPosition?.wizardletIndex || 0].isVisible ) {
+      // Auto-next if first wizardlet is invisible
+      if ( ! this.wizardController.canLandOn(this.wizardController.wizardPosition) ) {
         await this.wizardController.next();
       }
 

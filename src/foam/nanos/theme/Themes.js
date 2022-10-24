@@ -10,8 +10,6 @@ foam.CLASS({
 
   documentation: `Support methods for Theme`,
 
-  axioms: [ foam.pattern.Singleton.create() ],
-
   implements: [
     'foam.mlang.Expressions',
   ],

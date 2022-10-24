@@ -44,7 +44,24 @@ foam.CLASS({
       name: 'adapt',
       value: function(o, v, prop) {
         if ( ! v ) return;
-        if ( foam.String.isInstance(v) && this.__subContext__ ) return this.__subContext__[v];
+        if ( foam.String.isInstance(v) && this.__subContext__ ) {
+          // First, try to find in context
+          let result = this.__subContext__[v];
+          if ( result ) return result;
+
+          // Second, treat like dotted path and follow path from context
+          const path = v.split('.');
+          result = this.__subContext__;
+
+          for ( const part of path ) {
+            // Return 'undefined' as soon as the path is broken
+            if ( ! result[part] ) return;
+
+            result = result[part];
+          }
+
+          return result;
+        }
         return foam.core.FObjectProperty.ADAPT.value.call(this, o, v, prop);
       }
     }

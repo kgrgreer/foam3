@@ -31,11 +31,11 @@ foam.CLASS({
 
   methods: [
     function put_(x, obj) {
-      return new Promise(resolve => {
+      return new Promise( (resolve, reject) => {
         this.lock.then(() => {
           return this.delegate.put_(x, obj).then((o) => {
             resolve(o);
-          });
+          }, reject);
         });
       });
     },
