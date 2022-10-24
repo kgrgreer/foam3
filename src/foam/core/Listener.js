@@ -96,7 +96,6 @@ foam.CLASS({
       var isMerged   = this.isMerged;
       var isFramed   = this.isFramed;
       var mergeDelay = this.mergeDelay;
-      var on         = this.on;
 
       var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
@@ -123,11 +122,12 @@ foam.CLASS({
         configurable: true,
         enumerable: false
       });
-
-      if ( on.length > 0 ) {
-        var listener = proto[this.name];
-        for ( var i = 0 ; i < on.length ; i++ ) {
-          let o        = on[i].split('.');
+    },
+    function initObject(obj) {
+      if ( this.on.length > 0 ) {
+        var listener = obj[this.name];
+        for ( var i = 0 ; i < this.on.length ; i++ ) {
+          let o        = this.on[i].split('.');
           let objectOn = o.shift();
           let topic    = o;
 
