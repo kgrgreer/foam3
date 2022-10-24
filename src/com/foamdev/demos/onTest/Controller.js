@@ -9,12 +9,13 @@ foam.CLASS({
   name: 'Controller',
   extends: 'foam.u2.Controller',
 
-  reactions: [
-    //simple
-    ['', 'propertyChange', 'reactionTestListener']
-    //using slot
-    //['', 'propertyChange.slotListener', 'reactionTestListener']
-  ],
+  // reactions: [
+  //   //simple
+  //   ['', 'propertyChange', 'reactionTestListener']
+  //   //using slot
+  //   ['', 'propertyChange.slotListener', 'reactionTestListener']
+  //   ['', 'propertyChange.yourName', 'reactionTestListener'],
+  // ],
 
   css: `
     h1 { color: #aaa; }
@@ -45,9 +46,9 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.start('div').add('Name:').end().start('div').add(this.YOUR_NAME).end().
+      this.start('div').add('Your name:').end().start('div').add(this.YOUR_NAME).end().
         start('h1').add('Hello ').add(this.yourName$).add('!').end().
-        start('div').add('listener:').end().start('div').add(this.SLOT_LISTENER).end();
+        start('div').add('Slot listener:').end().start('div').add(this.SLOT_LISTENER).end();
     }
   ],
 
@@ -57,22 +58,25 @@ foam.CLASS({
       on: [
         //we can use :
         //obj.topic or obj.evt.topic
-        //  'this.propertyChange.slotListener',//work
-        //  'this.propertyChange.yourName',//work
-        'this.propertyChange',//work
-
+          'this.propertyChange.slotListener',//work
+          'this.propertyChange.yourName'//,//work
+        //'this.propertyChange',//work
         // we can use also :
         //  'yourName.propertyChange',//work
         //  'data.propertyChange'//work
       ],
-      code: function(evt) {
-        console.log('Test Listener code')//TODO print this.yourName
+      // we can use also
+      // on: 'data.property' or on: 'data.property,data.something'
+      // on: 'this.propertyChange'
+      // on: 'this.propertyChange.slotListener,this.propertyChange.yourName',//work
+      code: function(evt, topic, slot, o) {
+        console.log('Test Listener code=> action on ' + o.obj.slotListener)
       }
     },
     {
       name: 'reactionTestListener',
       code: function() {
-        console.log('Reaction Test Listener '+this.yourName)
+        console.log('Reaction Test Listener ' + this.yourName)
       }
     }
   ]

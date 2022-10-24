@@ -72,7 +72,12 @@ foam.CLASS({
     },
     {
       class:  'StringArray',
-      name: 'on'
+      name: 'on',
+      adapt: function(_, v, prop) {
+        if ( Array.isArray(v) )
+          return v;
+        return v.split(',');
+      }
     }
   ],
 
@@ -93,7 +98,7 @@ foam.CLASS({
       var mergeDelay = this.mergeDelay;
       var on         = this.on;
 
-      Object.defineProperty(proto, name, {
+      var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
           if ( this.cls_.prototype === this ) return code;
 
@@ -125,6 +130,8 @@ foam.CLASS({
           let o        = on[i].split('.');
           let objectOn = o.shift();
           let topic    = o;
+
+          obj.onDetach(obj.sub.apply(obj, topic.concat(listener)));
         }
       }
     }
