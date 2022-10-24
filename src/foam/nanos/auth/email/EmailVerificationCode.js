@@ -40,17 +40,9 @@ foam.CLASS({
       name: 'verificationCode',
       required: true,
       view: function(_, X) {
-        return X.data.FragmentedTextField.create({
-          delegates: [
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X)
-          ]
-        }, X);
+        var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
+        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
     },
     {
