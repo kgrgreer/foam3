@@ -599,11 +599,12 @@ public class FScriptParser
       Literal.create("^"),
       Literal.create("_")
     ));
+    grammar.addSymbol("NUMBER", new Alt(grammar.sym("DOUBLE"), grammar.sym("INTEGER")));
 
-    grammar.addSymbol("NUMBER", new Seq(new Optional(Literal.create("-")), new Repeat(
+    grammar.addSymbol("INTEGER", new Seq(new Optional(Literal.create("-")), new Repeat(
       Range.create('0', '9'), 1
     )));
-    grammar.addAction("NUMBER", (val, x) -> {
+    grammar.addAction("INTEGER", (val, x) -> {
       var sb = new StringBuilder();
       Object[] values = (Object[]) val;
       if ( values[0] != null  ) sb.append(values[0]);
@@ -612,6 +613,33 @@ public class FScriptParser
       if ( finalStr.length() == 0 ) return val;
       try {
         return Integer.parseInt(finalStr);
+      } catch (NumberFormatException e) {
+        return Long.parseLong(finalStr);
+      }
+    });
+
+    grammar.addSymbol("DOUBLE", new Seq(new Optional(Literal.create("-")),
+      new Seq(
+        new Repeat(
+          Range.create('0', '9'), 1
+        ),
+        Literal.create("."),
+        new Repeat(
+          Range.create('0', '9'), 1
+        )
+      )));
+    grammar.addAction("DOUBLE", (val, x) -> {
+      var sb = new StringBuilder();
+      Object[] values = (Object[]) val;
+      if ( values[0] != null  ) sb.append(values[0]);
+      Object[] v = (Object[]) values[1];
+      sb.append(compactToString(v[0]));
+      sb.append(v[1]);
+      sb.append(compactToString(v[2]));
+      var finalStr = sb.toString();
+      if ( finalStr.length() == 0 ) return val;
+      try {
+        return Double.parseDouble(finalStr);
       } catch (NumberFormatException e) {
         return Long.parseLong(finalStr);
       }
