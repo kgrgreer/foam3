@@ -102,7 +102,7 @@ foam.CLASS({
       buttonStyle: 'LINK',
       code: async function() {
         try {
-          await this.emailVerificationService.verifyByCode(null, this.email, this.userName);
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
           this.ctrl.add(this.NotificationMessage.create({
             message: this.VERIFICATION_EMAIL_TITLE,
             description: this.VERIFICATION_EMAIL+ ' ' + this.email,
