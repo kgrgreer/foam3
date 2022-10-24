@@ -299,24 +299,18 @@ foam.CLASS({
       'For internal use only. Is used to implement the Slot.dot() method.',
 
   properties: [
-    {
-      // parent slot, not parent object
-      name: 'parent',
-      postSet: function(o, n) {
-        if ( this.name ) this.parentChange();
-      }
-    },
-    {
-      name: 'name',
-      postSet: function(o, n) {
-        if ( this.parent ) this.parentChange();
-      }
-    },
+    'parent', // parent slot, not parent object
+    'name',
     'value',
     'prevSub'
   ],
 
   methods: [
+    function init() {
+      this.onDetach(this.parent.sub(this.parentChange));
+      this.parentChange();
+    },
+
     function get() {
       var o = this.parent.get();
 
