@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.parse',
+  package: 'foam.parse.test',
   name: 'FScriptParserTest',
   extends: 'foam.nanos.test.Test',
 
@@ -21,6 +21,7 @@ foam.CLASS({
   'foam.nanos.auth.Address',
   'foam.nanos.auth.User',
   'foam.nanos.ruler.Rule',
+  'foam.parse.FScriptParser',
   'java.util.Date'
   ],
 

@@ -5,18 +5,19 @@
  */
 
 foam.CLASS({
-  package: 'foam.parse',
+  package: 'foam.parse.test',
   name: 'QueryParserUserTest',
   extends: 'foam.nanos.test.Test',
   
   javaImports: [
-  'foam.lib.parse.PStream',
-  'foam.lib.parse.ParserContext',
-  'foam.lib.parse.ParserContextImpl',
-  'foam.lib.parse.StringPStream',
-  'foam.nanos.auth.User',
-  'foam.mlang.predicate.Nary',
-  'foam.mlang.predicate.Predicate'
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContext',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.nanos.auth.User',
+    'foam.mlang.predicate.Nary',
+    'foam.mlang.predicate.Predicate',
+    'foam.parse.QueryParser'
   ],
 
   methods: [
