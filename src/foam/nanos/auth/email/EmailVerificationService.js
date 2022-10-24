@@ -19,7 +19,7 @@
       name: 'verifyByCode',
       type: 'Void',
       async: true,
-      args: 'Context x, String email, String userName'
+      args: 'Context x, String email, String userName, String emailTemplate'
     },
     {
       name: 'verifyUserEmail',

@@ -14,7 +14,6 @@ foam.CLASS({
     'foam.u2.wizard.data.NullSaver'
   ],
 
-
   properties: [
     {
       class: 'String',
@@ -30,7 +29,6 @@ foam.CLASS({
     async function save(data) {
       const capable = await this.capableLoader.load();
       const dao = capable.getCapablePayloadDAO();
-
       const payload = this.CapabilityJunctionPayload.create({
         capability: this.capabilityId,
         data

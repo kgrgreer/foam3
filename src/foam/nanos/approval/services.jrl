@@ -51,7 +51,46 @@ p({
   """,
   "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
 })
-
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewApprovalRequestDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    of = foam.nanos.approval.ApprovalRequest.getOwnClassInfo();
+    dao = new foam.nanos.approval.PopulateApprovalRequestSummariesDAO(x);
+    dao = new foam.dao.MaterializedDAO.Builder(x)
+          .setOf(of)
+          .setAdapter(new foam.nanos.approval.PopulateApprovalRequestSummariesAdapter(x, of, dao))
+          .setSourceDAO(x.get("approvalRequestDAO"))
+          .build()
+          .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
+        
+    return new foam.dao.PMDAO.Builder(x)
+      .setDelegate(dao)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "foam.nanos.approval.ApprovalRequest",
+      "remoteListenerSupport": false,
+      "serverBox": {
+        "class": "foam.box.SessionClientBox",
+        "url": "service/tableViewApprovalRequestDAO",
+        "delegate": {
+          "class": "foam.box.TimeoutBox",
+          "timeout": 25000,
+          "delegate": {
+            "class": "foam.box.HTTPBox",
+            "url": "service/tableViewApprovalRequestDAO"
+          }
+        }
+      }
+    }
+  """
+})
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "ApprovalRequestNotification",

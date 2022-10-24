@@ -107,7 +107,7 @@ foam.CLASS({
             `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId}'s data returns null for the path ${this.loadFromPath.toString()}`,
           );
           if ( this.of ) {
-            return this.of.create({}, this);
+            return initialData || this.of.create({}, this);
           }
         }
 

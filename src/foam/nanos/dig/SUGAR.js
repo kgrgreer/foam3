@@ -184,15 +184,15 @@ foam.CLASS({
             var service = this.__context__[serviceKey];
 
             if ( ! service ) return;
-  
+
             if ( ! service.cls_.getAxiomByName('delegate') ) return;
-  
+
             var of = foam.lookup(service.cls_.getAxiomByName('delegate').of);
-  
+
             if ( ! of ) return;
-  
+
             var methods = of.getOwnAxiomsByClass(foam.core.Method);
-            
+
             return methods.map(m => m.name).sort();
           }),
           data$: X.data.method$
