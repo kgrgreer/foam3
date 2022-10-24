@@ -208,7 +208,7 @@ public class FScriptParser
     });
     grammar.addSymbol(
       "FORMULA",
-      new Repeat(grammar.sym("MINUS"), Literal.create("+"),1)
+      new Repeat(grammar.sym("MINUS"), new Seq1(1, Whitespace.instance(), Literal.create("+"), Whitespace.instance()),1)
     );
     grammar.addAction("FORMULA", (val, x) -> {
       Object[] vals = (Object[]) val;
@@ -224,7 +224,7 @@ public class FScriptParser
 
     grammar.addSymbol(
       "MINUS",
-      new Repeat(grammar.sym("FORM_EXPR"), Literal.create("-"),1)
+      new Repeat(grammar.sym("FORM_EXPR"), new Seq1(1, Whitespace.instance(), Literal.create("-"), Whitespace.instance()),1)
     );
     grammar.addAction("MINUS", (val, x) -> {
       Object[] vals = (Object[]) val;
@@ -248,18 +248,18 @@ public class FScriptParser
         new Repeat(
           new Seq(
             new Alt(
-              new AbstractLiteral("*") {
+              new Seq1(1, Whitespace.instance(), new AbstractLiteral("*") {
                 @Override
                 public Object value() {
                   return new Multiply();
                 }
-              },
-              new AbstractLiteral("/") {
+              }, Whitespace.instance()),
+              new Seq1(1, Whitespace.instance(), new AbstractLiteral("/") {
                 @Override
                 public Object value() {
                   return new Divide();
                 }
-              }
+              }, Whitespace.instance())
             ),
             new Alt(
               grammar.sym("NUMBER"),
@@ -599,7 +599,46 @@ public class FScriptParser
       Literal.create("^"),
       Literal.create("_")
     ));
-    grammar.addSymbol("NUMBER", new Alt(grammar.sym("DOUBLE"), grammar.sym("INTEGER")));
+    grammar.addSymbol("NUMBER", new Alt(
+      grammar.sym("DOUBLE"),
+      grammar.sym("INTEGER"),
+      grammar.sym("MAX"),
+      grammar.sym("MIN")
+    ));
+
+    grammar.addSymbol("MAX", new Seq2(2, 6,
+      Literal.create("MAX("),
+      Whitespace.instance(),
+      grammar.sym("NUMBER"),
+      Whitespace.instance(),
+      Literal.create(","),
+      Whitespace.instance(),
+      grammar.sym("NUMBER"),
+      Whitespace.instance(),
+      Literal.create(")")
+
+    ));
+    grammar.addAction("MAX", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      return Math.max((Integer) vals[0], (Integer) vals[1]);
+    });
+
+    grammar.addSymbol("MIN", new Seq2(2, 6,
+      Literal.create("MIN("),
+      Whitespace.instance(),
+      grammar.sym("NUMBER"),
+      Whitespace.instance(),
+      Literal.create(","),
+      Whitespace.instance(),
+      grammar.sym("NUMBER"),
+      Whitespace.instance(),
+      Literal.create(")")
+
+    ));
+    grammar.addAction("MIN", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      return Math.min((Integer) vals[0], (Integer) vals[1]);
+    });
 
     grammar.addSymbol("INTEGER", new Seq(new Optional(Literal.create("-")), new Repeat(
       Range.create('0', '9'), 1

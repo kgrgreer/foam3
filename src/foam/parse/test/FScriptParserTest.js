@@ -141,10 +141,18 @@ foam.CLASS({
     sps.setString("2*8-6");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==10, "10");
 
-    double ans = 2.2*3-1;
+    sps.setString("2 * 8 - 6");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==10, "10");
 
+    sps.setString("2 * 8 - MAX(6,10)");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==6, "6");
+
+    sps.setString("2 * 8 - MIN(6,10)");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==10, "10");
+
+    double ans = 2.2*3-1;
     sps.setString("2.2*3-1");
-    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==ans, "10");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==ans, "double: 5.6");
 
     addr.setCountryId("CA");
     addr.setCity("Toronto");
