@@ -24,15 +24,14 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.data', 'updateSummary'],
-    ['data', 'propertyChange', 'updateSummary']
-  ],
-
   listeners: [
     {
       name: 'updateSummary',
       isFramed: true,
+      on: [
+        'data.propertyChange',
+        'this.propertyChange.data'//TODO not optimal (we can delete the second)
+      ],
       code: function() {
         this.summary = this.data ? this.data.toSummary() : undefined;
       }
