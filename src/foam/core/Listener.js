@@ -69,6 +69,15 @@ foam.CLASS({
           })
         ];
       }
+    },
+    {
+      class:  'StringArray',
+      name: 'on',
+      adapt: function(_, v, prop) {
+        if ( Array.isArray(v) )
+          return v;
+        return v.split(',');
+      }
     }
   ],
 
@@ -88,7 +97,7 @@ foam.CLASS({
       var isFramed   = this.isFramed;
       var mergeDelay = this.mergeDelay;
 
-      Object.defineProperty(proto, name, {
+      var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
           if ( this.cls_.prototype === this ) return code;
 
@@ -113,6 +122,18 @@ foam.CLASS({
         configurable: true,
         enumerable: false
       });
+    },
+    function initObject(obj) {
+      if ( this.on.length > 0 ) {
+        var listener = obj[this.name];
+        for ( var i = 0 ; i < this.on.length ; i++ ) {
+          let o        = this.on[i].split('.');
+          let objectOn = o.shift();
+          let topic    = o;
+
+          obj.onDetach(obj.sub.apply(obj, topic.concat(listener)));
+        }
+      }
     }
   ]
 });
