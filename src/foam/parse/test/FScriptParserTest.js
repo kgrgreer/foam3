@@ -30,9 +30,9 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
     var user = new User();
-    user.setFirstName("senorita");
-    user.setMiddleName("senorita");
-    user.setLastName("alice");
+    user.setFirstName("marmelad");
+    user.setMiddleName("marmelad");
+    user.setLastName("sonya");
     var addr = new Address();
     addr.setRegionId("wonderland");
 
@@ -45,8 +45,8 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
     user.setAddress(addr);
 
-    sps.setString("firstName==\\"senorita\\"");
-    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName==\\"senorita\\"");
+    sps.setString("firstName==\\"marmelad\\"");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName==\\"marmelad\\"");
     sps.setString("firstName==\\"kristina2\\"");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "quoted string kristina2 returns false");
     sps.setString("thisValue.len==8");
@@ -87,19 +87,19 @@ foam.CLASS({
     sps.setString("userName !exists||firstName !exists");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "sps.setString(\\"userName !exists||firstName !exists\\")");
 
-    sps.setString("firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists||firstName !exists");
+    sps.setString("firstName==\\"marmelad\\"&&firstName.len!=9&&userName !exists||firstName !exists");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists||firstName !exists");
 
     sps.setString("firstName.len!=9&&(userName !exists||firstName !exists)");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName.len!=9&&(userName !exists||firstName !exists)");
 
-    sps.setString("firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists&&firstName !exists");
+    sps.setString("firstName==\\"marmelad\\"&&firstName.len!=9&&userName !exists&&firstName !exists");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
-    sps.setString("firstName==\\"senorita\\"&&firstName.len==9||firstName.len==8");
+    sps.setString("firstName==\\"marmelad\\"&&firstName.len==9||firstName.len==8");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
-    sps.setString("!(firstName==\\"senorita\\"&&firstName.len!=9&&userName !exists&&firstName !exists)");
+    sps.setString("!(firstName==\\"marmelad\\"&&firstName.len!=9&&userName !exists&&firstName !exists)");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "&&firstName.len!=9&&userName !exists&&firstName !exists");
 
     sps.setString("!(firstName~/[0-9]/)");
@@ -119,6 +119,18 @@ foam.CLASS({
 
     sps.setString("firstName.len+lastName.len==13");
     test((((Predicate) parser.parse(sps, px).value()).f(user)), "firstname+lastname=13");
+
+    sps.setString("MAX(firstName.len,lastName.len)+5 == 13");
+    test((((Predicate) parser.parse(sps, px).value()).f(user)), "MAX(firstName.len,lastName.len)+5 == 13");
+
+    sps.setString("2+ MIN(firstName.len,lastName.len) == 7");
+    test((((Predicate) parser.parse(sps, px).value()).f(user)), "2+ MIN(firstName.len,lastName.len) == 7");
+
+    sps.setString("10 + MAX(firstName.len,MAX(lastName.len+4, 7)) == 19");
+    test((((Predicate) parser.parse(sps, px).value()).f(user)), "M10 + MAX(firstName.len,MAX(lastName.len+4, 7)) == 19");
+
+    sps.setString("10 + MIN(firstName.len,MAX(lastName.len+4, 7)) == 18");
+    test((((Predicate) parser.parse(sps, px).value()).f(user)), "M10 + MAX(firstName.len,MAX(lastName.len+4, 7)) == 19");
 
     sps.setString("4+7+2");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==13, "13");
@@ -199,7 +211,7 @@ foam.CLASS({
     Expr result = null;
     sps.setString("if ( address.regionId.len==5 ) { firstName } else { lastName.len+3 }");
     result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
-    test("senorita".equals(result.f(user)), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
+    test("marmelad".equals(result.f(user)), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 ");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
     result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
@@ -247,7 +259,6 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
     sps.setString("instanceof foam.nanos.ruler.Rule");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
-
     `
     }
   ]
