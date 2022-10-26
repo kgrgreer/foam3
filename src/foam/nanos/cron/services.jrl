@@ -101,7 +101,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.cron.Schedulable.getOwnClassInfo())
       .setGuid(true)
-      .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("schedulables")
       .setDecorator(new foam.nanos.script.ScriptRunnerDAO(
