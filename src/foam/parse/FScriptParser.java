@@ -242,7 +242,9 @@ public class FScriptParser
       new Alt(
         grammar.sym("NUMBER"),
         grammar.sym("FIELD_LEN"),
-        grammar.sym("FIELD")
+        grammar.sym("FIELD"),
+        grammar.sym("MAX"),
+        grammar.sym("MIN")
       ),
       new Optional(
         new Repeat(
@@ -264,7 +266,9 @@ public class FScriptParser
             new Alt(
               grammar.sym("NUMBER"),
               grammar.sym("FIELD_LEN"),
-              grammar.sym("FIELD")
+              grammar.sym("FIELD"),
+              grammar.sym("MAX"),
+              grammar.sym("MIN")
             )
           )
         )
@@ -601,43 +605,47 @@ public class FScriptParser
     ));
     grammar.addSymbol("NUMBER", new Alt(
       grammar.sym("DOUBLE"),
-      grammar.sym("INTEGER"),
-      grammar.sym("MAX"),
-      grammar.sym("MIN")
+      grammar.sym("INTEGER")
     ));
 
     grammar.addSymbol("MAX", new Seq2(2, 6,
       Literal.create("MAX("),
       Whitespace.instance(),
-      grammar.sym("NUMBER"),
+      grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(","),
       Whitespace.instance(),
-      grammar.sym("NUMBER"),
+      grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(")")
 
     ));
     grammar.addAction("MAX", (val, x) -> {
       Object[] vals = (Object[]) val;
-      return Math.max((Integer) vals[0], (Integer) vals[1]);
+      Expr[] t = new Expr[2];
+      t[0] = vals[0] instanceof Expr ? (Expr) vals[0] : new Constant(vals[0]);
+      t[1] = vals[1] instanceof Expr ? (Expr) vals[1] : new Constant(vals[1]);
+      return new MaxFunc(t, true);
     });
 
     grammar.addSymbol("MIN", new Seq2(2, 6,
       Literal.create("MIN("),
       Whitespace.instance(),
-      grammar.sym("NUMBER"),
+      grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(","),
       Whitespace.instance(),
-      grammar.sym("NUMBER"),
+      grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(")")
 
     ));
     grammar.addAction("MIN", (val, x) -> {
       Object[] vals = (Object[]) val;
-      return Math.min((Integer) vals[0], (Integer) vals[1]);
+      Expr[] t = new Expr[2];
+      t[0] = vals[0] instanceof Expr ? (Expr) vals[0] : new Constant(vals[0]);
+      t[1] = vals[1] instanceof Expr ? (Expr) vals[1] : new Constant(vals[1]);
+      return new MinFunc(t, true);
     });
 
     grammar.addSymbol("INTEGER", new Seq(new Optional(Literal.create("-")), new Repeat(
