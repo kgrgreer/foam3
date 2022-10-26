@@ -91,6 +91,13 @@ foam.CLASS({
       value: true
     },
     {
+      documentation: 'Provider imposed rateLimit (per second), at which point they will throttle or block completely for some time window',
+      class: 'Long',
+      name: 'rateLimit',
+      units: 's',
+      value: 14 // default for smtp.gmail.com
+    },
+    {
       documentation: 'Associated cron service to be disabled on excessive errors',
       class: 'String',
       name: 'cronId',

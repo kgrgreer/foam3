@@ -73,15 +73,3 @@ foam.CLASS({
     }
   ]
 });
-/*
-foam.CLASS({
-  package: 'foam.pattern',
-  name: 'ConstantSlotMultitonRefinement',
-
-  refines: 'foam.core.ConstantSlot',
-
-  axioms: [
-    foam.pattern.Multiton.create({property: 'value'})
-  ]
-});
-*/

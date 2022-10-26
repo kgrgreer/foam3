@@ -166,9 +166,11 @@ foam.CLASS({
         wizardPosition, nextScreen,
         currentSection, currentWizardlet,
         currentSection$isValid, currentWizardlet$isValid,
-        config$allowSkipping
+        config$allowSkipping,
+        currentWizardlet$isInAltFlow
       ) {
         if ( config$allowSkipping ) return true;
+        if ( currentWizardlet$isInAltFlow ) return true;
         if (
           ! nextScreen ||
           wizardPosition.wizardletIndex != nextScreen.wizardletIndex
@@ -298,17 +300,30 @@ foam.CLASS({
         this.visitedWizardlets.indexOf(wizardlet) == -1 ? p
           : p.then(() => wizardlet.save()), Promise.resolve());
     },
+    function canLandOn(pos) {
+      const wizardlet = this.wizardlets[pos.wizardletIndex];
+      if ( ! wizardlet.isVisible ) return false;
+      if ( wizardlet.sections.length < 1 ) return false;
+      const section = wizardlet.sections[pos.sectionIndex];
+      if ( ! section.isAvailable ) return false;
+      return true;
+    },
     async function next() {
-      const canLandOn_ = pos => {
-        const wizardlet = this.wizardlets[pos.wizardletIndex];
-        if ( ! wizardlet.isVisible ) return false;
-        if ( wizardlet.sections.length < 1 ) return false;
-        const section = wizardlet.sections[pos.sectionIndex];
-        if ( ! section.isAvailable ) return false;
-        return true;
+      let wizardlet = this.currentWizardlet;
+
+      // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
+      // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
+      // (i.e. we're in the loop below instead)
+      if ( ! wizardlet.goNextOnSave ) {
+        try {
+          await wizardlet.save();
+        } catch (e) {
+          this.lastException = e;
+          throw e;
+        }
+        return false;
       }
 
-      let wizardlet = this.currentWizardlet;
       const iterator = this.wizardPosition.iterate(this.wizardlets);
 
       for ( const pos of iterator ) {
@@ -324,7 +339,7 @@ foam.CLASS({
             );
 
             if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
-              if ( canLandOn_(this.wizardPosition) ) return false;
+              if ( this.canLandOn(this.wizardPosition) ) return false;
               hint = this.WizardErrorHint.ABORT_FLOW;
             }
 
@@ -349,7 +364,7 @@ foam.CLASS({
           }
         }
 
-        if ( canLandOn_(pos) ) {
+        if ( this.canLandOn(pos) ) {
           this.wizardPosition = pos;
           return false;
         }

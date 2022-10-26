@@ -23,8 +23,9 @@
   methods: [
     async function save(data) {
       for ( var action of this.actions ) {
-        data[action]?.code.call(data)
+        await data[action]?.code.call(data)
       }
+      await this.delegate.save(data);
     }
   ]
 });

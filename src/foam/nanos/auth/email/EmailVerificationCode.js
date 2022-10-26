@@ -40,22 +40,20 @@ foam.CLASS({
       name: 'verificationCode',
       required: true,
       view: function(_, X) {
-        return X.data.FragmentedTextField.create({
-          delegates: [
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X)
-          ]
-        }, X);
+        var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
+        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
     },
     {
       class: 'String',
       name: 'email',
+      required: true,
+      hidden: true
+    },
+    {
+      class: 'String',
+      name: 'userName',
       required: true,
       hidden: true
     },
@@ -69,47 +67,45 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      code: async function(X) {
-        var data = X.data;
+      code: async function() {
         var success, err;
         try {
-          success = await X.emailVerificationService.verifyCode(X, data.email, data.verificationCode);
+          success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.userName, this.verificationCode);
         } catch ( error ) {
           err = error;
         }
         if ( success ) {
-          X.ctrl.add(data.NotificationMessage.create({
-            message: data.SUCCESS_MSG,
-            type: data.LogLevel.INFO
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_MSG,
+            type: this.LogLevel.INFO
           }));
-
-          X.window.location.reload();
         } else {
-          X.ctrl.add(data.NotificationMessage.create({
-            message: data.ERROR_MSG,
-            type: data.LogLevel.ERROR,
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.ERROR_MSG,
+            type: this.LogLevel.ERROR,
             err: err?.data
           }));
+          throw err;
         }
       }
     },
     {
       name: 'resendCode',
       buttonStyle: 'LINK',
-      code: async function(X) {
+      code: async function() {
         try {
-          await X.emailVerificationService.verifyByCode(null, this.email);
-          self.ctrl.add(self.NotificationMessage.create({
-            message: self.VERIFICATION_EMAIL_TITLE,
-            description: self.VERIFICATION_EMAIL+ ' ' + this.email,
-            type: self.LogLevel.INFO
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.VERIFICATION_EMAIL_TITLE,
+            description: this.VERIFICATION_EMAIL+ ' ' + this.email,
+            type: this.LogLevel.INFO
           }));
           return true;
         } catch ( err ) {
-          self.ctrl.add(self.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
-            message: self.ERROR_MSG_EMAIL,
-            type: self.LogLevel.ERROR
+            message: this.ERROR_MSG_EMAIL,
+            type: this.LogLevel.ERROR
           }));
           return false;
         }

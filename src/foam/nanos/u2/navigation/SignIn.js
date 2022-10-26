@@ -49,7 +49,8 @@ foam.CLASS({
     },
     {
       name: 'footerSection',
-      title: ''
+      title: '',
+      isAvailable: () => false
     }
   ],
 
@@ -194,6 +195,17 @@ foam.CLASS({
           } catch (err) {
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
+                if ( this.username ) {
+                  try {
+                    logedInUser = await this.auth.login(x, this.username, this.password);
+                    this.subject.user = logedInUser;
+                    this.subject.realUser = logedInUser;
+                    if ( ! this.pureLoginFunction ) await this.nextStep();
+                    return;
+                  } catch ( err ) {
+                    username = '';
+                  }
+                }
                 this.usernameRequired = true;
               }
               this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
@@ -208,6 +220,7 @@ foam.CLASS({
       label: 'Create an account',
       section: 'footerSection',
       buttonStyle: 'LINK',
+      isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
         X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
@@ -218,6 +231,7 @@ foam.CLASS({
       label: 'Forgot password?',
       section: 'footerSection',
       buttonStyle: 'LINK',
+      isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.stack.push(X.data.StackBlock.create({
           view: {

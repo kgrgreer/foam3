@@ -49,7 +49,7 @@ foam.CLASS({
       factory: function(){
         if ( foam.nanos.crunch.MinMaxCapability.isInstance(this.capability) ){
           // a capability min of 0 denotes no minimum limit
-          return this.capability.min > 0 ? this.capability.min : this.choices.length;
+          return this.capability.hasOwnProperty('min') ? this.capability.min : this.choices.length;
         }
       }
     },
@@ -58,7 +58,7 @@ foam.CLASS({
       class: 'Int',
       factory: function(){
         if ( foam.nanos.crunch.MinMaxCapability.isInstance(this.capability) ){
-          return this.capability.max;
+          return this.capability.max || this.choices.length;
         }
       }
     },
@@ -108,7 +108,7 @@ foam.CLASS({
           let alternateFlow = this.__subContext__.sequence.contextAgentSpecs.filter(x => (x.spec.class == "foam.u2.wizard.agents.AlternateFlowAgent") || (x.name == "AlternateFlowAgent"));
           this.choiceWizardlets.forEach(cw => {
             for ( let af of alternateFlow ) {
-              if ( af.args.alternateFlow.available.filter(x => x == cw.instance_.of).length != 0 ) {
+              if ( (af.args || af.spec).alternateFlow.available?.filter(x => x == cw.instance_.of).length != 0 ) {
                 cw.isAvailable = true;
                 return;
               }
@@ -171,7 +171,6 @@ foam.CLASS({
         }
 
         this.data.selectedData = selectedData;
-
         var sections = [
           this.MinMaxCapabilityWizardletSection.create({
             isAvailable: true,
@@ -255,7 +254,7 @@ foam.CLASS({
     function handleLifting(liftedWizardlets) {
       const updated = () => {
         // Hide choice selection if lifted choices reach maximum
-        const countLifted = liftedWizardlets
+        const countLifted = liftedWizardlets.length && liftedWizardlets
           .map(w => w.isAvailable ? 1 : 0)
           .reduce((count, val) => count + val);
         this.isVisible = countLifted < this.max && this.isAvailable;

@@ -48,7 +48,7 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      if ( ! this.wizardController || ! this.config ) 
+      if ( ! this.wizardController || ! this.config )
         console.warn('Missing controller or config');
       const usingFormController = this.config && this.config.controller;
 
@@ -79,6 +79,15 @@ foam.CLASS({
         this.wizardController.autoPositionUpdates = false;
       }
 
+      // Auto-next if first wizardlet is invisible
+      if ( ! this.wizardController.canLandOn(this.wizardController.wizardPosition) ) {
+        await this.wizardController.next();
+      }
+
+      if ( usingFormController ) {
+        await controller.setFirstPosition();
+      }
+
       this.wizardStackBlock = this.StackBlock.create({
         view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
         parent: this
@@ -90,14 +99,14 @@ foam.CLASS({
           if ( ! e ) return;
           onError(e);
         }));
-        
+
         this.wizardStackBlock.removed.sub(() => {
           if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
             this.wizardController.status = this.WizardStatus.DISCARDED;
           }
           resolve();
         })
-        
+
         // If this is published to, wizard status will stay IN_PROGRESS
         this.flowAgent?.sub(this.cls_.name,() => {
           resolve();

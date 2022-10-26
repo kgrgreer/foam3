@@ -66,8 +66,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showTitle',
-      value: false
+      name: 'showTitle'
     },
     {
       class: 'Boolean',
@@ -133,6 +132,15 @@ foam.CLASS({
 
 
         return actionBar;
+      }
+    }
+  ],
+
+  methods: [
+    async function setFirstPosition() {
+      // Auto-next if first wizardlet is invisible
+      if ( ! this.data.canLandOn(this.data.wizardPosition) ) {
+        await this.data.next();
       }
     }
   ],

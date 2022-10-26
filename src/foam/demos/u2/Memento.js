@@ -158,6 +158,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',

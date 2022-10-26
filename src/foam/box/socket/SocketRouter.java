@@ -26,6 +26,7 @@ import foam.nanos.http.NanoRouter;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
+import foam.nanos.om.OMLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMWebAgent;
 import foam.nanos.NanoService;
@@ -47,6 +48,13 @@ public class SocketRouter
   implements ContextAware
 {
   protected Logger logger_;
+
+  protected static ThreadLocal<SessionServerBox> sessionServerBox_ = new ThreadLocal<SessionServerBox>() {
+      @Override
+      protected SessionServerBox initialValue() {
+        return new SessionServerBox();
+      }
+    };
   
   public SocketRouter(X x) {
     setX(x);
@@ -61,7 +69,6 @@ public class SocketRouter
     
     logger_ = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName(),
-        "service",
       }, (Logger) getX().get("logger"));
   }
 
@@ -103,7 +110,7 @@ public class SocketRouter
         throw new IOException("Service not found: "+serviceKey);
       }
       try {
-        new SessionServerBox(requestContext, agent.getSkeletonBox(), agent.getAuthenticate()).send(msg);
+        sessionServerBox_.get().send(requestContext, agent.getSkeletonBox(), agent.getAuthenticate(), msg);
       } catch (Exception e) {
         logger_.error("Error serving", serviceKey, e);
         if ( pm != null ) pm.error(getX(), e);
@@ -115,6 +122,7 @@ public class SocketRouter
   }
 
   protected WebAgent getAgent(Skeleton skeleton, NSpec spec) {
+    ((OMLogger) getX().get("OMLogger")).log("socket.router.agent");
     WebAgent agent = new SocketWebAgent(skeleton, spec.getAuthenticate());
     informService(agent, spec);
     return agent;

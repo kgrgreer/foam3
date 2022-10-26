@@ -21,6 +21,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function detach() {
+      this.SUPER();
+      this.cache = {};
+    },
+
     // Put invalidates cache and is forwarded to the source.
     function put_(x, o) {
       this.cache = {};
@@ -28,7 +33,7 @@ foam.CLASS({
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
-      // console.log('************ QUERYCache', limit);
+      // console.log('************ QUERYCache', skip, limit);
       if (
         // Only cache selects that have limit provided
         limit === undefined
@@ -42,16 +47,28 @@ foam.CLASS({
       let key  = [sink, order, predicate].toString();
 
       return new Promise(function(resolve, reject) {
-        //console.log('******** QUERYCACHE: key: ' + key + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
+        // console.log('******** QUERYCACHE: predicate: ' + predicate + ' in cache: ' +  ( self.cache[key] ? 'true' : 'false' ));
         let requestStartIdx = skip || 0;
         let requestEndIdx   = requestStartIdx + limit;
 
         // Ensure we have cache for request
-        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(function() {
+        self.fillCache_(key, requestStartIdx, requestEndIdx, x, sink, order, predicate).then(() => {
+
+          let endIdx = requestEndIdx <= self.cache[key].length ? requestEndIdx : self.cache[key].length;
+
+          //console.log('*** QCD *** size: ' + self.cache[key].length + ' : endIdx: ' + endIdx + ' : for predicate: ' + predicate);
+
+
           // Return data from cache
-          for ( let idx = requestStartIdx ; idx < requestEndIdx ; idx++ ) {
-            sink.put(self.cache[key][idx]);
+          for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
+            if ( foam.dao.ArraySink.isInstance(sink) ) {
+              sink.put(self.cache[key][idx]);
+            } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+              sink.projectionWithClass[idx-requestStartIdx] = self.cache[key][idx];
+            }
           }
+
+          sink.eof();
 
           resolve(sink);
         });
@@ -113,12 +130,22 @@ foam.CLASS({
       }
 
       if ( hasMissingData ) {
-        //console.log('******** QUERYCACHE*** HAS MISSING DATA ***: key: ' + key + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
+        // console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-          // Update cache with missing data
-          for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
-            self.cache[key][startIdx + idx] = result.array[idx];
+
+          if ( foam.dao.ArraySink.isInstance(sink) ) {
+            // ArraySink
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.array.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.array[idx];
+            }
+          } else if ( foam.mlang.sink.Projection.isInstance(sink) ) {
+            // Projection
+            // Update cache with missing data
+            for ( let idx = 0 ; idx < result.projectionWithClass.length ; idx++ ) {
+              self.cache[key][startIdx + idx] = result.projectionWithClass[idx];
+            }
           }
         });
       }

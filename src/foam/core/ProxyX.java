@@ -60,15 +60,11 @@ public class ProxyX
   }
 
   public X put(Object name, Object value) {
-    setX(getX().put(name, value));
-
-    return this;
+    return new ProxyX(getX().put(name, value));
   }
 
   public X putFactory(Object name, XFactory factory) {
-    setX(getX().putFactory(name, factory));
-
-    return this;
+    return new ProxyX(getX().putFactory(name, factory));
   }
 
   public Object getInstanceOf(Object value, Class type) {

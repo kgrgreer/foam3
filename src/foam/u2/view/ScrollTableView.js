@@ -291,13 +291,9 @@
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.onDetach(this.table_$.sub(this.refresh));
       this.onDetach(this.table_$.dot('data').sub(this.refresh));
       this.onDetach(this.table_$.dot('updateValues').sub(this.refresh));
@@ -485,6 +481,9 @@
     {
       name: 'updateRenderedPages_',
       isFramed: true,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         if ( ! this.table_ ) return;
 

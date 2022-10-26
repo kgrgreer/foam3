@@ -13,25 +13,28 @@ foam.CLASS({
   imports: [
     'ctrl',
     'loginView?',
+    'resetPasswordService',
     'resetPasswordToken',
     'stack',
-    'translationService',
+    'translationService'
   ],
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.UserNotFoundException',
-    'foam.nanos.auth.DuplicateEmailException'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   messages: [
-    { name: 'INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
-    { name: 'INSTRUC', message: 'Please check your inbox to continue' },
-    { name: 'REDIRECTION_TO', message: 'Back to Sign in' },
+    { name: 'TOKEN_INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
+    { name: 'TOKEN_INSTRUC',       message: 'Please check your inbox to continue' },
+    { name: 'CODE_INSTRUC_TITLE',  message: 'Verification code sent' },
+    { name: 'CODE_INSTRUC',        message: 'Please check your inbox for to verify your email' },
+    { name: 'REDIRECTION_TO',      message: 'Back to Sign in' },
     { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires username' },
-    { name: 'ERROR_MSG', message: 'Issue resetting your password. Please try again' },
+    { name: 'ERROR_MSG',           message: 'Issue resetting your password. Please try again' }
   ],
 
   sections: [
@@ -42,7 +45,6 @@ foam.CLASS({
       help: 'Enter your account email and we will send you an email with a link to create a new one.'
     }
   ],
-
 
   properties: [
     {
@@ -66,7 +68,10 @@ foam.CLASS({
       createVisibility: function(usernameRequired) {
        return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      section: 'emailPasswordSection',
+      validateObj: function(usernameRequired, username) {
+        return usernameRequired && ! username ? 'Username is required.' : '';
+      },
+      section: 'emailPasswordSection'
     },
     {
       class: 'Boolean',
@@ -79,6 +84,17 @@ foam.CLASS({
       documentation: 'checks if back link to login page is needed',
       value: true,
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showSubmitAction',
+      value: true,
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'resetByCode',
+      hidden: true
     }
   ],
 
@@ -88,21 +104,34 @@ foam.CLASS({
       label: 'Submit',
       buttonStyle: 'PRIMARY',
       section: 'emailPasswordSection',
-
+      isAvailable: function(showSubmitAction) {
+        return showSubmitAction
+      },
       isEnabled: function(errors_) {
         return ! errors_;
       },
-      code: function(X) {
-        const user = this.User.create({ email: this.email, userName: this.username });
-        this.resetPasswordToken.generateToken(null, user).then((_) => {
+      code: async function(X) {
+        var instructionTitle, instruction;
+        try {
+          if ( this.resetByCode ) {
+            await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
+            instructionTitle = this.CODE_INSTRUC_TITLE;
+            instruction = this.CODE_INSTRUC;
+          } else {
+            const user = await this.User.create({ email: this.email, userName: this.username });
+            await this.resetPasswordToken.generateToken(null, user);
+            instructionTitle = this.TOKEN_INSTRUC_TITLE;
+            instruction = this.TOKEN_INSTRUC;
+          }
+
           this.ctrl.add(this.NotificationMessage.create({
-            message: `${this.INSTRUC_TITLE}`,
-            description: `${this.INSTRUC}`,
+            message: instructionTitle,
+            description: instruction,
             type: this.LogLevel.INFO,
             transient: true
           }));
           this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
-        }).catch((err) => {
+        } catch(err) {
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
@@ -121,7 +150,8 @@ foam.CLASS({
             type: this.LogLevel.ERROR,
             transient: true
           }));
-        });
+          throw err;
+        }
       }
     }
   ]

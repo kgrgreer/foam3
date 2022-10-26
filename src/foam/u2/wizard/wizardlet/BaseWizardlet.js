@@ -318,6 +318,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'pubAnalyticEvt',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'goNextOnSave',
+      value: true,
+      documentation: `
+        If set to false, the wizardController will not attempt to find a next wizardPostiton to go to
+        in its next method.
+        This is useful because it allows us to use an AlternateFlowSaver which executes an AlternateFlow
+        on wizardlet save.
+      `
     }
   ],
 

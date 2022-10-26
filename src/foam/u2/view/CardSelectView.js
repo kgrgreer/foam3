@@ -14,7 +14,9 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.pattern.Faceted.create()
+    foam.pattern.Faceted.create({
+      inherit: true
+    })
   ],
 
   topics: [

@@ -64,17 +64,6 @@ foam.CLASS({
 
   methods: [
     function execute(x) {
-      [
-        ['unavailable', 'isAvailable', false],
-        ['available', 'isAvailable', true],
-        ['invisible', 'isVisible', false],
-        ['visible', 'isVisible', true]
-      ].forEach(([listProp, propToChange, newValue]) => {
-        for ( const wizardletId of this[listProp] ) {
-          const w = x.wizardlets.find(w => w.id == wizardletId);
-          w[propToChange] = newValue;
-        }
-      })
 
       if ( this.select.length != 0 ) {
         for ( let item of this.select ) {
@@ -86,10 +75,24 @@ foam.CLASS({
           w.data.selectedData = choices;
         }
       }
+      // set availability/visibility after updating selecteddata
+      // which will change availability/visibility
+      [
+        ['unavailable', 'isAvailable', false],
+        ['available', 'isAvailable', true],
+        ['invisible', 'isVisible', false],
+        ['visible', 'isVisible', true]
+      ].forEach(([listProp, propToChange, newValue]) => {
+        for ( const wizardletId of this[listProp] ) {
+          const w = x.wizardlets.find(w => w.id == wizardletId);
+          w[propToChange] = newValue;
+        }
+      })
     },
     function handleNext(wizardController) {
       if ( ! this.wizardletId ) {
         wizardController.goNext();
+        return;
       }
 
       if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
