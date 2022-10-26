@@ -41,15 +41,14 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.data', 'updateSummary'],
-    ['data', 'propertyChange', 'updateSummary']
-  ],
-
   listeners: [
     {
       name: 'updateSummary',
       isFramed: true,
+      on: [
+        'data.propertyChange',
+        'this.propertyChange.data'//TODO check if we can delete it.
+      ],
       code: async function() {
         let newSummary;
 

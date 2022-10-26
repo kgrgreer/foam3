@@ -175,10 +175,6 @@
     ['isInit', true]
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
@@ -365,6 +361,9 @@
       name: 'updateRenderedPages_',
       isMerged: true,
       mergeDelay: 100,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         // Remove any pages that are no longer on screen to save on
         // the amount of DOM we add to the page.

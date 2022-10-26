@@ -104,7 +104,7 @@ foam.CLASS({
         { capability }, capability.wizardlet);
       const beforeWizardlet = this.adaptWizardlet(
         { capability }, capability.beforeWizardlet);
-    
+
       this.capabilityWizardletsMap[capability.id] = {
         primaryWizardlet: afterWizardlet || beforeWizardlet,
         wizardlets: [beforeWizardlet, afterWizardlet].filter(v => v),
@@ -163,8 +163,7 @@ foam.CLASS({
       if ( ! wao ) wao = wizardlet.wao = this.NullWAO.create();
       while ( this.ProxyWAO.isInstance(wao) ) {
         // If there's already something at the end, don't replace it
-        if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
-        if ( ! wao.delegate ) {
+        if ( ! wao.delegate || this.NullWAO.isInstance(wao.delegate) ) {
           wao.delegate = this.getWAO();
           break;
         }

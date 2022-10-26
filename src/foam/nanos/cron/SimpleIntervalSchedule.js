@@ -291,7 +291,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'endsAfter',
-      label: 'Times',
+      label: 'Occurrences',
       columnLabel: 'Ends',
       gridColumns: 6,
       min: 1,

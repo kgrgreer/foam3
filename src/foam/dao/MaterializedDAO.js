@@ -43,7 +43,64 @@ foam.CLASS({
 //      javaFactory: 'return getSourceDAO().getOf();'
     },
     {
+      class: 'Boolean',
+      name: 'pm'
+    },
+    {
+      documentation: 'Decorate with a ServiceProviderAwareDAO',
+      name: 'serviceProviderAware',
+      class: 'Boolean',
+      javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getOf().getObjClass());'
+    },
+    {
+      documentation: 'Enable authorization',
+      class: 'Boolean',
+      name: 'authorize',
+      value: true
+    },
+    {
+      class: 'Object',
+      type: 'foam.nanos.auth.Authorizer',
+      name: 'authorizer',
+      javaFactory: `
+      if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getOf().getObjClass()) ) {
+        return new foam.nanos.auth.AuthorizableAuthorizer(getPermissionPrefix());
+      } else {
+        return new foam.nanos.auth.StandardAuthorizer(getPermissionPrefix());
+      }
+      `
+    },
+    {
+      class: 'String',
+      name: 'permissionPrefix',
+      factory: function() {
+        return this.of.name.toLowerCase();
+      },
+      javaFactory: `
+      return getOf().getObjClass().getSimpleName().toLowerCase();
+     `
+    },
+    {
       name: 'delegate',
+      javaPreSet: `
+        if ( getServiceProviderAware() ) {
+          val = new foam.nanos.auth.ServiceProviderAwareDAO.Builder(getX())
+            .setDelegate(val)
+            .build();
+        }
+
+        if ( getAuthorize() ) {
+          val = new foam.nanos.auth.AuthorizationDAO.Builder(getX())
+            .setDelegate(val)
+            .setAuthorizer(getAuthorizer())
+            .build();
+        }
+
+        /* TODO: get suitable NSpec
+        if ( getPm() )
+          val = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(val).build();
+        */
+      `,
       javaFactory: 'return new foam.dao.MDAO(getOf());'
     }
   ],

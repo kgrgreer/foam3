@@ -70,10 +70,7 @@ foam.CLASS({
       }
     }
   ],
-  reactions: [
-    ['', 'propertyChange.data', 'update' ],
-    ['', 'propertyChange.options', 'update' ],
-  ],
+
   methods: [
     function initCView(x) {
       this.chart = new this.Lib.CHART(x, this.config);
@@ -90,6 +87,10 @@ foam.CLASS({
     {
       name: 'update',
       isFramed: true,
+      on: [
+        'this.propertyChange.data',
+        'this.propertyChange.options'
+      ],
       code: function() {
         if ( ! this.chart ) return;
 
