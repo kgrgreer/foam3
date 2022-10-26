@@ -189,11 +189,13 @@ foam.CLASS({
           })
             .addClass(this.myClass('createView'))
           .end();
-      return this.SUPER()
-        .addClass(this.myClass('actionBar'))
-        .start(this.VIEW_MORE, { buttonStyle: 'TERTIARY' }).show(this.showViewMore)
+      return this.SUPER().addClass(this.myClass('actionBar'));
+
+      if ( this.showViewMore ) {
+        this.start(this.VIEW_MORE, { buttonStyle: 'TERTIARY' })
           .addClass(this.myClass('addButton'))
         .end();
+      }
     }
   ],
   listeners: [
