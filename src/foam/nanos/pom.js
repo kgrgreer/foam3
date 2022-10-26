@@ -292,7 +292,6 @@ foam.POM({
     { name: "cron/SymbolicFrequency",                                                     flags: "js|java" },
     { name: "cron/TimeHMS",                                                               flags: "js|java" },
     { name: "cron/TimeOfDaySchedule",                                                     flags: "js|java" },
-    { name: "cron/TransactionSchedulable",                                                flags: "js|java" },
     { name: "cron/NextDate",                                                              flags: "js|java" },
     { name: "cron/NextDateService",                                                       flags: "js|java" },
     { name: "cron/ClientNextDateService",                                                 flags: "js|java" },
