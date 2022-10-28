@@ -42,6 +42,10 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'objectId'
+    },
+    {
+      class: 'String',
+      name: 'extra'
     }
   ]
 })
