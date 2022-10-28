@@ -10,6 +10,7 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("analyticEvents")
+      .setDecorator(new foam.nanos.analytics.AnalyticEventOMDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())).build())
       .setAuthorize(false)
       .build();
   """,
