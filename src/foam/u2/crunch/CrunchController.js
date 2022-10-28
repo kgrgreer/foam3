@@ -332,9 +332,9 @@ foam.CLASS({
 
     async function doInlineIntercept(
       wizardController, capable, capabilityId,
-      opt_intercept, flags
+      opt_intercept, flags, opt_x
     ) {
-      let x = wizardController.__subContext__.createSubContext({
+      let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
         intercept: opt_intercept,
         rootCapability: capabilityId,
