@@ -73,7 +73,7 @@ foam.CLASS({
               if ( ! cls ) {
                 foam.assert(false, 'ViewSpec specifies unknown class: ', spec.class);
               }
-              ret = cls.create(spec, ctx).copyFrom(args || {});
+              ret = cls.create({ ...spec, ...(args || {})}, ctx);
             }
 
             if ( spec.children ) {

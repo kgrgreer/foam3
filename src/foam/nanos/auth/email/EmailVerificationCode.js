@@ -40,17 +40,9 @@ foam.CLASS({
       name: 'verificationCode',
       required: true,
       view: function(_, X) {
-        return X.data.FragmentedTextField.create({
-          delegates: [
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X),
-            '-',
-            X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X)
-          ]
-        }, X);
+        var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
+        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
     },
     {
@@ -102,7 +94,7 @@ foam.CLASS({
       buttonStyle: 'LINK',
       code: async function() {
         try {
-          await this.emailVerificationService.verifyByCode(null, this.email, this.userName);
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
           this.ctrl.add(this.NotificationMessage.create({
             message: this.VERIFICATION_EMAIL_TITLE,
             description: this.VERIFICATION_EMAIL+ ' ' + this.email,

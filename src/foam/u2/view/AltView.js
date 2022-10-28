@@ -103,6 +103,8 @@ foam.CLASS({
         }
       }
 
+//     var data = self.data$proxy;
+
       this.addClass()
       this.startContext({data: this})
         this.start()
@@ -111,7 +113,7 @@ foam.CLASS({
       .endContext()
       .start('div')
         .add(this.selectedView$.map(function(v) {
-          return self.E().tag(v, {data: self.data$proxy});
+          return self.E().tag(v, {data: self.data});
         }))
       .end();
 

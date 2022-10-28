@@ -600,7 +600,6 @@ foam.CLASS({
       this.__context__.warn('Must output before loading.');
     },
     function unload() {
-      this.__context__.warn('Must output before loading.');
     },
     function toString() { return 'UNLOADED'; }
   ]
@@ -1103,6 +1102,12 @@ foam.CLASS({
   ],
 
   methods: [
+    function detach() {
+      this.SUPER();
+      this.childNodes = [];
+      this.children   = [];
+      this.private_   = {};
+    },
     function init() {
       /*
       if ( ! this.translationService )
@@ -1202,6 +1207,7 @@ foam.CLASS({
     },
 
     function initTooltip() {
+return;
       if ( this.tooltip ) {
         this.Tooltip.create({target: this, text$: this.tooltip$});
       } else if ( this.getAttribute('title') ) {
@@ -1499,6 +1505,8 @@ foam.CLASS({
         }
         this.parentNode = undefined;
       }
+
+      this.detach();
     },
 
     function addEventListener(topic, listener, opt_args) {
@@ -2067,6 +2075,7 @@ foam.CLASS({
     },
 
     function slotE_(slot) {
+       this.onDetach(slot);
       // TODO: add same context capturing behviour to other slotXXX_() methods.
       /*
         Return an Element or an Array of Elements which are
@@ -2121,12 +2130,10 @@ foam.CLASS({
         self.insertBefore(tmp, first);
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) {
-            if ( e[i].state === e[i].LOADED ) {
-              e[i].remove(); e[i].detach();
-            }
+            e[i].remove();
           }
         } else {
-          if ( e.state === e.LOADED ) { e.remove(); e.detach(); }
+          e.remove();
         }
         var e2 = nextE();
         self.insertBefore(e2, tmp);

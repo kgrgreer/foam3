@@ -26,6 +26,14 @@
 
   methods: [
     {
+      name: 'resetPasswordByCode',
+      args: 'Context x, String email, String userName',
+      javaCode: `
+        EmailVerificationService service = (EmailVerificationService) x.get("emailVerificationService");
+        service.verifyByCode(x, email, userName, "resetPasswordByCode");
+      `
+    },
+    {
       name: 'findUser',
       args: 'Context x, String email, String userName',
       type: 'foam.nanos.auth.User',
@@ -61,7 +69,7 @@
       name: 'resetPassword',
       javaCode: `
         EmailVerificationService service = (EmailVerificationService) x.get("emailVerificationService");
-        if ( service.verifyCode(x, newPasswordObj.getEmail(), newPasswordObj.getUserName(), newPasswordObj.getResetPasswordCode()) ) {
+        if ( service.verifyUserEmail(x, newPasswordObj.getEmail(), newPasswordObj.getUserName(), newPasswordObj.getResetPasswordCode()) ) {
           String desiredPassword = newPasswordObj.getNewPassword();
 
           User systemUser = ((Subject) getX().get("subject")).getUser();
