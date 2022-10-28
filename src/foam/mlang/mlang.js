@@ -4923,10 +4923,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         var expr = getPredicate().f(obj) ? getTrueExpr() : getFalseExpr();
-        if ( expr instanceof If ) {
-          return ((If) expr).f(obj);
-        }
-        return expr;
+        return expr.f(obj);
       `
     },
     {
