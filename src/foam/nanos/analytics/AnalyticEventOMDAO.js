@@ -20,7 +20,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       AnalyticEvent event = (AnalyticEvent) getDelegate().put_(x, obj);
-      ((OMLogger) x.get("OMLogger")).log("analytic.event", event.getId());
+      ((OMLogger) x.get("OMLogger")).log("analytic.event", event.getName());
       return event;
       `
     }
