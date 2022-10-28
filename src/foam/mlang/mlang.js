@@ -4673,6 +4673,9 @@ foam.CLASS({
       try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
+          if ( current == null ) {
+            return null;
+          }
           if ( current instanceof Number ) {
             var oldResult = result;
             var value = ((Number) current).doubleValue();
