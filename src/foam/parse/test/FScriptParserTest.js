@@ -35,8 +35,9 @@ foam.CLASS({
     user.setFirstName("marmelad");
     user.setMiddleName("marmelad");
     user.setLastName("sonya");
+    user.setOrganization("name-with-dashes");
     var addr = new Address();
-    addr.setRegionId("wonderland");
+    addr.setRegionId("CA-ON");
 
 
     var parser = new FScriptParser(User.FIRST_NAME);
@@ -109,6 +110,12 @@ foam.CLASS({
 
     sps.setString("firstName~/[a-z]+/");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
+
+    sps.setString("organization exists");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "organization exists");
+
+    sps.setString("organization==\\"name-with-dashes\\"");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "organization==\\"name-with-dashes\\"");
 
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
@@ -228,18 +235,18 @@ foam.CLASS({
     // sps.setString("if(unknown !exists){999}else{0}");
     // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(unknown==null){999}else{0} -> 999");
 
-    Expr result = null;
-    sps.setString("if ( address.regionId.len==5 ) { firstName } else { lastName.len+3 }");
-    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
-    test("marmelad".equals(result.f(user)), "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 }");
+    Object result = null;
+    sps.setString("if(address.regionId.len==5){firstName}else{lastName.len+3}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test("marmelad".equals(result.toString()), "if(address.regionId.len==5){firstName}else{lastName.len==3}");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
-    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result.f(user)) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 }");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 }");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
-    result = (Expr) ((Expr) parser.parse(sps, px).value()).f(user);
-    test("Toronto".equals(result.f(user).toString()), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }"+result.f(user)+" class "+result.f(user).getClass().getName());
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test("Toronto".equals(result.toString()), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }"+result.toString()+" class "+result.getClass().getName());
 
     sps.setString("address instanceof foam.nanos.auth.Address");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
