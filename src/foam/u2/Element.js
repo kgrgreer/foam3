@@ -1103,6 +1103,12 @@ foam.CLASS({
   ],
 
   methods: [
+    function detach() {
+      this.SUPER();
+      this.childNodes = [];
+      this.children   = [];
+    },
+
     function init() {
       /*
       if ( ! this.translationService )
@@ -1133,7 +1139,8 @@ foam.CLASS({
       var e = await this.el();
       observer.observe(e, config);
       this.onunload.sub(function(s) {
-        observer.disconnect()
+        // might already be disconnected
+        try { observer.disconnect(); } catch(x) {}
       });
       return this;
     },
@@ -1498,6 +1505,8 @@ foam.CLASS({
         }
         this.parentNode = undefined;
       }
+
+      this.detach();
     },
 
     function addEventListener(topic, listener, opt_args) {
@@ -2066,6 +2075,7 @@ foam.CLASS({
     },
 
     function slotE_(slot) {
+       this.onDetach(slot);
       // TODO: add same context capturing behviour to other slotXXX_() methods.
       /*
         Return an Element or an Array of Elements which are
@@ -2120,12 +2130,10 @@ foam.CLASS({
         self.insertBefore(tmp, first);
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) {
-            if ( e[i].state === e[i].LOADED ) {
-              e[i].remove(); e[i].detach();
-            }
+            e[i].remove();
           }
         } else {
-          if ( e.state === e.LOADED ) { e.remove(); e.detach(); }
+          e.remove();
         }
         var e2 = nextE();
         self.insertBefore(e2, tmp);
@@ -2646,7 +2654,7 @@ foam.CLASS({
   requires: [ 'foam.u2.view.CurrencyView' ],
   properties: [
     [ 'displayWidth', 15 ],
-    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: false } ]
+    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: true } ]
   ]
 });
 
@@ -3125,7 +3133,13 @@ foam.CLASS({
 
   documentation: 'View for safely displaying HTML content.',
 
-  css: '^ { padding: 6px 0; }',
+  css: `
+    ^ { padding: 6px 0; }
+    ^ > span > span > .p-semiBold,
+    ^ > span {
+      font-size: 1.2rem;
+    }
+  `,
 
   properties: [
     {
