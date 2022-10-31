@@ -23,6 +23,7 @@ foam.CLASS({
       width: 65vw;
       padding: 3.2rem 0;
       flex-grow: 1;
+      height: 100%;
       /**
        * Make this work with conditional titles
        * gap: 1.6rem;
@@ -71,8 +72,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'viewTitle',
-      expression: function (data$currentWizardlet) {
-        return data$currentWizardlet.title;
+      expression: function (showTitle, data$currentWizardlet) {
+        return showTitle && data$currentWizardlet.showTitle ? data$currentWizardlet.title : '';
       }
     }
   ],
