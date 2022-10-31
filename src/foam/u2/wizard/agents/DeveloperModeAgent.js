@@ -10,11 +10,16 @@ foam.CLASS({
   implements: [ 'foam.core.ContextAgent' ],
 
   imports: [
+    'subject',
     'userCapabilityJunctionDAO'
   ],
 
   exports: [
     'developerMode'
+  ],
+
+  requires: [
+    'foam.nanos.crunch.UserCapabilityJunction'
   ],
 
   properties: [
@@ -28,9 +33,12 @@ foam.CLASS({
     async function execute() {
       const e = foam.mlang.Expressions.create();
       const developerCapability = await this.userCapabilityJunctionDAO.find(
-        e.EQ(foam.nanos.crunch.UserCapabilityJunction.TARGET_ID, 'developer'));
+        e.AND(
+          e.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject?.user?.id),
+          e.EQ(this.UserCapabilityJunction.TARGET_ID, 'developer')
+        ));
 
-      this.developerMode = developerCapability !== undefined;
+      this.developerMode = !! developerCapability;
     }
   ]
 });
