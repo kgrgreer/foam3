@@ -126,6 +126,11 @@ public class FScriptParser
       grammar.sym("OR"),
       Literal.create(")")));
 
+    grammar.addSymbol("FORM_PAREN", new Seq1(1,
+      Literal.create("("),
+      grammar.sym("FORMULA"),
+      Literal.create(")")));
+
     grammar.addSymbol("NEGATE", new Seq1(1,new LiteralIC("!"), grammar.sym("OR")));
     grammar.addAction("NEGATE", (val, x) -> {
       foam.mlang.predicate.Not predicate = new foam.mlang.predicate.Not();
@@ -240,6 +245,7 @@ public class FScriptParser
 
     grammar.addSymbol("FORM_EXPR", new Seq(
       new Alt(
+        grammar.sym("FORM_PAREN"),
         grammar.sym("NUMBER"),
         grammar.sym("FIELD_LEN"),
         grammar.sym("FIELD"),
@@ -264,6 +270,7 @@ public class FScriptParser
               }, Whitespace.instance())
             ),
             new Alt(
+              grammar.sym("FORM_PAREN"),
               grammar.sym("NUMBER"),
               grammar.sym("FIELD_LEN"),
               grammar.sym("FIELD"),
