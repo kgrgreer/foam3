@@ -42,6 +42,21 @@ foam.CLASS({
         let analyticEvent = self.AnalyticEvent.create({...evt, traceId: trace, objectId: obj, sessionId: self.sessionID, timestamp: new Date()})
         self.analyticEventDAO.put(analyticEvent);
       });
+
+      for ( const method of ['error', 'warn'] ) {
+        const delegate = console[method].bind(console);
+        console[method] = (...a) => {
+          delegate(...a);
+          if ( a[0] && typeof a[0] === 'string' && a[0].startsWith('Expression returned undefined') ) {
+            // This warnings happen too frequently to be useful
+            return;
+          }
+          this.analyticsAgent.pub('event', {
+            name: 'CONSOLE_' + method.toUpperCase(),
+            extra: foam.json.stringify(a)
+          });
+        };
+      }
     }
   ]
 });

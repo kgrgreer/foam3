@@ -1106,8 +1106,8 @@ foam.CLASS({
       this.SUPER();
       this.childNodes = [];
       this.children   = [];
-      this.private_   = {};
     },
+
     function init() {
       /*
       if ( ! this.translationService )
