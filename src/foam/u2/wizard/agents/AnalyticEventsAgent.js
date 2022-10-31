@@ -13,7 +13,8 @@ foam.CLASS({
 
   imports: [
     'analyticEventDAO',
-    'sessionID'
+    'sessionID',
+    'window'
   ],
 
   exports: ['analyticsAgent'],
@@ -30,6 +31,11 @@ foam.CLASS({
       class: 'foam.u2.wizard.PathProperty',
       name: 'objectIDKey',
       documentation: 'Context key for preferred objectID of AnalyticEvent'
+    },
+    {
+      class: 'Boolean',
+      name: 'logDeviceInfo',
+      value: true
     }
   ],
   methods: [
@@ -56,6 +62,18 @@ foam.CLASS({
             extra: foam.json.stringify(a)
           });
         };
+      }
+      // Log device info
+      if ( this.logDeviceInfo ) { 
+        this.analyticsAgent.pub('event', {
+          name: 'USER_AGENT',
+          extra: this.window.navigator.userAgent
+        });
+
+        this.analyticsAgent.pub('event', {
+          name: 'WINDOW_RESOLUTION',
+          extra: `${this.window.screen.width}x${this.window.screen.height}`
+        });
       }
     }
   ]
