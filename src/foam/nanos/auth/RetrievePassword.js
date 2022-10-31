@@ -12,8 +12,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'emailVerificationService',
     'loginView?',
+    'resetPasswordService',
     'resetPasswordToken',
     'stack',
     'translationService'
@@ -114,7 +114,7 @@ foam.CLASS({
         var instructionTitle, instruction;
         try {
           if ( this.resetByCode ) {
-            await this.emailVerificationService.verifyByCode(null, this.email, this.username);
+            await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
             instructionTitle = this.CODE_INSTRUC_TITLE;
             instruction = this.CODE_INSTRUC;
           } else {

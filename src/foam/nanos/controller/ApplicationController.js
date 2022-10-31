@@ -194,8 +194,8 @@ foam.CLASS({
           urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
         } catch { };
-        return urlSession !== "" ? urlSession : foam.localStorage[this.sessionName] ||
-          ( foam.localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
+          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
     },
     {
@@ -295,11 +295,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        return foam.localStorage['isMenuOpen'] === 'true'
-         || ( foam.localStorage['isMenuOpen'] = false );
+        return localStorage['isMenuOpen'] === 'true'
+         || ( localStorage['isMenuOpen'] = false );
       },
       postSet: function(_, n) {
-        foam.localStorage['isMenuOpen'] = n;
+        localStorage['isMenuOpen'] = n;
       }
     },
     {
@@ -423,16 +423,16 @@ foam.CLASS({
 
       var self = this;
 
-
       this.clientPromise.then(async function(client) {
-        self.setPrivate_('__subContext__', client.__subContext__);
+        self.originalSubContext = self.__subContext__;
+        self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
 
         // For testing purposes only. Do not use in code.
-        globalThis.x     = client.__subContext__;
+        globalThis.x     = self.__subContext__;
         globalThis.MLang = foam.mlang.Expressions.create();
 
         await self.fetchTheme();
-        foam.locale = foam.localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
         await client.translationService.initLatch;
         self.installLanguage();
@@ -528,9 +528,9 @@ foam.CLASS({
     },
 
     async function reloadClient() {
-      var newClient = await this.ClientBuilder.create({}, this).promise;
-      this.client = newClient.create(null, this);
-      this.setPrivate_('__subContext__', this.client.__subContext__);
+      var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
+      this.client = newClient.create(null, this.originalSubContext);
+      this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
@@ -826,7 +826,7 @@ foam.CLASS({
 
     async function checkGeneralCapability() {
       var capDAO = this.__subContext__.capabilityDAO;
-      var spid = await capDAO.find(this.user.spid);
+      var spid = await capDAO.find(this.subject.user.spid);
       if ( spid && spid.generalCapability != '' ) {
         const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
         var ucj = await ucjCheck();

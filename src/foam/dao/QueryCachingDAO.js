@@ -21,6 +21,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function detach() {
+      this.SUPER();
+      this.cache = {};
+    },
+
     // Put invalidates cache and is forwarded to the source.
     function put_(x, o) {
       this.cache = {};
