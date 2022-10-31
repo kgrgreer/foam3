@@ -49,6 +49,9 @@ foam.CLASS({
         self.analyticEventDAO.put(analyticEvent);
       });
 
+      // TODO: Temp fix for 3.20 iframe logging
+      window.analyticsAgent = this.analyticsAgent;
+
       for ( const method of ['error', 'warn'] ) {
         const delegate = console[method].bind(console);
         console[method] = (...a) => {
@@ -64,16 +67,22 @@ foam.CLASS({
         };
       }
       // Log device info
-      if ( this.logDeviceInfo ) { 
+      if ( this.logDeviceInfo ) {
         this.analyticsAgent.pub('event', {
           name: 'USER_AGENT',
           extra: this.window.navigator.userAgent
         });
 
         this.analyticsAgent.pub('event', {
-          name: 'WINDOW_RESOLUTION',
+          name: 'SCREEN_RESOLUTION',
           extra: `${this.window.screen.width}x${this.window.screen.height}`
         });
+
+        this.analyticsAgent.pub('event', {
+          name: 'WINDOW_RESOLUTION',
+          extra: `${this.window.innerWidth}x${this.window.innerHeight}`
+        });
+
       }
     }
   ]
