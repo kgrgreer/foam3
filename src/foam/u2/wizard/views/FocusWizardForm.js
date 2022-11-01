@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'FocusWizardForm',
   extends: 'foam.u2.wizard.controllers.IncrementalWizardController',
 
-  imports: [ 'popup?' ],
+  imports: [
+    'controlBorder?',
+    'popup?'
+  ],
 
   exports: [ 'showTitle' ],
 
@@ -84,8 +87,8 @@ foam.CLASS({
         .start(this.progressWizardView, { data: this })
           .addClass(this.myClass('progress'))
         .end()
-        .add(this.slot(function (showTitle, data$currentWizardlet) {
-          return showTitle && data$currentWizardlet.showTitle ?
+        .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
+          return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
               .addClasses(['h300', self.myClass('wizardletTitle')])
               .add(data$currentWizardlet.title)
