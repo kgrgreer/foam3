@@ -18,6 +18,11 @@ foam.CLASS({
       display: flex;
       flex-direction: column-reverse;
       justify-content: flex-end;
+      flex: 1;
+    }
+    /* Extra div added by borders?? */
+    ^reverse > div:not(.edge) {
+      flex: 1;
     }
     ^::before {
       display: block;
@@ -100,7 +105,7 @@ foam.CLASS({
         rootMargin: '0px 0px 0px',
         threshold: [0.25, 0.5, 0.25]
       };
-      
+
       const observer = new IntersectionObserver(this.onScrollUpdate, options);
 
       (async () => {
