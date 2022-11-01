@@ -18,6 +18,11 @@ foam.CLASS({
       display: flex;
       flex-direction: column-reverse;
       justify-content: flex-end;
+      flex: 1;
+    }
+    /* Extra div added by borders?? */
+    ^reverse > div:not(.edge) {
+      flex: 1;
     }
     ^::before {
       display: block;
