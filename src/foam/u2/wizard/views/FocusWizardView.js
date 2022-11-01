@@ -89,8 +89,8 @@ foam.CLASS({
       const self = this;
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .add(this.slot(function (showTitle, data$currentWizardlet) {
-          return showTitle && data$currentWizardlet.showTitle ?
+        .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
+          return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
               .addClasses(['h300', self.myClass('wizardletTitle')])
               .add(data$currentWizardlet.title)

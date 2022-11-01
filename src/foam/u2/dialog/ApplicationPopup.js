@@ -267,6 +267,7 @@ foam.CLASS({
               .addClass('h300')
               .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
               .enableClass('h500', this.isScrolled$)
+              .show(title)
               .add(title);
           }))
           .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
