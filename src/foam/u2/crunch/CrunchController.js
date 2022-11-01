@@ -168,7 +168,9 @@ foam.CLASS({
           intercept: intercept,
           capable: capable
         });
-        return this.createWizardSequence(capabilityId, x)
+
+        const capableCapabilityId = capable && capable.capabilityIds[0];
+        return this.createWizardSequence(capabilityId || capableCapabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
