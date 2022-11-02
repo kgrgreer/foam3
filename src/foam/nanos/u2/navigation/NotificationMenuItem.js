@@ -35,12 +35,17 @@ foam.CLASS({
       align-items: normal;
       position: relative;
     }
-    ^bell.foam-u2-ActionView {
-      color: $grey500;
-      justify-content: flex-start;
-    }
-    ^bell.foam-u2-ActionView svg {
-      fill: $grey500;
+    ^bell {
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: $buttonRadius;
+      box-sizing: border-box;
+      display: inline-flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 0;
+      outline: none;
+      text-align: center;
     }
     ^ .dot {
       align-items: center;
@@ -56,6 +61,16 @@ foam.CLASS({
       top: 0px;
       text-align: center;
       width: 15px;
+    }
+    ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    ^svgIcon svg {
+      height: 100%;
+      width: 1.15em;
+      fill: $grey500;
     }
   `,
 
@@ -101,12 +116,13 @@ foam.CLASS({
       this.addClass()
         .addClass('icon-container')
         .startContext({ data: this })
-        .start(this.NOTIFICATIONS, {
-          themeIcon: 'bell',
-          label$: this.showText ? this.formattedCount$.map(v => `${self.NOTIF} (${v})`) : foam.core.ConstantSlot.create({ value: '' }),
-          buttonStyle: 'UNSTYLED',
-          size: this.showText ? 'SMALL' : 'MEDIUM'
-        })
+        .start()
+          .start({ class: 'foam.u2.tag.Image', glyph: 'bell', role: 'presentation' })
+            .addClass(this.myClass('SVGIcon'))
+          .end()
+          .callIf(this.showText, function() {
+            this.add(self.formattedCount$.map(v => `${self.NOTIF} (${v})`));
+          })
           .addClass(this.myClass('bell'))
         .end()
         .endContext()
