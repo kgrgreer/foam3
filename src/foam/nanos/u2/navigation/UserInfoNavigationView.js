@@ -42,7 +42,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
     }
-    ^horizontal { 
+    ^horizontal {
       flex-direction: row;
     }
     ^horizontal > * + * {
@@ -82,27 +82,29 @@ foam.CLASS({
       var self = this;
       var X    = this.__subContext__;
 
-      var mainLabel = this.E()
-        .addClass(this.myClass('label-container'))
-        .enableClass(this.myClass('horizontal'), this.horizontal$)
-        .add(this.slot( subject$user => {
-        if ( ! this.subject.user ) return;
-        return this.E().addClass(self.myClass('name-container'))
+      function mainLabel() {
+        return self.E()
+        .addClass(self.myClass('label-container'))
+        .enableClass(self.myClass('horizontal'), this.horizontal$)
+        .add(self.slot( subject$user => {
+        if ( ! self.subject.user ) return;
+        return self.E().addClass(self.myClass('name-container'))
             .start('span')
-              .addClass(this.myClass('userName'))
+              .addClass(self.myClass('userName'))
               .addClass('p')
-              .add(this.subject.user.toSummary())
+              .add(self.subject.user.toSummary())
             .end();
         }))
-        .add(this.slot( (subject$realUser, subject$user) => {
-          if ( ! this.subject.realUser || foam.util.equals(this.subject.user, this.subject.realUser) ) return;
-          return this.E().addClass(self.myClass('name-container'))
+        .add(self.slot( (subject$realUser, subject$user) => {
+          if ( ! self.subject.realUser || foam.util.equals(self.subject.user, self.subject.realUser) ) return;
+          return self.E().addClass(self.myClass('name-container'))
               .start('span')
-                .addClass(this.myClass('agentName'))
+                .addClass(self.myClass('agentName'))
                 .addClass('p')
-                .add( this.subject.realUser.toSummary() )
+                .add(self.subject.realUser.toSummary())
               .end();
         }));
+      }
 
       this
       .addClass(this.myClass())
@@ -110,7 +112,7 @@ foam.CLASS({
       // this will rerender it when the menuItems slot updates.
       .add(this.menuItems$.map(finalArray => {
           return this.E().start(this.OverlayActionListView, {
-                        label: mainLabel,
+                        label: mainLabel(),
                         data: finalArray,
                         obj: self,
                         buttonStyle: 'UNSTYLED'
