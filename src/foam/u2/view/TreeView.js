@@ -24,7 +24,8 @@ foam.CLASS({
     'returnExpandedCSS?',
     'selection',
     'startExpanded',
-    'translationService?'
+    'translationService?',
+    'rowConfig'
   ],
 
   css: `
@@ -43,12 +44,13 @@ foam.CLASS({
       min-height: 40px;
       display: flex;
       align-items: center;
-      padding: 0 8px;
+      // padding: 0 8px;
     }
 
     button^button{
       padding: 8px;
       width: 100%;
+      justify-content: flex-start;
     }
 
     ^select-level {
@@ -74,7 +76,6 @@ foam.CLASS({
     ^toggle-icon svg{
       width: 0.75em;
       height: 0.75em;
-      fill: inherit;
     }
   `,
 
@@ -170,16 +171,23 @@ foam.CLASS({
       if ( this.translationService ) {
         labelString = self.translationService.getTranslation(foam.locale, self.data.label, self.data.label);
       }
+      var selectedSlot = this.slot(function(selected_) {
+        return selected_ ? 'p-semiBold' : 'p';
+      });
       var mainLabel = this.E().
         addClass(self.myClass('select-level')).
-        start()
-        //TODO: add tooltip when ellipsis
-          .addClass(this.slot(function(selected_) {
-            return selected_ ? 'p-semiBold' : 'p';
-          }))
-          .addClass(self.myClass('label')).
-          call(this.formatter, [self.data]).
-        end().
+        callIfElse(self.rowConfig?.[self.data.id],
+          function() {
+            this.tag(self.rowConfig?.[self.data.id])
+          },
+          function() {
+            this.start()
+              .addClass(selectedSlot)
+              .addClass(self.myClass('label')).
+              call(self.formatter, [self.data]).
+            end();
+          }
+        ).
         add(this.hasChildren$.map(hasChildren => {
           if ( ! hasChildren ) return self.E();
           return self.E().
@@ -234,7 +242,7 @@ foam.CLASS({
         start().
           addClass(self.myClass('heading')).
           style({
-            'padding-left': ((( self.level - 1) * 16 ) + 8 + 'px')
+            'padding-left': ((( self.level - 1) * 16 ) + 'px')
           }).
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
@@ -363,14 +371,15 @@ foam.CLASS({
   exports: [
     'onObjDrop',
     'selection',
-    'startExpanded'
+    'startExpanded',
+    'rowConfig'
   ],
 
   css: `
     ^ {
-      padding-top: 10px;
       overflow-y: auto;
       overflow-x: hidden;
+      padding: 0 8px;
     }
   `,
 
@@ -399,6 +408,14 @@ foam.CLASS({
       class: 'Function',
       name: 'onClickAddOn'
     },
+    {
+      name: 'rowConfig',
+      documentation: `
+      Allows overrides for menu Row views where required
+      Format: { menuId: viewSpec }
+      ex: { notifications: {class: 'NotificationMenuItem' } }
+      `
+    },
     [ 'defaultRoot', '' ]
   ],
 
@@ -406,10 +423,9 @@ foam.CLASS({
     function render() {
       this.startExpanded = this.startExpanded;
 
-      var M   = this.ExpressionsSingleton.create();
       var of  = this.__context__.lookup(this.relationship.sourceModel);
       var dao = this.data$proxy.where(
-        M.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
+        this.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
       var self = this;
       var isFirstSet = false;
 
