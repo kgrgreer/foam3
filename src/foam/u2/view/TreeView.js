@@ -423,10 +423,9 @@ foam.CLASS({
     function render() {
       this.startExpanded = this.startExpanded;
 
-      var M   = this.ExpressionsSingleton.create();
       var of  = this.__context__.lookup(this.relationship.sourceModel);
       var dao = this.data$proxy.where(
-        M.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
+        this.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
       var self = this;
       var isFirstSet = false;
 

@@ -94,7 +94,6 @@ foam.CLASS({
     function render() {
       this.startExpanded = this.startExpanded;
 
-      var M   = this.ExpressionsSingleton.create();
       var of  = this.__context__.lookup(this.relationship.sourceModel);
       var self = this;
       var isFirstSet = false;
@@ -102,7 +101,7 @@ foam.CLASS({
       this.addClass().
         add(this.slot(function(currentRoot) {
           var dao = this.data$proxy.where(
-            M.EQ(of.getAxiomByName(this.relationship.inverseName), currentRoot || this.defaultRoot));
+            this.EQ(of.getAxiomByName(this.relationship.inverseName), currentRoot || this.defaultRoot));
           return this.E()
           .callIf(currentRoot, function() { 
             this
