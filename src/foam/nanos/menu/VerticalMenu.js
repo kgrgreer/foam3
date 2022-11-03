@@ -62,7 +62,7 @@ foam.CLASS({
 
   ^search {
     box-sizing: border-box;
-    padding: 0 8px;
+    padding: 0 8px 8px 8px;
     text-align: center;
     width: 100%;
   }
