@@ -961,6 +961,7 @@ foam.POM({
     { name: "foam/u2/wizard/views/FlexibleWizardContentsView",        flags: "web" },
     { name: "foam/u2/wizard/views/ProgressBarWizardView",             flags: "web" },
     { name: "foam/u2/wizard/views/FocusWizardForm",                   flags: "web" },
+    { name: "foam/u2/wizard/views/TipActionView",                     flags: "web" },
     { name: "foam/u2/wizard/PathProperty",                            flags: "web" },
     { name: "foam/u2/wizard/debug/WizardInspector",                   flags: "web" },
     { name: "foam/u2/wizard/AlternateFlow",                           flags: "web" },
