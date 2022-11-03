@@ -256,10 +256,7 @@ foam.LIB({
       // becuase they seem lighter than everything else
       colorObj = foam.Color.parse(str);
       var [r, g, b] = [colorObj.red, colorObj.green, colorObj.blue].map(v => Math.floor(v));
-      console.log(r, g,b)
       var [h, _, _] = foam.Color.rgbToHsl(r, g, b);
-
-      debugger;
       return `hsl(${h} ${s}% ${l}%)`;
     },
 
