@@ -305,19 +305,20 @@ foam.CLASS({
             .addClass(this.myClass('bodyWrapper'))
             .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
-              let title = '';
+              let titleSlot = null;
               for ( const child of content$childNodes ) {
                 if ( ! child.viewTitle ) continue;
-                title = child.viewTitle$;
+                titleSlot = child.viewTitle$;
                 break;
               }
-              if ( ! title ) return this.E();
+              if ( ! titleSlot ) return this.E();
               return this.E()
                 .addClass(self.myClass('inner-title'))
                 .addClass('h300')
                 .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
                 .enableClass('h500', this.isScrolled$)
-                .add(title);
+                .show(titleSlot)
+                .add(titleSlot);
             }))
             .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
               .addClass(this.myClass('body'))

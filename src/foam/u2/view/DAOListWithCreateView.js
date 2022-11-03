@@ -156,7 +156,11 @@ foam.CLASS({
       name: 'propertyWhitelist',
       documentation: 'Passed to the createView, used by detailViews to only show some props of an FObject'
     },
-    'DAOCount'
+    'DAOCount',
+    {
+      class: 'Boolean',
+      name: 'showViewMore'
+    }
   ],
   methods: [
     function init() {
@@ -185,11 +189,13 @@ foam.CLASS({
           })
             .addClass(this.myClass('createView'))
           .end();
-      return this.SUPER()
-        .addClass(this.myClass('actionBar'))
-        .start(this.VIEW_MORE, { buttonStyle: 'TERTIARY' })
+      return this.SUPER().addClass(this.myClass('actionBar'));
+
+      if ( this.showViewMore ) {
+        this.start(this.VIEW_MORE, { buttonStyle: 'TERTIARY' })
           .addClass(this.myClass('addButton'))
         .end();
+      }
     }
   ],
   listeners: [

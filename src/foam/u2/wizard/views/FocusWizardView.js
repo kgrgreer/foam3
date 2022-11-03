@@ -21,6 +21,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      height: 100%;
       /**
        * Make this work with conditional titles
        * gap: 1.6rem;
@@ -55,8 +56,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'viewTitle',
-      expression: function (data$currentWizardlet) {
-        return data$currentWizardlet.title;
+      expression: function (showTitle, data$currentWizardlet) {
+        return showTitle && data$currentWizardlet.showTitle ? data$currentWizardlet.title : '';
       }
     }
   ],
@@ -72,8 +73,8 @@ foam.CLASS({
       const self = this;
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .add(this.slot(function (showTitle, data$currentWizardlet) {
-          return showTitle && data$currentWizardlet.showTitle ?
+        .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
+          return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
               .addClasses(['h300', self.myClass('wizardletTitle')])
               .add(data$currentWizardlet.title)
