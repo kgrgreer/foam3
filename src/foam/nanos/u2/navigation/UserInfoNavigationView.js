@@ -61,20 +61,19 @@ foam.CLASS({
       var self = this;
       var X    = this.__subContext__;
 
-      var mainLabel = this.UserInfoView.create()
-        .enableClass(this.myClass('horizontal'), this.horizontal$);
       this
       .addClass(this.myClass())
       // OverlayActionListView does not support slots;
       // this will rerender it when the menuItems slot updates.
       .add(this.menuItems$.map(finalArray => {
-          return this.E().start(this.OverlayActionListView, {
-                        label: mainLabel,
-                        data: finalArray,
-                        obj: self,
-                        buttonStyle: 'UNSTYLED'
-                      }).addClass(this.myClass('dropdown'));
-                    }))
+          return this.E()
+            .start(this.OverlayActionListView, {
+              label: this.UserInfoView.create().enableClass(this.myClass('horizontal'), this.horizontal$),
+              data: finalArray,
+              obj: self,
+              buttonStyle: 'UNSTYLED'
+            }).addClass(this.myClass('dropdown')).end();
+          }))
       .end();
     },
     function refreshEntries() {

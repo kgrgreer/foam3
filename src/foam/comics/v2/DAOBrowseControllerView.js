@@ -81,7 +81,7 @@ foam.CLASS({
 
   messages: [
     { name: 'VIEW_ALL', message: 'View all ' },
-    { name: 'ACTIONS', message: 'Actions' }
+    { name: 'ACTIONS',  message: 'Actions' }
   ],
 
   properties: [
@@ -100,7 +100,7 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return foam.comics.v2.DAOControllerConfig.create({ dao: this.data });
+        return this.onDetach(foam.comics.v2.DAOControllerConfig.create({dao: this.data}));
       }
     },
     {
@@ -171,19 +171,23 @@ foam.CLASS({
           return false;
         }
       },
-      code: function() {
+      code: function(x) {
         if ( ! this.stack ) return;
 
         if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView' ) {
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: this.config.createController.class,
-              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
-              config$: this.config$,
-              of: this.data.of
-            }, parent: this,
-            popup: this.config.createPopup
-          }));
+          if ( this.config.createPopup && this.config.redirectMenu ) {
+            x.pushMenu(this.config.redirectMenu);
+          } else {
+            this.stack.push(this.StackBlock.create({
+              view: {
+                class: this.config.createController.class,
+                data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
+                config$: this.config$,
+                of: this.data.of
+              }, parent: this,
+              popup: this.config.createPopup
+            }));
+          }
         } else if ( this.config.createControllerView ) {
           this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this, popup: this.config.createPopup }));
         } else {
@@ -235,7 +239,7 @@ foam.CLASS({
       var nav = this.showNav ? self.BreadcrumbView : '';
       this.addClass()
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
+      .add(this.slot(function(data, config, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))

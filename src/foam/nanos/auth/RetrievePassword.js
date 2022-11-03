@@ -12,8 +12,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'emailVerificationService',
     'loginView?',
+    'resetPasswordService',
     'resetPasswordToken',
     'stack',
     'translationService'
@@ -68,6 +68,9 @@ foam.CLASS({
       createVisibility: function(usernameRequired) {
        return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      validateObj: function(usernameRequired, username) {
+        return usernameRequired && ! username ? 'Username is required.' : '';
+      },
       section: 'emailPasswordSection'
     },
     {
@@ -111,7 +114,7 @@ foam.CLASS({
         var instructionTitle, instruction;
         try {
           if ( this.resetByCode ) {
-            await this.emailVerificationService.verifyByCode(null, this.email, this.username);
+            await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
             instructionTitle = this.CODE_INSTRUC_TITLE;
             instruction = this.CODE_INSTRUC;
           } else {
