@@ -50,7 +50,7 @@ foam.CLASS({
       documentation: 'Decorate with a ServiceProviderAwareDAO',
       name: 'serviceProviderAware',
       class: 'Boolean',
-      javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getOf().getObjClass());'
+      javaFactory: 'return foam.nanos.auth.ServiceProviderAware.class.isAssignableFrom(getSourceDAO().getOf().getObjClass());'
     },
     {
       documentation: 'Enable authorization',
@@ -63,10 +63,11 @@ foam.CLASS({
       type: 'foam.nanos.auth.Authorizer',
       name: 'authorizer',
       javaFactory: `
+      String sourceClass = getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
       if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getOf().getObjClass()) ) {
-        return new foam.nanos.auth.AuthorizableAuthorizer(getPermissionPrefix());
+        return new foam.nanos.auth.AuthorizableAuthorizer(sourceClass);
       } else {
-        return new foam.nanos.auth.StandardAuthorizer(getPermissionPrefix());
+        return new foam.nanos.auth.StandardAuthorizer(sourceClass);
       }
       `
     },

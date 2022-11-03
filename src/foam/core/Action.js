@@ -260,7 +260,7 @@ If empty then no permissions are required.`
     function createIsAvailable$(x, data) {
       return this.createSlotFor_(x, data, this.isAvailable, 'available');
     },
-    
+
     function createConfirmationRequired$(x, data) {
       return this.createSlotFor_(x, data, this.confirmationRequired, 'confirmationRequired');
     },
@@ -322,8 +322,8 @@ If empty then no permissions are required.`
 
     function installInProto(proto) {
       var action = this;
-      proto[this.name] = function() {
-        action.maybeCall(this.__context__, this);
+      proto[this.name] = function(x) {
+        action.maybeCall(x || this.__context__, this);
       };
     }
   ]
