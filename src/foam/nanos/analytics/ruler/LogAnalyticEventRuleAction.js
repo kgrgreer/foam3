@@ -14,6 +14,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.analytics.AnalyticEvent',
@@ -29,6 +30,10 @@ foam.CLASS({
     {
       name: 'traceIdExpr',
       class: 'foam.mlang.ExprProperty'
+    },
+    {
+      name: 'tags',
+      class: 'StringArray'
     }
   ],
 
@@ -47,6 +52,7 @@ foam.CLASS({
             var session = x.get(Session.class);
             event.setSessionId(session.getId());
             event.setExtra(obj.getClass().getSimpleName() + " " + rule.getOperation().toString());
+            if ( getTags().length > 0 ) event.setTags(getTags_(obj));
 
             ((DAO) x.get("analyticEventDAO")).put(event);
           }
@@ -61,6 +67,19 @@ foam.CLASS({
         var expr = getTraceIdExpr();
         var result = expr != null ? expr.f(obj) : obj.getProperty("id");
         return String.valueOf(result);
+      `
+    },
+    {
+      name: 'getTags_',
+      type: 'String[]',
+      args: 'FObject obj',
+      javaCode: `
+        var tags = new String[getTags().length];
+        for ( var i = 0; i < getTags().length; i++ ) {
+          var prop = (PropertyInfo) obj.getClassInfo().getAxiomByName(getTags()[i]);
+          tags[i] = String.valueOf(prop != null ? prop.f(obj) : getTags()[i]);
+        }
+        return tags;
       `
     }
   ]
