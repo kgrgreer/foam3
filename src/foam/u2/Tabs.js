@@ -23,7 +23,18 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    { class: 'String',  name: 'label' },
+    {
+      name: 'label',
+      documentation: 'Label for current tab, can be simple string or any U2 Element/ViewSpec'
+    },
+    {
+      class: 'String',
+      name: 'mementoLabel',
+      documentation: 'String that is stored in memento when tab is selected',
+      factory: function() {
+        return foam.String.isInstance(this.label) ? this.label : null;
+      }
+    },
     { class: 'Boolean', name: 'selected' }
   ]
 });
