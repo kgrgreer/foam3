@@ -506,6 +506,7 @@ foam.POM({
     { name: "test/SerializationTestEchoService",                                          flags: "js|java" },
     { name: "analytics/AnalyticEvent",                                                    flags: "js|java" },
     { name: "analytics/AnalyticEventOMDAO",                                               flags: "js|java" },
+    { name: "analytics/ruler/LogAnalyticEventRuleAction",                                 flags: "js|java" },
     { name: "analytics/Candlestick",                                                      flags: "js|java" },
     { name: "analytics/Foldable",                                                         flags: "js|java" },
     { name: "analytics/PostToWindow",                                                     flags: "web" },
