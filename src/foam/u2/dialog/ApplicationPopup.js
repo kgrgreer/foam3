@@ -102,6 +102,16 @@ foam.CLASS({
       border-top: 1px solid /*%GREY4%*/ #DADDE2;
       flex-shrink: 0;
     }
+    ^footer-link:link,
+    ^footer-link:visited,
+    ^footer-link:active {
+      color: /*%BLACK%*/ #1E1F21;
+      text-decoration: none;
+    }
+    ^footer-link:hover {
+      text-decoration: underline;
+    }
+
   `,
 
   properties: [
@@ -123,6 +133,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'footerString'
+    },
+    {
+      class: 'String',
+      name: 'footerLink'
     }
   ],
 
@@ -209,9 +223,11 @@ foam.CLASS({
             .addClass(this.myClass('body'))
             .call(function() { content = this; })
           .end()
-          .start()
+          .start(this.footerLink ? 'a' : '')
             .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .enableClass(this.myClass('footer-link'), this.footerLink$)
             .add(this.footerString$)
+            .attrs({ href: this.footerLink, target: '_blank' })
           .end()
         .end();
 
