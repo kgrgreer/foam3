@@ -358,6 +358,7 @@ foam.POM({
     { name: "lib/node/json_dao",                                      flags: "node" },
     { name: "lib/utf8",                                               flags: "js" },
     { name: "foam/net/CIDR",                                          flags: "js|java" },
+    { name: "foam/net/test/CIDRTest",                                 flags: "js|java" },
     { name: "foam/net/Host",                                          flags: "js|java" },
     { name: "foam/net/Port",                                          flags: "js|java" },
     { name: "foam/net/NotConnectedException",                         flags: "js" },
