@@ -556,24 +556,6 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'close',
-      tableWidth: 70,
-      confirmationRequired: function() {
-        return true;
-      },
-      isAvailable: function(status, id) {
-        return id && status !== 'CLOSED';
-      },
-      code: function() {
-        this.status = 'CLOSED';
-        this.assignedTo = 0;
-        this.ticketDAO.put(this).then(function(ticket) {
-          this.copyFrom(ticket);
-          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
-        }.bind(this));
-      }
-    },
-    {
       name: 'assign',
       section: 'infoSection',
       isAvailable: function(status){
@@ -644,6 +626,25 @@ foam.CLASS({
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
+      }
+    },
+    {
+      name: 'close',
+      tableWidth: 70,
+      section: 'infoSection',
+      confirmationRequired: function() {
+        return true;
+      },
+      isAvailable: function(status, id) {
+        return id && status !== 'CLOSED';
+      },
+      code: function() {
+        this.status = 'CLOSED';
+        this.assignedTo = 0;
+        this.ticketDAO.put(this).then(function(ticket) {
+          this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
+        }.bind(this));
       }
     }
   ],
