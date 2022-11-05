@@ -76,18 +76,23 @@ foam.CLASS({
       justify-content: flex-end;
       padding: 16px 0px;
     }
+    ^fullscreen ^wrapper {
+      height: 100%;
+      width: 100%;
+      border-radius: 0;
+    }
   `,
 
   properties: [
     {
-      class: 'Int',
+      class: 'String',
       name: 'maxHeight',
-      value: 65
+      value: '65vh'
     },
     {
-      class: 'Int',
+      class: 'String',
       name: 'maxWidth',
-      value: 45
+      value: '45vw'
     },
     {
       class: 'Enum',
@@ -119,13 +124,18 @@ foam.CLASS({
       var bgColor = this.returnExpandedCSS(this.modalStyle.color);
       this
         .addClass(this.myClass())
+        .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .on('keydown', this.onKeyDown)
         .start()
           .addClass(this.myClass('background'))
           .on('click', this.closeable ? this.close : null)
         .end()
         .start(this.Rows)
-          .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
+          .addClass(this.myClass('wrapper'))
+          .style({
+            'max-height': this.slot(function(fullscreen, maxHeight) { return ! fullscreen ? maxHeight : ''}),
+            'max-width': this.slot(function(fullscreen, maxWidth) { return ! fullscreen ? maxWidth : ''})
+          })
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
