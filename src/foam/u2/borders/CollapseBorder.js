@@ -35,15 +35,16 @@ foam.CLASS({
       align-items: center;
       left: 1.5vmin;
       top: max(-12px, -2vmin);
-      color: #666;
+      color: /*%GREY1%*/ #666;
       cursor: pointer;
       /* button overrides */
       width: 100%;
       border: none;
       background: none;
+      padding: 0;
     }
     ^.expanded > ^toolbar {
-      padding-bottom: 0.8rem;
+      padding: 0 0 0.8rem 0;
     }
     ^toggle-button {
       font-size: inherit !important;
