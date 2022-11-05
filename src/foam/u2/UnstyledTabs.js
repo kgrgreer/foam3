@@ -19,7 +19,7 @@ foam.CLASS({
       postSet: function(o, n) {
         if ( o ) o.selected = false;
         n.selected = true;
-        this.selectedLabel = n.label;
+        this.selectedLabel = n.mementoLabel;
       }
     },
     'tabRow',
@@ -30,6 +30,11 @@ foam.CLASS({
     {
       name: 'selectedLabel',
       memorable: true
+    },
+    {
+      class: 'Int',
+      name: 'mementoCounter_',
+      documentation: 'Used to set default memento value for tabs'
     }
   ],
 
@@ -48,16 +53,22 @@ foam.CLASS({
 
     function add(tab) {
       if ( this.Tab.isInstance(tab) ) {
+        var self = this;
         if ( ! this.selected && ! this.selectedLabel ) this.selected = tab;
         if ( tab.selected || this.selectedLabel == tab.label ) this.selected = tab;
-
+        if ( ! tab.mementoLabel ) {
+          tab.mementoLabel = this.mementoCounter_++;
+        }
         this.tabRow.start('span').
           addClass(this.myClass('tab')).
           enableClass('selected', tab.selected$).
           on('click', function() {
             this.selected = tab;
           }.bind(this)).
-          add(tab.label$).
+          add(tab.slot(function(label) {
+            if ( foam.String.isInstance(label) ) return label;
+            return self.createChild_(label, {});
+          })).
         end();
 
         tab.shown$ = tab.selected$;
