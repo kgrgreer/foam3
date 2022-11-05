@@ -133,7 +133,7 @@ foam.CLASS({
       if ( ! opt_spec ) opt_spec = {};
       var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
-      this.analyticsAgent.pub('event', {
+      ctx.analyticsAgent?.pub('event', {
         name: 'VIEW_LOAD_' + this.wizardlet.id,
         extra: foam.json.stringify(this.customView)
       });

@@ -35,7 +35,7 @@ foam.CLASS({
       value: false
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'expiry',
       documentation: 'The token expiry date'
     },

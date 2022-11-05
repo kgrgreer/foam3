@@ -722,7 +722,7 @@ foam.CLASS({
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;
-      menu && menu.launch && menu.launch(this);
+      menu && menu.launch && menu.launch(this.__subContext__);
     },
 
     async function findDefaultMenu(dao) {
