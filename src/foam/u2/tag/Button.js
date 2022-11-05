@@ -222,6 +222,29 @@ foam.CLASS({
       fill: /*%GREY4%*/ #DADDE2;
     }
 
+    /* Text */
+
+    ^text{
+      background: none;
+      border: 1px solid transparent;
+      color: /*%PRIMARY3%*/ #406DEA;
+    }
+
+    ^text svg { fill: currentColor;; }
+
+    ^text:hover:not(:disabled) {
+      background-color: /*%PRIMARY5%*/ #C6D2FF;
+    }
+
+    ^text:active:not(:disabled) {
+      background-color: /*%PRIMARY5%*/ #C6D2FF;
+      border-color: /*%PRIMARY3%*/ #406DEA;
+    }
+
+    ^text:disabled {
+      color: /*%GREY4%*/ #DADDE2;
+    }
+
     /* Link */
 
     ^link,^link svg {
