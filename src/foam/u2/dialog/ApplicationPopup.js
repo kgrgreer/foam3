@@ -164,6 +164,10 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'primaryActions'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'dynamicFooter'
     }
   ],
 
@@ -171,6 +175,7 @@ foam.CLASS({
     function init() {
       var content;
       const self = this;
+      window.thepopup = this;
       this.helpMenu$find.then( menu => {
         self.help_ = menu;
       });
@@ -276,6 +281,12 @@ foam.CLASS({
           .tag(this.DialogActionsView, {
             data$: this.primaryActions$
           })
+          .add(this.slot(function (dynamicFooter) {
+            if ( ! dynamicFooter ) return;
+            return this.E()
+              .addClass(this.myClass('dynamicFooter'))
+              .tag(dynamicFooter);
+          }))
           .start(this.footerLink ? 'a' : '')
             .show(this.footerString$)
             .addClasses([this.myClass('footer'), 'p-legal-light'])
