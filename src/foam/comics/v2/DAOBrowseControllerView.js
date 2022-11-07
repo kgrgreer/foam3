@@ -290,7 +290,6 @@ foam.CLASS({
                         .tag(self.CREATE, {
                             label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
-                            // size: 'LARGE'
                         })
                       .endContext();
                     })
