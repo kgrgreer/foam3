@@ -303,15 +303,6 @@ foam.CLASS({
             .start(self.CardBorder)
               .style({ position: 'relative', 'min-height': config.minHeight + 'px' })
               .start(config$browseBorder)
-                // .callIf(config$browseViews.length > 1 , function() {
-                //   this
-                //     .start(self.IconChoiceView, {
-                //       choices:config$browseViews.map(o => [o.view, o.icon]),
-                //       data$: self.browseView$
-                //     })
-                //       .addClass(self.myClass('altview-container'))
-                //     .end();
-                // })
                 .call(function() {
                   this.add(self.slot(function(browseView) {
                     return self.E().tag(browseView, { data: data, config: config } );
