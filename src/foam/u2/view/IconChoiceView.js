@@ -32,9 +32,6 @@ foam.CLASS({
     }
 
 
-    // ^disabled-icon {
-    //   opacity: 0.2;
-    // }
 
     ^ {
       background-color: $primary50;
