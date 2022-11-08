@@ -133,12 +133,10 @@ foam.CLASS({
       if ( ! opt_spec ) opt_spec = {};
       var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
-      if ( this.analyticsAgent ){
-        ctx.analyticsAgent.pub('event', {
-          name: 'VIEW_LOAD_' + this.wizardlet.id,
-          extra: foam.json.stringify(this.customView)
-        });
-      }
+      ctx.analyticsAgent?.pub('event', {
+        name: 'VIEW_LOAD_' + this.wizardlet.id,
+        extra: foam.json.stringify(this.customView)
+      });
 
       if ( this.customView ) {
         return this.ViewSpec.createView(

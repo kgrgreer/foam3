@@ -126,6 +126,15 @@ foam.CLASS({
       border-top: 1px solid $grey300;
       flex-shrink: 0;
     }
+    ^footer-link:link,
+    ^footer-link:visited,
+    ^footer-link:active {
+      color: /*%BLACK%*/ #1E1F21;
+      text-decoration: none;
+    }
+    ^footer-link:hover {
+      text-decoration: underline;
+    }
 
     ^inner-title {
       display: flex;
@@ -177,6 +186,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'footerString'
+    },
+    {
+      class: 'String',
+      name: 'footerLink'
     },
     {
       class: 'Boolean',
@@ -327,9 +340,15 @@ foam.CLASS({
               data$: this.primaryActions$
             }).addClass(this.myClass('actionBar')).end()
           .end()
-          .start()
-            .addClasses([this.myClass('footer'), 'p-legal-light']).show(this.footerString$)
+          .tag(this.DialogActionsView, {
+            data$: this.primaryActions$
+          })
+          .start(this.footerLink ? 'a' : '')
+            .show(this.footerString$)
+            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .enableClass(this.myClass('footer-link'), this.footerLink$)
             .add(this.footerString$)
+            .attrs({ href: this.footerLink, target: '_blank' })
           .end()
         .end();
 

@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function render () {
+    function render() {
       const self = this;
       this
         .add(this.slot(function ( data ) {
@@ -52,15 +52,27 @@ foam.CLASS({
 
             return buttonStyleA.ordinal - buttomStyleB.ordinal;
           });
-          
+
+          let slots = [];
+          data.forEach(a => {
+            slots.push(a.action.createIsAvailable$(self.__subContext__, a.data));
+          });
+          let s = foam.core.ArraySlot.create({ slots: slots }, self);
+          let anyAvailable = this.slot(function(slots) {
+            for ( let slot of slots ) {
+              if ( slot ) return true;
+            }
+            return false;
+          }, s);
+
           return this.E()
-            .addClass(self.myClass('actions'))
-            .forEach(data, function ( actionRef ) {
+            .enableClass(self.myClass('actions'), anyAvailable)
+            .forEach(data, function( actionRef ) {
               this.start(actionRef.action, {
                 size: 'LARGE',
                 data$: actionRef.data$
-              }).end()
-            })
+              }).end();
+            });
         }));
     }
   ]
