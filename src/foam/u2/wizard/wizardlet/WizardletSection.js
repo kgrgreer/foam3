@@ -134,7 +134,7 @@ foam.CLASS({
       var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
 
       if ( this.analyticsAgent ){
-        this.analyticsAgent.pub('event', {
+        ctx.analyticsAgent.pub('event', {
           name: 'VIEW_LOAD_' + this.wizardlet.id,
           extra: foam.json.stringify(this.customView)
         });
