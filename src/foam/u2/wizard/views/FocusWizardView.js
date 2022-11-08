@@ -28,6 +28,10 @@ foam.CLASS({
       */
     }
 
+    ^:not(^isFullscreen) {
+      margin: 0 40pt;
+    }
+
     ^contents {
       flex: 1;
       min-height: 0;

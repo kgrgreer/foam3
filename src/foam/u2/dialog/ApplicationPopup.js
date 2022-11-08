@@ -57,11 +57,9 @@ foam.CLASS({
       width: 100%;
       overflow: auto;
     }
-
     ^actionBar {
       padding: 2.4rem;
     }
-
     ^fullscreen ^actionBar {
       padding: 2.4rem;
     }
@@ -336,19 +334,16 @@ foam.CLASS({
               .addClass(this.myClass('body'))
               .call(function() { content = this.content; })
             .end()
-            .start(this.DialogActionsView, {
+            .tag(this.DialogActionsView, {
               data$: this.primaryActions$
-            }).addClass(this.myClass('actionBar')).end()
-          .end()
-          .tag(this.DialogActionsView, {
-            data$: this.primaryActions$
-          })
-          .start(this.footerLink ? 'a' : '')
-            .show(this.footerString$)
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
-            .enableClass(this.myClass('footer-link'), this.footerLink$)
-            .add(this.footerString$)
-            .attrs({ href: this.footerLink, target: '_blank' })
+            })
+            .start(this.footerLink ? 'a' : '')
+              .show(this.footerString$)
+              .addClasses([this.myClass('footer'), 'p-legal-light'])
+              .enableClass(this.myClass('footer-link'), this.footerLink$)
+              .add(this.footerString$)
+              .attrs({ href: this.footerLink, target: '_blank' })
+            .end()
           .end()
         .end();
 
