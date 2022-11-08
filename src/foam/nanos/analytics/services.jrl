@@ -5,6 +5,10 @@ p({
   "authenticate": false,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.analytics.AnalyticEvent.TIMESTAMP))
+        .setSize(1000000)
+        .build())
       .setOf(foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())
       .setPm(true)
       .setFuid(true)

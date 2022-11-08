@@ -54,9 +54,7 @@ foam.CLASS({
     }
 
     ^altview-container {
-      position: absolute;
-      right: 0;
-      padding: 12px 16px 0 0;
+      padding: 12px 16px;
     }
 
     ^buttons{
@@ -254,6 +252,14 @@ foam.CLASS({
                   .start(self.Cols)
                     .add(this.slot(function(config$browseContext) {
                       return this.E()
+                        .callIf(config$browseViews.length > 1 , function() {
+                          this.addClass(self.myClass('buttons')).start(self.IconChoiceView, {
+                              choices: config$browseViews.map(o => [o.view, o.icon, o.name]),
+                              data$: self.browseView$
+                            })
+                              .addClass(self.myClass('altview-container'))
+                            .end();
+                        })
                         .callIf( config.browseActions.length && config.browseContext, function() {
                           if ( config.browseActions.length > 2 ) {
                             this.start(self.OverlayActionListView, {
@@ -284,7 +290,6 @@ foam.CLASS({
                         .tag(self.CREATE, {
                             label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
-                            size: 'LARGE'
                         })
                       .endContext();
                     })
@@ -297,15 +302,6 @@ foam.CLASS({
             .start(self.CardBorder)
               .style({ position: 'relative', 'min-height': config.minHeight + 'px' })
               .start(config$browseBorder)
-                .callIf(config$browseViews.length > 1 , function() {
-                  this
-                    .start(self.IconChoiceView, {
-                      choices:config$browseViews.map(o => [o.view, o.icon]),
-                      data$: self.browseView$
-                    })
-                      .addClass(self.myClass('altview-container'))
-                    .end();
-                })
                 .call(function() {
                   this.add(self.slot(function(browseView) {
                     return self.E().tag(browseView, { data: data, config: config } );
