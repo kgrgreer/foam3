@@ -15,6 +15,7 @@ foam.CLASS({
   implements: ['foam.mlang.Expressions'],
 
   imports: [
+    'displayWidth?',
     'theme'
   ],
 
@@ -203,7 +204,8 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'dynamicFooter'
-    }
+    },
+    [ 'forceFullscreen', false ]
   ],
 
   methods: [
@@ -304,7 +306,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass(this.myClass('bodyWrapper'))
-            .add(this.slot(function(content$childNodes) {            if ( ! content$childNodes ) return;
+            .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
               let title = '';
               for ( const child of content$childNodes ) {
