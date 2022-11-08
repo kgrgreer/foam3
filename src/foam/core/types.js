@@ -832,13 +832,6 @@ foam.CLASS({
 
         var type = foam.lookup(prop.type);
 
-        if (
-          ( ! type.isInstance(v) ) &&
-          ( v.class ?
-            this.__context__.lookup(v.class) :
-            type ) === undefined
-        ) debugger;
-
         return type.isInstance(v) ?
           v :
           ( v.class ?

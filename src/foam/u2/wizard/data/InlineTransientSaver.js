@@ -40,17 +40,6 @@ foam.CLASS({
 
   methods: [
     async function save (data) {
-      // Intercept wizard loops are horrible to debug, so detect and stop them
-      {
-        const debounce = (new Date()).getTime();
-        if ( debounce - window.lastCalled < 1000 ) {
-          console.error('detected intercept loop!', new Error());
-          debugger;
-          return;
-        }
-        window.lastCalled = debounce;
-      }
-
       let subX = this.wizardController.__subContext__;
       if ( data && this.MapHolder.isInstance(data) ) {
         subX = subX.createSubContext(data.value);

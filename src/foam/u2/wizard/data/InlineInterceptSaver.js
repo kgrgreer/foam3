@@ -26,14 +26,6 @@ foam.CLASS({
 
   methods: [
     async function save (data) {
-      console.log('this was called!')
-      const debounce = (new Date()).getTime();
-      if ( debounce - window.lastCalled < 1000 ) {
-        console.error('detected intercept loop!', new Error());
-        debugger;
-        return;
-      }
-      window.lastCalled = debounce;
       if ( ! this.Capable.isInstance(data) ) {
         console.error('[InlineInterceptSaver] input data is not Capable', {
           data: data,
