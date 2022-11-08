@@ -147,7 +147,10 @@ foam.CLASS({
       section: 'summary',
       createVisibility: 'HIDDEN',
       gridColumns: 4,
-      order: 1
+      order: 1,
+      factory: function() {
+        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
+      }
     },
     {
       class: 'Date',
@@ -159,10 +162,7 @@ foam.CLASS({
       javaFactory: `
         Date d = getSchedule().getNextScheduledTime(getX(), new Date());
         return d != null ? d : null;
-      `,
-      factory: function(){
-        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
-      }
+      `
     },
     {
       class: 'foam.core.Enum',
