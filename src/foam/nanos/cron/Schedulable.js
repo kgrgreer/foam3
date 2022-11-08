@@ -161,7 +161,7 @@ foam.CLASS({
         return d != null ? d : null;
       `,
       factory: function(){
-        return `${this.objectToSchedule.toSummary()} - ${this.nextScheduledDate}`;
+        return `${this.objectToSchedule?.toSummary()} - ${this.nextScheduledDate}`;
       }
     },
     {
