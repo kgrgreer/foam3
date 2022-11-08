@@ -20,7 +20,6 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      width: 65vw;
       flex-grow: 1;
       height: 100%;
       /**
@@ -33,16 +32,6 @@ foam.CLASS({
       margin: 0 40pt;
     }
 
-    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^:not(^isFullscreen) {
-        width: 45vw;
-      }
-    }
-    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
-      ^:not(^isFullscreen) {
-        width: 25vw;
-      }
-    }
     ^contents {
       flex: 1;
       min-height: 0;
