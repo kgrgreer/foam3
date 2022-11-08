@@ -252,7 +252,7 @@ public class FScriptParser
         grammar.sym("MAX"),
         grammar.sym("MIN")
       ),
-      new Optional(
+      new Alt(
         new Repeat(
           new Seq(
             new Alt(
@@ -277,7 +277,10 @@ public class FScriptParser
               grammar.sym("MAX"),
               grammar.sym("MIN")
             )
-          )
+          ), 1
+        ),
+        new foam.lib.parse.Not(
+          new Alt(new Seq(Whitespace.instance(), Literal.create("*")), new Seq(Whitespace.instance(), Literal.create("/")))
         )
       )
     ));
@@ -287,7 +290,7 @@ public class FScriptParser
         !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
         return Action.NO_PARSE;
       }
-      if ( vals.length == 1 || vals[1] == null || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
+      if ( vals.length == 1 || vals[1] == null || !(vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
       Expr[] args = new Expr[2];
       Object [] formulas = (Object[]) vals[1];
       var firstArg = ( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]);
@@ -507,6 +510,7 @@ public class FScriptParser
       Literal.create("\"")
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
+
 
     grammar.addSymbol("ENUM", new Seq(
       grammar.sym("WORD"),
