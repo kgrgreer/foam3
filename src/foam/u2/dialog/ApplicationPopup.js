@@ -39,8 +39,25 @@ foam.CLASS({
 
     ^inner {
       height: 85vh;
+      width: 65vw;
       flex-direction: column;
       overflow: hidden;
+    }
+
+    ^bodyWrapper {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 0 4rem;
+      align-self: center;
+      width: 100%;
+      overflow: auto;
+    }
+    ^actionBar {
+      padding: 2.4rem;
+    }
+    ^fullscreen ^actionBar {
+      padding: 2.4rem;
     }
 
     ^header {
@@ -84,8 +101,9 @@ foam.CLASS({
       flex-direction: column;
     }
 
-    ^fullscreen ^body {
-      max-height: 100vh;
+    ^fullscreen ^bodyWrapper {
+      max-height: var(--max-height, 100vh);
+      padding: 0 2rem;
     }
 
     ^logo img, ^logo svg {
@@ -126,6 +144,23 @@ foam.CLASS({
 
     ^inner-title-small {
       padding: 1.2rem 0;
+    }
+
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^:not(^fullscreen) ^inner {
+        width: 45vw;
+      }
+      ^fullscreen ^bodyWrapper {
+        width: 75%;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
+      ^:not(^fullscreen) ^inner {
+        width: 35vw;
+      }
+      ^fullscreen ^bodyWrapper {
+        width: 65%;
+      }
     }
   `,
 
@@ -180,6 +215,16 @@ foam.CLASS({
         self.help_ = menu;
       });
 
+      const updateWidth = () => {
+        if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.MD.ordinal ) {
+          this.forceFullscreen = true;
+        } else {
+          this.forceFullscreen = false;
+        }
+      }
+      updateWidth();
+      this.onDetach(this.displayWidth$.sub(updateWidth))
+
       this.addClass()
 
         // These methods come from ControlBorder
@@ -187,7 +232,7 @@ foam.CLASS({
         .setActionProp(this.EQ(this.Action.NAME, "discard"), 'closeAction')
         .setActionList(this.TRUE, 'primaryActions')
 
-        .enableClass(this.myClass('fullscreen'), this.fullscreen$)
+        .enableClass(this.myClass('fullscreen'), this.fullscreen$.or(this.forceFullscreen$))
         .start()
           .addClass(this.myClass('background'))
           .on('click', this.closeable ? this.closeModal.bind(this) : null)
@@ -257,42 +302,45 @@ foam.CLASS({
               }))
             .end()
           .end()
-          .add(this.slot(function (content$childNodes) {
-            if ( ! content$childNodes ) return;
-            let title = '';
-            for ( const child of content$childNodes ) {
-              if ( ! child.viewTitle ) continue;
-              title = child.viewTitle$;
-              break;
-            }
-            if ( ! title ) return this.E();
-            return this.E()
-              .addClass(self.myClass('inner-title'))
-              .addClass('h300')
-              .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
-              .enableClass('h500', this.isScrolled$)
-              .show(title)
-              .add(title);
-          }))
-          .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
-            .addClass(this.myClass('body'))
-            .call(function() { content = this.content; })
-          .end()
-          .tag(this.DialogActionsView, {
-            data$: this.primaryActions$
-          })
-          .add(this.slot(function (dynamicFooter) {
-            if ( ! dynamicFooter ) return;
-            return this.E()
-              .addClass(this.myClass('dynamicFooter'))
-              .tag(dynamicFooter);
-          }))
-          .start(this.footerLink ? 'a' : '')
-            .show(this.footerString$)
-            .addClasses([this.myClass('footer'), 'p-legal-light'])
-            .enableClass(this.myClass('footer-link'), this.footerLink$)
-            .add(this.footerString$)
-            .attrs({ href: this.footerLink, target: '_blank' })
+          .start()
+            .addClass(this.myClass('bodyWrapper'))
+            .add(this.slot(function(content$childNodes) {            if ( ! content$childNodes ) return;
+              if ( ! content$childNodes ) return;
+              let title = '';
+              for ( const child of content$childNodes ) {
+                if ( ! child.viewTitle ) continue;
+                title = child.viewTitle$;
+                break;
+              }
+              if ( ! title ) return this.E();
+              return this.E()
+                .addClass(self.myClass('inner-title'))
+                .addClass('h300')
+                .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
+                .enableClass('h500', this.isScrolled$)
+                .show(title)
+                .add(title);
+            }))
+            .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
+              .addClass(this.myClass('body'))
+              .call(function() { content = this.content; })
+            .end()
+            .tag(this.DialogActionsView, {
+              data$: this.primaryActions$
+            })
+            .add(this.slot(function (dynamicFooter) {
+              if ( ! dynamicFooter ) return;
+              return this.E()
+                .addClass(this.myClass('dynamicFooter'))
+                .tag(dynamicFooter);
+            }))
+            .start(this.footerLink ? 'a' : '')
+              .show(this.footerString$)
+              .addClasses([this.myClass('footer'), 'p-legal-light'])
+              .enableClass(this.myClass('footer-link'), this.footerLink$)
+              .add(this.footerString$)
+              .attrs({ href: this.footerLink, target: '_blank' })
+            .end()
           .end()
         .end();
 
