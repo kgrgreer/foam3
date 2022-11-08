@@ -23,7 +23,8 @@ foam.CLASS({
   'foam.nanos.auth.User',
   'foam.nanos.ruler.Rule',
   'foam.parse.FScriptParser',
-  'java.util.Date'
+  'java.util.Date',
+  'net.nanopay.payroll.PayrollTransaction'
   ],
 
   methods: [
@@ -38,12 +39,18 @@ foam.CLASS({
     user.setOrganization("name-with-dashes");
     var addr = new Address();
     addr.setRegionId("CA-ON");
+var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
 
 
-    var parser = new FScriptParser(User.FIRST_NAME);
     StringPStream sps    = new StringPStream();
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
+//    PayrollTransaction tx = new PayrollTransaction();
+//    tx.setPayPeriodFactor(new Float(1.2));
+//    tx.setPayPeriods(2);
+//    sps.setString("payPeriodFactor * (24000 / payPeriods)");
+//    test(((Predicate) parser2.parse(sps, px).value()).f(tx), "payPeriodFactor * (24000 / payPeriods)");
+    var parser = new FScriptParser(User.FIRST_NAME);
     sps.setString("address==null");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
     user.setAddress(addr);
@@ -54,6 +61,9 @@ foam.CLASS({
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "quoted string kristina2 returns false");
     sps.setString("thisValue.len==8");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "thisValue.len==8");
+
+    sps.setString("lastname.len*unknown==null");
+    test(parser.parse(sps, px)==null, "lastname.len*unknown==null");
 
     sps.setString("thisValue.len == 8");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "whitespace test: thisValue.len == 8");
