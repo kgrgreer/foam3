@@ -109,7 +109,7 @@ foam.CLASS({
 
     ^logo img, ^logo svg {
       display: flex;
-      max-height: 40px;
+      max-height: 2.4rem;
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
     }
@@ -216,7 +216,6 @@ foam.CLASS({
       this.helpMenu$find.then( menu => {
         self.help_ = menu;
       });
-
       const updateWidth = () => {
         if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.MD.ordinal ) {
           this.forceFullscreen = true;
@@ -226,7 +225,6 @@ foam.CLASS({
       }
       updateWidth();
       this.onDetach(this.displayWidth$.sub(updateWidth))
-
       this.addClass()
 
         // These methods come from ControlBorder
@@ -317,20 +315,20 @@ foam.CLASS({
             .addClass(this.myClass('bodyWrapper'))
             .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
-              let title = '';
+              let titleSlot = null;
               for ( const child of content$childNodes ) {
                 if ( ! child.viewTitle ) continue;
-                title = child.viewTitle$;
+                titleSlot = child.viewTitle$;
                 break;
               }
-              if ( ! title ) return this.E();
+              if ( ! titleSlot ) return this.E();
               return this.E()
                 .addClass(self.myClass('inner-title'))
                 .addClass('h300')
                 .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
                 .enableClass('h500', this.isScrolled$)
-                .show(title)
-                .add(title);
+                .show(titleSlot)
+                .add(titleSlot);
             }))
             .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
               .addClass(this.myClass('body'))

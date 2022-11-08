@@ -14,7 +14,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-
       margin: 0;
     }
     ^actions > * {
