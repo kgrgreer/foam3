@@ -283,7 +283,7 @@ public class FScriptParser
     ));
     grammar.addAction("FORM_EXPR", (val, x) -> {
       Object[] vals = (Object[]) val;
-      if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) &&
+      if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) && !(vals[0] instanceof AbstractFloatPropertyInfo) &&
         !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
         return Action.NO_PARSE;
       }
