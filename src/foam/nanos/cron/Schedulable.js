@@ -161,8 +161,7 @@ foam.CLASS({
         return d != null ? d : null;
       `,
       factory: function(){
-        var ret = `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
-        return ret;
+        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
       }
     },
     {
