@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script language="javascript" src="../../../foam.js"></script>
+    <style>
+      .chapter {
+        display: inline-block;
+        background: #eee;
+      }
+    </style>
+    <script>
+      foam.CLASS({
+        name: 'Sample',
+        extends: 'foam.u2.Element',
+
+        methods: [
+          function render() {
+            this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
+            start('img').attr('src',' https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png').end().
+            start('center').
+              add('Google Logo').
+            end();
+          }
+        ]
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="123" class="chapter" style="padding:4px" onClick="alert('clicked')">
+      <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png">
+      <center>
+        Google Logo
+      </center>
+    </div>
+
+    <br><br>
+
+    <foam class="Sample"></foam>
+  </body>
+</html>
