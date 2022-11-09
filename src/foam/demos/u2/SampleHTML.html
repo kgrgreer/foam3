@@ -16,9 +16,8 @@
           function render() {
             this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
             start('img').attr('src',' https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png').end().
-            start('center').
-              add('Google Logo').
-            end();
+            tag('hr').
+            start('center').add('Google Logo').end();
           }
         ]
       });
@@ -28,9 +27,8 @@
   <body>
     <div id="123" class="chapter" style="padding:4px" onClick="alert('clicked')">
       <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png">
-      <center>
-        Google Logo
-      </center>
+      <hr>
+      <center>Google Logo</center>
     </div>
 
     <br><br>
