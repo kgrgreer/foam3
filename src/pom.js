@@ -1016,6 +1016,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/CreateLoader",                       flags: "web" },
     { name: "foam/u2/wizard/data/DAOArrayLoader",                     flags: "web" },
     { name: "foam/u2/wizard/data/ContextLoader",                      flags: "web" },
+    { name: "foam/u2/wizard/data/PurgeCacheSaver",                    flags: "web" },
     { name: "foam/u2/wizard/data/PutLoader",                          flags: "web" },
     { name: "foam/u2/wizard/data/PayloadLoader",                      flags: "web" },
     { name: "foam/u2/wizard/data/PayloadSaver",                       flags: "web" },
