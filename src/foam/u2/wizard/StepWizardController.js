@@ -314,7 +314,8 @@ foam.CLASS({
               this.wizardlets[i].title || this.wizardlets[i].id ||
               (this.wizardlets[i].of?.name ?? 'UNKNOWN')
             ) + '_COMPLETE', 
-          tags: ['wizard'] 
+          tags: ['wizard'],
+          extra: this.wizardlets[i].evtExtra && this.wizardlets[i].evtExtra$get(this.wizardlets[i])
         })
         if ( (i + 1) < end && this.wizardlets[i + 1] ) await this.wizardlets[i + 1].load();
       }
