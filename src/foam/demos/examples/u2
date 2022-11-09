@@ -24,7 +24,7 @@ All 32 components extend foam.u2.Element, which loosely modelled after the DOM <
 add('testing');
 
 ##   U3 vs. Real DOM
-The first example creates a ul tag with 100 li children using the browser's build-in DOM API.
+The first example creates a ul tag with 10 li children using the browser's build-in DOM API.
 The second example does the same thing using U3. Notice how the two examples are very similar.
 --
 console.profile('p1');
@@ -37,7 +37,7 @@ function test1() {
     node.appendChild(li);
   }
   start().call(function() { this.element_.appendChild(node); });
-  log('DOM', performance.now() - startTime);
+  log('DOM ', performance.now() - startTime);
 }
 test1();
 console.profileEnd('p1');
@@ -51,7 +51,7 @@ function test2() {
     node.start('li').add("text" + i).end();            // Append an <li>
 
   add(node);
-  log('U3', performance.now() - startTime);
+  log('U3 ', performance.now() - startTime);
 }
 test2()
 console.profileEnd('p2');
@@ -216,6 +216,23 @@ foam.CLASS({
 tag({class:'ExampleElement'});
 
 ##    render()
+--
+foam.CLASS({
+  name: 'Sample',
+  extends: 'foam.u2.Element',
+
+  methods: [
+    function render() {
+      this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
+      start('img').attr('src',' https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png').end().
+      tag('hr').
+      start('center').add('Google Logo').end();
+    }
+  ]
+});
+
+tag({class: 'Sample'});
+
 ##   Keyboard Shortcuts
 --
 foam.CLASS({
