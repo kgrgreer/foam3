@@ -103,7 +103,7 @@
       }
 
       const selectedCapabilityWizardlet = prereqMinMaxWizardlet.prerequisiteWizardlets.find(w =>
-        w.capability && w.capability.id == selectedCapabilityId
+        (w.capability && w.capability.id) || w.id == selectedCapabilityId
       );
 
       if ( ! selectedCapabilityWizardlet ){
