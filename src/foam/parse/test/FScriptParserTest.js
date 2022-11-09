@@ -20,7 +20,7 @@ foam.CLASS({
   'foam.mlang.predicate.Predicate',
   'foam.mlang.Expr',
   'foam.nanos.auth.Address',
-  'foam.nanos.auth.User',
+  'foam.parse.FScriptParserTestUser',
   'foam.nanos.ruler.Rule',
   'foam.parse.FScriptParser',
   'java.util.Date',
@@ -31,12 +31,13 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-    var user = new User();
+    var user = new FScriptParserTestUser();
     user.setId(100L);
     user.setFirstName("marmelad");
     user.setMiddleName("marmelad");
     user.setLastName("sonya");
     user.setOrganization("name-with-dashes");
+
     var addr = new Address();
     addr.setRegionId("CA-ON");
 var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
@@ -50,7 +51,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
 //    tx.setPayPeriods(2);
 //    sps.setString("payPeriodFactor * (24000 / payPeriods)");
 //    test(((Predicate) parser2.parse(sps, px).value()).f(tx), "payPeriodFactor * (24000 / payPeriods)");
-    var parser = new FScriptParser(User.FIRST_NAME);
+    var parser = new FScriptParser(FScriptParserTestUser.FIRST_NAME);
     sps.setString("address==null");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
     user.setAddress(addr);
@@ -151,11 +152,14 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     sps.setString("10 + MIN(firstName.len,MAX(lastName.len+4, 7)) == 18");
     test((((Predicate) parser.parse(sps, px).value()).f(user)), "M10 + MAX(firstName.len,MAX(lastName.len+4, 7)) == 19");
 
-    sps.setString("4+7+2");
+    sps.setString("1295100+(0.15*1439800)+14292+52497+19305");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==13, "13");
 
     sps.setString("4+7-2");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==9, "9");
+
+    sps.setString("4+7*2");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==18, "18");
 
     sps.setString("4+7*2");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==18, "18");
