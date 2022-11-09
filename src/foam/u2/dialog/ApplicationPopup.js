@@ -337,13 +337,13 @@ foam.CLASS({
             .tag(this.DialogActionsView, {
               data$: this.primaryActions$
             })
-            .start(this.footerLink ? 'a' : '')
-              .show(this.footerString$)
-              .addClasses([this.myClass('footer'), 'p-legal-light'])
-              .enableClass(this.myClass('footer-link'), this.footerLink$)
-              .add(this.footerString$)
-              .attrs({ href: this.footerLink, target: '_blank' })
-            .end()
+          .end()
+          .start(this.footerLink ? 'a' : '')
+            .show(this.footerString$)
+            .addClasses([this.myClass('footer'), 'p-legal-light'])
+            .enableClass(this.myClass('footer-link'), this.footerLink$)
+            .add(this.footerString$)
+            .attrs({ href: this.footerLink, target: '_blank' })
           .end()
         .end();
 
