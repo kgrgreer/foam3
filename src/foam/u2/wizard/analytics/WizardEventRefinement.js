@@ -28,7 +28,8 @@ foam.CLASS({
           wizardlet.title || wizardlet.id ||
             (wizardlet.of?.name ?? 'UNKNOWN')
         ) + '_' + eventName,
-        tags: ['wizard']
+        tags: ['wizard'],
+        extra: wizardlet.evtExtra && wizardlet.evtExtra$get(wizardlet)
       };
     }
   ]
