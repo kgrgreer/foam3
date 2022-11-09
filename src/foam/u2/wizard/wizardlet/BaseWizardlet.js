@@ -263,6 +263,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'pubAnalyticEvt',
       value: true
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'evtExtra',
+      documentation: `
+        Path of wizardlet prop to save to AnalyticEvent.EXTRA
+      `
     }
   ],
 
