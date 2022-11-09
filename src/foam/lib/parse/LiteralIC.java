@@ -38,6 +38,6 @@ public class LiteralIC
   }
 
   public String toString() {
-    return "LiteralIC(" + string_ + ")";
+    return "LiteralIC(" + string_ + ","+((value_!=null)?value_.toString():"null")+")";
   }
 }

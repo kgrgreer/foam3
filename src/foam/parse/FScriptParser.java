@@ -42,6 +42,7 @@ public class FScriptParser
   public void addExpressions(List expressions) {
     this.expressions.addAll(expressions);
     this.expressions.sort(Comparator.comparing(LiteralIC::getString).reversed());
+    foam.nanos.logger.StdoutLogger.instance().info(this.getClass().getSimpleName(), "expressions", this.expressions.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(",")));
   }
 
   public void setup(ClassInfo classInfo, Map<String, PropertyInfo> props) {

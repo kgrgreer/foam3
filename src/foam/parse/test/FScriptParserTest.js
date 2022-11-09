@@ -168,7 +168,10 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==500, "id*lastname.len=500");
 
     sps.setString("unknown*lastName.len");
-    test(parser.parse(sps, px) == null, "unknown+lastname.len=null");
+    test(parser.parse(sps, px) == null, "unknown*lastname.len=null");
+
+    sps.setString("lastName.len*unknown");
+    test(parser.parse(sps, px) == null, "lastname.len*unknown=null");
 
     sps.setString("4+7/7");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==5, "5");
@@ -187,6 +190,9 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
 
     sps.setString("2 * 8 - 6");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==10, "10");
+
+    sps.setString("100-(2+8)-MAX(6,10)");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==80, "100-(2+8)-MAX(6,10)==80");
 
     sps.setString("2 * 8 - MAX(6,10)");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==6, "6");
@@ -249,8 +255,30 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     sps.setString("if(id exists){id}else{0}");
     test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists){id}else{0} -> 666");
 
+    sps.setString("if(id exists && id==666){id}else{0}");
+    test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists && id==666){id}else{0} -> 666");
+
+    sps.setString("if(unknown==null){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown==null){999}else{0} --> null");
+
+    sps.setString("if(unknown!=null){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown!=null){999}else{0} --> null");
+
+    sps.setString("if(unknown!=null && unknown==999){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown!=null && unknown==999){999}else{0} --> null");
+
+    sps.setString("if(unknown==999){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown==999){999}else{0} --> null");
+
+    sps.setString("if(unknown !exists){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown !exists){999}else{0} -> null");
     // sps.setString("if(unknown !exists){999}else{0}");
-    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(unknown==null){999}else{0} -> 999");
+    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(unknown !exists){999}else{0} -> 999");
+
+    sps.setString("if(unknown exists){999}else{0}");
+    test(parser.parse(sps, px) == null, "if(unknown exists){999}else{0} -> null");
+    // sps.setString("if(unknown exists){999}else{0}");
+    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(exists unknown){999}else{0} -> 0");
 
     Object result = null;
     sps.setString("if(address.regionId.len==5){firstName}else{lastName.len+3}");
