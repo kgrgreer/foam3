@@ -35,7 +35,6 @@ foam.CLASS({
   methods: [
     async function save (data) {
       const v = await this.delegate.save(data);
-      debugger
       this.dao.cmd(foam.dao.DAO.PURGE_CMD);
       this.dao.cmd(foam.dao.DAO.RESET_CMD);
       return v;
