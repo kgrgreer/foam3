@@ -558,6 +558,11 @@ foam.CLASS({
         }
       };
     },
+    function sub() {
+      var ret = this.SUPER.apply(this, arguments);
+      this.get();
+      return ret;
+    },
     function detach() {
       this.cleanup();
       this.SUPER();
