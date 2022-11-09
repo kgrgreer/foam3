@@ -159,7 +159,10 @@ foam.CLASS({
       javaFactory: `
         Date d = getSchedule().getNextScheduledTime(getX(), new Date());
         return d != null ? d : null;
-      `
+      `,
+      factory: function(){
+        return `${this.objectToSchedule.toSummary()} - ${this.nextScheduledDate}`;
+      }
     },
     {
       class: 'foam.core.Enum',

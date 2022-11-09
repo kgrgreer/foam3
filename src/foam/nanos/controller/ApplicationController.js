@@ -924,7 +924,6 @@ foam.CLASS({
 
       if ( this.theme.sideNav )
         this.sideNav_ = this.theme.sideNav;
-
       if ( this.theme.loginView )
         this.loginView = this.theme.loginView;
     },

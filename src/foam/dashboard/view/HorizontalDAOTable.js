@@ -32,7 +32,7 @@ foam.CLASS({
       padding-top: 0;
     }
     ^entry-container > * {
-      max-width: 400px;
+      width: clamp(200px, 25%, 500px);
       max-height: 200px;
     }
   `,
@@ -41,7 +41,7 @@ foam.CLASS({
     'title',
     'actionView',
     'data',
-    ['limit', 3],
+    ['limit', 5],
     {
       class: 'FObjectProperty',
       name: 'size',
@@ -80,11 +80,11 @@ foam.CLASS({
         .add(this.slot(function(currentValues) {
           var e = self.E();
           return e.addClass(self.myClass('entry-container'))
+            .callIf(self.actionView, function() {
+              this.tag(self.actionView);
+            })
             .forEach(currentValues, function(data) {
               e.tag(self.citationView, { data : data });
-            })
-            .callIf(self.actionView, function() {
-              e.tag(self.actionView);
             });
         }));
     }
