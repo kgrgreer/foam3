@@ -1901,7 +1901,7 @@ foam.CLASS({
     {
       name: 'toString',
       code: function() { return this.toString_(this.value); },
-      javaCode: 'return getValue() == null ? "null" : getValue().toString();'
+      javaCode: 'return getValue() == null ? null : getValue().toString();'
     },
 
     // TODO(adamvy): Re-enable when we can parse this in java more correctly.
