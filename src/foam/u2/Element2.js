@@ -13,11 +13,9 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE() to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
-  - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
   - replace unload() with remove()
   - replace this.sub('onunload') with this.onDetach()
