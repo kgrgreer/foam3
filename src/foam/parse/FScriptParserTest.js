@@ -107,6 +107,12 @@ foam.CLASS({
     sps.setString("firstName~/[a-z]+/");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
 
+    sps.setString("firstName~/[a-z]+/i");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
+
+    sps.setString("firstName~/[a-z]+/im");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
+
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
 
