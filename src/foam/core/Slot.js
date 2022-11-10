@@ -473,6 +473,9 @@ foam.CLASS({
 
   documentation: `
     Tracks dependencies for a dynamic function and invalidates if they change.
+    Note that ExpressionSlots are lazily evaluated, even if you sub(), so
+    updates will not be generated from calling .sub() unless you also call
+    .get().
 
     <pre>
       foam.CLASS({name: 'Person', properties: ['fname', 'lname']});
@@ -559,13 +562,6 @@ foam.CLASS({
         }
       };
     },
-    /*
-    function sub() {
-      var ret = this.SUPER.apply(this, arguments);
-      this.get();
-      return ret;
-    },
-    */
     function detach() {
       this.cleanup();
       this.SUPER();
