@@ -470,6 +470,7 @@ foam.CLASS({
   package: 'foam.core',
   name: 'ExpressionSlot',
   extends: 'foam.core.PromiseSlot',
+
   documentation: `
     Tracks dependencies for a dynamic function and invalidates if they change.
 
@@ -558,11 +559,13 @@ foam.CLASS({
         }
       };
     },
+    /*
     function sub() {
       var ret = this.SUPER.apply(this, arguments);
       this.get();
       return ret;
     },
+    */
     function detach() {
       this.cleanup();
       this.SUPER();
