@@ -1528,11 +1528,6 @@ return;
       }
     },
 
-    function setNodeName(name) {
-      this.nodeName = name;
-      return this;
-    },
-
     function setID(id) {
       /*
         Explicitly set Element's id.
@@ -1551,11 +1546,6 @@ return;
 
     function nbsp() {
       return this.entity('nbsp');
-    },
-
-    function cssClass(cls) {
-      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
-      return this.addClass(cls);
     },
 
     function addClass(cls) { /* Slot | String */
@@ -1716,7 +1706,7 @@ return;
         return this.add(translation);
       }
       console.warn('Missing Translation Service in ', this.cls_.name);
-      if ( opt_default === undefined ) opt_default = 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = source;
       return this.add(opt_default);
     },
 
@@ -2309,6 +2299,7 @@ foam.CLASS({
   refines: 'foam.core.FObject',
   methods: [
     function toE(args, X) {
+      X = X || globalThis.ctrl || foam.__context__;
       return foam.u2.ViewSpec.createView(
         { class: 'foam.u2.DetailView', showActions: true, data: this },
         args, this, X);
