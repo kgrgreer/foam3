@@ -16,14 +16,24 @@ foam.CLASS({
   'foam.lib.parse.StringPStream',
   'foam.nanos.auth.User',
   'foam.mlang.predicate.Nary',
-  'foam.mlang.predicate.Predicate'
+  'foam.mlang.predicate.Predicate',
+  'java.util.Date',
+  'java.text.SimpleDateFormat',
+  'java.util.TimeZone'
   ],
+
+  javaCode: `
+  protected final static ThreadLocal<SimpleDateFormat> dateFormat_ = ThreadLocal.withInitial(() -> {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return sdf;
+  });`,
 
   methods: [
     {
       name: 'runTest',
-      //INFO it will just parse the query to get the predicate without evaluation.
       javaCode: `
+      // Just parse the query to get the predicate without evaluation.
       test( isValid("id=6", " id =  ?  ") , "The id equal to the value");
       test( isValid("-id=6"," id <>  ?  ") , "The id is Not equal to the value");
       test( isValid("Not id=6"," id <>  ?  ") , "The id is Not equal to the value '- Symbol' ");
@@ -74,31 +84,64 @@ foam.CLASS({
       test( isValid("firstName=Simon,Wassim"," ( firstname =  ?  )  OR  ( firstname =  ?  ) ") , "The firstName is equal to value1 OR to value2");
       //          {"id=(6|7)"," ( ( ( id =  ?  )  OR  ( id =  ?  ) ) ) "},
       //          {"id=(6|7)"," ( ( ( id =  ?  )  OR  ( id =  ?  ) ) ) "},//TODO add alises
+
+      // Parse query and evalue predicates on user
+      var user = new User();
+      user.setFirstName("senorita");
+      user.setMiddleName("senorita");
+      user.setLastName("alice");
+      user.setBirthday(new Date(2323223232L)); // Tue Jan 27 21:20:23 GMT 1970
+
+      Date earlierDate = new Date(2322603000L); // Tue Jan 27 21:10:03 GMT 1970
+      Date laterDate = new Date(2323803000L);   // Tue Jan 27 21:30:03 GMT 1970
+
+      // test user's birthday is between two timestamps
+      test(evaluate("birthday<" + dateFormat_.get().format(laterDate), user), user.getBirthday() + " < "+laterDate.toString());
+      test(evaluate("birthday>" + dateFormat_.get().format(earlierDate), user), user.getBirthday() + " > "+earlierDate.toString());
       `
+    },
+    {
+      name: 'buildPredicate',
+      type: 'foam.mlang.predicate.Predicate',
+      args: [
+        { name: 'query', type: 'String' }
+      ],
+      javaCode: `
+        QueryParser parser = new QueryParser(User.getOwnClassInfo());
+        StringPStream sps = new StringPStream();
+        sps.setString(query);
+        PStream ps = sps;
+        ParserContext x = new ParserContextImpl();
+        ps = parser.parse(ps, x);
+        return ps == null ? null : (foam.mlang.predicate.Nary) ps.value();
+  `
     },
     {
       name: 'isValid',
       type: 'Boolean',
-      args : [
+      args: [
         { name: 'query',type: 'String' },
         { name: 'statement',type: 'String' }
       ],
       javaCode: `
-        QueryParser parser = new QueryParser(User.getOwnClassInfo());
-
-    StringPStream sps = new StringPStream();
-    sps.setString(query);
-    PStream ps = sps;
-    ParserContext x = new ParserContextImpl();
-    ps = parser.parse(ps, x);
-    if (ps == null)
-      return false;
-
-    Predicate result = (foam.mlang.predicate.Nary) ps.value();
-    result = result.partialEval();
-
-    return statement.equalsIgnoreCase(result.createStatement()) ? true : false;
+        Predicate result = buildPredicate(query);
+        if (result == null) return false;
+        result = result.partialEval();
+        return statement.equalsIgnoreCase(result.createStatement()) ? true : false;
         `
     },
+    {
+      name: 'evaluate',
+      type: 'Boolean',
+      args: [
+        { name: 'query',type: 'String' },
+        { name: 'user',type: 'foam.nanos.auth.User' }
+      ],
+      javaCode: `
+        Predicate predicate = buildPredicate(query);
+        if (predicate == null) return false;
+        return predicate.f(user);
+      `
+    }
   ]
 });
