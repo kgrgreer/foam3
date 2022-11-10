@@ -200,7 +200,7 @@ foam.CLASS({
           e = foam.u2.Text.create({text: val}, this);
         } else if ( foam.u2.Element.isInstance(val) ) {
           e = val;
-        } else if ( foam.Array.isInstance(val) {
+        } else if ( foam.Array.isInstance(val) ) {
           e = this.start('span').add(val);
         } else if ( val.then ) {
           val.then(e => {
