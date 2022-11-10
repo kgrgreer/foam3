@@ -765,7 +765,7 @@ foam.CLASS({
   methods: [
     // from state
 
-    // TODO: remove
+    // TODO: for backward compatibility with U2, remove when all code ported
     function el() {
       return Promise.resolve(this.el_());
     },
