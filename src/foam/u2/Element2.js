@@ -200,9 +200,17 @@ foam.CLASS({
           e = foam.u2.Text.create({text: val}, this);
         } else if ( foam.u2.Element.isInstance(val) ) {
           e = val;
+        } else if ( foam.Array.isInstance(val) {
+          e = this.start('span').add(val);
+        } else if ( val.then ) {
+          val.then(e => {
+            this.element_.parentNode.replaceChild(e.element_, this.element_);
+            this.element_ = e.element_;
+          });
+          return;
         } else {
           console.log('Unknown slot type: ', typeof val);
-//          debugger;
+          debugger;
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
@@ -1477,6 +1485,13 @@ foam.CLASS({
     //   }
     //   return this.insertAt_(children, reference, true);
     // },
+
+    function setChildren() {
+      this.removeAllChildren();
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        this.add(arguments[0]);
+      }
+    },
 
     function removeAllChildren() {
       this.element_.innerHTML = '';
