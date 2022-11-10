@@ -85,7 +85,7 @@ foam.CLASS({
       //          {"id=(6|7)"," ( ( ( id =  ?  )  OR  ( id =  ?  ) ) ) "},
       //          {"id=(6|7)"," ( ( ( id =  ?  )  OR  ( id =  ?  ) ) ) "},//TODO add alises
 
-      // Parse query and evalue predicates on user
+      // Parse query and evaluate predicates on user
       var user = new User();
       user.setFirstName("senorita");
       user.setMiddleName("senorita");
