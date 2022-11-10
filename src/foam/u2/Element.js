@@ -3136,10 +3136,6 @@ foam.CLASS({
 
   css: `
     ^ { padding: 6px 0; }
-    ^ > span > span > .p-semiBold,
-    ^ > span {
-      font-size: 1.2rem;
-    }
   `,
 
   properties: [
