@@ -202,6 +202,7 @@ foam.POM({
     { name: "foam/u2/RowFormatter",                                   flags: "web" },
     { name: "foam/u2/WeakMap",                                        flags: "web" },
     { name: "foam/u2/Element",                                        flags: "web" },
+    { name: "foam/u2/Element2",                                       flags: "u3" },
     { name: "foam/u2/MNRowFormatter",                                 flags: "web" },
     { name: "foam/u2/ProgressView",                                   flags: "web" },
     { name: "foam/u2/PropertyBorder",                                 flags: "web" },
