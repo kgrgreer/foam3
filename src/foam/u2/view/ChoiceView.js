@@ -337,7 +337,13 @@ foam.CLASS({
 
         p.then(a => {
           var choices = a.map(this.objToChoice);
-          var choiceLabels = a.map(o => { return this.objToChoice(o)[1]});
+          var choiceLabels = a.map(o => {
+            const v = this.objToChoice(o);
+            if ( ! v ) {
+              console.log(this.objToChoice.toString());
+            }
+            return this.objToChoice(o)[1];
+          });
           Promise.all(choiceLabels).then(resolvedChoiceLabels => {
             if ( seq !== self.seq_ ) return; // stale select
             for ( let i = 0; i < choices.length; i++ ) {
