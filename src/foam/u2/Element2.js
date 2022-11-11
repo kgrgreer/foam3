@@ -13,11 +13,9 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE() to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
-  - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
   - replace unload() with remove()
   - replace this.sub('onunload') with this.onDetach()
@@ -202,9 +200,17 @@ foam.CLASS({
           e = foam.u2.Text.create({text: val}, this);
         } else if ( foam.u2.Element.isInstance(val) ) {
           e = val;
+        } else if ( foam.Array.isInstance(val) ) {
+          e = this.start('span').add(val);
+        } else if ( val.then ) {
+          val.then(e => {
+            this.element_.parentNode.replaceChild(e.element_, this.element_);
+            this.element_ = e.element_;
+          });
+          return;
         } else {
           console.log('Unknown slot type: ', typeof val);
-//          debugger;
+          debugger;
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
@@ -767,7 +773,7 @@ foam.CLASS({
   methods: [
     // from state
 
-    // TODO: remove
+    // TODO: for backward compatibility with U2, remove when all code ported
     function el() {
       return Promise.resolve(this.el_());
     },
@@ -1479,6 +1485,13 @@ foam.CLASS({
     //   }
     //   return this.insertAt_(children, reference, true);
     // },
+
+    function setChildren() {
+      this.removeAllChildren();
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        this.add(arguments[0]);
+      }
+    },
 
     function removeAllChildren() {
       this.element_.innerHTML = '';

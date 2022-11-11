@@ -470,8 +470,12 @@ foam.CLASS({
   package: 'foam.core',
   name: 'ExpressionSlot',
   extends: 'foam.core.PromiseSlot',
+
   documentation: `
     Tracks dependencies for a dynamic function and invalidates if they change.
+    Note that ExpressionSlots are lazily evaluated, even if you sub(), so
+    updates will not be generated from calling .sub() unless you also call
+    .get().
 
     <pre>
       foam.CLASS({name: 'Person', properties: ['fname', 'lname']});
@@ -536,7 +540,7 @@ foam.CLASS({
       },
       factory: function() {
         return this.code.apply(this.obj || this, this.args.map(function(a) {
-          return a.get();
+          return a && a.get();
         }));
       }
     },
@@ -548,7 +552,7 @@ foam.CLASS({
     function set() { /* nop */ },
     function subToArgs_(args) {
       this.cleanup();
-      const subs = args.map(a => a.sub(this.invalidate));
+      const subs = args.map(a => a && a.sub(this.invalidate));
 
       this.cleanup_ = {
         detach: function() {
