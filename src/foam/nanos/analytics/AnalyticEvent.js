@@ -46,6 +46,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sessionId',
+      preSet: function(old, nu) {
+        return nu && nu.split('-')[0] || nu;
+      },
       javaPreSet: `
       if ( ! foam.util.SafetyUtil.isEmpty(val) ) {
         val = val.split("-")[0];
