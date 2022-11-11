@@ -1022,6 +1022,7 @@ foam.POM({
     { name: "foam/u2/wizard/data/InlineTransientSaver",               flags: "web" },
     { name: "foam/u2/wizard/data/LoaderInjectorSaver",                flags: "web" },
     { name: "foam/u2/wizard/data/MapLoader",                          flags: "web" },
+    { name: "foam/u2/wizard/data/HideIfValidSaver",                   flags: "web" },
     { name: "foam/u2/wizard/event/WizardEvent",                       flags: "web" },
     { name: "foam/u2/wizard/event/WizardEventType",                   flags: "web" },
     { name: "foam/u2/wizard/event/WizardErrorHint",                   flags: "web" },
