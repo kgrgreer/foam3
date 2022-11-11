@@ -34,6 +34,8 @@ foam.CLASS({
       const x = this.__subContext__;
 
       this
+        .enableClass('foam-u2-ActionView-unavailable',
+          this.action.createIsAvailable$(this.__context__, this.data), true)
         .addClass()
         .start()
           .addClass(this.myClass('helptext'))

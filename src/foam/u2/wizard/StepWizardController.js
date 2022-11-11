@@ -191,6 +191,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'autoPositionUpdates',
       value: true
+    },
+    {
+      class: 'Map',
+      name: 'actionExtras',
+      factory: () => ({})
     }
   ],
 
