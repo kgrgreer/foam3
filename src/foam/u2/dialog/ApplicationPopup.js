@@ -183,7 +183,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'SUPPORT_TITLE', message: 'Payment Support: '}
+    { name: 'SUPPORT_TITLE', message: 'Support: '}
   ],
 
   properties: [
