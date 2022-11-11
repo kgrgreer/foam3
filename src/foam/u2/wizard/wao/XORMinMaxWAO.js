@@ -51,6 +51,11 @@
         OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
       name: 'loadIntoPath'
+    },
+    {
+      class: 'Boolean',
+      name: 'cloneValue',
+      value: true
     }
   ],
 
@@ -136,9 +141,11 @@
           }
         }
 
-        clonedSelectedWizardletData = loadedFromData.clone();
+        clonedSelectedWizardletData = this.cloneValue ?
+          loadedFromData.clone() : loadedFromData;
       } else {
-        clonedSelectedWizardletData = selectedCapabilityWizardletData.clone();
+        clonedSelectedWizardletData = this.cloneValue ?
+          selectedCapabilityWizardletData.clone() : selectedCapabilityWizardletData;
       }
 
       if ( this.isWrappedInFObjectHolder ){
