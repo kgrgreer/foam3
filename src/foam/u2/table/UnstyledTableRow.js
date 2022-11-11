@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'canBuildObjfromProj',
     'click?',
     'dblclick?',
     'nestedPropsAndIndexes',
