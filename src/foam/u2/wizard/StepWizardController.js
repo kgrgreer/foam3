@@ -218,6 +218,11 @@ foam.CLASS({
         clicks), this property will be updated to propagate errors back to
         StepWizardAgent, and also allow views to react.
       `
+    },
+    {
+      class: 'Map',
+      name: 'actionExtras',
+      factory: () => ({})
     }
   ],
 
