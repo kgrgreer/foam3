@@ -4166,6 +4166,7 @@ foam.CLASS({
         sps.setString(getQuery());
         PStream ps = sps;
         ParserContext x = new ParserContextImpl();
+        x.set("X", getX());
         ps = parser.parse(ps, x);
         if (ps == null)
           return new False();
@@ -4672,6 +4673,9 @@ foam.CLASS({
       try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
+          if ( current == null ) {
+            return null;
+          }
           if ( current instanceof Number ) {
             var oldResult = result;
             var value = ((Number) current).doubleValue();
@@ -4684,6 +4688,8 @@ foam.CLASS({
             }
           }
         }
+        if ( result == null )
+          return null;
         return getRounding() ? Math.round(result) : result;
       } catch (Throwable t) {
         foam.nanos.logger.Logger logger = foam.nanos.logger.StdoutLogger.instance();
@@ -4777,7 +4783,8 @@ foam.CLASS({
         sb.append(getClass().getSimpleName()).append('(');
         for ( int i = 0; i < getArgs().length; i++ ) {
           if ( i > 0 ) sb.append(", ");
-          sb.append(getArgs()[i].toString());
+          Object arg = getArgs()[i];
+          sb.append(arg != null ? arg.toString() : "null");
         }
         sb.append(')');
         return sb.toString();
@@ -4917,10 +4924,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         var expr = getPredicate().f(obj) ? getTrueExpr() : getFalseExpr();
-        if ( expr instanceof If ) {
-          return ((If) expr).f(obj);
-        }
-        return expr;
+        return expr.f(obj);
       `
     },
     {

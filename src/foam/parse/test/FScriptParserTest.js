@@ -135,7 +135,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==11, "4+7");
 
     sps.setString("id+lastName.len");
-    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==105, "id+lastname=105");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==105, "id+lastname.len=105");
 
     sps.setString("firstName.len+lastName.len==13");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName.len+lastName.len=13");
@@ -253,10 +253,10 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==5");
 
     sps.setString("if(id exists){id}else{0}");
-    test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists){id}else{0} -> 666");
+    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists){id}else{0} -> 666");
 
     sps.setString("if(id exists && id==666){id}else{0}");
-    test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists && id==666){id}else{0} -> 666");
+    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists && id==666){id}else{0} -> 666");
 
     sps.setString("if(unknown==null){999}else{0}");
     test(parser.parse(sps, px) == null, "if(unknown==null){999}else{0} --> null");
