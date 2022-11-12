@@ -1,5 +1,81 @@
+## U2/U3
+##  All Features
+An example which shows all (most) U2 features.
+--
+foam.CLASS({
+  name: 'AllFeatures',
+  extends: 'foam.u2.Controller',
 
-## U3
+  css: `
+    << {
+      border: 1px solid black;
+      padding: 4px;
+    }
+
+    <<pinkish {
+      background: pink;
+    }
+  `,
+
+  properties: [
+    { class: 'String', name: 'firstName' },
+    { class: 'String', name: 'lastName'  }
+  ],
+
+  methods: [
+    function render() {
+      this.
+      addClass(this.myClass()).
+      start('p').
+        start('h1').add('Title').end().
+        start('u').on('click', () => alert('inline listener')).add('inline listener').end().
+        add(', ').
+        start('u').on('click', () => alert('named listener')).add('named listener').end().
+        br().
+        br().
+        start().
+          addClass(this.myClass('pinkish')).
+          add('A styled pink section.').
+        end().
+        br().
+        start().
+          style({background: 'lightblue'}).
+          add('A styled blue section.').
+        end().
+        start('img').attr('src', '../u2/Dragon.png').end().
+        br().
+        start('img').attrs({src: '../u2/Dragon.png', width: 60, height: 60}).end().
+        start({class: 'foam.u2.TextField'}).end().
+        tag({class: 'foam.u2.CheckBox'}).
+        start('div', {id: 123}).
+          add('Inspect Element to See my ID.').
+        end().
+        start('div', {tooltip: 'My tooltip'}).
+          add('Hover for Tooltip!').
+        end().
+        add(this.FIRST_NAME, this.LAST_NAME, this.READ_ONLY).
+      end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'readOnly',
+      code: function() {
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() { alert('onClick listener'); }
+    }
+  ]
+});
+
+tag({class: 'AllFeatures'});
+
 ##  Background
 U3 is FOAM's native UI library.
 It is named U3 because it is FOAM's third UI library.
