@@ -12,7 +12,7 @@ p({
       .setOf(foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())
       .setPm(true)
       .setFuid(true)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .setSAF(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("analyticEvents")
