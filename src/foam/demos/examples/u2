@@ -18,8 +18,10 @@ foam.CLASS({
   `,
 
   properties: [
-    { class: 'String', name: 'firstName' },
-    { class: 'String', name: 'lastName'  }
+    { class: 'String', name: 'firstName', value: 'John' },
+    { class: 'String', name: 'lastName',  value: 'Doe'  },
+    { class: 'Boolean', name: 'isReadOnly' }
+
   ],
 
   methods: [
@@ -53,7 +55,15 @@ foam.CLASS({
         start('div', {tooltip: 'My tooltip'}).
           add('Hover for Tooltip!').
         end().
-        add(this.FIRST_NAME, this.LAST_NAME, this.READ_ONLY).
+        add('ReadOnly: ', this.isReadOnly$).
+        br().
+        add('First Name:').
+        start(this.FIRST_NAME, {mode$: this.isReadOnly$.map(m => { return m ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW; })}).end().
+        br().
+        add(' Last Name:').
+        start(this.LAST_NAME, {controllerMode$: this.isReadOnly$.map(m => { return m ? foam.u2.ControllerMode.VIEW : foam.u2.ControllerMode.EDIT; })}).end().
+        br().
+        add(this.READ_ONLY).
       end();
     }
   ],
@@ -62,6 +72,7 @@ foam.CLASS({
     {
       name: 'readOnly',
       code: function() {
+        this.isReadOnly = true;
       }
     }
   ],
