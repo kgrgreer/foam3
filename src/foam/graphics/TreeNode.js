@@ -125,7 +125,7 @@ foam.CLASS({
   methods: [
     function initCView() {
       this.SUPER();
-
+//      this.formatNode.bind(this.graph);
       this.formatNode();
 
       if ( this.relationship ) {
@@ -139,19 +139,19 @@ foam.CLASS({
           var treeNodeWidth = treeNodeConfig && treeNodeConfig.width
             ? treeNodeConfig.width
             : this.graph.nodeWidth;
-          
+
           var treeNodeHeight = treeNodeConfig && treeNodeConfig.height
             ? treeNodeConfig.height
             : this.graph.nodeHeight;
-          
+
           var treeNodeCornerRadius = treeNodeConfig && treeNodeConfig.nodeCornerRadius
             ? treeNodeConfig.nodeCornerRadius
             : this.graph.nodeCornerRadius;
-          
+
           var treeNodeExpandIconColor = treeNodeConfig && treeNodeConfig.expandIconColor
             ? treeNodeConfig.expandIconColor
             : this.expandIconColor;
-  
+
           var treeNodeExpandIconWidth = treeNodeConfig && treeNodeConfig.expandIconWidth
             ? treeNodeConfig.expandIconWidth
             : this.expandIconWidth;
@@ -183,7 +183,7 @@ foam.CLASS({
         onClick = treeNodeConfig.onClickNode;
       }
 
-      this.canvas.on('click', 
+      this.canvas.on('click',
         e => {
           var p = this.parent;
 
