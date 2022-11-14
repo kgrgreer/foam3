@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'EmailTemplateEngine',
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.lib.json.*',
@@ -67,13 +69,20 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-              ((Logger) x.get("logger")).warning("No value provided for variable", v);
-              Alarm alarm = new Alarm();
-              alarm.setName("Email template config");
-              alarm.setReason(AlarmReason.CONFIGURATION);
-              alarm.setNote("No value provided for variable " + v);
-              alarm.setClusterable(false);
-              ((DAO) x.get("alarmDAO")).put(alarm);
+
+              final String message = "No value provided for variable "+v;
+              ((Logger) getX().get("logger")).warning(message);
+              Agency agency = (Agency) getX().get("threadPool");
+              agency.submit(getX(), new ContextAgent() {
+                public void execute(X x) {
+                  Alarm alarm = new Alarm();
+                  alarm.setName("Email template config");
+                  alarm.setReason(AlarmReason.CONFIGURATION);
+                  alarm.setNote(message);
+                  alarm.setClusterable(false);
+                  ((DAO) x.get("alarmDAO")).put(alarm);
+                }
+              }, this.getClass().getSimpleName()+"-alarm");
             }
             ((StringBuilder) x.get("sb")).append(value);
             return value;
