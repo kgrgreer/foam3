@@ -256,6 +256,8 @@ foam.CLASS({
 
         return this.QuickAgent.create({
           executeFn: async function (x) {
+            console.error(x.exception);
+
             // If we fail to save, the default behaviour will be an error
             // message displayed to the user.
             if ( x.event == self.WizardEventType.WIZARDLET_SAVE )  {
