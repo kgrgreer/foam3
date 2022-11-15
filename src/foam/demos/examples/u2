@@ -62,6 +62,8 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this; // Needed in some inner functions
+
       this.
       addClass(this.myClass()).
       start('p').
@@ -100,6 +102,20 @@ foam.CLASS({
         br().add(this.flag$).br().
         start().show(this.flag$).add('show if flag is true').end().
         start().hide(this.flag$).add('hide if flag is true').end().
+        callIf(this.flag, function() {
+          this.add('Added if flag is true');
+        }).
+        callIfElse(this.flag, function() {
+          this.add('Added if(else) flag is true');
+        },
+        function() {
+          this.add('Added if(else) flag is false');
+        }).
+        add(this.flag$.map(function (f) {
+          return f ?
+            self.E().add('Added dynamically if true') :
+            self.E().add('Added dynamically if false');
+        })).
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
           call(function() {
@@ -115,7 +131,7 @@ foam.CLASS({
         end().
         start().
           select(this.users, function(user) {
-            // this.start().         // U3 Version 
+            // this.start().         // U3 Version
             return this.E().start(). // U2 Version
               add(user.id, ' ', user.firstName, ' ', user.lastName, ' age: ', user.age).
             end();
