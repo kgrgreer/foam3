@@ -96,6 +96,35 @@ foam.CLASS({
       this.
       addClass(this.myClass()).
       start('p').
+        start('h2').add('ID').end().
+        start('div', {id: 123}).
+          add('Inspect Element to See my ID.').
+        end().
+        // All elements have a uniquely assigned id in U2, but not U3
+        start().add('or mine').end().
+        start().add('or mine').end().
+
+        start('h2').add('add').end().
+        add('one value at a time').
+        br().
+        add('or ', 'multiple ', 'values ', 'all ', 'at ', 'once').
+        br().
+        add(1, ' ', 3.14, ' ', true, ' ', false).
+        add([1,2,3,4,5]).
+        br().
+        add(Promise.resolve('A resolved promise.')).
+
+        start('h2').add('Start / Tag').end().
+        start('b').add('bold text').end().
+        br().
+        add('Text Field: ').start({class: 'foam.u2.TextField'}).end().
+        add('CheckBox: ').tag({class: 'foam.u2.CheckBox'}).
+        br().
+        // Create a named view, so we can access it later
+        start('textarea', {}, this.namedView$).add('Dynamic Content in named view.\n').attrs({cols:80, rows:10}).end().
+        br().
+        add(this.ADD_CONTENT_TO_VIEW).
+
         start('h2').add('Events').end().
         start('u').on('click', () => alert('inline listener')).add('inline listener').end().
         add(', ').
@@ -131,22 +160,6 @@ foam.CLASS({
         start('img').attrs({src: '../u2/Dragon.png', width: this.flag$.map(f => f ? 40 : 80), height: this.flag$.map(f => f ? 40 : 80)}).end().
         br().
         add(this.FLIP).
-
-        start('h2').add('Start / Tag').end().
-        start('b').add('bold text').end().
-        br().
-        add('Text Field: ').start({class: 'foam.u2.TextField'}).end().
-        add('CheckBox: ').tag({class: 'foam.u2.CheckBox'}).
-        br().
-        // Create a named view, so we can access it later
-        start('textarea', {}, this.namedView$).add('Dynamic Content in named view.\n').attrs({cols:80, rows:10}).end().
-        br().
-        add(this.ADD_CONTENT_TO_VIEW).
-
-        start('h2').add('ID').end().
-        start('div', {id: 123}).
-          add('Inspect Element to See my ID.').
-        end().
 
         start('h2').add('Tooltip').end().
         start('div', {tooltip: 'My tooltip'}).
@@ -227,6 +240,8 @@ foam.CLASS({
         start('h2').add('DAOList').end().
         tag({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
 
+        start('h2').add('DAOBrowserView').end().
+        //tag({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
       end();
     }
   ],
