@@ -6,11 +6,19 @@ An example which shows all (most) U2 features.
 foam.CLASS({
   name: 'SimpleUser',
 
+  // If not specified, all properties will be included in tableViews,
+  // but we don't want to display 'password'.
+  tableColumns: [
+    'id', 'firstName', 'lastName', 'age'
+  ],
+
   properties: [
-    { class: 'Int',    name: 'id' },
-    { class: 'String', name: 'firstName' },
-    { class: 'String', name: 'lastName' },
-    { class: 'Int',    name: 'age' }
+    { class: 'Int',      name: 'id' },
+    { class: 'String',   name: 'firstName' },
+    { class: 'String',   name: 'lastName' },
+    { class: 'Int',      name: 'age' },
+    // hidden: true means we don't want to display this property in DetailViews
+    { class: 'Password', name: 'password', hidden: true }
   ],
 
   methods: [
@@ -83,10 +91,10 @@ foam.CLASS({
           cache: true,
           daoType: 'LOCAL',
           testData: [
-            { firstName: 'John', lastName: 'Doe',   age: 42 },
-            { firstName: 'Jane', lastName: 'Doe',   age: 24 },
-            { firstName: 'John', lastName: 'Smith', age: 18 },
-            { firstName: 'Jane', lastName: 'Smith', age: 26 }
+            { firstName: 'John', lastName: 'Doe',   age: 42, password: 'secret1' },
+            { firstName: 'Jane', lastName: 'Doe',   age: 24, password: 'secret1' },
+            { firstName: 'John', lastName: 'Smith', age: 18, password: 'secret1' },
+            { firstName: 'Jane', lastName: 'Smith', age: 26, password: 'secret1' }
           ]
         });
       }
@@ -94,10 +102,12 @@ foam.CLASS({
   ],
 
   methods: [
+    // render() is where your views DOM is built / rendered
     function render() {
       var self = this; // Needed in some inner functions
 
       this.
+      // This will match the ^ { ... } CSS rule above.
       addClass(this.myClass()).
       start('p').
         start('h2').add('ID').end().
