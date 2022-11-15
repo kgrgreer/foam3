@@ -16,7 +16,7 @@ foam.CLASS({
     { class: 'Int',      name: 'id' },
     { class: 'String',   name: 'firstName' },
     { class: 'String',   name: 'lastName' },
-    { class: 'Int',      name: 'age' },
+    { class: 'Int',      name: 'age' /*, units: 'years' */},
     // hidden: true means we don't want to display this property in DetailViews
     { class: 'Password', name: 'password', hidden: true }
   ],
@@ -202,6 +202,12 @@ foam.CLASS({
         })).
 
         start('h2').add('Looping').end().
+        start('div').
+          repeat(1, 10, function(i) { this.add(i, ' '); }).
+        end().
+        start('div').
+          repeat(10, 1, function(i) { this.add(i, ' '); }).
+        end().
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
           call(function() {
@@ -237,7 +243,7 @@ foam.CLASS({
           add(this.user.ID.__, this.user.FIRST_NAME.__, SimpleUser.LAST_NAME.__, SimpleUser.AGE.__).
           add(this.user.HAVE_BIRTHDAY).
         endContext().
-        add(this.user.HAVE_BIRTHDAY). // Won't work because wrong 'data' in context
+        add(" Doesn't work:", this.user.HAVE_BIRTHDAY). // Won't work because wrong 'data' in context
 
 
         start('h2').add('DetailView').end().
