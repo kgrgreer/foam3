@@ -633,6 +633,7 @@ foam.POM({
     { name: "foam/u2/view/NoBackStack",                               flags: "web" },
     { name: "foam/u2/view/ReadOnlyEnumView",                          flags: "web" },
     { name: "foam/u2/view/ViewReferenceFObjectView",                  flags: "web" },
+    { name: "foam/u2/view/SpinnerView",                               flags: "web" },
     { name: "foam/u2/EnumView",                                       flags: "web" },
     { name: "foam/u2/ClassView",                                      flags: "web" },
     { name: "foam/u2/view/ReferenceView",                             flags: "web" },
