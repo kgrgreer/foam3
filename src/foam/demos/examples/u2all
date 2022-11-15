@@ -6,9 +6,10 @@ foam.CLASS({
   name: 'SimpleUser',
 
   // If not specified, all properties will be included in tableViews,
-  // but we don't want to display 'password'.
+  // except those with hidden: true.
+  // But if we also don't want to display 'age', then we can change the tableColumns
   tableColumns: [
-    'id', 'firstName', 'lastName', 'age'
+    'id', 'firstName', 'lastName'
   ],
 
   properties: [
@@ -16,7 +17,7 @@ foam.CLASS({
     { class: 'String',   name: 'firstName' },
     { class: 'String',   name: 'lastName' },
     { class: 'Int',      name: 'age' /*, units: 'years' */},
-    // hidden: true means we don't want to display this property in DetailViews
+    // hidden: true means we don't want to display this property in Detail or Table Views
     { class: 'Password', name: 'password', hidden: true }
   ],
 
@@ -97,6 +98,30 @@ foam.CLASS({
           ]
         });
       }
+    },
+    {
+      class: 'String',
+      name: 'readWrite',
+      value: 'testing...',
+      visibility: 'RW'
+    },
+    {
+      class: 'String',
+      name: 'readOnly',
+      value: 'testing...',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'disabled',
+      value: 'testing...',
+      visibility: 'DISABLED'
+    },
+    {
+      class: 'String',
+      name: 'hidden',
+      value: 'testing...',
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -244,6 +269,8 @@ foam.CLASS({
         endContext().
         add(" Doesn't work:", this.user.HAVE_BIRTHDAY). // Won't work because wrong 'data' in context
 
+        start('h2').add('Visibility').end().
+        add(this.READ_WRITE.__, this.READ_ONLY.__, this.DISABLED.__, this.HIDDEN.__).
 
         start('h2').add('DetailView').end().
         // Simpler than adding all of the properties yourself, just use a DetailView
@@ -277,6 +304,10 @@ foam.CLASS({
           start('li').add("tableCellFormatter's").end().
           start('li').add('Menus').end().
           start('li').add('Search').end().
+          start('li').add('onKey').end().
+          start('li').add('registerElement').end().
+          start('li').add('el() / element_').end().
+          start('li').add('CView Integration').end().
         end().
       end();
     }
