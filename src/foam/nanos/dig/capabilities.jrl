@@ -17,7 +17,7 @@ p({
   class: "foam.nanos.crunch.Capability",
   id: "foam-nanos-dig-DIG-create",
   name: "DIG-create",
-  description: "Data Integration Gateway",
+  description: "Data Integration Gateway (Create)",
   enabled: true,
   keywords: ["dig"],
   permissionsGranted: [
