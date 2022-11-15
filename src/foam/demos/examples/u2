@@ -148,6 +148,11 @@ foam.CLASS({
             end();
           }).
         end().
+
+        start('h2').add('Actions').end().
+        add(this.FLAG.__).
+        add(this.FLIP, this.ENABLE, this.DISABLE).
+
       end();
     }
   ],
@@ -158,6 +163,20 @@ foam.CLASS({
       code: function() {
         this.flag = ! this.flag;
       }
+    },
+    {
+      name: 'enable',
+      code: function() {
+        this.flag = true;
+      },
+      isEnabled: function(flag) { return ! flag; }
+    },
+    {
+      name: 'disable',
+      code: function() {
+        this.flag = false;
+      },
+      isEnabled: function(flag) { return flag; }
     }
   ],
 
