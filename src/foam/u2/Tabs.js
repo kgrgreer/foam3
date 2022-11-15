@@ -112,7 +112,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ColorToken',
       name: 'tabPrimaryColor',
-      value: '$primary400'
+      value: '$primary300'
     }
   ],
 
@@ -120,8 +120,9 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      max-height: 100%;
+      gap: 3.2rem;
+      --tabRow-padding: 0.8rem;
+      --tabRow-radius: 1.6rem;
     }
     ^content{
       flex: 1;
@@ -131,31 +132,34 @@ foam.CLASS({
     ^content > * {
       flex: 1;
       position: relative;
+      width: 100%;
     }
     ^tabRow {
-      flex: 0 1 auto;
-      border-radius: 3px;
+      flex: 0 0 auto;
+      border-radius: var(--tabRow-radius, 0.4rem);
       border: 1px solid $grey100;
-      display: flex;
       gap: 8px;
-      padding: 0.4rem;
+      padding: var(--tabRow-padding, 0.4rem);
       white-space: nowrap;
-      justify-content: space-evenly;
-      background-color: $primary50;
-      width: 25rem;
+      background-color: $white;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       align-self: center;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(100px, 1fr);
+      width: 100%;
+      overflow: auto;
     }
     ^tab {
       border-radius: 3px;
       align-items: center;
       background: none;
-      border-radius: 4px;
+      border-radius: max(calc(var(--tabRow-radius, 0.4rem) - var(--tabRow-padding, 0.4rem)), 0.2rem);
       color: $tabPrimaryColor;
       display: flex;
       justify-content: center;
-      padding: 7px 12px;
+      padding: 12px 24px;
       flex: 1 1 0;
-      font-weight: 500;
     }
     ^tab:hover {
       background: $tabPrimaryColor$hover;
@@ -164,7 +168,6 @@ foam.CLASS({
     }
     ^tab.selected {
       color: $tabPrimaryColor$foreground;
-      font-weight: 600;
       background-color: $tabPrimaryColor;
     }
   `
