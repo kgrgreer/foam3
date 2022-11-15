@@ -7,19 +7,23 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   css: `
-    << {
+    ^ {
       border: 1px solid black;
       padding: 4px;
     }
 
-    <<pinkish {
+    ^pinkish {
       background: pink;
+    }
+
+    ^blueish {
+      background: lightblue;
     }
   `,
 
   properties: [
-    { class: 'String', name: 'firstName', value: 'John' },
-    { class: 'String', name: 'lastName',  value: 'Doe'  },
+    { class: 'String',  name: 'firstName', value: 'John' },
+    { class: 'String',  name: 'lastName',  value: 'Doe'  },
     { class: 'Boolean', name: 'flag' }
   ],
 
@@ -37,6 +41,10 @@ foam.CLASS({
         start().
           addClass(this.myClass('pinkish')).
           add('A styled pink section.').
+        end().
+        start().
+          addClass('blueish').
+          add('A styled blue section.').
         end().
         br().
         start().
