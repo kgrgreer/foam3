@@ -27,7 +27,11 @@ foam.CLASS({
 
 foam.CLASS({
   name: 'AllFeatures',
-  extends: 'foam.u2.Controller',
+  extends: 'foam.u2.Controller', // exports self as 'data'
+
+  // Other options:
+  // extends: 'foam.u2.Element', // inherits 'data' or sets with setContext()
+  // extends: 'foam.u2.View',    // has a 'data' property
 
   requires: [ 'foam.dao.EasyDAO' ],
 
@@ -104,7 +108,7 @@ foam.CLASS({
         start().add('or mine').end().
         start().add('or mine').end().
 
-        start('h2').add('add').end().
+        start('h2').add('Add').end().
         add('one value at a time').
         br().
         add('or ', 'multiple ', 'values ', 'all ', 'at ', 'once').
