@@ -155,6 +155,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDragged_'
+    },
+    {
+      class: 'Boolean',
+      name: 'showHelp'
     }
   ],
 
@@ -169,7 +173,7 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
-      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles) { 
+      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles) {
           if ( isMultipleFiles ) return true;
           return ! hasFiles;
         });
@@ -207,6 +211,7 @@ foam.CLASS({
               .end();
             }))
         .end()
+        .start().show(this.showHelp$)
         .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
           .start()
             .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
@@ -215,6 +220,7 @@ foam.CLASS({
           .start()
             .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
           .end()
+        .end()
         .end()
       .end()
       .on('drop', this.onDrop)
