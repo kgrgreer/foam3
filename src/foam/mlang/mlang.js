@@ -743,7 +743,7 @@ foam.CLASS({
         var value = prop.adaptValue(nu);
         var arg1 = this.arg1;
         if ( foam.mlang.Constant.isInstance(value) && arg1 && arg1.adapt ) {
-          var value = this.arg1.adapt.call(null, old, value.value, arg1);
+          var value = this.arg1.adapt.call(null, old, value.value, arg1) || '';
           if ( value !== value.value ) return foam.mlang.Constant.create({value: value});
           return nu;
         }
