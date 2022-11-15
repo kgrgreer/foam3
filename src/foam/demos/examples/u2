@@ -31,8 +31,8 @@ foam.CLASS({
       background: pink;
     }
 
-    ^blueish {
-      background: lightblue;
+    .greenish {
+      background: lightgreen;
     }
   `,
 
@@ -75,16 +75,16 @@ foam.CLASS({
         br().
         start().
           addClass(this.myClass('pinkish')).
-          add('A styled pink section.').
+          add('A scoped styled pink section.').
         end().
         start().
-          addClass('blueish').
-          add('A styled blue section.').
+          addClass('greenish').
+          add('An unscoped styled green section.').
         end().
         br().
         start().
           style({background: 'lightblue'}).
-          add('A styled blue section.').
+          add('An inline styled blue section.').
         end().
         start('img').attr('src', '../u2/Dragon.png').end().
         br().
