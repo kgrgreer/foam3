@@ -20,8 +20,7 @@ foam.CLASS({
   properties: [
     { class: 'String', name: 'firstName', value: 'John' },
     { class: 'String', name: 'lastName',  value: 'Doe'  },
-    { class: 'Boolean', name: 'isReadOnly' }
-
+    { class: 'Boolean', name: 'flag' }
   ],
 
   methods: [
@@ -55,24 +54,20 @@ foam.CLASS({
         start('div', {tooltip: 'My tooltip'}).
           add('Hover for Tooltip!').
         end().
-        add('ReadOnly: ', this.isReadOnly$).
         br().
-        add('First Name:').
-        start(this.FIRST_NAME, {mode$: this.isReadOnly$.map(m => { return m ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW; })}).end().
-        br().
-        add(' Last Name:').
-        start(this.LAST_NAME, {controllerMode$: this.isReadOnly$.map(m => { return m ? foam.u2.ControllerMode.VIEW : foam.u2.ControllerMode.EDIT; })}).end().
-        br().
-        add(this.READ_ONLY).
+        add('Flag: ', this.FLAG, ' ', this.FLAG.__, ' ', this.FLIP).
+        br().add(this.flag$).br().
+        start().show(this.flag$).add('show if flag is true').end().
+        start().hide(this.flag$).add('hide if flag is true').end().
       end();
     }
   ],
 
   actions: [
     {
-      name: 'readOnly',
+      name: 'flip',
       code: function() {
-        this.isReadOnly = true;
+        this.flag = ! this.flag;
       }
     }
   ],
