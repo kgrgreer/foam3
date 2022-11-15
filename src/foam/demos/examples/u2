@@ -9,8 +9,18 @@ foam.CLASS({
   properties: [
     { class: 'Int',    name: 'id' },
     { class: 'String', name: 'firstName' },
-    { class: 'String', name: 'lastName'  },
+    { class: 'String', name: 'lastName' },
     { class: 'Int',    name: 'age' }
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.id + ' ' + this.firstName + ' ' + this.lastName;
+    }
+  ],
+
+  actions: [
+    function haveBirthday() { this.age++ }
   ]
 });
 
@@ -31,6 +41,11 @@ foam.CLASS({
       background: pink;
     }
 
+    ^important {
+      font-weigth: 800;
+      color: red;
+    }
+
     .greenish {
       background: lightgreen;
     }
@@ -40,8 +55,22 @@ foam.CLASS({
     { class: 'String',  name: 'firstName', value: 'John' },
     { class: 'String',  name: 'lastName',  value: 'Doe'  },
     { class: 'Boolean', name: 'flag' },
+    'namedView',
     {
-      class: 'foam.dao.DAOProperty',
+      class: 'FObjectProperty',
+      of: 'SimpleUser',
+      name: 'user',
+      factory: function() {
+        return SimpleUser.create({
+          id: 1,
+          firstName: 'Sergey',
+          lastName: 'Bubka',
+          age: 58
+          });
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty', // Note package is required
       name: 'users',
       factory: function() {
         return this.EasyDAO.create({
@@ -85,17 +114,36 @@ foam.CLASS({
           style({background: 'lightblue'}).
           add('An inline styled blue section.').
         end().
+        start().
+          enableClass(this.myClass('important'), this.flag$).
+          add('Toggle flag to add ^important CSS class.').
+        end().add(this.FLIP).
+        start().
+          style({background: this.flag$.map(f => f ? 'black' : 'red')}).
+          add('Add style dynamically from a slotl').
+        end().add(this.FLIP).
 
         start('h2').add('Attributes').end().
         start('img').attr('src', '../u2/Dragon.png').end().
         br().
         start('img').attrs({src: '../u2/Dragon.png', width: 60, height: 60}).end().
+        start('h3').add('Dynamic Attributes').end().
+        start('img').attrs({src: '../u2/Dragon.png', width: this.flag$.map(f => f ? 40 : 80), height: this.flag$.map(f => f ? 40 : 80)}).end().
+        br().
+        add(this.FLIP).
 
         start('h2').add('Start / Tag').end().
-        start({class: 'foam.u2.TextField'}).end().
-        tag({class: 'foam.u2.CheckBox'}).
+        start('b').add('bold text').end().
+        br().
+        add('Text Field: ').start({class: 'foam.u2.TextField'}).end().
+        add('CheckBox: ').tag({class: 'foam.u2.CheckBox'}).
+        br().
+        // Create a named view, so we can access it later
+        start('textarea', {}, this.namedView$).add('Dynamic Content in named view.\n').attrs({cols:80, rows:10}).end().
+        br().
+        add(this.ADD_CONTENT_TO_VIEW).
 
-        start('h2').add('Attributes').end().
+        start('h2').add('ID').end().
         start('div', {id: 123}).
           add('Inspect Element to See my ID.').
         end().
@@ -153,6 +201,32 @@ foam.CLASS({
         add(this.FLAG.__).
         add(this.FLIP, this.ENABLE, this.DISABLE).
 
+        start('h2').add('startContext() / endContext() / Property Binding').end().
+        startContext({data: this.user}).
+          // Note that I can add properties from either the object or the class
+          add(this.user.ID, this.user.FIRST_NAME, SimpleUser.LAST_NAME, SimpleUser.AGE).
+          br().
+          br().
+          add(this.user.ID.__, this.user.FIRST_NAME.__, SimpleUser.LAST_NAME.__, SimpleUser.AGE.__).
+          add(this.user.HAVE_BIRTHDAY).
+        endContext().
+        add(this.user.HAVE_BIRTHDAY). // Won't work because wrong 'data' in context
+
+
+        start('h2').add('DetailView').end().
+        // Simpler than adding all of the properties yourself, just use a DetailView
+        tag({class: 'foam.u2.DetailView', data: this.user}).
+        // or Simpler, just:
+        add(this.user).
+
+        start('h2').add('TableView').end().
+        start({class: 'foam.u2.view.TableView', data: this.users}).
+          style({height: '200px', display: 'contents'}).
+        end().
+
+        start('h2').add('DAOList').end().
+        tag({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
+
       end();
     }
   ],
@@ -177,6 +251,12 @@ foam.CLASS({
         this.flag = false;
       },
       isEnabled: function(flag) { return flag; }
+    },
+    {
+      name: 'addContentToView',
+      code: function addContent() {
+        this.namedView.add('Add content!\n');
+      }
     }
   ],
 
