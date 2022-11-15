@@ -2,9 +2,24 @@
 ##  All Features
 An example which shows all (most) U2 features.
 --
+
+foam.CLASS({
+  name: 'SimpleUser',
+
+  properties: [
+    { class: 'Int',    name: 'id' },
+    { class: 'String', name: 'firstName' },
+    { class: 'String', name: 'lastName'  },
+    { class: 'Int',    name: 'age' }
+  ]
+});
+
+
 foam.CLASS({
   name: 'AllFeatures',
   extends: 'foam.u2.Controller',
+
+  requires: [ 'foam.dao.EasyDAO' ],
 
   css: `
     ^ {
@@ -24,7 +39,25 @@ foam.CLASS({
   properties: [
     { class: 'String',  name: 'firstName', value: 'John' },
     { class: 'String',  name: 'lastName',  value: 'Doe'  },
-    { class: 'Boolean', name: 'flag' }
+    { class: 'Boolean', name: 'flag' },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'users',
+      factory: function() {
+        return this.EasyDAO.create({
+          of: SimpleUser,
+          seqNo: true,
+          cache: true,
+          daoType: 'LOCAL',
+          testData: [
+            { firstName: 'John', lastName: 'Doe',   age: 42 },
+            { firstName: 'Jane', lastName: 'Doe',   age: 24 },
+            { firstName: 'John', lastName: 'Smith', age: 18 },
+            { firstName: 'Jane', lastName: 'Smith', age: 26 }
+          ]
+        });
+      }
+    }
   ],
 
   methods: [
@@ -78,6 +111,14 @@ foam.CLASS({
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
           forEach(['apple', 'banana', 'organge'], function(fruit) {
             this.start('li').add(fruit).end();
+          }).
+        end().
+        start().
+          select(this.users, function(user) {
+            // this.start().         // U3 Version 
+            return this.E().start(). // U2 Version
+              add(user.id, ' ', user.firstName, ' ', user.lastName, ' age: ', user.age).
+            end();
           }).
         end().
       end();
