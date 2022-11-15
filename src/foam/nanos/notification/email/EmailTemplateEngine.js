@@ -71,9 +71,10 @@ foam.CLASS({
               value = "";
 
               final String message = "No value provided for variable "+v;
-              ((Logger) getX().get("logger")).warning(message);
-              Agency agency = (Agency) getX().get("threadPool");
-              agency.submit(getX(), new ContextAgent() {
+              X y = foam.core.XLocator.get();
+              ((Logger) y.get("logger")).warning(message);
+              Agency agency = (Agency) y.get("threadPool");
+              agency.submit(y, new ContextAgent() {
                 public void execute(X x) {
                   Alarm alarm = new Alarm();
                   alarm.setName("Email template config");
