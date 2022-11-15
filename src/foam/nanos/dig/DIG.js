@@ -364,14 +364,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'connectionTimeout',
       class: 'Long',
       units: 'ms',
-      value: 20000
+      value: 20000,
+      section: 'details'
     },
     {
       documentation: 'Connection timeout in milliseconds',
       name: 'requestTimeout',
       class: 'Long',
       units: 'ms',
-      value: 10000
+      value: 10000,
+      section: 'details'
     },
     {
       name: 'secure',
