@@ -67,6 +67,19 @@ foam.CLASS({
         br().add(this.flag$).br().
         start().show(this.flag$).add('show if flag is true').end().
         start().hide(this.flag$).add('hide if flag is true').end().
+        start('ol').
+          // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
+          call(function() {
+            for ( var i = 1 ; i <= 5 ; i++ )
+              this.start('li').add('Item ' + i).end();
+          }).
+        end().
+        start('ul').
+          // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
+          forEach(['apple', 'banana', 'organge'], function(fruit) {
+            this.start('li').add(fruit).end();
+          }).
+        end().
       end();
     }
   ],
