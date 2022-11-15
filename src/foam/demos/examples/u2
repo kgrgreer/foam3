@@ -67,12 +67,12 @@ foam.CLASS({
       this.
       addClass(this.myClass()).
       start('p').
-        start('h1').add('Title').end().
+        start('h2').add('Events').end().
         start('u').on('click', () => alert('inline listener')).add('inline listener').end().
         add(', ').
         start('u').on('click', () => alert('named listener')).add('named listener').end().
-        br().
-        br().
+
+        start('h2').add('CSS').end().
         start().
           addClass(this.myClass('pinkish')).
           add('A scoped styled pink section.').
@@ -81,23 +81,31 @@ foam.CLASS({
           addClass('greenish').
           add('An unscoped styled green section.').
         end().
-        br().
         start().
           style({background: 'lightblue'}).
           add('An inline styled blue section.').
         end().
+
+        start('h2').add('Attributes').end().
         start('img').attr('src', '../u2/Dragon.png').end().
         br().
         start('img').attrs({src: '../u2/Dragon.png', width: 60, height: 60}).end().
+
+        start('h2').add('Start / Tag').end().
         start({class: 'foam.u2.TextField'}).end().
         tag({class: 'foam.u2.CheckBox'}).
+
+        start('h2').add('Attributes').end().
         start('div', {id: 123}).
           add('Inspect Element to See my ID.').
         end().
+
+        start('h2').add('Tooltip').end().
         start('div', {tooltip: 'My tooltip'}).
           add('Hover for Tooltip!').
         end().
-        br().
+
+        start('h2').add('Conditionals').end().
         add('Flag: ', this.FLAG, ' ', this.FLAG.__, ' ', this.FLIP).
         br().add(this.flag$).br().
         start().show(this.flag$).add('show if flag is true').end().
@@ -112,10 +120,13 @@ foam.CLASS({
           this.add('Added if(else) flag is false');
         }).
         add(this.flag$.map(function (f) {
+          // Note: Use self.E() instead of this.E() because 'this' is the slot
           return f ?
             self.E().add('Added dynamically if true') :
             self.E().add('Added dynamically if false');
         })).
+
+        start('h2').add('Looping').end().
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
           call(function() {
