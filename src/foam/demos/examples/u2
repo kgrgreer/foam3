@@ -137,7 +137,7 @@ foam.CLASS({
         // Create a named view, so we can access it later
         start('textarea', {}, this.namedView$).add('Dynamic Content in named view.\n').attrs({cols:80, rows:10}).end().
         br().
-        add(this.ADD_CONTENT_TO_VIEW).
+        add(this.ADD_CONTENT_TO_VIEW, ' ', this.REMOVE_CONTENT).
 
         start('h2').add('Events').end().
         start('u').on('click', () => alert('inline listener')).add('inline listener').end().
@@ -286,6 +286,9 @@ foam.CLASS({
       code: function addContent() {
         this.namedView.add('Add content!\n');
       }
+    },
+    function removeContent() {
+      this.namedView.removeAllChildren();
     }
   ],
 
