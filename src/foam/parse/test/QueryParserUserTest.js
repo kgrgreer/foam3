@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.parse',
+  package: 'foam.parse.test',
   name: 'QueryParserUserTest',
   extends: 'foam.nanos.test.Test',
   
@@ -17,6 +17,7 @@ foam.CLASS({
   'foam.nanos.auth.User',
   'foam.mlang.predicate.Nary',
   'foam.mlang.predicate.Predicate',
+  'foam.parse.*',
   'java.util.Date',
   'java.text.SimpleDateFormat',
   'java.util.TimeZone'

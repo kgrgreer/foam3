@@ -1,5 +1,92 @@
+## U2/U3
+##  All Features
+An example which shows all (most) U2 features.
+--
+foam.CLASS({
+  name: 'AllFeatures',
+  extends: 'foam.u2.Controller',
 
-## U3
+  css: `
+    << {
+      border: 1px solid black;
+      padding: 4px;
+    }
+
+    <<pinkish {
+      background: pink;
+    }
+  `,
+
+  properties: [
+    { class: 'String', name: 'firstName', value: 'John' },
+    { class: 'String', name: 'lastName',  value: 'Doe'  },
+    { class: 'Boolean', name: 'isReadOnly' }
+
+  ],
+
+  methods: [
+    function render() {
+      this.
+      addClass(this.myClass()).
+      start('p').
+        start('h1').add('Title').end().
+        start('u').on('click', () => alert('inline listener')).add('inline listener').end().
+        add(', ').
+        start('u').on('click', () => alert('named listener')).add('named listener').end().
+        br().
+        br().
+        start().
+          addClass(this.myClass('pinkish')).
+          add('A styled pink section.').
+        end().
+        br().
+        start().
+          style({background: 'lightblue'}).
+          add('A styled blue section.').
+        end().
+        start('img').attr('src', '../u2/Dragon.png').end().
+        br().
+        start('img').attrs({src: '../u2/Dragon.png', width: 60, height: 60}).end().
+        start({class: 'foam.u2.TextField'}).end().
+        tag({class: 'foam.u2.CheckBox'}).
+        start('div', {id: 123}).
+          add('Inspect Element to See my ID.').
+        end().
+        start('div', {tooltip: 'My tooltip'}).
+          add('Hover for Tooltip!').
+        end().
+        add('ReadOnly: ', this.isReadOnly$).
+        br().
+        add('First Name:').
+        start(this.FIRST_NAME, {mode$: this.isReadOnly$.map(m => { return m ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW; })}).end().
+        br().
+        add(' Last Name:').
+        start(this.LAST_NAME, {controllerMode$: this.isReadOnly$.map(m => { return m ? foam.u2.ControllerMode.VIEW : foam.u2.ControllerMode.EDIT; })}).end().
+        br().
+        add(this.READ_ONLY).
+      end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'readOnly',
+      code: function() {
+        this.isReadOnly = true;
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'onClick',
+      code: function() { alert('onClick listener'); }
+    }
+  ]
+});
+
+tag({class: 'AllFeatures'});
+
 ##  Background
 U3 is FOAM's native UI library.
 It is named U3 because it is FOAM's third UI library.
@@ -24,7 +111,7 @@ All 32 components extend foam.u2.Element, which loosely modelled after the DOM <
 add('testing');
 
 ##   U3 vs. Real DOM
-The first example creates a ul tag with 100 li children using the browser's build-in DOM API.
+The first example creates a ul tag with 10 li children using the browser's build-in DOM API.
 The second example does the same thing using U3. Notice how the two examples are very similar.
 --
 console.profile('p1');
@@ -37,7 +124,7 @@ function test1() {
     node.appendChild(li);
   }
   start().call(function() { this.element_.appendChild(node); });
-  log('DOM', performance.now() - startTime);
+  log('DOM ', performance.now() - startTime);
 }
 test1();
 console.profileEnd('p1');
@@ -51,7 +138,7 @@ function test2() {
     node.start('li').add("text" + i).end();            // Append an <li>
 
   add(node);
-  log('U3', performance.now() - startTime);
+  log('U3 ', performance.now() - startTime);
 }
 test2()
 console.profileEnd('p2');
@@ -155,10 +242,9 @@ start('div').hide().show().add('show()').end();         // will be shown
 
 ##   focused / focus() / blur()
 --
-// TODO: update to use data when working
-start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end();
+start('input').attrs({value: 'not focused'}).end();
 add(' ');
-start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
+start('input').attrs({value: 'focused'}).focus().end();
 
 ##   Creating a Component
 <ol>
@@ -216,6 +302,23 @@ foam.CLASS({
 tag({class:'ExampleElement'});
 
 ##    render()
+--
+foam.CLASS({
+  name: 'Sample',
+  extends: 'foam.u2.Element',
+
+  methods: [
+    function render() {
+      this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
+      start('img').attr('src','/foam3/src/foam/u2/images/foam_red.png').end().
+      tag('hr').
+      start('center').add('FOAM Logo').end();
+    }
+  ]
+});
+
+tag({class: 'Sample'});
+
 ##   Keyboard Shortcuts
 --
 foam.CLASS({
@@ -240,7 +343,19 @@ foam.CLASS({
 var k = KeyboardTest.create();
 tag(k);
 
-##   el()
+##   el() / .element_
+Sometimes it is necessary to access the real underlying DOM node.
+--
+// U2 or U3
+var a = start('b');
+a.el().then(el => el.innerHTML = 'foobar');
+
+start().br().end();
+
+// U3
+var a = start('b');
+a.element_.innerHTML = 'foobar2';
+
 ##   id
 You can set an element's id, but keep in mind that it isn't normally a good idea to do so because
 it prevents you from instantiating two instances of your component.
@@ -269,7 +384,7 @@ no-breaking space, the same as adding &amp;nbsp; to your html
 start('div')
   .style({width: 100})
   .add('Breaking space').br()
-  .add('NonBreaking').nbsp().add('space').br()
+  .add('NonBreaking').nbsp().add('space').br().
 end();
 ##    remove()
 ##    add()
@@ -448,7 +563,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ { background: pink; }
-    ^subsection { background: green; }
+    ^subsection { background: lightblue; }
   `,
   classes: [
     {
