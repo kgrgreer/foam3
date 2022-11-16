@@ -169,9 +169,10 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
-      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles) { 
-          if ( isMultipleFiles ) return true;
-          return ! hasFiles;
+      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles, controllerMode) {
+          let cm = controllerMode != foam.u2.ControllerMode.VIEW;
+          if ( isMultipleFiles && cm ) return true;
+          return ! hasFiles && cm;
         });
 
       this.start('input')
@@ -207,7 +208,7 @@ foam.CLASS({
               .end();
             }))
         .end()
-        .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
+        .start().hide(true).addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
           .start()
             .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
             .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()

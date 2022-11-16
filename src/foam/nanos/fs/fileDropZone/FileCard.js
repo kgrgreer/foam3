@@ -99,7 +99,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'canBeRemoved',
-      value: true
+      expression: function(controllerMode) { return controllerMode != foam.u2.ControllerMode.VIEW; }
     },
     {
       name: 'index'
