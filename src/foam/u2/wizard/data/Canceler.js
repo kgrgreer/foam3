@@ -7,6 +7,7 @@
 foam.INTERFACE({
   package: 'foam.u2.wizard.data',
   name: 'Canceler',
+  proxy: true,
   nullStrategy: true,
 
   methods: [
