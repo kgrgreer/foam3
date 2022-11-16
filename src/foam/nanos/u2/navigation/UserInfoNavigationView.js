@@ -81,6 +81,7 @@ foam.CLASS({
     async function render() {
       var self = this;
       var X    = this.__subContext__;
+      this.__subContext__.register(foam.u2.view.MenuView, 'foam.u2.view.MenuView');
 
       var mainLabel = this.E()
         .addClass(this.myClass('label-container'))

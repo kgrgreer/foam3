@@ -71,6 +71,7 @@ foam.CLASS({
     }
     ^logo {
       flex: 1;
+      padding: 0 16px;
     }
     ^menu-container.foam-nanos-menu-VerticalMenu {
       padding: 0px;

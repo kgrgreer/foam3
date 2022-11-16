@@ -50,6 +50,9 @@ foam.CLASS({
     ^menuControl{
       position: absolute;
     }
+    ^components-container^logo-adjust {
+      gap: 16px;
+    }
     ^logo {
       flex: 1;
       justify-content: center;
@@ -94,6 +97,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass(this.myClass('components-container'))
           // Menu Open/Close
+          .addClass(this.myClass('logo-adjust'))
           .startContext({ data: this })
             .start(this.MENU_CONTROL, { themeIcon: 'hamburger', buttonStyle: 'TERTIARY', size: 'SMALL' })
               .addClass(this.myClass('menuControl'))
