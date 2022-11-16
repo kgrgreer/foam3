@@ -158,7 +158,7 @@ foam.CLASS({
       color: $tabPrimaryColor;
       display: flex;
       justify-content: center;
-      padding: 12px 24px;
+      padding: 8px 12px;
       flex: 1 1 0;
     }
     ^tab:hover {
