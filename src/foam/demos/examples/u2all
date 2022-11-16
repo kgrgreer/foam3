@@ -122,6 +122,22 @@ foam.CLASS({
       name: 'hidden',
       value: 'testing...',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'maybeDisabled',
+      value: 'testing...',
+      visibility: function(flag) {
+        return flag ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+      }
+    },
+    {
+      class: 'String',
+      name: 'maybeHidden',
+      value: 'testing...',
+      visibility: function(flag) {
+        return flag ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     }
   ],
 
@@ -270,7 +286,9 @@ foam.CLASS({
         add(" Doesn't work:", this.user.HAVE_BIRTHDAY). // Won't work because wrong 'data' in context
 
         start('h2').add('Visibility').end().
-        add(this.READ_WRITE.__, this.READ_ONLY.__, this.DISABLED.__, this.HIDDEN.__).
+        add(this.READ_WRITE.__, this.READ_ONLY.__, this.DISABLED.__, this.HIDDEN.__, this.MAYBE_DISABLED.__, this.MAYBE_HIDDEN.__).
+        br().
+        add(this.FLIP).
 
         start('h2').add('DetailView').end().
         // Simpler than adding all of the properties yourself, just use a DetailView
