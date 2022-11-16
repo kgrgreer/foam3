@@ -66,6 +66,7 @@ foam.CLASS({
   properties: [
     { class: 'String',  name: 'firstName', value: 'John' },
     { class: 'String',  name: 'lastName',  value: 'Doe'  },
+    { class: 'String',  name: 'testField' },
     { class: 'Boolean', name: 'flag' },
     'namedView',
     {
@@ -270,6 +271,11 @@ foam.CLASS({
           }).
         end().
 
+        start('h2').add('onKey').end().
+        add('value: ').add(this.testField$).br().
+        add('OnKey: false - ').tag(this.TEST_FIELD).
+        add('OnKey: true - ').tag(this.TEST_FIELD, {onKey: true}).
+
         start('h2').add('Actions').end().
         add(this.FLAG.__).
         add(this.FLIP, this.ENABLE, this.DISABLE).
@@ -322,7 +328,6 @@ foam.CLASS({
           start('li').add("tableCellFormatter's").end().
           start('li').add('Menus').end().
           start('li').add('Search').end().
-          start('li').add('onKey').end().
           start('li').add('registerElement').end().
           start('li').add('el() / element_').end().
           start('li').add('CView Integration').end().
