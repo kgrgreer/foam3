@@ -313,25 +313,31 @@ foam.CLASS({
         start('h2').add('DAOBrowserView').end().
         //tag({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
 
-        start('h2').add('Future').end().
-        add('Advanced topics to be covered in the future:').
-        start('ol').
-          start('li').add('Validation').end().
-          start('li').add('i18n').end().
-          start('li').add('a11y').end().
-          start('li').add('Borders').end().
-          start('li').add('Themes').end().
-          start('li').add('Stacks').end().
-          start('li').add('Sections + Columns').end().
-          start('li').add('Mementos').end().
-          start('li').add('Permissions').end().
-          start('li').add("tableCellFormatter's").end().
-          start('li').add('Menus').end().
-          start('li').add('Search').end().
-          start('li').add('registerElement').end().
-          start('li').add('el() / element_').end().
-          start('li').add('CView Integration').end().
-        end().
+        // No need to embed a whole DOM tree in one render() method, it can be broken
+        // up to multiple methods:
+        call(this.renderFutureList).
+      end();
+    },
+
+    function renderFutureList() {
+      this.start('h2').add('Future').end().
+      add('Advanced topics to be covered in the future:').
+      start('ol').
+        start('li').add('Validation').end().
+        start('li').add('i18n').end().
+        start('li').add('a11y').end().
+        start('li').add('Borders').end().
+        start('li').add('Themes').end().
+        start('li').add('Stacks').end().
+        start('li').add('Sections + Columns').end().
+        start('li').add('Mementos').end().
+        start('li').add('Permissions').end().
+        start('li').add("tableCellFormatter's").end().
+        start('li').add('Menus').end().
+        start('li').add('Search').end().
+        start('li').add('registerElement').end().
+        start('li').add('el() / element_').end().
+        start('li').add('CView Integration').end().
       end();
     }
   ],
