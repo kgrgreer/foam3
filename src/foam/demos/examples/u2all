@@ -331,8 +331,20 @@ foam.CLASS({
 
         // No need to embed a whole DOM tree in one render() method, it can be broken
         // up to multiple methods:
+        call(this.renderSeeAlso).
+
         call(this.renderFutureList).
       end(); // Notice how this is the end of the first real line of code in the render() method.
+    },
+
+    function renderSeeAlso() {
+    this.start('h2').add('See Also').end().
+    add('Advanced topics covered elsewhere:').
+    start('ol').
+      start('li').start('a').attrs({href: '/foam3/src/foam/demos/u2/AllViews.html'}).add('All Views').end().end().
+      start('li').start('a').attrs({href: 'http://localhost:8080/foam3/src/foam/demos/u2/Border.html'}).add('Borders').end().end().
+      start('li').start('a').attrs({href: 'http://localhost:8080/foam3/src/foam/demos/u2/Visibility.html'}).add('Visibility').end().end().
+    end();
     },
 
     function renderFutureList() {
@@ -342,7 +354,6 @@ foam.CLASS({
         start('li').add('Validation').end().
         start('li').add('i18n').end().
         start('li').add('a11y').end().
-        start('li').add('Borders').end().
         start('li').add('Themes').end().
         start('li').add('Stacks').end().
         start('li').add('Sections + Columns').end().
