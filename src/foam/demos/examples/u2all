@@ -293,14 +293,15 @@ foam.CLASS({
         // Since this class is a Controller, and exports itself as 'data', we can bind its
         // own properties easily:
         add(this.STRING_FIELD, this.INT_FIELD, this.DATE_FIELD, this.FLAG).
+        // Or, wrap the views in PropertyBorders to add extra functionality:
+        add(this.STRING_FIELD.__, this.INT_FIELD.__, this.DATE_FIELD.__, this.FLAG.__).
+        // Or, get the advantages of a PropertyBorder but change the default View
+        tag(this.INT_FIELD.__, { config: { view: { class: 'foam.u2.RangeView', minValue: 0, maxValue: 5, onKey: true}, label: 'Range' } }).
         br().
         // But if we want to bind a different object, we need to create a sub-context
         // with that object as data:
         startContext({data: this.user}).
           // Note that I can add properties from either the object or the class
-          add(this.user.ID, this.user.FIRST_NAME, SimpleUser.LAST_NAME, SimpleUser.AGE).
-          br().
-          br().
           add(this.user.ID.__, this.user.FIRST_NAME.__, SimpleUser.LAST_NAME.__, SimpleUser.AGE.__).
           add(this.user.HAVE_BIRTHDAY).
         endContext().
