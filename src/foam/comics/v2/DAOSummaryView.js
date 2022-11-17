@@ -108,7 +108,7 @@ foam.CLASS({
           : allActions.length >= 1
             ? allActions
             : null;
-        if ( acArray.length ) {
+        if ( acArray && acArray.length ) {
           let res;
           acArray.forEach(a => {
             var aSlot = a.createIsAvailable$(this.__subContext__, data);
