@@ -272,7 +272,7 @@ foam.CLASS({
         end().
         add('Count: ', this.INT_FIELD).
         tag(this.intField$.map(function (count) {
-          return self.E('b').repeat(1, count, function() { this.add(' * '); });
+          return self.E('b').style({color: 'gold'}).repeat(1, count, function() { this.add(' ★ '); });
         })).
 
         start('h2').add('onKey').end().
@@ -285,7 +285,12 @@ foam.CLASS({
         add(this.FLIP, this.ENABLE, this.DISABLE).
 
         start('h2').add('startContext() / endContext() / Property Binding').end().
+        // Since this class is a Controller, and exports itself as 'data', we can bind its
+        // own properties easily:
         add(this.STRING_FIELD, this.INT_FIELD, this.DATE_FIELD, this.FLAG).
+        br().
+        // But if we want to bind a different object, we need to create a sub-context
+        // with that object as data:
         startContext({data: this.user}).
           // Note that I can add properties from either the object or the class
           add(this.user.ID, this.user.FIRST_NAME, SimpleUser.LAST_NAME, SimpleUser.AGE).
