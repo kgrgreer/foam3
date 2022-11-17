@@ -64,9 +64,9 @@ foam.CLASS({
   `,
 
   properties: [
-    { class: 'String',  name: 'firstName', value: 'John' },
-    { class: 'String',  name: 'lastName',  value: 'Doe'  },
-    { class: 'String',  name: 'testField' },
+    { class: 'String',  name: 'stringField', value: 'Testing' },
+    { class: 'Int',     name: 'intField',  value: 5  },
+    { class: 'Date',    name: 'dateField' },
     { class: 'Boolean', name: 'flag' },
     'namedView',
     {
@@ -270,17 +270,22 @@ foam.CLASS({
             end();
           }).
         end().
+        add('Count: ', this.INT_FIELD).
+        tag(this.intField$.map(function (count) {
+          return self.E('b').repeat(1, count, function() { this.add(' * '); });
+        })).
 
         start('h2').add('onKey').end().
         add('value: ').add(this.testField$).br().
-        add('OnKey: false - ').tag(this.TEST_FIELD).
-        add('OnKey: true - ').tag(this.TEST_FIELD, {onKey: true}).
+        add('OnKey: false - ').tag(this.STRING_FIELD).
+        add('OnKey: true - ').tag(this.STRING_FIELD, {onKey: true}).
 
         start('h2').add('Actions').end().
         add(this.FLAG.__).
         add(this.FLIP, this.ENABLE, this.DISABLE).
 
         start('h2').add('startContext() / endContext() / Property Binding').end().
+        add(this.STRING_FIELD, this.INT_FIELD, this.DATE_FIELD, this.FLAG).
         startContext({data: this.user}).
           // Note that I can add properties from either the object or the class
           add(this.user.ID, this.user.FIRST_NAME, SimpleUser.LAST_NAME, SimpleUser.AGE).
@@ -316,7 +321,7 @@ foam.CLASS({
         // No need to embed a whole DOM tree in one render() method, it can be broken
         // up to multiple methods:
         call(this.renderFutureList).
-      end();
+      end(); // Notice how this is the end of the first real line of code in the render() method.
     },
 
     function renderFutureList() {
