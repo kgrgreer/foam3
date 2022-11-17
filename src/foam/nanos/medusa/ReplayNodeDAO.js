@@ -136,7 +136,8 @@ foam.CLASS({
         return max;
       }
 
-      obj = getJournal().cmd(x, obj);
+      var result = getJournal().cmd(x, obj);
+      if ( result != null ) return  result;
 
       return getDelegate().cmd_(x, obj);
       `

@@ -96,8 +96,8 @@ foam.CLASS({
       name: 'cmd_',
       javaCode: `
       Object cmd = getDelegate().cmd_(x, obj);
-      if ( cmd != null ) {
-        return submit(x, cmd, DOP.CMD);
+      if ( ! DAO.PURGE_CMD.equals(obj) ) {
+        submit(x, obj, DOP.CMD);
       }
       return cmd;
       `
