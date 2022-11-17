@@ -164,10 +164,14 @@ foam.CLASS({
         br().
         add('or ', 'multiple ', 'values ', 'all ', 'at ', 'once').
         br().
+        add('Escaped: <script>doSomethingBad();</script><img src="someplaceBad">').
+        br().
         add(1, ' ', 3.14, ' ', true, ' ', false).
         add([1,2,3,4,5]).
         br().
-        add(Promise.resolve('A resolved promise.')).
+        add(Promise.resolve('A resolved promise')).
+        br().
+        add('A non-breaking space (&nbsp;) here ->').nbsp().add('<-').
 
         start('h2').add('Start / Tag').end().
         start('b').add('bold text').end().
@@ -270,7 +274,8 @@ foam.CLASS({
             end();
           }).
         end().
-        add('Count: ', this.INT_FIELD).
+        br().
+        add('Stars: ').tag({class: foam.u2.RangeView, minValue: 1, maxValue: 5, data$: this.intField$}).
         tag(this.intField$.map(function (count) {
           return self.E('b').style({color: 'gold'}).repeat(1, count, function() { this.add(' ★ '); });
         })).
