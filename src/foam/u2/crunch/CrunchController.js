@@ -337,6 +337,7 @@ foam.CLASS({
       let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
         intercept: opt_intercept,
+        wizardController: wizardController,
         rootCapability: capabilityId,
         wizardlets: []
       });
@@ -364,7 +365,10 @@ foam.CLASS({
           await targetDAO.put(capable);
         });
       }
-
+      for ( let i = 0; i < x.wizardlets.length; i++ ) {
+        let w = x.wizardlets[i];
+        w.wizardController = wizardController;
+      }
       // Resolve to current object - inline intercepts cannot provide
       // the return object as the wizard must continue.
       if ( opt_intercept ) opt_intercept.resolve(capable);
