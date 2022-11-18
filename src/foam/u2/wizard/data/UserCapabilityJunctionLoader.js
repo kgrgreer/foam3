@@ -4,12 +4,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'UserCapabilityJunctionLoader',
   implements: [ 'foam.u2.wizard.data.Loader' ],
+
   documentation: `
-    todo
+    Will load ucj data into wizardlet.
   `,
 
   imports: [
@@ -22,15 +23,9 @@
   requires: [
     'foam.u2.borders.LoadingLevel'
   ],
-  properties: [
-    // {
-    //   class: 'String',
-    //   name: 'wizardletId'
-    // }
-  ],
+
   methods: [
     async function load(data) {
-      
       const wizardlet = await this.wizardlets.find(w => w.id === this.wizardletId);
       if ( wizardlet.loading ) return;
       wizardlet.loading = true;

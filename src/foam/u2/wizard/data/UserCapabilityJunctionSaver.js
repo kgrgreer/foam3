@@ -4,36 +4,29 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'UserCapabilityJunctionSaver',
   implements: [ 'foam.u2.wizard.data.Saver' ],
+
   documentation: `
-    todo
+    Will save ucj data from wizardlets
   `,
 
   imports: [
     'subject',
-    'wizardlets',
     'crunchService',
     'wizardletId',
+    'wizardlets'
   ],
 
   requires: [
     'foam.u2.borders.LoadingLevel'
   ],
-  properties: [
-    // {
-    //   class: 'String',
-    //   name: 'wizardletId'
-    // }
-  ],
+
   methods: [
     async function save(data) {
       const wizardlet = await this.wizardlets.find(w => w.id === this.wizardletId);
-      // if ( wizardlet.loading ) {
-      //   return this.cancelSave_(wizardlet);
-      // }
       if ( ! wizardlet.isAvailable ) return this.cancelSave_(wizardlet);
       await this.save_(wizardlet, data);
       return data;
