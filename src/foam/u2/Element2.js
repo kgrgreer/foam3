@@ -13,11 +13,9 @@ TODO:
 
 /*
 PORTING U2 to U3:
-  - rename initE() to render()
   - when setting nodeName value, set to lower-case
     ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
-  - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
   - replace unload() with remove()
   - replace this.sub('onunload') with this.onDetach()
@@ -132,13 +130,9 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Node',
 
-  imports: [
-    'document'
-  ],
+  imports: [ 'document' ],
 
-  properties: [
-    'element_'
-  ],
+  properties: [ 'element_' ],
 
   methods: [
     function toE() { return this; },
@@ -192,22 +186,31 @@ foam.CLASS({
   listeners: [
     {
       name: 'update',
-      isFramed: true,
+//      isFramed: true,
       code: function() {
-        var val = this.slot.get();
-        var e;
-        if ( val === undefined || val === null ) {
-          e = foam.u2.Text.create({}, this);
-        } else if ( this.isLiteral(val) ) {
-          e = foam.u2.Text.create({text: val}, this);
-        } else if ( foam.u2.Element.isInstance(val) ) {
-          e = val;
-        } else {
-          console.log('Unknown slot type: ', typeof val);
-//          debugger;
-        }
-        this.element_.parentNode.replaceChild(e.element_, this.element_);
-        this.element_ = e.element_;
+        var update_ = (val) => {
+          var e;
+          if ( val === undefined || val === null ) {
+            e = foam.u2.Text.create({}, this);
+          } else if ( this.isLiteral(val) ) {
+            e = foam.u2.Text.create({text: val}, this);
+          } else if ( foam.u2.Element.isInstance(val) ) {
+            e = val;
+          } else if ( foam.Array.isInstance(val) ) {
+            e = foam.u2.Element.create({nodeName:'span'}, this);
+            e.add.apply(e, val);
+          } else if ( val.then ) {
+            val.then(e => update_(e));
+            return;
+          } else {
+            console.log('Unknown slot type: ', typeof val);
+            debugger;
+          }
+          this.element_.parentNode.replaceChild(e.element_, this.element_);
+          this.element_ = e.element_;
+        };
+
+        update_(this.slot.get());
       }
     }
   ]
@@ -767,7 +770,7 @@ foam.CLASS({
   methods: [
     // from state
 
-    // TODO: remove
+    // TODO: for backward compatibility with U2, remove when all code ported
     function el() {
       return Promise.resolve(this.el_());
     },
@@ -1480,6 +1483,13 @@ foam.CLASS({
     //   return this.insertAt_(children, reference, true);
     // },
 
+    function setChildren() {
+      this.removeAllChildren();
+      for ( var i = 0 ; i < arguments.length ; i++ ) {
+        this.add(arguments[0]);
+      }
+    },
+
     function removeAllChildren() {
       this.element_.innerHTML = '';
       for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
@@ -1490,9 +1500,14 @@ foam.CLASS({
     },
 
     function repeat(s, e, f) {
-      // TODO: support descending
-      for ( var i = s ; i <= e ; i++ ) {
-        f.call(this, i);
+      if ( s <= e ) {
+        for ( var i = s ; i <= e ; i++ ) {
+          f.call(this, i);
+        }
+      } else {
+        for ( var i = s ; i >= e ; i-- ) {
+          f.call(this, i);
+        }
       }
       return this;
     },

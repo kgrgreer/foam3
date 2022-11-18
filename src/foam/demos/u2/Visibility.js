@@ -389,8 +389,8 @@ foam.CLASS({
           .add('Control Permissions')
         .end()
         .startContext({ data: this })
-          .start().add(this.USER_HAS_READ_PERMISSION).end()
-          .start().add(this.USER_HAS_READ_WRITE_PERMISSION).end()
+          .start().add(this.USER_HAS_READ_PERMISSION.__).end()
+          .start().add(this.USER_HAS_READ_WRITE_PERMISSION.__).end()
         .end();
     }
   ]

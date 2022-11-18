@@ -523,6 +523,7 @@ foam.POM({
     { name: "analytics/DemoChartView",                                                    flags: "js" },
     { name: "analytics/Foldable",                                                         flags: "js|java" },
     { name: "analytics/PostToWindow",                                                     flags: "web" },
+    { name: "analytics/test/AnalyticEventDAOSecurityTest",                                flags: "js|java" },
     { name: "test/ClientEchoService",                                                     flags: "js" },
     { name: "crunch/crunchtest/FakeTestObject",                                           flags: "js|java" },
     { name: "crunch/Renewable",                                                           flags: "js|java" },
