@@ -71,16 +71,6 @@ foam.CLASS({
     },
     {
       class: 'foam.comics.v2.CannedQuery',
-      label: 'All Expirable',
-      predicateFactory: function(e) {
-        return e.NEQ(
-          foam.nanos.crunch.UserCapabilityJunction.EXPIRY,
-          null
-        );
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
       label: 'Renewable',
       predicateFactory: function(e) {
         return e.EQ(
