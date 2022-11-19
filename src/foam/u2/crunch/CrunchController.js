@@ -365,6 +365,7 @@ foam.CLASS({
           await targetDAO.put(capable);
         });
       }
+      // TODO: choose better location for this or ensure it's in context
       for ( let i = 0; i < x.wizardlets.length; i++ ) {
         let w = x.wizardlets[i];
         w.wizardController = wizardController;
