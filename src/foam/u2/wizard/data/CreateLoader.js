@@ -19,7 +19,7 @@ foam.CLASS({
       name: 'spec',
       factory: function(){
         return {
-          class: this.wizardletOf.id
+          class: this.wizardletOf?.id
         }
       }
     },
