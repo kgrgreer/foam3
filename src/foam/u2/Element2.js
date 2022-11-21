@@ -394,12 +394,12 @@ foam.CLASS({
         var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
         if ( ! map[cls.id] ) {
           map[cls.id] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       } else {
         if ( ! installedStyles[this.$UID] ) {
           installedStyles[this.$UID] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       }
     },
@@ -446,14 +446,14 @@ foam.CLASS({
       };
     },
 
-    function expandCSS(cls, text) {
+    function expandCSS(cls, text, ctx) {
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^/<< shorthand on the CSS. */
       // TODO: Parse and validate the CSS.
       // TODO: Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
+      text = text.replace(/(<<|\^)(.)/g, function(match, _, next) {
         var c = next.charCodeAt(0);
         // Check if the next character is an uppercase or lowercase letter,
         // number, - or _. If so, add a - because this is a modified string.
@@ -465,6 +465,7 @@ foam.CLASS({
 
         return base + next;
       });
+      return foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]
 });
