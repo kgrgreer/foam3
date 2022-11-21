@@ -90,6 +90,7 @@ foam.CLASS({
             this.E().start()
               .addClasses([self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub')])
               .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: data$currentWizardlet.subTitle }))
+//              .add(data$currentWizardlet.subTitle)
             .end() : null
         }))
         .start(this.contentsView, { data: this.data })
