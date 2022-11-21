@@ -49,7 +49,7 @@
       .on('click', this.onClick);
     },
     function addContent(self) {
-      this.add(self.label);
+      this.add(self.label$);
     }
   ]
 });

@@ -16,7 +16,7 @@ foam.CLASS({
     ^{
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.8rem;
       justify-content: flex-start;
     }
     ^vertical {
@@ -28,9 +28,12 @@ foam.CLASS({
       object-fit: contain;
     }
     ^svgIcon svg {
-      height: 1em;
-      width: 1em;
+      height: 1.15em;
+      width: 1.15em;
       fill: currentColor;
+    }
+    ^svgIcon svg {
+      font-size: initial;
     }
 
     /* SVGs outside themeGlyphs may have their own heights and widths,
@@ -58,6 +61,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'vertical'
+    },
+    {
+      class: 'String',
+      name: 'labelClass'
     }
   ],
   methods: [
@@ -74,7 +81,7 @@ foam.CLASS({
             .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
           .end();
       }
-      this.addClass('h600').add(this.label$);
+      this.start().addClass(this.labelClass$).add(this.label$).end();
     }
   ]
 });

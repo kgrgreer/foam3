@@ -60,6 +60,7 @@ foam.CLASS({
     async function render() {
       var self = this;
       var X    = this.__subContext__;
+      this.__subContext__.register(foam.u2.view.MenuView, 'foam.u2.view.MenuView');
 
       this
       .addClass(this.myClass())

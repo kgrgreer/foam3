@@ -14,10 +14,11 @@
 
         methods: [
           function render() {
-            this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
-            start('img').attr('src',' https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png').end().
-            tag('hr').
-            start('center').add('Google Logo').end();
+            this.start().setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
+              start('img').attr('src', '/foam3/src/foam/u2/images/foam_red.png').end().
+              tag('hr').
+              start('center').add('FOAM Logo').end().
+            end();
           }
         ]
       });
@@ -26,9 +27,9 @@
 
   <body>
     <div id="123" class="chapter" style="padding:4px" onClick="alert('clicked')">
-      <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png">
+      <img src="/foam3/src/foam/u2/images/foam_red.png">
       <hr>
-      <center>Google Logo</center>
+      <center>FOAM Logo</center>
     </div>
 
     <br><br>

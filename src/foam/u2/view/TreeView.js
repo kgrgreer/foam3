@@ -254,7 +254,7 @@ foam.CLASS({
               icon: self.level === 1 ? self.data.icon : ''
             }).
               enableClass('selected', this.selected_$).
-              // make not be a button so that other buttons can be nested              setNodeName('span').
+              // make not be a button so that other buttons can be nested
               addClass(this.myClass('button')).
             end().
           endContext().
