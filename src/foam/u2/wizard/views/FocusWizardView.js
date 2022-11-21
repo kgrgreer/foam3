@@ -85,10 +85,11 @@ foam.CLASS({
             .end() : null
         }))
         .add(this.slot(function (data$currentWizardlet) {
+        debugger;
           return data$currentWizardlet.subTitle ?
             this.E().start()
               .addClasses([self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub')])
-              .add(data$currentWizardlet.subTitle)
+              .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: data$currentWizardlet.subTitle }))
             .end() : null
         }))
         .start(this.contentsView, { data: this.data })
