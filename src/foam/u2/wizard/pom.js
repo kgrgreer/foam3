@@ -89,6 +89,7 @@ foam.POM({
     { name: "data/LoaderInjectorSaver",                flags: "web" },
     { name: "data/UserCapabilityJunctionSaver",        flags: "web" },
     { name: "data/UserCapabilityJunctionLoader",       flags: "web" },
+    { name: "data/EasySaver",                          flags: "web" },
     { name: "data/MapLoader",                          flags: "web" },
     { name: "event/WizardEvent",                       flags: "web" },
     { name: "event/WizardEventType",                   flags: "web" },
