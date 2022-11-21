@@ -66,7 +66,7 @@ foam.CLASS({
                       'pmDAO',
                       'om1MinuteDAO',
                       'om5MinuteDAO',
-                      'omHouryDAO',
+                      'omHourlyDAO',
                       'omDailyDAO'
                     ])
                   ),

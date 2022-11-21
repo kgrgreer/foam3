@@ -221,60 +221,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'JsLib',
-
-  documentation: 'Axiom to install a JS Library on demand.',
-
-  constants: {
-    LOADED: {} // loaded libraries
-  },
-
-  properties: [
-    {
-      class: 'String',
-      name: 'src'
-    },
-    {
-      name: 'name',
-      factory: function() { return 'JsLib-' + this.src; }
-    },
-    [ 'priority', 20 ]
-  ],
-
-  methods: [
-    function installInProto(proto) {
-      var oldRender = proto.render, self = this;
-
-      proto.render = async function() {
-        await self.installLib();
-        oldRender.apply(this, arguments);
-      }
-    },
-
-    function installLib() {
-      if ( ! document ) return;
-      var installedStyles = document.installedStyles || ( document.installedStyles = {} );
-      if ( ! this.LOADED[this.name] ) {
-        var self = this;
-        this.LOADED[this.name] = new Promise(function(resolve, reject) {
-          var id = foam.next$UID();
-          let e  = document.createElement('script')
-          e.setAttribute('id', id)
-          e.setAttribute('src', self.src)
-          document.body.appendChild(e);
-          e.onload = function() {
-            resolve(true);
-          };
-        });
-      }
-      return this.LOADED[this.name];
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'DefaultValidator',
 
   documentation: 'Default Element validator.',
@@ -303,7 +249,7 @@ foam.CLASS({
     },
 
     function sanitizeText(text) {
-      if ( ! text ) return text;
+      if ( text === null || text === undefined ) return text;
       text = text.toString();
       if ( text.search(/[&<"']/) == -1 ) return text;
       return text.replace(/[&<"']/g, (m) => {
@@ -1207,7 +1153,6 @@ foam.CLASS({
     },
 
     function initTooltip() {
-return;
       if ( this.tooltip ) {
         this.Tooltip.create({target: this, text$: this.tooltip$});
       } else if ( this.getAttribute('title') ) {
@@ -1528,11 +1473,6 @@ return;
       }
     },
 
-    function setNodeName(name) {
-      this.nodeName = name;
-      return this;
-    },
-
     function setID(id) {
       /*
         Explicitly set Element's id.
@@ -1551,11 +1491,6 @@ return;
 
     function nbsp() {
       return this.entity('nbsp');
-    },
-
-    function cssClass(cls) {
-      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
-      return this.addClass(cls);
     },
 
     function addClass(cls) { /* Slot | String */
@@ -1716,7 +1651,7 @@ return;
         return this.add(translation);
       }
       console.warn('Missing Translation Service in ', this.cls_.name);
-      if ( opt_default === undefined ) opt_default = 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = source;
       return this.add(opt_default);
     },
 
@@ -1833,9 +1768,14 @@ return;
     },
 
     function repeat(s, e, f) {
-      // TODO: support descending
-      for ( var i = s ; i <= e ; i++ ) {
-        f.call(this, i);
+      if ( s <= e ) {
+        for ( var i = s ; i <= e ; i++ ) {
+          f.call(this, i);
+        }
+      } else {
+        for ( var i = s ; i >= e ; i-- ) {
+          f.call(this, i);
+        }
       }
       return this;
     },
@@ -2309,6 +2249,7 @@ foam.CLASS({
   refines: 'foam.core.FObject',
   methods: [
     function toE(args, X) {
+      X = X || globalThis.ctrl || foam.__context__;
       return foam.u2.ViewSpec.createView(
         { class: 'foam.u2.DetailView', showActions: true, data: this },
         args, this, X);
@@ -3136,10 +3077,6 @@ foam.CLASS({
 
   css: `
     ^ { padding: 6px 0; }
-    ^ > span > span > .p-semiBold,
-    ^ > span {
-      font-size: 1.2rem;
-    }
   `,
 
   properties: [

@@ -364,14 +364,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'connectionTimeout',
       class: 'Long',
       units: 'ms',
-      value: 20000
+      value: 20000,
+      section: 'details'
     },
     {
       documentation: 'Connection timeout in milliseconds',
       name: 'requestTimeout',
       class: 'Long',
       units: 'ms',
-      value: 10000
+      value: 10000,
+      section: 'details'
     },
     {
       name: 'secure',
@@ -426,6 +428,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     {
       name: 'postButton',
       label: 'Send Request',
+      section: "details",
       code: async function() {
         var req = this.HTTPRequest.create({
           url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.postURL + "&sessionId=" + localStorage.defaultSession,
