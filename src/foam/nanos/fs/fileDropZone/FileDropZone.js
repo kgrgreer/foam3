@@ -212,8 +212,6 @@ foam.CLASS({
               .end();
             }))
         .end()
-
-        // show(this.slot(this.function(showHelp, files) { return showHelp && files.length > 0; })
         .start().addClass(this.myClass('caption-container'))
         .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
           .start()
