@@ -136,11 +136,15 @@ foam.CLASS({
           this.wizardlet.__subContext__.wizardController
       });
 
+      ctx.analyticsAgent?.pub('event', {
+        name: 'VIEW_LOAD_' + this.wizardlet.id,
+        extra: foam.json.stringify(this.customView)
+      });
+
       if ( this.customView ) {
         return this.ViewSpec.createView(
           this.customView, { data$: this.wizardlet.data$ }, this, ctx);
       }
-
 
       ctx.register(
         this.VerticalDetailView,

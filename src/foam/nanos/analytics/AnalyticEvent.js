@@ -8,6 +8,15 @@ foam.CLASS({
   package: 'foam.nanos.analytics',
   name: 'AnalyticEvent',
 
+  implements: [
+    'foam.nanos.auth.Authorizable'
+  ],
+
+  javaImports: [
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -35,13 +44,82 @@ foam.CLASS({
       name: 'traceId'
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.session.Session',
-      name: 'sessionId'
+      class: 'String',
+      name: 'sessionId',
+      preSet: function(old, nu) {
+        return nu && nu.split('-')[0] || nu;
+      },
+      javaPreSet: `
+      if ( ! foam.util.SafetyUtil.isEmpty(val) ) {
+        val = val.split("-")[0];
+      }
+      `
     },
     {
       class: 'Object',
       name: 'objectId'
+    },
+    {
+      class: 'String',
+      name: 'extra'
     }
+  ],
+
+  methods: [
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        // nop - open to write
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if (
+          ! auth.check(x, "user.read." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if (
+          ! auth.check(x, "user.update." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+        if (
+          ! auth.check(x, "user.remove." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
   ]
 })

@@ -20,9 +20,8 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      width: 65vw;
-      padding: 3.2rem 0;
       flex-grow: 1;
+      height: 100%;
       /**
        * Make this work with conditional titles
        * gap: 1.6rem;
@@ -33,16 +32,6 @@ foam.CLASS({
       margin: 0 40pt;
     }
 
-    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^:not(^isFullscreen) {
-        width: 45vw;
-      }
-    }
-    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
-      ^:not(^isFullscreen) {
-        width: 25vw;
-      }
-    }
     ^contents {
       flex: 1;
       min-height: 0;
@@ -71,8 +60,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'viewTitle',
-      expression: function (data$currentWizardlet) {
-        return data$currentWizardlet.title;
+      expression: function (showTitle, data$currentWizardlet) {
+        return showTitle && data$currentWizardlet.showTitle ? data$currentWizardlet.title : '';
       }
     }
   ],
@@ -88,8 +77,8 @@ foam.CLASS({
       const self = this;
       this.addClass()
         .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
-        .add(this.slot(function (showTitle, data$currentWizardlet) {
-          return showTitle && data$currentWizardlet.showTitle ?
+        .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
+          return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
               .addClasses(['h300', self.myClass('wizardletTitle')])
               .add(data$currentWizardlet.title)
@@ -99,7 +88,7 @@ foam.CLASS({
           return data$currentWizardlet.subTitle ?
             this.E().start()
               .addClasses([self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub')])
-              .add(data$currentWizardlet.subTitle)
+              .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: data$currentWizardlet.subTitle }))
             .end() : null
         }))
         .start(this.contentsView, { data: this.data })

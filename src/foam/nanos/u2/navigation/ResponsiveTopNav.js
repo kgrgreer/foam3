@@ -43,12 +43,10 @@ foam.CLASS({
       align-items: center;
       display: flex;
       flex: 1;
+      gap: 8px;
     }
-    ^components-container > * + * {
-      margin-left: 8px;
-    }
-    ^menuControl{
-      position: absolute;
+    ^components-container^logo-adjust {
+      gap: 16px;
     }
     ^logo {
       flex: 1;
@@ -59,9 +57,6 @@ foam.CLASS({
       ^components-container {
         flex: unset;
       }
-      ^menuControl{
-        position: relative;
-      }
       ^logo {
         flex: unset;
         justify-content: flex-start;
@@ -71,8 +66,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'hasNotifictionMenuPermission'
+      name: 'notifications'
     },
     {
       name: 'nodeName',
@@ -83,7 +77,7 @@ foam.CLASS({
   methods: [
     function checkNotificationAccess() {
       this.menuDAO.find('notifications').then(bb=>{
-        this.hasNotifictionMenuPermission = bb;
+        this.notifications = bb;
       });
     },
     function render() {
@@ -93,6 +87,7 @@ foam.CLASS({
         .show(this.loginSuccess$)
         .addClass(this.myClass())
         .start().addClass(this.myClass('components-container'))
+          .addClass(this.myClass('logo-adjust'))
           // Menu Open/Close
           .startContext({ data: this })
             .start(this.MENU_CONTROL, { themeIcon: 'hamburger', buttonStyle: 'TERTIARY', size: 'SMALL' })
@@ -106,17 +101,21 @@ foam.CLASS({
             })
           .end()
         .end()
-        // TODO: Make Responsive
         .add(this.slot(function(displayWidth) {
           if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
             return this.E().addClass(this.myClass('components-container'))
-            .start({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
-              .show(self.hasNotifictionMenuPermission$)
-            .end()
+            .add(self.slot(function(notifications) {
+              if ( ! notifications ) return;
+              return this.E().start(notifications, {
+                label: foam.nanos.u2.navigation.NotificationMenuItem.create({}, self),
+                buttonStyle: 'UNSTYLED'
+              }).show(notifications).end();
+            }))
             .tag({ class: 'foam.nanos.auth.LanguageChoiceView' })
             .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' });
           } else {
-            return this.E();
+            return this.E()
+              .tag({ class: 'foam.nanos.auth.LanguageChoiceView' });
           }
         }));
     }

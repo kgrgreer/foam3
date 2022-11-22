@@ -302,6 +302,9 @@ foam.CLASS({
     {
       name: 'onDAOUpdate',
       isFramed: true,
+      on: [
+        'this.propertyChange.mode'
+      ],
       code: function() {
         var self = this;
         var seq = ++this.seq_;
@@ -353,8 +356,4 @@ foam.CLASS({
       }
     }
   ],
-
-  reactions: [
-    ['', 'propertyChange.mode', 'onDAOUpdate']
-  ]
 });

@@ -223,7 +223,7 @@ foam.CLASS({
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
     {

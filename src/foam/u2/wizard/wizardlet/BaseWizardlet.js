@@ -322,6 +322,13 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'evtExtra',
+      documentation: `
+        Path of wizardlet prop to save to AnalyticEvent.EXTRA
+      `
+    },
+    {
       class: 'Boolean',
       name: 'goNextOnSave',
       value: true,

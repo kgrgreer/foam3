@@ -43,6 +43,10 @@ foam.CLASS({
     {
       name: 'buttonSecondaryBorderColor',
       value: function(e) { return e.LIGHTEN(e.TOKEN('$buttonSecondaryColor'), -40) }
+    },
+    {
+      name: 'buttonPrimaryLightColor',
+      value: function(e) { return e.FROM_HUE(e.TOKEN('$buttonPrimaryColor'), 41, 95) }
     }
   ],
   css: `
@@ -289,6 +293,33 @@ foam.CLASS({
       color: $buttonPrimaryColor;
       fill: $buttonPrimaryColor;
       text-decoration: underline;
+    }
+
+    /* Text */
+
+    ^text{
+      background: none;
+      border: 1px solid transparent;
+      color: $buttonPrimaryColor;
+    }
+
+    ^text svg { fill: $buttonPrimaryColor; }
+
+    ^text:hover:not(:disabled) {
+      background-color: $buttonPrimaryLightColor;
+    }
+
+    ^text:active:not(:disabled) {
+      background-color: $buttonPrimaryLightColor;
+      border-color: $buttonPrimaryColor;
+    }
+
+    ^text:disabled {
+      color: $buttonSecondaryColor$active;
+    }
+
+    ^text:disabled svg {
+      fill: $buttonSecondaryColor$active;
     }
 
     /* Sizes */

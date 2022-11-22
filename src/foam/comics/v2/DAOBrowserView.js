@@ -258,6 +258,8 @@ foam.CLASS({
 
       if ( ! foam.dao.QueryCachingDAO.isInstance(this.data) ) {
         this.data = this.onDetach(foam.dao.QueryCachingDAO.create({ delegate: this.data }));
+      } else {
+        this.data.cache = {};
       }
 
       var self = this;

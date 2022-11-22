@@ -403,6 +403,10 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'preSelectedCannedQuery'
+    },
+    {
+      class: 'String',
+      name: 'redirectMenu'
     }
   ]
 });

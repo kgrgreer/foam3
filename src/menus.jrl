@@ -1,5 +1,7 @@
 // admin
 p({"class":"foam.nanos.menu.Menu","id":"admin","label":"Admin","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"user-config","label":"User Config","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"settings","label":"Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"user-config"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.all-views","label":"All Views","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.demos.u2.AllViews"}},"parent":"admin"})
 p({
   "class":"foam.nanos.menu.Menu",
@@ -234,6 +236,7 @@ p({"class":"foam.nanos.menu.Menu","id":"dashboard-demo","handler":{"class":"foam
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"notifications",
+  "label":"Notifications",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
@@ -282,7 +285,7 @@ p({
       }
     }
   },
-  "parent":"hidden"
+  "parent":"user-config"
 })
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sign-in","label":"Sign in","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.view.LoginView","mode_":"SignIn"}},"parent":"hidden"})
