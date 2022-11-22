@@ -252,7 +252,7 @@ foam.CLASS({
           repeat(1, 10, function(i) { this.add(i, ' '); }).
         end().
         start('div').
-          repeat(10, 1, function(i) { this.add(i, ' '); }).
+          repeat(10, 1, function(i) { this.add(i, ' '); }, true).
         end().
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
@@ -297,7 +297,7 @@ foam.CLASS({
         // Or, wrap the views in PropertyBorders to add extra functionality:
         add(this.STRING_FIELD.__, this.INT_FIELD.__, this.DATE_FIELD.__, this.FLAG.__).
         // Or, get the advantages of a PropertyBorder but change the default View
-        tag(this.INT_FIELD.__, { config: { view: { class: 'foam.u2.RangeView', minValue: 0, maxValue: 5, onKey: true}, label: 'Range' } }).
+        tag(this.INT_FIELD.__, { config: { view: { class: 'foam.u2.RangeView', minValue: 1, maxValue: 5, onKey: true}, label: 'Range' } }).
         br().
         // But if we want to bind a different object, we need to create a sub-context
         // with that object as data:
