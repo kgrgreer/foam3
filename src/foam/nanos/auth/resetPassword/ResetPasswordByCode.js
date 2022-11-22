@@ -61,7 +61,6 @@ foam.CLASS({
     {
       name: 'confirmationPassword',
       section: 'resetPasswordSection'
-
     }
   ],
 
