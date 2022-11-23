@@ -41,9 +41,6 @@ foam.CLASS({
       expression: function (alternateFlow) {
         return alternateFlow.buttonStyle;
       }
-    },
-    // isenabled for alternateflow do not need to
-    // depend on data$canGoNext
-    ['isEnabled', () => true]
+    }
   ]
 })
