@@ -88,6 +88,8 @@ foam.POM({
     { name: "data/InlineTransientSaver",               flags: "web" },
     { name: "data/LoaderInjectorSaver",                flags: "web" },
     { name: "data/MapLoader",                          flags: "web" },
+    { name: "data/HideIfValidSaver",                   flags: "web" },
+    { name: "data/PredicatedSaver",                    flags: "web" },
     { name: "event/WizardEvent",                       flags: "web" },
     { name: "event/WizardEventType",                   flags: "web" },
     { name: "event/WizardErrorHint",                   flags: "web" },
