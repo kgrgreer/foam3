@@ -331,7 +331,8 @@ foam.CLASS({
 
     async function doInlineIntercept(
       wizardController, capable, capabilityId,
-      opt_intercept, flags, opt_x
+      opt_intercept, flags, opt_x,
+      opt_sequenceExtras
     ) {
       let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
@@ -340,7 +341,7 @@ foam.CLASS({
         rootCapability: capabilityId,
         wizardlets: []
       });
-      x = await this.Sequence.create(null, x)
+      const seq = this.Sequence.create(null, x)
         .add(this.CapabilityAdaptAgent)
         .add(this.LoadCapabilitiesAgent)
         .add(this.LoadCapabilityGraphAgent)
@@ -348,7 +349,14 @@ foam.CLASS({
           waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
         })
         .add(this.GraphWizardletsAgent)
-        .execute();
+
+      if ( opt_sequenceExtras ) {
+        for ( const fluentSpec of opt_sequenceExtras ) {
+          fluentSpec.apply(seq);
+        }
+      }
+
+      x = await seq.execute();
 
       // When the last wizardlet of the intercept (entry capability) is
       // saved the Capable will be put in its respective DAO. This also
