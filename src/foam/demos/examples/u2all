@@ -16,7 +16,7 @@ foam.CLASS({
     { class: 'Int',      name: 'id' },
     { class: 'String',   name: 'firstName' },
     { class: 'String',   name: 'lastName' },
-    { class: 'Int',      name: 'age' /*, units: 'years' */},
+    { class: 'Int',      name: 'age' , min: 0, max: 140, units: 'years'},
     // hidden: true means we don't want to display this property in Detail or Table Views
     { class: 'Password', name: 'password', hidden: true }
   ],
@@ -60,6 +60,16 @@ foam.CLASS({
 
     .greenish {
       background: lightgreen;
+    }
+
+    .foam-u2-DetailView {
+      display: contents;
+      float: left;
+      width: 800px;
+    }
+
+    h2 {
+      margin-top: 60px;
     }
   `,
 
@@ -331,8 +341,10 @@ foam.CLASS({
         start('h2').add('DetailView').end().
         // Simpler than adding all of the properties yourself, just use a DetailView
         tag({class: 'foam.u2.DetailView', data: this.user}).
+        br().br().
         // or Simpler, just:
         add(this.user).
+        br().br().
 
         start('h2').add('TableView').end().
         start({class: 'foam.u2.view.TableView', data: this.users}).
@@ -340,7 +352,9 @@ foam.CLASS({
         end().
 
         start('h2').add('DAOList').end().
-        tag({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
+        start({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
+          style({width: '800px'}).
+        end().
 
         start('h2').add('DAOBrowserView').end().
         /*
