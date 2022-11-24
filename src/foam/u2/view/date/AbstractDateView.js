@@ -11,10 +11,7 @@ foam.CLASS({
   properties: [
     {
       class: 'DateTime',
-      name: 'data',
-      postSet: function(o, n){
-        a = 9;
-      }
+      name: 'data'
     },
     {
       class: 'Int',
