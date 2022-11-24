@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   actions: [
-    function haveBirthday() { this.age++ }
+    function haveBirthday() { this.age++; }
   ]
 });
 
@@ -150,7 +150,7 @@ foam.CLASS({
       this.
       // This will match the ^ { ... } CSS rule above.
       addClass(this.myClass()).
-      start('p').
+      start('div').
         start('h2').add('ID').end().
         start('div', {id: 123}).
           add('Inspect Element to See my ID.').
@@ -188,7 +188,7 @@ foam.CLASS({
         start('h2').add('Events').end().
         start('u').on('click', () => alert('inline listener')).add('inline listener').end().
         add(', ').
-        start('u').on('click', () => alert('named listener')).add('named listener').end().
+        start('u').on('click', this.onClick).add('named listener').end().
 
         start('h2').add('CSS').end().
         start().
@@ -282,7 +282,7 @@ foam.CLASS({
         })).
 
         start('h2').add('onKey').end().
-        add('value: ').add(this.testField$).br().
+        add('value: ').add(this.stringField$).br().
         add('OnKey: false - ').tag(this.STRING_FIELD).
         add('OnKey: true - ').tag(this.STRING_FIELD, {onKey: true}).
 
@@ -328,7 +328,12 @@ foam.CLASS({
         tag({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
 
         start('h2').add('DAOBrowserView').end().
-        //tag({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
+        /*
+        TODO: CSS column layout is broken outside of NANOS
+        start({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
+          style({height: '200px', display: 'contents'}).
+        end().
+        */
 
         // No need to embed a whole DOM tree in one render() method, it can be broken
         // up to multiple methods:
