@@ -202,25 +202,29 @@ foam.CLASS({
 
         start('h2').add('CSS').end().
         start().
-          addClass(this.myClass('pinkish')).
-          add('A scoped styled pink section.').
+          style({width: '600px'}).
+          start().
+            addClass(this.myClass('pinkish')).
+            add('A scoped styled pink section.').
+          end().
+          start().
+            addClass('greenish').
+            add('An unscoped styled green section.').
+          end().
+          start().
+            style({background: 'lightblue'}).
+            add('An inline styled blue section.').
+          end().
+          start().
+            enableClass(this.myClass('important'), this.flag$).
+            add('Toggle flag to add ^important CSS class.').
+          end().
+          start().
+            style({background: this.flag$.map(f => f ? 'black' : 'red')}).
+            add('Add style dynamically from a slotl').
+          end().
+          add(this.FLIP).
         end().
-        start().
-          addClass('greenish').
-          add('An unscoped styled green section.').
-        end().
-        start().
-          style({background: 'lightblue'}).
-          add('An inline styled blue section.').
-        end().
-        start().
-          enableClass(this.myClass('important'), this.flag$).
-          add('Toggle flag to add ^important CSS class.').
-        end().add(this.FLIP).
-        start().
-          style({background: this.flag$.map(f => f ? 'black' : 'red')}).
-          add('Add style dynamically from a slotl').
-        end().add(this.FLIP).
 
         start('h2').add('Attributes').end().
         start('img').attr('src', '../u2/Dragon.png').end().
@@ -303,7 +307,8 @@ foam.CLASS({
 
         start('h2').add('Properties').end().
         // There are 4 levels/ways of adding a property value to your DOM:
-        add('Value: ', this.stringField). // just the current value, but doesn't update
+        // just the current value, but doesn't update
+         add('Value: ', this.stringField).
         tag('p').
         // the current value, but updates if the value changes
         add('Slot: ', this.stringField$).
