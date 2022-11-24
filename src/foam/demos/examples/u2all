@@ -256,6 +256,7 @@ foam.CLASS({
         end().
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
+          // You can just use call() and then use any kind of JS loop: for, while, do/while, forEach, etc.
           call(function() {
             for ( var i = 1 ; i <= 5 ; i++ )
               this.start('li').add('Item ' + i).end();
@@ -289,6 +290,20 @@ foam.CLASS({
         start('h2').add('Actions').end().
         add(this.FLAG.__).
         add(this.FLIP, this.ENABLE, this.DISABLE).
+
+        start('h2').add('Properties').end().
+        // There are 4 levels/ways of adding a property value to your DOM:
+        add('Value: ', this.stringField). // just the current value, but doesn't update
+        tag('p').
+        // the current value, but updates if the value changes
+        add('Slot: ', this.stringField$).
+        tag('p').
+        // a view for editing the value
+        add('View: ', this.STRING_FIELD).
+        tag('p').
+        // a view with extra features provided by PropertyBorder, like label, validation text, etc.
+        add('View with PropertyBorder: ', this.STRING_FIELD.__).
+        tag('p').
 
         start('h2').add('startContext() / endContext() / Property Binding').end().
         // Since this class is a Controller, and exports itself as 'data', we can bind its
