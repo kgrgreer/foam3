@@ -41,6 +41,7 @@ foam.POM({
     { name: "controllers/IncrementalWizardController", flags: "web" },
     { name: "views/FlexibleWizardContentsView",        flags: "web" },
     { name: "views/FocusWizardView",                   flags: "web" },
+    { name: "SkipMeView",                              flags: "web" },
     { name: "PathProperty",                            flags: "web" },
     { name: "debug/WizardInspector",                   flags: "web" },
     { name: "AlternateFlow",                           flags: "web" },
