@@ -22,6 +22,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'beforeWizardlet',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       hidden: true,
       documentation: `
         A wizardlet to display before this capability's prerequisites, and only
