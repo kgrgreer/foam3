@@ -1499,12 +1499,12 @@ foam.CLASS({
       return this;
     },
 
-    function repeat(s, e, f) {
+    function repeat(s, e, f, opt_allowReverse) {
       if ( s <= e ) {
         for ( var i = s ; i <= e ; i++ ) {
           f.call(this, i);
         }
-      } else {
+      } else if ( opt_allowReverse ) {
         for ( var i = s ; i >= e ; i-- ) {
           f.call(this, i);
         }

@@ -16,7 +16,7 @@ foam.CLASS({
     { class: 'Int',      name: 'id' },
     { class: 'String',   name: 'firstName' },
     { class: 'String',   name: 'lastName' },
-    { class: 'Int',      name: 'age' /*, units: 'years' */},
+    { class: 'Int',      name: 'age' , min: 0, max: 140, units: 'years'},
     // hidden: true means we don't want to display this property in Detail or Table Views
     { class: 'Password', name: 'password', hidden: true }
   ],
@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   actions: [
-    function haveBirthday() { this.age++ }
+    function haveBirthday() { this.age++; }
   ]
 });
 
@@ -60,6 +60,16 @@ foam.CLASS({
 
     .greenish {
       background: lightgreen;
+    }
+
+    .foam-u2-DetailView {
+      display: contents;
+      float: left;
+      width: 800px;
+    }
+
+    h2 {
+      margin-top: 60px;
     }
   `,
 
@@ -150,7 +160,7 @@ foam.CLASS({
       this.
       // This will match the ^ { ... } CSS rule above.
       addClass(this.myClass()).
-      start('p').
+      start('div').
         start('h2').add('ID').end().
         start('div', {id: 123}).
           add('Inspect Element to See my ID.').
@@ -167,6 +177,7 @@ foam.CLASS({
         add('Escaped: <script>doSomethingBad();</script><img src="someplaceBad">').
         br().
         add(1, ' ', 3.14, ' ', true, ' ', false).
+        br().
         add([1,2,3,4,5]).
         br().
         add(Promise.resolve('A resolved promise')).
@@ -187,29 +198,33 @@ foam.CLASS({
         start('h2').add('Events').end().
         start('u').on('click', () => alert('inline listener')).add('inline listener').end().
         add(', ').
-        start('u').on('click', () => alert('named listener')).add('named listener').end().
+        start('u').on('click', this.onClick).add('named listener').end().
 
         start('h2').add('CSS').end().
         start().
-          addClass(this.myClass('pinkish')).
-          add('A scoped styled pink section.').
+          style({width: '600px'}).
+          start().
+            addClass(this.myClass('pinkish')).
+            add('A scoped styled pink section.').
+          end().
+          start().
+            addClass('greenish').
+            add('An unscoped styled green section.').
+          end().
+          start().
+            style({background: 'lightblue'}).
+            add('An inline styled blue section.').
+          end().
+          start().
+            enableClass(this.myClass('important'), this.flag$).
+            add('Toggle flag to add ^important CSS class.').
+          end().
+          start().
+            style({background: this.flag$.map(f => f ? 'black' : 'red')}).
+            add('Add style dynamically from a slotl').
+          end().
+          add(this.FLIP).
         end().
-        start().
-          addClass('greenish').
-          add('An unscoped styled green section.').
-        end().
-        start().
-          style({background: 'lightblue'}).
-          add('An inline styled blue section.').
-        end().
-        start().
-          enableClass(this.myClass('important'), this.flag$).
-          add('Toggle flag to add ^important CSS class.').
-        end().add(this.FLIP).
-        start().
-          style({background: this.flag$.map(f => f ? 'black' : 'red')}).
-          add('Add style dynamically from a slotl').
-        end().add(this.FLIP).
 
         start('h2').add('Attributes').end().
         start('img').attr('src', '../u2/Dragon.png').end().
@@ -251,10 +266,11 @@ foam.CLASS({
           repeat(1, 10, function(i) { this.add(i, ' '); }).
         end().
         start('div').
-          repeat(10, 1, function(i) { this.add(i, ' '); }).
+          repeat(10, 1, function(i) { this.add(i, ' '); }, true).
         end().
         start('ol').
           // Note: You must use 'function' rather than '=>' syntax to get proper 'this' binding
+          // You can just use call() and then use any kind of JS loop: for, while, do/while, forEach, etc.
           call(function() {
             for ( var i = 1 ; i <= 5 ; i++ )
               this.start('li').add('Item ' + i).end();
@@ -281,13 +297,28 @@ foam.CLASS({
         })).
 
         start('h2').add('onKey').end().
-        add('value: ').add(this.testField$).br().
+        add('value: ').add(this.stringField$).br().
         add('OnKey: false - ').tag(this.STRING_FIELD).
         add('OnKey: true - ').tag(this.STRING_FIELD, {onKey: true}).
 
         start('h2').add('Actions').end().
         add(this.FLAG.__).
         add(this.FLIP, this.ENABLE, this.DISABLE).
+
+        start('h2').add('Properties').end().
+        // There are 4 levels/ways of adding a property value to your DOM:
+        // just the current value, but doesn't update
+         add('Value: ', this.stringField).
+        tag('p').
+        // the current value, but updates if the value changes
+        add('Slot: ', this.stringField$).
+        tag('p').
+        // a view for editing the value
+        add('View: ', this.STRING_FIELD).
+        tag('p').
+        // a view with extra features provided by PropertyBorder, like label, validation text, etc.
+        add('View with PropertyBorder: ', this.STRING_FIELD.__).
+        tag('p').
 
         start('h2').add('startContext() / endContext() / Property Binding').end().
         // Since this class is a Controller, and exports itself as 'data', we can bind its
@@ -296,7 +327,7 @@ foam.CLASS({
         // Or, wrap the views in PropertyBorders to add extra functionality:
         add(this.STRING_FIELD.__, this.INT_FIELD.__, this.DATE_FIELD.__, this.FLAG.__).
         // Or, get the advantages of a PropertyBorder but change the default View
-        tag(this.INT_FIELD.__, { config: { view: { class: 'foam.u2.RangeView', minValue: 0, maxValue: 5, onKey: true}, label: 'Range' } }).
+        tag(this.INT_FIELD.__, { config: { view: { class: 'foam.u2.RangeView', minValue: 1, maxValue: 5, onKey: true}, label: 'Range' } }).
         br().
         // But if we want to bind a different object, we need to create a sub-context
         // with that object as data:
@@ -315,8 +346,10 @@ foam.CLASS({
         start('h2').add('DetailView').end().
         // Simpler than adding all of the properties yourself, just use a DetailView
         tag({class: 'foam.u2.DetailView', data: this.user}).
+        br().br().
         // or Simpler, just:
         add(this.user).
+        br().br().
 
         start('h2').add('TableView').end().
         start({class: 'foam.u2.view.TableView', data: this.users}).
@@ -324,10 +357,17 @@ foam.CLASS({
         end().
 
         start('h2').add('DAOList').end().
-        tag({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
+        start({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
+          style({width: '800px'}).
+        end().
 
         start('h2').add('DAOBrowserView').end().
-        //tag({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
+        /*
+        TODO: CSS column layout is broken outside of NANOS
+        start({class: 'foam.comics.v2.DAOBrowserView', data: this.users }).
+          style({height: '200px', display: 'contents'}).
+        end().
+        */
 
         // No need to embed a whole DOM tree in one render() method, it can be broken
         // up to multiple methods:

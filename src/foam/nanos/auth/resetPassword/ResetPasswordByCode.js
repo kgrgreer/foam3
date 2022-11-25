@@ -55,12 +55,11 @@ foam.CLASS({
       }
     },
     {
-      name: 'confirmationPassword',
+      name: 'newPassword',
       section: 'resetPasswordSection'
-
     },
     {
-      name: 'newPassword',
+      name: 'confirmationPassword',
       section: 'resetPasswordSection'
     }
   ],

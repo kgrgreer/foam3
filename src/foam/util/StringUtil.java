@@ -90,9 +90,13 @@ public class StringUtil {
     var sb = new StringBuilder();
     char current = 0;
     for ( var c : s.toCharArray() ) {
-      if ( current == 0 ) current = Character.toUpperCase(c);
-      else {
-        if ( ! Character.isUpperCase(current) && Character.isUpperCase(c) ) {
+      if ( current == 0 ) {
+        current = Character.toUpperCase(c);
+      } else {
+        // Replace underscore with space
+        if ( c == '_' ) c = ' ';
+
+        if ( Character.isLowerCase(current) && Character.isUpperCase(c) ) {
           sb.append(' ');
         }
         current = c;
