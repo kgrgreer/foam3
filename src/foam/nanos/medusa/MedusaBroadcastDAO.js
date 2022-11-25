@@ -132,7 +132,7 @@ foam.CLASS({
         // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
         agency.submit(x, new ContextAgent() {
           public void execute(X x) {
-            getLogger().debug("agency", "execute", config.getId());
+             // getLogger().debug("agency", "execute", config.getId());
              try {
               DAO dao = (DAO) getClients().get(config.getId());
               if ( dao == null ) {
