@@ -359,6 +359,11 @@ This is the heart of Medusa.`,
                   alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
                 }
               }
+            } else if ( next == null &&
+                        entry == null &&
+                        replaying.getIndex() == 0 ) {
+              replaying.updateIndex(x, dagger.getGlobalIndex(x));
+              continue;
             }
             if ( next == null ||
                  entry != null &&
