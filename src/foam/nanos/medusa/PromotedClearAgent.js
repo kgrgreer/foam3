@@ -107,15 +107,13 @@ foam.CLASS({
           )
         );
         Max max = (Max) MAX(MedusaEntry.INDEX);
-        Count count = new Count();
         ClearSink clearSink = new ClearSink(x, dao);
-        CompactionSink compactionSink = new CompactionSink(x, clearSink);
         Sequence seq = new Sequence.Builder(x)
-          .setArgs(new Sink[] {count, max, compactionSink})
+          .setArgs(new Sink[] {max, clearSink})
           .build();
         dao.select(seq);
-        if ( ((Long)count.getValue()) > 0 ) {
-          Loggers.logger(x, this).debug("cleared", count.getValue());
+        if ( clearSink.getCleared() > 0 || clearSink.getRemoved() > 0 ) {
+          Loggers.logger(x, this).debug("cleared", clearSink.getCleared(), "removed", clearSink.getRemoved());
           setMinIndex((Long)max.getValue());
         }
       } catch ( Throwable t ) {

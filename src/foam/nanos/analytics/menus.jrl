@@ -35,3 +35,22 @@ p({
 //   },
 //   "parent":"analytics"
 // })
+
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"analyticEvents",
+  label:"Analytic Events",
+  keywords: ["analytic", "event"],
+  handler:{
+    class:"foam.nanos.menu.DAOMenu2",
+    config:{
+      class:"foam.comics.v2.DAOControllerConfig",
+      daoKey:"analyticEventDAO",
+      browseTitle:"Analytic Events",
+      createPredicate:{"class":"foam.mlang.predicate.False"},
+      editPredicate:{"class":"foam.mlang.predicate.True"},
+      deletePredicate:{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  parent:"analytics"
+})

@@ -114,7 +114,7 @@ foam.CLASS({
             DaggerService dagger = (DaggerService) x.get("daggerService");
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
             if ( replaying.getReplaying() ) {
-            replaying.getReplayDetails().put(config.getId(), details);
+              replaying.getReplayDetails().put(config.getId(), details);
 
               if ( replaying.getStartTime() == null ) {
                 replaying.setStartTime(new java.util.Date());
