@@ -87,6 +87,7 @@ foam.CLASS({
         .show(this.loginSuccess$)
         .addClass(this.myClass())
         .start().addClass(this.myClass('components-container'))
+          .addClass(this.myClass('logo-adjust'))
           // Menu Open/Close
           .addClass(this.myClass('logo-adjust'))
           .startContext({ data: this })

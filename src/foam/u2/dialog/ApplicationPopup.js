@@ -31,6 +31,9 @@ foam.CLASS({
     'foam.u2.ActionReference',
     'foam.u2.borders.ScrollBorder',
     'foam.u2.dialog.DialogActionsView',
+    'foam.u2.layout.Grid',
+    'foam.u2.layout.GUnit',
+    'foam.u2.layout.GridColumns',
     'foam.u2.tag.Image'
   ],
 
@@ -119,11 +122,17 @@ foam.CLASS({
     }
 
     ^footer {
-      padding: 1em;
+      padding: 1em 0;
       text-align: center;
       border-top: 1px solid $grey300;
       flex-shrink: 0;
+      white-space: nowrap;
     }
+
+    ^  .foam-u2-layout-Grid {
+      grid-gap: 0;
+    }
+
     ^footer-link:link,
     ^footer-link:visited,
     ^footer-link:active {
@@ -147,6 +156,14 @@ foam.CLASS({
       padding: 1.2rem 0;
     }
 
+    ^ .p-legal-light {
+      color: #6F6F6F;
+    }
+
+    ^info-text {
+      color: /*%BLACK%*/ #1e1f21;
+    }
+
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
         width: 45vw;
@@ -164,6 +181,10 @@ foam.CLASS({
       }
     }
   `,
+
+  messages: [
+    { name: 'SUPPORT_TITLE', message: 'Support: '}
+  ],
 
   properties: [
     {
@@ -206,7 +227,8 @@ foam.CLASS({
       name: 'progressView',
       value: { class: 'foam.u2.ProgressView' }
     },
-    [ 'forceFullscreen', false ]
+    [ 'forceFullscreen', false ],
+    [ 'includeSupport', false ]
   ],
 
   methods: [
@@ -337,12 +359,43 @@ foam.CLASS({
             .tag(this.DialogActionsView, {
               data$: this.primaryActions$
             })
-            .start(this.footerLink ? 'a' : '')
-              .show(this.footerString$)
+            .start(this.Grid)
               .addClasses([this.myClass('footer'), 'p-legal-light'])
-              .enableClass(this.myClass('footer-link'), this.footerLink$)
-              .add(this.footerString$)
-              .attrs({ href: this.footerLink, target: '_blank' })
+              // empty space
+              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 0, lgColumns: 5, xlColumns: 5 }})
+              .end()
+              // link
+              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 2, xlColumns: 2 } })
+                .start(this.footerLink ? 'a' : '')
+                  .show(this.footerString$)
+                  .enableClass(this.myClass('footer-link'), this.footerLink$)
+                  .add(this.footerString$)
+                  .attrs({ href: this.footerLink, target: '_blank' })
+                .end()
+              .end()
+              // support info
+              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 5, xlColumns: 5 } })
+                .callIf(this.includeSupport, function() {
+                  this
+                    .start()
+                      .start('span')
+                        .addClass('')
+                        .add(self.SUPPORT_TITLE)
+                        .start('a')
+                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
+                          .add(self.theme.supportConfig.supportEmail)
+                        .end()
+                        .add(' | ')
+                        .start('a')
+                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
+                          .add(self.theme.supportConfig.supportPhone)
+                        .end()
+                      .end()
+                    .end()
+                })
+              .end()
             .end()
           .end()
         .end();

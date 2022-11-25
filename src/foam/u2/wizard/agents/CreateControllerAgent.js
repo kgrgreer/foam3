@@ -20,6 +20,7 @@ foam.CLASS({
 
   imports: [
     'initialPosition?',
+    'wizardFlow',
     'wizardlets'
   ],
 
@@ -59,6 +60,7 @@ foam.CLASS({
           wizardPosition: this.initialPosition
         } : {})
       })
+      this.wizardFlow.wizardController = this.wizardController;
       this.wizardlets.forEach(v => { v.wizardController$ = this.wizardController$ })
     }
   ]
