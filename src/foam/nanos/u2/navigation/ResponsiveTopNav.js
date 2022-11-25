@@ -48,6 +48,9 @@ foam.CLASS({
     ^components-container^logo-adjust {
       gap: 16px;
     }
+    ^components-container^logo-adjust {
+      gap: 16px;
+    }
     ^logo {
       flex: 1;
       justify-content: center;
