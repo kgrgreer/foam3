@@ -947,12 +947,12 @@ configuration for contacting the primary node.`,
             return dao;
           }
         }
+        getLogger().error("mdao", serviceName, key, "not found");
       } catch (Throwable t) {
         getLogger().error("mdao", serviceName, key, t.getMessage(), t);
       } finally {
         pm.log(x);
       }
-      ((DAO) x.get("alarmDAO")).put(new Alarm("Medusa MDAO not found: "+serviceName));
       throw new IllegalArgumentException("MDAO not found: "+serviceName);
       `
     },

@@ -143,6 +143,7 @@ foam.CLASS({
     'inputHeight': '34px',
     'inputHorizontalPadding': '8px',
     'inputVerticalPadding': '8px',
+    'inputBorderRadius': '4px',
 
     // FONT
     'font1': `'IBM Plex Sans', sans-serif`

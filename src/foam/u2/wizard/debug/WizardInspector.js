@@ -56,7 +56,7 @@ foam.CLASS({
       border-color: #333;
     }
     ^current.foam-u2-borders-Block {
-      border-color: $primary700;
+      border-color: $primary400;
     }
   `,
 

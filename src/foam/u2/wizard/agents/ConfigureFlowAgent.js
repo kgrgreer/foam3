@@ -24,7 +24,9 @@ foam.CLASS({
     'popView',
     'wizardCloseSub',
     'popupMode',
-    'flowAgent'
+    'flowAgent',
+    'wizardController',
+    'as wizardFlow'
   ],
 
   topics: ['flowAgent'],
@@ -96,7 +98,8 @@ foam.CLASS({
           }
           ;
       }
-    }
+    },
+    'wizardController'
   ],
 
   methods: [

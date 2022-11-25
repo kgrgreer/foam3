@@ -9,7 +9,6 @@ foam.CLASS({
   extends: 'foam.nanos.dig.DUGRule',
   
   javaImports: [
-    'foam.dao.Sink',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.AbstractSink',

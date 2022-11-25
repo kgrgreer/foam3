@@ -32,7 +32,7 @@ foam.CLASS({
 `,
   methods: [
     function render() {
-      var timeout = this.setInterval(this.onUpdate, 5000);
+      var timeout = this.setInterval(this.onUpdate, 2000);
       var view = this;
 
       this.onDetach(function() {

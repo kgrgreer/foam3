@@ -93,7 +93,16 @@ foam.CLASS({
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
         this.progressValue = n?.wizardletIndex;
+        this.activePosition = n;
       }
+    },
+    {
+      name: 'activePosition',
+      documentation: `
+        Active position represents the wizardlet currently acting, which may
+        not be a visible wizardlet and therefore will not always reflect the
+        position of the visible wizardlet.
+      `
     },
 
     {
@@ -355,6 +364,7 @@ foam.CLASS({
 
           this.onWizardletCompleted(wizardlet);
           wizardlet = nextPositionWizardlet;
+          this.activePosition = pos;
 
           try {
             await wizardlet.load();

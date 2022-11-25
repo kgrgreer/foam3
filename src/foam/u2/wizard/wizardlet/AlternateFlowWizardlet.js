@@ -49,8 +49,13 @@ foam.CLASS({
     function init() {
       this.SUPER();
       if ( this.choices ) {
-        var choices = this.choices.map(alternateFlow => 
-          this.AlternateFlowAction.create({ alternateFlow }));
+        var choices = this.choices.map(alternateFlow => {
+          var action = this.AlternateFlowAction.create({ alternateFlow });
+          if ( alternateFlow.canSkipData ) {
+            action.isEnabled = function(isLoading_) { return !isLoading_ };
+          }
+          return action;
+        });
         this.dynamicActions = this.dynamicActions.concat(choices);
       }
       if ( this.useAltFlowWAO && ! this.AlternateFlowWAO.isInstance(this.wao) ) {

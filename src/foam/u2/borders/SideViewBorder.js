@@ -71,7 +71,7 @@ foam.CLASS({
           .addClass(this.myClass('side'))
           .enableClass(this.myClass('open'), this.sideVisible$)
           .startContext({ data: this })
-            .tag(this.HIDE, { buttonStyle: 'PRIMARY' })
+            .tag(this.HIDE_VIEW, { buttonStyle: 'PRIMARY' })
           .endContext()
           .add(this.slot(function (sideView) {
             return this.E()
@@ -87,7 +87,7 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'hide',
+      name: 'hideView',
       label: 'close',
       code: function () {
         this.sideVisible = false;
