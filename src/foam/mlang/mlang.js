@@ -4083,7 +4083,6 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.lib.parse.PStream',
     'foam.lib.parse.ParserContext',
-    'foam.lib.parse.ParserContext',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',
     'foam.mlang.Constant',

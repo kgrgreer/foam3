@@ -24,7 +24,7 @@
   methods: [
     async function execute() {
       let ucj = await this.crunchService.getJunction(null, this.rootCapability.id);
-      this.crunchService.pub('updateJunction');
+      this.crunchService.pub('updateJunctionTopic');
       if ( ucj && ucj.status === this.CapabilityJunctionStatus.GRANTED ) {
         this.crunchService.pub('grantedJunction');
       }

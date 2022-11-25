@@ -557,9 +557,6 @@ foam.CLASS({
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
-      function returnMementoColumnNameDisregardSorting(c) {
-        return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
-      },
       async function filterUnpermitted(arr) {
         if ( this.auth ) {
           var permissionedProperties = [];
