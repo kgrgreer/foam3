@@ -31,7 +31,7 @@
       this.SUPER();
 
       this.addClass()
-      .startContext({controllerMode: 'VIEW'})
+      .startContext({controllerMode: foam.u2.ControllerMode.VIEW})
       .start()
         .start(this.Cols)
           .start()
