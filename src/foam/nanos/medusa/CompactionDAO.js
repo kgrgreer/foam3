@@ -452,9 +452,9 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      long compactionRatio = (long) ((((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue()) * 100.0);
+      long compactionRatio = ((long) ((((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue()) * 100.0)) - 100;
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", compactionRatio);
+      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", compactionRatio, "%");
       return compactionTime;
       `
     },
