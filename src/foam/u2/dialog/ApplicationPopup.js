@@ -227,6 +227,10 @@ foam.CLASS({
       name: 'progressView',
       value: { class: 'foam.u2.ProgressView' }
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'dynamicFooter'
+    },
     [ 'forceFullscreen', false ],
     [ 'includeSupport', false ]
   ],
@@ -235,6 +239,7 @@ foam.CLASS({
     function init() {
       var content;
       const self = this;
+      window.thepopup = this;
       this.helpMenu$find.then( menu => {
         self.help_ = menu;
       });
@@ -359,6 +364,12 @@ foam.CLASS({
             .tag(this.DialogActionsView, {
               data$: this.primaryActions$
             })
+            .add(this.slot(function (dynamicFooter) {
+              if ( ! dynamicFooter ) return;
+              return this.E()
+                .addClass(this.myClass('dynamicFooter'))
+                .tag(dynamicFooter);
+            }))
             .start(this.Grid)
               .addClasses([this.myClass('footer'), 'p-legal-light'])
               // empty space
