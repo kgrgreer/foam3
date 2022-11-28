@@ -10,6 +10,7 @@ foam.ENUM({
 
   values: [
     { name: 'UNSPECIFIED', label: 'Unspecified' },
+    { name: 'UNIDENTIFIED', label: 'Unidentified' },
     { name: 'CONGESTION', label: 'Congestion' },
     { name: 'CREDENTIALS', label: 'Invalid credentials' },
     { name: 'TIMEOUT', label: 'Request timed out' },

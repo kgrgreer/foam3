@@ -26,5 +26,19 @@ foam.CLASS({
         return data$canGoNext && ! isLoading_;
       }
     }
+  ],
+  methods: [
+    function toE(args, X) {
+      var view = foam.u2.ViewSpec.createView(this.view, {
+        ...(args || {}),
+        action: this
+      }, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        view.data$ = X.data$;
+      }
+
+      return view;
+    }
   ]
 });

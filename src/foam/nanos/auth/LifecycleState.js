@@ -27,7 +27,7 @@ foam.ENUM({
     },
     {
       name: 'DISABLED',
-      label: 'Disabled'
+      label: 'Disabld'
     }
   ]
 });

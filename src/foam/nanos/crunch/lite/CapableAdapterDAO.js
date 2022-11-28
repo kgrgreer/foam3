@@ -196,7 +196,9 @@ foam.CLASS({
       code: function () {
         // A publish on propertyChange isn't enough here; slots won't update if
         //   the object is identical.
-        this.capable.capablePayloads = [ ...this.capable.capablePayloads ];
+        var temp = [ ...this.capable.capablePayloads ];
+        this.capable.capablePayloads = [];
+        this.capable.capablePayloads.push(...temp);
       }
     }
   ]

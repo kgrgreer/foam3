@@ -59,6 +59,11 @@ foam.CLASS({
       class: 'String',
       name: 'wizardletId',
       documentation: 'set this to jump to a specific wizardlet by id'
+    },
+    {
+      class: 'Boolean',
+      name: 'canSkipData',
+      documentation: 'Set to true if the alternateflow action should always be enabled'
     }
   ],
 

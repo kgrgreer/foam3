@@ -26,6 +26,7 @@ foam.CLASS({
     {
       name: 'promise',
       factory: function() {
+        /* ignoreWarning */
         var self = this;
         return this.journal.replay(null, this.delegate).then(function(dao) {
           // TODO: can't use `requires` for class used inside factory

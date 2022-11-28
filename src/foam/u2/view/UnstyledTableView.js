@@ -108,8 +108,12 @@ foam.CLASS({
     {
       name: 'selectedColumnNames',
       expression: function(columns, of, memento, memento$head) {
-        var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
-        return ls || columns;
+        try {
+          var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
+          return ls || columns;
+        } catch (x) {
+          return columns;
+        }
       }
     },
     {
@@ -327,7 +331,7 @@ foam.CLASS({
     async function render() {
       var view = this;
 
-      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
@@ -549,9 +553,6 @@ foam.CLASS({
       },
       function shouldColumnBeSorted(c) {
         return c[c.length - 1] === this.DESCENDING_ORDER_CHAR || c[c.length - 1] === this.ASCENDING_ORDER_CHAR;
-      },
-      function returnMementoColumnNameDisregardSorting(c) {
-        return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;

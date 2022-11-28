@@ -237,7 +237,8 @@ foam.CLASS({
           return this.SignIn.id;
         }
       }
-    }
+    },
+    { class: 'Boolean', name: 'showLogo', value: true }
   ],
 
   messages: [
@@ -276,7 +277,7 @@ foam.CLASS({
         .start()
           .add(
             this.slot(function(shouldResize) {
-              return self.E().show(shouldResize || self.fullScreenLoginImage || ! self.imgPath )
+              return self.E().show( self.showLogo && ( shouldResize || self.fullScreenLoginImage || ! self.imgPath ) )
               .addClass('topBar-logo-Back')
               .start('img')
                 .attr('src', logo)

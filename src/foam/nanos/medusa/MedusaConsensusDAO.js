@@ -29,6 +29,7 @@ This is the heart of Medusa.`,
     'foam.dao.DAO',
     'foam.dao.DOP',
     'foam.lib.json.JSONParser',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ',
@@ -358,6 +359,11 @@ This is the heart of Medusa.`,
                   alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
                 }
               }
+            } else if ( next == null &&
+                        entry == null &&
+                        replaying.getIndex() == 0 ) {
+              replaying.updateIndex(x, dagger.getGlobalIndex(x));
+              continue;
             }
             if ( next == null ||
                  entry != null &&
@@ -528,11 +534,17 @@ This is the heart of Medusa.`,
               registry.register(x, (Long) entry.getId());
             }
           }
+
+          // legacy support for storageTransient objectId
+          entry.setObjectId(nu.getProperty("id"));
         }
 
         return entry;
       } catch (IllegalArgumentException e) {
         pm.error(x, e);
+        Alarm alarm = new Alarm("Medusa MDAO not found", entry.getNSpecName(), LogLevel.ERROR);
+        alarm.setClusterable(false);
+        ((DAO) x.get("alarmDAO")).put(alarm);
         throw e;
       } catch (Throwable t) {
         pm.error(x, t);

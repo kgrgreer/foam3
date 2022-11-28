@@ -26,6 +26,7 @@ TODO: handle node roll failure - or timeout
   `,
 
   javaImports: [
+    'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.FObject',
     'foam.core.X',
@@ -407,25 +408,53 @@ TODO: handle node roll failure - or timeout
       args: 'X x',
       type: 'Long',
       javaCode: `
-      Logger logger = Loggers.logger(x, this, "compaction");
-      DAO dao = (DAO) x.get("medusaEntryDAO");
-      dao = dao.orderBy(MedusaEntry.ID);
-      Count count = new Count();
-      Sink sink = new CompactibleSink(x,
+      final Logger logger = Loggers.logger(x, this, "compaction");
+      final DAO dao = ((DAO) x.get("medusaEntryDAO")).orderBy(MedusaEntry.ID);
+      final Count total = (Count) dao.select(new Count());
+
+      final Count compacted = new Count();
+      final Count processed = new Count();
+      final CompactibleSink compactibleSink = new CompactibleSink(x,
                     new CompactionSink(x,
                     new UniqueSink(x,
                     new NSpecSink(x,
                     new Sequence.Builder(x)
                       .setArgs(new Sink[] {
-                        count,
+                        compacted,
                         new NodeSink(x) })
                       .build()
                     ))));
-      long startTime = System.currentTimeMillis();
-      logger.info("start");
-      dao.select(sink);
+      final Sink sink = new Sequence.Builder(x)
+                     .setArgs(new Sink[] {
+                       processed,
+                       compactibleSink })
+                     .build();
+
+      final long startTime = System.currentTimeMillis();
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      Agency agency = (Agency) x.get(support.getThreadPoolName());
+      agency.submit(x, new ContextAgent() {
+        public void execute(X x) {
+          logger.info("start");
+          dao.select(sink);
+          long compactionTime = System.currentTimeMillis() - startTime;
+          logger.info("agency", "end", "duration", Duration.ofMillis(compactionTime));
+        }
+      }, this.getClass().getSimpleName()+".compaction");
+      // wait for eof
+      while ( ! compactibleSink.getIsEof() &&
+              ((Long) processed.getValue()) < ((Long) total.getValue()) ) {
+        long percentComplete = (long) ((((Long) processed.getValue()) / ((Long) total.getValue()).doubleValue()) * 100.0);
+        logger.info("progress", "processed", processed.getValue(), "compacted", compacted.getValue(), "completed", percentComplete, "%");
+        try {
+          Thread.currentThread().sleep(5000);
+        } catch (InterruptedException e) {
+          break;
+        }
+      }
+      long compactionRatio = ((long) ((((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue()) * 100.0)) - 100;
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("end", "duration", Duration.ofMillis(compactionTime), "compacted", count.getValue());
+      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", compactionRatio, "%");
       return compactionTime;
       `
     },
@@ -472,9 +501,10 @@ TODO: handle node roll failure - or timeout
       // NOTE: line.shutdown will block forever if a mediator does not reply.
       // Instead, perform manual polling for completion.
       long waited = 0L;
-      long sleep = 1000L;
-      long waitTime = Math.max(getMaxWait(), compactionTime * 2);
+      long sleep = 5000L;
+      long waitTime = Math.max(getMaxWait(), compactionTime);
       while ( waited < waitTime ) {
+        logger.debug("wait");
         try {
           Thread.currentThread().sleep(sleep);
           waited += sleep;
@@ -608,6 +638,19 @@ TODO: handle node roll failure - or timeout
 
       documentation: 'Skip entries which are not compactible',
 
+      properties: [
+        {
+          name: 'isEof',
+          class: 'Boolean'
+        }
+      ],
+
+      javaCode: `
+      public CompactibleSink(X x, Sink delegate) {
+        super(x, delegate);
+      }
+      `,
+
       methods: [
         {
           name: 'put',
@@ -615,10 +658,12 @@ TODO: handle node roll failure - or timeout
           MedusaEntry entry = (MedusaEntry) obj;
           if ( entry.getCompactible() ) {
             getDelegate().put(obj, sub);
-          } else {
-            Loggers.logger(getX(), this).debug("Not compactible", entry.toSummary());
           }
           `
+        },
+        {
+          name: 'eof',
+          javaCode: 'setIsEof(true);'
         }
       ]
     },

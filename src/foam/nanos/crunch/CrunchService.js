@@ -23,7 +23,7 @@ foam.INTERFACE({
   ],
 
   topics: [
-    'updateJunction'
+    'updateJunctionTopic'
   ],
 
   methods: [

@@ -96,8 +96,8 @@ foam.CLASS({
       name: 'cmd_',
       javaCode: `
       Object cmd = getDelegate().cmd_(x, obj);
-      if ( cmd != null ) {
-        return submit(x, cmd, DOP.CMD);
+      if ( ! DAO.PURGE_CMD.equals(obj) ) {
+        submit(x, obj, DOP.CMD);
       }
       return cmd;
       `
@@ -132,7 +132,7 @@ foam.CLASS({
         // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
         agency.submit(x, new ContextAgent() {
           public void execute(X x) {
-            getLogger().debug("agency", "execute", config.getId());
+             // getLogger().debug("agency", "execute", config.getId());
              try {
               DAO dao = (DAO) getClients().get(config.getId());
               if ( dao == null ) {

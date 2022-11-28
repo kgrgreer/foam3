@@ -68,7 +68,6 @@ foam.CLASS({
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
-    'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.wizard.agents.NullEventHandlerAgent',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
@@ -337,6 +336,7 @@ foam.CLASS({
       let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
         intercept: opt_intercept,
+        wizardController: wizardController,
         rootCapability: capabilityId,
         wizardlets: []
       });
@@ -364,7 +364,11 @@ foam.CLASS({
           await targetDAO.put(capable);
         });
       }
-
+      // TODO: choose better location for this or ensure it's in context
+      for ( let i = 0; i < x.wizardlets.length; i++ ) {
+        let w = x.wizardlets[i];
+        w.wizardController = wizardController;
+      }
       // Resolve to current object - inline intercepts cannot provide
       // the return object as the wizard must continue.
       if ( opt_intercept ) opt_intercept.resolve(capable);

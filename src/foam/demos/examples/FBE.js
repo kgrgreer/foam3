@@ -347,11 +347,12 @@ foam.CLASS({
       var self = this;
 
       async function load(section) {
-        self.testData += await fetch(section).then(response => response.text())
+        self.testData += await fetch(section).then(response => response.text()).catch(x => { debugger; });
       }
+      await load('u2all');
 //      await load('u2');
 //      await load('faq');
-      await load('validation');
+//      await load('validation');
 //      await load('examples');
 //      await load('dao');
 

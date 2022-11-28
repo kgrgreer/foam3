@@ -227,6 +227,11 @@ foam.CLASS({
         clicks), this property will be updated to propagate errors back to
         StepWizardAgent, and also allow views to react.
       `
+    },
+    {
+      class: 'Map',
+      name: 'actionExtras',
+      factory: () => ({})
     }
   ],
 
@@ -367,7 +372,7 @@ foam.CLASS({
             let { exception, hint } = await wizardlet.handleException(
               this.WizardEventType.WIZARDLET_LOAD, e
             );
-            
+
             if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
               throw this.lastException = exception || e;
             }

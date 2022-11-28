@@ -54,11 +54,12 @@ foam.CLASS({
     function add(tab) {
       if ( this.Tab.isInstance(tab) ) {
         var self = this;
-        if ( ! this.selected && ! this.selectedLabel ) this.selected = tab;
-        if ( tab.selected || this.selectedLabel == tab.label ) this.selected = tab;
         if ( ! tab.mementoLabel ) {
           tab.mementoLabel = this.mementoCounter_++;
         }
+        if ( ! this.selected && ! this.selectedLabel ) this.selected = tab;
+        if ( tab.selected || this.selectedLabel == tab.mementoLabel ) this.selected = tab;
+        
         this.tabRow.start('span').
           addClass(this.myClass('tab')).
           enableClass('selected', tab.selected$).

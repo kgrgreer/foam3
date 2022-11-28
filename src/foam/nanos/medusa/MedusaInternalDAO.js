@@ -73,9 +73,9 @@ Update: it appears there are multiple DAOs in the context.`,
         );
 
         Count count = new Count();
-        CompactionSink compactionSink = new CompactionSink(x, new PurgeSink(x, new foam.dao.RemoveSink(x, dao)));
+        Sink sink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
         Sequence seq = new Sequence.Builder(x)
-          .setArgs(new Sink[] {count, compactionSink})
+          .setArgs(new Sink[] {count, sink})
           .build();
         dao.select(seq);
         cmd.setPurged((Long)count.getValue());
