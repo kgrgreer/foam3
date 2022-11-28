@@ -50,10 +50,7 @@ foam.CLASS({
       `,
       factory: function() {
         return foam.nanos.crunch.ui.MinMaxCapabilityWizardlet.create({}, this);
-      },
-      javaFactory: `
-        return new MinMaxCapabilityWizardlet();
-      `
+      }
     },
     {
       class: 'Object',
