@@ -372,7 +372,7 @@ foam.CLASS({
             let { exception, hint } = await wizardlet.handleException(
               this.WizardEventType.WIZARDLET_LOAD, e
             );
-            
+
             if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
               throw this.lastException = exception || e;
             }
