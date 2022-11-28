@@ -186,13 +186,11 @@ foam.CLASS({
             && ! p.networkTransient
             && p.searchView
             && ! p.hidden
-        })
+        });
 
-        return tableSearchColumns
-          ? tableSearchColumns.columns
-          : filteredDefaultColumns
-            ? filteredDefaultColumns
-            : allProps
+        if ( tableSearchColumns ) return tableSearchColumns.columns;
+
+        return filteredDefaultColumns ? filteredDefaultColumns : allProps;
       }
     },
     {
@@ -410,4 +408,3 @@ foam.CLASS({
     }
   ]
 });
-
