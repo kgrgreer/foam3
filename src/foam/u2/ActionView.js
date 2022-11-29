@@ -35,7 +35,7 @@ foam.CLASS({
     'foam.u2.dialog.ConfirmationModal'
   ],
 
-  imports: ['ctrl'],
+  imports: [ 'ctrl?' ],
 
   enums: [
     {
@@ -154,7 +154,7 @@ foam.CLASS({
   listeners: [
     function click(e) {
       try {
-        if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
+        if ( ctrl && this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
           (async () => {
             this.ctrl.add(this.ConfirmationModal.create({
               primaryAction: this.action,
