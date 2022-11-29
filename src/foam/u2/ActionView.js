@@ -155,8 +155,8 @@ foam.CLASS({
     function click(e) {
       try {
         if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
-          let modal = this.action.confirmationView(this.__subContext__, this.data)
-          if (!modal) { this.action && this.action.maybeCall(this.__subContext__, this.data) }
+          let modal = this.action.confirmationView(this.__subContext__, this.data);
+          if ( ! modal ) { this.action && this.action.maybeCall(this.__subContext__, this.data) }
           else {
             (async () => {
               this.ctrl.add(this.ConfirmationModal.create({
