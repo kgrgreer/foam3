@@ -100,22 +100,14 @@ foam.CLASS({
     },
     {
       name: 'primary',
-      expression: function(config$of, data) {
+      expression: function(config$of) {
         var allActions = config$of.getAxiomsByClass(foam.core.Action);
         var defaultAction = allActions.filter((a) => a.isDefault);
-        var acArray = defaultAction.length >= 1
-          ? defaultAction
+        return defaultAction.length >= 1
+          ? defaultAction[0]
           : allActions.length >= 1
-            ? allActions
+            ? allActions[0]
             : null;
-        if ( acArray && acArray.length ) {
-          let res;
-          acArray.forEach(a => {
-            var aSlot = a.createIsAvailable$(this.__subContext__, data);
-            if (aSlot.get()) res = a;
-          });
-          return res;
-        }
       }
     },
     {
