@@ -10,15 +10,22 @@ foam.CLASS({
   extends: 'foam.nanos.script.Script',
 
   imports: [
-    'cronDAO',
-    'cronEventDAO'
+    'cronDAO'
+  ],
+
+  requires: [
+    'foam.nanos.cron.IntervalSchedule',
+    'foam.nanos.cron.TimeHMS'
   ],
 
   javaImports: [
     'foam.core.ClientRuntimeException',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
+    'foam.log.LogLevel',
+    'static foam.mlang.MLang.EQ',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date'
@@ -91,6 +98,48 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      name: 'reattemptRequested',
+      class: 'Boolean',
+      storageTransient: true,
+      visibility: 'RO'
+    },
+    {
+      name: 'maxReattempts',
+      class: 'Int',
+      value: 2
+    },
+    {
+      name: 'reattempts',
+      class: 'Int',
+      storageTransient: true,
+      visibility: 'RO'
+    },
+    {
+      documentation: 'Schedule to use to re-schedule on script failure',
+      name: 'reattemptSchedule',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.cron.Schedule',
+      view: {
+        class: 'foam.u2.view.FObjectView',
+        of: 'foam.nanos.cron.Schedule'
+      },
+      section: 'scheduling',
+      factory: function() {
+        return this.IntervalSchedule.create({
+          duration: this.TimeHMS.create({
+            minute:5
+          })
+        });
+      },
+      javaFactory: `
+      return new IntervalSchedule.Builder(getX())
+        .setDuration(new TimeHMS.Builder(getX())
+          .setMinute(5)
+          .build())
+        .build();
+      `
+    },
+    {
       class: 'String',
       name: 'daoKey',
       value: 'cronJobDAO',
@@ -125,6 +174,9 @@ foam.CLASS({
             return false;
           }
         }
+        if ( getReattemptRequested() )
+          return getReattempts() < getMaxReattempts();
+
         return true;
       `
     },
@@ -137,18 +189,86 @@ foam.CLASS({
         }
       ],
       type: 'Date',
-      javaCode:
-`
-return getSchedule().getNextScheduledTime(x,
-  new Date(System.currentTimeMillis())
-);
-`
+      javaCode: `
+      if ( getReattemptRequested() &&
+           getReattempts() < getMaxReattempts() ) {
+        return getReattemptSchedule().getNextScheduledTime(x,
+          new Date(System.currentTimeMillis())
+        );
+      }
+      return getSchedule().getNextScheduledTime(x,
+        new Date(System.currentTimeMillis())
+      );
+      `
     },
     {
       name: 'runScript',
-      code: `
-        super.runScript();
+      code: function() {
+
+        this.super.runScript();
+      },
+      javaCode: `
+      if ( getReattemptRequested() &&
+           getReattempts() < getMaxReattempts() ) {
+        setReattempts(getReattempts() +1);
+        setReattemptRequested(false);
+        try {
+          super.runScript(x);
+          if ( ! getReattemptRequested() ) {
+            resetReattempts();
+            getReattemptSchedule().postExecution();
+          } else if ( getReattempts() >= getMaxReattempts() ) {
+            DAO alarmDAO = (DAO) x.get("alarmDAO");
+            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
+            if ( alarm != null ) {
+              if ( ! alarm.getIsActive() ) {
+                alarm = (Alarm) alarm.fclone();
+                alarm.setIsActive(true);
+              }
+            } else {
+              alarm = new Alarm(getId(), true);
+              alarm.setSeverity(LogLevel.ERROR);
+              alarm.setReason(AlarmReason.THRESHOLD);
+              alarm.setNote("max reattempts reached");
+            }
+            alarmDAO.put(alarm);
+
+            // disable self
+            setStatus(ScriptStatus.ERROR);
+            setEnabled(false);
+            resetReattempts();
+          }
+        } catch ( RuntimeException e ) {
+          throw e;
+        }
+      } else if ( ! getReattemptRequested() ) {
+        super.runScript(x);
         getSchedule().postExecution();
+
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
+        if ( alarm != null &&
+             alarm.getIsActive() ) {
+          alarm = (Alarm) alarm.fclone();
+          alarm.setIsActive(false);
+          alarmDAO.put(alarm);
+        }
+      }
+      `
+    },
+    {
+      documentation: 'Request job is rescheduled',
+      name: 'reattempt',
+      javaCode: `
+      setReattemptRequested(true);
+      `
+    },
+    {
+      documentation: 'Request job is rescheduled',
+      name: 'resetReattempts',
+      javaCode: `
+      clearReattemptRequested();
+      clearReattempts();
       `
     }
   ],
