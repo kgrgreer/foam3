@@ -528,37 +528,6 @@ foam.CLASS({
         this.filters = columns;
         return;
       }
-
-      columns = of.getAxiomByName('tableColumns');
-      columns = columns && columns.columns;
-      columns = await this.filterPropertiesByReadPermission(columns, of.id);
-      if ( columns ) {
-        this.columns = columns.filter(function(c) {
-        //  to account for nested columns like approver.legalName
-        if ( c.split('.').length > 1 ) return false;
-
-        var a = of.getAxiomByName(c);
-
-        if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-
-        return a
-          && ! a.storageTransient
-          && ! a.networkTransient
-          && a.searchView
-          && ! a.hidden
-        });
-        return;
-      }
-
-      columns = of.getAxiomsByClass(foam.core.Property)
-        .filter((p) => {
-          return ! p.storageTransient
-          && ! p.networkTransient
-          && p.searchView
-          && ! p.hidden
-        })
-        .map(foam.core.Property.NAME.f);
-      this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
     }
   ],
 
