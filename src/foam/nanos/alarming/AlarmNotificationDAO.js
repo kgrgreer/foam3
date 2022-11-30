@@ -111,6 +111,7 @@ foam.CLASS({
         .setSpid(spid)
         .setTemplate(getNotificationTemplate())
         .setToastMessage(alarm.getName())
+        .setAlarm(alarm)
         .build();
 
      ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);

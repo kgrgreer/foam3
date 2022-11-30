@@ -16,7 +16,12 @@ p({
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.LAST_RUN })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.ENABLED });
   """,
-  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+  "client":"""
+    {
+      "of":"foam.nanos.cron.Cron",
+      "cache": false
+    }
+  """
 })
 
 p({
@@ -54,7 +59,12 @@ p({
       .setCluster(false)
       .build();
   """,
-  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+  "client":"""
+    {
+      "of":"foam.nanos.cron.Cron",
+      "cache": false
+    }
+  """
 })
 
 p({

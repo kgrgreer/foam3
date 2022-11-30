@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"admin.cronjobs",
-  "label":"Cronjobs",
+  "label":"Cronjobs - Active Crons",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
