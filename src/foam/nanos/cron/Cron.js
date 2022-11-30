@@ -11,7 +11,7 @@ foam.CLASS({
 
   imports: [
     'cronDAO',
-    'cronEventDAO'
+    'cronEventDAO?'
   ],
 
   javaImports: [
