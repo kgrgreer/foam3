@@ -334,6 +334,10 @@ foam.CLASS({
       opt_intercept, flags, opt_x,
       opt_sequenceExtras
     ) {
+      if ( ! capable ) {
+        capable = foam.nanos.crunch.lite.BaseCapable.create();
+      }
+
       let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
         intercept: opt_intercept,
