@@ -85,7 +85,9 @@ foam.CLASS({
               name: this.id,
               checked: self.slot(function (data) { return data === c[0]; })
             }).
-            call(function() { id = this.id = self.$UID; }).
+            call(function() {
+              id = this.id || ( this.id = this.$UID );
+            }).
             on('change', function() {
               self.data = c[0];
               self.cannedQuery = c[1];
