@@ -11,7 +11,7 @@ foam.CLASS({
   properties: [
     {
       class: 'DateTime',
-      name: 'data',
+      name: 'data'
     },
     {
       class: 'Int',
@@ -89,7 +89,7 @@ foam.CLASS({
       postSet: function(_, n) {
         var d = new Date(this.data);
         d.setHours(n);
-        this.data = d;
+        this.data.set(d);
         this.hour24 = undefined;
       }
     },
@@ -113,7 +113,7 @@ foam.CLASS({
         var m;
         if ( ! data || isNaN(data.getDate()) ) {
           m = new Date().getMinutes();
-        } else { 
+        } else {
           m = data.getMinutes();
         }
         return (m < 10 ? '0' : '') + m;
