@@ -218,42 +218,55 @@ foam.CLASS({
             resetReattempts();
             getReattemptSchedule().postExecution();
           } else if ( getReattempts() >= getMaxReattempts() ) {
-            DAO alarmDAO = (DAO) x.get("alarmDAO");
-            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-            if ( alarm != null ) {
-              if ( ! alarm.getIsActive() ) {
-                alarm = (Alarm) alarm.fclone();
-                alarm.setIsActive(true);
-              }
-            } else {
-              alarm = new Alarm(getId(), true);
-              alarm.setSeverity(LogLevel.ERROR);
-              alarm.setReason(AlarmReason.THRESHOLD);
-              alarm.setNote("max reattempts reached");
-            }
-            alarmDAO.put(alarm);
-
-            // disable self
-            setStatus(ScriptStatus.ERROR);
-            setEnabled(false);
-            resetReattempts();
+            alarm(x, AlarmReason.THRESHOLD, "max reattempts reached", true);
           }
         } catch ( RuntimeException e ) {
-          throw e;
+          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
+         throw e;
         }
       } else if ( ! getReattemptRequested() ) {
-        super.runScript(x);
-        getSchedule().postExecution();
-
-        DAO alarmDAO = (DAO) x.get("alarmDAO");
-        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-        if ( alarm != null &&
-             alarm.getIsActive() ) {
-          alarm = (Alarm) alarm.fclone();
-          alarm.setIsActive(false);
-          alarmDAO.put(alarm);
+        try {
+          super.runScript(x);
+          getSchedule().postExecution();
+          DAO alarmDAO = (DAO) x.get("alarmDAO");
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
+          if ( alarm != null &&
+               alarm.getIsActive() ) {
+            alarm = (Alarm) alarm.fclone();
+            alarm.setIsActive(false);
+            alarmDAO.put(alarm);
+          }
+        } catch ( RuntimeException e ) {
+          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
         }
       }
+      `
+    },
+    {
+      documentation: 'generate alarm and optionally disable self',
+      name: 'alarm',
+      args: 'X x, AlarmReason reason, String note, Boolean disable',
+      javaCode: `
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
+        if ( alarm != null ) {
+          if ( ! alarm.getIsActive() ) {
+            alarm = (Alarm) alarm.fclone();
+            alarm.setIsActive(true);
+          }
+        } else {
+          alarm = new Alarm(getId(), true);
+          alarm.setSeverity(LogLevel.ERROR);
+          alarm.setReason(reason);
+          alarm.setNote(note);
+        }
+        alarmDAO.put(alarm);
+
+        setStatus(ScriptStatus.ERROR);
+        resetReattempts();
+        if ( disable ) {
+          setEnabled(false);
+        }
       `
     },
     {
