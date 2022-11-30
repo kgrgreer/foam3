@@ -81,6 +81,8 @@ the notification will be handled. `,
                  template.getEmailArgs().size() == 0 ) {
               template.setEmailArgs(notification.getEmailArgs());
             }
+            template.setAlarm(notification.getAlarm());
+
             // Notify a user directly
             DAO userDAO = (DAO) x.get("localUserDAO");
             User user = (User) userDAO.find(template.getUserId());
