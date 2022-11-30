@@ -229,6 +229,13 @@ foam.CLASS({
         }
         return spid_;
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.alarming.Alarm',
+      name: 'alarm',
+      storageTransient: true,
+      visibility: 'HIDDEN'
     }
   ],
 

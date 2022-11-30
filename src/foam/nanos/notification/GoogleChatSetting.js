@@ -15,45 +15,67 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.logger.Logger',
-    'org.apache.http.client.methods.CloseableHttpResponse',
-    'org.apache.http.client.methods.HttpPost',
-    'org.apache.http.entity.StringEntity',
-    'org.apache.http.impl.client.CloseableHttpClient',
-    'org.apache.http.impl.client.HttpClients'
+    'foam.nanos.logger.Loggers',
+    'foam.lib.json.Outputter',
+    'java.net.http.HttpClient',
+    'java.net.http.HttpRequest',
+    'java.net.http.HttpResponse',
+    'java.io.PrintWriter',
+    'java.io.StringWriter',
+    'java.util.HashMap',
+    'java.util.Map',
+    'java.net.URI'
   ],
 
   methods: [
     {
       name: 'sendNotification',
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
-
+      try {
         if ( foam.util.SafetyUtil.isEmpty(notification.getGoogleChatWebhook()) )
           return;
 
-        // Get the message to send
-        String googleChatMessage = notification.getGoogleChatMessage();
-        if ( foam.util.SafetyUtil.isEmpty(googleChatMessage) ) {
-          googleChatMessage = notification.getBody();
+        Map map = new HashMap();
+
+        String URL = notification.getGoogleChatWebhook();
+        // Loggers.logger(x, this).debug("URL", URL);
+
+        if ( notification.getAlarm() != null ) {
+          String threadKey = notification.getAlarm().getId().toString().replaceAll(" ","_");
+          Map thread = new HashMap();
+          thread.put("threadKey", threadKey);
+          map.put("thread", thread);
+          URL += "&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD";
         }
 
-        // Post to the GoogleChat webhook
-        HttpPost httpPost = new HttpPost(notification.getGoogleChatWebhook());
-        httpPost.addHeader("Content-type", "application/json");
-
-        // Add the googleChat message to the post
-        StringEntity params = new StringEntity(getSpid() +" Alarm: "+googleChatMessage , "UTF-8");
-        params.setContentType("application/json");
-        httpPost.setEntity(params);
-
-        try {
-          CloseableHttpResponse response =  HttpClients.createDefault().execute(httpPost);
-
-          if ( response.getStatusLine().getStatusCode() != 200 )
-            logger.warning("Could not post to GoogleChat; error code - " + response.getStatusLine().getStatusCode());
-        } catch (Throwable t) {
-          logger.error("Error sending GoogleChat message: ", t);
+        String message = notification.getGoogleChatMessage();
+        if ( foam.util.SafetyUtil.isEmpty(message) ) {
+          message = notification.getBody();
         }
+
+        StringWriter sw  = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        Outputter outputter = new Outputter(x, pw);
+        map.put("text", message);
+        outputter.output(map);
+        String body = sw.toString();
+        // Loggers.logger(x, this).debug("body", body);
+
+        HttpRequest request = HttpRequest.newBuilder(URI.create(URL))
+          .header("accept", "application/json; charset=UTF-8")
+          .POST(HttpRequest.BodyPublishers.ofString(body))
+          .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+          .send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Loggers.logger(x, this).debug(response.body());
+        if ( response.statusCode() != 200 ) {
+          Loggers.logger(x, this).warning("Failed posting to Google", response.statusCode(), response.body());
+        }
+      } catch (Throwable t) {
+        Loggers.logger(x, this).error(t);
+      }
       `
     }
   ]
