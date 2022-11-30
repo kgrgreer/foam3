@@ -206,16 +206,6 @@ foam.CLASS({
       documentation: 'Email template name.'
     },
     {
-      class: 'String',
-      name: 'slackWebhook',
-      documentation: 'Webhook associated to Slack.'
-    },
-    {
-      class: 'String',
-      name: 'slackMessage',
-      documentation: 'Message to be sent to Slack.'
-    },
-    {
       class: 'Boolean',
       name: 'clusterable',
       value: true,

@@ -1,13 +1,12 @@
-
 /**
  * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
   package: 'foam.nanos.notification',
-  name: 'SlackSetting',
+  name: 'GoogleChatSetting',
   extends: 'foam.nanos.notification.NotificationSetting',
 
   javaImports: [
@@ -31,37 +30,37 @@ foam.CLASS({
       javaCode: `
         Logger logger = (Logger) x.get("logger");
 
-        if ( foam.util.SafetyUtil.isEmpty(notification.getSlackWebhook()) )
+        if ( foam.util.SafetyUtil.isEmpty(notification.getGoogleChatWebhook()) )
           return;
 
         // Get the message to send
-        String slackMessage = notification.getSlackMessage();
-        if ( foam.util.SafetyUtil.isEmpty(slackMessage) ) {
-          slackMessage = notification.getBody();
+        String googleChatMessage = notification.getGoogleChatMessage();
+        if ( foam.util.SafetyUtil.isEmpty(googleChatMessage) ) {
+          googleChatMessage = notification.getBody();
         }
 
-        // Post to the slack webhook
-        HttpPost httpPost = new HttpPost(notification.getSlackWebhook());
+        // Post to the GoogleChat webhook
+        HttpPost httpPost = new HttpPost(notification.getGoogleChatWebhook());
         httpPost.addHeader("Content-type", "application/json");
-        
-        // Add the slack message to the post
+
+        // Add the googleChat message to the post
         Theme theme = ((Themes) x.get("themes")).findTheme(x);
         String appName = getSpid();
         if ( theme != null &&
              ! foam.util.SafetyUtil.isEmpty(theme.getAppName()) ) {
           appName = theme.getAppName();
         }
-        StringEntity params = new StringEntity(appName +" Alarm: "+slackMessage , "UTF-8");
+        StringEntity params = new StringEntity(appName +" Alarm: "+googleChatMessage , "UTF-8");
         params.setContentType("application/json");
         httpPost.setEntity(params);
-        
+
         try {
           CloseableHttpResponse response =  HttpClients.createDefault().execute(httpPost);
-            
+
           if ( response.getStatusLine().getStatusCode() != 200 )
-            logger.warning("Could not post to Slack; error code - " + response.getStatusLine().getStatusCode());
+            logger.warning("Could not post to GoogleChat; error code - " + response.getStatusLine().getStatusCode());
         } catch (Throwable t) {
-          logger.error("Error sending slack message: ", t);
+          logger.error("Error sending GoogleChat message: ", t);
         }
       `
     }
