@@ -67,6 +67,11 @@ foam.CLASS({
       name: 'enableHttps'
     },
     {
+      class: 'Boolean',
+      name: 'enableMTLS',
+      documentation: 'Enable mTLS on this server connection'
+    },
+    {
       name: 'keystoreFileName',
       documentation: 'id of the keystore file in fileDAO',
       class: 'String',
@@ -402,9 +407,11 @@ foam.CLASS({
           sslContextFactory.setKeyStore(keyStore);
           sslContextFactory.setKeyStorePassword(this.getKeystorePassword());
           // NOTE: Enabling these will fail self-signed certificate use.
-          // sslContextFactory.setWantClientAuth(true);
-          // sslContextFactory.setNeedClientAuth(true);
-
+          if ( getEnableMTLS() ) {
+            sslContextFactory.setWantClientAuth(true);
+            sslContextFactory.setNeedClientAuth(true);  
+          }
+          
           getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
