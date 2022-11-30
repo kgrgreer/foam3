@@ -14,11 +14,32 @@ foam.CLASS({
       class: 'foam.u2.wizard.PathProperty',
       name: 'path'
     },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      documentation: `
+        OPTIONAL: For loading into the CapabilityJunction's data using a path
+      `,
+      name: 'loadIntoPath'
+    }
   ],
 
   methods: [
-    async function load() {
-      return this.path.f(this.__subContext__);
+    async function load({ old }) {
+      const val = this.path.f(this.__subContext__);
+
+      if ( this.loadIntoPath ) {
+        let initialData = this.delegate ? await this.delegate.load({ old }) : old;
+
+        if ( ! initialData ) {
+          initialData = this.of.create({}, this);
+        }
+
+        this.loadIntoPath$set(initialData, val);
+
+        return initialData;
+      }
+
+      return val;
     }
   ]
 });
