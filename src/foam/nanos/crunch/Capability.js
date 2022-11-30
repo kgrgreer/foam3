@@ -337,7 +337,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.name;
+        return this.name || this.id;
       },
       javaCode: `
         return getName();
