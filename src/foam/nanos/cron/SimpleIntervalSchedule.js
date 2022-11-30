@@ -128,7 +128,7 @@ foam.CLASS({
       documentation: `An internal prop used to change labels on the choiceView for frequency
         in the scheduled transfer depending on singular or plural frequency(repeat)
         e.g.  1 Week, 2 Weeks `,
-      hidden: true,
+      hidden: true,// dummy
       expression: function(repeat) {
         return repeat > 1 ? 'plural' : 'singular';
       }
