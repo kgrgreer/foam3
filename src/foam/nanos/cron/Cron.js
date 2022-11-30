@@ -253,14 +253,15 @@ foam.CLASS({
           if ( ! alarm.getIsActive() ) {
             alarm = (Alarm) alarm.fclone();
             alarm.setIsActive(true);
+            alarmDAO.put(alarm);
           }
         } else {
           alarm = new Alarm(getId(), true);
           alarm.setSeverity(LogLevel.ERROR);
           alarm.setReason(reason);
           alarm.setNote(note);
+          alarmDAO.put(alarm);
         }
-        alarmDAO.put(alarm);
 
         setStatus(ScriptStatus.ERROR);
         resetReattempts();
