@@ -17,7 +17,6 @@ foam.CLASS({
     'currentMenu',
     'loginSuccess',
     'loginView?',
-    'menuDAO',
     'memento_',
     'menuDAO',
     'pushMenu',

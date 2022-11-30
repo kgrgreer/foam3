@@ -14,6 +14,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'analyticsAgent?',
     'showWizardletSectionTitles?'
   ],
 
@@ -129,9 +130,18 @@ foam.CLASS({
   ],
 
   methods: [
-    function createView(opt_spec) {
+    function createView(opt_spec, opt_ctx_extras) {
       if ( ! opt_spec ) opt_spec = {};
       var ctx = this.wizardlet.__subSubContext__.createSubContext({ wizardController: this.wizardlet.wizardController });
+      
+      if ( opt_ctx_extras ) {
+        ctx = ctx.createSubContext(opt_ctx_extras);
+      }
+
+      window?.analyticsAgent?.pub('event', {
+        name: 'VIEW_LOAD_' + this.wizardlet.id,
+        extra: foam.json.stringify(this.customView)
+      });
 
       ctx.analyticsAgent?.pub('event', {
         name: 'VIEW_LOAD_' + this.wizardlet.id,

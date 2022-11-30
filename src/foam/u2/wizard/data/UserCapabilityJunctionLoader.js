@@ -41,7 +41,7 @@ foam.CLASS({
           wizardlet.data = loadedData.clone(wizardlet.__subSubContext__);
         }
       } catch (e) {
-        console.log(e);
+        console.warn(e);
       }
     }
   ]

@@ -286,7 +286,6 @@ foam.CLASS({
             searchData$: self.searchData$
           }, this, self.__subContext__);
 
-          self.show(filters && filters.length);
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
@@ -300,6 +299,7 @@ foam.CLASS({
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
               .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
+                .show(filters && filters.length)
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -406,7 +406,7 @@ foam.CLASS({
         }
       }
 
-      var perms =  await Promise.all(permissionedProperties.map( async p => 
+      var perms =  await Promise.all(permissionedProperties.map( async p =>
         await this.auth.check(ctrl.__subContext__, modelName + '.rw.' + p) ||
         await this.auth.check(ctrl.__subContext__, modelName + '.ro.' + p)
       ));
@@ -514,9 +514,9 @@ foam.CLASS({
       var of = this.dao && this.dao.of;
 
       if ( ! of ) this.filters = [];
-      
+
       var searchColumns_ = await this.filterPropertiesByReadPermission(this.searchColumns, of.id);
-      if ( searchColumns_ && searchColumns_.length > 0 ) {
+      if ( searchColumns_ ) {
         this.filters =  searchColumns_;
         return;
       }
@@ -528,37 +528,6 @@ foam.CLASS({
         this.filters = columns;
         return;
       }
-
-      columns = of.getAxiomByName('tableColumns');
-      columns = columns && columns.columns;
-      columns = await this.filterPropertiesByReadPermission(columns, of.id);
-      if ( columns ) {
-        this.columns = columns.filter(function(c) {
-        //  to account for nested columns like approver.legalName
-        if ( c.split('.').length > 1 ) return false;
-
-        var a = of.getAxiomByName(c);
-
-        if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-
-        return a
-          && ! a.storageTransient
-          && ! a.networkTransient
-          && a.searchView
-          && ! a.hidden
-        });
-        return;
-      }
-
-      columns = of.getAxiomsByClass(foam.core.Property)
-        .filter((p) => {
-          return ! p.storageTransient
-          && ! p.networkTransient
-          && p.searchView
-          && ! p.hidden
-        })
-        .map(foam.core.Property.NAME.f);
-      this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
     }
   ],
 
