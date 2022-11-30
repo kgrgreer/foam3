@@ -16,8 +16,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.logger.Logger',
-    'foam.nanos.theme.Theme',
-    'foam.nanos.theme.Themes',
     'org.apache.http.client.methods.CloseableHttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
@@ -45,13 +43,7 @@ foam.CLASS({
         httpPost.addHeader("Content-type", "application/json");
         
         // Add the slack message to the post
-        Theme theme = ((Themes) x.get("themes")).findTheme(x);
-        String appName = getSpid();
-        if ( theme != null &&
-             ! foam.util.SafetyUtil.isEmpty(theme.getAppName()) ) {
-          appName = theme.getAppName();
-        }
-        StringEntity params = new StringEntity(appName +" Alarm: "+slackMessage , "UTF-8");
+        StringEntity params = new StringEntity(getSpid() +" Alarm: "+slackMessage , "UTF-8");
         params.setContentType("application/json");
         httpPost.setEntity(params);
         
