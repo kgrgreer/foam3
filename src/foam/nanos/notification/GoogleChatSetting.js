@@ -64,7 +64,7 @@ foam.CLASS({
         map.put("text", message);
         outputter.output(map);
         String body = sw.toString();
-        Loggers.logger(x, this).debug("body", body);
+        // Loggers.logger(x, this).debug("body", body);
 
         HttpRequest request = HttpRequest.newBuilder(URI.create(URL))
           .header("accept", "application/json; charset=UTF-8")
@@ -74,7 +74,7 @@ foam.CLASS({
         HttpResponse<String> response = HttpClient.newHttpClient()
           .send(request, HttpResponse.BodyHandlers.ofString());
 
-        Loggers.logger(x, this).debug(response.body());
+        // Loggers.logger(x, this).debug(response.body());
         if ( response.statusCode() != 200 ) {
           Loggers.logger(x, this).warning("Failed posting to Google", response.statusCode(), response.body());
         }
