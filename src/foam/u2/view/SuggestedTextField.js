@@ -16,6 +16,10 @@
     'foam.u2.TextField'
   ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'onRowSelect?'
   ],
@@ -52,7 +56,8 @@
 
   messages: [
     { name: 'SUGGESTIONS_MSG', message: 'Suggestions' },
-    { name: 'NO_SUGGESTIONS_MSG', message: 'No Suggestions' }
+    { name: 'NO_SUGGESTIONS_MSG', message: 'No Suggestions' },
+    { name: 'MORE_SUGGESTIONS', message: 'Refine search to see more results' }
   ],
 
   properties: [
@@ -115,6 +120,10 @@
       value: 50,
       documentation: 'Limits the number of suggestions displayed'
     },
+    {
+      class: 'Boolean',
+      name: 'refineInput'
+    },
     'inputFocused'
   ],
 
@@ -164,7 +173,7 @@
                e.preventDefault();
              })
           .end();
-      });
+      }).add(this.refineInput$.map(v => v ? self.MORE_SUGGESTIONS : ""));
     },
     function fromProperty(prop) {
       this.prop = prop;
@@ -174,14 +183,17 @@
   listeners: [
     {
       name: 'onUpdate',
-      isMerged: true,
-      mergeDelay: 200,
+      isFramed: true,
       code: function() {
         const self = this;
         if ( this.suggestionsLimit > 0 ) {
           this.autocompleter.filteredDAO.limit(this.suggestionsLimit).select()
           .then((sink) => {
             this.filteredValues = sink.array;
+          });
+          // required to check if more elements are available to render
+          this.autocompleter.filteredDAO.limit(this.suggestionsLimit+1).select(this.Count.create()).then( count => {
+            self.refineInput = count.value > self.suggestionsLimit ? true : false;
           });
         } else {
           this.autocompleter.filteredDAO.select()
