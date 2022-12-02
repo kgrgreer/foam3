@@ -193,7 +193,7 @@
           });
           // required to check if more elements are available to render
           this.autocompleter.filteredDAO.limit(this.suggestionsLimit+1).select(this.Count.create()).then( count => {
-            self.refineInput = count.value > self.suggestionsLimit ? true : false;
+            self.refineInput = count.value > self.suggestionsLimit;
           });
         } else {
           this.autocompleter.filteredDAO.select()
