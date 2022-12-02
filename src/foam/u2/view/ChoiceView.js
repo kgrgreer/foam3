@@ -301,11 +301,13 @@ foam.CLASS({
     },
     {
       name: 'onDAOUpdate',
-      isFramed: true,
+      isMerged: true,
+      mergeDelay: 160,
       on: [
         'this.propertyChange.mode'
       ],
       code: function() {
+        if ( this.isDetached() ) return;
         var self = this;
         var seq = ++this.seq_;
         var dao = this.dao;
