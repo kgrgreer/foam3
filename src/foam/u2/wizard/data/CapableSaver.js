@@ -15,7 +15,7 @@
   `,
 
   imports: [
-    'capable'
+    'capable?'
   ],
 
   requires: [
@@ -25,14 +25,17 @@
   properties: [
     {
       name: 'capability'
-    }
+    },
+    'loader'
   ],
 
   methods: [
     async function save(data) {
-      return await this.capable.getCapablePayloadDAO().put(
+      const root = await this.loader?.load({}) ?? this.capable;
+      let a = await root.getCapablePayloadDAO().put(
         this.makePayload(data)
       );
+      await this.delegate.save(a);
     },
 
     function makePayload(data) {

@@ -14,9 +14,11 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.lib.json.Outputter',
+    'foam.util.SafetyUtil',
     'java.net.http.HttpClient',
     'java.net.http.HttpRequest',
     'java.net.http.HttpResponse',
@@ -41,9 +43,12 @@ foam.CLASS({
         // Loggers.logger(x, this).debug("URL", URL);
 
         if ( notification.getAlarm() != null ) {
-          String threadKey = notification.getAlarm().getId().toString().replaceAll(" ","_");
+          StringBuilder threadKey = new StringBuilder();
+          threadKey.append(System.getProperty("CLUSTER_NAME", notification.getAlarm().getHostname()));
+          threadKey.append("-");
+          threadKey.append(notification.getAlarm().getName().replaceAll(" ", "_"));
           Map thread = new HashMap();
-          thread.put("threadKey", threadKey);
+          thread.put("threadKey", threadKey.toString());
           map.put("thread", thread);
           URL += "&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD";
         }

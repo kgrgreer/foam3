@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'foam.u2.memento.Memorable'
   ],
 
   css: `
@@ -159,6 +160,7 @@ foam.CLASS({
       class: 'Reference',
       name: 'rootCapability',
       of: 'foam.nanos.crunch.Capability',
+      memorable: 'true',
       help: `Root capability reference used to populate graph.
           Graph renders prerequisites downward of the selected capabilty.`,
       view: function(_, X) {
