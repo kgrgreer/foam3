@@ -378,7 +378,7 @@ This is the heart of Medusa.`,
           if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
-                promoterLock_.wait(replaying.getReplaying() ? 100 : getTimerInterval());
+                promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
               }
             } catch (InterruptedException e ) {
               logger.info("exit", "interrupted");
@@ -755,7 +755,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
               }
             }
             // TODO: do not put, causing deadlock
-            ((DAO) x.get("alarmDAO")).put(alarm);
+            // ((DAO) x.get("alarmDAO")).put(alarm);
           }
         }
         return skipped;
