@@ -336,6 +336,12 @@ foam.CLASS({
           dao.find(this.data).then(o => o ? [o] : []);
 
         p.then(a => {
+          if ( a.length > 10 ) {
+            this.warn('Warning: Inefficient to use ChoiceView for large selections. Count: ' + a.length);
+            if ( this.prop_ ) {
+              this.warn('For Property: ' + this.prop_.name + ' on ' + this.prop_.forClass_);
+            }
+          }
           var choices = a.map(this.objToChoice);
           var choiceLabels = a.map(o => {
             const v = this.objToChoice(o);
