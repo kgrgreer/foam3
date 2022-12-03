@@ -63,6 +63,9 @@ foam.CLASS({
           var delegate = jdao.getDelegate();
           jdao.clearDelegate();
           jdao.setDelegate(delegate);
+
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replaningInfo");
+          replaying.clearCount();
         }
       } else if ( DAO.PURGE_CMD.equals(obj) ) {
         getMdao().cmd_(x, obj);

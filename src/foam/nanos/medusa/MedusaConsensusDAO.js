@@ -536,9 +536,10 @@ This is the heart of Medusa.`,
               registry.register(x, (Long) entry.getId());
             }
           }
-
-          // legacy support for storageTransient objectId
-          entry.setObjectId(nu.getProperty("id"));
+          if ( nu != null ) {
+            // legacy support for storageTransient objectId
+            entry.setObjectId(nu.getProperty("id"));
+          }
         }
 
         return entry;
