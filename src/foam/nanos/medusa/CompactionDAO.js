@@ -557,6 +557,11 @@ TODO: handle node roll failure - or timeout
           name: 'put',
           javaCode: `
           MedusaEntry entry = (MedusaEntry) obj;
+          Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
+          if ( compaction != null &&
+               ! compaction.getReducible() ) {
+            getDelegate().put(obj, sub);
+          }
           String id = entry.getNSpecName()+"-"+entry.getObjectId();
           Map results = getPutResults();
           if ( entry.getDop().equals(DOP.REMOVE) ) {
@@ -615,18 +620,24 @@ TODO: handle node roll failure - or timeout
               logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
             }
           } else {
-              MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
-              String data = entrySupport.data(x, found, null, entry.getDop());
-              MedusaEntry me = (MedusaEntry) entry.fclone();
-              MedusaEntry.ID.clear(me);
-              MedusaEntry.DATA.clear(me);
-              MedusaEntry.TRANSIENT_DATA.clear(me);
-              MedusaEntry.OBJECT.clear(me);
-              MedusaEntry.HASH.clear(me);
-              me.setData(data);
-              DaggerService dagger = (DaggerService) x.get("daggerService");
-              me = dagger.link(x, me);
-              getDelegate().put(me, sub);
+            MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+            String data = entry.getData();
+
+            Compaction compaction = (Compaction) ((DAO) x.get("compactionDAO")).find(entry.getNSpecName());
+            if ( compaction == null ||
+                 compaction.getReducible() ) {
+              data = entrySupport.data(x, found, null, entry.getDop());
+            }
+            MedusaEntry me = (MedusaEntry) entry.fclone();
+            MedusaEntry.ID.clear(me);
+            MedusaEntry.DATA.clear(me);
+            MedusaEntry.TRANSIENT_DATA.clear(me);
+            MedusaEntry.OBJECT.clear(me);
+            MedusaEntry.HASH.clear(me);
+            me.setData(data);
+            DaggerService dagger = (DaggerService) x.get("daggerService");
+            me = dagger.link(x, me);
+            getDelegate().put(me, sub);
           }
           `
         }

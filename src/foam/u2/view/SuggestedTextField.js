@@ -109,6 +109,12 @@
       class: 'Boolean',
       name: 'suggestOnFocus'
     },
+    {
+      class: 'Int',
+      name: 'suggestionsLimit',
+      value: 50,
+      documentation: 'Limits the number of suggestions displayed'
+    },
     'inputFocused'
   ],
 
@@ -168,12 +174,21 @@
   listeners: [
     {
       name: 'onUpdate',
-      isFramed: true,
+      isMerged: true,
+      mergeDelay: 200,
       code: function() {
-        this.autocompleter.filteredDAO.select()
-        .then((sink) => {
-          this.filteredValues = sink.array;
-        });
+        const self = this;
+        if ( this.suggestionsLimit > 0 ) {
+          this.autocompleter.filteredDAO.limit(this.suggestionsLimit).select()
+          .then((sink) => {
+            this.filteredValues = sink.array;
+          });
+        } else {
+          this.autocompleter.filteredDAO.select()
+          .then((sink) => {
+            this.filteredValues = sink.array;
+          });
+        }
       }
     },
     function loaded() {

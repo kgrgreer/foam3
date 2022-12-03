@@ -35,11 +35,19 @@ foam.CLASS({
       },
     },
     {
+      documentation: 'Entry is eligible for compaction',
       name: 'compactible',
       class: 'Boolean',
       value: false
     },
     {
+      documentation: 'An entry eligible for compaction is normally output only once, but if not reducible, then all copies are output',
+      name: 'reducible',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      documentation: 'Entry data can be clear after compaction',
       name: 'clearable',
       class: 'Boolean',
       value: true

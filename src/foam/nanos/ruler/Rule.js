@@ -111,9 +111,11 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
-      class: 'String',
+      class: 'Reference',
       name: 'daoKey',
-      label: 'DAO Key',
+      of: 'foam.nanos.boot.NSpec',
+      targetDAOKey: 'nSpecDAO',
+      label: 'DAO',
       documentation: 'dao name that the rule is applied on.',
       readPermissionRequired: true,
       writePermissionRequired: true,
@@ -155,17 +157,6 @@ foam.CLASS({
       readPermissionRequired: true,
       writePermissionRequired: true,
       documentation: 'Defines if the rule is async. Async rule always runs after DAO put/remove, the after flag on the rule will be ignored.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.mlang.predicate.Predicate',
-      name: 'predicate',
-      factory: function() {
-        return this.True.create();
-      },
-      javaFactory: `
-        return foam.mlang.MLang.TRUE;
-      `
     },
     {
       class: 'FObjectProperty',

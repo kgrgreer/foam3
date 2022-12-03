@@ -35,6 +35,12 @@ foam.CLASS({
         The loader should load a "wizard spec", which is a capability id or
         a Capable object.
       `
+    },
+    {
+      class: 'FObjectArray',
+      // of: 'foam.util.FluentSpec',
+      of: 'foam.core.FObject',
+      name: 'sequenceExtras'
     }
   ],
 
@@ -56,7 +62,12 @@ foam.CLASS({
       // Load from wizardSpecLoader
       const root = this.wizardSpecLoader ? await this.wizardSpecLoader.load({}) : data;
       if ( typeof root === 'string' ) {
-        throw new Error('has not been needed yet, so no code here yet');
+        await this.crunchController.doInlineIntercept(
+          this.wizardController, null, root, null,
+          { put: false },
+          subX, this.sequenceExtras
+        );
+        return;
       }
 
       if ( this.Capable.isInstance(root) ) {
@@ -67,7 +78,7 @@ foam.CLASS({
           await this.crunchController.doInlineIntercept(
             this.wizardController, root, capabilityId, null,
             { put: false },
-            subX
+            subX, this.sequenceExtras
           );
         }
 
