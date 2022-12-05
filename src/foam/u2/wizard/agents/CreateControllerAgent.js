@@ -26,6 +26,7 @@ foam.CLASS({
   exports: [
     'config',
     'submitted',
+    'wizardClosing',
     'wizardController'
   ],
 
@@ -42,7 +43,11 @@ foam.CLASS({
       name: 'submitted',
       class: 'Boolean'
     },
-    'wizardController'
+    'wizardController',
+    {
+      class: 'Boolean',
+      name: 'wizardClosing'
+    }
   ],
   methods: [
     async function execute() {
