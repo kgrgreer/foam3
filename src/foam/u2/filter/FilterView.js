@@ -263,7 +263,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.onDetach(this.searchColumns$.sub(this.updateFilters));
-      this.onDetach(this.dao$.sub(this.updateFilters));
+      this.onDetach(this.dao.of$.sub(this.updateFilters));
     },
     async function render() {
       var self = this;
