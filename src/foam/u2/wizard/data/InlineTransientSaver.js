@@ -46,6 +46,7 @@ foam.CLASS({
 
   methods: [
     async function save (data) {
+      if ( ! data ) return;
       let subX = this.wizardController.__subContext__;
       if ( data && this.MapHolder.isInstance(data) ) {
         subX = subX.createSubContext(data.value);

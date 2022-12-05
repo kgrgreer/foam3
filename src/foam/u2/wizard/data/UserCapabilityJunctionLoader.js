@@ -40,6 +40,7 @@ foam.CLASS({
         } else {
           wizardlet.data = loadedData.clone(wizardlet.__subSubContext__);
         }
+        return wizardlet.data;
       } catch (e) {
         console.warn(e);
       }

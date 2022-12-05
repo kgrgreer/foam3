@@ -25,7 +25,10 @@ foam.CLASS({
 
   methods: [
     async function load({ old }) {
-      return await this.loaders[this.loaders.length - 1].load(...arguments);
+      for ( let i = 0 ; i < this.loaders.length ; i++ ) {
+        old = await this.loaders[i].load({ old });
+      }
+      return old;
     }
   ]
 });

@@ -42,8 +42,8 @@ foam.CLASS({
   ],
 
   methods: [
-    async function load(o) {
-      return o?.old ?? this.of.create(this.args, this);
+    async function load({old}) {
+      return old ? old.copyFrom(this.args) : this.of.create(this.args, this);
     }
   ]
 });
