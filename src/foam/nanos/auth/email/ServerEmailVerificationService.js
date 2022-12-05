@@ -10,10 +10,10 @@
   implements: [ 'foam.nanos.auth.email.EmailVerificationService' ],
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserNotFoundException',
@@ -90,7 +90,7 @@
           .setUserName(user.getUserName())
           .setExpiry(calendar.getTime())
           .build();
-        
+
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         code = (EmailVerificationCode) verificationCodeDAO.put(code);
 
@@ -120,7 +120,7 @@
           ((DAO) x.get("localUserDAO")).put(user);
         } else {
           sendCode(x, user, this.VERIFY_EMAIL_TEMPLATE);
-          throw new AuthenticationException(this.RESEND_MESSAGE);
+          throw new ValidationException(this.RESEND_MESSAGE);
         }
         return res;
       `
@@ -160,7 +160,7 @@
                 EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
                 GT(EmailVerificationCode.EXPIRY, c.getTime())
               ));
-              return code != null;     
+              return code != null;
             }
           `
         }));
