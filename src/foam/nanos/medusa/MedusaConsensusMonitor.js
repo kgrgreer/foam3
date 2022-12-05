@@ -52,7 +52,7 @@ foam.CLASS({
       name: 'minReplayInterval',
       class: 'Long',
       units: 'ms',
-      value: 360000
+      value: 600000
     },
     {
       name: 'medusaDAO',
@@ -168,11 +168,14 @@ foam.CLASS({
         alarm.setNote("No Consensus: "+next.toSummary());
         alarm = (Alarm) alarmDAO.put(alarm);
 
+        // TOOD: getMinReplayInterval has to be adjusted based on count.
+        // Nodes with multiple mediator requests are constrained on memory and
+        // 1m records might take 10 minutes to read and send.
         if ( getLastReplay() == 0L ||
              System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
           logger.info("request replay");
           final ReplayRequestCmd cmd = new ReplayRequestCmd();
-          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
+          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(replaying.getIndex()).build());
           Agency agency = (Agency) x.get(support.getThreadPoolName());
           agency.submit(x,
             new ContextAgent() {
