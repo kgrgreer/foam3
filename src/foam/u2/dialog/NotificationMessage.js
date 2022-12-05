@@ -145,7 +145,7 @@ foam.CLASS({
         // Create notification message and description from
         // exception name and message.
         var ex = this.err.exception || this.err;
-        if ( ex.id ) {
+        if ( ex.id && ! this.message ) {
           this.message = ex.id.split('.').pop();
           if ( this.message.endsWith('Exception') ) {
             this.message = this.message.replace('Exception', '');
