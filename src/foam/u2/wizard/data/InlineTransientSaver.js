@@ -17,9 +17,14 @@ foam.CLASS({
     MapHolder, it will be used to populate the subcontext.
   `,
 
+  issues: [
+    'inline transient wizards cannot be re-loaded via alternate flows'
+  ],
+
   imports: [
     'crunchController',
-    'wizardController'
+    'wizardController',
+    'wizardlet'
   ],
 
   requires: [
@@ -46,6 +51,10 @@ foam.CLASS({
 
   methods: [
     async function save (data) {
+      // InlineTransientSaver will create duplicate wizards if it is called
+      // more than once, so deactivate this wizardlet's saver.
+      this.wizardlet.wao.saver = { class: 'foam.u2.wizard.data.NullSaver' };
+
       let subX = this.wizardController.__subContext__;
       if ( data && this.MapHolder.isInstance(data) ) {
         subX = subX.createSubContext(data.value);
