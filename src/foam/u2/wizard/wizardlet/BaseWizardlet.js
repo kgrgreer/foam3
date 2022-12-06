@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'BaseWizardlet',
+  implements: ['foam.u2.wizard.DynamicActionWizardlet'],
 
   todo: [
     'rename wizardlet.loading to wizardlet.busy',
