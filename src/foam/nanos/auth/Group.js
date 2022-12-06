@@ -158,6 +158,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       documentation: 'Custom authentication settings for this group.'
     }
     */
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'generalCapability',
+      documentation: `Capability that needs to be granted to proceed to the app.
+      Checked for status in ApplicationController.`
+    }
   ],
 
   methods: [
