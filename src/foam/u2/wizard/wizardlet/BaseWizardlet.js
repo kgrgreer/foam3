@@ -17,7 +17,8 @@ foam.CLASS({
   topics: ['saveEvent'],
 
   implements: [
-    'foam.u2.wizard.wizardlet.Wizardlet'
+    'foam.u2.wizard.wizardlet.Wizardlet',
+    'foam.u2.wizard.DynamicActionWizardlet'
   ],
 
   imports: [
@@ -27,7 +28,8 @@ foam.CLASS({
 
   exports: [
     'id as wizardletId',
-    'of as wizardletOf'
+    'of as wizardletOf',
+    'as wizardlet'
   ],
 
   requires: [
