@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'HttpServer',
 
   implements: [
-    'foam.nanos.NanoService'
+    'foam.nanos.NanoService',
+    'foam.nanos.boot.NSpecAware'
   ],
 
   javaImports: [
@@ -150,7 +151,7 @@ foam.CLASS({
       try {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -344,7 +345,7 @@ foam.CLASS({
       if ( this.getEnableHttps() ) {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
