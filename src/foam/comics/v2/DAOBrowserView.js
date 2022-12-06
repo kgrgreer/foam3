@@ -295,6 +295,10 @@ foam.CLASS({
             }));
           }
 
+          this.onDetach(this.cannedPredicate$.sub(() => {
+            filterView?.clearAll();
+          }));
+
           if ( config$cannedQueries.length >= 1 ) {
             cannedView = foam.u2.ViewSpec.createView(self.cannedQueriesView, {
               choices: config$cannedQueries.map((o) => [o.predicate, o.label]),

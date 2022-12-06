@@ -3929,7 +3929,7 @@ foam.CLASS({
     {
       name: 'TRUE',
       factory: function() { return foam.mlang.predicate.True.create() }
-    },
+    }
   ],
 
   methods: [

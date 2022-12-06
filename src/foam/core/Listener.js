@@ -104,9 +104,8 @@ foam.CLASS({
           if ( ! this.hasOwnPrivate_(name) ) {
             var self = this;
             var l = function(sub) {
-              // Is it possible to detect stale subscriptions?
-              // ie. after an object has been detached.
-              return code.apply(self, arguments);
+              // Don't deliver stale notifications after an object has been detached.
+              if ( ! self.isDetached() ) return code.apply(self, arguments);
             };
 
             if ( isMerged ) {

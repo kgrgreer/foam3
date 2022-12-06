@@ -368,7 +368,9 @@ This is the heart of Medusa.`,
             if ( next == null ||
                  entry != null &&
                  ! entry.getPromoted() ) {
-              gap(x, nextIndex, nextIndexSince);
+              if (gap(x, nextIndex, nextIndexSince)) {
+                continue; // don't sleep
+              }
             }
           } finally {
             pm.log(x);
@@ -534,9 +536,10 @@ This is the heart of Medusa.`,
               registry.register(x, (Long) entry.getId());
             }
           }
-
-          // legacy support for storageTransient objectId
-          entry.setObjectId(nu.getProperty("id"));
+          if ( nu != null ) {
+            // legacy support for storageTransient objectId
+            entry.setObjectId(nu.getProperty("id"));
+          }
         }
 
         return entry;
@@ -636,14 +639,17 @@ During replay gaps are treated differently; If the index after the gap is ready 
           type: 'Long'
         }
       ],
+      type: 'Boolean',
       javaCode: `
 // TODO: another scenario - broadcast from primary - but primary dies before broadcasting to quorum of Nodes.  So only x of y nodes have copy.  The entry will not be promoted, and the system will effectively halt.   It is possible to recover from this scenario by deleting the x node entries.
+
+      boolean skipped = false;
 
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       if ( index != replaying.getIndex() + 1 ||
            ! replaying.getReplaying() &&
            System.currentTimeMillis() - since < 2000 ) {
-        return;
+        return skipped;
       }
 
       // NOTE: use internalMedusaDAO, else we'll block on ReplayingDAO.
@@ -657,7 +663,10 @@ During replay gaps are treated differently; If the index after the gap is ready 
         Long minIndex = 0L;
         if ( entry == null ) {
           Min min = (Min) getDelegate().where(
-            EQ(MedusaEntry.PROMOTED, false)
+            AND(
+              GT(MedusaEntry.INDEX, index),
+              EQ(MedusaEntry.PROMOTED, false)
+            )
           ).select(MIN(MedusaEntry.INDEX));
           if ( min != null &&
                min.getValue() != null &&
@@ -679,11 +688,13 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 // the promoter will look for the entry after the global index.
                 getLogger().info("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
                 replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
+                ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap.skip");
+                skipped = true;
               }
-              return;
+              return skipped;
             }
             if ( entry.getIndex() == replaying.getIndex() + 1 ) {
-              return;
+              return skipped;
             }
 
             getLogger().warning("gap", "found", index);
@@ -748,6 +759,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
             // ((DAO) x.get("alarmDAO")).put(alarm);
           }
         }
+        return skipped;
       } catch (Throwable t) {
         pm.error(x, t);
         getLogger().error(t);
