@@ -151,7 +151,7 @@ foam.CLASS({
       try {
         int port = getPort();
         try {
-          port = Port.get(getX(), getNSpec().getId());
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -345,7 +345,7 @@ foam.CLASS({
       if ( this.getEnableHttps() ) {
         int port = getPort();
         try {
-          port = Port.get(getX(), getNSpec().getId());
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
