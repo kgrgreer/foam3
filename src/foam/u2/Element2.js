@@ -394,12 +394,12 @@ foam.CLASS({
         var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
         if ( ! map[cls.id] ) {
           map[cls.id] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       } else {
         if ( ! installedStyles[this.$UID] ) {
           installedStyles[this.$UID] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
+          X.installCSS(this.expandCSS(cls, this.code, X), cls.id);
         }
       }
     },
@@ -446,14 +446,14 @@ foam.CLASS({
       };
     },
 
-    function expandCSS(cls, text) {
+    function expandCSS(cls, text, ctx) {
       if ( ! this.expands_ ) return text;
 
       /* Performs expansion of the ^/<< shorthand on the CSS. */
       // TODO: Parse and validate the CSS.
       // TODO: Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
+      text = text.replace(/(<<|\^)(.)/g, function(match, _, next) {
         var c = next.charCodeAt(0);
         // Check if the next character is an uppercase or lowercase letter,
         // number, - or _. If so, add a - because this is a modified string.
@@ -465,6 +465,7 @@ foam.CLASS({
 
         return base + next;
       });
+      return foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]
 });
@@ -1791,23 +1792,40 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyBorder
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     }
   ],
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
-
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
-
-      e.fromProperty && e.fromProperty(this);
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: this }, args, X);
+    },
+
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        el.data$ = X.data$.dot(this.name);
+      }
+
+      el.fromProperty && el.fromProperty(this);
+
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2035,16 +2053,16 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      expression: function(label, labelFormatter) {
+      expression: function(label, checkboxLabelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
           label: this.help,
-          labelFormatter: labelFormatter
+          labelFormatter: checkboxLabelFormatter
         };
       }
     },
     {
-      name: 'labelFormatter'
+      name: 'checkboxLabelFormatter'
     }
   ]
 });
