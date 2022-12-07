@@ -684,8 +684,6 @@ TODO: handle node roll failure - or timeout
             DaggerService dagger = (DaggerService) x.get("daggerService");
             me = dagger.link(x, me);
             getDelegate().put(me, sub);
-            // me.setPromoted(true);
-            // ((DAO) x.get("internalMedusaDAO")).put(me);
           }
           `
         }
