@@ -64,6 +64,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'canSkipData',
       documentation: 'Set to true if the alternateflow action should always be enabled'
+    },
+    {
+      class: 'Boolean',
+      name: 'saveCurrent',
+      documentation: `
+        When a wizardletId is given, we jump to the given wizardlet instead of calling gonext which
+        saves the current wizardlet.
+        Set this boolean to true if the current wizardlet should be saved before executing alt flow where
+        wizardletId is given.
+      `
     }
   ],
 
@@ -103,6 +113,8 @@ foam.CLASS({
 
       if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
         wizardController = wizardController.data;
+      
+      if  ( this.saveCurrent ) wizardController.currentWizardlet.save();
 
       const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
       if ( wi < 0 ) {
