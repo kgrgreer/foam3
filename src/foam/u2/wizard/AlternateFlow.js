@@ -90,7 +90,8 @@ foam.CLASS({
       ].forEach(([listProp, propToChange, newValue]) => {
         for ( const wizardletId of this[listProp] ) {
           const w = x.wizardlets.find(w => w.id == wizardletId);
-          w[propToChange] = newValue;
+          if ( w )
+            w[propToChange] = newValue;
         }
       })
     },
