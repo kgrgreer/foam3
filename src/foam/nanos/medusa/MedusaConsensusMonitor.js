@@ -52,7 +52,7 @@ foam.CLASS({
       name: 'minReplayInterval',
       class: 'Long',
       units: 'ms',
-      value: 600000
+      value: 300000
     },
     {
       name: 'medusaDAO',
@@ -102,6 +102,17 @@ foam.CLASS({
         getInitialTimerDelay(),
         getTimerInterval()
       );
+      `
+    },
+    {
+      name: 'stop',
+      javaCode: `
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        Loggers.logger(getX(), this).info("stop");
+        timer.cancel();
+        clearTimer();
+      }
       `
     },
     {
@@ -175,7 +186,9 @@ foam.CLASS({
              System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
           logger.info("request replay");
           final ReplayRequestCmd cmd = new ReplayRequestCmd();
-          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(replaying.getIndex()).build());
+          // request parents as well to handle 'parent not found' scenario
+          Long min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
+          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(min).build());
           Agency agency = (Agency) x.get(support.getThreadPoolName());
           agency.submit(x,
             new ContextAgent() {
