@@ -96,6 +96,12 @@ foam.CLASS({
       javaFactory: 'return new DaggerBootstrap();'
     },
     {
+      documentation: 'Indexes with values less than minIndex are involved in bootstrapping and should not be deleted.',
+      name: 'minIndex',
+      class: 'Long',
+      value: 2
+    },
+    {
       documentation: 'Current max promoted index',
       name: 'index',
       label: 'Global Index',
@@ -243,6 +249,7 @@ foam.CLASS({
       }
       logger.info("end", "index", getIndex());
       setBootstrap(bootstrap);
+      setMinIndex(getIndex());
       return bootstrap;
      `
     },

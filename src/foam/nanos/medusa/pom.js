@@ -67,6 +67,7 @@ foam.POM({
     { name: "MedusaUniqueDAO",                                                            flags: "js|java" },
     { name: "MultiplePrimariesException",                                                 flags: "js|java" },
     { name: "NodeCView",                                                                  flags: "js" },
+    { name: "PredicatedPutDAO",                                                           flags: "js|java" },
     { name: "PrimaryMediatorDAO",                                                         flags: "js|java" },
     { name: "PrimaryNotFoundException",                                                   flags: "js|java" },
     { name: "PromotedClearAgent",                                                         flags: "js|java" },
