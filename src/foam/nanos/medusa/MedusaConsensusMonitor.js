@@ -187,7 +187,7 @@ foam.CLASS({
           logger.info("request replay");
           final ReplayRequestCmd cmd = new ReplayRequestCmd();
           // request parents as well to handle 'parent not found' scenario
-          Long min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
+          long min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
           cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(min).build());
           Agency agency = (Agency) x.get(support.getThreadPoolName());
           agency.submit(x,
