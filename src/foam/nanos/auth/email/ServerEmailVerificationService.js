@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.auth.email',
   name: 'ServerEmailVerificationService',
   implements: [ 'foam.nanos.auth.email.EmailVerificationService' ],
@@ -34,7 +34,8 @@
   ],
 
   messages: [
-    { name: 'RESEND_MESSAGE', message: 'This code is no longer valid, a new code has been sent to your email address.'}
+    { name: 'INVALID_CODE', message: 'This code is no longer valid.'},
+    { name: 'INCORRECT_CODE', message: 'Incorrect code.'}
   ],
 
   methods: [
@@ -46,7 +47,8 @@
         DAO userDAO = ((DAO) x.get("localUserDAO")).where(
           AND(
             EQ(User.EMAIL, email),
-            EQ(User.LOGIN_ENABLED, true)
+            EQ(User.LOGIN_ENABLED, true),
+            EQ(User.SPID, x.get("spid"))
           ))
           .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();
@@ -93,7 +95,7 @@
           .setVerificationAttempts(0)
           .setMaxAttempts(DEFAULT_MAX_ATTEMPTS)
           .build();
-        
+
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         code = (EmailVerificationCode) verificationCodeDAO.put(code);
 
@@ -115,17 +117,12 @@
       javaCode: `
         User user = findUser(x, email, userName);
 
-        var res = verifyCode(x, user, verificationCode);
+        processCode(x, user, verificationCode);
 
-        if ( res ) {
-          user = (User) user.fclone();
-          user.setEmailVerified(true);
-          ((DAO) x.get("localUserDAO")).put(user);
-        } else {
-          sendCode(x, user, this.VERIFY_EMAIL_TEMPLATE);
-          throw new AuthenticationException(this.RESEND_MESSAGE);
-        }
-        return res;
+        user = (User) user.fclone();
+        user.setEmailVerified(true);
+        ((DAO) x.get("localUserDAO")).put(user);
+        return true;
       `
     },
     {
@@ -154,16 +151,46 @@
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+            public void processCode(foam.core.X x, User user, String verificationCode) {
+              try {
+                verifyCode(x, user, verificationCode);
+              } finally {
+                var dao  = (DAO) x.get("emailVerificationCodeDAO");
+                var code = (EmailVerificationCode) dao.find(AND(
+                  EQ(EmailVerificationCode.EMAIL, user.getEmail()),
+                  EQ(EmailVerificationCode.USER_NAME, user.getUserName())
+                ));
+
+                if ( code != null ) {
+                  dao.remove(code);
+                }
+              }
+            }
+
             public boolean verifyCode(foam.core.X x, User user, String verificationCode) {
               DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
               Calendar c = Calendar.getInstance();
               EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
                 EQ(EmailVerificationCode.EMAIL, user.getEmail()),
                 EQ(EmailVerificationCode.USER_NAME, user.getUserName()),
-                EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
-                GT(EmailVerificationCode.EXPIRY, c.getTime())
+                GT(EmailVerificationCode.EXPIRY, c.getTime()),
+                GT(EmailVerificationCode.MAX_ATTEMPTS, EmailVerificationCode.VERIFICATION_ATTEMPTS)
               ));
-              return code != null;     
+
+              if ( code == null )
+                throw new VerificationCodeException(this.INVALID_CODE);
+
+              if ( ! code.getVerificationCode().equals(verificationCode) ) {
+                code = (EmailVerificationCode) code.fclone();
+                code.setVerificationAttempts(code.getVerificationAttempts() + 1);
+                verificationCodeDAO.put(code);
+
+                var remaining = code.getMaxAttempts() - code.getVerificationAttempts();
+                var exception = new VerificationCodeException(this.INCORRECT_CODE);
+                exception.setRemainingAttempts(remaining);
+                throw exception;
+              }
+              return true;
             }
           `
         }));
