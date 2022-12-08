@@ -41,7 +41,8 @@
         DAO userDAO = ((DAO) x.get("localUserDAO")).where(
           AND(
             EQ(User.EMAIL, email),
-            EQ(User.LOGIN_ENABLED, true)
+            EQ(User.LOGIN_ENABLED, true),
+            EQ(User.SPID, x.get("spid"))
           ))
           .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();

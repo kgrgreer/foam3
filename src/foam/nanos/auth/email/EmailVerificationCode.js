@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.auth.email',
   name: 'EmailVerificationCode',
-  ids: [ 'email' ],
+  ids: [ 'email', 'userName' ],
 
   mixins: [
     'foam.nanos.auth.CreatedAware',
