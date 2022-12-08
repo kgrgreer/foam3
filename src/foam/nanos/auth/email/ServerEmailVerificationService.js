@@ -52,9 +52,12 @@ foam.CLASS({
         if ( list == null || list.size() == 0 ) {
           throw new UserNotFoundException();
         }
+
         if ( list.size() > 1 ) {
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "verifyByCode", "multiple valid users found for", email);
+
           if ( SafetyUtil.isEmpty(userName) ) throw new DuplicateEmailException();
+
           list = ((ArraySink) userDAO
             .where(EQ(User.USER_NAME, userName))
             .select(new ArraySink()))
@@ -90,6 +93,7 @@ foam.CLASS({
         
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         code = (EmailVerificationCode) verificationCodeDAO.put(code);
+
         EmailMessage message = new EmailMessage();
         message.setTo(new String[]{user.getEmail()});
         message.setUser(user.getId());
@@ -107,7 +111,9 @@ foam.CLASS({
       name: 'verifyUserEmail',
       javaCode: `
         User user = findUser(x, email, userName);
+
         var res = verifyCode(x, user, verificationCode);
+
         if ( res ) {
           user = (User) user.fclone();
           user.setEmailVerified(true);
