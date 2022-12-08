@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.auth.email',
   name: 'ServerEmailVerificationService',
   implements: [ 'foam.nanos.auth.email.EmailVerificationService' ],
