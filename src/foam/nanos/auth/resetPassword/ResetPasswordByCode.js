@@ -28,8 +28,16 @@ foam.CLASS({
       name: 'verificationCodeSection'
     },
     {
-      name: 'resetPasswordSection'
+      name: 'resetPasswordSection',
+      isAvailable: function(codeVerified) {
+        return codeVerified;
+      }
     }
+  ],
+
+  messages: [
+    { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
+    { name: 'INVALID_CODE',     message: 'The code you have entered is invalid. Please re-enter your code or request a new code.' }
   ],
 
   properties: [
@@ -52,7 +60,19 @@ foam.CLASS({
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
         delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['resetPasswordCode'],
+          query: 'resetPasswordCode.len==6',
+          errorMessage: 'EMPTY_CODE'
+        },
+        {
+          args: ['codeVerified'],
+          query: 'codeVerified!=true',
+          errorMessage: 'INVALID_CODE'
+        }
+      ]
     },
     {
       name: 'newPassword',
@@ -61,6 +81,35 @@ foam.CLASS({
     {
       name: 'confirmationPassword',
       section: 'resetPasswordSection'
+    },
+    {
+      class: 'Boolean',
+      name: 'codeVerified',
+      documentation: 'Updated by verifyCode method whenever code is updated and of valid format.'
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.onDetach(this.resetPasswordCode$.sub(() => this.verifyCode()));
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'verifyCode',
+      mergeDelay: 100,
+      code: async function() {
+        var validFormat = ( ! this.RESET_PASSWORD_CODE.validateObj[0].call(this) );
+        if ( ! validFormat ) {
+          this.codeVerified = false;
+          return;
+        }
+
+        // call server to verify code
+        var verified = await  this.resetPasswordService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
+        this.codeVerified = verified;
+      }
     }
   ],
 
