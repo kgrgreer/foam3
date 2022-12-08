@@ -74,6 +74,10 @@
       javaCode: `
         User user = findUser(x, email, userName);
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
+
+        // invalidate any existing codes before sending a new code
+        invalidateExistingCodes(x, user);
+
         sendCode(x, user, emailTemplate);
       `
     },
@@ -115,11 +119,12 @@
         var res = verifyCode(x, user, verificationCode);
 
         if ( res ) {
-          user = (User) user.fclone();
-          user.setEmailVerified(true);
-          ((DAO) x.get("localUserDAO")).put(user);
+          if ( ! user.getEmailVerified() ) {
+            user = (User) user.fclone();
+            user.setEmailVerified(true);
+            ((DAO) x.get("localUserDAO")).put(user);
+          }
         } else {
-          sendCode(x, user, this.VERIFY_EMAIL_TEMPLATE);
           throw new AuthenticationException(this.RESEND_MESSAGE);
         }
         return res;
@@ -142,6 +147,17 @@
         }
         return code.toString();
       `
+    },
+    {
+      name: 'invalidateExistingCodes',
+      type: 'Void',
+      args: 'Context x, User user',
+      javaCode: `
+        ((DAO) x.get("emailVerificationCodeDAO")).where(AND(
+          EQ(EmailVerificationCode.EMAIL, user.getEmail()),
+          EQ(EmailVerificationCode.USER_NAME, user.getUserName())
+        )).removeAll();
+      `
     }
   ],
 
@@ -151,7 +167,7 @@
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-            public boolean verifyCode(foam.core.X x, User user, String verificationCode) {
+            public boolean verifyCode(X x, User user, String verificationCode) {
               DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
               Calendar c = Calendar.getInstance();
               EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
@@ -160,7 +176,11 @@
                 EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
                 GT(EmailVerificationCode.EXPIRY, c.getTime())
               ));
-              return code != null;     
+              if ( code != null ) {
+                invalidateExistingCodes(x, user);
+                return true;
+              }
+              return false;
             }
           `
         }));
