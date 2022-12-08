@@ -107,11 +107,15 @@ foam.CLASS({
           this.codeVerified = false;
           return;
         }
-        // call server to verify code
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
           this.codeVerified = verified;
         } catch (error) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: error.data.message,
+            type: this.LogLevel.ERROR,
+            transient: true
+          }));
           this.codeVerified = false;
         }
       }
