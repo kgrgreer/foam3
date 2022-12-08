@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'emailVerificationService',
     'resetPasswordService'
   ],
 
@@ -68,8 +69,8 @@ foam.CLASS({
           errorMessage: 'EMPTY_CODE'
         },
         {
-          args: ['codeVerified'],
-          query: 'codeVerified!=true',
+          args: ['resetPasswordCode', 'codeVerified'],
+          query: 'codeVerified==true',
           errorMessage: 'INVALID_CODE'
         }
       ]
@@ -85,7 +86,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'codeVerified',
-      documentation: 'Updated by verifyCode method whenever code is updated and of valid format.'
+      documentation: `
+        Updated by verifyCode method whenever code is updated and of valid format.
+      `
     }
   ],
 
@@ -100,15 +103,17 @@ foam.CLASS({
       name: 'verifyCode',
       mergeDelay: 100,
       code: async function() {
-        var validFormat = ( ! this.RESET_PASSWORD_CODE.validateObj[0].call(this) );
-        if ( ! validFormat ) {
+        if ( ! this.resetPasswordCode || this.resetPasswordCode.length != 6 ) {
           this.codeVerified = false;
           return;
         }
-
         // call server to verify code
-        var verified = await  this.resetPasswordService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
-        this.codeVerified = verified;
+        try {
+          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
+          this.codeVerified = verified;
+        } catch (error) {
+          this.codeVerified = false;
+        }
       }
     }
   ],
