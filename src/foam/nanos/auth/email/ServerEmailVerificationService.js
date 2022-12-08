@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.auth.email',
   name: 'ServerEmailVerificationService',
   implements: [ 'foam.nanos.auth.email.EmailVerificationService' ],
@@ -52,12 +52,9 @@
         if ( list == null || list.size() == 0 ) {
           throw new UserNotFoundException();
         }
-
         if ( list.size() > 1 ) {
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "verifyByCode", "multiple valid users found for", email);
-
           if ( SafetyUtil.isEmpty(userName) ) throw new DuplicateEmailException();
-
           list = ((ArraySink) userDAO
             .where(EQ(User.USER_NAME, userName))
             .select(new ArraySink()))
@@ -74,10 +71,6 @@
       javaCode: `
         User user = findUser(x, email, userName);
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
-
-        // invalidate any existing codes before sending a new code
-        invalidateExistingCode(x, user);
-
         sendCode(x, user, emailTemplate);
       `
     },
@@ -97,7 +90,6 @@
         
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
         code = (EmailVerificationCode) verificationCodeDAO.put(code);
-
         EmailMessage message = new EmailMessage();
         message.setTo(new String[]{user.getEmail()});
         message.setUser(user.getId());
@@ -115,16 +107,13 @@
       name: 'verifyUserEmail',
       javaCode: `
         User user = findUser(x, email, userName);
-
         var res = verifyCode(x, user, verificationCode);
-
         if ( res ) {
-          if ( ! user.getEmailVerified() ) {
-            user = (User) user.fclone();
-            user.setEmailVerified(true);
-            ((DAO) x.get("localUserDAO")).put(user);
-          }
+          user = (User) user.fclone();
+          user.setEmailVerified(true);
+          ((DAO) x.get("localUserDAO")).put(user);
         } else {
+          sendCode(x, user, this.VERIFY_EMAIL_TEMPLATE);
           throw new AuthenticationException(this.RESEND_MESSAGE);
         }
         return res;
@@ -147,16 +136,6 @@
         }
         return code.toString();
       `
-    },
-    {
-      name: 'invalidateExistingCode',
-      type: 'Void',
-      args: 'Context x, User user',
-      javaCode: `
-        DAO emailVerificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
-        EmailVerificationCode code = (EmailVerificationCode) emailVerificationCodeDAO.find(user.getEmail());
-        if ( code != null ) emailVerificationCodeDAO.remove(code);
-      `
     }
   ],
 
@@ -166,7 +145,7 @@
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-            public boolean verifyCode(X x, User user, String verificationCode) {
+            public boolean verifyCode(foam.core.X x, User user, String verificationCode) {
               DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
               Calendar c = Calendar.getInstance();
               EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
@@ -175,11 +154,7 @@
                 EQ(EmailVerificationCode.VERIFICATION_CODE, verificationCode),
                 GT(EmailVerificationCode.EXPIRY, c.getTime())
               ));
-              if ( code != null ) {
-                invalidateExistingCode(x, user);
-                return true;
-              }
-              return false;
+              return code != null;     
             }
           `
         }));
