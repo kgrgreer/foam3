@@ -32,6 +32,12 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
+    { name: 'INSTRUC',          message: 'Please check your inbox for to verify your email' },
+    { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -93,6 +99,39 @@ foam.CLASS({
           type: this.LogLevel.INFO,
           transient: true
         }));
+      }
+    },
+    {
+      name: 'resendCode',
+      label: 'Resend Code',
+      section: 'verificationCodeSection',
+      buttonStyle: 'LINK',
+      code: async function(X) {
+        try {
+          await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
+
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.INSTRUC_TITLE,
+            description: this.INSTRUC,
+            type: this.LogLevel.INFO,
+            transient: true
+          }));
+        } catch(err) {
+          if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
+              this.ctrl.add(this.NotificationMessage.create({
+                err: err.data,
+                type: this.LogLevel.ERROR,
+                transient: true
+              }));
+              return;
+          }
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.RESEND_ERROR_MSG,
+            type: this.LogLevel.ERROR,
+            transient: true
+          }));
+          throw err;
+        }
       }
     }
   ]
