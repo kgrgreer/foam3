@@ -63,11 +63,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'Boolean',
-      name: 'processed',
-      hidden: true
-    },
-    {
       class: 'Int',
       name: 'maxAttempts',
       value: 5,

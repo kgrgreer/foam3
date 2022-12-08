@@ -159,9 +159,7 @@
                 ));
 
                 if ( code != null ) {
-                  code = (EmailVerificationCode) code.fclone();
-                  code.setProcessed(true);
-                  dao.put(code);
+                  dao.remove(code);
                 }
               }
             }
@@ -172,7 +170,6 @@
               EmailVerificationCode code = (EmailVerificationCode) verificationCodeDAO.find(AND(
                 EQ(EmailVerificationCode.EMAIL, user.getEmail()),
                 EQ(EmailVerificationCode.USER_NAME, user.getUserName()),
-                EQ(EmailVerificationCode.PROCESSED, false),
                 GT(EmailVerificationCode.EXPIRY, c.getTime()),
                 GT(EmailVerificationCode.MAX_ATTEMPTS, EmailVerificationCode.VERIFICATION_ATTEMPTS)
               ));
@@ -180,7 +177,7 @@
               if ( code == null )
                 throw new VerificationCodeException(this.INVALID_CODE);
 
-              if ( code.getVerificationCode() != verificationCode ) {
+              if ( ! code.getVerificationCode().equals(verificationCode) ) {
                 code = (EmailVerificationCode) code.fclone();
                 code.setVerificationAttempts(code.getVerificationAttempts() + 1);
                 verificationCodeDAO.put(code);
