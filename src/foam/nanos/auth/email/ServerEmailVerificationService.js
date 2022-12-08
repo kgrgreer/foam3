@@ -76,7 +76,7 @@
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
 
         // invalidate any existing codes before sending a new code
-        invalidateExistingCodes(x, user);
+        invalidateExistingCode(x, user);
 
         sendCode(x, user, emailTemplate);
       `
@@ -149,14 +149,13 @@
       `
     },
     {
-      name: 'invalidateExistingCodes',
+      name: 'invalidateExistingCode',
       type: 'Void',
       args: 'Context x, User user',
       javaCode: `
-        ((DAO) x.get("emailVerificationCodeDAO")).where(AND(
-          EQ(EmailVerificationCode.EMAIL, user.getEmail()),
-          EQ(EmailVerificationCode.USER_NAME, user.getUserName())
-        )).removeAll();
+        DAO emailVerificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
+        EmailVerificationCode code = (EmailVerificationCode) emailVerificationCodeDAO.find(user.getEmail());
+        if ( code != null ) emailVerificationCodeDAO.remove(code);
       `
     }
   ],
@@ -177,7 +176,7 @@
                 GT(EmailVerificationCode.EXPIRY, c.getTime())
               ));
               if ( code != null ) {
-                invalidateExistingCodes(x, user);
+                invalidateExistingCode(x, user);
                 return true;
               }
               return false;
