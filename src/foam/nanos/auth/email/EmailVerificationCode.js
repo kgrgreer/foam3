@@ -61,6 +61,22 @@ foam.CLASS({
       class: 'DateTime',
       name: 'expiry',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'processed',
+      hidden: true
+    },
+    {
+      class: 'Int',
+      name: 'maxAttempts',
+      value: 5,
+      hidden: true
+    },
+    {
+      class: 'Int',
+      name: 'verificationAttempts',
+      hidden: true
     }
   ],
 
