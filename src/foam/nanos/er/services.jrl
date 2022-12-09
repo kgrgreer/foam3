@@ -1,0 +1,42 @@
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"eventRecordDAO",
+  serve:true,
+  serviceScript:"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.er.EventRecord.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("eventRecords")
+      .setPm(true)
+      .setDecorator(new foam.nanos.er.EventRecordDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, foam.nanos.er.EventRecord.getOwnClassInfo())).build())
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.PARTNER })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.SEVERITY });
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.er.EventRecord"
+    }
+  """
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"eventRecordResponseDAO",
+  serve:true,
+  serviceScript:"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.er.EventRecordResponse.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("eventRecordResponses")
+      .setPm(true)
+      .build();
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.er.EventRecordResponse"
+    }
+  """
+})

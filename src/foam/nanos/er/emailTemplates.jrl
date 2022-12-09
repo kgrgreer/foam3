@@ -1,0 +1,15 @@
+p({
+  class: "foam.nanos.notification.email.EmailTemplate",
+  id:"foam-nanos-er-EventRecordEmailTemplate",
+  name:"foam-nanos-er-EventRecordEmailTemplate",
+  "subject": "EventRecord - {{summary}}",
+  "body": """event: {{event}}
+partner: {{partner}}
+code: {{code}}
+severity: {{severity}}
+message: {{message}}
+createdFrom: {{createdFrom}}
+createdBy: {{createdBy}}
+created: {{created}}
+  """
+})
