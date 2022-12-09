@@ -74,8 +74,8 @@ foam.CLASS({
     {
       name: 'id',
       class: 'String',
-      factory: function () {
-        return foam.uuid.randomGUID();
+      expression: function (capability) {
+        return capability ? capability.id : foam.uuid.randomGUID();
       }
     },
     {
