@@ -92,7 +92,6 @@
                   cardSelectViewConfig.label = choice[1];
                 } else {
                   valueSimpSlot = self.mustSlot(choice);
-                  cardSelectViewConfig.of = choice.cls_.id;
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;

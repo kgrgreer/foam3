@@ -17,7 +17,6 @@ foam.CLASS({
     'currentMenu',
     'loginSuccess',
     'loginView?',
-    'menuDAO',
     'memento_',
     'menuDAO',
     'pushMenu',
@@ -121,6 +120,13 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'loginFailed',
+      value: true,
+      hidden: true,
+      documentation: 'Used to control flow in transient wizard signin'
     }
   ],
 
@@ -193,6 +199,7 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
+              this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
                 if ( this.username ) {

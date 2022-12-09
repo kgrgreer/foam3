@@ -13,9 +13,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ClassInfo',
-    'foam.core.SimpleFacetManager',
+    'foam.core.ContextAware',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.AbstractSink',
     'foam.dao.ProxySink',
     'foam.dao.Sink',
     'foam.nanos.logger.Logger',
@@ -28,8 +29,7 @@ foam.CLASS({
     public CompactionSink(X x, Sink delegate) {
       super(x, delegate);
     }
-    `
-  ,
+  `,
 
   properties: [
     {
@@ -53,28 +53,25 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
       Sink sink = (Sink) getSinks().get(entry.getNSpecName());
-      if ( sink == null ) {
-        Logger logger = Loggers.logger(x, this, "getSink");
-        DAO dao = (DAO) x.get(entry.getNSpecName());
-        if ( dao == null ) {
-          if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
-            logger.error("NSpec not found", entry.getNSpecName());
-          }
-          getSinks().put(entry.getNSpecName(), getDelegate());
+      if ( sink != null ) return sink;
+
+      Logger logger = Loggers.logger(x, this, "getSink");
+      DAO dao = (DAO) x.get(entry.getNSpecName());
+      if ( dao == null ) {
+        if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
+          logger.error("NSpec not found", entry.getNSpecName());
+        }
+        getSinks().put(entry.getNSpecName(), getDelegate());
+      } else {
+        Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
+        if ( compaction != null &&
+             ! compaction.getCompactible() ) {
+          getSinks().put(entry.getNSpecName(), new AbstractSink());
         } else {
-          ClassInfo of = dao.getOf();
-          String className = of.getId()+"CompactionSink";
-          Map<String,Object> args = new HashMap();
-          args.put("delegate", getDelegate());
-          try {
-            sink = (Sink) new SimpleFacetManager().create(className, args, x.put("logger", foam.nanos.logger.NullLogger.instance()));
-            getSinks().put(entry.getNSpecName(), sink);
-          } catch (Throwable t) {
-            // logger.debug("Unable to create", className, t.getMessage());
-            getSinks().put(entry.getNSpecName(), getDelegate());
-          }
+          getSinks().put(entry.getNSpecName(), getDelegate());
         }
       }
+
       return (Sink) getSinks().get(entry.getNSpecName());
       `
     }

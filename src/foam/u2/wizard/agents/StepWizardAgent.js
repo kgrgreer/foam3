@@ -23,6 +23,7 @@ foam.CLASS({
     'popupMode',
     'flowAgent?',
     'stack',
+    'wizardClosing',
     'wizardController?'
   ],
 
@@ -55,7 +56,7 @@ foam.CLASS({
       window.lastWizardController = this.wizardController;
 
       const controller = usingFormController ?
-        this.config.controller$create() : this.wizardController;
+        this.config.controller$create({}, this.__subContext__) : this.wizardController;
 
       const view = usingFormController ? {
         // new approach
@@ -101,6 +102,7 @@ foam.CLASS({
         }));
 
         this.wizardStackBlock.removed.sub(() => {
+          this.wizardClosing = true;
           if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
             this.wizardController.status = this.WizardStatus.DISCARDED;
           }
@@ -121,6 +123,8 @@ foam.CLASS({
   ],
   listeners: [
     function resolveAgent() {
+      if ( this.wizardClosing ) return;
+      this.wizardClosing = true;
       if ( this.stack.BACK.isEnabled(this.stack.pos) )
         this.stack.back();
       else

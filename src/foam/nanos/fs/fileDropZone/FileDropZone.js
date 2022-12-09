@@ -155,6 +155,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDragged_'
+    },
+    {
+      class: 'Boolean',
+      name: 'showHelp'
     }
   ],
 
@@ -208,7 +212,8 @@ foam.CLASS({
               .end();
             }))
         .end()
-        .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
+        .start().addClass(this.myClass('caption-container'))
+        .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
           .start()
             .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
             .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.auth.email',
   name: 'EmailVerificationCode',
-  ids: [ 'email' ],
+  ids: [ 'email', 'userName' ],
 
   mixins: [
     'foam.nanos.auth.CreatedAware',
@@ -60,6 +60,17 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'expiry',
+      hidden: true
+    },
+    {
+      class: 'Int',
+      name: 'maxAttempts',
+      value: 5,
+      hidden: true
+    },
+    {
+      class: 'Int',
+      name: 'verificationAttempts',
       hidden: true
     }
   ],

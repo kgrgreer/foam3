@@ -66,7 +66,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showTitle'
+      name: 'showTitle',
+      value: true
     },
     {
       class: 'Boolean',

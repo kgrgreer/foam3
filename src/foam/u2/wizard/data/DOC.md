@@ -163,6 +163,8 @@ wao: {
 }
 ```
 
+The example above will take `subject.user.id` from context and load it into the `userId` key of the `MapHolder`'s `value`.
+
 ### DAOSaver
 
 Simply saves the data to the specified DAO.
@@ -188,8 +190,6 @@ wao: {
 ```
 
 The `wizardSpecLoader` should be a `Loader` that gets a "wizard spec" (a capability's `id` or a Capable object). In the example above, the wizard spec is loaded from a property called `selectedPlan` on a prerequisite's data. In this case `selectedPlan` holds a `Capable`.
-
-The example above will take `subject.user.id` from context and load it into the `userId` key of the `MapHolder`'s `value`.
 
 ### LoaderInjectorSaver
 

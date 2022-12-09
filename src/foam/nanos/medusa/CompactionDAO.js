@@ -26,6 +26,7 @@ TODO: handle node roll failure - or timeout
   `,
 
   javaImports: [
+    'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.FObject',
     'foam.core.X',
@@ -37,6 +38,7 @@ TODO: handle node roll failure - or timeout
     'foam.dao.ProxySink',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Sequence',
+    'foam.nanos.NanoService',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -132,6 +134,10 @@ TODO: handle node roll failure - or timeout
         logger.info("health");
         health(x);
 
+        // setup
+        logger.info("stopServices");
+        stopServices(x);
+
         // block
         logger.info("block");
         setBlocking(true);
@@ -151,7 +157,7 @@ TODO: handle node roll failure - or timeout
 
         // dagger
         logger.info("dagger");
-        long oldIndex = dagger(x);
+        long oldGlobalIndex = dagger(x);
 
         // unblock
         logger.info("unblock");
@@ -164,7 +170,11 @@ TODO: handle node roll failure - or timeout
 
         // purge
         logger.info("purge");
-        purge(x, oldIndex, compactionTime);
+        purge(x, oldGlobalIndex, compactionTime);
+
+        // startServices
+        logger.info("startServices");
+        startServices(x);
 
         logger.info("end");
       } catch (Throwable t) {
@@ -172,6 +182,42 @@ TODO: handle node roll failure - or timeout
         throw t;
       } finally {
         logger.info("end", "duration", Duration.ofMillis(System.currentTimeMillis() - startTime));
+      }
+      `
+    },
+    {
+      name: 'stopServices',
+      args: 'X x',
+      javaCode: `
+      NanoService service = (NanoService) x.get("promotedClearAgent");
+      if ( service != null ) {
+        service.stop();
+      }
+      service = (NanoService) x.get("medusaConsensusMonitor");
+      if ( service != null ) {
+        service.stop();
+      }
+      `
+    },
+    {
+      name: 'startServices',
+      args: 'X x',
+      javaCode: `
+      NanoService service = (NanoService) x.get("promotedClearAgent");
+      if ( service != null ) {
+        try {
+          service.start();
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed to start", "promotedClearAgent");
+        }
+      }
+      service = (NanoService) x.get("medusaConsensusMonitor");
+      if ( service != null ) {
+        try {
+          service.start();
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed to start", "promotedClearAgent");
+        }
       }
       `
     },
@@ -330,7 +376,7 @@ TODO: handle node roll failure - or timeout
 
       long newIndex = service.getGlobalIndex(x);
       if ( oldIndex == newIndex ||
-           ! ( newIndex == oldIndex + bootstrap.getBootstrapHashEntries()) ) {
+           newIndex != oldIndex + bootstrap.getBootstrapHashEntries() )  {
         logger.error("primary, reconfigurate, failed", "old", oldIndex, "new", newIndex);
         throw new CompactionException("dagger");
       }
@@ -407,38 +453,67 @@ TODO: handle node roll failure - or timeout
       args: 'X x',
       type: 'Long',
       javaCode: `
-      Logger logger = Loggers.logger(x, this, "compaction");
-      DAO dao = (DAO) x.get("medusaEntryDAO");
-      dao = dao.orderBy(MedusaEntry.ID);
-      Count count = new Count();
-      Sink sink = new CompactibleSink(x,
+      final Logger logger = Loggers.logger(x, this, "compaction");
+      final DAO dao = ((DAO) x.get("medusaEntryDAO")).orderBy(MedusaEntry.ID);
+      final Count total = (Count) dao.select(new Count());
+
+      final Count compacted = new Count();
+      final Count processed = new Count();
+      final CompactibleSink compactibleSink = new CompactibleSink(x,
                     new CompactionSink(x,
                     new UniqueSink(x,
                     new NSpecSink(x,
                     new Sequence.Builder(x)
                       .setArgs(new Sink[] {
-                        count,
+                        compacted,
                         new NodeSink(x) })
                       .build()
                     ))));
-      long startTime = System.currentTimeMillis();
-      logger.info("start");
-      dao.select(sink);
+      final Sink sink = new Sequence.Builder(x)
+                     .setArgs(new Sink[] {
+                       processed,
+                       compactibleSink })
+                     .build();
+
+      final long startTime = System.currentTimeMillis();
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      Agency agency = (Agency) x.get(support.getThreadPoolName());
+      agency.submit(x, new ContextAgent() {
+        public void execute(X x) {
+          logger.info("start");
+          dao.select(sink);
+          long compactionTime = System.currentTimeMillis() - startTime;
+          logger.info("agency", "end", "duration", Duration.ofMillis(compactionTime));
+        }
+      }, this.getClass().getSimpleName()+".compaction");
+      // wait for eof
+      while ( ! compactibleSink.getIsEof() &&
+              ((Long) processed.getValue()) < ((Long) total.getValue()) ) {
+        long percentComplete = (long) ((((Long) processed.getValue()) / ((Long) total.getValue()).doubleValue()) * 100.0);
+        logger.info("progress", "processed", processed.getValue(), "compacted", compacted.getValue(), "completed", percentComplete, "%");
+        try {
+          Thread.currentThread().sleep(5000);
+        } catch (InterruptedException e) {
+          break;
+        }
+      }
+      double ratio = ((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue();
+      double compressed = ((((Long) processed.getValue()) - ((Long) compacted.getValue())) / ((Long) processed.getValue()).doubleValue()) * 100.0;
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("end", "duration", Duration.ofMillis(compactionTime), "compacted", count.getValue());
+      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", String.format("%.2f", ratio), "compressed", String.format("%.2f%%", compressed));
       return compactionTime;
       `
     },
     {
       documentation: 'Clean up memory medusa entry daos after compaction',
       name: 'purge',
-      args: 'X x, Long oldIndex, Long compactionTime',
+      args: 'X x, Long oldGlobalIndex, Long compactionTime',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "purge");
-      logger.info("oldIndex", oldIndex);
+      logger.info("oldIndex", oldGlobalIndex);
       final MedusaEntryPurgeCmd cmd = new MedusaEntryPurgeCmd.Builder(x)
         .setMinIndex(0L)
-        .setMaxIndex(oldIndex)
+        .setMaxIndex(oldGlobalIndex)
         .build();
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -472,9 +547,10 @@ TODO: handle node roll failure - or timeout
       // NOTE: line.shutdown will block forever if a mediator does not reply.
       // Instead, perform manual polling for completion.
       long waited = 0L;
-      long sleep = 1000L;
-      long waitTime = Math.max(getMaxWait(), compactionTime * 2);
+      long sleep = 5000L;
+      long waitTime = Math.max(getMaxWait(), compactionTime);
       while ( waited < waitTime ) {
+        logger.debug("wait");
         try {
           Thread.currentThread().sleep(sleep);
           waited += sleep;
@@ -527,6 +603,11 @@ TODO: handle node roll failure - or timeout
           name: 'put',
           javaCode: `
           MedusaEntry entry = (MedusaEntry) obj;
+          Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
+          if ( compaction != null &&
+               ! compaction.getReducible() ) {
+            getDelegate().put(obj, sub);
+          }
           String id = entry.getNSpecName()+"-"+entry.getObjectId();
           Map results = getPutResults();
           if ( entry.getDop().equals(DOP.REMOVE) ) {
@@ -580,23 +661,29 @@ TODO: handle node roll failure - or timeout
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK
-              logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+              logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             } else {
-              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             }
           } else {
-              MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
-              String data = entrySupport.data(x, found, null, entry.getDop());
-              MedusaEntry me = (MedusaEntry) entry.fclone();
-              MedusaEntry.ID.clear(me);
-              MedusaEntry.DATA.clear(me);
-              MedusaEntry.TRANSIENT_DATA.clear(me);
-              MedusaEntry.OBJECT.clear(me);
-              MedusaEntry.HASH.clear(me);
-              me.setData(data);
-              DaggerService dagger = (DaggerService) x.get("daggerService");
-              me = dagger.link(x, me);
-              getDelegate().put(me, sub);
+            MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+            String data = entry.getData();
+
+            Compaction compaction = (Compaction) ((DAO) x.get("compactionDAO")).find(entry.getNSpecName());
+            if ( compaction == null ||
+                 compaction.getReducible() ) {
+              data = entrySupport.data(x, found, null, entry.getDop());
+            }
+            MedusaEntry me = (MedusaEntry) entry.fclone();
+            MedusaEntry.ID.clear(me);
+            MedusaEntry.DATA.clear(me);
+            MedusaEntry.TRANSIENT_DATA.clear(me);
+            MedusaEntry.OBJECT.clear(me);
+            MedusaEntry.HASH.clear(me);
+            me.setData(data);
+            DaggerService dagger = (DaggerService) x.get("daggerService");
+            me = dagger.link(x, me);
+            getDelegate().put(me, sub);
           }
           `
         }
@@ -608,6 +695,19 @@ TODO: handle node roll failure - or timeout
 
       documentation: 'Skip entries which are not compactible',
 
+      properties: [
+        {
+          name: 'isEof',
+          class: 'Boolean'
+        }
+      ],
+
+      javaCode: `
+      public CompactibleSink(X x, Sink delegate) {
+        super(x, delegate);
+      }
+      `,
+
       methods: [
         {
           name: 'put',
@@ -615,10 +715,12 @@ TODO: handle node roll failure - or timeout
           MedusaEntry entry = (MedusaEntry) obj;
           if ( entry.getCompactible() ) {
             getDelegate().put(obj, sub);
-          } else {
-            Loggers.logger(getX(), this).debug("Not compactible", entry.toSummary());
           }
           `
+        },
+        {
+          name: 'eof',
+          javaCode: 'setIsEof(true);'
         }
       ]
     },

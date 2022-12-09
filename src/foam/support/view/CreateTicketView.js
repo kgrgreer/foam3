@@ -172,7 +172,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'subject'
+      name: 'emailSubject'
     },
     {
       class: 'String',
@@ -239,7 +239,7 @@ foam.CLASS({
             .add('Subject')
           .end()
           .start()
-            .tag(this.SUBJECT)
+            .tag(this.EMAIL_SUBJECT)
           .end()
           .start().addClass('label')
             .add('Description')

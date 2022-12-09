@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'HttpServer',
 
   implements: [
-    'foam.nanos.NanoService'
+    'foam.nanos.NanoService',
+    'foam.nanos.boot.NSpecAware'
   ],
 
   javaImports: [
@@ -65,6 +66,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enableHttps'
+    },
+    {
+      class: 'Boolean',
+      name: 'enableMTLS',
+      documentation: 'Enable mTLS on this server connection'
     },
     {
       name: 'keystoreFileName',
@@ -145,7 +151,7 @@ foam.CLASS({
       try {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -339,7 +345,7 @@ foam.CLASS({
       if ( this.getEnableHttps() ) {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -402,9 +408,11 @@ foam.CLASS({
           sslContextFactory.setKeyStore(keyStore);
           sslContextFactory.setKeyStorePassword(this.getKeystorePassword());
           // NOTE: Enabling these will fail self-signed certificate use.
-          // sslContextFactory.setWantClientAuth(true);
-          // sslContextFactory.setNeedClientAuth(true);
-
+          if ( getEnableMTLS() ) {
+            sslContextFactory.setWantClientAuth(true);
+            sslContextFactory.setNeedClientAuth(true);  
+          }
+          
           getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),

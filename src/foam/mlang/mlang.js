@@ -3929,7 +3929,7 @@ foam.CLASS({
     {
       name: 'TRUE',
       factory: function() { return foam.mlang.predicate.True.create() }
-    },
+    }
   ],
 
   methods: [
@@ -4082,7 +4082,6 @@ foam.CLASS({
     'foam.core.ClassInfo',
     'foam.core.FObject',
     'foam.lib.parse.PStream',
-    'foam.lib.parse.ParserContext',
     'foam.lib.parse.ParserContext',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',

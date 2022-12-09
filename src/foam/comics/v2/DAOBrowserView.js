@@ -124,7 +124,7 @@ foam.CLASS({
   imports: [
     'auth',
     'ctrl',
-    'displayWidth',
+    'displayWidth?',
     'exportDriverRegistryDAO',
     'stack?'
   ],
@@ -233,6 +233,7 @@ foam.CLASS({
       class: 'Int',
       name: 'maxActions',
       expression: function(displayWidth) {
+        if ( displayWidth === undefined ) return 3;
         return displayWidth.minWidth < this.DisplayWidth.MD.minWidth ? 0 :
                displayWidth.minWidth < this.DisplayWidth.LG.minWidth ? 1 :
                3;
@@ -293,6 +294,10 @@ foam.CLASS({
               controllerMode: foam.u2.ControllerMode.EDIT
             }));
           }
+
+          this.onDetach(this.cannedPredicate$.sub(() => {
+            filterView?.clearAll();
+          }));
 
           if ( config$cannedQueries.length >= 1 ) {
             cannedView = foam.u2.ViewSpec.createView(self.cannedQueriesView, {

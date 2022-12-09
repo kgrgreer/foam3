@@ -166,7 +166,7 @@ foam.CLASS({
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
-        width: 45vw;
+        width: 65vw;
       }
       ^fullscreen ^bodyWrapper {
         width: 75%;
@@ -227,6 +227,10 @@ foam.CLASS({
       name: 'progressView',
       value: { class: 'foam.u2.ProgressView' }
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'dynamicFooter'
+    },
     [ 'forceFullscreen', false ],
     [ 'includeSupport', false ]
   ],
@@ -235,11 +239,12 @@ foam.CLASS({
     function init() {
       var content;
       const self = this;
+      window.thepopup = this;
       this.helpMenu$find.then( menu => {
         self.help_ = menu;
       });
       const updateWidth = () => {
-        if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.MD.ordinal ) {
+        if ( this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal ) {
           this.forceFullscreen = true;
         } else {
           this.forceFullscreen = false;
@@ -359,44 +364,52 @@ foam.CLASS({
             .tag(this.DialogActionsView, {
               data$: this.primaryActions$
             })
-            .start(this.Grid)
-              .addClasses([this.myClass('footer'), 'p-legal-light'])
-              // empty space
-              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 0, lgColumns: 5, xlColumns: 5 }})
-              .end()
-              // link
-              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 2, xlColumns: 2 } })
-                .start(this.footerLink ? 'a' : '')
-                  .show(this.footerString$)
-                  .enableClass(this.myClass('footer-link'), this.footerLink$)
-                  .add(this.footerString$)
-                  .attrs({ href: this.footerLink, target: '_blank' })
+            .add(this.slot(function (dynamicFooter) {
+              if ( ! dynamicFooter ) return;
+              return this.E()
+                .addClass(this.myClass('dynamicFooter'))
+                .tag(dynamicFooter);
+            }))
+            .callIf((this.footerString || this.includeSupport ), function() {
+              this.start(this.Grid)
+                .addClasses([this.myClass('footer'), 'p-legal-light'])
+                // empty space
+                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 0, lgColumns: 5, xlColumns: 5 }})
                 .end()
-              .end()
-              // support info
-              .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 5, xlColumns: 5 } })
-                .callIf(this.includeSupport, function() {
-                  this
-                    .start()
-                      .start('span')
-                        .addClass('')
-                        .add(self.SUPPORT_TITLE)
-                        .start('a')
-                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
-                          .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
-                          .add(self.theme.supportConfig.supportEmail)
-                        .end()
-                        .add(' | ')
-                        .start('a')
-                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
-                          .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
-                          .add(self.theme.supportConfig.supportPhone)
+                // link
+                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 2, xlColumns: 2 } })
+                  .start(this.footerLink ? 'a' : '')
+                    .show(this.footerString$)
+                    .enableClass(this.myClass('footer-link'), this.footerLink$)
+                    .add(this.footerString$)
+                    .attrs({ href: this.footerLink, target: '_blank' })
+                  .end()
+                .end()
+                // support info
+                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 5, xlColumns: 5 } })
+                  .callIf(this.includeSupport, function() {
+                    this
+                      .start()
+                        .start('span')
+                          .addClass('')
+                          .add(self.SUPPORT_TITLE)
+                          .start('a')
+                            .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                            .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
+                            .add(self.theme.supportConfig.supportEmail)
+                          .end()
+                          .add(' | ')
+                          .start('a')
+                            .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                            .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
+                            .add(self.theme.supportConfig.supportPhone)
+                          .end()
                         .end()
                       .end()
-                    .end()
-                })
+                  })
+                .end()
               .end()
-            .end()
+            })
           .end()
         .end();
 

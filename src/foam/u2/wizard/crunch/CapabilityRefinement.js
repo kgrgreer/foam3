@@ -22,6 +22,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'beforeWizardlet',
+      type: 'foam.lib.json.UnknownFObject',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       hidden: true,
       documentation: `
         A wizardlet to display before this capability's prerequisites, and only
@@ -35,6 +37,7 @@ foam.CLASS({
       name: 'wizardConfig',
       type: 'foam.lib.json.UnknownFObject',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
+      view: { class: 'foam.u2.HTMLView' },
       documentation: `
         Configuration placed on top level capabilities defining various
         configuration options supported by client capability wizards.
