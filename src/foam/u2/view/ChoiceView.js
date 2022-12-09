@@ -303,11 +303,8 @@ foam.CLASS({
       name: 'onDAOUpdate',
       isMerged: true,
       mergeDelay: 160,
-      on: [
-        'this.propertyChange.mode'
-      ],
+      on: [ 'this.propertyChange.mode' ],
       code: function() {
-        if ( this.isDetached() ) return;
         var self = this;
         var seq = ++this.seq_;
         var dao = this.dao;
@@ -339,7 +336,7 @@ foam.CLASS({
 
         p.then(a => {
           if ( a.length > 100 ) {
-            this.warn('Warning: Inefficient to use ChoiceView for large selections. Count: ' + a.length);
+            this.warn('Warning: Inefficient to use ChoiceView for large selections, consider using RichChoiceView instead. Count: ' + a.length);
             if ( this.prop_ ) {
               this.warn('For Property: ' + this.prop_.name + ' on ' + this.prop_.forClass_);
             }
