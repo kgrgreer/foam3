@@ -1,0 +1,39 @@
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
+  "id":"JSON",
+  "name":"JSON",
+  "driverNSpec:"jsonDigDriver",
+  "format": "JSON"
+})
+
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
+  "id":"JSONJ",
+  "name":"JSON/J",
+  "driverNSpec:"jsonjDigDriver",
+  "format": "JSONJ"
+})
+
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
+  "id":"CSV",
+  "name":"CSV",
+  "driverNSpec:"csvDigDriver",
+  "format": "CSV"
+})
+
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
+  "id":"HTML",
+  "name":"HTML",
+  "driverNSpec:"htmlDigDriver"
+  "format": "HTML"
+})
+
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
+  "id":"XML",
+  "name":"XML",
+  "driverNSpec:"xmlDigDriver",
+  "format": "XML"
+})
