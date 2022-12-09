@@ -101,7 +101,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.onDetach(this.resetPasswordCode$.sub(() => this.verifyCode()));
+      this.resetPasswordCode$.sub(() => this.verifyCode());
     }
   ],
 
