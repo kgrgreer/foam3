@@ -19,6 +19,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.email.VerificationCodeException',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.FragmentedTextField',
     'foam.u2.FragmentedTextFieldFragment'
@@ -40,8 +41,11 @@ foam.CLASS({
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
     { name: 'INVALID_CODE',     message: 'The code you have entered is invalid. Please re-enter your code or request a new code.' },
     { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
-    { name: 'INSTRUC',          message: 'Please check your inbox to verify your email' },
-    { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' }
+    { name: 'INSTRUC',          message: 'Please check your inbox for to verify your email' },
+    { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
+    { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
+    { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
+    { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
   properties: [
@@ -65,18 +69,13 @@ foam.CLASS({
         delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       },
-      validationPredicates: [
-        {
-          args: ['resetPasswordCode'],
-          query: 'resetPasswordCode.len==6',
-          errorMessage: 'EMPTY_CODE'
-        },
-        {
-          args: ['resetPasswordCode', 'codeVerified'],
-          query: 'codeVerified==true',
-          errorMessage: 'INVALID_CODE'
-        }
-      ]
+      validateObj: function(resetPasswordCode, codeVerified, remainingAttempts) {
+        if ( ! resetPasswordCode || resetPasswordCode.length != 6 )
+          return this.EMPTY_CODE;
+        if ( codeVerified ) return;
+        if ( remainingAttempts > 0 ) return this.INVALID_CODE + remainingAttempts;
+        return this.NO_ATTEMPTS_LEFT;
+      }
     },
     {
       name: 'newPassword',
@@ -91,6 +90,13 @@ foam.CLASS({
       name: 'codeVerified',
       documentation: `
         Updated by verifyCode method whenever code is updated and of valid format.
+      `
+    },
+    {
+      name: 'remainingAttempts',
+      documentation: `
+        Number of remaining attempts to enter current verification code.
+        Used in resetPasswordCode error message.
       `
     }
   ],
@@ -114,11 +120,10 @@ foam.CLASS({
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
           this.codeVerified = verified;
         } catch (error) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: error.data.message,
-            type: this.LogLevel.ERROR,
-            transient: true
-          }));
+          if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
+            this.remainingAttempts = error.data.exception.remainingAttempts;
+          }
+
           this.codeVerified = false;
         }
       }
