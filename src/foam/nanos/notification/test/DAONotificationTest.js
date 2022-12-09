@@ -38,8 +38,6 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
       setUp(x);
-      DAO emailMessageDAO = new MDAO(EmailMessage.getOwnClassInfo());
-      x = x.put("emailMessageDAO", emailMessageDAO);
       DAO countryDAO = (DAO) x.get("countryDAO");
       Country country = (Country) countryDAO.find("CA");
       country = (Country) country.fclone();
@@ -47,11 +45,16 @@ foam.CLASS({
       country = (Country) countryDAO.put_(x, country);
 
       // test for email
+      DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
       List<EmailMessage> emailMessages = (List) ((ArraySink) emailMessageDAO.select(new ArraySink())).getArray();
-      test( emailMessages != null && emailMessages.size() > 0, "email generated");
-      // NOTE: can't test message subject and such as emailMessageDAO decorators are not applied.
-      // EmailMessage message = emailMessages.get(0);
-      // test( message.getSubject().contains("DAONotificationEmailTemplateTest"), "email has expected subject: ["+message.getSubject()+"] body: ["+message.getBody()+"] message: "+message.toString());
+      EmailMessage message = null;
+      for ( EmailMessage msg : emailMessages ) {
+        if ( msg.getSubject().contains("DAONotificationEmailTemplateTest") ) {
+          message = msg;
+          break;
+        }
+      }
+      test( message != null, "email subject has expected text: DAONotifcationEmailTemplateTest ["+message.getSubject()+"] body: ["+message.getBody()+"] message: "+message.toString());
       `
     }
   ]
