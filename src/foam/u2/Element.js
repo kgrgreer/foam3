@@ -647,6 +647,11 @@ foam.CLASS({
 
   constants: [
     {
+      // TODO: To replace ^ in future, to be compatible with U3
+      name: 'CSS_SELF',
+      value: '<<'
+    },
+    {
       name: 'CSS_CLASSNAME_PATTERN',
       factory: function() { return /^[a-z_-][a-z\d_-]*$/i; }
     },
