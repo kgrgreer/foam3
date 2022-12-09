@@ -2446,7 +2446,7 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.onDetach(this.data$.sub(this.update));
+      this.data$.sub(this.update);
     }
   ],
 
