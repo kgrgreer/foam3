@@ -80,7 +80,11 @@ foam.CLASS({
     },
     {
       name: 'of',
-      class: 'Class'
+      class: 'Class',
+      expression: function(capability) {
+        if ( ! capability?.of ) return null;
+        return capability.of;
+      }
     },
     {
       name: 'data',
