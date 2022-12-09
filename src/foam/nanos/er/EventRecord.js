@@ -8,9 +8,12 @@ foam.CLASS({
   package: 'foam.nanos.er',
   name: 'EventRecord',
 
+  documentation: `A modelled log message for reoccuring system events`,
+
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   mixins: [
@@ -107,6 +110,15 @@ foam.CLASS({
       tableWidth: 90
     },
     {
+      class: 'String',
+      name: 'hostname',
+      visibility: 'RO',
+      javaFactory: `
+      return System.getProperty("hostname", "localhost");
+      `
+    },
+    {
+      // these next two could be a subclass RequestResponseER
       name: 'requestMessage',
       class: 'String',
       updateVisibility: 'RO',
@@ -156,9 +168,10 @@ foam.CLASS({
     // },
     {
       name: 'eventRecordResponse',
-      class: 'Reference',
+      class: 'FObjectProperty',
       of: 'foam.nanos.er.EventRecordResponse',
-      updateVisibility: 'RO'
+      visibility: 'RO',
+      storageTransient: true
     },
     {
       name: 'exception',
@@ -183,16 +196,10 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
+      code: function() {
+        return this.event;
+      },
       javaCode: `
-      if ( getEventRecordResponse() != null ) {
-        EventRecordResponse response = findEventRecordResponse(getX());
-        if ( response != null ) {
-          var summary = response.toSummary();
-          if ( ! SafetyUtil.isEmpty(summary) ) {
-            return summary;
-          }
-        }
-      }
       StringBuilder sb = new StringBuilder();
       if ( ! SafetyUtil.isEmpty(getEvent()) ) {
         if ( sb.length() > 0 ) {

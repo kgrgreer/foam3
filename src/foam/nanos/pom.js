@@ -31,6 +31,7 @@ foam.POM({
     { name: "er/EventRecord",                                                             flags: "js|java" },
     { name: "er/EventRecordAlarmRuleAction",                                              flags: "js|java" },
     { name: "er/EventRecordDAO",                                                          flags: "js|java" },
+    { name: "er/EventRecordResponseDAO",                                                 flags: "js|java" },
     { name: "er/EventRecordNotificationRuleAction",                                      flags: "js|java" },
     { name: "er/EventRecordResponse",                                                     flags: "js|java" },
     { name: "er/test/EventRecordTest",                                                    flags: "js|java" },

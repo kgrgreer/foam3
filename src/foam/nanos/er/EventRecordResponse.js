@@ -8,6 +8,8 @@ foam.CLASS({
   package: 'foam.nanos.er',
   name: 'EventRecordResponse',
 
+  documentation: `Documentation and Response for an event`,
+
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -26,22 +28,24 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'code',
-      class: 'String',
-      required: true
-    },
-    {
-      name: 'partner',
-      class: 'String',
-      require: true
-    },
-    {
-      name: 'event',
+      name: 'id',
       class: 'String',
       visibility: 'RO'
     },
     {
-      name: 'response',
+      name: 'event',
+      class: 'String'
+    },
+    {
+      name: 'partner',
+      class: 'String'
+    },
+    {
+      name: 'code',
+      class: 'String'
+    },
+    {
+      name: 'description',
       class: 'String',
       view: {
         class: 'foam.u2.tag.TextArea',
@@ -50,21 +54,14 @@ foam.CLASS({
       }
     },
     {
-      name: 'summary',
-      class: 'String'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'toSummary',
-      type: 'String',
-      javaCode: `
-      if ( ! SafetyUtil.isEmpty(getSummary()) ) {
-        return getSummary();
+      name: 'response',
+      label: 'Response / Resolution',
+      class: 'String',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        rows: 5,
+        cols: 80
       }
-      return null;
-      `
     }
   ]
 });

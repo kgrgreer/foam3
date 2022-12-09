@@ -7,9 +7,10 @@ p({
 partner: {{partner}}
 code: {{code}}
 severity: {{severity}}
-message: {{message}}
-createdFrom: {{createdFrom}}
+{% if message %}message: {{message}}{% endif %}
+{% if createdFrom %}createdFrom: {{createdFrom}}{% endif %}
 createdBy: {{createdBy}}
 created: {{created}}
+hostname: {{hostname}}
   """
 })
