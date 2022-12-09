@@ -30,10 +30,7 @@ foam.CLASS({
       name: 'verificationCodeSection'
     },
     {
-      name: 'resetPasswordSection',
-      isAvailable: function(codeVerified) {
-        return codeVerified;
-      }
+      name: 'resetPasswordSection'
     }
   ],
 
@@ -88,14 +85,18 @@ foam.CLASS({
       name: 'codeVerified',
       documentation: `
         Updated by verifyCode method whenever code is updated and of valid format.
-      `
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
     },
     {
       name: 'remainingAttempts',
       documentation: `
         Number of remaining attempts to enter current verification code.
         Used in resetPasswordCode error message.
-      `
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
     }
   ],
 
