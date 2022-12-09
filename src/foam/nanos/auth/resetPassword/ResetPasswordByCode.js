@@ -38,8 +38,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
-    { name: 'INVALID_CODE',     message: 'The code you have entered is invalid. Please re-enter your code or request a new code.' },
     { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
     { name: 'INSTRUC',          message: 'Please check your inbox for to verify your email' },
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
@@ -116,15 +114,18 @@ foam.CLASS({
           this.codeVerified = false;
           return;
         }
+
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
           this.codeVerified = verified;
         } catch (error) {
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
+            this.codeVerified = false;
+            if ( ! this.remainingAttempts ) {
+              this.resendCode();
+            }
           }
-
-          this.codeVerified = false;
         }
       }
     }
@@ -166,7 +167,7 @@ foam.CLASS({
       label: 'Resend Code',
       section: 'verificationCodeSection',
       buttonStyle: 'LINK',
-      code: async function(X) {
+      code: async function() {
         try {
           await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
 
