@@ -29,6 +29,7 @@ foam.CLASS({
 
   constants: [
     { name: 'TIMEOUT', type: 'Integer', value: 30 },
+    { name: 'DEFAULT_MAX_ATTEMPTS', type: 'Integer', value: 5 },
     { name: 'VERIFY_EMAIL_TEMPLATE', type: 'String', value: 'verifyEmailByCode' }
   ],
 
@@ -91,6 +92,8 @@ foam.CLASS({
           .setEmail(user.getEmail())
           .setUserName(user.getUserName())
           .setExpiry(calendar.getTime())
+          .setVerificationAttempts(0)
+          .setMaxAttempts(DEFAULT_MAX_ATTEMPTS)
           .build();
 
         DAO verificationCodeDAO = (DAO) x.get("emailVerificationCodeDAO");
