@@ -61,7 +61,7 @@ foam.CLASS({
       Map args = new HashMap();
 
       args.put("of", obj.getClass().getSimpleName());
-      args.put("dop", rule.getOperation());
+      args.put("dop", rule.getOperation().getName());
 
       // add all properties of obj as args
       var props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
