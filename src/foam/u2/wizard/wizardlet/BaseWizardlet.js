@@ -65,6 +65,9 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'capability'
+    },
+    {
       class: 'Boolean',
       name: 'reloadOnAutoSave'
     },
@@ -89,7 +92,11 @@ foam.CLASS({
     },
     {
       name: 'title',
-      class: 'String'
+      class: 'String',
+      expression: function(capability) {
+        if ( ! capability?.name ) return '';
+        return capability.name;
+      }
     },
     {
       name: 'subTitle',
