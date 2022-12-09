@@ -25,7 +25,7 @@ foam.CLASS({
     async function save (...a) {
       const loader = foam.json.parse(
         this.loader, undefined, this.__subContext__);
-      const obj = await loader.load();
+      const obj = await loader.load({});
       if ( ! this.predicate.f(obj) ) return;
       return await this.delegate.save(...a);
     }
