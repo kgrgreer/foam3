@@ -162,6 +162,7 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     // {
+    //  ?? first byte of session? if not otherwise specified? Only helpful on user generated events. system and medusa will always be the same.
     //   name: 'traceId',
     //   class: 'String',
     //   updateVisibility: 'RO'

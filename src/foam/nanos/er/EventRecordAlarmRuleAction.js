@@ -52,6 +52,7 @@ foam.CLASS({
         }
         if ( ! alarm.getIsActive() ) {
           alarm.setIsActive(true);
+          alarm.setNote(er.getMessage());
         }
         alarmDAO.put(alarm);
       } else if ( alarm != null &&
