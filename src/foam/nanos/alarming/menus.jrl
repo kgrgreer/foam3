@@ -1,0 +1,35 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "alarming.widget.activeAlarms",
+  "label": "Active Alarms",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "foam.dashboard.view.CardWrapper",
+      "title": "Active Alarms",
+      "currentView": {
+        "class": "foam.dashboard.view.DAOTable",
+        "dao": "alarmDAO",
+        "citationView": "foam.nanos.alarming.AlarmCitationView",
+        "viewMore": true,
+        "emptyTitle": "No Active Alarms",
+        "emptySubTitle": ""
+      }
+    }
+  }
+})
+//      "mode": "config"
+//        "predicate": {
+//          "class":"foam.mlang.predicate.True"
+//        },
+//  "parent": "hidden"
+//          "class":"foam.mlang.predicate.Eq",
+//          "arg1":{
+//            "class":"__Property__",
+//            "forClass_":"foam.nanos.alarming.Alarm",
+//            "name":"isActive"
+//          },
+//          "arg2":{
+//            "class":"foam.mlang.Constant",
+//            "value":true
+//          }

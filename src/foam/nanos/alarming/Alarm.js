@@ -172,5 +172,16 @@ foam.CLASS({
         this.alarmDAO.cmd(this.AbstractDAO.RESET_CMD);
       }
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function() {
+        return this.name + ' ' +
+          this.severity.label + ' ' +
+          this.isActive ? "Active" :  "Cleared";
+      }
+    }
   ]
 });
