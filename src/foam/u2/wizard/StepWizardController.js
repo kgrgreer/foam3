@@ -322,7 +322,18 @@ foam.CLASS({
       if ( ! section.isAvailable ) return false;
       return true;
     },
+    function debugLog (title, position, details) {
+      const logger = console;
+
+      logger.debug(`%c${title}: %c${position && position.toSummary() || '--'} %o`,
+        "font-weight: bold",
+        "color: #fc0373;",
+        details || {}
+      );
+    },
     async function next() {
+      const debugLog = this.debugLog.bind(this);
+
       let wizardlet = this.currentWizardlet;
 
       // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
@@ -352,28 +363,31 @@ foam.CLASS({
         // sections of the same wizardlet.
         const atWizardletBoundary = ! nextPosition || nextWizardlet != wizardlet;
 
-        console.debug(`%c@ wizard position: %c${referencePosition.toSummary()} %o`,
-          "font-weight: bold",
-          "color: #fc0373;",
-          {
-            atWizardletBoundary,
-            nextPosition: nextPosition.toSummary()
-          }
-        );
+        debugLog('analyzing wizard position', referencePosition, {
+          atWizardletBoundary,
+          nextWizardlet,
+          nextPosition
+        });
         
         // Not much to do between sections of the same wizardlet, just
         // land on one if it's available
         if ( ! atWizardletBoundary ) {
           if ( this.canLandOn(nextPosition) ) {
+            debugLog('landing on section', referencePosition, {
+              nextPosition
+            });
             this.wizardPosition = nextPosition;
             return false;
           }
+
+          referencePosition = referencePosition.getNext(this.wizardlets);
+          continue;
         }
 
         try {
-          console.debug(`%cstart save: %c${wizardlet.id} ${referencePosition.toSummary()}`,
-            "font-weight: bold",
-            "color: #fc0373;");
+          debugLog('saving wizardlet', referencePosition, {
+            wizardlet
+          });
           await wizardlet.save();
         } catch (e) {
           let { exception, hint } = await wizardlet.handleException(
@@ -401,18 +415,18 @@ foam.CLASS({
 
         // Load the next available wizardlets; ignore unavailable wizardlets
         while ( ! nextWizardlet.isAvailable ) {
-          console.debug(`%cskip unavailable: %c${nextPosition.toSummary()}`,
-            "font-weight: bold",
-            "color: #fc0373;");
+          debugLog('skipping unavailable wizardlet', nextPosition, {
+            wizardlet: nextWizardlet
+          });
           nextPosition = nextPosition.getNext(this.wizardlets);
           nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
           if ( ! nextWizardlet ) break;
         }
 
         try {
-          console.debug(`%cstart load: %c${nextWizardlet.id} ${nextPosition.toSummary()} %o`,
-            "font-weight: bold",
-            "color: #fc0373;");
+          debugLog('loading wizardlet', nextPosition, {
+            wizardlet: nextWizardlet
+          });
           await nextWizardlet.load();
         } catch (e) {
           let { exception, hint } = await nextWizardlet.handleException(
@@ -425,9 +439,10 @@ foam.CLASS({
         }
 
         if ( this.canLandOn(nextPosition) ) {
-          console.debug(`%clanding: %c${nextPosition.toSummary()}`,
+          console.debug(`%clanding: %c${nextPosition && nextPosition.toSummary()}`,
             "font-weight: bold",
             "color: #fc0373;");
+          debugLog('landing on wizardlet', nextPosition);
           this.wizardPosition = nextPosition;
           return false;
         }
