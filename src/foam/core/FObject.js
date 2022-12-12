@@ -983,7 +983,7 @@ foam.CLASS({
       // so that the unset state of those properties is preserved
       var props = this.cls_.getAxiomsByClass(foam.core.Property);
 
-      if ( o.cls_ && ( o.cls_ === this.cls_ || o.cls_.isSubClass(this.cls_) ) ) {
+      if ( o.cls_ && ( o.cls_ === this.cls_ || o.cls_.isSubClass(this.cls_) || this.cls_.isSubClass(o.cls_) ) ) {
         for ( var i = 0 ; i < props.length ; i++ ) {
           var name = props[i].name;
 

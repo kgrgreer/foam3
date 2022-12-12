@@ -278,7 +278,7 @@ foam.CLASS({
       } else if ( intercept.interceptType == intercept.InterceptType.CAPABLE ) {
         x = await self.launchCapableWizard(intercept, x);
       }
-      
+
       const wizardController = x.wizardController;
 
       if ( wizardController.status == this.WizardStatus.COMPLETED ) {
@@ -325,7 +325,7 @@ foam.CLASS({
       if ( wizardController.status !== this.WizardStatus.IN_PROGRESS ) {
         return false;
       }
-    
+
       return true;
     },
 

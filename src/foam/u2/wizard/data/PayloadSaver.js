@@ -27,7 +27,7 @@ foam.CLASS({
 
   methods: [
     async function save(data) {
-      const capable = await this.capableLoader.load();
+      const capable = await this.capableLoader.load({});
       const dao = capable.getCapablePayloadDAO();
       const payload = this.CapabilityJunctionPayload.create({
         capability: this.capabilityId,
@@ -45,7 +45,7 @@ foam.CLASS({
           'saver tee. It may be worth asking someone if this is a good idea.'
         );
       }
-    
+
       return await this.delegate.save();
     }
   ]

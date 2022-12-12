@@ -95,6 +95,7 @@
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
+                cardSelectViewConfig.data  = valueSimpSlot.get();
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))
