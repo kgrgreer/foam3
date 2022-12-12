@@ -41,6 +41,12 @@ foam.CLASS({
       expression: function (alternateFlow) {
         return alternateFlow.buttonStyle;
       }
+    },
+    {
+      name: 'icon',
+      expression: function (alternateFlow) {
+        return alternateFlow.icon;
+      }
     }
   ]
 })
