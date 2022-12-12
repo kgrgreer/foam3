@@ -97,7 +97,8 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       required: true,
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true },
+      validationTextVisible: false
     },
     {
       class: 'Boolean',
