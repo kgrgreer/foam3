@@ -68,7 +68,7 @@ public class DigUtil {
 
   private static Format lookupFormat(X x, String id) {
     DAO dao = (DAO) x.get("digFormatDAO");
-    DigFormat digFormat = (DigFormat) dao.find(id);
+    DigFormat digFormat = (DigFormat) dao.find(id != null ? id.toUpperCase() : null);
     if ( digFormat == null ) {
       throw new RuntimeException("Invalid format: " + id);
     }

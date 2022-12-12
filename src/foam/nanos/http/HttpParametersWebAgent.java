@@ -167,6 +167,7 @@ public class HttpParametersWebAgent
     parameters.set(Command.class, command);
 
     Format format = Format.JSON;
+    String formatOverride = null;
     resp.setContentType("text/html");
     if ( req.getParameter("format") != null && ! "".equals(req.getParameter("format").trim()) ) {
       String f = req.getParameter("format");
@@ -188,6 +189,7 @@ public class HttpParametersWebAgent
           resp.setContentType("text/html");
           break;
         default:
+          formatOverride = f;
           format = Format.JSON;
           resp.setContentType("application/json");
       }
@@ -228,6 +230,8 @@ public class HttpParametersWebAgent
     }
     parameters.set("format", format);
     parameters.set(Format.class, format);
+    if ( !SafetyUtil.isEmpty(formatOverride) )
+      parameters.set("formatOverride", formatOverride);
 
     // logger.debug("parameters", parameters);
     x = x.put(HttpParameters.class, parameters);

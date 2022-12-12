@@ -24,7 +24,7 @@ p({
   "description": "Driver for handling JSON requests from DIG.",
   "serve": false,
   "service": {
-    "class": "form.nanos.dig.drivers.DigJsonDriver"
+    "class": "foam.nanos.dig.drivers.DigJsonDriver"
   }
 })
 
@@ -34,7 +34,7 @@ p({
   "description": "Driver for handling JSON/J requests from DIG.",
   "serve": false,
   "service": {
-    "class": "form.nanos.dig.drivers.DigJsonJDriver"
+    "class": "foam.nanos.dig.drivers.DigJsonJDriver"
   }
 })
 
@@ -44,7 +44,7 @@ p({
   "description": "Driver for handling CSV requests from DIG.",
   "serve": false,
   "service": {
-    "class": "form.nanos.dig.drivers.DigCsvDriver"
+    "class": "foam.nanos.dig.drivers.DigCsvDriver"
   }
 })
 
@@ -54,7 +54,7 @@ p({
   "description": "Driver for handling HTML requests from DIG.",
   "serve": false,
   "service": {
-    "class": "form.nanos.dig.drivers.DigHtmlDriver"
+    "class": "foam.nanos.dig.drivers.DigHtmlDriver"
   }
 })
 
@@ -64,6 +64,6 @@ p({
   "description": "Driver for handling XML requests from DIG.",
   "serve": false,
   "service": {
-    "class": "form.nanos.dig.drivers.DigXmlDriver"
+    "class": "foam.nanos.dig.drivers.DigXmlDriver"
   }
 })
