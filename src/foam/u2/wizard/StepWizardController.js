@@ -340,57 +340,108 @@ foam.CLASS({
 
       const iterator = this.wizardPosition.iterate(this.wizardlets);
 
-      for ( const pos of iterator ) {
-        nextPositionWizardlet = this.wizardlets[pos.wizardletIndex];
-        if ( ! nextPositionWizardlet.isAvailable ) continue;
+      let referencePosition = this.wizardPosition;
 
-        if ( nextPositionWizardlet != wizardlet ) {
-          try {
-            await wizardlet.save();
-          } catch (e) {
-            let { exception, hint } = await wizardlet.handleException(
-              this.WizardEventType.WIZARDLET_SAVE, e
-            );
+      while ( referencePosition ) {
+        let wizardlet = this.wizardlets[referencePosition.wizardletIndex];
+        let nextPosition = referencePosition.getNext(this.wizardlets);
+        nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+        // if ( ! nextPositionWizardlet.isAvailable ) continue;
 
-            if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
-              if ( this.canLandOn(this.wizardPosition) ) return false;
-              hint = this.WizardErrorHint.ABORT_FLOW;
-            }
+        // It is possible that 'referencePosition' and 'nextPosition' are
+        // sections of the same wizardlet.
+        const atWizardletBoundary = ! nextPosition || nextWizardlet != wizardlet;
 
-            if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
-              throw this.lastException = exception || e;
-            }
+        console.debug(`%c@ wizard position: %c${referencePosition.toSummary()} %o`,
+          "font-weight: bold",
+          "color: #fc0373;",
+          {
+            atWizardletBoundary,
+            nextPosition: nextPosition.toSummary()
           }
-
-          this.onWizardletCompleted(wizardlet);
-          wizardlet = nextPositionWizardlet;
-          this.activePosition = pos;
-
-          try {
-            await wizardlet.load();
-          } catch (e) {
-            let { exception, hint } = await wizardlet.handleException(
-              this.WizardEventType.WIZARDLET_LOAD, e
-            );
-
-            if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
-              throw this.lastException = exception || e;
-            }
+        );
+        
+        // Not much to do between sections of the same wizardlet, just
+        // land on one if it's available
+        if ( ! atWizardletBoundary ) {
+          if ( this.canLandOn(nextPosition) ) {
+            this.wizardPosition = nextPosition;
+            return false;
           }
         }
 
-        if ( this.canLandOn(pos) ) {
-          this.wizardPosition = pos;
+        try {
+          console.debug(`%cstart save: %c${wizardlet.id} ${referencePosition.toSummary()}`,
+            "font-weight: bold",
+            "color: #fc0373;");
+          await wizardlet.save();
+        } catch (e) {
+          let { exception, hint } = await wizardlet.handleException(
+            this.WizardEventType.WIZARDLET_SAVE, e
+          );
+
+          if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
+            if ( this.canLandOn(this.wizardPosition) ) return false;
+            hint = this.WizardErrorHint.ABORT_FLOW;
+          }
+
+          if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
+            throw this.lastException = exception || e;
+          }
+        }
+
+        this.onWizardletCompleted(wizardlet);
+        this.activePosition = nextPosition;;
+
+        // Re-calculate next position and next wizardlet
+        // (in case an inline wizard was added while saving)
+        nextPosition = referencePosition.getNext(this.wizardlets);
+        nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+        if ( ! nextWizardlet ) break;
+
+        // Load the next available wizardlets; ignore unavailable wizardlets
+        while ( ! nextWizardlet.isAvailable ) {
+          console.debug(`%cskip unavailable: %c${nextPosition.toSummary()}`,
+            "font-weight: bold",
+            "color: #fc0373;");
+          nextPosition = nextPosition.getNext(this.wizardlets);
+          nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+          if ( ! nextWizardlet ) break;
+        }
+
+        try {
+          console.debug(`%cstart load: %c${nextWizardlet.id} ${nextPosition.toSummary()} %o`,
+            "font-weight: bold",
+            "color: #fc0373;");
+          await nextWizardlet.load();
+        } catch (e) {
+          let { exception, hint } = await nextWizardlet.handleException(
+            this.WizardEventType.WIZARDLET_LOAD, e
+          );
+
+          if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+            throw this.lastException = exception || e;
+          }
+        }
+
+        if ( this.canLandOn(nextPosition) ) {
+          console.debug(`%clanding: %c${nextPosition.toSummary()}`,
+            "font-weight: bold",
+            "color: #fc0373;");
+          this.wizardPosition = nextPosition;
           return false;
         }
+
+        referencePosition = nextPosition;
       }
 
-      try {
-        await wizardlet.save();
-      } catch (e) {
-        this.lastException = e;
-        throw e;
-      }
+
+      // try {
+      //   await wizardlet.save();
+      // } catch (e) {
+      //   this.lastException = e;
+      //   throw e;
+      // }
       this.status = this.WizardStatus.COMPLETED;
       return true;
     },
