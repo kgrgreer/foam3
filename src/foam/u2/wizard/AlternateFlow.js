@@ -27,6 +27,10 @@ foam.CLASS({
       name: 'label'
     },
     {
+      class: 'String',
+      name: 'icon'
+    },
+    {
       class: 'StringArray',
       name: 'available'
     },
