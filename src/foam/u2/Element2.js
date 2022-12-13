@@ -61,71 +61,6 @@ becomes:
   - Move CSS code out and share with U2
 */
 
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'ControllerMode',
-
-  documentation: 'CRUD controller modes: CREATE/VIEW/EDIT.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'modePropertyName'
-    },
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode; }
-    }
-  ],
-
-  methods: [
-    function getVisibilityValue(prop) {
-      return prop.visibility || prop[this.modePropertyName];
-    }
-  ],
-
-  values: [
-    {
-      name: 'CREATE',
-      modePropertyName: 'createVisibility'
-    },
-    {
-      name: 'VIEW',
-      modePropertyName: 'readVisibility',
-      restrictDisplayMode: function(mode) {
-        return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
-      }
-    },
-    {
-      name: 'EDIT',
-      modePropertyName: 'updateVisibility'
-    }
-  ]
-});
-
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'DisplayMode',
-
-  documentation: 'View display mode; how or if a view is displayed.',
-
-  properties: [
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode === foam.u2.DisplayMode.RW ? this : mode; }
-    }
-  ],
-
-  values: [
-    { name: 'RW', label: 'Read-Write' },
-    { name: 'DISABLED' },
-    { name: 'RO', label: 'Read-Only' },
-    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
-  ]
-});
-
-
 foam.CLASS({
   package: 'foam.u2',
   name: 'Node',
@@ -2511,7 +2446,7 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.onDetach(this.data$.sub(this.update));
+      this.data$.sub(this.update);
     }
   ],
 

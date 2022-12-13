@@ -4,78 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/*
-TODO:
- - Remove use of E() and replace with create-ing axiom to add same behaviour.
- - start('leftPanel') should work for locating pre-existing named spaces
- - Don't generate .java and remove need for flags: ['js'].
-*/
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'ControllerMode',
-
-  documentation: 'CRUD controller modes: CREATE/VIEW/EDIT.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'modePropertyName'
-    },
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode; }
-    }
-  ],
-
-  methods: [
-    function getVisibilityValue(prop) {
-      return prop.visibility || prop[this.modePropertyName];
-    }
-  ],
-
-  values: [
-    {
-      name: 'CREATE',
-      modePropertyName: 'createVisibility'
-    },
-    {
-      name: 'VIEW',
-      modePropertyName: 'readVisibility',
-      restrictDisplayMode: function(mode) {
-        return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
-      }
-    },
-    {
-      name: 'EDIT',
-      modePropertyName: 'updateVisibility'
-    }
-  ]
-});
-
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'DisplayMode',
-
-  documentation: 'View display mode; how or if a view is displayed.',
-
-  properties: [
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode === foam.u2.DisplayMode.RW ? this : mode; }
-    }
-  ],
-
-  values: [
-    { name: 'RW', label: 'Read-Write' },
-    { name: 'DISABLED' },
-    { name: 'RO', label: 'Read-Only' },
-    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
-  ]
-});
-
-
 foam.CLASS({
   package: 'foam.u2',
   name: 'Entity',
@@ -718,6 +646,11 @@ foam.CLASS({
   ],
 
   constants: [
+    {
+      // TODO: To replace ^ in future, to be compatible with U3
+      name: 'CSS_SELF',
+      value: '<<'
+    },
     {
       name: 'CSS_CLASSNAME_PATTERN',
       factory: function() { return /^[a-z_-][a-z\d_-]*$/i; }

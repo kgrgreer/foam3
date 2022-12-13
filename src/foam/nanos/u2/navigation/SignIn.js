@@ -96,7 +96,9 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+      required: true,
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true },
+      validationTextVisible: false
     },
     {
       class: 'Boolean',
@@ -120,6 +122,13 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'loginFailed',
+      value: true,
+      hidden: true,
+      documentation: 'Used to control flow in transient wizard signin'
     }
   ],
 
@@ -175,6 +184,7 @@ foam.CLASS({
           }
           try {
             let logedInUser = await this.auth.login(x, this.identifier, this.password);
+            this.loginFailed = false;
             if ( ! logedInUser ) return;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
@@ -197,6 +207,7 @@ foam.CLASS({
                 if ( this.username ) {
                   try {
                     logedInUser = await this.auth.login(x, this.username, this.password);
+                    this.loginFailed = false;
                     this.subject.user = logedInUser;
                     this.subject.realUser = logedInUser;
                     if ( ! this.pureLoginFunction ) await this.nextStep();

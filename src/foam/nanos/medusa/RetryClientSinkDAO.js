@@ -208,12 +208,13 @@ foam.CLASS({
               throw t;
             }
           }
-          if ( alarm != null ) {
+          if ( alarm != null &&
+               alarm.getIsActive() ) {
             if ( alarm.isFrozen() ) {
               alarm = (Alarm) alarm.fclone();
             }
             alarm.setIsActive(false);
-            ((DAO) x.get("alarmDAO")).put_(x, alarm);
+            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put_(x, alarm);
           }
         }
       } finally {

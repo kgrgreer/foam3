@@ -166,7 +166,7 @@ foam.CLASS({
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
-        width: 45vw;
+        width: 65vw;
       }
       ^fullscreen ^bodyWrapper {
         width: 75%;
@@ -244,7 +244,7 @@ foam.CLASS({
         self.help_ = menu;
       });
       const updateWidth = () => {
-        if ( this.displayWidth?.ordinal < foam.u2.layout.DisplayWidth.MD.ordinal ) {
+        if ( this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal ) {
           this.forceFullscreen = true;
         } else {
           this.forceFullscreen = false;
