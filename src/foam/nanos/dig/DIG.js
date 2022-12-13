@@ -285,7 +285,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         if ( format ) {
           url += query ? "&" : "?";
           query = true;
-          url += "format=" + format.name.toLowerCase();
+          url += "format=" + format.toLowerCase();
         }
         if ( key ) {
           url += query ? "&" : "?";
