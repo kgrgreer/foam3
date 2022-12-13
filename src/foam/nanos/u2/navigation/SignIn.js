@@ -184,6 +184,7 @@ foam.CLASS({
           }
           try {
             let logedInUser = await this.auth.login(x, this.identifier, this.password);
+            this.loginFailed = false;
             if ( ! logedInUser ) return;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
@@ -201,12 +202,12 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
-              this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
                 if ( this.username ) {
                   try {
                     logedInUser = await this.auth.login(x, this.username, this.password);
+                    this.loginFailed = false;
                     this.subject.user = logedInUser;
                     this.subject.realUser = logedInUser;
                     if ( ! this.pureLoginFunction ) await this.nextStep();
