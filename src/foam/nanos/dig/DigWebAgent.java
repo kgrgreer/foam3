@@ -36,12 +36,6 @@ public class DigWebAgent extends ContextAwareSupport
 
     logger.debug("data", p.get("data"));
     try {
-      String formatOverride = p.getParameter("formatOverride");
-      if ( !SafetyUtil.isEmpty(formatOverride) ) {
-        logger.debug("Override format " + format + " with " + formatOverride);
-        format = formatOverride;
-      }
-
       // Find the operation
       DAO digFormatDAO = (DAO) x.get("digFormatDAO");
       DigFormat digFormat = (DigFormat) digFormatDAO.find(format != null ? format.toUpperCase() : null);
