@@ -459,6 +459,7 @@ foam.POM({
     { name: "dig/drivers/DigJsonDriver",                                                  flags: "js|java" },
     { name: "dig/drivers/DigJsonJDriver",                                                 flags: "js|java" },
     { name: "dig/drivers/DigXmlDriver",                                                   flags: "js|java" },
+    { name: "dig/format/DigFormat",                                                       flags: "js|java" },
     { name: "dig/exception/DAOPutException",                                              flags: "js|java" },
     { name: "dig/exception/DAONotFoundException",                                         flags: "js|java" },
     { name: "dig/exception/DAORequiredException",                                         flags: "js|java" },
