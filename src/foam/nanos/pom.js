@@ -529,6 +529,7 @@ foam.POM({
     { name: "analytics/ruler/LogAnalyticEventRuleAction",                                 flags: "js|java" },
     { name: "analytics/Candlestick",                                                      flags: "js|java" },
     { name: "analytics/CandlestickChartView",                                             flags: "js" },
+    { name: "analytics/CandlestickKeyView",                                               flags: "js" },
     { name: "analytics/CandlestickUniqueKeyPredicate",                                    flags: "js|java" },
     { name: "analytics/DemoChartView",                                                    flags: "js" },
     { name: "analytics/Foldable",                                                         flags: "js|java" },

@@ -97,6 +97,22 @@ foam.CLASS({
           }
           return this.ArrayDAO.create();
         });
+        // RichChoiceView not setup correctly. Search not showing anything
+        // and selection shows as a 'summary' view. 
+        // return {
+        //   class: 'foam.u2.view.RichChoiceView',
+        //   search: true,
+        //   sections: [
+        //     {
+        //       heading: 'Events',
+        //       dao$: dao
+        //     }
+        //   ],
+        //   allowClearingSelection: true,
+        //   rowView: {
+        //     class: 'foam.nanos.analytics.CandlestickKeyView'
+        //   }
+        // }
         return foam.u2.view.ChoiceView.create({
           objToChoice: function(candlestick) {
             return [candlestick.key, candlestick.key];
@@ -105,7 +121,7 @@ foam.CLASS({
           placeholder: '--'
         });
       },
-       postSet: function(oldValue, newValue) {
+      postSet: function(oldValue, newValue) {
         this.rebuild();
       }
     },
