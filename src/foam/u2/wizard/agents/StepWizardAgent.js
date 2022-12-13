@@ -44,7 +44,8 @@ foam.CLASS({
         return this.importedConfig || this.StepWizardConfig.create();
       }
     },
-    'wizardStackBlock'
+    'wizardStackBlock',
+    'lastLastActiveWizard'
   ],
 
   methods: [
@@ -102,6 +103,7 @@ foam.CLASS({
         }));
 
         this.wizardStackBlock.removed.sub(() => {
+          this.crunchController.lastActiveWizard = this.lastLastActiveWizard;
           this.wizardClosing = true;
           if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
             this.wizardController.status = this.WizardStatus.DISCARDED;
@@ -115,6 +117,7 @@ foam.CLASS({
         })
 
         if ( this.crunchController ) {
+          this.lastLastActiveWizard = this.crunchController.lastActiveWizard;
           this.crunchController.lastActiveWizard = this.wizardController;
         }
         this.stack.push(this.wizardStackBlock);
