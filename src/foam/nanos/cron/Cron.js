@@ -220,32 +220,23 @@ foam.CLASS({
             getReattemptSchedule().postExecution();
           } else if ( getReattempts() >= getMaxReattempts() ) {
             er(x, "max reattempts reached", LogLevel.ERROR, null);
+            er(x, "disable on error", LogLevel.WARN, null);
+            setEnabled(false);
           }
         } catch ( RuntimeException e ) {
-          er(x, e.getMessage(), LogLevel.ERROR, null);
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
           throw e;
         }
       } else if ( ! getReattemptRequested() ) {
         try {
           super.runScript(x);
           getSchedule().postExecution();
-          er(x, null, LogLevel.INFO, null);
         } catch ( RuntimeException e ) {
-          er(x, e.getMessage(), LogLevel.ERROR, null);
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
         }
-      }
-      `
-    },
-    {
-      documentation: 'generate event record, and disable self on ERROR',
-      name: 'er',
-      args: 'X x, String message, LogLevel severity, Throwable t',
-      javaCode: `
-      super.er(x, message, severity, t);
-      // ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, getId(), null, null, message, severity, t));
-      if ( severity == LogLevel.ERROR ) {
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, getId(), null, null, "disable on error", LogLevel.WARN, null));
-        setEnabled(false);
       }
       `
     },

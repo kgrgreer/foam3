@@ -28,10 +28,38 @@ foam.CLASS({
           Loggers.logger(x, this).error(t);
         }
 
-        if ( er.getException() != null ) {
-          logger.log(er.getSeverity(), summary, (Exception) er.getException());
-        } else {
-          logger.log(er.getSeverity(), summary);
+        switch ( er.getSeverity().getOrdinal() ) {
+          case 0:
+            if ( er.getException() != null ) {
+              logger.debug(summary, (Exception) er.getException());
+            } else {
+              logger.debug(summary);
+            }
+          break;
+
+          case 1:
+            if ( er.getException() != null ) {
+              logger.info(summary, (Exception) er.getException());
+            } else {
+              logger.info(summary);
+            }
+          break;
+
+          case 2:
+            if ( er.getException() != null ) {
+              logger.warning(summary, (Exception) er.getException());
+            } else {
+              logger.warning(summary);
+            }
+          break;
+
+          case 3:
+            if ( er.getException() != null ) {
+              logger.error(summary, (Exception) er.getException());
+            } else {
+              logger.error(summary);
+            }
+          break;
         }
 
         ((OMLogger) x.get("OMLogger")).log(summary);

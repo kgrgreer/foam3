@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
+    'createdFrom',
     'event',
     'partner',
     'code',
@@ -35,6 +36,8 @@ foam.CLASS({
   ],
 
   searchColumns: [
+    'createdFrom',
+    'event',
     'partner',
     'code',
     'severity'

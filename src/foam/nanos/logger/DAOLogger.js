@@ -32,11 +32,6 @@ foam.CLASS({
         return false;
       }
     };
-
-    // legacy support
-    public void log(Object... args) {
-      log(LogLevel.INFO, args);
-    }
   `,
 
   methods: [
@@ -72,15 +67,11 @@ foam.CLASS({
       type: 'Void',
       args: [
         {
-          name: 'severity',
-          javaType: 'foam.log.LogLevel'
-        },
-        {
           name: 'args',
           javaType: 'Object...'
         }
       ],
-      javaCode: 'submit(severity, combine(args));'
+      javaCode: 'submit(LogLevel.INFO, combine(args));'
     },
     {
       name: 'info',

@@ -426,8 +426,6 @@ foam.CLASS({
           ps.println();
           t.printStackTrace(ps);
           er(x, t.getMessage(), LogLevel.ERROR, t);
-//          Logger logger = (Logger) x.get("logger");
-//          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
           throw thrown;
         } finally {
           setLastDuration(pm.getTime());
