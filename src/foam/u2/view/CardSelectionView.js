@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'CardSelectionView',
   extends: 'foam.u2.View',
@@ -95,7 +95,6 @@
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
-                cardSelectViewConfig.data  = valueSimpSlot.get();
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))
