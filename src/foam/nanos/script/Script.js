@@ -37,8 +37,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'foam.dao.*',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.*',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -417,13 +419,15 @@ foam.CLASS({
             throw new RuntimeException("Script language not supported");
           }
           pm.log(x);
+          er(x, null, LogLevel.INFO, null);
         } catch (Throwable t) {
           thrown = new RuntimeException(t);
           pm.error(x, t);
           ps.println();
           t.printStackTrace(ps);
-          Logger logger = (Logger) x.get("logger");
-          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
+          er(x, t.getMessage(), LogLevel.ERROR, t);
+//          Logger logger = (Logger) x.get("logger");
+//          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
           throw thrown;
         } finally {
           setLastDuration(pm.getTime());
@@ -445,6 +449,13 @@ foam.CLASS({
           ((DAO) x.get(getEventDaoKey())).put(event);
         }
     `
+    },
+    {
+      name: 'er',
+      args: 'X x, String message, LogLevel severity, Throwable t',
+      javaCode: `
+      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, getId(), null, null, message, severity, t));
+      `
     },
     {
       name: 'poll',

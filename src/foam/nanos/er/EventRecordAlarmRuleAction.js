@@ -47,6 +47,7 @@ foam.CLASS({
           alarm.setSeverity(er.getSeverity());
           alarm.setNote(er.getMessage());
           alarm.setClusterable(er.getClusterable());
+          alarm.setEventRecord(er.getId());
         } else {
           alarm = (Alarm) alarm.fclone();
         }
@@ -54,7 +55,8 @@ foam.CLASS({
           alarm.setIsActive(true);
           alarm.setNote(er.getMessage());
         }
-        alarmDAO.put(alarm);
+        alarm = (Alarm) alarmDAO.put(alarm);
+        er.setAlarm(alarm.getId());
       } else if ( alarm != null &&
                   alarm.getIsActive() ) {
         alarm = (Alarm) alarm.fclone();

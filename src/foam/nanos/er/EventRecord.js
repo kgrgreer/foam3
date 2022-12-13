@@ -41,10 +41,19 @@ foam.CLASS({
   ],
 
   javaCode: `
-  public EventRecord(X x, String event, String partner) {
+  public EventRecord(X x, Object caller, String event, String partner) {
     setX(x);
     setEvent(event);
     setPartner(partner);
+    setCreatedFrom(caller.getClass().getSimpleName());
+  }
+
+  public EventRecord(X x, Object caller, String event, String partner, String message) {
+    setX(x);
+    setEvent(event);
+    setPartner(partner);
+    setMessage(message);
+    setCreatedFrom(caller.getClass().getSimpleName());
   }
 
   public EventRecord(X x, Object caller, String event, String partner, String code, String message, LogLevel severity, Throwable t) {
@@ -190,6 +199,18 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       storageTransient: true
+    },
+    {
+      name: 'alarm',
+      class: 'Reference',
+      of: 'foam.nanos.alarming.Alarm',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      menuKeys: [
+        'alarm',
+        'admin.alarm'
+      ]
     }
   ],
 

@@ -1,0 +1,6 @@
+<title>Event Record</title>
+
+<h1>Use</h1>
+d = x.get("eventRecordDAO");
+er = new EventRecord(x, this, "script test", "nanopay", "101", "nothing to report", LogLevel.ERROR, new Exception("stacktrace"));
+d.put(er);

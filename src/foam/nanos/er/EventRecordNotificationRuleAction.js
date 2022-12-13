@@ -15,6 +15,8 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -75,14 +77,14 @@ foam.CLASS({
         }
       }
 
-      if ( obj instanceof CreatedAware ) {
-        Date date = ((CreatedAware)obj).getCreated();
+      if ( er instanceof CreatedAware ) {
+        Date date = ((CreatedAware)er).getCreated();
         if ( date != null ) {
           args.put("created", sdf_.get().format(date));
         }
       }
-      if ( obj instanceof CreatedByAware ) {
-        User user = (User) ((DAO) x.get("userDAO")).find(((CreatedByAware)obj).getCreatedBy());
+      if ( er instanceof CreatedByAware ) {
+        User user = (User) ((DAO) x.get("userDAO")).find(((CreatedByAware)er).getCreatedBy());
         if ( user != null ) {
           args.put("createdBy", user.getLegalName());
         } else {
@@ -90,25 +92,30 @@ foam.CLASS({
           args.put("createdBy", "");
         }
       }
-      if ( obj instanceof LastModifiedAware ) {
-        Date date = ((LastModifiedAware)obj).getLastModified();
+      if ( er instanceof LastModifiedAware ) {
+        Date date = ((LastModifiedAware)er).getLastModified();
         if ( date != null ) {
           args.put("lastModified", sdf_.get().format(date));
         }
       }
-      if ( obj instanceof LastModifiedByAware ) {
-        User user = (User) ((DAO) x.get("userDAO")).find(((LastModifiedByAware)obj).getLastModifiedBy());
+      if ( er instanceof LastModifiedByAware ) {
+        User user = (User) ((DAO) x.get("userDAO")).find(((LastModifiedByAware)er).getLastModifiedBy());
         args.put("lastModifiedBy", user.getLegalName());
       }
-
-      args.put("summary", obj.toSummary());
+      args.put("summary", er.toSummary());
+      args.put("eventRecord", er.getId());
 
       StringBuilder sb = new StringBuilder();
       sb.append(obj.getClass().getSimpleName());
       sb.append(" ");
       sb.append(rule.getOperation());
       sb.append(" ");
-      sb.append(obj);
+      sb.append(er.toSummary());
+      sb.append(" ");
+      AppConfig appConfig = (AppConfig) x.get("appConfig");
+      sb.append(appConfig.getUrl());
+      sb.append("/#er?id=");
+      sb.append(er.getId());
 
       Notification notification = new Notification();
       notification.setBody(sb.toString());

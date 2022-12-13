@@ -12,5 +12,6 @@ severity: {{severity}}
 createdBy: {{createdBy}}
 created: {{created}}
 hostname: {{hostname}}
+{% if eventRecord %}eventRecord: {{url}}/#er?id={{eventRecord}}{% endif %}
   """
 })
