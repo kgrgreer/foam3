@@ -66,19 +66,26 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'capability'
+    },
+    {
       class: 'Boolean',
       name: 'reloadOnAutoSave'
     },
     {
       name: 'id',
       class: 'String',
-      factory: function () {
-        return foam.uuid.randomGUID();
+      expression: function (capability) {
+        return capability ? capability.id : foam.uuid.randomGUID();
       }
     },
     {
       name: 'of',
-      class: 'Class'
+      class: 'Class',
+      expression: function(capability) {
+        if ( ! capability?.of ) return null;
+        return capability.of;
+      }
     },
     {
       name: 'data',
@@ -90,7 +97,11 @@ foam.CLASS({
     },
     {
       name: 'title',
-      class: 'String'
+      class: 'String',
+      expression: function(capability) {
+        if ( ! capability?.name ) return '';
+        return capability.name;
+      }
     },
     {
       name: 'subTitle',
@@ -257,6 +268,8 @@ foam.CLASS({
 
         return this.QuickAgent.create({
           executeFn: async function (x) {
+            console.error(x.exception);
+
             // If we fail to save, the default behaviour will be an error
             // message displayed to the user.
             if ( x.event == self.WizardEventType.WIZARDLET_SAVE )  {

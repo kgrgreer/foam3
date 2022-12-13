@@ -92,10 +92,10 @@
                   cardSelectViewConfig.label = choice[1];
                 } else {
                   valueSimpSlot = self.mustSlot(choice);
-                  cardSelectViewConfig.of = choice.cls_.id;
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
+                cardSelectViewConfig.data  = valueSimpSlot.get();
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))

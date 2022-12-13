@@ -121,6 +121,11 @@ foam.CLASS({
           }
           if ( action.name === 'goPrev' ) {
             goPrevAction = action;
+            goPrevAction.buttonStyle = 'PRIMARY';
+            const copyProperties = ['isAvailable', 'isEnabled'];
+            for ( const k of copyProperties ) {
+              if ( ! goPrevAction[k] ) goPrevAction[k] = this.GO_PREV[k];
+            }
             continue;
           }
           actionBar.push(action);

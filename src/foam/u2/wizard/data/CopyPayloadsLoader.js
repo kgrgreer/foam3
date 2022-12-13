@@ -14,6 +14,14 @@ foam.CLASS({
     object obtained by the delegate loader.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.nanos.crunch.CapabilityJunctionPayload'
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -33,6 +41,7 @@ foam.CLASS({
     async function load(...a) {
       const sourceCapable = await this.capableLoader.load({});
       const targetCapable = await this.delegate.load(...a);
+      let   listOfRequirements = [];
 
       // Copy list of requirements
       {
@@ -44,22 +53,25 @@ foam.CLASS({
           }
         }
 
-        const listOfRequirements = this.requirementsIncludes.length > 0
+        listOfRequirements = this.requirementsIncludes.length > 0
           ? this.requirementsIncludes.filter(v => setOfRequirements[v])
           : Object.keys(setOfRequirements);
 
-        targetCapable.capabilityIds = Object.keys(setOfRequirements);
+        targetCapable.capabilityIds = listOfRequirements;
       }
 
-      // Copy existing payloads
-      {
+      // Copy existing required payloads to the target
+      if ( listOfRequirements.length > 0 ) {
         const sourceDAO = sourceCapable.getCapablePayloadDAO();
         const targetDAO = targetCapable.getCapablePayloadDAO();
 
-        const sourcePayloads = (await sourceDAO.select()).array;
-        for ( const payload of sourcePayloads ) {
-          targetDAO.put(payload);
-        }
+        await sourceDAO
+          .where(this.IN(this.CapabilityJunctionPayload.CAPABILITY, listOfRequirements))
+          .select({
+            put: function (payload) {
+              targetDAO.put(payload)
+            }
+          });
       }
 
       return targetCapable;

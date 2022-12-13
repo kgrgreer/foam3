@@ -26,6 +26,9 @@ foam.CLASS({
   ],
 
   methods: [
+    function toSummary () {
+      return this.wizardletIndex + ':' + this.sectionIndex;
+    },
     function compareTo(b) {
       let a = this;
       let wizardletDiff = a.wizardletIndex - b.wizardletIndex;

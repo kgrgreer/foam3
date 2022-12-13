@@ -27,6 +27,10 @@ foam.CLASS({
       name: 'label'
     },
     {
+      class: 'String',
+      name: 'icon'
+    },
+    {
       class: 'StringArray',
       name: 'available'
     },
@@ -113,7 +117,7 @@ foam.CLASS({
 
       if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
         wizardController = wizardController.data;
-      
+
       if  ( this.saveCurrent ) wizardController.currentWizardlet.save();
 
       const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
