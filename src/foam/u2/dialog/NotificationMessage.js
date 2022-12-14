@@ -153,7 +153,7 @@ foam.CLASS({
             if ( this.message.endsWith('Exception') ) {
               this.message = this.message.replace('Exception', '');
             }
-            this.message = foam.String.capitalize(foam.String.labelize(this.message).toLowerCase());
+            this.message = foam.String.labelize(this.message);
           }
           this.message = this.translationService.getTranslation(foam.locale, ex.title || ex.id, this.message);
         }
