@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'EventRecordResponseDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Add EventRecordResponse referenct to EventRecord`,
+  documentation: `Add EventRecordResponse reference to EventRecord`,
 
   javaImports: [
     'foam.dao.DAO',

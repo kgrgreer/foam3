@@ -21,11 +21,6 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
-  ids: [
-    'code',
-    'partner'
-  ],
-
   properties: [
     {
       name: 'id',

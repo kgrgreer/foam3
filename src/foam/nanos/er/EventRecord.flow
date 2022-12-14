@@ -32,3 +32,6 @@ eventRecordDAO.put(er);
 
 <h1>Alarm Raise and Clear</h1>
 Alarms are raised on WARN or ERROR level.  A raised Alarm will be cleared if an EventRecord of severity INFO is created with a matching <b>event</b>, <b>partner</b>, <b>code</b>.
+
+<h1>Event Record Response</h1>
+An Event Record Response is a detailed description of an Event Record and what to do when one is encountered.
