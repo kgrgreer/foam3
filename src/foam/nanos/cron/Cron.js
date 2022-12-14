@@ -26,6 +26,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date'
@@ -218,56 +219,25 @@ foam.CLASS({
             resetReattempts();
             getReattemptSchedule().postExecution();
           } else if ( getReattempts() >= getMaxReattempts() ) {
-            alarm(x, AlarmReason.THRESHOLD, "max reattempts reached", true);
+            er(x, "max reattempts reached", LogLevel.ERROR, null);
+            er(x, "disable on error", LogLevel.WARN, null);
+            setEnabled(false);
           }
         } catch ( RuntimeException e ) {
-          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
-         throw e;
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
         }
       } else if ( ! getReattemptRequested() ) {
         try {
           super.runScript(x);
           getSchedule().postExecution();
-          DAO alarmDAO = (DAO) x.get("alarmDAO");
-          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
-          }
         } catch ( RuntimeException e ) {
-          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
         }
       }
-      `
-    },
-    {
-      documentation: 'generate alarm and optionally disable self',
-      name: 'alarm',
-      args: 'X x, AlarmReason reason, String note, Boolean disable',
-      javaCode: `
-        DAO alarmDAO = (DAO) x.get("alarmDAO");
-        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-        if ( alarm != null ) {
-          if ( ! alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(true);
-            alarmDAO.put(alarm);
-          }
-        } else {
-          alarm = new Alarm(getId(), true);
-          alarm.setSeverity(LogLevel.ERROR);
-          alarm.setReason(reason);
-          alarm.setNote(note);
-          alarmDAO.put(alarm);
-        }
-
-        setStatus(ScriptStatus.ERROR);
-        resetReattempts();
-        if ( disable ) {
-          setEnabled(false);
-        }
       `
     },
     {
