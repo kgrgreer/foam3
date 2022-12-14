@@ -2,7 +2,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"er",
   "label":"Event Records",
-  "keywords": ["alarm", "eventrecord","er","log"],
+  "keywords": ["alarms","eventrecords","er","logs"],
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
