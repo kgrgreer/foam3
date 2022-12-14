@@ -11,6 +11,13 @@ foam.CLASS({
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
+  properties: [
+    {
+      name: 'isClientException',
+      value: true
+    }
+  ],
+
   javaCode: `
     public ClientRuntimeException() {
       super();

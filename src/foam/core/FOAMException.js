@@ -73,7 +73,8 @@ foam.CLASS({
       factory: function() { return this.cls_.id; },
       javaFactory: 'return this.getClass().getName();',
       externalTransient: true,
-      storageTransient: true
+      storageTransient: true,
+      visibility: 'RO'
     },
     {
       name: 'exceptionMessage',
@@ -95,7 +96,8 @@ foam.CLASS({
     {
       documentation: 'Override title of notification messages',
       name: 'title',
-      class: 'String'
+      class: 'String',
+      visibility: 'RO'
     },
     {
       name: 'errorCode',
@@ -108,6 +110,12 @@ foam.CLASS({
       class: 'String',
       javaFactory: 'return System.getProperty("hostname", "localhost");',
       visibilty: 'RO'
+    },
+    {
+      name: 'isClientException',
+      class: 'Boolean',
+      value: false,
+      hidden: true
     }
   ],
 
@@ -241,7 +249,7 @@ foam.CLASS({
       exceptions might be.`,
       type: 'RuntimeException',
       visibility: 'public',
-      javaCode: `return this;`
+      javaCode: 'return getIsClientException() ? this : null;'
     }
   ]
 });
