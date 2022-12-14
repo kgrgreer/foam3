@@ -7,7 +7,6 @@
 foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'CapabilityIntercept',
-  implements: [ 'foam.core.ExceptionInterface' ],
   extends: 'foam.core.FOAMException',
   javaGenerateConvenienceConstructor: false,
 
@@ -124,16 +123,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      // TODO: cloning this property from ExceptionInterface creates a bug.
-      name: 'getClientRethrowException',
-      documentation:
-      `If an exception is intended to go to the client, this
-      returns an exception object; it returns null otherwise.`,
-      type: 'RuntimeException',
-      visibility: 'public',
-      javaCode: `return this;`
-    },
     {
       name: 'addCapabilityId',
       args: [

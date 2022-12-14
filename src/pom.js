@@ -49,7 +49,6 @@ foam.POM({
     { name: "foam/core/Axiom",                                        flags: "js|java" },
     { name: "foam/core/ContextMethod",                                flags: "js" },
     { name: "foam/core/Exception",                                    flags: "js|java" },
-    { name: "foam/core/ExceptionInterface",                           flags: "js|java" },
     { name: "foam/core/FOAMException",                                flags: "js|java" },
     { name: "foam/core/FOAMExceptionTest",                            flags: "js|java" },
     { name: "foam/core/Window",                                       flags: "js" },
