@@ -32,7 +32,8 @@ foam.CLASS({
     'partner',
     'code',
     'severity',
-    'message'
+    'message',
+    'hostname'
   ],
 
   searchColumns: [
@@ -44,30 +45,37 @@ foam.CLASS({
   ],
 
   javaCode: `
-  public EventRecord(X x, Object caller, String event, String partner) {
+  public EventRecord(X x, Object caller, String event) {
     setX(x);
     setEvent(event);
-    setPartner(partner);
-    setCreatedFrom(caller.getClass().getSimpleName());
+    setCreatedFrom(caller);
   }
 
-  public EventRecord(X x, Object caller, String event, String partner, String message) {
+  public EventRecord(X x, Object caller, String event, String message) {
     setX(x);
+    setCreatedFrom(caller);
     setEvent(event);
-    setPartner(partner);
     setMessage(message);
-    setCreatedFrom(caller.getClass().getSimpleName());
+  }
+
+  public EventRecord(X x, Object caller, String event, String message, LogLevel severity, Throwable t) {
+    setX(x);
+    setCreatedFrom(caller);
+    setEvent(event);
+    setMessage(message);
+    setSeverity(severity);
+    setException(t);
   }
 
   public EventRecord(X x, Object caller, String event, String partner, String code, String message, LogLevel severity, Throwable t) {
     setX(x);
+    setCreatedFrom(caller);
     setEvent(event);
     setPartner(partner);
     setCode(code);
     setMessage(message);
     setSeverity(severity);
     setException(t);
-    setCreatedFrom(caller.getClass().getSimpleName());
   }
   `,
 
@@ -170,8 +178,21 @@ foam.CLASS({
     {
       // TODO: class and method?
       name: 'createdFrom',
-      class: 'String',
-      updateVisibility: 'RO'
+      class: 'Object',
+      updateVisibility: 'RO',
+      javaSetter: `
+      if ( val == null ) {
+        createdFrom_ = val;
+        createdFromIsSet_ = false;
+        return;
+      }
+      if ( val instanceof String ) {
+        createdFrom_ = val;
+      } else {
+        createdFrom_ = val.getClass().getSimpleName();
+      }
+      createdFromIsSet_ = true;
+      `
     },
     // {
     //  ?? first byte of session? if not otherwise specified? Only helpful on user generated events. system and medusa will always be the same.
@@ -226,6 +247,12 @@ foam.CLASS({
       },
       javaCode: `
       StringBuilder sb = new StringBuilder();
+      if ( getCreatedFrom() != null ) {
+        if ( sb.length() > 0 ) {
+          sb.append("-");
+        }
+        sb.append(getCreatedFrom().toString());
+      }
       if ( ! SafetyUtil.isEmpty(getEvent()) ) {
         if ( sb.length() > 0 ) {
           sb.append("-");

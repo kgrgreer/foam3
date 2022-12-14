@@ -42,10 +42,17 @@ foam.CLASS({
       String name = er.toSummary();
       Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
       if ( er.getSeverity().getOrdinal() >= LogLevel.WARN.getOrdinal() ) {
+
+        StringBuilder note = new StringBuilder();
+        note.append(er.getMessage());
+        if ( er.getException() != null ) {
+          note.append("\\n");
+          note.append(((Exception)er.getException()).getMessage());
+        }
         if ( alarm == null ) {
           alarm = new Alarm(name);
           alarm.setSeverity(er.getSeverity());
-          alarm.setNote(er.getMessage());
+          alarm.setNote(note.toString());
           alarm.setClusterable(er.getClusterable());
           alarm.setEventRecord(er.getId());
         } else {
@@ -53,7 +60,11 @@ foam.CLASS({
         }
         if ( ! alarm.getIsActive() ) {
           alarm.setIsActive(true);
-          alarm.setNote(er.getMessage());
+          alarm.setNote(note.toString());
+        }
+        if ( alarm.getSeverity() != er.getSeverity() ) {
+          alarm.setSeverity(er.getSeverity());
+          alarm.setNote(note.toString());
         }
         alarm = (Alarm) alarmDAO.put(alarm);
         er.setAlarm(alarm.getId());
