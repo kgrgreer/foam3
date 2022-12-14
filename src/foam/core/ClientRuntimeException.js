@@ -8,7 +8,6 @@ foam.CLASS({
   name: 'ClientRuntimeException',
   package: 'foam.core',
   extends: 'foam.core.FOAMException',
-  implements: [ 'foam.core.ExceptionInterface' ],
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
@@ -28,18 +27,5 @@ foam.CLASS({
     public ClientRuntimeException(String message, Throwable cause ) {
       super(message, cause);
     }
-  `,
-
-  methods: [
-    {
-      // TODO: cloning this property from ExceptionInterface creates a bug.
-      name: 'getClientRethrowException',
-      documentation:
-      `If an exception is intended to go to the client, this
-        returns an exception object; it returns null otherwise.`,
-      type: 'RuntimeException',
-      visibility: 'public',
-      javaCode: `return this;`
-    }
-  ]
+  `
 });

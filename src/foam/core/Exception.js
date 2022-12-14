@@ -26,5 +26,5 @@ foam.INTERFACE({
       name: 'isClientException',
       type: 'Boolean'
     }
-  ],
+  ]
 });

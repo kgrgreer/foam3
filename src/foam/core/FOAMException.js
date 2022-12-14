@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.core',
   name: 'FOAMException',
-  implements: [ 'foam.core.Exception' ],
+  implements: ['foam.core.Exception'],
   javaExtends: 'RuntimeException',
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
@@ -93,7 +93,13 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Override title of notification messages',
+      name: 'title',
+      class: 'String'
+    },
+    {
       name: 'errorCode',
+      aliases: ['code'],
       class: 'String',
       visibility: 'RO'
     },
@@ -221,6 +227,21 @@ foam.CLASS({
       sb.append(getMessage());
       return sb.toString();
       `
+    },
+    {
+      name: 'getClientRethrowException',
+      documentation:
+      `If an exception is intended to go to the client, this
+      returns an exception object; it returns null otherwise.
+
+      Note that the exception returned by this property is the
+      one that should be re-thrown. This is particularly useful
+      for CompoundException where the CompoundException itself
+      is not intended to be re-thrown but any of its child
+      exceptions might be.`,
+      type: 'RuntimeException',
+      visibility: 'public',
+      javaCode: `return this;`
     }
   ]
 });

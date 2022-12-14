@@ -241,7 +241,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Request job is rescheduled',
+     documentation: 'Request job is rescheduled',
       name: 'reattempt',
       javaCode: `
       setReattemptRequested(true);
