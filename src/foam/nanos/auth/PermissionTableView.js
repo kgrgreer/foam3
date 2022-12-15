@@ -232,33 +232,18 @@ foam.CLASS({
 
         .add(this.slot(this.table))
 
-
-
-
-
-
         .start('div')
           .start(self.ScrollCView.create({
             value$:   self.gSkip$,
             extent$:  self.filteredCols$.map(m => Math.min(self.COLS, m)),
             width:    1000,
-            vertical: true,
+            vertical: false,
             height:   26,
             size$:    self.filteredCols$
           }))
           .end()
           .style({float: 'right', 'padding-right': '23px'})
-        .end()/*.br().add(self.gSkip$, ' ', self.filteredCols$)*/;
-
-
-
-
-
-
-
-
-
-
+        .end();
     },
 
     function table(filteredPs, filteredGs, gSkip) {
