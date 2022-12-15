@@ -73,8 +73,8 @@ foam.CLASS({
                 return self.E();
               }
 
-              // For default selection e.g. One time deposit
-              if ( choices[0] ) self.data = choices[0][0];
+              // For default selection in case of empty data e.g. One time deposit
+              if ( choices[0] && ! self.data ) self.data = foam.Array.isInstance(choices[0]) ? choices[0][0] : choices[0];
 
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
