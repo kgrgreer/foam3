@@ -231,7 +231,7 @@ foam.CLASS({
 
         .add(this.slot(this.table))
 
-        .start('div')
+        /*.start('div')
           .start(self.ScrollCView.create({
             value$: self.gSkip$,
             extent: Math.min(self.COLS, self.filteredCols),
@@ -242,8 +242,7 @@ foam.CLASS({
           }))
           .style({transform: 'rotate(90deg)'})
           .end()
-        .end()
-        .add(self.filteredCols$, ' ', self.gSkip$);
+        .end()*/;
     },
 
     function table(filteredPs, filteredGs, gSkip) {
@@ -311,8 +310,8 @@ foam.CLASS({
     },
 
     function count(self) {
-      var msg = 'permissions: ' + self.filteredRows + ' of ' + self.ps.length;
-      msg += ",  groups: " + self.filteredCols + ' of ' + self.gs.length;
+      var msg = self.filteredRows + ' of ' + self.ps.length + ' permissions, ';
+      msg += self.filteredCols + ' of ' + self.gs.length + ' groups';
 
       this.add(msg);
     },
