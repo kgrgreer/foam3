@@ -238,7 +238,7 @@ foam.CLASS({
         .start('div')
           .start(self.ScrollCView.create({
             value$: self.gSkip$,
-            extent: self.COLS,
+            extent: Math.min(self.COLS, self.filteredCols),
             width: self.COLS*40,
             vertical: false,
             height: 26,
@@ -288,7 +288,7 @@ foam.CLASS({
     },
 
     function tableBody(skip, gSkip, filteredPs) {
-      var ps   = this.filteredPs, gs = this.gs.slice(gSkip, gSkip+this.COLS);
+      var ps   = this.filteredPs, gs = this.filteredGs.slice(gSkip, gSkip+this.COLS);
       var self = this, count = 0;
       return self.E('tbody').forEach(filteredPs, function(p) {
         if ( count > skip + self.ROWS ) return;
@@ -302,9 +302,6 @@ foam.CLASS({
           .end()
           .forEach(gs, function(g) {
             this.start('td')
-              .show(self.gQuery$.map(function(q) {
-                return q == '' || g.id.indexOf(q) != -1;
-              }))
               .on('mouseover', function() { self.currentGroup = g; })
               .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
               .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
@@ -317,7 +314,10 @@ foam.CLASS({
     },
 
     function count(self) {
-      this.add(self.filteredCols, ' groups, ', self.filteredRows, ' permissions', self.filteredRows$.map(function(rows) { return rows == self.ps.length ?  '' : (', ' + rows + ' selected'); }))
+      var msg = 'permissions: ' + self.filteredRows + ' of ' + self.ps.length;
+      msg += ",  groups: " + self.filteredCols + ' of ' + self.gs.length;
+
+      this.add(msg);
     },
 
     // * -> null, foo.bar -> foo.*, foo.* -> *
