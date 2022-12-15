@@ -236,13 +236,13 @@ foam.CLASS({
           .start(self.ScrollCView.create({
             value$:   self.gSkip$,
             extent$:  self.filteredCols$.map(m => Math.min(self.COLS, m)),
-            width:    1000,
+            width$:   self.filteredCols$.map(m => m * 26),
             vertical: false,
             height:   26,
             size$:    self.filteredCols$
           }))
           .end()
-          .style({float: 'right', 'padding-right': '23px'})
+          .style({float: 'right', 'padding-right': '26px'})
         .end();
     },
 
