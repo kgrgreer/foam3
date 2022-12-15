@@ -526,7 +526,7 @@ foam.CLASS({
           this.SUPER();
           this.
             addClass(this.myClass()).
-            style({width: '18px', height: '18px'}).
+            style({height: '18px'}).
             enableClass(this.myClass('implied'), this.data.checked$, true).
             enableClass(this.myClass('checked'), this.data.checked$).
             add(this.slot(function(data$granted) {
