@@ -16,7 +16,6 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'foam.graphics.Label',
     'foam.graphics.ScrollCView',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.GroupPermissionJunction',
@@ -103,6 +102,14 @@ foam.CLASS({
       left: 0;
       z-index: 2;
     }
+
+    ^groupLabel {
+      font-weight: normal;
+      writing-mode: vertical-lr;
+      white-space: nowrap;
+      background: white;
+    }
+
   `,
 
   properties: [
@@ -404,27 +411,11 @@ foam.CLASS({
       gs = gs.slice(matrix.gSkip, matrix.gSkip+matrix.COLS);
       var self = this;
       this.forEach(gs, function(g) {
-        this.start('th')
+        this.start('td')
           .attrs({title: g.description})
+          .addClass(matrix.myClass('groupLabel'))
           .enableClass(matrix.myClass('hovered'), matrix.currentGroup$.map(function(cg) { return cg === g; } ))
-          .call(function() {
-            var cv = foam.graphics.Box.create({
-              color$: matrix.currentGroup$.map(function(cg) { return cg === g ? '#ccc' : 'white'; }),
-              autoRepaint: true,
-              width: 20,
-              height: 200});
-            var l = foam.graphics.Label.create({
-              text: g.id,
-              x: 25,
-              y: 8,
-              color: 'black',
-              font: '300 16px Helvetica',
-              width: 200,
-              height: 20,
-              rotation: -Math.PI/2});
-            cv.add(l);
-            this.add(cv);
-          })
+          .add(g.id)
         .end();
       });
     },
