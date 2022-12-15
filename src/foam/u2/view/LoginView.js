@@ -287,7 +287,7 @@ foam.CLASS({
           }))
         .end()
         // Title txt and Data
-        .callIf(self.showTitle, function() { this.start().addClass('title-top').add(this.data.TITLE).end(); })
+        .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()
