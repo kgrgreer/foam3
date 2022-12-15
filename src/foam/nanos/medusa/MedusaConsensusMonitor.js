@@ -24,14 +24,23 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.EQ',
-    'foam.nanos.alarming.Alarm',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.Arrays',
     'java.util.Timer'
+  ],
+
+  constants: [
+    {
+      name: 'EVENT_NAME',
+      type: 'String',
+      value: 'Medusa Consensus'
+    }
   ],
 
   properties: [
@@ -85,6 +94,11 @@ foam.CLASS({
       class: 'Object',
       visibility: 'HIDDEN',
       networkTransient: true
+    },
+    {
+      name: 'eventRecord',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.er.EventRecord'
     }
   ],
 
@@ -127,10 +141,11 @@ foam.CLASS({
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
 
       try {
-        DAO alarmDAO = (DAO) x.get("alarmDAO");
-        String alarmName = "Medusa Consensus";
-        Alarm alarm = new Alarm(alarmName);
-        alarm = (Alarm) alarmDAO.find(alarm);
+        EventRecord er = getEventRecord();
+        if ( er == null ) {
+          er = new EventRecord(x, this, EVENT_NAME);
+          setEventRecord(er);
+        }
 
         if ( getLastIndex() == 0L ||
              getLastIndex() != replaying.getIndex() ) {
@@ -138,11 +153,11 @@ foam.CLASS({
           setLastIndex(replaying.getIndex());
           setLastIndexSince(System.currentTimeMillis());
           setLastReplay(0L);
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
+          if ( er.getSeverity() == LogLevel.WARN ) {
+            er.setSeverity(LogLevel.INFO);
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+            er.clearId();
+            setEventRecord(er);
           }
           return;
         }
@@ -157,11 +172,11 @@ foam.CLASS({
           setLastIndex(nextIndex);
           setLastIndexSince(System.currentTimeMillis());
           setLastReplay(0L);
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
+          if ( er.getSeverity() == LogLevel.WARN ) {
+            er.setSeverity(LogLevel.INFO);
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+            er.clearId();
+            setEventRecord(er);
           }
           return;
         }
@@ -169,15 +184,13 @@ foam.CLASS({
         // not null, not promoted, and in this state for at least a timer cycle
         logger.warning("no consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", new java.util.Date(getLastIndexSince()));
 
-        if ( alarm == null ) {
-          alarm = new Alarm(alarmName, true);
-          alarm.setClusterable(false);
-        } else {
-          alarm = (Alarm) alarm.fclone();
+        if ( er.getSeverity() == LogLevel.INFO ) {
+          er.setSeverity(LogLevel.WARN);
+          er.setMessage("No Consensus: "+next.toSummary());
+          er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+          er.clearId();
+          setEventRecord(er);
         }
-        alarm.setIsActive(true);
-        alarm.setNote("No Consensus: "+next.toSummary());
-        alarm = (Alarm) alarmDAO.put(alarm);
 
         // TOOD: getMinReplayInterval has to be adjusted based on count.
         // Nodes with multiple mediator requests are constrained on memory and

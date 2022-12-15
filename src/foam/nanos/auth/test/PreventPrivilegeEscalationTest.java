@@ -64,7 +64,7 @@ public class PreventPrivilegeEscalationTest
     } catch (Throwable e) {
       logger_.error(e);
       e.printStackTrace();
-      test(false, "An unexpected exception was thrown. Some tests might not have been executed. "+e.getMessage());
+      test(false, "An unexpected exception was thrown. Some tests might not have been executed. "+e.getClass().getName()+" "+e.getMessage());
     }
   }
 
@@ -337,6 +337,7 @@ public class PreventPrivilegeEscalationTest
     List permissionIds = new ArrayList();
     permissionIds.add("group.update.anonymous");
     permissionIds.add("user.update.*");
+    permissionIds.add("paymentcode.create");
     X userContext = generateTestUser(x, permissionIds);
 
     // Create a user in the anonymous group.

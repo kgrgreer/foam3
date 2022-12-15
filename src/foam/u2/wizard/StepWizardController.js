@@ -414,14 +414,14 @@ foam.CLASS({
         if ( ! nextWizardlet ) break;
 
         // Load the next available wizardlets; ignore unavailable wizardlets
-        while ( ! nextWizardlet.isAvailable ) {
+        while ( nextWizardlet && ! nextWizardlet.isAvailable ) {
           debugLog('skipping unavailable wizardlet', nextPosition, {
             wizardlet: nextWizardlet
           });
           nextPosition = nextPosition.getNext(this.wizardlets);
           nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
-          if ( ! nextWizardlet ) break;
         }
+        if ( ! nextWizardlet ) break;
 
         try {
           debugLog('loading wizardlet', nextPosition, {

@@ -221,6 +221,10 @@ public class HttpParametersWebAgent
           break;
         }
       }
+
+      // Set the format string to the name
+      f = format.getName();
+      
     //   if ( i == formats.length ) {
     //     logger.debug("accept/format could not be determined, default to JSON.");
     //   }
