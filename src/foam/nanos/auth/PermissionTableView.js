@@ -32,7 +32,8 @@ foam.CLASS({
   ],
 
   constants: {
-    ROWS: 26
+    COLS: 14,
+    ROWS: 24
   },
 
   css: `
@@ -118,7 +119,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'groupQuery',
+      name: 'gQuery',
+      postSet: function() { this.gSkip = 0; },
       view: {
         class: 'foam.u2.TextField',
         type: 'Search',
@@ -155,6 +157,10 @@ foam.CLASS({
       class: 'Int',
       name: 'skip'
     },
+    {
+      class: 'Int',
+      name: 'gSkip'
+    },
     'ps', /* permissions array */
     'gs', /* groups array */
     'currentGroup',
@@ -171,6 +177,21 @@ foam.CLASS({
       name: 'filteredRows',
       expression: function(filteredPs) {
         return filteredPs.length;
+      }
+    },
+    {
+      name: 'filteredGs',
+      expression: function(gs, gQuery) {
+        gQuery = gQuery.trim();
+        return gs.filter(function(g) {
+          return gQuery == '' || g.id.indexOf(gQuery) != -1;
+        });
+      }
+    },
+    {
+      name: 'filteredCols',
+      expression: function(filteredGs) {
+        return filteredGs.length;
       }
     }
   ],
@@ -197,83 +218,99 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .style({
+          'padding-left':  '16px',
+          'padding-top':   '16px',
+          'padding-right': '16px',
+        })
+
         .start()
-          .style({
-            'padding-left':  '16px',
-            'padding-top':   '16px',
-            'padding-right': '16px',
-          })
-          .start()
-            .addClass(this.myClass('header'))
-            .start('span')
-              .style({
-                'padding': '8px'
-              })
-              .add('Permission Matrix')
-            .end()
-            .add(this.GROUP_QUERY, ' ', this.QUERY)
+          .addClass(this.myClass('header'))
+          .start('span')
+            .style({padding: '8px'})
+            .add('Permission Matrix')
           .end()
-          .start()
-            .addClass(this.myClass('table-wrapper'))
-              .start('table')
-              .style({ 'width': '100%', 'flex': '1' })
-              .on('wheel', this.onWheel, {passive: true})
-              .start('thead')
-                .start('tr')
-                  .start('th')
-                    .attrs({colspan:1000})
-                    .style({textAlign: 'left', padding: '8px', fontWeight: 400})
-                    .add(gs.length, ' groups, ', ps.length, ' permissions', self.filteredRows$.map(function(rows) { return rows == ps.length ?  '' : (', ' + rows + ' selected'); }))
-                    .start()
-                      .style({float: 'right'})
-                      .add('⋮')
-                    .end()
-                  .end()
-                .end()
-                .start('tr')
-                  .start('th').style({minWidth: '510px'}).end()
-                  .call(function() { self.initTableColumns.call(this, gs, self); })
+          .add(this.G_QUERY, ' ', this.QUERY)
+        .end()
+
+        .start()
+          .addClass(this.myClass('table-wrapper'))
+          .start('table')
+            .style({ 'width': '100%', 'flex': '1' })
+            .on('wheel', this.onWheel, {passive: true})
+            .start('thead')
+              .start('tr')
+                .start('th')
+                  .attrs({colspan:1000})
+                  .style({'text-align': 'left', padding: '8px', 'font-weight': 400})
+                  .call(self.count, [self])
                 .end()
               .end()
-              .add(this.slot(function(skip, filteredPs) {
-                var count = 0;
-                return self.E('tbody').forEach(filteredPs, function(p) {
-                  if ( count > self.skip + self.ROWS ) return;
-                  if ( count < self.skip ) { count++; return; }
-                  count++;
-                  this.start('tr')
-                    .start('td')
-                      .addClass('permissionHeader')
-                      .attrs({title: p.description})
-                      .add(p.id)
-                    .end()
-                    .forEach(gs, function(g) {
-                      this.start('td')
-                        .show(self.groupQuery$.map(function(q) {
-                          return q == '' || g.id.indexOf(q) != -1;
-                        }))
-                        .on('mouseover', function() { self.currentGroup = g; })
-                        .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
-                        .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
-                        .attrs({title: g.id + ' : ' + p.id})
-                        .tag(self.createCheckBox(p, g))
-                      .end();
-                    })
-                  .end();
-                });
-              }))
+              .start('tr')
+                .start('th')
+                  .style({minWidth: '510px'})
+                .end()
+                .call(function() { self.tableColumns.call(this, gs, self); })
+              .end()
             .end()
-            .start(self.ScrollCView.create({
-              value$: self.skip$,
-              extent: self.ROWS,
-              height: self.ROWS*21,
-              width: 26,
-              size$: self.filteredRows$.map(function(m){return m-1;})
-            }))
-              .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
-            .end()
+            .add(this.slot(this.table))
           .end()
+          .start(self.ScrollCView.create({
+            value$: self.skip$,
+            extent: self.ROWS,
+            height: self.ROWS*21,
+            width: 26,
+            size$: self.filteredRows$.map(function(m){return m-1;})
+          }))
+            .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
+          .end()
+        .end()
+
+        .start('div')
+          .start(self.ScrollCView.create({
+            value$: self.gSkip$,
+            extent: self.COLS,
+            width: self.COLS*40,
+            vertical: false,
+            height: 26,
+            size$: self.filteredCols$.map(function(m){return m-1;})
+          }))
+          .end()
+        .end()
+        .add(self.filteredCols$, ' ', self.gSkip$);
+    },
+
+    function table(skip, gSkip, filteredPs) {
+      var ps   = this.filteredPs, gs = this.gs.slice(gSkip, gSkip+this.COLS);
+      var self = this, count = 0;
+      return self.E('tbody').forEach(filteredPs, function(p) {
+        if ( count > skip + self.ROWS ) return;
+        if ( count < skip ) { count++; return; }
+        count++;
+        this.start('tr')
+          .start('td')
+            .addClass('permissionHeader')
+            .attrs({title: p.description})
+            .add(p.id)
+          .end()
+          .forEach(gs, function(g) {
+            this.start('td')
+              .show(self.gQuery$.map(function(q) {
+                return q == '' || g.id.indexOf(q) != -1;
+              }))
+              .on('mouseover', function() { self.currentGroup = g; })
+              .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
+              .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
+              .attrs({title: g.id + ' : ' + p.id})
+              .tag(self.createCheckBox(p, g))
+            .end();
+          })
         .end();
+      });
+    },
+
+    function count(self) {
+      this.add(self.filteredCols, ' groups, ', self.filteredRows, ' permissions', self.filteredRows$.map(function(rows) { return rows == self.ps.length ?  '' : (', ' + rows + ' selected'); }))
     },
 
     // * -> null, foo.bar -> foo.*, foo.* -> *
@@ -358,13 +395,11 @@ foam.CLASS({
       };
     },
 
-    function initTableColumns(gs, matrix) {
+    function tableColumns(gs, matrix) {
+      gs = gs.slice(matrix.gSkip, matrix.gSkip+matrix.COLS);
       var self = this;
       this.forEach(gs, function(g) {
         this.start('th')
-          .show(matrix.groupQuery$.map(function(q) {
-            return q == '' || g.id.indexOf(q) != -1;
-          }))
           .attrs({title: g.description})
           .call(function() {
             var cv = foam.graphics.Box.create({
