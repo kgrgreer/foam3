@@ -198,7 +198,7 @@ foam.CLASS({
 
   methods: [
     async function initMatrix() {
-      var ps   = this.filteredPs, gs = this.gs;
+      var ps   = this.filteredPs, gs = this.filteredPs;
       var self = this;
       var perms = await this.groupPermissionJunctionDAO.select();
       perms.array.forEach(perm => {
@@ -233,38 +233,7 @@ foam.CLASS({
           .add(this.G_QUERY, ' ', this.QUERY)
         .end()
 
-        .start()
-          .addClass(this.myClass('table-wrapper'))
-          .start('table')
-            .style({ 'width': '100%', 'flex': '1' })
-            .on('wheel', this.onWheel, {passive: true})
-            .start('thead')
-              .start('tr')
-                .start('th')
-                  .attrs({colspan:1000})
-                  .style({'text-align': 'left', padding: '8px', 'font-weight': 400})
-                  .call(self.count, [self])
-                .end()
-              .end()
-              .start('tr')
-                .start('th')
-                  .style({minWidth: '510px'})
-                .end()
-                .call(function() { self.tableColumns.call(this, gs, self); })
-              .end()
-            .end()
-            .add(this.slot(this.table))
-          .end()
-          .start(self.ScrollCView.create({
-            value$: self.skip$,
-            extent: self.ROWS,
-            height: self.ROWS*21,
-            width: 26,
-            size$: self.filteredRows$.map(function(m){return m-1;})
-          }))
-            .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
-          .end()
-        .end()
+        .add(this.slot(this.table))
 
         .start('div')
           .start(self.ScrollCView.create({
@@ -280,7 +249,45 @@ foam.CLASS({
         .add(self.filteredCols$, ' ', self.gSkip$);
     },
 
-    function table(skip, gSkip, filteredPs) {
+    function table(filteredPs, filteredGs, gSkip) {
+      var ps   = filteredPs, gs = filteredGs;
+      var self = this;
+
+      return this.E().start()
+        .addClass(this.myClass('table-wrapper'))
+        .start('table')
+          .style({ 'width': '100%', 'flex': '1' })
+          .on('wheel', this.onWheel, {passive: true})
+          .start('thead')
+            .start('tr')
+              .start('th')
+                .attrs({colspan:1000})
+                .style({'text-align': 'left', padding: '8px', 'font-weight': 400})
+                .call(self.count, [self])
+              .end()
+            .end()
+            .start('tr')
+              .start('th')
+                .style({minWidth: '510px'})
+              .end()
+              .call(function() { self.tableColumns.call(this, gs, self); })
+            .end()
+          .end()
+          .add(this.slot(this.tableBody))
+        .end()
+        .start(self.ScrollCView.create({
+          value$: self.skip$,
+          extent: self.ROWS,
+          height: self.ROWS*21,
+          width: 26,
+          size$: self.filteredRows$.map(function(m){return m-1;})
+        }))
+          .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
+        .end()
+      .end();
+    },
+
+    function tableBody(skip, gSkip, filteredPs) {
       var ps   = this.filteredPs, gs = this.gs.slice(gSkip, gSkip+this.COLS);
       var self = this, count = 0;
       return self.E('tbody').forEach(filteredPs, function(p) {
