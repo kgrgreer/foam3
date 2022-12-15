@@ -32,8 +32,8 @@ foam.CLASS({
   ],
 
   constants: {
-    COLS: 10,
-    ROWS: 24
+    COLS: 26,
+    ROWS: 18
   },
 
   css: `
@@ -155,7 +155,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'gSkip'
+      name: 'gSkip',
+      preSet: function(_, skip) { if ( skip === undefined || skip === null ) debugger; return skip || 0; }
     },
     'ps', /* permissions array */
     'gs', /* groups array */
@@ -193,7 +194,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initMatrix() {
+    async function matrix() {
       var ps   = this.filteredPs, gs = this.filteredPs;
       var self = this;
       var perms = await this.groupPermissionJunctionDAO.select();
@@ -231,18 +232,33 @@ foam.CLASS({
 
         .add(this.slot(this.table))
 
-        /*.start('div')
+
+
+
+
+
+        .start('div')
           .start(self.ScrollCView.create({
-            value$: self.gSkip$,
-            extent: Math.min(self.COLS, self.filteredCols),
-            width: self.COLS*40,
-            vertical: false,
-            height: 26,
-            size$: self.filteredCols$.map(function(m){return m-1;})
+            value$:   self.gSkip$,
+            extent$:  self.filteredCols$.map(m => Math.min(self.COLS, m)),
+            width:    1000,
+            vertical: true,
+            height:   26,
+            size$:    self.filteredCols$
           }))
-          .style({transform: 'rotate(90deg)'})
           .end()
-        .end()*/;
+          .style({float: 'right', 'padding-right': '23px'})
+        .end()/*.br().add(self.gSkip$, ' ', self.filteredCols$)*/;
+
+
+
+
+
+
+
+
+
+
     },
 
     function table(filteredPs, filteredGs, gSkip) {
@@ -274,7 +290,7 @@ foam.CLASS({
         .start(self.ScrollCView.create({
           value$: self.skip$,
           extent: self.ROWS,
-          height: self.ROWS*21,
+          height: self.ROWS*20,
           width: 26,
           size$: self.filteredRows$.map(function(m){return m-1;})
         }))
@@ -294,6 +310,7 @@ foam.CLASS({
           .start('td')
             .addClass('permissionHeader')
             .attrs({title: p.description})
+            .style({width: '600px', 'max-width': '600px', overflow: 'auto'})
             .add(p.id)
           .end()
           .forEach(gs, function(g) {
@@ -441,7 +458,7 @@ foam.CLASS({
           }
           self.gs = gs.array;
           self.ps = ps.array;
-          self.initMatrix();
+          self.matrix();
         })
       });
     },
@@ -471,10 +488,8 @@ foam.CLASS({
           var num = Math.ceil(Math.abs(delta) / 40);
           return Math.max(0, skip + (negative ? -num : num));
         }
-
         this.skip  = process(this.skip,  e.deltaY);
         this.gSkip = process(this.gSkip, e.deltaX);
-
         e.preventDefault();
       }
     }
