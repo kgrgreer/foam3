@@ -32,7 +32,7 @@ foam.CLASS({
   ],
 
   constants: {
-    COLS: 14,
+    COLS: 10,
     ROWS: 24
   },
 
@@ -65,7 +65,7 @@ foam.CLASS({
     }
 
     ^ tbody tr:hover, ^hovered {
-      background: #ccc;
+      background: #ccc !important;
     }
 
     ^ table {
@@ -127,10 +127,6 @@ foam.CLASS({
         placeholder: 'Group Search',
         onKey: true
       }
-    },
-    {
-      name: 'selectedGroup',
-      documentation: 'Array for managing checkbox value on groups filter'
     },
     {
       name: 'columns_',
@@ -244,6 +240,7 @@ foam.CLASS({
             height: 26,
             size$: self.filteredCols$.map(function(m){return m-1;})
           }))
+          .style({transform: 'rotate(90deg)'})
           .end()
         .end()
         .add(self.filteredCols$, ' ', self.gSkip$);
@@ -408,6 +405,7 @@ foam.CLASS({
       this.forEach(gs, function(g) {
         this.start('th')
           .attrs({title: g.description})
+          .enableClass(matrix.myClass('hovered'), matrix.currentGroup$.map(function(cg) { return cg === g; } ))
           .call(function() {
             var cv = foam.graphics.Box.create({
               color$: matrix.currentGroup$.map(function(cg) { return cg === g ? '#ccc' : 'white'; }),
@@ -468,11 +466,17 @@ foam.CLASS({
       name: 'onWheel',
       isFramed: true,
       code: function(e) {
-        var negative = e.deltaY < 0;
-        // Convert to rows, rounding up. (Therefore minumum 1.)
-        var rows = Math.ceil(Math.abs(e.deltaY) / 40);
-        this.skip = Math.max(0, this.skip + (negative ? -rows : rows));
-        if ( e.deltaY !== 0 ) e.preventDefault();
+        function process(skip, delta) {
+          var negative = delta < 0;
+          // Convert to rows, rounding up. (Therefore minumum 1.)
+          var num = Math.ceil(Math.abs(delta) / 40);
+          return Math.max(0, skip + (negative ? -num : num));
+        }
+
+        this.skip  = process(this.skip,  e.deltaY);
+        this.gSkip = process(this.gSkip, e.deltaX);
+
+        e.preventDefault();
       }
     }
   ],
