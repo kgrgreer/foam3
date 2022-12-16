@@ -203,6 +203,7 @@ foam.POM({
     { name: "foam/u2/JsLib",                                          flags: "web" },
     { name: "foam/u2/ControllerMode",                                 flags: "web" },
     { name: "foam/u2/DisplayMode",                                    flags: "web" },
+    { name: "foam/u2/CSS",                                            flags: "web" },
     { name: "foam/u2/Element",                                        predicate: function() { return ! foam.flags.u3; }, flags: "web" },
     { name: "foam/u2/Element2",                                       flags: "u3" },
     { name: "foam/u2/MNRowFormatter",                                 flags: "web" },
