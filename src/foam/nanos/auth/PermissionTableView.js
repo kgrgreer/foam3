@@ -302,7 +302,7 @@ foam.CLASS({
         count++;
         this.start('tr')
           .start('td')
-            .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { console.log('********', cp, p); return cp === p; } ))
+            .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { return cp === p; } ))
             .addClass('permissionHeader')
             .attrs({title: p.description})
             .style({width: '600px', 'max-width': '600px', overflow: 'auto'})
