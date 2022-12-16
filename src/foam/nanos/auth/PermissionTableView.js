@@ -105,6 +105,7 @@ foam.CLASS({
 
     ^groupLabel {
       font-weight: normal;
+      padding-top: 4px;
       writing-mode: vertical-lr;
       white-space: nowrap;
       background: white;
