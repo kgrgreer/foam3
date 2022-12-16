@@ -169,6 +169,7 @@ foam.CLASS({
     'ps', /* permissions array */
     'gs', /* groups array */
     'currentGroup',
+    'currentPermission',
     {
       name: 'filteredPs',
       expression: function(ps, query) {
@@ -301,6 +302,7 @@ foam.CLASS({
         count++;
         this.start('tr')
           .start('td')
+            .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { console.log('********', cp, p); return cp === p; } ))
             .addClass('permissionHeader')
             .attrs({title: p.description})
             .style({width: '600px', 'max-width': '600px', overflow: 'auto'})
@@ -308,7 +310,7 @@ foam.CLASS({
           .end()
           .forEach(gs, function(g) {
             this.start('td')
-              .on('mouseover', function() { self.currentGroup = g; })
+              .on('mouseover', function() { self.currentGroup = g; self.currentPermission = p; })
               .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
               .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
               .attrs({title: g.id + ' : ' + p.id})
