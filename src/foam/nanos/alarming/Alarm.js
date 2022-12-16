@@ -137,8 +137,7 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.er.EventRecord',
+      class: 'String',
       name: 'eventRecord',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
