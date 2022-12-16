@@ -21,7 +21,7 @@ foam.CLASS({
       javaCode: `
         Logger logger = (Logger) x.get("logger");
         EventRecord er = (EventRecord) getDelegate().put_(x, obj);
-        var summary = er.toSummary();
+        var summary = er.toLogSummary();
         try {
           er = (EventRecord) getDelegate().put_(x, obj);
         } catch (Throwable t) {

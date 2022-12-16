@@ -13,6 +13,21 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'groupPermissionJunctionDAO'
 });
 
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'foam.nanos.auth.Group',
+  forwardName: 'children',
+  targetModel: 'foam.nanos.auth.Group',
+  inverseName: 'parent',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
+    menuKeys: ['admin.groups']
+  }
+});
+
 /*
 foam.RELATIONSHIP({
   cardinality: '*:*',
