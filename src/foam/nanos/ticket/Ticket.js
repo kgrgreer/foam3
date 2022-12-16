@@ -29,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
+    'foam.nanos.auth.User',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -376,7 +377,6 @@ foam.CLASS({
           if ( user != null ) {
             clearAssignedToSummary();
             setAssignedToSummary(user.getLegalName());
-            
           }
         }
       `,
@@ -390,7 +390,7 @@ foam.CLASS({
       storageTransient: true,
       createVisibility: 'HIDDEN',
       visibility: 'RO',
-      javaFactory: `
+      javaGetter: `
         DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
         if ( userDAO != null ) {
           User user = (User) userDAO.find(getAssignedTo());
@@ -616,6 +616,7 @@ foam.CLASS({
         assignedTicket.assignedTo = X.subject.user.id;
 
         this.ticketDAO.put(assignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
@@ -642,6 +643,7 @@ foam.CLASS({
         unassignedTicket.assignedTo = 0;
 
         this.ticketDAO.put(unassignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
