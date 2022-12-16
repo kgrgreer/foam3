@@ -62,7 +62,7 @@ foam.CLASS({
     'type',
     // REVIEW: view fails to display when owner in tableColumn, the 2nd entry in allColumns is undefined.
     // 'owner',
-    'assignedTo.legalName',
+    'assignedToSummary',
     'createdBy.legalName',
     'lastModified',
     'status',
@@ -369,8 +369,37 @@ foam.CLASS({
           this.assignedToGroup = '';
         }
       },
+      javaPostSet: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(val);
+          if ( user != null ) {
+            clearAssignedToSummary();
+            setAssignedToSummary(user.getLegalName());
+            
+          }
+        }
+      `,
       order: 7,
       gridColumns: 6
+    },
+    {
+      class: 'String',
+      label: 'Assigned To',
+      name: 'assignedToSummary',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      javaFactory: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(getAssignedTo());
+          if ( user != null ) {
+            return user.getLegalName();
+          }
+        }
+        return null;
+      `
     },
     {
       class: 'Reference',
