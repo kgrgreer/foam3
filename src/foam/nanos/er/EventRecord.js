@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'createdFrom',
+    'source',
     'event',
     'partner',
     'code',
@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'createdFrom',
+    'source',
     'event',
     'partner',
     'code',
@@ -45,31 +45,31 @@ foam.CLASS({
   ],
 
   javaCode: `
-  public EventRecord(X x, Object caller, String event) {
+  public EventRecord(X x, Object source, String event) {
     setX(x);
     setEvent(event);
-    setCreatedFrom(caller);
+    setSource(source);
   }
 
-  public EventRecord(X x, Object caller, String event, String message) {
+  public EventRecord(X x, Object source, String event, String message) {
     setX(x);
-    setCreatedFrom(caller);
+    setSource(source);
     setEvent(event);
     setMessage(message);
   }
 
-  public EventRecord(X x, Object caller, String event, String message, LogLevel severity, Throwable t) {
+  public EventRecord(X x, Object source, String event, String message, LogLevel severity, Throwable t) {
     setX(x);
-    setCreatedFrom(caller);
+    setSource(source);
     setEvent(event);
     setMessage(message);
     setSeverity(severity);
     setException(t);
   }
 
-  public EventRecord(X x, Object caller, String event, String partner, String code, String message, LogLevel severity, Throwable t) {
+  public EventRecord(X x, Object source, String event, String partner, String code, String message, LogLevel severity, Throwable t) {
     setX(x);
-    setCreatedFrom(caller);
+    setSource(source);
     setEvent(event);
     setPartner(partner);
     setCode(code);
@@ -177,21 +177,21 @@ foam.CLASS({
     },
     {
       // TODO: class and method?
-      name: 'createdFrom',
+      name: 'source',
       class: 'Object',
       updateVisibility: 'RO',
       javaSetter: `
       if ( val == null ) {
-        createdFrom_ = val;
-        createdFromIsSet_ = false;
+        source_ = val;
+        sourceIsSet_ = false;
         return;
       }
       if ( val instanceof String ) {
-        createdFrom_ = val;
+        source_ = val;
       } else {
-        createdFrom_ = val.getClass().getSimpleName();
+        source_ = val.getClass().getSimpleName();
       }
-      createdFromIsSet_ = true;
+      sourceIsSet_ = true;
       `
     },
     // {
@@ -225,6 +225,12 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      name: 'raiseAlarm',
+      class: 'Boolean',
+      value: true,
+      storageTransient: true
+    },
+    {
       name: 'alarm',
       class: 'Reference',
       of: 'foam.nanos.alarming.Alarm',
@@ -243,15 +249,32 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.event;
+        var str = '';
+        if ( this.source ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.source;
+        }
+        if ( this.event ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.event;
+        }
+        if ( this.partner ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.partner;
+        }
+        if ( this.code ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.code;
+        }
+        return str;
       },
       javaCode: `
       StringBuilder sb = new StringBuilder();
-      if ( getCreatedFrom() != null ) {
+      if ( getSource() != null ) {
         if ( sb.length() > 0 ) {
           sb.append("-");
         }
-        sb.append(getCreatedFrom().toString());
+        sb.append(getSource().toString());
       }
       if ( ! SafetyUtil.isEmpty(getEvent()) ) {
         if ( sb.length() > 0 ) {
@@ -271,12 +294,38 @@ foam.CLASS({
         }
         sb.append(getCode());
       }
-      // if ( ! SafetyUtil.isEmpty(getMessage()) ) {
-      //   if ( sb.length() > 0 ) {
-      //     sb.append("-");
-      //   }
-      //   sb.append(getMessage());
-      // }
+      return sb.toString();
+      `
+    },
+    {
+      name: 'toLogSummary',
+      type: 'String',
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      if ( getSource() != null ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getSource().toString());
+      }
+      if ( ! SafetyUtil.isEmpty(getEvent()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getEvent());
+      }
+      if ( ! SafetyUtil.isEmpty(getPartner()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getPartner());
+      }
+      if ( ! SafetyUtil.isEmpty(getCode()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getCode());
+      }
       return sb.toString();
       `
     }
