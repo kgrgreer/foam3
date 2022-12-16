@@ -123,7 +123,8 @@ foam.CLASS({
         return ! required ? null : [[name],
           function() {
             const axiom = this.cls_.getAxiomByName(name);
-            return axiom.isDefaultValue(this[name]) && (`${this.PLEASE_ENTER} ${label.toLowerCase()}`);
+            return axiom.isDefaultValue(this[name]) && (`${self_.PLEASE_ENTER} ${label.toLowerCase()}`); 
+            // TODO: normalise all reqired-esque predicates to use the same message, currently split between "<prop> required" and "Please enter <prop>"
           }];
       }
     }
