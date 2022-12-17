@@ -68,6 +68,17 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'SUCCESS_ENABLED',
+      message: 'Successfully enabled'
+    },
+    {
+      name: 'SUCCESS_DISABLED',
+      message: 'Successfully disabled'
+    }
+  ],
+
   properties: [
     {
       documentation: 'Cron jobs shall be enabled as a deployment step.',
@@ -264,10 +275,23 @@ foam.CLASS({
         return this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = false;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = false;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     },
@@ -277,10 +301,23 @@ foam.CLASS({
         return ! this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = true;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = true;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     }
