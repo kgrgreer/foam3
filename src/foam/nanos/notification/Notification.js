@@ -206,16 +206,6 @@ foam.CLASS({
       documentation: 'Email template name.'
     },
     {
-      class: 'String',
-      name: 'slackWebhook',
-      documentation: 'Webhook associated to Slack.'
-    },
-    {
-      class: 'String',
-      name: 'slackMessage',
-      documentation: 'Message to be sent to Slack.'
-    },
-    {
       class: 'Boolean',
       name: 'clusterable',
       value: true,
@@ -239,6 +229,13 @@ foam.CLASS({
         }
         return spid_;
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.alarming.Alarm',
+      name: 'alarm',
+      storageTransient: true,
+      visibility: 'HIDDEN'
     }
   ],
 

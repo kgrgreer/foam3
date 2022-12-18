@@ -16,7 +16,9 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.nanos.medusa.MedusaRegistry'
+    'foam.nanos.medusa.MedusaRegistry',
+    'java.util.HashMap',
+    'java.util.Map'
   ],
 
   javaCode: `
@@ -38,6 +40,19 @@ foam.CLASS({
       of: 'foam.nanos.medusa.MedusaRegistry',
       javaFactory: 'return (MedusaRegistry) getX().get("medusaRegistry");',
       visibility: 'HIDDEN',
+    },
+    {
+      class: 'Long',
+      name: 'cleared'
+    },
+    {
+      class: 'Long',
+      name: 'removed'
+    },
+    {
+      class: 'Map',
+      name: 'clearable',
+      javaFactory: 'return new HashMap();'
     }
   ],
 
@@ -47,13 +62,28 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) ((FObject)obj).fclone();
       getRegistry().notify(getX(), entry);
-      if ( entry.getCompactible() ) {
-        MedusaEntry.DATA.clear(entry);
-        MedusaEntry.TRANSIENT_DATA.clear(entry);
-        MedusaEntry.OBJECT.clear(entry);
-        getDao().put(entry);
-      } else {
+      if ( ! entry.getCompactible() ) {
         getDao().remove(entry);
+        setRemoved(getRemoved() + 1);
+      } else {
+        Boolean clearable = (Boolean) getClearable().get(entry.getNSpecName());
+        if ( clearable == null ) {
+          Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
+          if ( compaction != null &&
+               compaction.getClearable() ) {
+            clearable = true;
+          } else {
+            clearable = false;
+          }
+          getClearable().put(entry.getNSpecName(), clearable);
+        }
+        if ( clearable ) {
+          MedusaEntry.DATA.clear(entry);
+          MedusaEntry.TRANSIENT_DATA.clear(entry);
+          MedusaEntry.OBJECT.clear(entry);
+          getDao().put(entry);
+          setCleared(getCleared() + 1);
+        }
       }
       `
     }

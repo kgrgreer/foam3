@@ -208,7 +208,6 @@ NOTE: when using the java client, the first call to a newly started instance may
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       value: 1000,
-      max: 1000,
       min: 0
     },
     {
@@ -286,7 +285,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         if ( format ) {
           url += query ? "&" : "?";
           query = true;
-          url += "format=" + format.name.toLowerCase();
+          url += "format=" + format.toLowerCase();
         }
         if ( key ) {
           url += query ? "&" : "?";
@@ -364,14 +363,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'connectionTimeout',
       class: 'Long',
       units: 'ms',
-      value: 20000
+      value: 20000,
+      section: 'details'
     },
     {
       documentation: 'Connection timeout in milliseconds',
       name: 'requestTimeout',
       class: 'Long',
       units: 'ms',
-      value: 10000
+      value: 10000,
+      section: 'details'
     },
     {
       name: 'secure',
@@ -426,6 +427,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     {
       name: 'postButton',
       label: 'Send Request',
+      section: "details",
       code: async function() {
         var req = this.HTTPRequest.create({
           url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.postURL + "&sessionId=" + localStorage.defaultSession,

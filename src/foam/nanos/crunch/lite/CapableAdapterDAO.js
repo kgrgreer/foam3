@@ -154,7 +154,23 @@ foam.CLASS({
         }
 
         return sink;
-      `
+      `,
+      code: async function (x, sink, skip, limit, order, predicate) {
+        var resultSink = sink || this.ArraySink.create({ of: this.of });
+        sink = this.decorateSink_(resultSink, skip, limit, order, predicate);
+
+        var detached = false;
+        var sub = foam.core.FObject.create();
+        sub.onDetach(function() { detached = true; });
+
+        for ( const payload of this.capable.capablePayloads ) {
+          if ( detached ) break;
+          sink.put(payload, sub);
+        }
+
+        sink.eof();
+        return sink;
+      }
     },
     {
       name: 'ifFoundElseIfNotFound_',
@@ -180,7 +196,9 @@ foam.CLASS({
       code: function () {
         // A publish on propertyChange isn't enough here; slots won't update if
         //   the object is identical.
-        this.capable.capablePayloads = [ ...this.capable.capablePayloads ];
+        var temp = [ ...this.capable.capablePayloads ];
+        this.capable.capablePayloads = [];
+        this.capable.capablePayloads.push(...temp);
       }
     }
   ]

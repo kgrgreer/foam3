@@ -81,6 +81,7 @@ foam.CLASS({
     'crunchController',
     'crunchService',
     'menuDAO',
+    'pushMenu?',
     'registerElement',
     'subject',
     'theme',
@@ -263,7 +264,7 @@ foam.CLASS({
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
           var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
-            return ret?.getCapabilities(this.ctrl.__subContext__).dao.select();
+            return ret?.getCapabilities(self.ctrl.__subContext__).dao.select();
           });
           if ( themeCaps?.array?.length != 0 ) return self.renderFeatured(themeCaps.array);
           var featured = await this.featuredCapabilities.select();
@@ -531,6 +532,8 @@ foam.CLASS({
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        // Push default menu if menu changes
+        this.pushMenu?.('');
       }
     }
   ]

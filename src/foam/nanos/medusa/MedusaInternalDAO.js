@@ -20,6 +20,8 @@ Update: it appears there are multiple DAOs in the context.`,
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.GTE',
+    'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
     'static foam.mlang.MLang.NOT',
     'foam.mlang.sink.Count',
@@ -66,16 +68,16 @@ Update: it appears there are multiple DAOs in the context.`,
         MedusaEntryPurgeCmd cmd = (MedusaEntryPurgeCmd) obj;
         DAO dao = this.where(
           AND(
-            GT(MedusaEntry.INDEX, cmd.getMinIndex()),
+            GTE(MedusaEntry.INDEX, cmd.getMinIndex()),
             LTE(MedusaEntry.INDEX, cmd.getMaxIndex()),
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
 
         Count count = new Count();
-        CompactionSink compactionSink = new CompactionSink(x, new PurgeSink(x, new foam.dao.RemoveSink(x, dao)));
+        Sink sink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
         Sequence seq = new Sequence.Builder(x)
-          .setArgs(new Sink[] {count, compactionSink})
+          .setArgs(new Sink[] {count, sink})
           .build();
         dao.select(seq);
         cmd.setPurged((Long)count.getValue());

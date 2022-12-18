@@ -9,14 +9,13 @@ foam.CLASS({
   extends: 'foam.nanos.dig.DUGRuleAction',
   
   javaImports: [
-    'foam.dao.Sink',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
-    'foam.nanos.logger.Loggers',
     'foam.dao.Sink',
+    'foam.nanos.logger.Loggers'
   ],
   
   properties: [

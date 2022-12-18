@@ -13,11 +13,13 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'emailVerificationService',
     'resetPasswordService'
   ],
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.email.VerificationCodeException',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.FragmentedTextField',
     'foam.u2.FragmentedTextFieldFragment'
@@ -30,6 +32,15 @@ foam.CLASS({
     {
       name: 'resetPasswordSection'
     }
+  ],
+
+  messages: [
+    { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
+    { name: 'INSTRUC',          message: 'Please check your inbox to verify your email' },
+    { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
+    { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
+    { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
+    { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
   properties: [
@@ -52,16 +63,72 @@ foam.CLASS({
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
         delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
+      },
+      validateObj: function(resetPasswordCode, codeVerified, remainingAttempts) {
+        if ( ! resetPasswordCode || resetPasswordCode.length != 6 )
+          return this.EMPTY_CODE;
+        if ( codeVerified ) return;
+        if ( remainingAttempts > 0 ) return this.INVALID_CODE + remainingAttempts;
+        return this.NO_ATTEMPTS_LEFT;
       }
-    },
-    {
-      name: 'confirmationPassword',
-      section: 'resetPasswordSection'
-
     },
     {
       name: 'newPassword',
       section: 'resetPasswordSection'
+    },
+    {
+      name: 'confirmationPassword',
+      section: 'resetPasswordSection'
+    },
+    {
+      class: 'Boolean',
+      name: 'codeVerified',
+      documentation: `
+        Updated by verifyCode method whenever code is updated and of valid format.
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
+    },
+    {
+      name: 'remainingAttempts',
+      documentation: `
+        Number of remaining attempts to enter current verification code.
+        Used in resetPasswordCode error message.
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.resetPasswordCode$.sub(() => this.verifyCode());
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'verifyCode',
+      mergeDelay: 100,
+      code: async function() {
+        if ( ! this.resetPasswordCode || this.resetPasswordCode.length != 6 ) {
+          this.codeVerified = false;
+          return;
+        }
+
+        try {
+          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
+          this.codeVerified = verified;
+        } catch (error) {
+          if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
+            this.remainingAttempts = error.data.exception.remainingAttempts;
+            this.codeVerified = false;
+            if ( ! this.remainingAttempts ) {
+              this.resendCode();
+            }
+          }
+        }
+      }
     }
   ],
 
@@ -94,6 +161,39 @@ foam.CLASS({
           type: this.LogLevel.INFO,
           transient: true
         }));
+      }
+    },
+    {
+      name: 'resendCode',
+      label: 'Resend Code',
+      section: 'verificationCodeSection',
+      buttonStyle: 'LINK',
+      code: async function() {
+        try {
+          await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
+
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.INSTRUC_TITLE,
+            description: this.INSTRUC,
+            type: this.LogLevel.INFO,
+            transient: true
+          }));
+        } catch(err) {
+          if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
+              this.ctrl.add(this.NotificationMessage.create({
+                err: err.data,
+                type: this.LogLevel.ERROR,
+                transient: true
+              }));
+              return;
+          }
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.RESEND_ERROR_MSG,
+            type: this.LogLevel.ERROR,
+            transient: true
+          }));
+          throw err;
+        }
       }
     }
   ]

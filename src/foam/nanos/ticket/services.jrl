@@ -64,7 +64,13 @@ p({
       .setAuthorize(true)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO((foam.dao.DAO) x.get("localTicketDAO"))
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.ID});
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.TYPE});
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.ASSIGNED_TO_SUMMARY});
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.LAST_MODIFIED});
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.STATUS}); 
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.TITLE}); 
   """,
   "client":
   """

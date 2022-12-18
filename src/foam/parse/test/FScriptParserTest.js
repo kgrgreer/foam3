@@ -135,7 +135,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==11, "4+7");
 
     sps.setString("id+lastName.len");
-    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==105, "id+lastname=105");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==105, "id+lastname.len=105");
 
     sps.setString("firstName.len+lastName.len==13");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName.len+lastName.len=13");
@@ -153,7 +153,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test((((Predicate) parser.parse(sps, px).value()).f(user)), "M10 + MAX(firstName.len,MAX(lastName.len+4, 7)) == 19");
 
     sps.setString("1295100+(0.15*1439800)+14292+52497+19305");
-    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==13, "13");
+    test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==1597164, "1597164");
 
     sps.setString("4+7-2");
     test(((Double)((Expr) parser.parse(sps, px).value()).f(user))==9, "9");

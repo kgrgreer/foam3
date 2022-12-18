@@ -9,12 +9,14 @@ package foam.nanos.dig;
 import foam.core.FOAMException;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.*;
 import foam.lib.csv.CSVOutputter;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.dig.exception.DigErrorMessage;
+import foam.nanos.dig.format.*;
 import foam.nanos.http.Format;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
@@ -30,12 +32,24 @@ public class DigUtil {
    * @param error The error to output.
    * @param format The format of the output.
    */
+  public static void outputException(X x, DigErrorMessage error, String format) {
+    outputFObject(x, error, Integer.parseInt(error.getStatus()), lookupFormat(x, format));
+  }
+
   public static void outputException(X x, DigErrorMessage error, Format format) {
     outputFObject(x, error, Integer.parseInt(error.getStatus()), format);
   }
 
+  public static void outputFOAMException(X x, FOAMException foamException, int status, String format) {
+    outputFObject(x, foamException, status, lookupFormat(x, format));
+  }
+
   public static void outputFOAMException(X x, FOAMException foamException, int status, Format format) {
     outputFObject(x, foamException, status, format);
+  }
+
+  public static void outputFObject(X x, FOAMException error, int status, String format) {
+    outputFObject(x, error, status, lookupFormat(x, format));
   }
 
   public static void outputFObject(X x, FOAMException error, int status, Format format) {
@@ -46,6 +60,19 @@ public class DigUtil {
 
     error.setExceptionMessage(error.getTranslation());
     outputFObject(x, error, format);
+  }
+
+  public static void outputFObject(X x, FObject object, String format) {
+    outputFObject(x, object, lookupFormat(x, format));
+  }
+
+  private static Format lookupFormat(X x, String id) {
+    DAO dao = (DAO) x.get("digFormatDAO");
+    DigFormat digFormat = (DigFormat) dao.find(id != null ? id.toUpperCase() : null);
+    if ( digFormat == null ) {
+      throw new RuntimeException("Invalid format: " + id);
+    }
+    return digFormat.getFormat();
   }
 
   public static void outputFObject(X x, FObject object, Format format) {

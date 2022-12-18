@@ -46,8 +46,9 @@ foam.CLASS({
   properties: [
     {
       name: 'format',
-      class: 'Enum',
-      of: 'foam.nanos.http.Format'
+      class: 'Reference',
+      of: 'foam.nanos.dig.format.DigFormat',
+      targetDAOKey: 'digFormatDAO'
     },
     {
       name: 'logger',

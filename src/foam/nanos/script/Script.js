@@ -24,7 +24,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'notify',
     'notificationDAO',
     'scriptDAO',
     'scriptEventDAO',
@@ -38,8 +37,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'foam.dao.*',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.*',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -301,20 +302,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       documentation: 'Name of dao to store script run/event report. To set from inheritor just change property value',
       tableWidth: 120
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `,
-      javaCloneProperty: '//noop'
     }
   ],
 
@@ -406,6 +393,9 @@ foam.CLASS({
         try {
           Thread.currentThread().setPriority(getPriority());
           setLastRun(new Date());
+          if ( ! ( this instanceof foam.nanos.cron.Cron ) ) {
+            er(x, null, LogLevel.INFO, null);
+          }
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
@@ -418,13 +408,12 @@ foam.CLASS({
             throw new RuntimeException("Script language not supported");
           }
           pm.log(x);
-        } catch (Throwable t) {
+       } catch (Throwable t) {
           thrown = new RuntimeException(t);
           pm.error(x, t);
           ps.println();
           t.printStackTrace(ps);
-          Logger logger = (Logger) x.get("logger");
-          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
+          er(x, t.getMessage(), LogLevel.ERROR, t);
           throw thrown;
         } finally {
           setLastDuration(pm.getTime());
@@ -446,6 +435,13 @@ foam.CLASS({
           ((DAO) x.get(getEventDaoKey())).put(event);
         }
     `
+    },
+    {
+      name: 'er',
+      args: 'X x, String message, LogLevel severity, Throwable t',
+      javaCode: `
+      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, getId(), null, null, message, severity, t));
+      `
     },
     {
       name: 'poll',

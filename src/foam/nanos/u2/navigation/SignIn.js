@@ -17,7 +17,6 @@ foam.CLASS({
     'currentMenu',
     'loginSuccess',
     'loginView?',
-    'menuDAO',
     'memento_',
     'menuDAO',
     'pushMenu',
@@ -97,7 +96,9 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+      required: true,
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true },
+      validationTextVisible: false
     },
     {
       class: 'Boolean',
@@ -121,6 +122,13 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'loginFailed',
+      value: true,
+      hidden: true,
+      documentation: 'Used to control flow in transient wizard signin'
     }
   ],
 
@@ -176,6 +184,7 @@ foam.CLASS({
           }
           try {
             let logedInUser = await this.auth.login(x, this.identifier, this.password);
+            this.loginFailed = false;
             if ( ! logedInUser ) return;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
@@ -198,6 +207,7 @@ foam.CLASS({
                 if ( this.username ) {
                   try {
                     logedInUser = await this.auth.login(x, this.username, this.password);
+                    this.loginFailed = false;
                     this.subject.user = logedInUser;
                     this.subject.realUser = logedInUser;
                     if ( ! this.pureLoginFunction ) await this.nextStep();
@@ -223,7 +233,7 @@ foam.CLASS({
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
     {

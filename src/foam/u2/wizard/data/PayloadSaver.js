@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.wizard.data.ProxySaver',
 
   requires: [
-    'foam.nanos.crunch.CapabilityJunctionPayload'
+    'foam.nanos.crunch.CapabilityJunctionPayload',
+    'foam.u2.wizard.data.NullSaver'
   ],
 
   properties: [
@@ -26,7 +27,7 @@ foam.CLASS({
 
   methods: [
     async function save(data) {
-      const capable = await this.capableLoader.load();
+      const capable = await this.capableLoader.load({});
       const dao = capable.getCapablePayloadDAO();
       const payload = this.CapabilityJunctionPayload.create({
         capability: this.capabilityId,
@@ -38,13 +39,13 @@ foam.CLASS({
       // Delegate saver is optional
       if ( ! this.delegate ) return newPayload.data;
 
-      if ( foam.flags.dev ) {
+      if ( foam.flags.dev && ! this.NullSaver.isInstance(this.delegate) ) {
         console.error(
           'If you see this you are the first person using PayloadSaver as a ' +
           'saver tee. It may be worth asking someone if this is a good idea.'
         );
       }
-    
+
       return await this.delegate.save();
     }
   ]

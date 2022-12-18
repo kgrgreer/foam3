@@ -12,8 +12,8 @@
   extends: 'foam.u2.wizard.wao.ProxyWAO',
 
   imports: [
-    'wizardlets',
-    'capabilityToPrerequisite'
+    'wizardlets?',
+    'capabilityToPrerequisite?'
   ],
   requires: [
     'foam.u2.wizard.FObjectHolder'
@@ -51,6 +51,11 @@
         OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
       name: 'loadIntoPath'
+    },
+    {
+      class: 'Boolean',
+      name: 'cloneValue',
+      value: true
     }
   ],
 
@@ -103,7 +108,8 @@
       }
 
       const selectedCapabilityWizardlet = prereqMinMaxWizardlet.prerequisiteWizardlets.find(w =>
-        w.capability && w.capability.id == selectedCapabilityId
+        ( w?.capability?.id == selectedCapabilityId) ||
+        ( w?.id == selectedCapabilityId)
       );
 
       if ( ! selectedCapabilityWizardlet ){
@@ -136,9 +142,11 @@
           }
         }
 
-        clonedSelectedWizardletData = loadedFromData.clone();
+        clonedSelectedWizardletData = this.cloneValue ?
+          loadedFromData.clone() : loadedFromData;
       } else {
-        clonedSelectedWizardletData = selectedCapabilityWizardletData.clone();
+        clonedSelectedWizardletData = this.cloneValue ?
+          selectedCapabilityWizardletData.clone() : selectedCapabilityWizardletData;
       }
 
       if ( this.isWrappedInFObjectHolder ){

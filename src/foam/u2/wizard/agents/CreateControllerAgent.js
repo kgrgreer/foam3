@@ -20,12 +20,14 @@ foam.CLASS({
 
   imports: [
     'initialPosition?',
+    'wizardFlow',
     'wizardlets'
   ],
 
   exports: [
     'config',
     'submitted',
+    'wizardClosing',
     'wizardController'
   ],
 
@@ -42,7 +44,11 @@ foam.CLASS({
       name: 'submitted',
       class: 'Boolean'
     },
-    'wizardController'
+    'wizardController',
+    {
+      class: 'Boolean',
+      name: 'wizardClosing'
+    }
   ],
   methods: [
     async function execute() {
@@ -54,6 +60,7 @@ foam.CLASS({
           wizardPosition: this.initialPosition
         } : {})
       })
+      this.wizardFlow.wizardController = this.wizardController;
       this.wizardlets.forEach(v => { v.wizardController$ = this.wizardController$ })
     }
   ]

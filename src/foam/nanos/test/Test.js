@@ -68,7 +68,7 @@ foam.CLASS({
       name: 'passed',
       visibility: 'RO',
       tableCellFormatter: function(value) {
-        if ( value ) this.start().style({ color: '#0f0' }).add(value).end();
+        if ( value ) this.start().style({ color: '#3a3', 'font-weight': 'bold' }).add(value).end();
       },
       tableWidth: 85
     },
@@ -77,7 +77,7 @@ foam.CLASS({
       name: 'failed',
       visibility: 'RO',
       tableCellFormatter: function(value) {
-        if ( value ) this.start().style({ color: '#f00' }).add(value).end();
+        if ( value ) this.start().style({ color: '#a33', 'font-weight': 'bold' }).add(value).end();
       },
       tableWidth: 85
     },
@@ -185,7 +185,7 @@ foam.CLASS({
       boolean   threw                   = false;
       String    returnedMessage         = "";
       Throwable throwable               = null;
-  
+
       try {
         fn.run();
       } catch (Throwable t) {
@@ -197,7 +197,7 @@ foam.CLASS({
           returnedMessage = ((foam.core.FOAMException) t).getTranslation();
         }
       }
-      
+
       if ( ! threw ) {
         fail(message+" (expected exception to be thrown, but exception never was thrown)");
         return;
@@ -220,7 +220,7 @@ foam.CLASS({
              ")");
         return;
       }
-  
+
       if ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
            ! returnedMessage.equals(expectedExceptionMessage) ) {
         System.out.println("Error message was not correct.");
@@ -235,7 +235,7 @@ foam.CLASS({
           ")");
         return;
       }
-  
+
       // assume a pass at this point
       pass(message);
       `

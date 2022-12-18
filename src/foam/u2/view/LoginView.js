@@ -237,7 +237,9 @@ foam.CLASS({
           return this.SignIn.id;
         }
       }
-    }
+    },
+    { class: 'Boolean', name: 'showLogo', value: true },
+    { class: 'Boolean', name: 'showTitle', value: true }
   ],
 
   messages: [
@@ -276,7 +278,7 @@ foam.CLASS({
         .start()
           .add(
             this.slot(function(shouldResize) {
-              return self.E().show(shouldResize || self.fullScreenLoginImage || ! self.imgPath )
+              return self.E().show( self.showLogo && ( shouldResize || self.fullScreenLoginImage || ! self.imgPath ) )
               .addClass('topBar-logo-Back')
               .start('img')
                 .attr('src', logo)
@@ -285,7 +287,7 @@ foam.CLASS({
           }))
         .end()
         // Title txt and Data
-        .start().addClass('title-top').add(this.data.TITLE).end()
+        .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()

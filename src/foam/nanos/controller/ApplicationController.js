@@ -825,14 +825,14 @@ foam.CLASS({
     },
 
     async function checkGeneralCapability() {
-      var capDAO = this.__subContext__.capabilityDAO;
-      var spid = await capDAO.find(this.subject.user.spid);
-      if ( spid && spid.generalCapability != '' ) {
-        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
+      var groupDAO = this.__subContext__.groupDAO;
+      var group = await groupDAO.find(this.subject.user.group);
+      if ( group && group.generalCapability != '' ) {
+        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
         var ucj = await ucjCheck();
 
         if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
+          await this.crunchController.createWizardSequence(group.generalCapability, this.__subContext__).execute();
           let postCheck = await ucjCheck();
           if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
             this.add(foam.u2.dialog.ConfirmationModal.create({
@@ -924,7 +924,6 @@ foam.CLASS({
 
       if ( this.theme.sideNav )
         this.sideNav_ = this.theme.sideNav;
-
       if ( this.theme.loginView )
         this.loginView = this.theme.loginView;
     },
