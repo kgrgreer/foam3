@@ -302,20 +302,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       documentation: 'Name of dao to store script run/event report. To set from inheritor just change property value',
       tableWidth: 120
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `,
-      javaCloneProperty: '//noop'
     }
   ],
 
@@ -407,6 +393,9 @@ foam.CLASS({
         try {
           Thread.currentThread().setPriority(getPriority());
           setLastRun(new Date());
+          if ( ! ( this instanceof foam.nanos.cron.Cron ) ) {
+            er(x, null, LogLevel.INFO, null);
+          }
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
@@ -419,8 +408,7 @@ foam.CLASS({
             throw new RuntimeException("Script language not supported");
           }
           pm.log(x);
-          er(x, null, LogLevel.INFO, null);
-        } catch (Throwable t) {
+       } catch (Throwable t) {
           thrown = new RuntimeException(t);
           pm.error(x, t);
           ps.println();

@@ -71,10 +71,9 @@ foam.CLASS({
               value = "";
 
               final String message = "No value provided for variable "+v;
-              X y = foam.core.XLocator.get();
-              ((Logger) y.get("logger")).warning(message);
-              Agency agency = (Agency) y.get("threadPool");
-              agency.submit(y, new ContextAgent() {
+              ((Logger) getX().get("logger")).warning(message);
+              Agency agency = (Agency) getX().get("threadPool");
+              agency.submit(getX(), new ContextAgent() {
                 public void execute(X x) {
                   Alarm alarm = new Alarm();
                   alarm.setName("Email template config");
@@ -282,14 +281,14 @@ foam.CLASS({
             for ( int i = 0 ; i < val0.length ; i++ ) {
               templateName.append(val0[i]);
             }
-            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate((X)x.get("x"), templateName.toString());
+            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(getX(), templateName.toString());
             if ( extendedEmailTemplate == null ) {
-              ((Logger) x.get("logger")).warning("Extended template not found", templateName);
+              ((Logger) getX().get("logger")).warning("Extended template not found", templateName);
               Alarm alarm = new Alarm();
               alarm.setName("Email template config");
               alarm.setReason(AlarmReason.CONFIGURATION);
               alarm.setNote("Extended template not found " + templateName);
-              ((DAO) x.get("alarmDAO")).put(alarm);
+              ((DAO) getX().get("alarmDAO")).put(alarm);
               return val;
             }
             StringBuilder content = new StringBuilder();
