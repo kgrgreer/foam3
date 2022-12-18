@@ -288,6 +288,7 @@ foam.POM({
     { name: "test/Test",                                                                  flags: "js|java" },
     { name: "test/TestBorder",                                                            flags: "js" },
     { name: "cron/Cron",                                                                  flags: "js|java" },
+    { name: "cron/CronDAO",                                                               flags: "js|java" },
     { name: "cron/CronJobDAO",                                                            flags: "js|java" },
     { name: "cron/CronSchedule",                                                          flags: "js|java" },
     { name: "cron/CronScheduler",                                                         flags: "js|java" },

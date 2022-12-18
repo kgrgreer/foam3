@@ -22,8 +22,8 @@ foam.CLASS({
     'foam.blob.IdentifiedBlob',
     'foam.blob.InputStreamBlob',
     'foam.dao.DAO',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.log.LogLevel',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.cron.Cron',
     'foam.nanos.fs.File',
     'foam.nanos.notification.email.SMTPConfig',
@@ -104,6 +104,12 @@ foam.CLASS({
       value: 'Email Service'
     },
     {
+      documentation: 'Track WARN EventRecord so it can be cleared on a successful operation',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.er.EventRecord',
+      name: 'er'
+    },
+    {
       name: 'session_',
       javaType: 'Session',
       class: 'Object',
@@ -137,15 +143,15 @@ foam.CLASS({
           transport.connect(getUsername(), getPassword());
           logger.info("transport", "connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
+          EventRecord er = getEr();
+          if ( er != null ) {
+            er = (EventRecord) er.fclone();
+            er.setSeverity(LogLevel.INFO);
+            clearEr();
+            ((DAO) getX().get("eventRecordDAO")).put(er);
+          }
         } catch ( Exception e ) {
-          logger.error("Transport failed initialization", e);
-          Alarm alarm = new Alarm.Builder(getX())
-            .setName(this.getClass().getSimpleName()+".transport")
-            .setReason(AlarmReason.CREDENTIALS)
-            .setClusterable(false)
-            .setNote(e.getMessage())
-            .build();
-          ((DAO) getX().get("alarmDAO")).put(alarm);
+          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
           clearSession_();
 
           DAO cronDAO = (DAO) getX().get("cronDAO");
@@ -154,7 +160,7 @@ foam.CLASS({
             cron = (Cron) cron.fclone();
             cron.setEnabled(false);
             cronDAO.put(cron);
-            logger.warning("SMTP Email Service cron disabled");
+            ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), "Cron", getCronId(), "disable on error", LogLevel.WARN, null));
           }
           throw new foam.core.FOAMException(e);
         }
@@ -322,25 +328,18 @@ foam.CLASS({
           getTransport_().send(message);
           emailMessage.setStatus(Status.SENT);
           emailMessage.setSentDate(message.getSentDate());
-          logger.debug("sent");
+          // logger.debug("sent");
           omLogger.log(this.getClass().getSimpleName(), "message", "sent");
-          DAO alarmDAO = (DAO) getX().get("alarmDAO");
-          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME,alarmName));
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
+          EventRecord er = getEr();
+          if ( er != null ) {
+            er = (EventRecord) er.fclone();
+            er.setSeverity(LogLevel.INFO);
+            clearEr();
+            ((DAO) getX().get("eventRecordDAO")).put(er);
           }
         } catch ( SendFailedException | ParseException e ) {
           if ( e.getMessage().contains("Too many login attempts") ) {
-            Alarm alarm = new Alarm.Builder(getX())
-              .setName(this.getClass().getSimpleName()+".transport")
-              .setReason(AlarmReason.CREDENTIALS)
-              .setClusterable(false)
-              .setNote(e.getMessage())
-              .build();
-            ((DAO) getX().get("alarmDAO")).put(alarm);
+            setEr((EventRecord) ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
             clearSession_();
 
             DAO cronDAO = (DAO) getX().get("cronDAO");
@@ -349,14 +348,11 @@ foam.CLASS({
               cron = (Cron) cron.fclone();
               cron.setEnabled(false);
               cronDAO.put(cron);
-              logger.warning("SMTP Email Service cron disabled");
+              ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), "Cron", getCronId(), "disable on error", LogLevel.WARN, null));
             }
           } else {
             emailMessage.setStatus(Status.FAILED);
-            logger.warning("send failed", e);
-            Alarm alarm = new Alarm(alarmName, e.getMessage());
-            alarm.setClusterable(false);
-            ((DAO) getX().get("alarmDAO")).put(alarm);
+            setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.WARN, e)));
           }
         } catch ( MessagingException e ) {
           try {
@@ -366,7 +362,7 @@ foam.CLASS({
           }
           clearTransport_();
           clearSession_();
-          logger.error("send failed", e);
+          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.WARN, e)));
         } catch ( RuntimeException e ) {
           // already reported.
           logger.error("send failed", e.getMessage());

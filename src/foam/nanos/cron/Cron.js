@@ -224,7 +224,9 @@ foam.CLASS({
            getReattempts() < getMaxReattempts() ) {
         setReattempts(getReattempts() +1);
         setReattemptRequested(false);
+        String attempt = "reattempt ("+getReattempts()+" of "+getMaxReattempts()+")";
         try {
+          er(x, attempt, LogLevel.WARN, null);
           super.runScript(x);
           if ( ! getReattemptRequested() ) {
             resetReattempts();
@@ -233,6 +235,10 @@ foam.CLASS({
             er(x, "max reattempts reached", LogLevel.ERROR, null);
             er(x, "disable on error", LogLevel.WARN, null);
             setEnabled(false);
+          } else if ( getReattempts() == 0 ) {
+            er(x, "reattempt requested", LogLevel.WARN, null);
+          } else {
+            er(x, attempt+" failed", LogLevel.WARN, null);
           }
         } catch ( RuntimeException e ) {
           er(x, "disable on error", LogLevel.WARN, null);
@@ -241,6 +247,7 @@ foam.CLASS({
         }
       } else if ( ! getReattemptRequested() ) {
         try {
+          er(x, null, LogLevel.INFO, null);
           super.runScript(x);
           getSchedule().postExecution();
         } catch ( RuntimeException e ) {
