@@ -457,6 +457,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'tooltip',
+      attribute: true,
       postSet: function(o, n) {
         if ( n && ! o ) {
           this.Tooltip.create({target: this, text$: this.tooltip$});
@@ -500,23 +501,6 @@ foam.CLASS({
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
       value: 'div'
-    },
-    {
-      name: 'attributeMap',
-      documentation: 'Same information as "attributes", but in map form for faster lookup',
-      transient: true,
-      factory: function() { return {}; }
-    },
-    {
-      name: 'attributes',
-      documentation: 'Array of {name: ..., value: ...} attributes.',
-      factory: function() { return []; },
-      postSet: function(_, attrs) {
-        this.attributeMap = {};
-        for ( var i = 0 ; i < attrs.length ; i++ ) {
-          this.attributeMap[attrs[i].name] = attrs[i];
-        }
-      }
     },
     {
       name: 'classes',
@@ -853,10 +837,6 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip && value ) {
-        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
-      }
-
       // handle slot binding, ex.: data$: ...,
       // Remove if we add a props() method
       if ( name.endsWith('$') ) {
@@ -889,16 +869,6 @@ foam.CLASS({
         } else {
           foam.assert(foam.util.isPrimitive(value), 'Attribute value must be a primitive type.');
 
-          var attr = this.getAttributeNode(name);
-
-          if ( attr ) {
-            attr.value = value;
-          } else {
-            attr = { name: name, value: value };
-            this.attributes.push(attr);
-            this.attributeMap[name] = attr;
-          }
-
           if ( this.PSEDO_ATTRIBUTES[name] ) {
             this.element_[name] = value;
           } else {
@@ -907,57 +877,33 @@ foam.CLASS({
         }
       }
 
+
+      if ( name === 'title' && ! this.tooltip && value ) {
+        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
+      }
+
       return this;
     },
 
     function removeAttribute(name) {
-      /* Remove attribute named 'name'. */
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        if ( this.attributes[i].name === name ) {
-          this.attributes.splice(i, 1);
-          delete this.attributeMap[name];
-          if ( this.PSEDO_ATTRIBUTES[name] ) {
-            this.element_[name] = '';
-          } else {
-            this.element_.removeAttribute(name);
-          }
-          break;
-        }
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        this.element_[name] = '';
+      } else {
+        this.element_.removeAttribute(name);
       }
       return this;
     },
 
-    function getAttributeNode(name) {
-      /*
-        Get {name: ..., value: ...} attributeNode associated
-        with 'name', if exists.
-      */
-      return this.attributeMap[name];
-    },
-
     function getAttribute(name) {
-      // TODO: add support for other dynamic attributes also
-      // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
-        var value = this.el_()[name];
-        var attr  = this.getAttributeNode(name);
-
-        if ( attr ) {
-          attr.value = value;
-        } else {
-          attr = { name: name, value: value };
-          this.attributes.push(attr);
-          this.attributeMap[name] = attr;
-        }
-
-        return value;
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        return this[name];
       }
 
       /*
         Get value associated with attribute 'name',
         or undefined if attribute not set.
       */
-      var attr = this.getAttributeNode(name);
+      var attr = this.element_.getAttributeNode(name);
       return attr && attr.value;
     },
 
@@ -2191,8 +2137,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateMode_(this.mode);
-      // this.enableClass('error', this.error_$);
-      this.setAttribute('title', this.error_$);
+      this.enableClass('error', this.error_$);
+      // this.setAttribute('title', this.error_$);
     },
 
     function updateMode_() {
