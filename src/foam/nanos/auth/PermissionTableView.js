@@ -63,7 +63,7 @@ foam.CLASS({
       background: #FFCCCC;
     }
 
-    ^ tbody tr:hover, ^hovered {
+    ^hovered {
       background: #ccc !important;
     }
 
@@ -311,9 +311,9 @@ foam.CLASS({
           .forEach(gs, function(g) {
             this.start('td')
               .on('mouseover', function() { self.currentGroup = g; self.currentPermission = p; })
-              .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
-              .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
-              .attrs({title: g.id + ' : ' + p.id})
+              // removed mouseout because it just caused flicker
+              .enableClass(self.myClass('hovered'), self.slot(function(currentGroup, currentPermission) { return currentGroup == g || currentPermission == p; }))
+              // .attrs({title: g.id + ' : ' + p.id}) // Not needed becasue with scrollbars, col&row labels are always visible
               .tag(self.createCheckBox(p, g))
             .end();
           })
