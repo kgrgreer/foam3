@@ -10,21 +10,22 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-  'java.text.SimpleDateFormat',
-  'foam.core.X',
-  'foam.lib.parse.PStream',
-  'foam.lib.parse.ParserContext',
-  'foam.lib.parse.ParserContextImpl',
-  'foam.lib.parse.StringPStream',
-  'foam.mlang.Constant',
-  'foam.mlang.predicate.Predicate',
-  'foam.mlang.Expr',
-  'foam.nanos.auth.Address',
-  'foam.parse.FScriptParserTestUser',
-  'foam.nanos.ruler.Rule',
-  'foam.parse.FScriptParser',
-  'java.util.Date',
-  'net.nanopay.payroll.PayrollTransaction'
+    'java.text.SimpleDateFormat',
+    'foam.core.X',
+    'foam.lib.parse.LiteralIC',
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContext',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.mlang.Constant',
+    'foam.mlang.predicate.Predicate',
+    'foam.mlang.Expr',
+    'foam.nanos.auth.Address',
+    'foam.nanos.ruler.Rule',
+    'foam.parse.FScriptParser',
+    'java.util.Date',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   methods: [
@@ -40,17 +41,18 @@ foam.CLASS({
 
     var addr = new Address();
     addr.setRegionId("CA-ON");
-var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
-
 
     StringPStream sps    = new StringPStream();
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
-//    PayrollTransaction tx = new PayrollTransaction();
-//    tx.setPayPeriodFactor(new Float(1.2));
-//    tx.setPayPeriods(2);
-//    sps.setString("payPeriodFactor * (24000 / payPeriods)");
-//    test(((Predicate) parser2.parse(sps, px).value()).f(tx), "payPeriodFactor * (24000 / payPeriods)");
+
+    // var parser2 = new FScriptParser(net.nanopay.payroll.PayrollTransaction.getOwnClassInfo());
+    // net.nanopay.payroll.PayrollTransaction tx = new net.nanopay.payroll.PayrollTransaction();
+    // tx.setPayPeriods(2);
+    // sps.setString("1.2 * (24000 / payPeriods)");
+    // var r = ((Double)((Expr) parser2.parse(sps, px).value()).f(tx));
+    // test(((Double)((Expr) parser2.parse(sps, px).value()).f(tx))==10000.0, "expected: 1.2 * (24000/2) == 14400.0, found: "+r);
+
     var parser = new FScriptParser(FScriptParserTestUser.FIRST_NAME);
     sps.setString("address==null");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
@@ -253,10 +255,10 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==5");
 
     sps.setString("if(id exists){id}else{0}");
-    test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists){id}else{0} -> 666");
+    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists){id}else{0} -> 666");
 
     sps.setString("if(id exists && id==666){id}else{0}");
-    test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==666, "if(id exists && id==666){id}else{0} -> 666");
+    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists && id==666){id}else{0} -> 666");
 
     sps.setString("if(unknown==null){999}else{0}");
     test(parser.parse(sps, px) == null, "if(unknown==null){999}else{0} --> null");
@@ -278,7 +280,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     sps.setString("if(unknown exists){999}else{0}");
     test(parser.parse(sps, px) == null, "if(unknown exists){999}else{0} -> null");
     // sps.setString("if(unknown exists){999}else{0}");
-    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(exists unknown){999}else{0} -> 0");
+    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==0, "if(exists unknown){999}else{0} -> 0");
 
     Object result = null;
     sps.setString("if(address.regionId.len==5){firstName}else{lastName.len+3}");
@@ -331,7 +333,38 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
     sps.setString("instanceof foam.nanos.ruler.Rule");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
-    `
+
+    parser = new FScriptParser(foam.nanos.auth.User.getOwnClassInfo());
+    List<LiteralIC> expressions = new ArrayList();
+    expressions.add(new LiteralIC("lit_int_10", new Constant(10)));
+    expressions.add(new LiteralIC("lit_int_20", new Constant(20)));
+    expressions.add(new LiteralIC("lit_int_30", new Constant(30)));
+    expressions.add(new LiteralIC("lit_float_111", new Constant(111.0)));
+    expressions.add(new LiteralIC("lit_float_222", new Constant(222.0)));
+    expressions.add(new LiteralIC("lit_float_333", new Constant(333.0)));
+    expressions.add(new LiteralIC("f200", new Constant("lit_int_10*lit_int_20")));
+     expressions.add(new LiteralIC("f40", new Constant("lit_int_30+lit_int_20-lit_int_10")));
+    parser.addExpressions(expressions);
+
+    sps.setString("lit_int_10 * lit_int_20");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 200, "expect: 10 * 20 == 200, found: "+result);
+    sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -910.0, "expect: (10*20)-(111.0*10) == -910.0, found: "+result);
+     sps.setString("lit_int_30+lin_int_20-lit_int_10");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 40, "expect: 30+20-10 == 40, found: "+result);
+     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+lin_int_20-lit_int_10)");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -950.0, "expect: (10*20)-(111.0*10)-(30+20-10) == -950.0, found: "+result);
+     sps.setString("((lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10))+(lit_int_30+(lin_int_20-lit_int_10))");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -950.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -950.0, found: "+result);
+    sps.setString("f200");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 200, "expect: lit_int_10 * lit_int_20 == 200, found: "+result);
+     `
     }
   ]
 });
