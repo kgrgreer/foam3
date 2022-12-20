@@ -25,7 +25,7 @@
     {
       class: 'Object',
       name: 'matchValue',
-      documentation: 'Value to match in order too pass predicate'
+      documentation: 'Value to match in order to pass predicate'
     }
   ],
 
