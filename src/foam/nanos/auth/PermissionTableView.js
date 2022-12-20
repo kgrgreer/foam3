@@ -32,7 +32,7 @@ foam.CLASS({
 
   constants: {
     COLS: 26,
-    ROWS: 18
+    ROWS: 19
   },
 
   css: `
@@ -284,7 +284,7 @@ foam.CLASS({
         .start(self.ScrollCView.create({
           value$: self.skip$,
           extent: self.ROWS,
-          height: self.ROWS*20,
+          height: self.ROWS*25,
           width: 26,
           size$: self.filteredRows$.map(function(m){return m-1;})
         }))
@@ -297,9 +297,8 @@ foam.CLASS({
       var ps   = this.filteredPs, gs = this.filteredGs.slice(gSkip, gSkip+this.COLS);
       var self = this, count = 0;
       return self.E('tbody').forEach(filteredPs, function(p) {
-        if ( count > skip + self.ROWS ) return;
-        if ( count < skip ) { count++; return; }
-        count++;
+        if ( count >= skip + self.ROWS ) return;
+        if ( count++ < skip ) return;
         this.start('tr')
           .start('td')
             .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { return cp === p; } ))

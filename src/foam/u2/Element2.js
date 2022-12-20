@@ -877,7 +877,6 @@ foam.CLASS({
         }
       }
 
-
       if ( name === 'title' && ! this.tooltip && value ) {
         this.Tooltip.create({target: this, text$: this.attrSlot('title')});
       }
@@ -896,7 +895,7 @@ foam.CLASS({
 
     function getAttribute(name) {
       if ( this.PSEDO_ATTRIBUTES[name] ) {
-        return this[name];
+        return this.element_[name];
       }
 
       /*
