@@ -14,7 +14,7 @@
   properties: [
     {
       class: 'String',
-      name: 'loadFromContext',
+      name: 'contextKey',
       documentation: 'Name of context object to check'
     },
     {
@@ -31,14 +31,14 @@
 
   methods: [
     function execute(x) {
-      var objToCheck = x[this.loadFromContext];
+      var objToCheck = x[this.contextKey];
 
       if ( ! objToCheck )
-        throw new Error(`Unable to find ${this.loadFromContext} in this context`);
+        throw new Error(`Unable to find ${this.contextKey} in this context`);
 
       objToCheck = this.valuePath.f(objToCheck);
       if ( ! objToCheck )
-        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.loadFromContext}`)
+        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.contextKey}`)
     
       if ( ! foam.Object.equals(objToCheck, this.matchValue) )
         throw new Error(`Predicate check failed.`)
