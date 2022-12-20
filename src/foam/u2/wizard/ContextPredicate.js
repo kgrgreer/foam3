@@ -31,17 +31,20 @@
 
   methods: [
     function execute(x) {
-      var valueToCheck = x[this.contextKey];
+      var objToCheck = x[this.contextKey];
 
-      if ( ! valueToCheck )
+      if ( ! objToCheck )
         throw new Error(`Unable to find ${this.contextKey} in this context`);
 
-      valueToCheck = this.valuePath.f(valueToCheck);
+      if ( ! this.valuePath && ! foam.util.equals(valueToCheck, this.matchValue) )
+        throw new Error(`Predicate check failed.`);
+
+      var valueToCheck = this.valuePath.f(objToCheck);
       if ( ! valueToCheck )
-        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.contextKey}`)
+        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.contextKey}`);
     
       if ( ! foam.util.equals(valueToCheck, this.matchValue) )
-        throw new Error(`Predicate check failed.`)
+        throw new Error(`Predicate check failed.`);
 
       return true;
     }
