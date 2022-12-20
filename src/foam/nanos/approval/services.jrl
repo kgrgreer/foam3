@@ -64,9 +64,13 @@ p({
           .setOf(of)
           .setAdapter(new foam.nanos.approval.PopulateApprovalRequestSummariesAdapter(x, of, dao))
           .setSourceDAO(x.get("approvalRequestDAO"))
+          .setAuthorize(false)
           .build()
           .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
-        
+    dao = new foam.nanos.auth.AuthorizationDAO.Builder(x)
+            .setDelegate(dao)
+            .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
+            .build();
     return new foam.dao.PMDAO.Builder(x)
       .setDelegate(dao)
       .build();
