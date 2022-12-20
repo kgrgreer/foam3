@@ -284,7 +284,7 @@ foam.CLASS({
         .start(self.ScrollCView.create({
           value$: self.skip$,
           extent: self.ROWS,
-          height: self.ROWS*20,
+          height: self.ROWS*25,
           width: 26,
           size$: self.filteredRows$.map(function(m){return m-1;})
         }))
