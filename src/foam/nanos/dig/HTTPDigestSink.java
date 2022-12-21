@@ -79,9 +79,9 @@ public class HTTPDigestSink extends AbstractSink {
     Object id = fobj.getProperty("id");
     String className = fobj.getClass().getSimpleName();
     int responseCode = -1;
-    int count = 3;
+    int retryCount = 3;
 
-    while ( count > 0 ) {
+    while ( retryCount > 0 ) {
       try {
         responseCode = sendRequest(fobj);
 
@@ -92,7 +92,7 @@ public class HTTPDigestSink extends AbstractSink {
             Thread.sleep(5000);
           } catch (InterruptedException e) {}
 
-          count--;
+          retryCount--;
         } else {
           return;
         } 
