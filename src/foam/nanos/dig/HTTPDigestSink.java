@@ -101,9 +101,13 @@ public class HTTPDigestSink extends AbstractSink {
         String name = "HTTP DIGEST CONNECTION TIMEOUT";
         String note = "[" + className + ", " + id + ", " + new Date() + "]";
         createAlarm(name, note, LogLevel.ERROR);
-  
+
         throw new RuntimeException(e);
       } catch (Throwable t) {
+        String name = "HTTP DIGEST UNEXPECTED FAILURE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.ERROR);
+
         throw new RuntimeException(t);
       }
     }
