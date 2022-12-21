@@ -350,6 +350,7 @@ foam.POM({
     { name: "auth/AgentAuthClient",                                                       flags: "js|java" },
     { name: "auth/ClientAgentAuthService",                                                flags: "js|java" },
     { name: "auth/UniqueUserService",                                                     flags: "js|java" },
+    { name: "om/DAOOMLogger",                                                             flags: "js|java" },
     { name: "pm/PMTemperatureCellFormatter",                                              flags: "js" },
     { name: "pm/NullPM",                                                                  flags: "js|java" },
     { name: "pm/PM",                                                                      flags: "js|java" },
