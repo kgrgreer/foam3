@@ -11,7 +11,6 @@ foam.CLASS({
   documentation: 'Approval requests are stored in approvalRequestDAO and represent a single approval request for a single user.',
 
   implements: [
-    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -700,61 +699,6 @@ foam.CLASS({
                   + oldMemo;
         return newMemo;
       }
-    },
-    {
-      name: 'authorizeOnCreate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      javaThrows: ['AuthorizationException'],
-      javaCode: `
-        AuthService authService = (AuthService) x.get("auth");
-        if ( ! authService.check(x, "approval.create") ) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnRead',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      javaThrows: ['AuthorizationException'],
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null || ! SafetyUtil.equals(user.getId(), getApprover()) ) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnUpdate',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldObj', type: 'foam.core.FObject' }
-      ],
-      javaThrows: ['AuthorizationException'],
-      javaCode: `
-        ApprovalRequest approvalRequest = (ApprovalRequest) oldObj;
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService authService = (AuthService) x.get("auth");
-        if ( user == null || ! SafetyUtil.equals(approvalRequest.getApprover(), user.getId()) && ! ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system"))) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnDelete',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      javaThrows: ['AuthorizationException'],
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null  || ! ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system")) ) {
-          throw new AuthorizationException("Approval can only be deleted by system");
-        }
-      `
     }
   ],
 
