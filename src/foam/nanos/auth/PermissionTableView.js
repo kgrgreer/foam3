@@ -312,7 +312,7 @@ foam.CLASS({
               .on('mouseover', function() { self.currentGroup = g; self.currentPermission = p; })
               // removed mouseout because it just caused flicker
               .enableClass(self.myClass('hovered'), self.slot(function(currentGroup, currentPermission) { return currentGroup == g || currentPermission == p; }))
-              // .attrs({title: g.id + ' : ' + p.id}) // Not needed becasue with scrollbars, col&row labels are always visible
+//              .attrs({title: g.id + ' : ' + p.id}) // Not needed becasue with scrollbars, col&row labels are always visible
               .tag(self.createCheckBox(p, g))
             .end();
           })
@@ -525,8 +525,8 @@ foam.CLASS({
             style({height: '18px'}).
             enableClass(this.myClass('implied'), this.data.checked$, true).
             enableClass(this.myClass('checked'), this.data.checked$).
-            add(this.slot(function(data$granted) {
-              return data$granted ? '✓' : '';
+            add(this.slot(function(data$granted, data$implied) {
+              return data$granted ? (data$implied ? '↑' : '✓') : '';
             })).
             on('click', this.onClick);
         }
