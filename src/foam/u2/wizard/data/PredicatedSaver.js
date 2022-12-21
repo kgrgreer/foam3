@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'PredicatedSaver',
@@ -19,7 +25,7 @@ foam.CLASS({
     async function save (...a) {
       const loader = foam.json.parse(
         this.loader, undefined, this.__subContext__);
-      const obj = await loader.load();
+      const obj = await loader.load({});
       if ( ! this.predicate.f(obj) ) return;
       return await this.delegate.save(...a);
     }

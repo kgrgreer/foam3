@@ -835,13 +835,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "templateEngine",
-  "serve": false,
-  "serviceClass": "foam.nanos.notification.email.EmailTemplateEngine"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "counterDAO",
   "description": "A reporting count DAO being updated on other dao update",
   "serve": true,

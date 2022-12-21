@@ -70,7 +70,7 @@ foam.CLASS({
           const ofCls = foam.String.isInstance(of) ? X.maybeLookup(of) : of;
           if ( ! ofCls || ! ofCls.model_.extends ) return facet;
           if ( ofCls == foam.core.FObject ) return facet;
-          return cls.getFacetOf(X.maybeLookup(ofCls.model_.extends)) || facet;
+          return this.getFacetOf(X.maybeLookup(ofCls.model_.extends)) || facet;
         }
         return facet;
       };

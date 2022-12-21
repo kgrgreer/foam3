@@ -1,4 +1,11 @@
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "templateEngine",
+  "serve": false,
+  "serviceClass": "foam.nanos.notification.email.EmailTemplateEngine"
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailTemplateDAO",
   "lazy":false,

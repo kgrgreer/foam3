@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.wizardlet',
   name: 'BaseWizardlet',
+  implements: ['foam.u2.wizard.DynamicActionWizardlet'],
 
   todo: [
     'rename wizardlet.loading to wizardlet.busy',
@@ -67,19 +68,26 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'capability'
+    },
+    {
       class: 'Boolean',
       name: 'reloadOnAutoSave'
     },
     {
       name: 'id',
       class: 'String',
-      factory: function () {
-        return foam.uuid.randomGUID();
+      expression: function (capability) {
+        return capability ? capability.id : foam.uuid.randomGUID();
       }
     },
     {
       name: 'of',
-      class: 'Class'
+      class: 'Class',
+      expression: function(capability) {
+        if ( ! capability?.of ) return null;
+        return capability.of;
+      }
     },
     {
       name: 'data',
@@ -91,7 +99,11 @@ foam.CLASS({
     },
     {
       name: 'title',
-      class: 'String'
+      class: 'String',
+      expression: function(capability) {
+        if ( ! capability?.name ) return '';
+        return capability.name;
+      }
     },
     {
       name: 'subTitle',

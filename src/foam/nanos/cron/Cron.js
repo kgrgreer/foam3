@@ -10,15 +10,23 @@ foam.CLASS({
   extends: 'foam.nanos.script.Script',
 
   imports: [
-    'cronDAO',
-    'cronEventDAO'
+    'cronDAO'
+  ],
+
+  requires: [
+    'foam.nanos.cron.IntervalSchedule',
+    'foam.nanos.cron.TimeHMS'
   ],
 
   javaImports: [
     'foam.core.ClientRuntimeException',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
+    'foam.log.LogLevel',
+    'static foam.mlang.MLang.EQ',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date'
@@ -60,6 +68,17 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'SUCCESS_ENABLED',
+      message: 'Successfully enabled'
+    },
+    {
+      name: 'SUCCESS_DISABLED',
+      message: 'Successfully disabled'
+    }
+  ],
+
   properties: [
     {
       documentation: 'Cron jobs shall be enabled as a deployment step.',
@@ -89,6 +108,48 @@ foam.CLASS({
       visibility: 'RO',
       tableWidth: 170,
       storageTransient: true
+    },
+    {
+      name: 'reattemptRequested',
+      class: 'Boolean',
+      storageTransient: true,
+      visibility: 'RO'
+    },
+    {
+      name: 'maxReattempts',
+      class: 'Int',
+      value: 2
+    },
+    {
+      name: 'reattempts',
+      class: 'Int',
+      storageTransient: true,
+      visibility: 'RO'
+    },
+    {
+      documentation: 'Schedule to use to re-schedule on script failure',
+      name: 'reattemptSchedule',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.cron.Schedule',
+      view: {
+        class: 'foam.u2.view.FObjectView',
+        of: 'foam.nanos.cron.Schedule'
+      },
+      section: 'scheduling',
+      factory: function() {
+        return this.IntervalSchedule.create({
+          duration: this.TimeHMS.create({
+            minute:5
+          })
+        });
+      },
+      javaFactory: `
+      return new IntervalSchedule.Builder(getX())
+        .setDuration(new TimeHMS.Builder(getX())
+          .setMinute(5)
+          .build())
+        .build();
+      `
     },
     {
       class: 'String',
@@ -125,6 +186,9 @@ foam.CLASS({
             return false;
           }
         }
+        if ( getReattemptRequested() )
+          return getReattempts() < getMaxReattempts();
+
         return true;
       `
     },
@@ -137,18 +201,76 @@ foam.CLASS({
         }
       ],
       type: 'Date',
-      javaCode:
-`
-return getSchedule().getNextScheduledTime(x,
-  new Date(System.currentTimeMillis())
-);
-`
+      javaCode: `
+      if ( getReattemptRequested() &&
+           getReattempts() < getMaxReattempts() ) {
+        return getReattemptSchedule().getNextScheduledTime(x,
+          new Date(System.currentTimeMillis())
+        );
+      }
+      return getSchedule().getNextScheduledTime(x,
+        new Date(System.currentTimeMillis())
+      );
+      `
     },
     {
       name: 'runScript',
-      code: `
-        super.runScript();
-        getSchedule().postExecution();
+      code: function() {
+
+        this.super.runScript();
+      },
+      javaCode: `
+      if ( getReattemptRequested() &&
+           getReattempts() < getMaxReattempts() ) {
+        setReattempts(getReattempts() +1);
+        setReattemptRequested(false);
+        String attempt = "reattempt ("+getReattempts()+" of "+getMaxReattempts()+")";
+        try {
+          er(x, attempt, LogLevel.WARN, null);
+          super.runScript(x);
+          if ( ! getReattemptRequested() ) {
+            resetReattempts();
+            getReattemptSchedule().postExecution();
+          } else if ( getReattempts() >= getMaxReattempts() ) {
+            er(x, "max reattempts reached", LogLevel.ERROR, null);
+            er(x, "disable on error", LogLevel.WARN, null);
+            setEnabled(false);
+          } else if ( getReattempts() == 0 ) {
+            er(x, "reattempt requested", LogLevel.WARN, null);
+          } else {
+            er(x, attempt+" failed", LogLevel.WARN, null);
+          }
+        } catch ( RuntimeException e ) {
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
+        }
+      } else if ( ! getReattemptRequested() ) {
+        try {
+          er(x, null, LogLevel.INFO, null);
+          super.runScript(x);
+          getSchedule().postExecution();
+        } catch ( RuntimeException e ) {
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
+        }
+      }
+      `
+    },
+    {
+     documentation: 'Request job is rescheduled',
+      name: 'reattempt',
+      javaCode: `
+      setReattemptRequested(true);
+      `
+    },
+    {
+      documentation: 'Request job is rescheduled',
+      name: 'resetReattempts',
+      javaCode: `
+      clearReattemptRequested();
+      clearReattempts();
       `
     }
   ],
@@ -160,10 +282,23 @@ return getSchedule().getNextScheduledTime(x,
         return this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = false;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = false;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     },
@@ -173,10 +308,23 @@ return getSchedule().getNextScheduledTime(x,
         return ! this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = true;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = true;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     }

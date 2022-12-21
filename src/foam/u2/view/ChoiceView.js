@@ -301,10 +301,9 @@ foam.CLASS({
     },
     {
       name: 'onDAOUpdate',
-      isFramed: true,
-      on: [
-        'this.propertyChange.mode'
-      ],
+      isMerged: true,
+      mergeDelay: 160,
+      on: [ 'this.propertyChange.mode' ],
       code: function() {
         var self = this;
         var seq = ++this.seq_;
@@ -332,10 +331,16 @@ foam.CLASS({
         */
 
         var p = this.mode === foam.u2.DisplayMode.RW ?
-          dao.select().then(s => s.array) :
+          dao.limit(150).select().then(s => s.array) :
           dao.find(this.data).then(o => o ? [o] : []);
 
         p.then(a => {
+          if ( a.length > 100 ) {
+            this.warn('Warning: Inefficient to use ChoiceView for large selections, consider using RichChoiceView instead. Count: ' + a.length);
+            if ( this.prop_ ) {
+              this.warn('For Property: ' + this.prop_.name + ' on ' + this.prop_.forClass_);
+            }
+          }
           var choices = a.map(this.objToChoice);
           var choiceLabels = a.map(o => {
             const v = this.objToChoice(o);

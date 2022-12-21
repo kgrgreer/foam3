@@ -77,11 +77,11 @@ foam.CLASS({
     {
       class: 'Float',
       name: 'handleSize',
-      expression: function(minHandleSize, size, extent, height, innerBorder) {
-        var h  = height - 2 * innerBorder;
+      expression: function(vertical, minHandleSize, size, extent, height, width, innerBorder) {
+        var h  = (this.vertical ? height : width) - 2*innerBorder;
         var hs = size > 0 ? extent * h / size : 0;
 
-        return hs < minHandleSize ? minHandleSize : hs;
+        return Math.max(hs, minHandleSize);
       }
     },
     {
@@ -100,28 +100,44 @@ foam.CLASS({
       value: '#999'
     },
     {
+      name: 'xMax',
+      expression: function(width, innerBorder, handleSize)  {
+        return width - handleSize;
+      }
+    },
+    {
       name: 'yMax',
       expression: function(height, innerBorder, handleSize)  {
-        return height - innerBorder - handleSize;
+        return height - handleSize;
       }
     },
     {
       name: 'rate',
       expression: function(size, extent, yMax, innerBorder) {
-        return size ? ( yMax - innerBorder ) / (size - extent) : 0;
+        return size ? ( yMax - 2*innerBorder ) / (size - extent) : 0;
       }
     },
+    {
+      name: 'xrate',
+      expression: function(size, extent, xMax, innerBorder) {
+        return size ? ( xMax - 2*innerBorder ) / (size - extent) : 0;
+      }
+    }
   ],
 
   methods: [
-    function initCView() {
+    function initCView() {//      if ( this.vertical ) this.rotation = Math.PI/2;
       this.onDetach(this.canvas.pointer.touch.sub(this.onTouch));
 
       var self = this;
       var mouseInput = this.canvas.pointer.mouseInput;
       this.onDetach(mouseInput.down.sub(function() {
         var moveSub = mouseInput.move.sub(function() {
-          self.value = self.yToValue(mouseInput.y);
+          if ( self.vertical ) {
+            self.value = self.yToValue(mouseInput.y);
+          } else {
+            self.value = self.xToValue(mouseInput.x);
+          }
         });
         mouseInput.up.sub(function(s) {
           moveSub.detach();
@@ -134,8 +150,16 @@ foam.CLASS({
       return ( y - this.innerBorder ) / this.rate;
     },
 
+    function xToValue(x) {
+      return ( x - this.innerBorder ) / this.xrate;
+    },
+
     function valueToY(value) {
       return value * this.rate + this.innerBorder;
+    },
+
+    function valueToX(value) {
+      return value * this.xrate + this.innerBorder;
     },
 
     function paintSelf(c) {
@@ -146,16 +170,24 @@ foam.CLASS({
       if ( this.extent >= this.size ) return;
 
       c.strokeStyle = this.borderColor;
-      c.lineWidth = 0.4;
+      c.lineWidth   = 0.4;
       c.strokeRect(0, 0, this.width, this.height);
 
       c.fillStyle = this.handleColor;
 
-      c.fillRect(
-        2,
-        this.valueToY(this.value),
-        this.width - 4,
-        this.handleSize);
+      if ( this.vertical ) {
+        c.fillRect(
+          2,
+          this.valueToY(this.value),
+          this.width - 4,
+          this.handleSize);
+      } else {
+        c.fillRect(
+          this.valueToX(this.value),
+          2,
+          this.handleSize,
+          this.height - 4);
+      }
     }
   ],
 
@@ -163,7 +195,11 @@ foam.CLASS({
     {
       name: 'onTouch',
       code: function(_, __, touch) {
-        this.value = this.yToValue(touch.y);
+        if ( this.vertical ) {
+          this.value = this.yToValue(touch.y);
+        } else {
+          this.value = this.xToValue(touch.x);
+        }
 
         // prevents highlighting of other elements while scrolling
         touch.claimed = true;

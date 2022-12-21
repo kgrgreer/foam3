@@ -12,8 +12,8 @@
   extends: 'foam.u2.wizard.wao.ProxyWAO',
 
   imports: [
-    'wizardlets',
-    'capabilityToPrerequisite'
+    'wizardlets?',
+    'capabilityToPrerequisite?'
   ],
   requires: [
     'foam.u2.wizard.FObjectHolder'

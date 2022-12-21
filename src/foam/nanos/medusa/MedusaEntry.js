@@ -111,11 +111,18 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       }
     },
     {
+      // NOTE: previously storageTransient, but objectId required for compaction
       document: 'FObject id',
       class: 'Object',
       name: 'objectId',
       visibility: 'RO',
-      storageTransient: true
+      javaCompare: `
+      if ( o1 != null && o2 != null ) {
+        return o1.toString().compareTo(o2.toString());
+      }
+      if ( o1 == null && o2 == null) return 0;
+      return o1 == null ? -1 : 1;
+      `
     },
     {
       document: 'FObject on route to Primary',

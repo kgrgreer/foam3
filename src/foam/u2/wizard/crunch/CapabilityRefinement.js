@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.wizard.crunch',
   name: 'CapabilityRefinement',
@@ -37,6 +43,7 @@ foam.CLASS({
       name: 'wizardConfig',
       type: 'foam.lib.json.UnknownFObject',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
+      view: { class: 'foam.u2.HTMLView' },
       documentation: `
         Configuration placed on top level capabilities defining various
         configuration options supported by client capability wizards.

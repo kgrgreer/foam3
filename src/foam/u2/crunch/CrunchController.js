@@ -68,7 +68,6 @@ foam.CLASS({
     'foam.u2.wizard.agents.DetachAgent',
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
-    'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.wizard.agents.NullEventHandlerAgent',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
@@ -335,6 +334,10 @@ foam.CLASS({
       opt_intercept, flags, opt_x,
       opt_sequenceExtras
     ) {
+      if ( ! capable ) {
+        capable = foam.nanos.crunch.lite.BaseCapable.create();
+      }
+
       let x = ( opt_x || wizardController.__subContext__ ).createSubContext({
         capable,
         intercept: opt_intercept,

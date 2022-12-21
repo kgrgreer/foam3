@@ -49,7 +49,6 @@ foam.CLASS({
            ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
         return alarm;
       }
-
       // TODO: Occuring from medusa during replay
       if ( alarm.getCreated() ==  null ) {
         alarm = (Alarm) alarm.fclone();
@@ -81,6 +80,10 @@ foam.CLASS({
       }
       body.append("\\ninfo: ");
       body.append(alarm.getNote());
+      if ( alarm.getEventRecord() != null ) {
+        body.append("\\neventRecord: ");
+        body.append("/#er?id="+alarm.getEventRecord());
+      }
 
       HashMap args = new HashMap();
       args.put("alarm.name", alarm.getName());
@@ -93,6 +96,9 @@ foam.CLASS({
         args.put("alarm.cleared", alarm.getLastModified().toString());
       }
       args.put("alarm.note", alarm.getNote());
+      if ( alarm.getEventRecord() != null ) {
+        args.put("alarm.eventRecord", alarm.getEventRecord());
+      }
 
       // Notifications are ServiceProviderAware
       String spid = ServiceProviderAware.GLOBAL_SPID;
@@ -111,6 +117,7 @@ foam.CLASS({
         .setSpid(spid)
         .setTemplate(getNotificationTemplate())
         .setToastMessage(alarm.getName())
+        .setAlarm(alarm)
         .build();
 
      ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);

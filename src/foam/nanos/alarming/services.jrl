@@ -36,20 +36,11 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"alarmDAO",
-  "serve":true,
+  "name":"localAlarmDAO",
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
       .setPm(true)
-      .setPipelinePm(true)
-      .setDecorator(new foam.nanos.alarming.AddAlarmNameDAO.Builder(x)
-        .setDelegate(new foam.nanos.alarming.AlarmLoggingDAO.Builder(x)
-        .setDelegate(new foam.nanos.alarming.AlarmNotificationDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.alarming.Alarm.getOwnClassInfo()))
-        .build())
-        .build())
-        .build())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
       .setWriteOnly(true)
@@ -68,6 +59,24 @@ p({
        foam.nanos.alarming.Alarm.SEVERITY,
        foam.nanos.alarming.Alarm.IS_ACTIVE
      });
+  `
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"alarmDAO",
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
+      .setInnerDAO(x.get("localAlarmDAO"))
+      .setDecorator(new foam.nanos.alarming.AddAlarmNameDAO.Builder(x)
+        .setDelegate(new foam.nanos.alarming.AlarmLoggingDAO.Builder(x)
+        .setDelegate(new foam.nanos.alarming.AlarmNotificationDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.alarming.Alarm.getOwnClassInfo()))
+        .build())
+        .build())
+        .build())
+      .build();
   `,
   "client":"{\"of\":\"foam.nanos.alarming.Alarm\"}"
 })
@@ -79,6 +88,7 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.alarming.OMName.getOwnClassInfo())
+      .setCluster(false)
       .build();
     `
   ,"client":"{\"of\":\"foam.nanos.alarming.OMName\"}"

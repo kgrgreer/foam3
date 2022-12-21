@@ -153,11 +153,7 @@ foam.CLASS({
       if ( ! wizardlet ) return null;
       wizardlet = wizardlet.clone(this.__subContext__);
 
-      if ( this.CapabilityWizardlet.isInstance(wizardlet) ) {
-        wizardlet.copyFrom({ capability: capability });
-      } else {
-        wizardlet.id = capability.id;
-      }
+      wizardlet.copyFrom({ capability: capability });     
 
       var wao = wizardlet.wao;
       if ( ! wao ) wao = wizardlet.wao = this.NullWAO.create();

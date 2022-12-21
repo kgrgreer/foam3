@@ -249,6 +249,23 @@ p({
   "client": "{\"of\":\"foam.nanos.medusa.DaggerBootstrap\"}"
 })
 
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "compactionDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.Compaction.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("compactions")
+      .setRuler(false)
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.Compaction.ID));
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.Compaction\"}"
+})
+
 // See deployment/mm and mn for type specific setup
 
 // p({

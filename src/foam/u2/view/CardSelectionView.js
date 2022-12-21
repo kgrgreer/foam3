@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'CardSelectionView',
   extends: 'foam.u2.View',
@@ -73,8 +73,8 @@
                 return self.E();
               }
 
-              // For default selection e.g. One time deposit
-              if ( choices[0] ) self.data = choices[0][0];
+              // For default selection in case of empty data e.g. One time deposit
+              if ( choices[0] && ! self.data ) self.data = foam.Array.isInstance(choices[0]) ? choices[0][0] : choices[0];
 
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
@@ -92,10 +92,10 @@
                   cardSelectViewConfig.label = choice[1];
                 } else {
                   valueSimpSlot = self.mustSlot(choice);
-                  cardSelectViewConfig.of = choice.cls_.id;
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
+                cardSelectViewConfig.data  = valueSimpSlot.get();
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))

@@ -64,18 +64,6 @@ foam.CLASS({
       documentation: 'Description of the Group.'
     },
     {
-      class: 'Reference',
-      name: 'parent',
-      documentation: 'Parent group to inherit permissions from.',
-      targetDAOKey: 'groupDAO',
-      of: 'foam.nanos.auth.Group',
-      view: {
-        class: 'foam.u2.view.ReferenceView',
-        placeholder: '--'
-      },
-      menuKeys: ['admin.groups']
-    },
-    {
       class: 'StringArray',
       name: 'defaultMenu',
       documentation: 'Menu user redirects to after login.',
@@ -158,6 +146,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       documentation: 'Custom authentication settings for this group.'
     }
     */
+    {
+      class: 'Reference',
+      of: 'foam.nanos.crunch.Capability',
+      name: 'generalCapability',
+      documentation: `Capability that needs to be granted to proceed to the app.
+      Checked for status in ApplicationController.`
+    }
   ],
 
   methods: [

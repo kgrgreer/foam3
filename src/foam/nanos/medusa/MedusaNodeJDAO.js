@@ -13,7 +13,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.FileRollCmd'
+    'foam.dao.FileRollCmd',
+    'foam.dao.java.JDAO'
   ],
 
   properties: [
@@ -47,11 +48,26 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-      Object cmd = getDelegate().cmd_(x, obj);
+      foam.nanos.logger.Loggers.logger(x, this).debug("cmd",obj);
       if ( obj instanceof FileRollCmd ) {
-        ((DAO) x.get("medusaNodeDAO")).cmd_(x, DAO.PURGE_CMD);
+
+        // Roll the JDAO's Journal
+        // the reset delegate which will recreate the
+        // the Journal, MessageDigest, and trigger replay
+
+        obj = getDelegate().cmd_(x, obj);
+        if ( obj != null &&
+             foam.util.SafetyUtil.isEmpty(((FileRollCmd) obj).getError()) ) {
+          ((DAO) x.get("medusaNodeDAO")).cmd_(x, DAO.PURGE_CMD);
+          JDAO jdao = (JDAO) getDelegate();
+          var delegate = jdao.getDelegate();
+          jdao.clearDelegate();
+          jdao.setDelegate(delegate);
+
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          replaying.clearCount();
+        }
       } else if ( DAO.PURGE_CMD.equals(obj) ) {
-        // foam.nanos.logger.Loggers.logger(x, this, "cmd").debug("purge");
         getMdao().cmd_(x, obj);
       }
       return obj;

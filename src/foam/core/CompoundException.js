@@ -9,10 +9,7 @@ foam.CLASS({
   package: 'foam.core',
   extends: 'foam.core.FOAMException',
 
-  implements: [ 'foam.core.ExceptionInterface' ],
-
   javaImports: [
-    'foam.core.ExceptionInterface',
     'java.util.ArrayList'
   ],
 
@@ -50,9 +47,9 @@ foam.CLASS({
       visibility: 'public',
       javaCode: `
         for ( var t : getExceptions() ) {
-          if ( t instanceof ExceptionInterface ) {
+          if ( t instanceof FOAMException ) {
             RuntimeException clientE =
-              ((ExceptionInterface) t).getClientRethrowException();
+              ((FOAMException) t).getClientRethrowException();
             if ( clientE != null ) {
               return clientE;
             }

@@ -208,7 +208,6 @@ NOTE: when using the java client, the first call to a newly started instance may
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       value: 1000,
-      max: 1000,
       min: 0
     },
     {
@@ -286,7 +285,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         if ( format ) {
           url += query ? "&" : "?";
           query = true;
-          url += "format=" + format.name.toLowerCase();
+          url += "format=" + format.toLowerCase();
         }
         if ( key ) {
           url += query ? "&" : "?";

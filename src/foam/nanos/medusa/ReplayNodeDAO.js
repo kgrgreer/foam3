@@ -25,6 +25,7 @@ foam.CLASS({
     'static foam.mlang.MLang.LTE',
     'static foam.mlang.MLang.MAX',
     'static foam.mlang.MLang.MIN',
+    'static foam.mlang.MLang.TRUE',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Max',
@@ -32,6 +33,7 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'java.time.Duration',
     'java.util.HashMap',
     'java.util.Map'
   ],
@@ -95,33 +97,41 @@ foam.CLASS({
           clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
           getClients().put(details.getRequester(), clientDAO);
 
-          Min min = (Min) MIN(MedusaEntry.INDEX);
-          Count count = new Count();
-          Sequence seq = new Sequence.Builder(x)
-            .setArgs(new Sink[] {count, min})
-            .build();
-
-          // cache - mdao (cache, fixed size, last x received)
-          // this includes storageTransient entries
-          DAO cache = (DAO) x.get("medusaNodeDAO");
-          cache.select(seq);
-
-          Predicate p = GTE(MedusaEntry.INDEX, details.getMinIndex());
-          if ( details.getMaxIndex() > 0 ) {
-            p = AND(
+          Predicate p = null;
+          if ( details.getMinIndex() > info.getMinIndex() ) {
+            p = GTE(MedusaEntry.INDEX, details.getMinIndex());
+          }
+          if ( details.getMaxIndex() > 0 &&
+               details.getMaxIndex() < info.getMaxIndex() ) {
+            if ( p == null ) {
+              p = LTE(MedusaEntry.INDEX, details.getMaxIndex());
+            } else {
+              p = AND(
                    p,
                    LTE(MedusaEntry.INDEX, details.getMaxIndex())
                 );
+            }
+          }
+          if ( p == null ) {
+            p = TRUE;
           }
 
-          // if ( ((Long) count.getValue()) > 0 &&
-          //      min.getValue() != null &&
-          //      details.getMinIndex() >= (Long) min.getValue() ) {
-            cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          // } else {
-            getJournal().replay(x, new MedusaSetNodeDAO(x, clientDAO).where(p));
-            cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          // }
+          logger.debug("cache,select,start", details.getRequester(), p);
+          long startTime = System.currentTimeMillis();
+          // cache - mdao (cache, fixed size, last x received)
+          // this includes storageTransient entries
+          DAO cache = (DAO) x.get("medusaNodeDAO");
+          cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
+          logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+
+          logger.debug("journal,select,start", details.getRequester(), p);
+          startTime = System.currentTimeMillis();
+          getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
+          logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+
+          // send from cache again to capture anything received during journal replay
+          cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
+          getClients().remove(details.getRequester());
         } else {
           logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getMaxIndex());
         }
@@ -135,9 +145,6 @@ foam.CLASS({
         }
         return max;
       }
-
-      var result = getJournal().cmd(x, obj);
-      if ( result != null ) return  result;
 
       return getDelegate().cmd_(x, obj);
       `

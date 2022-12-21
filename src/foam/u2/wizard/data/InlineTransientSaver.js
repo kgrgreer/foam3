@@ -69,16 +69,21 @@ foam.CLASS({
       }
 
       // Load from wizardSpecLoader
-      const root = await this.wizardSpecLoader.load({});
+      const root = this.wizardSpecLoader ? await this.wizardSpecLoader.load({}) : data;
       if ( typeof root === 'string' ) {
-        throw new Error('has not been needed yet, so no code here yet');
+        await this.crunchController.doInlineIntercept(
+          this.wizardController, null, root, null,
+          { put: false },
+          subX, this.sequenceExtras
+        );
+        return;
       }
 
       if ( this.Capable.isInstance(root) ) {
         for ( const capabilityId of root.capabilityIds ) {
           // TODO: add excludes list
           if ( capabilityId === 'authentication' ) continue;
-
+          if ( root.capablePayloads.length > 0 ) return;
           await this.crunchController.doInlineIntercept(
             this.wizardController, root, capabilityId, null,
             { put: false },

@@ -40,7 +40,7 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) ((FObject)obj).fclone();
       getRegistry().notify(getX(), entry);
-      foam.nanos.logger.Loggers.logger(getX(), this).debug("delete", entry.toSummary());
+      // foam.nanos.logger.Loggers.logger(getX(), this).debug("delete", entry.toSummary());
       getDelegate().put(entry, sub);
       `
     }

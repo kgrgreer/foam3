@@ -125,9 +125,9 @@ foam.CLASS({
         default: throw new RuntimeException("Method not found.");
       }
     } catch (Throwable t) {
-      if ( t instanceof foam.core.ExceptionInterface ) {
+      if ( t instanceof foam.core.FOAMException ) {
         RuntimeException clientE = (RuntimeException)
-          ((foam.core.ExceptionInterface) t).getClientRethrowException();
+          ((foam.core.FOAMException) t).getClientRethrowException();
         if ( clientE != null ) {
           throw clientE;
         }
