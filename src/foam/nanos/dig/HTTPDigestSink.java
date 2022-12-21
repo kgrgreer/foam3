@@ -85,7 +85,7 @@ public class HTTPDigestSink extends AbstractSink {
       try {
         responseCode = sendRequest(fobj);
 
-        // re-send on 4xx and 5xx
+        // resend on 4xx and 5xx
         if ( responseCode >= 400 && responseCode <= 599 )  {
 
           try {
