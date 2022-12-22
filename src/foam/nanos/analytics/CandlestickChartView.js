@@ -63,11 +63,13 @@ foam.CLASS({
                   E.OR(
                     E.CONTAINS_IC(foam.nanos.boot.NSpec.NAME, "candlestick"),
                     E.IN(foam.nanos.boot.NSpec.NAME, [
-                      'pmDAO',
                       'om1MinuteDAO',
                       'om5MinuteDAO',
                       'omHourlyDAO',
-                      'omDailyDAO'
+                      'omDailyDAO',
+                      'pm1MinuteDAO',
+                      'pmHourlyDAO',
+                      'pmDailyDAO'
                     ])
                   ),
                   E.NOT(E.EQ(foam.nanos.boot.NSpec.NAME, "candlestickAlarmDAO"))

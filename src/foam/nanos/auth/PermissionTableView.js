@@ -414,10 +414,11 @@ foam.CLASS({
       var self = this;
       this.forEach(gs, function(g) {
         this.start('td')
+          .style({'white-space': 'pre'})
           .attrs({title: g.description})
           .addClass(matrix.myClass('groupLabel'))
           .enableClass(matrix.myClass('hovered'), matrix.currentGroup$.map(function(cg) { return cg === g; } ))
-          .add(g.id)
+          .add(g.displayName_)
         .end();
       });
     },
@@ -427,14 +428,29 @@ foam.CLASS({
       var self = this;
 
       this.groupDAO.orderBy(this.Group.ID).select().then(function(gs) {
-        for ( var i = 0 ; i < gs.array.length ; i++ ) {
-          self.gMap[gs.array[i].id] = gs.array[i];
+        gs = gs.array;
+
+        var gs2 = [];
+        function findChildren(parent, prefix) {
+          for ( var i = 0 ; i < gs.length ; i ++ ) {
+            var g = gs[i];
+            if ( g.parent === parent ) {
+              gs2.push(g);
+              g.displayName_ = prefix ? prefix + '┌ ' + g.id : g.id;
+              findChildren(g.id, prefix + '   ');
+            }
+          }
+        }
+        findChildren('', '');
+        gs = gs2;
+        for ( var i = 0 ; i < gs.length ; i++ ) {
+          self.gMap[gs[i].id] = gs[i];
         }
         self.permissionDAO.orderBy(self.Permission.ID).select().then(function(ps) {
           for ( var i = 0 ; i < ps.array.length ; i++ ) {
             self.pMap[ps.array[i].id] = ps.array[i];
           }
-          self.gs = gs.array;
+          self.gs = gs;
           self.ps = ps.array;
           self.matrix();
         })
