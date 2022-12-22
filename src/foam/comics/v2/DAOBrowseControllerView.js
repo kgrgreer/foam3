@@ -126,6 +126,9 @@ foam.CLASS({
     {
       name: 'click',
       expression: function(config$click) {
+        if (this.config.disableSelection) {
+          return () => {};
+        }
         if ( this.config.click && typeof this.config.click === 'function' )
           return this.config.click;
         // This function is exported and is not always called with the 'this' being the current view
@@ -276,7 +279,7 @@ foam.CLASS({
                           }
                         });
                     }))
-                    .callIf( ! config.detailView, function() {
+                    .callIf( ! config.detailView && ! ( config.createControllerView || config$primaryAction ), function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
                             label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
