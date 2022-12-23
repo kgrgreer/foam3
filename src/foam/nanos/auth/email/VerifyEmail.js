@@ -14,6 +14,7 @@
   imports: [
     'ctrl',
     'emailToken',
+    'emailVerificationService',
     'loginVariables',
     'userDAO'
   ],
@@ -30,6 +31,13 @@
       title: 'Verify your Email',
       subTitle: 'Your email has not been verified yet. Please verify your email to continue.'
     }
+  ],
+
+  messages: [
+    { name: 'TOKEN_INSTRUC_TITLE',      message: 'Verification Email Sent' },
+    { name: 'TOKEN_INSTRUC',            message: 'Verification email sent to ' },
+    { name: 'CODE_INSTRUC_TITLE',       message: 'Verification code sent' },
+    { name: 'CODE_INSTRUC',             message: 'Please check your inbox to verify your email' },
   ],
 
 
@@ -73,6 +81,50 @@
       class: 'Boolean',
       name: 'showAction',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'verifyByCode',
+      hidden: true
+    }
+  ],
+
+  methods: [
+    async function checkUser() {
+      // check user exists and if more than one user exists under the same email,
+      // prompt for username
+      var dao = this.userDAO.where(this.EQ(this.User.EMAIL, this.email));
+      var users = (await dao.select()).array;
+      var user;
+      if ( users.length < 1 ) {
+        this.ctrl.add(this.NotificationMessage.create({
+          message: 'User not found',
+          description: 'User not found under email ' + this.email,
+          type: this.LogLevel.ERROR,
+          transient: true
+        }));
+        throw new Error('User not found.');
+      } else if ( users.length == 1 ) {
+        user = users[0];
+      } else {
+        if ( this.userName ) {
+          var res = await dao.find(this.EQ(this.User.USER_NAME, this.userName));
+          if ( res ) user = res;
+          else {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: 'User not found',
+              description: 'User not found under username ' + this.userName,
+              type: this.LogLevel.ERROR,
+              transient: true
+            }));
+            throw new Error('User not found.');
+          }
+        } else {
+          this.userNameRequired = true
+          throw new Error('Username is required.');
+        }
+      }
+      return user;
     }
   ],
 
@@ -89,45 +141,21 @@
         return showAction;
       },
       code: async function() {
-        var self = this;
-        var dao = this.userDAO.where(this.EQ(this.User.EMAIL, this.email));
-        var users = (await dao.select()).array;
-        var user;
-        if ( users.length < 1 ) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: 'User not found',
-            description: 'User not found under email ' + self.email,
-            type: this.LogLevel.ERROR,
-            transient: true
-          }));
-          throw new Error('User not found.');
-        } else if ( users.length == 1 ) {
-          user = users[0];
-        } else {
-          if ( this.userName ) {
-            var res = await dao.find(this.EQ(this.User.USER_NAME, this.userName));
-            if ( res ) user = res;
-            else {
-              this.ctrl.add(this.NotificationMessage.create({
-                message: 'User not found',
-                description: 'User not found under username ' + self.userName,
-                type: this.LogLevel.ERROR,
-                transient: true
-              }));
-              throw new Error('User not found.');
-            }
-          } else {
-            this.userNameRequired = true
-            throw new Error('Username is required.');
-          }
-        }
-
         try {
-          var res = await this.emailToken.generateToken(null, user);
-          if ( ! res ) throw new Error('Error generating reset token');
+          if ( this.verifyByCode ) {
+            await this.emailVerificationService.verifyByCode(null, this.email, this.username, '');
+            instructionTitle = this.CODE_INSTRUC_TITLE;
+            instruction = this.CODE_INSTRUC;
+          } else {
+            this.checkUser();
+            const user = await this.User.create({ email: this.email, userName: this.username });
+            await this.resetPasswordToken.generateToken(null, user);
+            instructionTitle = this.TOKEN_INSTRUC_TITLE;
+            instruction = this.TOKEN_INSTRUC + this.email;
+          }
           this.ctrl.add(this.NotificationMessage.create({
-            message: 'Verification Email Sent',
-            description: 'Verification email sent to ' + self.email,
+            message: instructionTitle,
+            description: instruction,
             type: this.LogLevel.INFO,
             transient: true
           }));
