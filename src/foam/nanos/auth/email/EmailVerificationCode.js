@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'emailVerificationService'
   ],
 
@@ -72,12 +73,20 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      hidden: true
     }
   ],
 
   actions: [
     {
       name: 'submit',
+      isAvailable: function(showAction) {
+        return showAction;
+      },
       code: async function() {
         var success, err;
         try {
