@@ -112,9 +112,6 @@ foam.CLASS({
     {
       name: 'resendCode',
       buttonStyle: 'LINK',
-      isAvailable: function(showAction) {
-        return showAction;
-      },
       code: async function() {
         try {
           await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
