@@ -16,6 +16,7 @@
     'emailToken',
     'emailVerificationService',
     'loginVariables',
+    'resetPasswordToken',
     'userDAO'
   ],
 
@@ -106,6 +107,7 @@
         throw new Error('User not found.');
       } else if ( users.length == 1 ) {
         user = users[0];
+        this.userName = user.userName;
       } else {
         if ( this.userName ) {
           var res = await dao.find(this.EQ(this.User.USER_NAME, this.userName));
@@ -142,13 +144,13 @@
       },
       code: async function() {
         try {
+          this.checkUser();
           if ( this.verifyByCode ) {
-            await this.emailVerificationService.verifyByCode(null, this.email, this.username, '');
+            await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
             instructionTitle = this.CODE_INSTRUC_TITLE;
             instruction = this.CODE_INSTRUC;
           } else {
-            this.checkUser();
-            const user = await this.User.create({ email: this.email, userName: this.username });
+            const user = await this.User.create({ email: this.email, userName: this.userName });
             await this.resetPasswordToken.generateToken(null, user);
             instructionTitle = this.TOKEN_INSTRUC_TITLE;
             instruction = this.TOKEN_INSTRUC + this.email;
