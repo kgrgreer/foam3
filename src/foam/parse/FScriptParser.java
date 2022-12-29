@@ -16,10 +16,8 @@ import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
-import foam.parse.NewlineParser;
 
 import java.lang.Exception;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -29,7 +27,7 @@ public class FScriptParser
   protected List expressions;
 
   public FScriptParser(PropertyInfo property) {
-    Map<String, PropertyInfo> props = new HashMap<String, PropertyInfo>();
+    Map<String, PropertyInfo> props = new HashMap();
     props.put("thisValue", property);
     setup(property.getClassInfo(), props);
   }
@@ -81,7 +79,7 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
 
-    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
+    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")), EOF.instance()));
 
     grammar.addSymbol(
       "OR",
@@ -437,12 +435,36 @@ public class FScriptParser
       grammar.sym("FIELD")
     ));
 
-    grammar.addSymbol("REGEX", new Seq1(
-      1, Literal.create("/"),
+    grammar.addSymbol("REGEX", new Seq2(
+      1, 3, Literal.create("/"),
       new Repeat(new Alt(Literal.create("\\/"), new NotChars("/"))),
-      Literal.create("/")
+      Literal.create("/"),
+      new Optional(new Repeat(
+        new Alt(
+          Literal.create("i"), //CASE_INSENSITIVE
+          Literal.create("m"), //MULTILINE
+          Literal.create("s"), //DOTALL
+          Literal.create("x") //COMMENTS
+        ), 1
+      ))
     ));
-    grammar.addAction("REGEX", (val, x) -> Pattern.compile(compactToString(val)));
+    grammar.addAction("REGEX", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      HashMap hm = new HashMap();
+      hm.put("i", Pattern.CASE_INSENSITIVE);
+      hm.put("m", Pattern.MULTILINE);
+      hm.put("s", Pattern.DOTALL);
+      hm.put("x", Pattern.COMMENTS);
+      var flags = -1;
+      if ( vals[1] != null ) {
+        Object[] flagsArr = (Object[]) vals[1];
+        for (int i = 0; i < flagsArr.length-1; i++ ) {
+          var en = hm.get(flagsArr[i]);
+          flags = en == null ? flags : flags | (int) en;
+        }
+      }
+      return flags < 0 ? Pattern.compile(compactToString(vals[0])) : Pattern.compile(compactToString(vals[0]), flags);
+    });
 
     grammar.addSymbol("DATE", new Alt(
       new Seq(
