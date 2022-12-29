@@ -42,6 +42,10 @@ foam.CLASS({
       }
     },
     {
+      name: 'disableSelection',
+      class: 'Boolean'
+    },
+    {
       class: 'String',
       name: 'daoKey'
     },
@@ -107,6 +111,18 @@ foam.CLASS({
         The most important action on the page. The view for this controller may
         choose to display this action prominently.
       `,
+      value: null
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
+      name: 'primaryMenu',
+      documentation: `
+        When provided overrides primary action to launch provided menu.
+      `,
+      postSet: function(_, n) {
+        this.primaryMenu$find.then(v => this.primaryAction = v)
+      },
       value: null
     },
     {
