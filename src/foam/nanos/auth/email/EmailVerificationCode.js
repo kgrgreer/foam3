@@ -42,7 +42,7 @@ foam.CLASS({
       required: true,
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
-        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
     },
@@ -112,6 +112,9 @@ foam.CLASS({
     {
       name: 'resendCode',
       buttonStyle: 'LINK',
+      isAvailable: function(showAction) {
+        return showAction;
+      },
       code: async function() {
         try {
           await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
