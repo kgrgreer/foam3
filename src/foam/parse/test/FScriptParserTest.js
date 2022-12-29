@@ -124,19 +124,16 @@ foam.CLASS({
     sps.setString("firstName~/[a-z]+/");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
 
-<<<<<<< HEAD:src/foam/parse/test/FScriptParserTest.js
     sps.setString("organization exists");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "organization exists");
 
     sps.setString("organization==\\"name-with-dashes\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "organization==\\"name-with-dashes\\"");
-=======
     sps.setString("firstName~/[a-z]+/i");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
 
     sps.setString("firstName~/[a-z]+/im");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
->>>>>>> 876178f3874857bbdbf45bc18b3fccd09db83159:src/foam/parse/FScriptParserTest.js
 
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
