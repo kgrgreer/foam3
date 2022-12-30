@@ -8,6 +8,7 @@ foam.POM({
   name: "foam-u2-wizard",
   version: 1,
   files: [
+    { name: "ContextPredicate",                        flags: "web" },
     { name: "crunch/CapabilityRefinement",             flags: "web" },
     { name: "agents/ConfigureFlowAgent",               flags: "web" },
     { name: "agents/DeveloperModeAgent",               flags: "web" },

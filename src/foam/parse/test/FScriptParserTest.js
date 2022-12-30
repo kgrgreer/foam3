@@ -347,28 +347,35 @@ foam.CLASS({
     expressions.add(new LiteralIC("lit_float_111", new Constant(111.0)));
     expressions.add(new LiteralIC("lit_float_222", new Constant(222.0)));
     expressions.add(new LiteralIC("lit_float_333", new Constant(333.0)));
-    expressions.add(new LiteralIC("f200", new Constant("lit_int_10*lit_int_20")));
-     expressions.add(new LiteralIC("f40", new Constant("lit_int_30+lit_int_20-lit_int_10")));
     parser.addExpressions(expressions);
 
     sps.setString("lit_int_10 * lit_int_20");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == 200, "expect: 10 * 20 == 200, found: "+result);
+
     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == -910.0, "expect: (10*20)-(111.0*10) == -910.0, found: "+result);
-     sps.setString("lit_int_30+lit_int_20-lit_int_10");
+
+    sps.setString("lit_int_30+lit_int_20-lit_int_10");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == 40, "expect: 30+20-10 == 40, found: "+result);
-     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+lit_int_20-lit_int_10)");
+
+    sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+(lit_int_20-lit_int_10))");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == -870.0, "expect: (10*20)-(111.0*10)+(30+20-10) == -870.0, found: "+result);
-     sps.setString("((lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10))+(lit_int_30+(lit_int_20-lit_int_10))");
+    test(((Double) result) == -870.0, "expect: (10*20)-(111.0*10)+(30+(20-10)) == -870.0, found: "+result);
+
+    sps.setString("((lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10))-(lit_int_30+(lit_int_20-lit_int_10))");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == -870.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -870.0, found: "+result);
-    sps.setString("f200");
+    test(((Double) result) == -950.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -950.0, found: "+result);
+
+    sps.setString("if(lit_int_20 > lit_int_10){lit_int_30}else{0}");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 200, "expect: lit_int_10 * lit_int_20 == 200, found: "+result);
+    test(((Double) result) == 30, "expect: if(lit_int_20 > lit_int_10){lit_int_30}else{0} == 30, found: "+result);
+
+    sps.setString("if(lit_int_20 > lit_int_10){lit_int_30*10}else{0}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 300, "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
      `
     }
   ]

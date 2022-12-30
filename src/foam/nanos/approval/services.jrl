@@ -54,7 +54,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "tableViewApprovalRequestDAO",
-  "lazy": false,
+  "lazy": true,
   "serve": true,
   "serviceScript":
   """
@@ -66,7 +66,10 @@ p({
           .setSourceDAO(x.get("approvalRequestDAO"))
           .build()
           .orderBy(foam.mlang.MLang.DESC(foam.nanos.approval.ApprovalRequest.CREATED));
-        
+    dao = new foam.nanos.auth.AuthorizationDAO.Builder(x)
+            .setDelegate(dao)
+            .setAuthorizer(new foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer())
+            .build();
     return new foam.dao.PMDAO.Builder(x)
       .setDelegate(dao)
       .build();
