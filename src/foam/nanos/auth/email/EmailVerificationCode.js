@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'emailVerificationService'
   ],
 
@@ -41,7 +42,7 @@ foam.CLASS({
       required: true,
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
-        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       }
     },
@@ -72,12 +73,20 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showAction',
+      hidden: true
     }
   ],
 
   actions: [
     {
       name: 'submit',
+      isAvailable: function(showAction) {
+        return showAction;
+      },
       code: async function() {
         var success, err;
         try {
