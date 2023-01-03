@@ -99,7 +99,7 @@ Later themes:
             var groupTheme = await group.theme$find;
             if ( groupTheme ) {
               if ( theme && ! foam.util.equals(theme, groupTheme) ) {
-                theme = theme.merge(groupTheme);
+                // theme = theme.merge(groupTheme);
               } else {
                 theme = groupTheme;
               }
@@ -211,7 +211,7 @@ Later themes:
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null && ! SafetyUtil.equals(theme, groupTheme) ) {
-            theme = theme.merge(groupTheme);
+            // theme = theme.merge(groupTheme);
             break;
           }
           group = (Group) groupDAO.find(group.getParent());
