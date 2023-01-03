@@ -236,6 +236,7 @@ public class FScriptParser
       if ( vals[0] == null ) return null;
       Expr[] args = new Expr[vals.length];
       for ( int i = 0; i < vals.length; i++ ) {
+        if ( vals[i] instanceof If && ! isPropNumber(((If) vals[i]).getTrueExpr())) return Action.NO_PARSE;
         args[i] = (Expr)vals[i];
       }
       Formula formula = new Subtract();
@@ -250,7 +251,8 @@ public class FScriptParser
         grammar.sym("FIELD_LEN"),
         grammar.sym("FIELD"),
         grammar.sym("MAX"),
-        grammar.sym("MIN")
+        grammar.sym("MIN"),
+        grammar.sym("IF_ELSE")
       ),
       new Alt(
         new Repeat(
@@ -275,7 +277,8 @@ public class FScriptParser
               grammar.sym("FIELD_LEN"),
               grammar.sym("FIELD"),
               grammar.sym("MAX"),
-              grammar.sym("MIN")
+              grammar.sym("MIN"),
+              grammar.sym("IF_ELSE")
             )
           ), 1
         ),
@@ -286,8 +289,7 @@ public class FScriptParser
     ));
     grammar.addAction("FORM_EXPR", (val, x) -> {
       Object[] vals = (Object[]) val;
-      if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) && !(vals[0] instanceof AbstractFloatPropertyInfo) &&
-        !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ||
+      if ( vals[0] instanceof Expr && ! isPropNumber((Expr)vals[0]) || (vals[0] instanceof Dot) ||
         vals[0] instanceof Constant && ((Constant)vals[0]).f(null) instanceof String
       ) {
         return Action.NO_PARSE;
@@ -777,5 +779,10 @@ public class FScriptParser
       if ( ! Character.isUpperCase(str.charAt(i)) ) return false;
     }
     return true;
+  }
+
+  protected Boolean isPropNumber(Expr expr) {
+    return ! (expr instanceof AbstractPropertyInfo && !(expr instanceof AbstractDoublePropertyInfo) && !(expr instanceof AbstractFloatPropertyInfo) &&
+      !(expr instanceof AbstractIntPropertyInfo) && !(expr instanceof AbstractLongPropertyInfo) || (expr instanceof Dot));
   }
 }

@@ -393,6 +393,9 @@ foam.CLASS({
     sps.setString("(Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == MAX(0, (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA))");
     result = ((Predicate) parser.parse(sps, px).value()).f(user);
     test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+     sps.setString("if(lit_int_20 > lit_int_10){(Employee_Earnings_CA + Employee_Reimbursement_CA)}else{0} - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA)");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
      `
     }
   ]
