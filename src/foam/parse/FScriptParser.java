@@ -79,7 +79,8 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
 
-    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")), EOF.instance()));
+    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), grammar.sym("START_VALUES"), EOF.instance()));
+    grammar.addSymbol("START_VALUES", new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")));
 
     grammar.addSymbol(
       "OR",
@@ -320,7 +321,7 @@ public class FScriptParser
       Literal.create("{"),
       new Alt(NewlineParser.create(), Whitespace.instance()),
       new Alt(
-        grammar.sym("START"),
+        grammar.sym("START_VALUES"),
         grammar.sym("VALUE")
       ),
       new Alt(NewlineParser.create(), Whitespace.instance()),
@@ -333,7 +334,7 @@ public class FScriptParser
           Literal.create("{"),
           new Alt(NewlineParser.create(), Whitespace.instance()),
           new Alt(
-            grammar.sym("START"),
+            grammar.sym("START_VALUES"),
             grammar.sym("VALUE")
           ),
           new Alt(NewlineParser.create(), Whitespace.instance()),
