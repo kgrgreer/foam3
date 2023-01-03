@@ -287,7 +287,9 @@ public class FScriptParser
     grammar.addAction("FORM_EXPR", (val, x) -> {
       Object[] vals = (Object[]) val;
       if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) && !(vals[0] instanceof AbstractFloatPropertyInfo) &&
-        !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
+        !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ||
+        vals[0] instanceof Constant && ((Constant)vals[0]).f(null) instanceof String
+      ) {
         return Action.NO_PARSE;
       }
       if ( vals.length == 1 || vals[1] == null || !(vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
