@@ -557,7 +557,7 @@ foam.CLASS({
       this.cleanup_ = {
         detach: function() {
           for ( var i = 0 ; i < subs.length ; i++ ) {
-            subs[i].detach();
+            if ( subs[i] ) subs[i].detach();
           }
         }
       };
@@ -642,7 +642,7 @@ foam.CLASS({
       if ( arguments.length != 1 ) return this.SUPER.apply(this, arguments);
       var subs = this.slots.map(s => s.sub(l));
       return {
-        detach: function() { subs.forEach(s => s.detach()); }
+        detach: function() { subs.forEach(s => s && s.detach()); }
       };
     }
   ]
