@@ -84,7 +84,7 @@ foam.CLASS({
         });
       },
       preSet: function(_, n){
-        this.wizardlets[n.wizardletIndex].load()
+        this.wizardlets[n.wizardletIndex].load({});
         return n;
       },
       postSet: function (o, n) {
