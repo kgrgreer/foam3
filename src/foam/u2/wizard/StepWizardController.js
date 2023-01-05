@@ -83,6 +83,11 @@ foam.CLASS({
           sectionIndex: 0,
         });
       },
+      preSet: function(o, n) {
+        if ( n?.wizardletIndex != o?.wizardletIndex )
+          this.wizardlets[n.wizardletIndex].load({});
+        return n;
+      },
       postSet: function (o, n) {
         if ( o && n && o.wizardletIndex !== n.wizardletIndex ) {
           this.wizardlets[o.wizardletIndex].isCurrent = false;
