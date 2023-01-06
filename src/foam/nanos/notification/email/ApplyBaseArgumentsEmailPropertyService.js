@@ -4,36 +4,34 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
-  package: 'foam.nanos.notification.email',
-  name: 'ApplyBaseArgumentsEmailPropertyService',
+foam.CLASS({
+  package: "foam.nanos.notification.email",
+  name: "ApplyBaseArgumentsEmailPropertyService",
 
-  documentation: 'set up the base arguments of theme, appConfig',
+  documentation: "set up the base arguments of theme, appConfig",
 
-  implements: [
-    'foam.nanos.notification.email.EmailPropertyService'
-  ],
+  implements: ["foam.nanos.notification.email.EmailPropertyService"],
 
   javaImports: [
-    'foam.core.X',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.SupportConfig',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.Loggers',
-    'foam.nanos.notification.email.EmailConfig',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.session.Session',
-    'foam.nanos.theme.Theme',
-    'foam.util.SafetyUtil',
-    'java.util.HashMap',
-    'java.util.Map'
+    "foam.core.X",
+    "foam.nanos.app.AppConfig",
+    "foam.nanos.app.SupportConfig",
+    "foam.nanos.auth.User",
+    "foam.nanos.logger.Logger",
+    "foam.nanos.logger.Loggers",
+    "foam.nanos.notification.email.EmailConfig",
+    "foam.nanos.notification.email.EmailMessage",
+    "foam.nanos.session.Session",
+    "foam.nanos.theme.Theme",
+    "foam.util.SafetyUtil",
+    "java.util.HashMap",
+    "java.util.Map",
   ],
 
   methods: [
     {
-      name: 'apply',
-      type: 'foam.nanos.notification.email.EmailMessage',
+      name: "apply",
+      type: "foam.nanos.notification.email.EmailMessage",
       javaCode: `
         Logger logger = Loggers.logger(x, this);
 
@@ -93,13 +91,13 @@
         templateArgs.put("privacyLabel", appConfig.getPrivacy());
 
         // Temporary color until token support is added for email
-        templateArgs.put("primary1", theme.getPrimary1());
-        templateArgs.put("primary2", theme.getPrimary2());
-        templateArgs.put("primary3", theme.getPrimary3());
-        templateArgs.put("primary4", theme.getPrimary4());
-        templateArgs.put("primary5", theme.getPrimary5());
-        templateArgs.put("white", theme.getWhite());
-        templateArgs.put("black", theme.getBlack());
+        templateArgs.put("theme.primary1", theme.getPrimary1());
+        templateArgs.put("theme.primary2", theme.getPrimary2());
+        templateArgs.put("theme.primary3", theme.getPrimary3());
+        templateArgs.put("theme.primary4", theme.getPrimary4());
+        templateArgs.put("theme.primary5", theme.getPrimary5());
+        templateArgs.put("theme.white", theme.getWhite());
+        templateArgs.put("theme.black", theme.getBlack());
 
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());
@@ -113,7 +111,7 @@
         emailMessage.setTemplateArguments(templateArgs);
 
         return emailMessage;
-      `
-    }
-  ]
+      `,
+    },
+  ],
 });
