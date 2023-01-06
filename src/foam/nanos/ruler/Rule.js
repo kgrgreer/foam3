@@ -216,6 +216,7 @@ foam.CLASS({
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -231,6 +232,7 @@ foam.CLASS({
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -253,6 +255,7 @@ foam.CLASS({
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -268,6 +271,7 @@ foam.CLASS({
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {

@@ -109,6 +109,7 @@ foam.CLASS({
     },
     {
       name: 'name',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj, axiom) {
         if ( obj.type === foam.core.Requires ) {
           this.tag(obj.ClassLink, {data: obj.axiom.path, showPackage: true});
