@@ -43,6 +43,13 @@ foam.CLASS({
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
+  css: `
+    .foam-u2-ActionView-resendCode {
+      width: 100%;
+      justify-content: left!important;
+    }
+  `,
+
   properties: [
     {
       class: 'String',
