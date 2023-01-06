@@ -44,7 +44,7 @@ foam.CLASS({
   ],
 
   css: `
-    .foam-u2-ActionView-resendCode {
+    .foam-u2-detail-SectionView-verificationCodeSection .foam-u2-ActionView-resendCode {
       width: 100%;
       justify-content: left!important;
     }
