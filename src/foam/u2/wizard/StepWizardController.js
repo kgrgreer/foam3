@@ -83,8 +83,9 @@ foam.CLASS({
           sectionIndex: 0,
         });
       },
-      preSet: function(_, n){
-        this.wizardlets[n.wizardletIndex].load()
+      preSet: function(o, n) {
+        if ( n?.wizardletIndex != o?.wizardletIndex )
+          this.wizardlets[n.wizardletIndex].load({});
         return n;
       },
       postSet: function (o, n) {

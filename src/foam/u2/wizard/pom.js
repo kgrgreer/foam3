@@ -43,6 +43,7 @@ foam.POM({
     { name: "views/FlexibleWizardContentsView",        flags: "web" },
     { name: "views/FocusWizardView",                   flags: "web" },
     { name: "views/TipActionView",                     flags: "web" },
+    { name: "SkipMeView",                              flags: "web" },
     { name: "PathProperty",                            flags: "web" },
     { name: "debug/WizardInspector",                   flags: "web" },
     { name: "AlternateFlow",                           flags: "web" },
