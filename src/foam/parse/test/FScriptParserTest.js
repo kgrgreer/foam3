@@ -129,6 +129,11 @@ foam.CLASS({
 
     sps.setString("organization==\\"name-with-dashes\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "organization==\\"name-with-dashes\\"");
+    sps.setString("firstName~/[a-z]+/i");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
+
+    sps.setString("firstName~/[a-z]+/im");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
 
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
@@ -321,6 +326,7 @@ foam.CLASS({
 
     sps.setString("supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     sps.setString("supportConfig.supportAddress.regionId==\\"CA-ON\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId==\\"CA-ON\\"");
     sps.setString("supportConfig.supportAddress instanceof foam.nanos.auth.Address");
@@ -334,7 +340,7 @@ foam.CLASS({
     sps.setString("instanceof foam.nanos.ruler.Rule");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
 
-    parser = new FScriptParser(foam.nanos.auth.User.getOwnClassInfo());
+    parser = new FScriptParser(foam.parse.test.FScriptParserTestUser.getOwnClassInfo());
     List<LiteralIC> expressions = new ArrayList();
     expressions.add(new LiteralIC("lit_int_10", new Constant(10)));
     expressions.add(new LiteralIC("lit_int_20", new Constant(20)));
@@ -342,7 +348,12 @@ foam.CLASS({
     expressions.add(new LiteralIC("lit_float_111", new Constant(111.0)));
     expressions.add(new LiteralIC("lit_float_222", new Constant(222.0)));
     expressions.add(new LiteralIC("lit_float_333", new Constant(333.0)));
+    expressions.add(new LiteralIC("region", new Constant("CA-ON")));
     parser.addExpressions(expressions);
+
+    sps.setString("if (address.regionId==region) {firstName} else {null}");
+    result = (String) ((Expr)parser.parse(sps, px).value()).f(user);
+    test("marmelad".equals(result), "if (address.regionId==region) {firstName} else {null}");
 
     sps.setString("lit_int_10 * lit_int_20");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
@@ -371,6 +382,20 @@ foam.CLASS({
     sps.setString("if(lit_int_20 > lit_int_10){lit_int_30*10}else{0}");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == 300, "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+
+    user.setTestint1(11);
+    user.setTestint2(22);
+    user.setTestint3(33);
+    sps.setString("MAX(0, (testint1 * testint2) - testint3) == (testint1 * testint2) - testint3");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+
+    sps.setString("(Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == MAX(0, (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA))");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+     sps.setString("if(lit_int_20 > lit_int_10){(Employee_Earnings_CA + Employee_Reimbursement_CA)}else{0} - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA)");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
      `
     }
   ]
