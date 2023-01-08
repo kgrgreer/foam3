@@ -43,6 +43,13 @@ public class FScriptParser
     // foam.nanos.logger.StdoutLogger.instance().info(this.getClass().getSimpleName(), "expressions", this.expressions.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(",")));
   }
 
+  /**
+   * return copy, for inspection only
+   */
+  public List getExpressions() {
+    return new ArrayList(expressions);
+  }
+
   public void setup(ClassInfo classInfo, Map<String, PropertyInfo> props) {
     classInfo_ = classInfo;
     expressions = new ArrayList();
