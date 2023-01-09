@@ -8,7 +8,8 @@ foam.CLASS({
   name: 'HTTPException',
   implements: [ 'foam.core.Exception' ],
   properties: [
-    'response'
+    'response',
+    'message'
   ]
 });
 
@@ -224,7 +225,7 @@ foam.CLASS({
         }).then((rmsg) => {
           rmsg && replyBox && replyBox.send(rmsg);
         }, function(r) {
-          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r }) }));
+          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r, message: r.message }) }));
         });
       },
       swiftCode: `
