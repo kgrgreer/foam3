@@ -353,7 +353,7 @@ foam.POM({
     { name: "foam/glang/glang",                                       flags: "js|java" },
     { name: "foam/parse/QueryParser",                                 flags: "js" },
     { name: "foam/parse/FScriptParser",                               flags: "js" },
-    { name: "foam/parse/FScriptParserTestUser",                               flags: "js|java" },
+    { name: "foam/parse/test/FScriptParserTestUser",                  flags: "js|java" },
     { name: "foam/parse/test/FScriptParserTest",                      flags: "js|java" },
     { name: "foam/parse/test/QueryParserUserTest",                    flags: "js|java" },
     { name: "foam/physics/Physical",                                  flags: "js" },

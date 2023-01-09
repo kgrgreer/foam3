@@ -48,7 +48,12 @@ public class ErrorReportingNodePStream
   }
 
   public String getErrorLine() {
-    var lines = root_.substring(tail());
+    var lines = "";
+    try {
+      lines = root_.substring(tail());
+    } catch (StringIndexOutOfBoundsException e) {
+      // TODO:
+    }
     int nextLinePos = lines.indexOf('\n');
     int lastLinePos = 0;
     int lineNumber  = 1;
