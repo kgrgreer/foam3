@@ -34,7 +34,7 @@ foam.CLASS({
         return this.name + " (" + this.oldValue + " => " + this.newValue + ")";
       },
       javaCode: `
-        return getName() + " (" + this.getOldValue() + " => " + this.getNewValue() + ")");
+        return getName() + " (" + this.getOldValue() + " => " + this.getNewValue() + ")";
       `
     }
   ]
