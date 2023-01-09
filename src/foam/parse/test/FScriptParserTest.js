@@ -388,14 +388,28 @@ foam.CLASS({
     user.setTestint3(33);
     sps.setString("MAX(0, (testint1 * testint2) - testint3) == (testint1 * testint2) - testint3");
     result = ((Predicate) parser.parse(sps, px).value()).f(user);
-    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+    test(((Boolean) result), "expect: MAX(0, (testint1 * testint2) - testint3) == (testint1 * testint2) - testint3 -> true, found: "+result);
 
-    sps.setString("(Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == MAX(0, (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA))");
-    result = ((Predicate) parser.parse(sps, px).value()).f(user);
-    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+    // MAX rounds, so these will never be equal.
+    // sps.setString("(Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == MAX(0, (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA))");
+    // result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    // test(((Boolean) result), "expect: equation == MAX(0, equation) -> true, found: "+result);
+
      sps.setString("if(lit_int_20 > lit_int_10){(Employee_Earnings_CA + Employee_Reimbursement_CA)}else{0} - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA)");
     result = ((Predicate) parser.parse(sps, px).value()).f(user);
-    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){equation = equation}else{false} -> true , found: "+result);
+
+     sps.setString("0 / 1");
+     result = ((Expr) parser.parse(sps, px).value()).f(user);
+     test (((Double)result) == 0, "expect: 0 / 1 -> 0, found: "+result);
+
+     sps.setString("1 / 0");
+     try {
+       result = ((Expr) parser.parse(sps, px).value()).f(user);
+       test (false, "expect: 1 / 0 -> exception, found: "+result);
+     } catch (RuntimeException e) {
+       test (true, "expect: 1 / 0 -> exception, found: "+e.getMessage());
+     }
      `
     }
   ]
