@@ -59,6 +59,7 @@ foam.CLASS({
         // check against current date
         if ( startDate <= new Date() ) return this.START_DATE_ERROR;
       },
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj  ) return;
         this.style({ 'font-weight': '600' }).add(obj.formatDate(value));
@@ -88,6 +89,7 @@ foam.CLASS({
           errorMessage: 'INVALID_REPEAT_1'
         }
       ],
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj ) return;
         let ret = value + ' ' + obj.frequency.label;
@@ -234,6 +236,7 @@ foam.CLASS({
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       },
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj ) return;
         this.style({ 'font-weight': '600' }).add(value.label + ' ' + obj.expandedDayOfWeek.label);
@@ -283,6 +286,7 @@ foam.CLASS({
         // check against start date
         if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
       },
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj  ) return;
         this.style({ 'font-weight': '600' }).add('On ' + obj.formatDate(value));
@@ -309,6 +313,7 @@ foam.CLASS({
       class: 'String',
       name: 'note',
       columnLabel: '',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         let nextDates = obj.calculateNextDates_(2);
         let ordinal;

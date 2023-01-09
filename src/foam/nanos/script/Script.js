@@ -127,6 +127,7 @@ foam.CLASS({
       name: 'enabled',
       includeInDigest: true,
       documentation: 'Enables script.',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.start()
           .style({ color: value ? /*%APPROVAL3*/ 'green' : /*%GREY2%*/ 'grey' })

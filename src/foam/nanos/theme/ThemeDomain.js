@@ -25,6 +25,7 @@ foam.CLASS({
       name: 'theme',
       class: 'Reference',
       of: 'foam.nanos.theme.Theme',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj, axiom) {
         obj.theme$find
           .then((theme) => {
