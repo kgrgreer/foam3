@@ -4,10 +4,16 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/**
+ * TODO:
+ * - Add grouping/ordering support
+ * - Add onClick support
+ * - Add Projection support
+ */
 foam.CLASS({
   package: 'foam.u2',
   name: 'DAOList',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   topics: [ 'rowClick' ],
 
@@ -22,6 +28,8 @@ foam.CLASS({
     'selection? as importSelection'
   ],
 
+  requires: ['foam.u2.view.LazyScrollManager'],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -29,38 +37,26 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'rowView'
-    },
-    {
-      // deprecated
-      class: 'foam.u2.ViewFactory',
-      name: 'rowFactory'
+      name: 'rowView',
+      value: { class: 'foam.u2.CitationView' }
     },
     'selection',
-    'hoverSelection'
+    'hoverSelection',
+    'listEl_'
   ],
 
   methods: [
     function render() {
-      var view = this;
-      this.
-        addClass(this.myClass()).
-        select(this.data$proxy, function(obj) {
-          return ( this.rowView ?
-            foam.u2.ViewSpec.createView(this.rowView, { data: obj }, this, this.__subSubContext__) :
-            this.rowFactory$f({data: obj})).
-              on('mouseover', function() { view.hoverSelection = obj; }).
-              on('click', function() {
-                view.selection = obj;
-                if ( view.importSelection$ ) view.importSelection = obj;
-                if ( view.editRecord$ ) view.editRecord(obj);
-                view.rowClick.pub(obj)
-              }).
-              addClass(this.slot(function(selection) {
-                if ( obj === selection ) return view.myClass('selected');
-                  return '';
-              }, view.selection$));
-        });
+      this
+        .addClass(this.myClass())
+        .start('', {}, this.listEl_$)
+          .tag(this.LazyScrollManager, {
+              data$: this.data$,
+              rowView: this.rowView,
+              rootElement: this.listEl_,
+              ctx: this
+          }, this.scrollEl_$)
+        .end();
     }
   ]
 });

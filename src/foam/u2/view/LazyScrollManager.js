@@ -150,7 +150,10 @@
       class: 'Function',
       name:'prepDAO',
       documentation: `Function that is run before each page is loaded on a limited DAO,
-      should always return a promise, can be used to create projections`
+      should always return a promise, can be used to create projections`,
+      factory: function() {
+        return function(dao) { return dao.select(); }
+      }
     },
     {
       name: 'appendTo',
@@ -262,30 +265,38 @@
       if ( this.order ) sortParams.push(this.order)
       if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
       this.loadingPages_[page] = true;
-      promise = this.prepDAO(proxy, this.ctx);
+      let promise = this.prepDAO(proxy, this.ctx);
       var e = this.E().attr('data-page', page);
 
       promise.then((values) => {
+        let populateRows = function (args) {
+          if ( values.array[i] === undefined ) return;
+          var index = (page*self.pageSize) + i + 1;
+          if ( self.groupBy ) {
+            var group = self.groupBy.f(values.array[i]);
+            if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
+              e.tag(self.groupHeaderView, args);
+            }
+            self.currGroup_ = group;
+          }
+          var rowEl = self.E().tag(self.rowView, args)
+              .attr('data-idx', index);
+          e.add(rowEl)
+          rowEl.el().then((a) => {
+            self.rowObserver.observe(a)
+          });
+        }
         if ( foam.mlang.sink.Projection.isInstance( values ) ) {
           for (var i = 0 ; i < values.projection.length ; i++) {
-            if ( values.array[i] === undefined ) continue;
-            var index = (page*this.pageSize) + i + 1;
-            if ( this.groupBy ) {
-              var group = self.groupBy.f(values.array[i]);
-              if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
-                e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
-              }
-              self.currGroup_ = group;
-            }
-            var rowEl = this.E().tag(self.rowView, { obj: values.array[i], projection: values.projection[i] })
-                .attr('data-idx', index);
-            e.add(rowEl)
-            rowEl.el().then((a) => {
-              self.rowObserver.observe(a)
-            });
+            // TODO: replace obj with data
+            let args = { obj: values.array[i], projection: values.projection[i] }
+            populateRows(args);
           }
-        } else if ( foam.dao.DAO.isInstance( values ) ){
-          // TODO
+        } else if ( foam.dao.Sink.isInstance( values ) && values.array ){
+          for (var i = 0 ; i < values.array.length ; i++) {
+            let args = { data: values.array[i] }
+            populateRows(args);
+          }
         }
         var isSet = false;
         if  ( self.renderedPages_[page] ) {
