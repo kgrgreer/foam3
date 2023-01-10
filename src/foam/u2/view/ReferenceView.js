@@ -18,22 +18,15 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceView',
-  extends: 'foam.u2.view.RichChoiceView',
+  extends: 'foam.u2.view.ChoiceView',
 
   documentation: `
     View for editing ReferenceProperty-ies.
     Note: that if the property's value is undefined this view will set it to
     to first choice unless you provide a 'placeholder' (inherited from ChoiceView).
   `,
-  requires: [
-    'foam.u2.view.RichChoiceViewSection'
-  ],
 
   properties: [
-    {
-      name: 'search',
-      value: true
-    },
     {
       name: 'placeholder',
       factory: function() { return '--'; }
@@ -49,9 +42,9 @@ foam.CLASS({
   methods: [
     function fromProperty(prop) {
       this.SUPER(prop);
-      if ( this.sections?.length == 0 ) {
-        let dao = this.__context__[prop.targetDAOKey] || this.__context__.data[prop.name + '$dao'];
-        this.sections = [ this.RichChoiceViewSection.create({ heading: (prop.of?.model_?.plural || 'Selections'), dao: dao }) ];
+      if ( ! this.dao ) {
+        var dao = this.__context__[prop.targetDAOKey] || this.__context__.data[prop.name + '$dao'];
+        this.dao = dao;
       }
     }
   ]
