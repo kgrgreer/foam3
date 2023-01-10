@@ -641,6 +641,7 @@ foam.POM({
     { name: "foam/u2/EnumView",                                       flags: "web" },
     { name: "foam/u2/ClassView",                                      flags: "web" },
     { name: "foam/u2/view/ReferenceView",                             flags: "web" },
+    { name: "foam/u2/view/RichChoiceReferenceView",                   flags: "web" },
     { name: "foam/u2/view/FullReferenceView",                         flags: "web" },
     { name: "foam/u2/view/StrategizerChoiceView",                     flags: "web" },
     { name: "foam/u2/tag/Card",                                       flags: "web" },
