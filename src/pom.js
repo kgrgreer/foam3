@@ -823,6 +823,7 @@ foam.POM({
     { name: "foam/lib/Outputter",                                     flags: "js|java" },
     { name: "foam/lib/PropertyPredicate",                             flags: "js|java" },
     { name: "foam/lib/PermissionedPropertyPredicate",                 flags: "js|java" },
+    { name: "foam/lib/NotEntityTypePropertyPredicate",                flags: "js|java" },
     { name: "foam/lib/NetworkPropertyPredicate",                      flags: "js|java" },
     { name: "foam/lib/StorageOptionalPropertyPredicate",              flags: "js|java" },
     { name: "foam/lib/StoragePropertyPredicate",                      flags: "js|java" },
