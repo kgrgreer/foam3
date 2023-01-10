@@ -31,10 +31,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function(x) {
-        return this.name + " (" + this.oldValue + " => " + this.newValue + ")";
+        return this.name + " (" + this.oldValue + " -> " + this.newValue + ")";
       },
       javaCode: `
-        return getName() + " (" + this.getOldValue() + " => " + this.getNewValue() + ")";
+        return getName() + " (" + this.getOldValue() + " -> " + this.getNewValue() + ")";
       `
     }
   ]
