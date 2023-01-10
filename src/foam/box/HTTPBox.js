@@ -225,7 +225,7 @@ foam.CLASS({
         }).then((rmsg) => {
           rmsg && replyBox && replyBox.send(rmsg);
         }, function(r) {
-          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r, message: r.message }) }));
+          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r, message: r?.message }) }));
         });
       },
       swiftCode: `
