@@ -29,6 +29,10 @@ foam.CLASS({
     'data'
   ],
 
+  messages: [
+    { name: 'GENERAL_ERROR', message: 'Network Error, please check your connection and try again.' },
+  ],
+
   properties: [
     {
       class: 'String',
@@ -158,7 +162,7 @@ foam.CLASS({
         // throw resp;
         return Promise.reject(resp);
       }).catch( _ => {
-        throw new Error('Network Error, please check your connection and try again.');
+        throw new Error(this.GENERAL_ERROR);
       });
     },
 
