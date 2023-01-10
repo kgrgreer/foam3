@@ -50,17 +50,25 @@
     },
     {
       type: 'Int',
+      name: 'pageSize_',
+      // Used to prevent extra large datasets being requested as it caused chrome to crash
+      max: 1000,
+      factory: function() { return this.pageSize; },
+      documentation: 'The number of items in each "page". There are three pages.'
+    },
+    {
+      type: 'Int',
       name: 'pageSize',
       // Used to prevent extra large datasets being requested as it caused chrome to crash
       max: 1000,
-      value: 30,
+      value: 100,
       documentation: 'The number of items in each "page". There are three pages.'
     },
     {
       class: 'Int',
       name: 'numPages_',
-      expression: function(daoCount, pageSize) {
-        return Math.ceil(daoCount / pageSize);
+      expression: function(daoCount, pageSize_) {
+        return Math.ceil(daoCount / pageSize_);
       }
     },
     {
@@ -87,7 +95,7 @@
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
-        var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
+        var n1 = (n-(this.currentTopPage_*this.pageSize_))/this.pageSize_;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
         }
@@ -99,7 +107,7 @@
       documentation: 'Stores the index of last row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
-        var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
+        var n1 = (n-(this.currentTopPage_*this.pageSize_))/this.pageSize_;
         if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_++;
         }
@@ -184,11 +192,12 @@
       this.updateCount();
     },
 
-    function render() {
+    async function render() {
       var self = this;
       var resize = new ResizeObserver (this.checkPageSize_);
+      let root = await this.rootElement.el()
       let options = {
-        root: this.rootElement?.el_() ?? null,
+        root: root ?? null,
         rootMargin: `-${this.offsetTop}px 0px 0px`,
         threshold: [0.25, 0.5, 0.75]
       };
@@ -227,7 +236,7 @@
 
     function safeScroll(){
       if ( ! this.scrollToIndex ) return;
-      var page = Math.floor(this.scrollToIndex/this.pageSize);
+      var page = Math.floor(this.scrollToIndex/this.pageSize_);
       if ( this.renderedPages_[page] ) {
         var el = document.querySelector(`[data-idx='${this.scrollToIndex}']`);
         if ( ! el ) return;
@@ -271,7 +280,7 @@
       promise.then((values) => {
         let populateRows = function (args) {
           if ( values.array[i] === undefined ) return;
-          var index = (page*self.pageSize) + i + 1;
+          var index = (page*self.pageSize_) + i + 1;
           if ( self.groupBy ) {
             var group = self.groupBy.f(values.array[i]);
             if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
@@ -328,8 +337,12 @@
       isFramed: true,
       documentation: 'Ensure page size is always atleast as large as the displayedRowCount_',
       code: function () {
-        if (this.displayedRowCount_ > this.pageSize) {
-          this.pageSize = this.displayedRowCount_;
+        if ( this.displayedRowCount_ && this.displayedRowCount_ != this.pageSize_ ) {
+          if (  this.pageSize < this.displayedRowCount_) {
+            this.pageSize_ = this.displayedRowCount_;
+          } else {
+            this.pageSize_ = this.pageSize;
+          }
           this.refresh();
         }
       }
@@ -387,8 +400,8 @@
         for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++ ) {
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] || this.loadingPages_[page] ) continue;
-          var skip = page * this.pageSize;
-          var dao  = this.data.limit(this.pageSize).skip(skip);
+          var skip = page * this.pageSize_;
+          var dao  = this.data.limit(this.pageSize_).skip(skip);
           this.getPage(dao, page);
         }
       }
@@ -415,7 +428,7 @@
         });
 
         if ( ! self.bottomRow && self.displayedRowCount_ < 0 )
-          self.bottomRow = self.pageSize > entries.length ? entries.length : self.pageSize;
+          self.bottomRow = self.pageSize_ > entries.length ? entries.length : self.pageSize_;
       }
     }
   ],
