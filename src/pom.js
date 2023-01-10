@@ -933,6 +933,7 @@ foam.POM({
     { name: "foam/comics/v2/DAOSummaryView",                          flags: "js" },
     { name: "foam/comics/v2/DAOUpdateView",                           flags: "js" },
     { name: "foam/comics/v2/NamedViews",                              flags: "js|java" },
+    { name: "foam/comics/v2/Clickable",                               flags: "js|java" },
     { name: "foam/comics/v2/userfeedback/UserFeedbackAware",          flags: "js|java" },
     { name: "foam/comics/v2/userfeedback/UserFeedbackStatus",         flags: "js|java" },
     { name: "foam/comics/v2/userfeedback/UserFeedback",               flags: "js|java" },
