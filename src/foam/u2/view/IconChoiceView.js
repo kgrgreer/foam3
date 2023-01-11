@@ -101,9 +101,9 @@ foam.CLASS({
 
       this.removeAllChildren();
 
-      this.add(this.choices.map(function(c) {
+      this.choices.forEach(c => {
         var id = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
-        return this.E().
+        self.start().
           addClass(this.myClass('item')).
           start('input', {id: id}).
             attrs({
@@ -111,7 +111,6 @@ foam.CLASS({
               name: this.id,
               checked: self.slot(function(data) { return data === c[0]; })
             }).
-            setID(id = self.NEXT_ID()).
             on('change', function(evt) {
               self.data = c[0];
             }).
@@ -126,8 +125,9 @@ foam.CLASS({
               data: c[1],
               embedSVG: true
             }).
-          end();
-      }.bind(this)));
+          end().
+        end();
+      });
     }
   ]
 });
