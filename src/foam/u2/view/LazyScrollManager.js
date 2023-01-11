@@ -61,7 +61,7 @@
       name: 'pageSize',
       // Used to prevent extra large datasets being requested as it caused chrome to crash
       max: 1000,
-      value: 100,
+      value: 50,
       documentation: 'The number of items in each "page". There are three pages.'
     },
     {
@@ -108,7 +108,7 @@
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
         var n1 = (n-(this.currentTopPage_*this.pageSize_))/this.pageSize_;
-        if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
+        if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 2 && n1%1 >= this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_++;
         }
       }
@@ -118,7 +118,7 @@
       name: 'displayedRowCount_',
       documentation: 'Stores the number of rows that are currently displayed in the div height',
       expression: function(topRow, bottomRow) {
-        return bottomRow - topRow;
+        return topRow && bottomRow ? bottomRow - topRow : 0;
       }
     },
     {
