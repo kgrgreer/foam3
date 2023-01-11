@@ -14,10 +14,6 @@ foam.CLASS({
   `,
 
   css: `
-    ^ {
-      display: flex;
-    }
-
     ^item {
       display: flex;
     }
@@ -26,12 +22,8 @@ foam.CLASS({
       display: none;
     }
 
-    ^ label {
-      cursor: pointer;
-      line-height: 48px;
-    }
-
     ^ {
+      display: flex;
       background-color: $primary50;
       border-radius: 4px;
       display: flex;
@@ -42,6 +34,8 @@ foam.CLASS({
     }
 
     ^label {
+      cursor: pointer;
+      line-height: 48px;
       align-items: center;
       background: none;
       border-radius: 4px;
@@ -52,7 +46,7 @@ foam.CLASS({
       padding: 7px 12px;
     }
 
-    ^label svg path{
+    ^label svg path {
       fill: $primary400;
     }
 
@@ -104,11 +98,11 @@ foam.CLASS({
       this.choices.forEach(c => {
         var id = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
         self.start().
-          addClass(this.myClass('item')).
+          addClass(self.myClass('item')).
           start('input', {id: id}).
             attrs({
               type: 'radio',
-              name: this.id,
+              name: id,
               checked: self.slot(function(data) { return data === c[0]; })
             }).
             on('change', function(evt) {
@@ -116,9 +110,9 @@ foam.CLASS({
             }).
           end().
           start('label', { tooltip: c[2] }).
-            addClass(this.myClass('label')).
+            addClass(self.myClass('label')).
             // this should be called selected
-            enableClass(this.myClass('disabled-icon'), self.slot(function(data) { return data === c[0] })).
+            enableClass(self.myClass('disabled-icon'), self.slot(function(data) { return data === c[0] })).
             attrs({for: id}).
             tag({
               class: 'foam.u2.tag.Image',
