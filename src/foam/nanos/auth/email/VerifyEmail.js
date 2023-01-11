@@ -143,7 +143,7 @@
       },
       code: async function() {
         try {
-          var user = this.checkUser();
+          var user = await this.checkUser();
           if ( this.verifyByCode ) {
             await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
             instructionTitle = this.CODE_INSTRUC_TITLE;
