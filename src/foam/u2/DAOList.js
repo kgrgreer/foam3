@@ -31,6 +31,13 @@ foam.CLASS({
   ],
 
   css: `
+  ^ {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 100%;
+  }
   ^wrapper{
     /*Scroll*/
     flex: 1;
@@ -51,9 +58,6 @@ foam.CLASS({
     max-height: 56px;
     padding: 16px 24px;
     width: 100%;
-    position: absolute;
-    display: flex;
-    bottom: 0;
   }
   ^buttons svg{
     width: 1em;
@@ -140,6 +144,12 @@ foam.CLASS({
 
     mixins: ['foam.comics.v2.Clickable'],
 
+    css: `
+      ^ {
+        min-height: 20px;
+      }
+    `,
+
     properties: [
       {
         class: 'foam.u2.ViewSpec',
@@ -151,6 +161,7 @@ foam.CLASS({
       function render() {
         var self = this;
         this.start(this.rowView, { data: this.data }) 
+          .addClass(this.myClass())
           .call(this.insertClick.bind(self), [this.data])
         .end()
       }
