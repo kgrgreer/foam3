@@ -31,8 +31,6 @@ foam.CLASS({
       line-height: 48px;
     }
 
-
-
     ^ {
       background-color: $primary50;
       border-radius: 4px;
@@ -42,33 +40,39 @@ foam.CLASS({
       overflow-x: auto;
       white-space: nowrap;
     }
+
     ^label {
       align-items: center;
       background: none;
       border-radius: 4px;
       color: $primary400;
-      
+
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
+
     ^label svg path{
       fill: $primary400;
     }
+
     ^label:hover {
       background: $primary700;
       color: $white;
       cursor: pointer;
     }
+
     ^label:hover svg path{
       fill: $white;
     }
+
     ^label^disabled-icon {
       background: $primary400;
       color: $white;
       fill: $white;
       font-weight: 600;
     }
+
     ^label^disabled-icon svg path {
       fill: $white;
     }
@@ -94,14 +98,14 @@ foam.CLASS({
   listeners: [
     function onChoicesUpdate() {
       var self = this;
-      var id;
 
       this.removeAllChildren();
 
       this.add(this.choices.map(function(c) {
+        var id = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
         return this.E().
           addClass(this.myClass('item')).
-          start('input').
+          start('input', {id: id}).
             attrs({
               type: 'radio',
               name: this.id,
@@ -116,13 +120,12 @@ foam.CLASS({
             addClass(this.myClass('label')).
             // this should be called selected
             enableClass(this.myClass('disabled-icon'), self.slot(function(data) { return data === c[0] })).
-            attrs({ for: id }).
-            start({
-                class: 'foam.u2.tag.Image',
-                data: c[1],
-                embedSVG: true
-              }).
-            end().
+            attrs({for: id}).
+            tag({
+              class: 'foam.u2.tag.Image',
+              data: c[1],
+              embedSVG: true
+            }).
           end();
       }.bind(this)));
     }
