@@ -88,6 +88,9 @@ foam.CLASS({
       class: 'String',
       storageTransient: true,
       visibility: 'RO',
+      getter: function() {
+        return this.getTranslation();
+      },
       javaGetter: `
         // Return non-translated template rendered exceptionMessage
         return renderMessage(getExceptionMessage());
@@ -125,7 +128,7 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
-        if ( ! this.translationService ) return msg;
+        if ( ! this.translationService ) return this.exceptionMessage;
         var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
         let m = this.getTemplateValues();
         for ( let [key, value] of m.entries() ) {

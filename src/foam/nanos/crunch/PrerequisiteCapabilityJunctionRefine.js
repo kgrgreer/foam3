@@ -40,6 +40,7 @@ foam.CLASS({
           ]
         };
       },
+      projectionSafe: false,
       tableCellFormatter: function(value, obj, _) {
         this.__subContext__.capabilityDAO
           .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
@@ -71,6 +72,7 @@ foam.CLASS({
           ]
         };
       },
+      projectionSafe: false,
       tableCellFormatter: function(value, obj, _) {
         this.__subContext__.capabilityDAO
           .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))

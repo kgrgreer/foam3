@@ -78,6 +78,7 @@ foam.CLASS({
       name: 'createdBy',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -93,6 +94,7 @@ foam.CLASS({
       name: 'createdByAgent',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -113,6 +115,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -127,6 +130,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {

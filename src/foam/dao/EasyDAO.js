@@ -370,6 +370,9 @@ foam.CLASS({
             ( delegate instanceof ProxyDAO ) )
             delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);
 
+        if ( getOm() )
+          delegate = new foam.nanos.om.DAOOMLogger.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
+
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
@@ -577,6 +580,10 @@ foam.CLASS({
       documentation: 'Enable time tracking for concurrent DAO operations',
       class: 'Boolean',
       name: 'timing'
+    },
+    {
+      class: 'Boolean',
+      name: 'om'
     },
     {
       class: 'Boolean',

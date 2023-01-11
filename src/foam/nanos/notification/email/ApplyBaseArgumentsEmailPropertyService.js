@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.notification.email',
   name: 'ApplyBaseArgumentsEmailPropertyService',
 
@@ -92,6 +92,14 @@
         templateArgs.put("privacyUrl", url + appConfig.getPrivacyUrl());
         templateArgs.put("privacyLabel", appConfig.getPrivacy());
 
+        // Temporary color until token support is added for email
+        templateArgs.put("theme.primary1", theme.getPrimary1());
+        templateArgs.put("theme.primary2", theme.getPrimary2());
+        templateArgs.put("theme.primary3", theme.getPrimary3());
+        templateArgs.put("theme.primary4", theme.getPrimary4());
+        templateArgs.put("theme.primary5", theme.getPrimary5());
+        templateArgs.put("theme.white", theme.getWhite());
+        templateArgs.put("theme.black", theme.getBlack());
 
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());
