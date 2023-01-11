@@ -129,6 +129,10 @@ foam.CLASS({
         sectionIndex: 0
       })
       wizardController.wizardPosition = pos;
+
+      if ( ! wizardController.currentWizardlet.isVisible ) {
+        wizardController.next();
+      }
     }
   ]
 })
