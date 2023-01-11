@@ -8,6 +8,10 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'Clickable',
 
+  documentation: `A mixin class that allows any collectionView (tables, lists, grids etc) 
+                  to implement default click and dblclick behaviour from the DAOController. 
+                  Also adds event escape handling for inputs`,
+
   imports: [
     'click?',
     'config?',
@@ -31,9 +35,7 @@ foam.CLASS({
           self.click.call(self, null, idObj.id);
         });
       });
-    }
-  ],
-  listeners: [
+    },
     {
       name: 'shouldEscapeEvts',
       documentation: `Use this function to skip clicks/doubleclicks on table
