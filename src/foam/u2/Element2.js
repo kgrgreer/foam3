@@ -42,7 +42,10 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
-  - NEXT_ID() removed. Use new Object().$UID instead.
+  - NEXT_ID() removed. Use new Object().$UID instead. (all done)
+  - SVG tages need to be added to SVG_TAGS
+  - onAddChildren() no longer supported
+
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -103,13 +106,19 @@ foam.CLASS({
   name: 'SlotNode',
   extends: 'foam.u2.Node',
 
+  // TODO: store the proxy node instead of element_ so it can be properly detached
+
   properties: [
     'slot',
+    {
+      name: 'node',
+      factory: function() { return foam.u2.Text.create({text: 'filler'}, this); }
+    },
     {
       name: 'element_',
       // Create a placeholder to insert into the right location, to be replaced
       // by slot value.
-      factory: function() { return this.document.createTextNode(''); }
+      getter: function() { return this.node.element_; }
     }
   ],
 
@@ -117,6 +126,10 @@ foam.CLASS({
     function load() {
       this.slot.sub(this.update);
       this.update();
+    },
+
+    function style(map) {
+      this.node.style && this.node.style(map);
     }
   ],
 
@@ -125,26 +138,31 @@ foam.CLASS({
       name: 'update',
 //      isFramed: true,
       code: function() {
-        var update_ = (val) => {
-          var e;
+        var update_ = val => {
+          var n;
+
           if ( val === undefined || val === null ) {
-            e = foam.u2.Text.create({}, this);
+            n = foam.u2.Text.create({}, this);
           } else if ( this.isLiteral(val) ) {
-            e = foam.u2.Text.create({text: val}, this);
+            n = foam.u2.Text.create({text: val}, this);
           } else if ( foam.u2.Element.isInstance(val) ) {
-            e = val;
+            n = val;
           } else if ( foam.Array.isInstance(val) ) {
-            e = foam.u2.Element.create({nodeName:'span'}, this);
-            e.add.apply(e, val);
+            n = foam.u2.Element.create({nodeName:'span'}, this);
+            n.add.apply(n, val);
           } else if ( val.then ) {
-            val.then(e => update_(e));
+            val.then(n => update_(n));
             return;
           } else {
             console.log('Unknown slot type: ', typeof val);
             debugger;
           }
-          this.element_.parentNode.replaceChild(e.element_, this.element_);
-          this.element_ = e.element_;
+
+          this.element_.parentNode.replaceChild(n.element_, this.element_);
+          n.load && n.load();
+          var old = this.node;
+          this.node = n;
+          old.detach();
         };
 
         update_(this.slot.get());
@@ -415,7 +433,7 @@ foam.CLASS({
     // ???: alternatively, there could be a sub-class of Element called SVGElement
     {
       name: 'SVG_TAGS',
-      value: { svg: true, g: true, rect: true, path: true }
+      value: { svg: true, g: true, rect: true, path: true, circle: true }
     }
   ],
 
@@ -585,16 +603,20 @@ foam.CLASS({
     },
 
     function load() {
+      // Needed for OverlayDropdown which overrides add(), but shouldn't.
+      // TODO: Fix OverlayDropdown to use content$ and then remove this.
+      var customAdd = this.add != foam.u2.Element.prototype.add;
       // disable adding to content$ during render()
-      this.add = function() { return this.add_(arguments, this); }
+      if ( ! customAdd ) this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      this.add = foam.u2.Element.prototype.add;
+      if ( ! customAdd ) this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
       // to document yet, then that doesn't work, so try again now.
       if ( this.focused ) this.element_.focus();
     },
+
     function remove() {
       if ( this.parentNode ) {
         // parent will remove from DOM and detach
@@ -603,16 +625,6 @@ foam.CLASS({
         this.element_.remove();
         this.detach();
       }
-    },
-    function onReplaceChild(oldE, newE) {
-      var e = this.el_();
-      if ( ! e ) {
-        console.warn('Missing Element: ', this.id);
-        return;
-      }
-      // TODO
-      oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
-      newE.load && newE.load();
     },
 
     function getBoundingClientRect() {
@@ -936,7 +948,10 @@ foam.CLASS({
         if ( cs[i] === oldE ) {
           cs[i] = newE;
           newE.parentNode = this;
-          this.onReplaceChild.call(this, oldE, newE);
+          debugger;
+          oldE.element_.parentNode.replaceChild(oldE.element_, newE.element_);
+//          oldE.element_.outerHTML = '<' + this.nodeName + '></' + this.nodeName + '>';
+          newE.load && newE.load();
           oldE.remove();
           return;
         }
@@ -951,7 +966,6 @@ foam.CLASS({
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
-      debugger;
       var ls = this.elListeners;
       for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
