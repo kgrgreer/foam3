@@ -43,7 +43,6 @@ PORTING U2 to U3:
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
   - NEXT_ID() removed. Use new Object().$UID instead. (all done)
-  - SVG tages need to be added to SVG_TAGS
   - onAddChildren() no longer supported
 
 
@@ -384,6 +383,10 @@ foam.CLASS({
     'translationService?'
   ],
 
+  exports: [
+    'namespace'
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -429,11 +432,6 @@ foam.CLASS({
         '39': 'right',
         '40': 'down'
       }
-    },
-    // ???: alternatively, there could be a sub-class of Element called SVGElement
-    {
-      name: 'SVG_TAGS',
-      value: { svg: true, g: true, rect: true, path: true, circle: true }
     }
   ],
 
@@ -448,8 +446,8 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        var ret = this.SVG_TAGS[this.nodeName] ?
-          this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
+        var ret = this.namespace ?
+          this.document.createElementNS(this.namespace, this.nodeName) :
           this.document.createElement(this.nodeName);
         if ( this.hasOwnProperty('id') ) ret.id = this.id;
         return ret;
@@ -519,6 +517,13 @@ foam.CLASS({
       name: 'nodeName',
       adapt: function(_, v) { return foam.String.toLowerCase(v); },
       value: 'div'
+    },
+    {
+      class: 'String',
+      name: 'namespace',
+      factory: function() {
+        return this.__context__['namespace'] || this.nodeName === 'svg' ? 'http://www.w3.org/2000/svg' : '';
+      }
     },
     {
       name: 'classes',
