@@ -175,6 +175,9 @@ foam.CLASS({
       label: 'Resend Code',
       section: 'verificationCodeSection',
       buttonStyle: 'LINK',
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
+      },
       code: async function() {
         try {
           await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
