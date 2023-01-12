@@ -23,8 +23,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function init () {
-      this.callback && this.callback();
+    async function init () {
+      this.callback && await this.callback();
       this.wizardController.next();
     }
   ]
