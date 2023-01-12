@@ -64,7 +64,6 @@ foam.CLASS({
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
-        this.progressMax = n?.length;
       }
     },
     {
@@ -84,7 +83,7 @@ foam.CLASS({
         });
       },
       preSet: function(o, n) {
-        if ( n?.wizardletIndex != o?.wizardletIndex )
+        if ( n?.wizardletIndex > o?.wizardletIndex )
           this.wizardlets[n.wizardletIndex].load({});
         return n;
       },
@@ -93,7 +92,8 @@ foam.CLASS({
           this.wizardlets[o.wizardletIndex].isCurrent = false;
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
-        this.progressValue = n?.wizardletIndex;
+        let a = this.wizardlets.slice(0, n?.wizardletIndex + 1);
+        this.progressValue = a.filter(v => v.isVisible).length;
         this.activePosition = n;
       }
     },
@@ -254,6 +254,11 @@ foam.CLASS({
         var isAvailable$ = w.isAvailable$;
         this.wsub.onDetach(isAvailable$.sub(() => {
           this.onWizardletAvailability(wizardletIndex, isAvailable$.get());
+        }));
+
+        var isVisible$ = w.isVisible$;
+        this.wsub.onDetach(isVisible$.sub(() => {
+          this.onWizardletVisibility();
         }));
 
         // Bind availability listener for each wizardlet section
@@ -525,6 +530,14 @@ foam.CLASS({
         if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
+      },
+    },
+    {
+      name: 'onWizardletVisibility',
+      framed: true,
+      code: function() {
+        // Force a position update so views recalculate state
+        this.progressMax = this.wizardlets?.filter(v => v.isVisible).length;
       },
     },
     function onWizardletValidity() {
