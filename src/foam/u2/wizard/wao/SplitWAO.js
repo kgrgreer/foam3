@@ -60,7 +60,7 @@ foam.CLASS({
       // temp workaround until daosaver is implemented
       try {
         if ( this.NullSaver.isInstance(saver) && this.delegate ) {
-          await this.delegate.save(wizardlet);
+        // No-op handled in finally
         } else {
           if ( wizardlet.loading ) return;
           if ( ! wizardlet.isAvailable ) return;
@@ -68,6 +68,7 @@ foam.CLASS({
           await saver.save(wizardlet.data);
         }
       } finally {
+        await this.delegate.save(wizardlet);
         wizardlet.loading = false;
       }
     }

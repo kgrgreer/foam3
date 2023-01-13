@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'InlineTransientSaver',
-  implements: [ 'foam.u2.wizard.data.Saver' ],
+  extends: 'foam.u2.wizard.data.ProxySaver',
   documentation: `
     This saver invokes an inline wizard based on the root capability for a
     transient wizard (a Capable wizard where the Capable object is disposed).
@@ -76,7 +76,7 @@ foam.CLASS({
           { put: false },
           subX, this.sequenceExtras
         );
-        return;
+        return await this.delegate.save(data);
       }
 
       if ( this.Capable.isInstance(root) ) {
@@ -91,9 +91,9 @@ foam.CLASS({
           );
         }
 
-        return;
+        return await this.delegate.save(data);
       }
-
+      await this.delegate.save(data);
       throw new Error('could not instantiate a wizard from this object:', root);
     }
   ]
