@@ -6,7 +6,7 @@
 foam.CLASS({
   package: 'foam.box',
   name: 'HTTPException',
-  extends: [ 'foam.core.FOAMException' ],
+  extends: 'foam.core.FOAMException',
   properties: [
     'response'
   ]
