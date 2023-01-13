@@ -41,6 +41,7 @@
       var action = this.AlternateFlowAction.create({ alternateFlow: this.alternateFlow });
       var x = this.__subContext__.createSubContext({ data: this.wizardController });
       action.maybeCall(x, this.wizardController);
+      return this.delegate.save.call(this, arguments);
     }
   ]
 });

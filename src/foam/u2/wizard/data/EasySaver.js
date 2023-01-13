@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'EasySaver',
-  implements: ['foam.u2.wizard.data.Saver'],
+  extends: 'foam.u2.wizard.data.ProxySaver',
 
   properties: [
     {
@@ -16,8 +16,10 @@
       name: 'savers',
       postSet: function(_, n) {
         if ( n.length < 2 ) return;
-        for ( let i = 1 ; i < n.length ; i++ ) {
-          n[i].delegate = n[i-1];
+        for ( let i = 0; i < n.length - 1; i++ ) {
+          if ( ! foam.u2.wizard.data.ProxySaver.isInstance(n[i]) )
+            console.log('Savers inside EasySaver must extend ProxySaver');
+          n[i].delegate = n[i+1];
         }
       }
     }
@@ -25,10 +27,9 @@
 
   methods: [
     async function save(data) {
-      for ( let i = 0 ; i < this.savers.length ; i++ ) {
-        await this.savers[i].save(data);
-      }
-      return;
+      if ( ! this.savers[this.savers.length-1].delegate )
+        this.savers[this.savers.length-1].delegate = this.delegate;
+      return await this.savers[0].save(data);
     }
   ]
 });
