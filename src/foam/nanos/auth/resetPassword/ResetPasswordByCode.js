@@ -127,7 +127,7 @@ foam.CLASS({
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
           this.codeVerified = verified;
 
-          // [NP-8692] Clear new/confirmation passwords after the reset password
+          // Clear new/confirmation passwords after the reset password
           // code is verified and user must re-enter the password fields.
           if ( this.codeVerified ) {
             this.clearProperty('newPassword');
