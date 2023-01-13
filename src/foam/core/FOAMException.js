@@ -186,7 +186,9 @@ foam.CLASS({
         var m = new Map();
         var ps = this.cls_.getAxiomsByClass(foam.core.Property);
         for ( var i = 0, property; property = ps[i]; i++ ) {
-          if ( ! property.externalTransient ) {
+          if ( ! property.externalTransient && property.name != 'message' ) {
+            // this.message is what we want to set, so ignoring in map
+            // also causes an infinit loop since it's message that calls this function
             m.set('{{'+property.name+'}}', this[property.name] || '');
           }
         }
