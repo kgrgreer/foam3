@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'UserCapabilityJunctionSaver',
-  implements: [ 'foam.u2.wizard.data.Saver' ],
+  extends: 'foam.u2.wizard.data.ProxySaver',
 
   documentation: `
     Will save ucj data from wizardlets
@@ -16,8 +16,17 @@ foam.CLASS({
   imports: [
     'crunchService',
     'subject',
-    'wizardletId',
+    'wizardletId as importedWizardletId',
     'wizardlets'
+  ],
+
+  properties: [
+    {
+      name: 'wizardletId',
+      factory: function() {
+        return this.importedWizardletId;
+      }
+    }
   ],
 
 
@@ -33,6 +42,7 @@ foam.CLASS({
       await p.then(ucj => {
         wizardlet.status = ucj.status;
       }).catch(e => console.debug(e) );
+      await this.delegate.save(data);
     }
   ]
 });

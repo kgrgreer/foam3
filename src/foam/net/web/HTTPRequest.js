@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'GENERAL_ERROR', message: 'Network Error, please check your connection and try again.' },
+    { name: 'GENERAL_ERROR', message: 'Network Error, please check your connection and try again.' }
   ],
 
   properties: [

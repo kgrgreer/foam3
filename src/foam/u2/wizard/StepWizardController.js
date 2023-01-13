@@ -83,7 +83,7 @@ foam.CLASS({
         });
       },
       preSet: function(o, n) {
-        if ( n?.wizardletIndex > o?.wizardletIndex )
+        if ( n?.wizardletIndex != o?.wizardletIndex )
           this.wizardlets[n.wizardletIndex].load({});
         return n;
       },

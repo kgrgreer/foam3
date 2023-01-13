@@ -126,6 +126,13 @@ foam.CLASS({
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
           this.codeVerified = verified;
+
+          // Clear new/confirmation passwords after the reset password
+          // code is verified and user must re-enter the password fields.
+          if ( this.codeVerified ) {
+            this.clearProperty('newPassword');
+            this.clearProperty('confirmationPassword');
+          }
         } catch (error) {
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
@@ -175,6 +182,9 @@ foam.CLASS({
       label: 'Resend Code',
       section: 'verificationCodeSection',
       buttonStyle: 'LINK',
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
+      },
       code: async function() {
         try {
           await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
