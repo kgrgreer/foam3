@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * Copyright 2023 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -30,7 +30,6 @@ foam.CLASS({
       code: foam.u2.wizard.AlternateFlow.getAxiomByName('execute').code
     },
     function execute (x) {
-      console.log('what is this', this);
       if ( this.enableAnalytics && this.analyticsAgent ) {
         const analyticsEvent = {
           name: `AlternateFlow_${this.analyticsName}`,
