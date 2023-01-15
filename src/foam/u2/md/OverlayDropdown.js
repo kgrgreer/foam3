@@ -115,9 +115,9 @@ foam.CLASS({
 
     function open(x, y) {
       var screenWidth  = this.window.innerWidth;
-      var domRect       = this.parentEl.getBoundingClientRect();
-      var screenHeight  = this.window.innerHeight;
-      var scrollY       = this.window.scrollY;
+      var domRect      = this.parentEl.getBoundingClientRect();
+      var screenHeight = this.window.innerHeight;
+      var scrollY      = this.window.scrollY;
       if ( domRect.top - scrollY < screenHeight / 2 ) {
         this.top = y; this.bottom = 'auto';
       } else {
