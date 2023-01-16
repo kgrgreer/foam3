@@ -429,20 +429,7 @@ foam.CLASS({
         }
         if ( ! nextWizardlet ) break;
 
-        try {
-          debugLog('loading wizardlet', nextPosition, {
-            wizardlet: nextWizardlet
-          });
-          await nextWizardlet.load();
-        } catch (e) {
-          let { exception, hint } = await nextWizardlet.handleException(
-            this.WizardEventType.WIZARDLET_LOAD, e
-          );
-
-          if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
-            throw this.lastException = exception || e;
-          }
-        }
+        await this.tryWizardletLoad(nextWizardlet, nextPosition);
 
         if ( this.canLandOn(nextPosition) ) {
           console.debug(`%clanding: %c${nextPosition && nextPosition.toSummary()}`,
@@ -465,6 +452,22 @@ foam.CLASS({
       // }
       this.status = this.WizardStatus.COMPLETED;
       return true;
+    },
+    async function tryWizardletLoad(wizardlet, wizardletPosition) {
+      try {
+        this.debugLog('loading wizardlet', wizardletPosition, {
+          wizardlet: wizardlet
+        });
+        await wizardlet.load();
+      } catch (e) {
+        let { exception, hint } = await wizardlet.handleException(
+          this.WizardEventType.WIZARDLET_LOAD, e
+        );
+
+        if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+          throw this.lastException = exception || e;
+        }
+      }
     },
     function back() {
       let previousScreen = this.previousScreen;

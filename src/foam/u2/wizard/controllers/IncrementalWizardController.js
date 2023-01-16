@@ -146,6 +146,7 @@ foam.CLASS({
     async function setFirstPosition() {
       // Auto-next if first wizardlet is invisible
       if ( ! this.data.canLandOn(this.data.wizardPosition) ) {
+        await this.data.tryWizardletLoad(this.data.currentWizardlet, this.data.wizardPosition);
         await this.data.next();
       }
     }
