@@ -22,22 +22,22 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'wizardletId',
-      factory: function() {
-        return this.importedWizardletId;
-      }
+      class: 'String',
+      name: 'wizardletId'
     }
   ],
 
 
   methods: [
     async function save(data) {
-      const wizardlet = await this.wizardlets.find(w => w.id === this.wizardletId);
+      let useId = this.wizardletId || this.importedWizardletId;
+      const wizardlet = await this.wizardlets.find(w => w.id === useId);
+      let useData = this.wizardletId ? wizardlet.data : data;
       let p = this.subject ? this.crunchService.updateJunctionFor(
-        null, this.wizardletId, data, null,
+        null, this.wizardletId, useData, null,
         this.subject.user, this.subject.realUser
       ) : this.crunchService.updateJunction(null,
-        this.wizardletId, data, null
+        this.wizardletId, useData, null
       );
       await p.then(ucj => {
         wizardlet.status = ucj.status;
