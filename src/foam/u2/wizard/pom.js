@@ -91,6 +91,7 @@ foam.POM({
     { name: "data/InlineTransientSaver",               flags: "web" },
     { name: "data/LoaderInjectorSaver",                flags: "web" },
     { name: "data/UserCapabilityJunctionSaver",        flags: "web" },
+    { name: "data/UserLoader",                         flags: "web" },
     { name: "data/UserCapabilityJunctionLoader",       flags: "web" },
     { name: "data/EasySaver",                          flags: "web" },
     { name: "data/MapLoader",                          flags: "web" },
@@ -125,6 +126,7 @@ foam.POM({
     { name: "wizardlet/FlowAgentWizardlet",            flags: "web" },
     { name: "wizardlet/DAOWizardlet",                  flags: "web" },
     { name: "wizardlet/FacadeCapabilityWizardlet",     flags: "web" },
-    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" }
+    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" },
+
   ]
 });
