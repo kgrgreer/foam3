@@ -34,10 +34,10 @@ foam.CLASS({
       const wizardlet = await this.wizardlets.find(w => w.id === useId);
       let useData = this.wizardletId ? wizardlet.data : data;
       let p = this.subject ? this.crunchService.updateJunctionFor(
-        null, this.wizardletId, useData, null,
+        null, useId, useData, null,
         this.subject.user, this.subject.realUser
       ) : this.crunchService.updateJunction(null,
-        this.wizardletId, useData, null
+        useId, useData, null
       );
       await p.then(ucj => {
         wizardlet.status = ucj.status;
