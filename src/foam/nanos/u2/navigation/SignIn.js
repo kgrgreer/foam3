@@ -71,6 +71,11 @@ foam.CLASS({
       }
     },
     {
+      flags: ['web'],
+      name: 'email',
+      hidden: true
+    },
+    {
       class: 'Boolean',
       name: 'usernameRequired',
       hidden: true
@@ -217,6 +222,7 @@ foam.CLASS({
                   }
                 }
                 this.usernameRequired = true;
+                this.email = this.identifier;
               }
               this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
