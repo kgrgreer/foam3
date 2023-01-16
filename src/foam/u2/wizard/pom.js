@@ -126,7 +126,6 @@ foam.POM({
     { name: "wizardlet/FlowAgentWizardlet",            flags: "web" },
     { name: "wizardlet/DAOWizardlet",                  flags: "web" },
     { name: "wizardlet/FacadeCapabilityWizardlet",     flags: "web" },
-    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" },
-
+    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" }
   ]
 });
