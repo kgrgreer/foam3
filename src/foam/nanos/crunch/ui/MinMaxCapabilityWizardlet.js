@@ -306,5 +306,19 @@ foam.CLASS({
       }
       return false;
     },
+  ],
+  listeners: [
+    {
+      name: 'onReady',
+      documentation: 'If one choice available skip the wizardlet',
+      code: function() {
+        const choiceWizardlets = this.choiceWizardlets;
+        if ( choiceWizardlets.length === 1 ) {
+          choiceWizardlets[0].isAvailable = true;
+          this.data.selectedData = [choiceWizardlets[0].capability.id];
+          this.isVisible = false;
+        }
+      }
+    }
   ]
 });
