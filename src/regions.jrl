@@ -1096,7 +1096,6 @@ p({class:"foam.nanos.auth.Region",code:"IL-TA","isoCode":"TA",name:"Tel Aviv",co
 p({class:"foam.nanos.auth.Region",code:"IL-JM","isoCode":"JM",name:"Yerushalayim",countryId:"IL","alternativeNames":["Al Quds","El Quds"]})
 
 //Pakistan
-p({class:"foam.nanos.auth.Region",code:"PK-IS","isoCode":"IS",name:"Islamabad",countryId:"PK","alternativeNames":["Islāmābād"]})
 p({class:"foam.nanos.auth.Region",code:"PK-BA","isoCode":"BA",name:"Balochistan",countryId:"PK","alternativeNames":["Balōchistān"]})
 p({class:"foam.nanos.auth.Region",code:"PK-KP","isoCode":"KP",name:"Khyber Pakhtunkhwa",countryId:"PK","alternativeNames":["Khaībar Pakhtūnkhwā"]})
 p({class:"foam.nanos.auth.Region",code:"PK-PB","isoCode":"PB",name:"Punjab",countryId:"PK","alternativeNames":["Panjāb"]})
