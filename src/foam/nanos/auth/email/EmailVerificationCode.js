@@ -178,8 +178,8 @@ foam.CLASS({
     },
     {
       name: 'resendCode',
-      isAvailable: function(showAction) {
-        return showAction;
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
       },
       buttonStyle: 'LINK',
       code: async function() {
