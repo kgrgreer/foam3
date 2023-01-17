@@ -6,23 +6,17 @@
 
 foam.CLASS({
   package: 'foam.nanos.notification.email.test',
-  name: 'MockSMTPEmailService',
-  extends: 'foam.nanos.notification.email.SMTPEmailService',
+  name: 'MockSMTPAgent',
+  extends: 'foam.nanos.notification.email.SMTPAgent',
 
   javaImports: [
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailServiceConfig',
     'foam.nanos.notification.email.Status',
     'javax.mail.Session', // satisfy javagen/compilation
     'javax.mail.Transport' // satisfy javagen/compilation
-  ],
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'rateLimit',
-      value: 2
-    }
   ],
 
   methods: [
@@ -33,7 +27,17 @@ foam.CLASS({
       `
     },
     {
-      name: 'sendEmail',
+      name: 'sleep',
+      args: 'Long interval',
+      javaCode: `
+      // don't let test continue after first rate limit
+      EmailServiceConfig config = (EmailServiceConfig) findId(getX()).fclone();
+      config.setEnabled(false);
+      ((DAO) getX().get("emailServiceConfigDAO")).put(config);
+      `
+    },
+    {
+      name: 'send',
       javaCode: `
         emailMessage = (EmailMessage) emailMessage.fclone();
         emailMessage.setStatus(Status.SENT);
