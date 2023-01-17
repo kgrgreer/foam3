@@ -74,6 +74,7 @@ foam.POM({
     { name: "data/CapableSaver",                           flags: "web" },
     { name: "data/ExecuteActionsSaver",                flags: "web" },
     { name: "data/AlternateFlowSaver",                 flags: "web" },
+    { name: "data/AnalyticsSaver",                     flags: "web" },
     { name: "data/ErrorSaver",                         flags: "web" },
     { name: "data/ArrayWrapSaver",                     flags: "web" },
     { name: "data/WrapSaver",                          flags: "web" },

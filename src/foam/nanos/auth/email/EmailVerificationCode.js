@@ -10,6 +10,7 @@ foam.CLASS({
   ids: [ 'email', 'userName' ],
 
   mixins: [
+    'foam.nanos.analytics.Analyticable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
@@ -130,8 +131,13 @@ foam.CLASS({
 
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
+          this.report('^verify-success', ['email-verification']);
+          this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
         } catch (error) {
+          this.report('^verify-failure', ['email-verification'], {
+            errorAsString: error.toString()
+          });
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
