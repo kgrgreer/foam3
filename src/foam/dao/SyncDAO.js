@@ -168,7 +168,6 @@ foam.CLASS({
     },
 
     function validate() {
-      this.SUPER();
       if ( ! this.VersionTrait.isSubClass(this.of) ) {
         throw new Error(`SyncDAO.of must have trait foam.version.VersionTrait`);
       }
