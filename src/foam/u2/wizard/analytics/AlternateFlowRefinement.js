@@ -36,7 +36,7 @@ foam.CLASS({
           tags: ['wizard']
         };
         this.analyticsAgent.pub('event', analyticsEvent);
-      } else {
+      } else if ( this.enableAnalytics ) {
         console.warn(
           'analytics is on for this AlternateFlow, but analytics is disabled',
           this
