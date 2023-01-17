@@ -37,18 +37,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"email",
-  "serviceScript":"""
-    import foam.nanos.notification.email.EmailService;
-    import foam.nanos.notification.email.ProxyEmailService;;
-    return new ProxyEmailService.Builder(x)
-      .setDelegate((EmailService) x.get("smtpEmailService"))
-      .build();
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"localEmailMessageDAO",
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
@@ -107,46 +95,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"SMTPConfig",
-  "description":"deprecated, configuration replace by SMTPEmailService",
-  "lazy": false,
-  "service":{"class":"foam.nanos.notification.email.SMTPConfig"}
-})
-
-p({
-  class:"foam.nanos.boot.NSpec",
-  name:"smtpEmailService",
-  lazy: false,
-  service:{
-    class:"foam.nanos.notification.email.SMTPEmailService"
-  }
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "resendNotificationService",
-  "serve": true,
-  "authenticate": true,
-  "boxClass":"foam.nanos.notification.ResendNotificationServiceInterfaceSkeleton",
-  "serviceClass": "foam.nanos.notification.ResendNotificationService",
-  "client":
-    """
-      {
-        "class":"foam.nanos.notification.ClientResendNotificationService",
-        "delegate": {
-          "class":"foam.box.SessionClientBox",
-          "delegate": {
-            "class":"foam.box.HTTPBox",
-            "url":
-            "service/resendNotificationService"
-          }
-        }
-      }
-    """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"emailConfigDAO",
   "lazy":false,
   "serve":true,
@@ -159,4 +107,49 @@ p({
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailConfig\"}"
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"emailServiceConfigDAO",
+  serve:true,
+  serviceScript:"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailServiceConfig.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("emailServiceConfig")
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.notification.email.EmailServiceConfig\"}"
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"smtpAgent",
+  lazy: false,
+  service:{
+    class:"foam.nanos.notification.email.SMTPAgent",
+    id: 'default'
+  }
+})
+
+// Example
+// p({
+//   class:"foam.nanos.boot.NSpec",
+//   name:"emailFolderAgent",
+//   lazy: false,
+//   service:{
+//     class:"foam.nanos.notification.email.EmailFolderAgent",
+//     id: 'default'
+//   }
+// })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"pop3",
+  "lazy":true,
+  "serve":true,
+  "boxClass":"foam.nanos.notification.email.POP3EmailSkeleton",
+  "serviceClass":"foam.nanos.notification.email.POP3EmailService",
+  "client":"{ \"class\":\"foam.nanos.notification.email.ClientPOP3EmailService\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/pop3\" } }"
 })
