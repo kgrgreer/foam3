@@ -53,6 +53,12 @@ foam.ENUM({
     {
       name: 'RECEIVED',
       label: 'Received',
+      color: '$blue500',
+      background: '$blue700',
+    },
+    {
+      name: 'PROCESSED',
+      label: 'Processed',
       color: '$success700',
       background: '$success50',
     }
