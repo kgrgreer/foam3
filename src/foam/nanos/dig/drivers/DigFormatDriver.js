@@ -179,7 +179,11 @@ foam.CLASS({
       long pageSize = DigFormatDriver.MAX_PAGE_SIZE;
       if ( ! SafetyUtil.isEmpty(limit) ) {
         long l = Long.valueOf(limit);
-        if ( l != AbstractDAO.MAX_SAFE_INTEGER && l < pageSize) {
+        if ( l == 0 ) {
+          // page size of 0 allows for maximum record count
+          // question: should this be protected by a permission?
+          pageSize = AbstractDAO.MAX_SAFE_INTEGER;
+        } else if ( l != AbstractDAO.MAX_SAFE_INTEGER && l < pageSize && l > 0 ) {
           pageSize = l;
         }
       }
