@@ -86,6 +86,7 @@ foam.CLASS({
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+        templateArgs.put("supportLogo", supportConfig.getSupportLogo());
         templateArgs.put("termsAndCondLink", url + appConfig.getTermsAndCondLink());
         templateArgs.put("termsAndCondLabel", appConfig.getTermsAndCondLabel());
         templateArgs.put("copyright", appConfig.getCopyright());
