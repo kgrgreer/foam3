@@ -53,3 +53,33 @@ p({
   enabled: true,
   lifecycleState:1
 })
+
+p({
+  class: "foam.nanos.ruler.Rule",
+  id: "foam-nanos-notification-email-EmailMessageProcessedStatusRule",
+  name: "EmailMessage Status - Processed",
+  documentation: "Move Processed EmailMessages to EmailMesageProcessedDAO",
+  ruleGroup: "EmailMessage",
+  daoKey: "emailMessageReceivedDAO",
+  priority: 0,
+  operation: 3,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.PropertyEQValue",
+        propName: "status",
+        propValue:  {
+          class: "foam.nanos.notification.email.Status",
+          ordinal: 6
+        }
+      }
+    ]
+  },
+  action: {
+    class: "foam.nanos.ruler.action.DAOPutRuleAction",
+    daoKey: "emailMessageProcessedDAO"
+  },
+  enabled: true,
+  lifecycleState:1
+})

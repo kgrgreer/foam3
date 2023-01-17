@@ -93,7 +93,7 @@ foam.CLASS({
     {
       name: 'emailMessageReceiveDAOKey',
       class: 'String',
-      value: 'emailMessageDAO'
+      value: 'emailMessageReceivedDAO'
     },
     {
       name: 'pollInterval',

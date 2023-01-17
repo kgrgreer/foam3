@@ -72,6 +72,74 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"localEmailMessageReceivedDAO",
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("emailMessagesReceived")
+      .setSAF(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
+        .setSize(100000)
+        .build())
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.email.EmailMessage.CREATED});
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"emailMessageReceivedDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
+      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageReceivedDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
+})
+
+// NOTE: clustered
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localEmailMessageProcessedDAO",
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("emailMessagesProcessed")
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
+        .setSize(100000)
+        .build())
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.email.EmailMessage.CREATED});
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"emailMessageProcessedDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
+      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageProcessedDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"emailPropertyService",
   "serviceScript": """
     import foam.core.FObject;
