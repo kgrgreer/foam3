@@ -26,7 +26,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'refinedMethod_execute_AlternateFlowRefinement',
+      name: '__original_execute_AlternateFlowRefinement',
       code: foam.u2.wizard.AlternateFlow.getAxiomByName('execute').code
     },
     function execute (x) {
@@ -43,7 +43,7 @@ foam.CLASS({
         );
       }
 
-      const result = this.refinedMethod_execute_AlternateFlowRefinement(x);
+      const result = this.__original_execute_AlternateFlowRefinement(x);
       return result;
     }
   ]
