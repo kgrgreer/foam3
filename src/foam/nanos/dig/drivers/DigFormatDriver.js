@@ -181,9 +181,11 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         long l = Long.valueOf(limit);
         
-        if ( l == 0 && auth.check(x, "service.dig.read-all-records") ) {
-          // page size of 0 allows for maximum record count
-          pageSize = AbstractDAO.MAX_SAFE_INTEGER;
+        if ( l == 0 ) {
+          if ( auth.check(x, "service.dig.read-all-records") ) {
+            // page size of 0 allows for maximum record count
+            pageSize = AbstractDAO.MAX_SAFE_INTEGER;
+          }
         } else if ( l != AbstractDAO.MAX_SAFE_INTEGER && l < pageSize && l > 0 ) {
           pageSize = l;
         }
