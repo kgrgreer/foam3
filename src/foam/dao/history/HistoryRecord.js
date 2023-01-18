@@ -29,7 +29,11 @@ foam.CLASS({
       name: 'objectId',
       label: 'Updated Object',
       documentation: 'Id of object related to history record.',
-      tableWidth: 150
+      tableWidth: 150,
+      tableCellFormatter: function(value, _) {
+        if ( !value ) return;
+        this.add(!!value.toSummary ? value.toSummary() : value);
+      }
     },
     {
       class: 'FObjectProperty',
