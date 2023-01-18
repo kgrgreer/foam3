@@ -269,9 +269,9 @@ foam.CLASS({
 
             // At runtime, getX() is valid, during test case run
             // XLocator is valid.  Need to determine which X to use.
-            X y = getX();
+            X y = foam.core.XLocator.get();
             if ( y.get("emailTemplateDAO") == null ) {
-              y = foam.core.XLocator.get();
+              y = getX();
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
             if ( extendedEmailTemplate == null ) {
