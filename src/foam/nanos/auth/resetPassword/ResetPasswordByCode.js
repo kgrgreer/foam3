@@ -44,8 +44,8 @@ foam.CLASS({
   ],
 
   css: `
-    .foam-u2-detail-SectionView-verificationCodeSection .foam-u2-ActionView-resendCode {
-      width: 100%;
+    .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+      justify-content: flex-start;
     }
   `,
 
