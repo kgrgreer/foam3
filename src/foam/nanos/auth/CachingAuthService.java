@@ -112,9 +112,6 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     DAO groupPermissionJunctionDAO = (DAO) getX().get("groupPermissionJunctionDAO");
     if ( groupPermissionJunctionDAO != null ) groupPermissionJunctionDAO.listen(purgeSink, TRUE);
 
-    DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
-    if ( capabilityDAO != null ) capabilityDAO.listen(purgeSink, TRUE);
-
     // Configure listeners for additional permission DAOs
     if ( extraDAOsToListenTo_ != null ) {
       for ( String daoName : extraDAOsToListenTo_ ) {
@@ -133,7 +130,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userId = ((User) obj).getId();
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
-    } else if (obj instanceof GroupPermissionJunction) {
+    } else if ( obj instanceof GroupPermissionJunction ) {
       GroupPermissionJunction gpj = (GroupPermissionJunction) obj;
       for ( Object o  : userPermissionCache_.values() ) {
         Map m = (Map) o;
