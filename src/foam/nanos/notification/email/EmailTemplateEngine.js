@@ -293,10 +293,10 @@ foam.CLASS({
 
             // At runtime, getX() is valid, during test case run
             // XLocator is valid.  Need to determine which X to use.
-            X y = getX();
+            X y = foam.core.XLocator.get();
             DAO alarmDAO = (DAO) y.get("alarmDAO");
             if ( alarmDAO == null ) {
-              y = foam.core.XLocator.get();
+              y = getX();
               alarmDAO = (DAO) y.get("alarmDAO");
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
@@ -406,6 +406,11 @@ foam.CLASS({
       javaCode: `
       StringBuilder sbJoin = sbJoin_.get();
 
+      // set the XLocator X to current X since we will need the current X to find the correct template
+      // set back to current XLocator when done
+      X LocatorX = foam.core.XLocator.get();
+      foam.core.XLocator.set(x);
+
       StringPStream ps = new StringPStream();
       ps.setString(body);
       ParserContext parserX = new ParserContextImpl();
@@ -415,6 +420,8 @@ foam.CLASS({
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
       getIncludeGrammar().parse(ps, parserX, "");
+
+      foam.core.XLocator.set(LocatorX);
 
       if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
       return joinTemplates(x, sbJoin);
