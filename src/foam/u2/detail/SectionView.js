@@ -33,6 +33,10 @@ foam.CLASS({
       color: $grey500;
       margin-bottom: 16px;
     }
+
+    ^actionDiv {
+      justify-content: end;
+    }
   `,
 
   properties: [
@@ -182,8 +186,8 @@ foam.CLASS({
               return view;
             }))
             .start(self.Cols)
+              .addClass(self.myClass('actionDiv'))
               .style({
-                'justify-content': 'end',
                 'margin-top': section.actions.length ? '16px' : 'initial'
               })
               .forEach(section.actions, function(a) {
