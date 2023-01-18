@@ -46,7 +46,6 @@ foam.CLASS({
   css: `
     .foam-u2-detail-SectionView-verificationCodeSection .foam-u2-ActionView-resendCode {
       width: 100%;
-      justify-content: left!important;
     }
   `,
 
@@ -181,7 +180,7 @@ foam.CLASS({
       name: 'resendCode',
       label: 'Resend Code',
       section: 'verificationCodeSection',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       isAvailable: function(codeVerified) {
         return ! codeVerified;
       },

@@ -42,10 +42,23 @@ foam.CLASS({
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
+  css: `
+    .foam-u2-detail-SectionView-verificationCodeSection .foam-u2-ActionView-resendCode {
+      width: 100%;
+    }
+  `,
+
+  sections: [
+    {
+      name: 'verificationCodeSection'
+    }
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'verificationCode',
+      section: 'verificationCodeSection',
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
         delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
@@ -181,7 +194,7 @@ foam.CLASS({
       isAvailable: function(codeVerified) {
         return ! codeVerified;
       },
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       code: async function() {
         if ( this.codeVerified ) return;
         try {
