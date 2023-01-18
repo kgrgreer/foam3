@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'ResetPasswordByCode',
   extends: 'foam.nanos.auth.resetPassword.ResetPassword',
 
+  mixins: [
+    'foam.nanos.analytics.Analyticable'
+  ],
+
   documentation: 'Reset Password By Code Model',
 
   imports: [
@@ -125,6 +129,8 @@ foam.CLASS({
 
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
+          this.report('^verify-success', ['email-verification']);
+          this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
 
           // Clear new/confirmation passwords after the reset password
@@ -134,6 +140,9 @@ foam.CLASS({
             this.clearProperty('confirmationPassword');
           }
         } catch (error) {
+          this.report('^verify-failure', ['email-verification'], {
+            errorAsString: error.toString()
+          });
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;

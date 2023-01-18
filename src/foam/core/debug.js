@@ -45,8 +45,6 @@ foam.CLASS({
 
   methods: [
     function validate() {
-      this.SUPER();
-
       if ( this.refines ) {
         if ( this.hasOwnProperty('extends') ) {
           throw this.id + ': "extends" and "refines" are mutually exclusive.';
@@ -95,8 +93,6 @@ foam.CLASS({
 
   methods: [
     function validate(model) {
-      this.SUPER();
-
       foam.assert(
           ! this.name.endsWith('$'),
           'Illegal Property Name: Can\'t end with "$": ', this.name);

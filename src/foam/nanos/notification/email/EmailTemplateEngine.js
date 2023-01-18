@@ -15,8 +15,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
@@ -69,29 +67,8 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-
-              final String message = "No value provided for variable "+v;
-              foam.nanos.logger.StdoutLogger.instance().warning(message);
-              // At runtime, getX() is valid, during test case run
-              // XLocator is valid.  Need to determine which X to use.
-              X y = getX();
-              Agency agency = (Agency) y.get("threadPool");
-              if ( agency == null ) {
-                y = foam.core.XLocator.get();
-                agency = (Agency) y.get("threadPool");
-              }
-              if ( agency != null ) {
-                agency.submit(y, new ContextAgent() {
-                  public void execute(X x) {
-                    Alarm alarm = new Alarm();
-                    alarm.setName("Email template config");
-                    alarm.setReason(AlarmReason.CONFIGURATION);
-                    alarm.setNote(message);
-                    alarm.setClusterable(false);
-                    ((DAO) x.get("alarmDAO")).put(alarm);
-                  }
-                }, this.getClass().getSimpleName()+"-alarm");
-              }
+              // NOTE: do not log warn or error as these generate alarms which in turn generate notifications and emails.
+              foam.nanos.logger.StdoutLogger.instance().info("WARN,No value provided for variable",v);
             }
             ((StringBuilder) x.get("sb")).append(value);
             return value;
@@ -291,24 +268,9 @@ foam.CLASS({
               templateName.append(val0[i]);
             }
 
-            // At runtime, getX() is valid, during test case run
-            // XLocator is valid.  Need to determine which X to use.
-            X y = foam.core.XLocator.get();
-            DAO alarmDAO = (DAO) y.get("alarmDAO");
-            if ( alarmDAO == null ) {
-              y = getX();
-              alarmDAO = (DAO) y.get("alarmDAO");
-            }
-            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
+            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(foam.core.XLocator.get(), templateName.toString());
             if ( extendedEmailTemplate == null ) {
-              foam.nanos.logger.StdoutLogger.instance().warning("Extended template not found", templateName);
-              if ( alarmDAO != null ) {
-                Alarm alarm = new Alarm();
-                alarm.setName("Email template config");
-                alarm.setReason(AlarmReason.CONFIGURATION);
-                alarm.setNote("Extended template not found " + templateName);
-                alarmDAO.put(alarm);
-              }
+              foam.nanos.logger.StdoutLogger.instance().info("WARN,Extended template not found", templateName);
               return val;
             }
             StringBuilder content = new StringBuilder();
@@ -345,7 +307,7 @@ foam.CLASS({
       }, (Logger) x.get("logger"));
       EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
       if ( template == null ) {
-        logger.warning("Template not found");
+        logger.info("WARN,Template not found");
         throw new RuntimeException("Template not found");
       }
       return renderTemplate(x.put("logger", logger), template.getBody(), values);
