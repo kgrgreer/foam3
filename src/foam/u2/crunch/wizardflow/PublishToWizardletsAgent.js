@@ -26,7 +26,7 @@ foam.CLASS({
   methods: [
     async function execute() {
       for ( const wizardlet of this.wizardlets ) {
-        wizardlet[this.event]();
+        wizardlet[this.event]?.();
       }
     }
   ]

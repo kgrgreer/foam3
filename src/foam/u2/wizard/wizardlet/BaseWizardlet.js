@@ -490,10 +490,6 @@ foam.CLASS({
         this.atLeastOneSectionVisible_ = this.sections.filter(
           v => v.isAvailable).length > 0;
       }
-    },
-    {
-      name: 'onReady',
-      code: function() {}
     }
   ]
 });
