@@ -36,7 +36,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.util.AUIDGenerator',
       javaFactory: `
-        return new AUIDGenerator(getX(), "alamrDAO");
+        return new AUIDGenerator(getX(), "alarmDAO");
       `
     }
   ],
