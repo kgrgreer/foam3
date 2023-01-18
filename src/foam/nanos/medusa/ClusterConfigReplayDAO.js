@@ -175,7 +175,6 @@ foam.CLASS({
           if ( details.getMaxIndex() >= minIndex ) {
             ReplayCmd cmd = new ReplayCmd();
             details = (ReplayDetailsCmd) details.fclone();
-            details.setMinIndex(minIndex);
             cmd.setDetails(details);
             cmd.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
@@ -196,7 +195,7 @@ foam.CLASS({
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
 
-        getLogger().info("ReplayRequestCmd", "min", cmd.getDetails().getMinIndex());
+        getLogger().info("cmd,ReplayRequestCmd,ReplayRequestCmd", "min", cmd.getDetails().getMinIndex());
 
         java.util.List<ClusterConfig> nodes = support.getReplayNodes();
         for ( ClusterConfig cfg : nodes ) {
@@ -205,15 +204,12 @@ foam.CLASS({
           details.setRequester(myConfig.getId());
           details.setResponder(cfg.getId());
           c.setDetails(details);
+          c.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
+          getLogger().info("cmd,ReplayRequestCmd,ReplayCmd", "from", myConfig.getId(), "to", cfg.getId(), "request", c);
           DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-          // clientDAO = new RetryClientSinkDAO.Builder(x)
-          //   .setName("medusaEntryDAO")
-          //   .setDelegate(clientDAO)
-          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
-          //   .setMaxRetryDelay(support.getMaxRetryDelay())
-          //   .build();
-          clientDAO.cmd_(x, c);
+          c = (ReplayCmd) clientDAO.cmd_(x, c);
+          getLogger().info("cmd,ReplayRequestCmd,ReplayCmd", "from", myConfig.getId(), "to", cfg.getId(), "response", c);
         }
         return obj;
       }

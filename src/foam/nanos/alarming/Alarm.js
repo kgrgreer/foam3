@@ -144,6 +144,13 @@ foam.CLASS({
       menuKeys: [
         'er'
       ]
+    },
+    {
+      documentation: 'UID for external systems - such a google chat',
+      class: 'String',
+      name: 'externalId',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     }
   ],
 

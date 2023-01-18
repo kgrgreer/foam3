@@ -1,18 +1,29 @@
 p({
   "class":"foam.nanos.script.Script",
-  "id":"Send Email - Directly",
+  "id":"Send Email with Attachment",
   "enabled":true,
-  "description":"Send Email explicitily with an SMTP Email Service",
+  "description":"Send Email with Attachment",
   "server":true,
   "status":1,
   "code": """
     // Send Email;
+    import foam.dao.DAO;
     import foam.nanos.auth.User;
     import foam.nanos.auth.Subject;
-    import foam.nanos.notification.email.Status;
     import foam.nanos.notification.email.EmailMessage;
-    import foam.nanos.notification.email.EmailService;
+    import foam.nanos.notification.email.EmailServiceConfig;
+    import foam.nanos.notification.email.SMTPAgent;
+    import foam.nanos.notification.email.Status;
     import java.util.HashMap;
+
+    // attachments
+    fileId = "971d0fe5-4e69-311f-87c1-5a06866620b7";
+    // make sure test file exists
+    fileDAO = x.get("fileDAO");
+    file = fileDAO.find(fileId);
+    if ( file == null ) {
+      print("WARN: File not found");
+    }
 
     String[] emails = new String[] { "joel@nanopay.net" };
     EmailMessage message = new EmailMessage.Builder(x)
@@ -23,70 +34,48 @@ p({
               .setStatus(Status.UNSENT)
               .build();
 
-    // NOTE: this relies on a valid smtpEmailService in the system.
-    emailService = (EmailService) x.get("smtpEmailService");
-    try {
-      message = emailService.sendEmail(x, message);
-      print("sent, please check your email");
-    } catch (Exception e) {
-      print("ERROR: "+e.getMessage());
+    if ( file != nulll ) {
+      HashMap map = new HashMap();
+      map.put("content", "test with attachment");
+      message.setTemplateArguments(map);
+
+      message.setAttachments(new String[] { fileId });
+    }
+
+    ((DAO) x.get("emailMessageDAO")).put(message);
+
+    SMTPAgent agent = (SMTPAgent) x.get("smtpAgent");
+    EmailServiceConfig config = agent.findId(x);
+    if ( ! config.getEnabled() ) {
+      config = config.fclone();
+      config.setEnabled(true);
+      ((DAO) x.get("emailServiceConfigDAO")).put(config);
+      agent.execute(x);
+    }
+    Thread.currentThread().sleep(2000);
+    message = (EmailMessage) ((DAO) x.get("emailMessageDAO")).find(message.getId());
+    if ( message.getStatus() == Status.SENT ) {
+      print("message sent");
+    } else {
+      print("message not sent");
     }
   """
 })
 
-p({
-  class:"foam.nanos.script.Script",
-  id:"Send Email with Attachment - Directly",
-  description:"Send Email with Attachment explicitily with the SMTP Email Service",
-  code:"""
-    // Generate Email with Attachment;
-    import foam.nanos.auth.User;
-    import foam.nanos.auth.Subject;
-    import foam.nanos.notification.email.Status;
-    import foam.nanos.notification.email.EmailMessage;
-    import foam.nanos.notification.email.SMTPEmailService;
-    import java.util.HashMap;
-
-    // attachments
-    fileId = "971d0fe5-4e69-311f-87c1-5a06866620b7";
-    // make sure test file exists
-    fileDAO = x.get("fileDAO");
-    file = fileDAO.find(fileId);
-    if ( file == null ) {
-      print("ERROR: File not found");
-      return;
-    }
-
-    String[] emails = new String[] { "joel@nanopay.net" };
-    EmailMessage message = new EmailMessage.Builder(x)
-              .setUser(((Subject) x.get("subject")).getUser().getId())
-              .setTo(emails)
-              .setSubject("Test: "+file.getFilename())
-              .setBody("Test")
-              .setStatus(Status.UNSENT)
-              .build();
-
-    HashMap map = new HashMap();
-    map.put("content", "test with attachment");
-    message.setTemplateArguments(map);
-
-    message.setAttachments(new String[] { fileId });
-
-    // NOTE: this relies on a valid smtpEmailService in the system.
-    emailService = (EmailService) x.get("smtpEmailService");
-    try {
-      message = emailService.sendEmail(x, message);
-      print("sent, please check your email");
-    } catch (Exception e) {
-      print("ERROR: "+e.getMessage());
-    }
-  """
-})
 p({
   class:"foam.nanos.script.Script",
   id:"EmailFolderAgent",
   description:"EmailFolderAgent",
   code:"""
-    new foam.nanos.notification.email.EmailFolderAgent(x).execute(x);
+    agent = new foam.nanos.notification.email.EmailFolderAgent(x);
+    agent.setId("default"); // default
+
+    config = agent.findId(x);
+    if ( ! config.getEnabled() ) {
+      config = config.fclone();
+      config.setEnabled(true);
+      x.get("emailServiceConfigDAO").put(config);
+    }
+    agent.execute();
   """
 })

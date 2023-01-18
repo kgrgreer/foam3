@@ -67,7 +67,7 @@ foam.CLASS({
         // template name check
         String templateName = (String) templateArgs.get("template");
         if ( SafetyUtil.isEmpty(templateName) ) {
-          logger.info("EmailTemplate not found");
+          logger.debug("EmailTemplate not found");
           return emailMessage;
         }
 
@@ -86,6 +86,7 @@ foam.CLASS({
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+        templateArgs.put("supportLogo", supportConfig.getSupportLogo());
         templateArgs.put("termsAndCondLink", url + appConfig.getTermsAndCondLink());
         templateArgs.put("termsAndCondLabel", appConfig.getTermsAndCondLabel());
         templateArgs.put("copyright", appConfig.getCopyright());

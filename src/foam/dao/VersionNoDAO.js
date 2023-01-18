@@ -84,7 +84,6 @@ foam.CLASS({
     },
 
     function validate() {
-      this.SUPER();
       if ( ! this.VersionTrait.isSubClass(this.of) ) {
         throw new Error(`VersionNoDAO.of must have trait
                             foam.version.VersionTrait`);
