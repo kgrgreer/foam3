@@ -67,8 +67,7 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-              // NOTE: do not log warn or error as these generate alarms which in turn generate notifications and emails.
-              foam.nanos.logger.StdoutLogger.instance().info("WARN,No value provided for variable",v);
+              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
             }
             ((StringBuilder) x.get("sb")).append(value);
             return value;
@@ -268,9 +267,15 @@ foam.CLASS({
               templateName.append(val0[i]);
             }
 
-            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(foam.core.XLocator.get(), templateName.toString());
+            // At runtime, getX() is valid, during test case run
+            // XLocator is valid.  Need to determine which X to use.
+            X y = getX();
+            if ( y.get("emailTemplateDAO") == null ) {
+              y = foam.core.XLocator.get();
+            }
+            EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
             if ( extendedEmailTemplate == null ) {
-              foam.nanos.logger.StdoutLogger.instance().info("WARN,Extended template not found", templateName);
+              foam.nanos.logger.StdoutLogger.instance().warning("Extended template not found", templateName);
               return val;
             }
             StringBuilder content = new StringBuilder();
@@ -307,7 +312,7 @@ foam.CLASS({
       }, (Logger) x.get("logger"));
       EmailTemplate template = EmailTemplateSupport.findTemplate(x, id);
       if ( template == null ) {
-        logger.info("WARN,Template not found");
+        logger.warning("Template not found");
         throw new RuntimeException("Template not found");
       }
       return renderTemplate(x.put("logger", logger), template.getBody(), values);
@@ -371,21 +376,22 @@ foam.CLASS({
       // set the XLocator X to current X since we will need the current X to find the correct template
       // set back to current XLocator when done
       X LocatorX = foam.core.XLocator.get();
-      foam.core.XLocator.set(x);
+      try {
+        foam.core.XLocator.set(x);
 
-      StringPStream ps = new StringPStream();
-      ps.setString(body);
-      ParserContext parserX = new ParserContextImpl();
-      parserX.set("sb", sbJoin);
-      parserX.set("x", x);
-      parserX.set("logger", x.get("logger"));
-      parserX.set("alarmDAO", x.get("alarmDAO"));
-      parserX.set("isNextTemplateExtending", false);
-      getIncludeGrammar().parse(ps, parserX, "");
-
-      foam.core.XLocator.set(LocatorX);
-
-      if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
+        StringPStream ps = new StringPStream();
+        ps.setString(body);
+        ParserContext parserX = new ParserContextImpl();
+        parserX.set("sb", sbJoin);
+        parserX.set("x", x);
+        parserX.set("logger", x.get("logger"));
+        parserX.set("alarmDAO", x.get("alarmDAO"));
+        parserX.set("isNextTemplateExtending", false);
+        getIncludeGrammar().parse(ps, parserX, "");
+        if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
+      } finally {
+        foam.core.XLocator.set(LocatorX);
+      }
       return joinTemplates(x, sbJoin);
       `
     }
