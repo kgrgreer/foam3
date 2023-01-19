@@ -151,7 +151,7 @@ public class AuthWebAgent
                 X effectiveContext = session.applyTo(x);
                 // Make context available to thread-local XLocator
                 XLocator.set(effectiveContext);
-                //session.setContext(effectiveContext); // XXX: Looks very wrong!!!
+                session.setContext(effectiveContext); // XXX: Looks very wrong!!!
                 return session;
               } catch( foam.core.ValidationException e ) {
                 logger.debug(e.getMessage(), foam.net.IPSupport.instance().getRemoteIp(x));
