@@ -20,7 +20,18 @@ foam.CLASS({
       'xs:int'          : 'foam.core.Int',
       'xs:long'         : 'foam.core.Long',
       'xs:short'        : 'foam.core.Int',
-      'xs:double'       : 'foam.core.Double'
+      'xs:double'       : 'foam.core.Double',
+      'xsd:boolean'     : 'foam.core.Boolean',
+      'xsd:date'        : 'foam.core.Date',
+      'xsd:dateTime'    : 'foam.core.Date',
+      'xsd:decimal'     : 'foam.core.Double',
+      'xsd:string'      : 'foam.core.String',
+      'xsd:time'        : 'foam.core.Date',
+      'xsd:base64Binary': 'foam.core.String',
+      'xsd:int'         : 'foam.core.Int',
+      'xsd:long'        : 'foam.core.Long',
+      'xsd:short'       : 'foam.core.Int',
+      'xsd:double'      : 'foam.core.Double'
     }
   },
 
@@ -544,6 +555,9 @@ foam.CLASS({
           case 'sequence':
             this.processSequence(m, child);
             break;
+          case 'all':
+            this.processSequence(m, child);
+            break;
         }
       }
     },
@@ -592,6 +606,18 @@ foam.CLASS({
             // check if nodeType is an element node
             if ( grandChild.nodeType !== 1 ) continue;
             if ( grandChild.localName === 'simpleContent' ) {
+              for ( var grandChildKey in grandChild.childNodes ) {
+                var greatGrandChild = grandChild.childNodes[grandChildKey];
+                if ( greatGrandChild.nodeType !== 1 ) continue;
+              }
+            }
+          }
+        } else if ( child.localName === 'group' ) {
+          for ( var childKey in child.childNodes ) {
+            var grandChild = child.childNodes[childKey];
+            // check if nodeType is an element node
+            if ( grandChild.nodeType !== 1 ) continue;
+            if ( grandChild.localName === 'choice' ) {
               for ( var grandChildKey in grandChild.childNodes ) {
                 var greatGrandChild = grandChild.childNodes[grandChildKey];
                 if ( greatGrandChild.nodeType !== 1 ) continue;
@@ -681,6 +707,11 @@ foam.CLASS({
             // process simple type
             this.processSimpleType(m, child);
             m.flags = m.extends ? [] : [ "java", "simpleType" ];
+            break;
+          case 'group':
+            // process group type
+            this.processSequence(m, child);
+            m.flags = m.extends ? [] : [ "java", "groupType" ];
             break;
           default:
             break;
