@@ -207,6 +207,7 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
+              this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
                 if ( this.username ) {
