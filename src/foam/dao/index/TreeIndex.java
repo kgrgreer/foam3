@@ -31,7 +31,7 @@ public class TreeIndex
   }
 
   public TreeIndex(PropertyInfo prop, Index tail) {
-    this(prop, tail, false);
+    this(prop, tail, true);
   }
 
   public TreeIndex(PropertyInfo prop, Index tail, boolean isPrimary) {
