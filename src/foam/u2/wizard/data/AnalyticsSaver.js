@@ -37,7 +37,8 @@ foam.CLASS({
       this.report(this.analyticsName, this.tags,
         { extra: foam.json.stringify(extra) });
 
-      return await this.delegate.save();
+      debugger;
+      return await this.delegate.save(data);
     }
   ]
 });
