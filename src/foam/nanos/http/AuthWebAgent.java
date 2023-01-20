@@ -243,8 +243,7 @@ public class AuthWebAgent
           session = (Session) sessionDAO.put(session);
         }
         User user = ((Subject) session.getContext().get("subject")).getUser();
-        if ( user != null &&
-             SafetyUtil.isEmpty(email) ) {
+        if ( user != null && SafetyUtil.isEmpty(email) ) {
           return session;
         }
 
