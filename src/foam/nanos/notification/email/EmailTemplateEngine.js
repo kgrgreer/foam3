@@ -373,10 +373,6 @@ foam.CLASS({
       javaCode: `
       StringBuilder sbJoin = sbJoin_.get();
 
-      // set the XLocator X to current X since we will need the current X to find the correct template
-      // set back to current XLocator when done
-      X LocatorX = foam.core.XLocator.get();
-
       StringPStream ps = new StringPStream();
       ps.setString(body);
       ParserContext parserX = new ParserContextImpl();
