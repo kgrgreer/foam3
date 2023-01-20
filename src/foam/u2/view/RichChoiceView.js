@@ -436,6 +436,11 @@ foam.CLASS({
       factory: function() {
         return this.RichChoiceViewI18NComparator.create();
       }
+    },
+    {
+      name: 'idProperty',
+      class: 'String',
+      value: 'id'
     }
   ],
 
@@ -601,7 +606,7 @@ foam.CLASS({
 
     function onSelect(obj) {
       this.fullObject_ = obj;
-      this.data = obj.id;
+      this.data = obj[this.idProperty];
       this.isOpen_ = false;
     },
 
@@ -641,9 +646,19 @@ foam.CLASS({
           return;
         }
         this.sections.forEach(section => {
+          if ( this.of ) {
+            section.dao.where(
+              this.EQ(this.of.getAxiomByName(this.idProperty), this.data)
+            ).select().then(result => {
+              if ( result.array.length > 0 ) this.fullObject_ = result.array[0];
+            }).catch( e => console.warn(e));
+            return;
+          }
+          // majority of cases will fall into above code,
+          // but incase a section is defined without a proper dao
           section.dao.find(this.data).then(result => {
             if ( result ) this.fullObject_ = result;
-          });
+          }).catch( e => console.warn(e));
         });
       }
     },
