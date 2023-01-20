@@ -38,8 +38,9 @@ foam.CLASS({
           public void run() {
             X oldX = ((ProxyX) XLocator.get()).getX();
             XLocator.set(x);
-            try { agent.execute(x); }
-            catch ( java.lang.Exception e ) {
+            try {
+              agent.execute(x);
+            } catch ( java.lang.Exception e ) {
               Loggers.logger(x, this).error("schedule", "failed", key, e);
             } finally {
               XLocator.set(oldX);
