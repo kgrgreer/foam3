@@ -21,15 +21,24 @@ public class TreeIndex
   protected Index        tail_;
   protected PropertyInfo prop_;
   protected long         selectCount_;
+  // Non primary indices shouldn't provide plans unless they can contribute
+  // because they might be partial indices on properties from sub-classes
+  // so they will win auctions but only return a subset of the data.
+  protected boolean      isPrimary_;
 
   public TreeIndex(PropertyInfo prop) {
-    this(prop, ValueIndex.instance());
+    this(prop, ValueIndex.instance(), true);
   }
 
   public TreeIndex(PropertyInfo prop, Index tail) {
+    this(prop, tail, true);
+  }
+
+  public TreeIndex(PropertyInfo prop, Index tail, boolean isPrimary) {
     prop_        = prop;
     selectCount_ = 0;
     tail_        = tail;
+    isPrimary_   = isPrimary;
   }
 
   public Object bulkLoad(FObject[] a) {
@@ -149,9 +158,15 @@ public class TreeIndex
   public SelectPlan planSelect(Object state, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     if ( state == null || predicate instanceof False ) return NotFoundPlan.instance();
 
+    Object   originalState = state;
     Object[] statePredicate = simplifyPredicate(state, predicate);
     state     = statePredicate[0];
     predicate = (Predicate) statePredicate[1];
+
+    if ( ! isPrimary_ && state == originalState && ( order == null || ! order.toString().equals(prop_.toString()) ) ) {
+      // Unless we're the primary index, we shouldn't offer a plan if we can't contribute
+      return NoPlan.instance();
+    }
 
     if ( predicate == null ) {
       // See if it's possible to do Count or GroupBy select efficiently.
