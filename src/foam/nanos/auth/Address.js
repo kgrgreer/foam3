@@ -233,11 +233,13 @@ foam.CLASS({
       },
       gridColumns: 6,
       validationPredicates: [
-        {
-          args: ['postalCode'],
-          query: 'postalCode.len>0',
-          errorMessage: 'POSTAL_CODE_REQUIRE'
-        },
+        // Requirement for PK is postalCode is optional
+        // real country distictions to come with NP-8818-facade Address
+        // {
+        //   args: ['postalCode'],
+        //   query: 'postalCode.len>0',
+        //   errorMessage: 'POSTAL_CODE_REQUIRE'
+        // },
         {
           args: ['postalCode', 'countryId'],
           query: 'countryId!="CA"||postalCode~/^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d$/i',
