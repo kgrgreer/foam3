@@ -32,9 +32,9 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public void authorizeOnCreate(X x, FObject obj) throws AuthorizationException {
-
-    String permission = createPermission("create");
+    String      permission  = createPermission("create");
     AuthService authService = (AuthService) x.get("auth");
+
     if ( ! authService.check(x, permission) ) {
       ((foam.nanos.logger.Logger) x.get("logger")).debug("StandardAuthorizer", "Permission denied.", permission);
       throw new AuthorizationException();
@@ -42,8 +42,7 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public void authorizeOnRead(X x, FObject obj) throws AuthorizationException {
-
-    String permission = createPermission("read", obj.getProperty("id"));
+    String      permission  = createPermission("read", obj.getProperty("id"));
     AuthService authService = (AuthService) x.get("auth");
 
     if ( ! authService.check(x, permission) ) {
@@ -53,8 +52,7 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public void authorizeOnUpdate(X x, FObject oldObj, FObject obj) throws AuthorizationException {
-
-    String permission = createPermission("update", obj.getProperty("id"));
+    String      permission  = createPermission("update", obj.getProperty("id"));
     AuthService authService = (AuthService) x.get("auth");
 
     if ( ! authService.check(x, permission) ) {
@@ -64,8 +62,7 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public void authorizeOnDelete(X x, FObject obj) throws AuthorizationException {
-
-    String permission  = createPermission("remove", obj.getProperty("id"));
+    String      permission  = createPermission("remove", obj.getProperty("id"));
     AuthService authService = (AuthService) x.get("auth");
 
     if ( ! authService.check(x, permission) ) {
@@ -75,8 +72,9 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public boolean checkGlobalRead(X x, Predicate predicate) {
-    String permission = createPermission("read", "*");
+    String      permission  = createPermission("read", "*");
     AuthService authService = (AuthService) x.get("auth");
+
     try {
       return authService.check(x, permission);
     } catch ( AuthorizationException e ) {
@@ -85,13 +83,13 @@ public class StandardAuthorizer implements Authorizer {
   }
 
   public boolean checkGlobalRemove(X x) {
-    String permission = createPermission("remove", "*");
+    String      permission  = createPermission("remove", "*");
     AuthService authService = (AuthService) x.get("auth");
+
     try {
       return authService.check(x, permission);
     } catch ( AuthorizationException e ) {
       return false;
     }
-
   }
 }
