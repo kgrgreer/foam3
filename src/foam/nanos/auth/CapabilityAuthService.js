@@ -83,10 +83,10 @@ foam.CLASS({
 
         while ( true ) {
           if ( getCapabilityPermissions().containsKey(p) ) return true;
-          if ( p.endsWith(".*") ) p = p.substring(0,p.length()-2);
+          if ( p.endsWith(".*") ) p = p.substring(0, p.length()-2); // TODO: Why would this happen?
           int i = p.lastIndexOf(".");
           if ( i == -1 ) return false;
-          p = p.substring(0,i+1) + "*";
+          p = p.substring(0, i+1) + "*"; // Why add the "*"?
         }
       `
     },
@@ -131,11 +131,7 @@ foam.CLASS({
     },
     {
       name: 'checkSpid_',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'spid', type: 'String' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String spid, String permission',
       type: 'Boolean',
       documentation: `
         When there is no user in the context, try to check if the permission is granted by the context spid
@@ -148,7 +144,7 @@ foam.CLASS({
           // service provider needs system context (getX())
           // to bypass auth call in prerequisiteImplies
           sp.setX(getX());
-          return sp.grantsPermission(permission);
+          return sp.grantsPermission(x, permission);
         }
         return false;
       `
@@ -185,6 +181,7 @@ foam.CLASS({
           DAO capabilityDAO = ( x.get("localCapabilityDAO") == null ) ? (DAO) x.get("capabilityDAO") : (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
+          // TODO: Is the first check required? If a UCJ doesn't have an EXPIRY, then would it ever be EXPIRED?
           Predicate capabilityScope = OR(
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
@@ -196,27 +193,27 @@ foam.CLASS({
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
-          
+
           // if realuser and user is the same, we can check without specifying entity
-          if ( realUser != null && realUser.getId() == user.getId() && 
+          if ( realUser != null && realUser.getId() == user.getId() &&
               userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
-          } else {
-            predicate.setEntity(AssociatedEntity.USER);
+          }
+
+          predicate.setEntity(AssociatedEntity.USER);
+          if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
+            return true;
+          }
+
+          // Check if a ucj implies the subject.realUser has this permission
+          if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
+            userPredicate = AND(
+              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+              NOT(INSTANCE_OF(AgentCapabilityJunction.class))
+            );
+            predicate.setEntity(AssociatedEntity.REAL_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
-            }
-  
-            // Check if a ucj implies the subject.realUser has this permission
-            if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
-              userPredicate = AND(
-                EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-                NOT(INSTANCE_OF(AgentCapabilityJunction.class))
-              );
-              predicate.setEntity(AssociatedEntity.REAL_USER);
-              if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
-                return true;
-              }
             }
           }
 
