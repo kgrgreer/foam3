@@ -74,7 +74,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'refineInput_',
-      value: true
+      value: true,
+      documentation: 'If choicesLimit set, the flag is an indicator to show that more items could be populated.'
     }
   ]
 });
@@ -406,9 +407,10 @@ foam.CLASS({
           else {
             section.filteredDAO = section.dao;
           }
-          section.filteredDAO.select(this.COUNT()).then( v => {
-              section.refineInput_ = v.value > section.choicesLimit;
-          });
+          if ( section.choicesLimit )
+            section.filteredDAO.select(this.COUNT()).then( v => {
+                section.refineInput_ = v.value > section.choicesLimit;
+            });
         });
       }
     },
@@ -604,10 +606,12 @@ foam.CLASS({
                                 .end();
                             }, false, self.comparator)
                           .end()
-                          .start()
-                            .addClass('moreChoices')
-                            .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
-                          .end();
+                          .callIf(section.choicesLimit, function() {
+                            this.start()
+                              .addClass('moreChoices')
+                              .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                            .end();
+                          });
                           index++;
                       });
                     });
