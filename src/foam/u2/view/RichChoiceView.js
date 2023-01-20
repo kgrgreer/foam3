@@ -66,6 +66,15 @@ foam.CLASS({
       class: 'String',
       name: 'heading',
       documentation: 'The heading text for this section.'
+    },
+    {
+      class: 'Int',
+      name: 'choicesLimit'
+    },
+    {
+      class: 'Boolean',
+      name: 'refineInput_',
+      value: true
     }
   ]
 });
@@ -136,6 +145,10 @@ foam.CLASS({
     {
       name: 'CLEAR_SELECTION',
       message: 'Clear'
+    },
+    {
+      name: 'MORE_CHOICES',
+      message: 'Refine search to see more results'
     }
   ],
 
@@ -389,6 +402,9 @@ foam.CLASS({
           else {
             section.filteredDAO = section.dao;
           }
+          section.filteredDAO.select(this.COUNT()).then( v => {
+              section.refineInput_ = v.value > section.choicesLimit;
+          });
         });
       }
     },
@@ -572,7 +588,7 @@ foam.CLASS({
                             .translate(section.heading, section.heading)
                           .end()
                           .start()
-                            .select(section.filteredDAO$proxy, obj => {
+                            .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
                               return this.E()
                                 .start(self.rowView, { data: obj })
                                   .enableClass('disabled', section.disabled)
@@ -583,6 +599,10 @@ foam.CLASS({
                                   })
                                 .end();
                             }, false, self.comparator)
+                          .end()
+                          .start()
+                            .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                            .style({padding: '8px 16px'})
                           .end();
                           index++;
                       });
