@@ -283,6 +283,10 @@ foam.CLASS({
       color: $destructive400;
       cursor: pointer;
     }
+
+    ^ .moreChoices {
+      padding: 8px 16px;
+    }
   `,
 
   properties: [
@@ -601,8 +605,8 @@ foam.CLASS({
                             }, false, self.comparator)
                           .end()
                           .start()
+                            .addClass('moreChoices')
                             .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
-                            .style({padding: '8px 16px'})
                           .end();
                           index++;
                       });
