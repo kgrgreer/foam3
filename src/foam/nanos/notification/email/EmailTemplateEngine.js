@@ -269,9 +269,9 @@ foam.CLASS({
 
             // At runtime, getX() is valid, during test case run
             // XLocator is valid.  Need to determine which X to use.
-            X y = getX();
+            X y = foam.core.XLocator.get();
             if ( y.get("emailTemplateDAO") == null ) {
-              y = foam.core.XLocator.get();
+              y = getX();
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
             if ( extendedEmailTemplate == null ) {
@@ -376,22 +376,18 @@ foam.CLASS({
       // set the XLocator X to current X since we will need the current X to find the correct template
       // set back to current XLocator when done
       X LocatorX = foam.core.XLocator.get();
-      try {
-        foam.core.XLocator.set(x);
 
-        StringPStream ps = new StringPStream();
-        ps.setString(body);
-        ParserContext parserX = new ParserContextImpl();
-        parserX.set("sb", sbJoin);
-        parserX.set("x", x);
-        parserX.set("logger", x.get("logger"));
-        parserX.set("alarmDAO", x.get("alarmDAO"));
-        parserX.set("isNextTemplateExtending", false);
-        getIncludeGrammar().parse(ps, parserX, "");
-        if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
-      } finally {
-        foam.core.XLocator.set(LocatorX);
-      }
+      StringPStream ps = new StringPStream();
+      ps.setString(body);
+      ParserContext parserX = new ParserContextImpl();
+      parserX.set("sb", sbJoin);
+      parserX.set("x", x);
+      parserX.set("logger", x.get("logger"));
+      parserX.set("alarmDAO", x.get("alarmDAO"));
+      parserX.set("isNextTemplateExtending", false);
+      getIncludeGrammar().parse(ps, parserX, "");
+      if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
+
       return joinTemplates(x, sbJoin);
       `
     }
