@@ -49,8 +49,13 @@ foam.CLASS({
   properties: [
     {
       name: 'capabilityPermissions',
+      documentation: `All permissions granted by any Capability. Used to
+      short-circuit permission checks for permissions that can't possibly be
+      granted by any UCJ.`,
+
       class: 'Map',
       javaFactory: `
+        // There is no ConcurrentHashSet, which is why we need to use a Map.
         Map  m    = new java.util.concurrent.ConcurrentHashMap();
         Sink sink = new AbstractSink() {
           public void put(Object obj, Detachable sub) {
