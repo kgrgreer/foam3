@@ -33,12 +33,22 @@ foam.CLASS({
           spec: { class: 'foam.core.MapHolder' }
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isHolder',
+      documentation: `
+        Leave as true when using a MapHolder,
+        set to false if populating an FObject.
+      `,
+      value: true
     }
   ],
 
   methods: [
     async function load(...a) {
       const target = await this.delegate.load(...a);
+      const objectToSet = this.isHolder ? target.value : target;
       for ( const k in this.args ) {
         let loader = this.args[k];
         // If it's not an FObject, parse it
@@ -48,11 +58,11 @@ foam.CLASS({
           console.log('after parse');
         }
 
-        target.value[k] = await loader.load({});
+        objectToSet[k] = await loader.load({});
       }
       for ( const k in this.bind ) {
         const wizardlet = this.wizardlets.find(w => w.id == this.bind[k]);
-        target.value[k] = wizardlet.data$;
+        objectToSet[k] = wizardlet.data$;
       }
 
       return target;
