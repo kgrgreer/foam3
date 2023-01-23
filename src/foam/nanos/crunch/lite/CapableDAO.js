@@ -69,7 +69,7 @@ foam.CLASS({
             }
           }
         } else {
-          Capable storedCapableObj = (Capable) currentObjectInDao;
+          Capable storedCapableObj = (Capable) currentObjectInDao.fclone();
 
           toPutCapableObj.setDAOKey(storedCapableObj.getDAOKey());
 
@@ -108,7 +108,7 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          toUpdateCapablePayloadDAO.inX(x).put((CapabilityJunctionPayload) currentPayload.fclone());
+          toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
         }
 
         // include old payloads when checking requirement status
