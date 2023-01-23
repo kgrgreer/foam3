@@ -142,13 +142,13 @@ foam.CLASS({
       grid-gap: 0;
     }
 
-    ^footer-link:link,
-    ^footer-link:visited,
-    ^footer-link:active {
+    ^footer-center a:link,
+    ^footer-center a:visited,
+    ^footer-center a:active {
       color: /*%BLACK%*/ #1E1F21;
       text-decoration: none;
     }
-    ^footer-link:hover {
+    ^footer-center a:hover {
       text-decoration: underline;
     }
 
@@ -173,7 +173,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
 
-    ^footer-img {
+    ^footer-center img {
       height: 1em;
       display: inline-block;
     }
@@ -226,12 +226,8 @@ foam.CLASS({
     },
     'help_',
     {
-      class: 'StringArray',
-      name: 'footerStrings'
-    },
-    {
       class: 'String',
-      name: 'footerLink'
+      name: 'footerHTML'
     },
     {
       class: 'Boolean',
@@ -394,30 +390,18 @@ foam.CLASS({
                 .tag(dynamicFooter);
             }))
           .end()
-          .callIf((this.footerStrings || this.includeSupport ), function() {
+          .callIf((this.footerHTML || this.includeSupport ), function() {
             this.start()
               .addClasses([self.myClass('footer'), 'p-legal-light'])
               // empty space
               .start().addClass(self.myClass('footer-left'))
               .end()
               // link
-              .start().addClass(self.myClass('footer-center'))
-                .start(self.footerLink ? 'a' : 'p')
-                  .show(self.footerStrings$)
-                  .enableClass(self.myClass('footer-link'), self.footerLink$)
-                  .forEach(self.footerStrings, function(str) {
-                    if ( str.startsWith('img:') ) {
-                      this.start('img')
-                        .addClass(self.myClass('footer-img'))
-                        .attr('src',str.replace('img:', ''))
-                      .end();
-                    } else {
-                      this.add(str);
-                    }
-                  })
-                  .attrs({ href: self.footerLink, target: '_blank' })
-                .end()
-              .end()
+              .add(self.slot(function (footerHTML) { 
+                return this.E().start().addClass(self.myClass('footer-center'))
+                  .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: footerHTML })) 
+                .end();
+              }))
               // support info
               .start().addClass(self.myClass('footer-right'))
                 .callIf(self.includeSupport, function() {
