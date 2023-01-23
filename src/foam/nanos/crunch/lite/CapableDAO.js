@@ -108,7 +108,7 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
+          toUpdateCapablePayloadDAO.inX(x).put((CapabilityJunctionPayload) currentPayload.fclone());
         }
 
         // include old payloads when checking requirement status
