@@ -46,7 +46,7 @@ foam.CLASS({
         );
       }
 
-      return await this.delegate.save();
+      return await this.delegate.save(data);
     }
   ]
 });
