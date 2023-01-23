@@ -87,6 +87,7 @@ foam.CLASS({
       name: 'countryId',
       label: 'Country',
       shortName: 'country',
+      writePermissionRequired: true,
       of: 'foam.nanos.auth.Country',
       documentation: `A foreign key into the CountryDAO which represents the country.`,
       required: true,
