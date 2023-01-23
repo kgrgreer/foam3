@@ -285,7 +285,7 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^ .moreChoices {
+    ^moreChoices {
       padding: 8px 16px;
     }
   `,
@@ -608,7 +608,7 @@ foam.CLASS({
                           .end()
                           .callIf(section.choicesLimit, function() {
                             this.start()
-                              .addClass('moreChoices')
+                              .addClass(self.myClass('moreChoices'))
                               .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
                             .end();
                           });
