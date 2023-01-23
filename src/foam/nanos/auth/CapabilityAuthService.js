@@ -20,15 +20,15 @@ foam.CLASS({
   javaImports: [
     'foam.core.Detachable',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.LimitedSink',
     'foam.dao.ProxySink',
-    'foam.dao.AbstractSink',
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
-    'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.CapabilityAuthServicePredicate',
+    'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.AssociatedEntity',
@@ -39,10 +39,11 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Date',
     'java.util.List',
     'java.util.Map',
-    'java.util.concurrent.ConcurrentHashMap',
+    'javax.security.auth.AuthPermission',
     'static foam.mlang.MLang.*'
   ],
 
@@ -52,17 +53,16 @@ foam.CLASS({
       documentation: `All permissions granted by any Capability. Used to
       short-circuit permission checks for permissions that can't possibly be
       granted by any UCJ.`,
-
       class: 'Map',
       javaFactory: `
         // There is no ConcurrentHashSet, which is why we need to use a Map.
-        Map  m    = new java.util.concurrent.ConcurrentHashMap();
+        Map  m    = new ConcurrentHashMap<String, AuthPermission>();
         Sink sink = new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             Capability c = (Capability) obj;
             for ( var j = 0 ; j < c.getPermissionsGranted().length ; j++ ) {
               String p = c.getPermissionsGranted()[j];
-              m.put(p, Boolean.TRUE);
+              m.put(p, new AuthPermission(p));
             }
           }
         };
@@ -84,15 +84,14 @@ foam.CLASS({
       type: 'Boolean',
       args: 'String p',
       javaCode: `
-        if ( p.startsWith("serviceprovider") ) return true; // TODO: why?
+        if ( p.startsWith("serviceprovider") ) return true;
 
-        while ( true ) {
-          if ( getCapabilityPermissions().containsKey(p) ) return true;
-          if ( p.endsWith(".*") ) p = p.substring(0, p.length()-2); // TODO: Why would this happen?
-          int i = p.lastIndexOf(".");
-          if ( i == -1 ) return false;
-          p = p.substring(0, i+1) + "*"; // Why add the "*"?
-        }
+        java.security.Permission p2 = new AuthPermission(p);
+
+        for ( Object perm : getCapabilityPermissions().values() )
+          if ( ((AuthPermission) perm).implies(p2) ) return true;
+
+        return false;
       `
     },
     {
