@@ -397,11 +397,9 @@ foam.CLASS({
               .start().addClass(self.myClass('footer-left'))
               .end()
               // link
-              .add(self.slot(function (footerHTML) { 
-                return this.E().start().addClass(self.myClass('footer-center'))
-                  .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: footerHTML })) 
-                .end();
-              }))
+              .start().addClass(self.myClass('footer-center'))
+                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
+              .end()
               // support info
               .start().addClass(self.myClass('footer-right'))
                 .callIf(self.includeSupport, function() {
