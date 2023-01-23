@@ -173,6 +173,11 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
 
+    ^footer-img {
+      height: 1em;
+      display: inline-block;
+    }
+
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
         width: 65vw;
@@ -221,8 +226,8 @@ foam.CLASS({
     },
     'help_',
     {
-      class: 'String',
-      name: 'footerString'
+      class: 'StringArray',
+      name: 'footerStrings'
     },
     {
       class: 'String',
@@ -389,7 +394,7 @@ foam.CLASS({
                 .tag(dynamicFooter);
             }))
           .end()
-          .callIf((this.footerString || this.includeSupport ), function() {
+          .callIf((this.footerStrings || this.includeSupport ), function() {
             this.start()
               .addClasses([self.myClass('footer'), 'p-legal-light'])
               // empty space
@@ -397,10 +402,19 @@ foam.CLASS({
               .end()
               // link
               .start().addClass(self.myClass('footer-center'))
-                .start(self.footerLink ? 'a' : '')
-                  .show(self.footerString$)
-                  .enableClass(this.myClass('footer-link'), this.footerLink$)
-                  .add(self.footerString$)
+                .start(self.footerLink ? 'a' : 'p')
+                  .show(self.footerStrings$)
+                  .enableClass(self.myClass('footer-link'), self.footerLink$)
+                  .forEach(self.footerStrings, function(str) {
+                    if ( str.startsWith('img:') ) {
+                      this.start('img')
+                        .addClass(self.myClass('footer-img'))
+                        .attr('src',str.replace('img:', ''))
+                      .end();
+                    } else {
+                      this.add(str);
+                    }
+                  })
                   .attrs({ href: self.footerLink, target: '_blank' })
                 .end()
               .end()
