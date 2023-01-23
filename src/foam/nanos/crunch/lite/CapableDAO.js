@@ -69,7 +69,7 @@ foam.CLASS({
             }
           }
         } else {
-          Capable storedCapableObj = (Capable) currentObjectInDao;
+          Capable storedCapableObj = (Capable) currentObjectInDao.fclone();
 
           toPutCapableObj.setDAOKey(storedCapableObj.getDAOKey());
 
