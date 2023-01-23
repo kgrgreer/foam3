@@ -78,7 +78,7 @@ foam.CLASS({
             toPutCapableObj.setDAOKey(getDaoKey());
           }
 
-          DAO storedCapablePayloadDAO = storedCapableObj.getCapablePayloadDAO(x);
+          DAO storedCapablePayloadDAO = storedCapableObj.getCapablePayloadDAO(getX());
 
           for ( int i = 0; i < toPutCapablePayloadArray.length; i++ ){
             CapabilityJunctionPayload toPutCapablePayload =
