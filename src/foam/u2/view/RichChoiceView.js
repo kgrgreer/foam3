@@ -66,6 +66,16 @@ foam.CLASS({
       class: 'String',
       name: 'heading',
       documentation: 'The heading text for this section.'
+    },
+    {
+      class: 'Int',
+      name: 'choicesLimit'
+    },
+    {
+      class: 'Boolean',
+      name: 'refineInput_',
+      value: true,
+      documentation: 'If choicesLimit set, the flag is an indicator to show that more items could be populated.'
     }
   ]
 });
@@ -136,6 +146,10 @@ foam.CLASS({
     {
       name: 'CLEAR_SELECTION',
       message: 'Clear'
+    },
+    {
+      name: 'MORE_CHOICES',
+      message: 'Refine search to see more results'
     }
   ],
 
@@ -270,6 +284,10 @@ foam.CLASS({
       color: $destructive400;
       cursor: pointer;
     }
+
+    ^moreChoices {
+      padding: 8px 16px;
+    }
   `,
 
   properties: [
@@ -389,6 +407,10 @@ foam.CLASS({
           else {
             section.filteredDAO = section.dao;
           }
+          if ( section.choicesLimit )
+            section.filteredDAO.select(this.COUNT()).then( v => {
+                section.refineInput_ = v.value > section.choicesLimit;
+            });
         });
       }
     },
@@ -572,7 +594,7 @@ foam.CLASS({
                             .translate(section.heading, section.heading)
                           .end()
                           .start()
-                            .select(section.filteredDAO$proxy, obj => {
+                            .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
                               return this.E()
                                 .start(self.rowView, { data: obj })
                                   .enableClass('disabled', section.disabled)
@@ -583,7 +605,13 @@ foam.CLASS({
                                   })
                                 .end();
                             }, false, self.comparator)
-                          .end();
+                          .end()
+                          .callIf(section.choicesLimit, function() {
+                            this.start()
+                              .addClass(self.myClass('moreChoices'))
+                              .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                            .end();
+                          });
                           index++;
                       });
                     });
