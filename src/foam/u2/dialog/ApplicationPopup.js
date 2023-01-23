@@ -142,13 +142,13 @@ foam.CLASS({
       grid-gap: 0;
     }
 
-    ^footer-link:link,
-    ^footer-link:visited,
-    ^footer-link:active {
+    ^footer-center a:link,
+    ^footer-center a:visited,
+    ^footer-center a:active {
       color: /*%BLACK%*/ #1E1F21;
       text-decoration: none;
     }
-    ^footer-link:hover {
+    ^footer-center a:hover {
       text-decoration: underline;
     }
 
@@ -171,6 +171,11 @@ foam.CLASS({
 
     ^info-text {
       color: /*%BLACK%*/ #1e1f21;
+    }
+
+    ^footer-center img {
+      height: 1em;
+      display: inline-block;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -222,11 +227,7 @@ foam.CLASS({
     'help_',
     {
       class: 'String',
-      name: 'footerString'
-    },
-    {
-      class: 'String',
-      name: 'footerLink'
+      name: 'footerHTML'
     },
     {
       class: 'Boolean',
@@ -389,7 +390,7 @@ foam.CLASS({
                 .tag(dynamicFooter);
             }))
           .end()
-          .callIf((this.footerString || this.includeSupport ), function() {
+          .callIf((this.footerHTML || this.includeSupport ), function() {
             this.start()
               .addClasses([self.myClass('footer'), 'p-legal-light'])
               // empty space
@@ -397,12 +398,7 @@ foam.CLASS({
               .end()
               // link
               .start().addClass(self.myClass('footer-center'))
-                .start(self.footerLink ? 'a' : '')
-                  .show(self.footerString$)
-                  .enableClass(this.myClass('footer-link'), this.footerLink$)
-                  .add(self.footerString$)
-                  .attrs({ href: self.footerLink, target: '_blank' })
-                .end()
+                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
               .end()
               // support info
               .start().addClass(self.myClass('footer-right'))
