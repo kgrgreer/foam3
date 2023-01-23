@@ -11,7 +11,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'foam.nanos.crunch.CapabilityIntercept',
@@ -47,7 +46,7 @@ foam.CLASS({
       javaCode: `
         FObject currentObjectInDao = getDelegate().find_(x, obj);
         Capable toPutCapableObj =  (Capable) obj;
-        DAO toUpdateCapablePayloadDAO;
+        DAO toPutCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(getX());
 
         CapabilityJunctionPayload[] toPutCapablePayloadArray =
           (CapabilityJunctionPayload[]) toPutCapableObj.getCapablePayloads();
@@ -57,7 +56,6 @@ foam.CLASS({
         // and we also need to populate the CapablePayload.daoKey and
         // CapablePayload.objId fields since they don't get filled out by client
         if ( currentObjectInDao == null ) {
-          toUpdateCapablePayloadDAO = toPutCapableObj.getCapablePayloadDAO(getX());
           for (int i = 0; i < toPutCapablePayloadArray.length; i++){
 
             toPutCapableObj.setDAOKey(getDaoKey());
@@ -80,7 +78,7 @@ foam.CLASS({
             toPutCapableObj.setDAOKey(getDaoKey());
           }
 
-          toUpdateCapablePayloadDAO = storedCapableObj.getCapablePayloadDAO(x);
+          DAO storedCapablePayloadDAO = storedCapableObj.getCapablePayloadDAO(x);
 
           for ( int i = 0; i < toPutCapablePayloadArray.length; i++ ){
             CapabilityJunctionPayload toPutCapablePayload =
@@ -96,7 +94,7 @@ foam.CLASS({
                   toPutCapablePayload.getCapability());
               }
 
-              CapabilityJunctionPayload storedCapablePayload = (CapabilityJunctionPayload) toUpdateCapablePayloadDAO.find(capability.getId());
+              CapabilityJunctionPayload storedCapablePayload = (CapabilityJunctionPayload) storedCapablePayloadDAO.find(capability.getId());
 
               if ( storedCapablePayload != null ){
                 toPutCapablePayload.setStatus(storedCapablePayload.getStatus());
@@ -108,12 +106,8 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
+          toPutCapablePayloadDAO.inX(x).put(currentPayload);
         }
-
-        // include old payloads when checking requirement status
-        CapabilityJunctionPayload[] payloads = (CapabilityJunctionPayload[]) ((List) ((ArraySink) toUpdateCapablePayloadDAO.inX(getX()).select(new ArraySink())).getArray()).toArray(new CapabilityJunctionPayload[0]);
-        toPutCapableObj.setCapablePayloads(payloads);
 
         if ( 
           ! toPutCapableObj.checkRequirementsStatusNoThrow(x, toPutCapableObj.getCapabilityIds(), CapabilityJunctionStatus.GRANTED) &&
