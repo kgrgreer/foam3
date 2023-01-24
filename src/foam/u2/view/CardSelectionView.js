@@ -78,7 +78,8 @@ foam.CLASS({
                 return self.E();
               }
 
-              var selection = self.data;
+              // Set default choice selection based on data
+              var selection = choices.find(c => self.choiceIsSelected(self.data, c));
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
                   return self.choiceIsSelected(data, choices[index]);
@@ -100,9 +101,9 @@ foam.CLASS({
                 cardSelectViewConfig.data$ = valueSimpSlot;
                 cardSelectViewConfig.data  = valueSimpSlot.get();
 
-                // Set choice selection based on predicate
-                if ( self.selectionPredicate && self.selectionPredicate.f(choice) ) {
-                  selection = choice;
+                // No default selection, set choice selection based on predicate
+                if ( selection === undefined && self.selectionPredicate?.f(choice) ) {
+                    selection = choice;
                 }
 
                 return self.E()
@@ -129,8 +130,8 @@ foam.CLASS({
 
               });
 
-              // For default selection in case of empty data e.g. One time deposit
-              if ( ! selection ) selection = choices[0];
+              // No default selection, select the first choice
+              if ( selection === undefined ) selection = choices[0];
               self.data = foam.Array.isInstance(selection) ? selection[0] : selection;
 
               return toRender;
