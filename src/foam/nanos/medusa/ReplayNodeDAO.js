@@ -42,7 +42,7 @@ foam.CLASS({
     {
       name: 'maxRetryAttempts',
       class: 'Int',
-      value: 10
+      value: 20
     },
     {
       name: 'journal',
