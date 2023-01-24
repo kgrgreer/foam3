@@ -112,7 +112,7 @@ foam.CLASS({
 
     ^logo img, ^logo svg {
       display: flex;
-      max-height: 2.4rem;
+      max-height: 4rem;
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
     }
@@ -122,24 +122,33 @@ foam.CLASS({
     }
 
     ^footer {
-      padding: 1em 0;
+      display: grid;
+      grid-template-columns: auto;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 1em;
       text-align: center;
       border-top: 1px solid $grey300;
       flex-shrink: 0;
       white-space: nowrap;
+    }
+    ^footer-right, ^footer-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     ^  .foam-u2-layout-Grid {
       grid-gap: 0;
     }
 
-    ^footer-link:link,
-    ^footer-link:visited,
-    ^footer-link:active {
+    ^footer-center a:link,
+    ^footer-center a:visited,
+    ^footer-center a:active {
       color: /*%BLACK%*/ #1E1F21;
       text-decoration: none;
     }
-    ^footer-link:hover {
+    ^footer-center a:hover {
       text-decoration: underline;
     }
 
@@ -164,12 +173,26 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
 
+    ^footer-center img {
+      height: 1em;
+      display: inline-block;
+    }
+
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
         width: 65vw;
       }
       ^fullscreen ^bodyWrapper {
         width: 75%;
+      }
+      ^footer {
+        grid-template-columns: 1fr auto 1fr;
+      }
+      ^footer-right {
+        justify-content: flex-end;
+      }
+      ^footer-left {
+        justify-content: flex-start;
       }
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
@@ -204,11 +227,7 @@ foam.CLASS({
     'help_',
     {
       class: 'String',
-      name: 'footerString'
-    },
-    {
-      class: 'String',
-      name: 'footerLink'
+      name: 'footerHTML'
     },
     {
       class: 'Boolean',
@@ -370,47 +389,42 @@ foam.CLASS({
                 .addClass(this.myClass('dynamicFooter'))
                 .tag(dynamicFooter);
             }))
-            .callIf((this.footerString || this.includeSupport ), function() {
-              this.start(this.Grid)
-                .addClasses([this.myClass('footer'), 'p-legal-light'])
-                // empty space
-                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 0, lgColumns: 5, xlColumns: 5 }})
-                .end()
-                // link
-                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 2, xlColumns: 2 } })
-                  .start(this.footerLink ? 'a' : '')
-                    .show(this.footerString$)
-                    .enableClass(this.myClass('footer-link'), this.footerLink$)
-                    .add(this.footerString$)
-                    .attrs({ href: this.footerLink, target: '_blank' })
-                  .end()
-                .end()
-                // support info
-                .start(this.GUnit, { columns: { class: 'foam.u2.layout.GridColumns', columns: 12, lgColumns: 5, xlColumns: 5 } })
-                  .callIf(this.includeSupport, function() {
-                    this
-                      .start()
-                        .start('span')
-                          .addClass('')
-                          .add(self.SUPPORT_TITLE)
-                          .start('a')
-                            .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
-                            .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
-                            .add(self.theme.supportConfig.supportEmail)
-                          .end()
-                          .add(' | ')
-                          .start('a')
-                            .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
-                            .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
-                            .add(self.theme.supportConfig.supportPhone)
-                          .end()
+          .end()
+          .callIf((this.footerHTML || this.includeSupport ), function() {
+            this.start()
+              .addClasses([self.myClass('footer'), 'p-legal-light'])
+              // empty space
+              .start().addClass(self.myClass('footer-left'))
+              .end()
+              // link
+              .start().addClass(self.myClass('footer-center'))
+                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
+              .end()
+              // support info
+              .start().addClass(self.myClass('footer-right'))
+                .callIf(self.includeSupport, function() {
+                  this
+                    .start()
+                      .start('span')
+                        .addClass('')
+                        .add(self.SUPPORT_TITLE)
+                        .start('a')
+                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
+                          .add(self.theme.supportConfig.supportEmail)
+                        .end()
+                        .add(' | ')
+                        .start('a')
+                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
+                          .add(self.theme.supportConfig.supportPhone)
                         .end()
                       .end()
-                  })
-                .end()
+                    .end()
+                })
               .end()
-            })
-          .end()
+            .end()
+          })
         .end();
 
       this.content = content;

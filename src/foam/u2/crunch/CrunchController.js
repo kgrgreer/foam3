@@ -45,6 +45,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.WizardStateAgent',
     'foam.u2.crunch.wizardflow.RequirementsPreviewAgent',
     'foam.u2.crunch.wizardflow.AutoSaveWizardletsAgent',
+    'foam.u2.crunch.wizardflow.PublishToWizardletsAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.PutFinalPayloadsAgent',
     'foam.u2.crunch.wizardflow.TestAgent',
@@ -147,6 +148,7 @@ foam.CLASS({
             this.add(self.DebugAgent)
           })
           .add(this.CreateControllerAgent)
+          .add(this.PublishToWizardletsAgent, { event: 'onReady' })
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
@@ -353,6 +355,7 @@ foam.CLASS({
           waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
         })
         .add(this.GraphWizardletsAgent)
+        .add(this.PublishToWizardletsAgent, { event: 'onReady' })
 
       if ( opt_sequenceExtras ) {
         for ( const fluentSpec of opt_sequenceExtras ) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CronJobDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Keep cron job execution dao in sync',
+  documentation: 'Remove disabled cron jobs',
 
   javaImports: [
     'foam.dao.DAO',
@@ -19,10 +19,10 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'cronJobDAO',
+      name: 'cronDAO',
       class: 'String',
       visibility: 'HIDDEN',
-      value: 'localCronJobDAO',
+      value: 'cronDAO',
     }
   ],
 
@@ -30,22 +30,14 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Cron cron = (Cron) getDelegate().put_(x, obj);
-      if ( cron.getEnabled() ) {
-        Cron job = (Cron) cron.fclone();
-        job.setScheduledTime(job.getNextScheduledTime(x));
-        ((DAO) x.get(getCronJobDAO())).put_(x, job);
+      Cron cron = (Cron) obj;
+      if ( ! cron.getEnabled() ) {
+        getDelegate().remove_(x, obj);
+        ((DAO) x.get(getCronDAO())).put_(x, cron.fclone());
+        return cron;
       } else {
-        ((DAO) x.get(getCronJobDAO())).remove_(x, cron);
+        return getDelegate().put_(x, obj);
       }
-      return cron;
-      `
-    },
-    {
-      name: 'remove_',
-      javaCode: `
-      ((DAO) x.get(getCronJobDAO())).remove_(x, obj);
-      return getDelegate().remove_(x, obj);
       `
     }
   ]

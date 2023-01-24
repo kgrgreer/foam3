@@ -30,6 +30,7 @@ foam.CLASS({
       section: '_defaultSection',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO
           .where(obj.EQ(foam.nanos.auth.User.ID, value))
@@ -51,6 +52,7 @@ foam.CLASS({
       section: '_defaultSection',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO
           .where(obj.EQ(foam.nanos.auth.User.ID, value))

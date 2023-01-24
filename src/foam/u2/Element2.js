@@ -42,7 +42,9 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
-  - NEXT_ID() removed. Use new Object().$UID instead.
+  - NEXT_ID() removed. Use new Object().$UID instead. (all done)
+  - onAddChildren() no longer supported
+
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -103,13 +105,19 @@ foam.CLASS({
   name: 'SlotNode',
   extends: 'foam.u2.Node',
 
+  // TODO: store the proxy node instead of element_ so it can be properly detached
+
   properties: [
     'slot',
+    {
+      name: 'node',
+      factory: function() { return foam.u2.Text.create({text: 'filler'}, this); }
+    },
     {
       name: 'element_',
       // Create a placeholder to insert into the right location, to be replaced
       // by slot value.
-      factory: function() { return this.document.createTextNode(''); }
+      getter: function() { return this.node.element_; }
     }
   ],
 
@@ -117,6 +125,10 @@ foam.CLASS({
     function load() {
       this.slot.sub(this.update);
       this.update();
+    },
+
+    function style(map) {
+      this.node.style && this.node.style(map);
     }
   ],
 
@@ -125,26 +137,31 @@ foam.CLASS({
       name: 'update',
 //      isFramed: true,
       code: function() {
-        var update_ = (val) => {
-          var e;
+        var update_ = val => {
+          var n;
+
           if ( val === undefined || val === null ) {
-            e = foam.u2.Text.create({}, this);
+            n = foam.u2.Text.create({}, this);
           } else if ( this.isLiteral(val) ) {
-            e = foam.u2.Text.create({text: val}, this);
+            n = foam.u2.Text.create({text: val}, this);
           } else if ( foam.u2.Element.isInstance(val) ) {
-            e = val;
+            n = val;
           } else if ( foam.Array.isInstance(val) ) {
-            e = foam.u2.Element.create({nodeName:'span'}, this);
-            e.add.apply(e, val);
+            n = foam.u2.Element.create({nodeName:'span'}, this);
+            n.add.apply(n, val);
           } else if ( val.then ) {
-            val.then(e => update_(e));
+            val.then(n => update_(n));
             return;
           } else {
             console.log('Unknown slot type: ', typeof val);
             debugger;
           }
-          this.element_.parentNode.replaceChild(e.element_, this.element_);
-          this.element_ = e.element_;
+
+          this.element_.parentNode.replaceChild(n.element_, this.element_);
+          n.load && n.load();
+          var old = this.node;
+          this.node = n;
+          old.detach();
         };
 
         update_(this.slot.get());
@@ -366,6 +383,10 @@ foam.CLASS({
     'translationService?'
   ],
 
+  exports: [
+    'namespace'
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -411,11 +432,6 @@ foam.CLASS({
         '39': 'right',
         '40': 'down'
       }
-    },
-    // ???: alternatively, there could be a sub-class of Element called SVGElement
-    {
-      name: 'SVG_TAGS',
-      value: { svg: true, g: true, rect: true, path: true }
     }
   ],
 
@@ -430,8 +446,8 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        var ret = this.SVG_TAGS[this.nodeName] ?
-          this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
+        var ret = this.namespace ?
+          this.document.createElementNS(this.namespace, this.nodeName) :
           this.document.createElement(this.nodeName);
         if ( this.hasOwnProperty('id') ) ret.id = this.id;
         return ret;
@@ -457,6 +473,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'tooltip',
+      attribute: true,
       postSet: function(o, n) {
         if ( n && ! o ) {
           this.Tooltip.create({target: this, text$: this.tooltip$});
@@ -502,20 +519,10 @@ foam.CLASS({
       value: 'div'
     },
     {
-      name: 'attributeMap',
-      documentation: 'Same information as "attributes", but in map form for faster lookup',
-      transient: true,
-      factory: function() { return {}; }
-    },
-    {
-      name: 'attributes',
-      documentation: 'Array of {name: ..., value: ...} attributes.',
-      factory: function() { return []; },
-      postSet: function(_, attrs) {
-        this.attributeMap = {};
-        for ( var i = 0 ; i < attrs.length ; i++ ) {
-          this.attributeMap[attrs[i].name] = attrs[i];
-        }
+      class: 'String',
+      name: 'namespace',
+      factory: function() {
+        return this.__context__['namespace'] || this.nodeName === 'svg' ? 'http://www.w3.org/2000/svg' : '';
       }
     },
     {
@@ -601,16 +608,20 @@ foam.CLASS({
     },
 
     function load() {
+      // Needed for OverlayDropdown which overrides add(), but shouldn't.
+      // TODO: Fix OverlayDropdown to use content$ and then remove this.
+      var customAdd = this.add != foam.u2.Element.prototype.add;
       // disable adding to content$ during render()
-      this.add = function() { return this.add_(arguments, this); }
+      if ( ! customAdd ) this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      this.add = foam.u2.Element.prototype.add;
+      if ( ! customAdd ) this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
       // to document yet, then that doesn't work, so try again now.
       if ( this.focused ) this.element_.focus();
     },
+
     function remove() {
       if ( this.parentNode ) {
         // parent will remove from DOM and detach
@@ -619,16 +630,6 @@ foam.CLASS({
         this.element_.remove();
         this.detach();
       }
-    },
-    function onReplaceChild(oldE, newE) {
-      var e = this.el_();
-      if ( ! e ) {
-        console.warn('Missing Element: ', this.id);
-        return;
-      }
-      // TODO
-      oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
-      newE.load && newE.load();
     },
 
     function getBoundingClientRect() {
@@ -853,10 +854,6 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip && value ) {
-        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
-      }
-
       // handle slot binding, ex.: data$: ...,
       // Remove if we add a props() method
       if ( name.endsWith('$') ) {
@@ -889,16 +886,6 @@ foam.CLASS({
         } else {
           foam.assert(foam.util.isPrimitive(value), 'Attribute value must be a primitive type.');
 
-          var attr = this.getAttributeNode(name);
-
-          if ( attr ) {
-            attr.value = value;
-          } else {
-            attr = { name: name, value: value };
-            this.attributes.push(attr);
-            this.attributeMap[name] = attr;
-          }
-
           if ( this.PSEDO_ATTRIBUTES[name] ) {
             this.element_[name] = value;
           } else {
@@ -907,57 +894,32 @@ foam.CLASS({
         }
       }
 
+      if ( name === 'title' && ! this.tooltip && value ) {
+        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
+      }
+
       return this;
     },
 
     function removeAttribute(name) {
-      /* Remove attribute named 'name'. */
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        if ( this.attributes[i].name === name ) {
-          this.attributes.splice(i, 1);
-          delete this.attributeMap[name];
-          if ( this.PSEDO_ATTRIBUTES[name] ) {
-            this.element_[name] = '';
-          } else {
-            this.element_.removeAttribute(name);
-          }
-          break;
-        }
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        this.element_[name] = '';
+      } else {
+        this.element_.removeAttribute(name);
       }
       return this;
     },
 
-    function getAttributeNode(name) {
-      /*
-        Get {name: ..., value: ...} attributeNode associated
-        with 'name', if exists.
-      */
-      return this.attributeMap[name];
-    },
-
     function getAttribute(name) {
-      // TODO: add support for other dynamic attributes also
-      // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
-        var value = this.el_()[name];
-        var attr  = this.getAttributeNode(name);
-
-        if ( attr ) {
-          attr.value = value;
-        } else {
-          attr = { name: name, value: value };
-          this.attributes.push(attr);
-          this.attributeMap[name] = attr;
-        }
-
-        return value;
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        return this.element_[name];
       }
 
       /*
         Get value associated with attribute 'name',
         or undefined if attribute not set.
       */
-      var attr = this.getAttributeNode(name);
+      var attr = this.element_.getAttributeNode(name);
       return attr && attr.value;
     },
 
@@ -991,7 +953,10 @@ foam.CLASS({
         if ( cs[i] === oldE ) {
           cs[i] = newE;
           newE.parentNode = this;
-          this.onReplaceChild.call(this, oldE, newE);
+          debugger;
+          oldE.element_.parentNode.replaceChild(oldE.element_, newE.element_);
+//          oldE.element_.outerHTML = '<' + this.nodeName + '></' + this.nodeName + '>';
+          newE.load && newE.load();
           oldE.remove();
           return;
         }
@@ -1006,7 +971,6 @@ foam.CLASS({
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
-      debugger;
       var ls = this.elListeners;
       for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
@@ -2191,8 +2155,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateMode_(this.mode);
-      // this.enableClass('error', this.error_$);
-      this.setAttribute('title', this.error_$);
+      this.enableClass('error', this.error_$);
+      // this.setAttribute('title', this.error_$);
     },
 
     function updateMode_() {

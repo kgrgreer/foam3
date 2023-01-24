@@ -16,7 +16,7 @@ foam.CLASS({
       var output = [];
       for ( var row of arrayOfValues ) {
         row = row.map(v =>  {
-          return '"' + (v.replaceAll && v.replaceAll('"', '""') || v) +  '"' ;
+          return v ? '"' + (v.replaceAll && v.replaceAll('"', '""') || v) +  '"' : '';
         });
         output.push(row.join(','));
       }

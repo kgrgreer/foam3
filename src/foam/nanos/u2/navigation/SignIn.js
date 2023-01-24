@@ -71,6 +71,11 @@ foam.CLASS({
       }
     },
     {
+      flags: ['web'],
+      name: 'email',
+      hidden: true
+    },
+    {
       class: 'Boolean',
       name: 'usernameRequired',
       hidden: true
@@ -202,6 +207,7 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
+              this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
                 if ( this.username ) {
@@ -217,6 +223,7 @@ foam.CLASS({
                   }
                 }
                 this.usernameRequired = true;
+                this.email = this.identifier;
               }
               this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }

@@ -42,7 +42,7 @@ foam.CLASS({
     {
       name: 'maxRetryAttempts',
       class: 'Int',
-      value: 12
+      value: 25
     },
     {
       name: 'journal',
@@ -60,31 +60,33 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
+      Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
       if ( obj instanceof ReplayDetailsCmd ) {
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
+        logger.info("request", details);
+
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
         details.setMinIndex(info.getMinIndex());
-        details.setMaxIndex(info.getMaxIndex());
+        details.setMaxIndex(info.getIndex());
         details.setCount(info.getCount());
 
-        ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex(), "count", details.getCount());
+        logger.info("response", details);
 
         return details;
       }
 
       if ( obj instanceof ReplayCmd ) {
-        Logger logger = Loggers.logger(x, this, "cmd", "ReplayCmd");
         ReplayCmd cmd = (ReplayCmd) obj;
         ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
         long indexAtStart = info.getIndex();
 
-        logger.info("requester", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex());
+        logger.info("request", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
         ClusterConfig toConfig = support.getConfig(x, details.getRequester());
-        if ( details.getMinIndex() <= info.getMaxIndex() ) {
+        if ( details.getMinIndex() <= info.getIndex() ) {
 
           DAO clientDAO = (DAO) getClients().get(details.getRequester());
           if ( clientDAO != null ) {
@@ -94,6 +96,9 @@ foam.CLASS({
             clientDAO.cmd_(x, RetryClientSinkDAO.CANCEL_RETRY_CMD);
             ((ProxyDAO)clientDAO).setDelegate(new NullDAO(x, MedusaEntry.getOwnClassInfo()));
           }
+          // NOTE: must use a retry client with a retry > 1.
+          // Presently the first response appears to be rejected by the
+          // caller.
           clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
           getClients().put(details.getRequester(), clientDAO);
 
@@ -102,7 +107,7 @@ foam.CLASS({
             p = GTE(MedusaEntry.INDEX, details.getMinIndex());
           }
           if ( details.getMaxIndex() > 0 &&
-               details.getMaxIndex() < info.getMaxIndex() ) {
+               details.getMaxIndex() < info.getIndex() ) {
             if ( p == null ) {
               p = LTE(MedusaEntry.INDEX, details.getMaxIndex());
             } else {
@@ -133,7 +138,7 @@ foam.CLASS({
           cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
           getClients().remove(details.getRequester());
         } else {
-          logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getMaxIndex());
+          logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getIndex());
         }
         return cmd;
       }
@@ -141,7 +146,7 @@ foam.CLASS({
       if ( obj instanceof foam.mlang.sink.Max ) {
         Max max = (Max) getDelegate().select((Max) obj);
         if ( max != null ) {
-          ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "Max", "response", max.getValue());
+          logger.info("response", max.getValue());
         }
         return max;
       }

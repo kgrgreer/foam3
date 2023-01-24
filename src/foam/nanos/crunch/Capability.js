@@ -346,9 +346,7 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       type: 'Boolean',
-      args: [
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'X x, String permission',
       documentation: `Checks if a permission or capability string is implied by the current capability`,
       javaCode: `
         if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
@@ -370,7 +368,7 @@ foam.CLASS({
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
       javaCode: `
-        if ( this.grantsPermission(permission) ) return true;
+        if ( this.grantsPermission(x, permission) ) return true;
         return this.prerequisiteImplies(x, permission);
       `
     },

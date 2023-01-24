@@ -32,7 +32,7 @@ foam.CLASS({
 
   constants: {
     COLS: 26,
-    ROWS: 18
+    ROWS: 19
   },
 
   css: `
@@ -63,7 +63,7 @@ foam.CLASS({
       background: #FFCCCC;
     }
 
-    ^ tbody tr:hover, ^hovered {
+    ^hovered {
       background: #ccc !important;
     }
 
@@ -226,7 +226,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({
           'padding-left':  '16px',
-          'padding-top':   '16px',
+          'padding-top':   '0',
           'padding-right': '16px',
         })
 
@@ -284,7 +284,7 @@ foam.CLASS({
         .start(self.ScrollCView.create({
           value$: self.skip$,
           extent: self.ROWS,
-          height: self.ROWS*20,
+          height: self.ROWS*25,
           width: 26,
           size$: self.filteredRows$.map(function(m){return m-1;})
         }))
@@ -297,9 +297,8 @@ foam.CLASS({
       var ps   = this.filteredPs, gs = this.filteredGs.slice(gSkip, gSkip+this.COLS);
       var self = this, count = 0;
       return self.E('tbody').forEach(filteredPs, function(p) {
-        if ( count > skip + self.ROWS ) return;
-        if ( count < skip ) { count++; return; }
-        count++;
+        if ( count >= skip + self.ROWS ) return;
+        if ( count++ < skip ) return;
         this.start('tr')
           .start('td')
             .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { return cp === p; } ))
@@ -311,9 +310,9 @@ foam.CLASS({
           .forEach(gs, function(g) {
             this.start('td')
               .on('mouseover', function() { self.currentGroup = g; self.currentPermission = p; })
-              .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
-              .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
-              .attrs({title: g.id + ' : ' + p.id})
+              // removed mouseout because it just caused flicker
+              .enableClass(self.myClass('hovered'), self.slot(function(currentGroup, currentPermission) { return currentGroup == g || currentPermission == p; }))
+//              .attrs({title: g.id + ' : ' + p.id}) // Not needed becasue with scrollbars, col&row labels are always visible
               .tag(self.createCheckBox(p, g))
             .end();
           })
@@ -386,9 +385,9 @@ foam.CLASS({
         if ( parent ) {
           function update() {
             if ( parent.granted ) {
-              data.impliedByGroups[parent.id] = true;
+              data.impliedByGroups[a.id] = true;
             } else {
-              delete data.impliedByGroups[parent.id];
+              delete data.impliedByGroups[a.id];
             }
             data.impliedByGroup = !! Object.keys(data.impliedByGroups).length;
           }
@@ -415,10 +414,11 @@ foam.CLASS({
       var self = this;
       this.forEach(gs, function(g) {
         this.start('td')
+          .style({'white-space': 'pre'})
           .attrs({title: g.description})
           .addClass(matrix.myClass('groupLabel'))
           .enableClass(matrix.myClass('hovered'), matrix.currentGroup$.map(function(cg) { return cg === g; } ))
-          .add(g.id)
+          .add(g.displayName_)
         .end();
       });
     },
@@ -428,14 +428,29 @@ foam.CLASS({
       var self = this;
 
       this.groupDAO.orderBy(this.Group.ID).select().then(function(gs) {
-        for ( var i = 0 ; i < gs.array.length ; i++ ) {
-          self.gMap[gs.array[i].id] = gs.array[i];
+        gs = gs.array;
+
+        var gs2 = [];
+        function findChildren(parent, prefix) {
+          for ( var i = 0 ; i < gs.length ; i ++ ) {
+            var g = gs[i];
+            if ( g.parent === parent ) {
+              gs2.push(g);
+              g.displayName_ = prefix ? prefix + '┌ ' + g.id : g.id;
+              findChildren(g.id, prefix + '   ');
+            }
+          }
+        }
+        findChildren('', '');
+        gs = gs2;
+        for ( var i = 0 ; i < gs.length ; i++ ) {
+          self.gMap[gs[i].id] = gs[i];
         }
         self.permissionDAO.orderBy(self.Permission.ID).select().then(function(ps) {
           for ( var i = 0 ; i < ps.array.length ; i++ ) {
             self.pMap[ps.array[i].id] = ps.array[i];
           }
-          self.gs = gs.array;
+          self.gs = gs;
           self.ps = ps.array;
           self.matrix();
         })
@@ -519,6 +534,12 @@ foam.CLASS({
         ^implied { color: gray }
       `,
       methods: [
+        function init() {
+          // TODO: setting the tooltip doesn't work from render() in U2, but does in U3
+          if ( this.data.impliedByGroup ) {
+            this.tooltip = "Implied by " + Object.keys(this.data.impliedByGroups).join(', ');
+          }
+        },
         function render() {
           this.SUPER();
           this.
@@ -526,8 +547,11 @@ foam.CLASS({
             style({height: '18px'}).
             enableClass(this.myClass('implied'), this.data.checked$, true).
             enableClass(this.myClass('checked'), this.data.checked$).
-            add(this.slot(function(data$granted) {
-              return data$granted ? '✓' : '';
+            add(this.slot(function(data$granted, data$implied, data$impliedByGroup) {
+              if ( ! data$granted      ) return '';
+              if ( data$impliedByGroup ) return '←';
+              if ( data$implied        ) return '↑';
+              return '✓';
             })).
             on('click', this.onClick);
         }

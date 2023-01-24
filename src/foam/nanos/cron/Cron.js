@@ -68,6 +68,17 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'SUCCESS_ENABLED',
+      message: 'Successfully enabled'
+    },
+    {
+      name: 'SUCCESS_DISABLED',
+      message: 'Successfully disabled'
+    }
+  ],
+
   properties: [
     {
       documentation: 'Cron jobs shall be enabled as a deployment step.',
@@ -213,7 +224,9 @@ foam.CLASS({
            getReattempts() < getMaxReattempts() ) {
         setReattempts(getReattempts() +1);
         setReattemptRequested(false);
+        String attempt = "reattempt ("+getReattempts()+" of "+getMaxReattempts()+")";
         try {
+          er(x, attempt, LogLevel.WARN, null);
           super.runScript(x);
           if ( ! getReattemptRequested() ) {
             resetReattempts();
@@ -222,6 +235,10 @@ foam.CLASS({
             er(x, "max reattempts reached", LogLevel.ERROR, null);
             er(x, "disable on error", LogLevel.WARN, null);
             setEnabled(false);
+          } else if ( getReattempts() == 0 ) {
+            er(x, "reattempt requested", LogLevel.WARN, null);
+          } else {
+            er(x, attempt+" failed", LogLevel.WARN, null);
           }
         } catch ( RuntimeException e ) {
           er(x, "disable on error", LogLevel.WARN, null);
@@ -230,6 +247,7 @@ foam.CLASS({
         }
       } else if ( ! getReattemptRequested() ) {
         try {
+          er(x, null, LogLevel.INFO, null);
           super.runScript(x);
           getSchedule().postExecution();
         } catch ( RuntimeException e ) {
@@ -264,10 +282,23 @@ foam.CLASS({
         return this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = false;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = false;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     },
@@ -277,10 +308,23 @@ foam.CLASS({
         return ! this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = true;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = true;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     }

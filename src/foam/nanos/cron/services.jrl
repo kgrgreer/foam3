@@ -8,7 +8,7 @@ p({
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("cronjobs")
-      .setDecorator(new foam.nanos.cron.CronJobDAO.Builder(x)
+      .setDecorator(new foam.nanos.cron.CronDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo())).build())
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
@@ -30,10 +30,13 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.cron.Cron.getOwnClassInfo())
-      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(
-        new foam.nanos.cron.CronScheduleDAO.Builder(x)
-          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo()))
-          .build()))
+      .setDecorator(
+        new foam.nanos.cron.CronJobDAO.Builder(x)
+          .setDelegate(new foam.nanos.script.ScriptRunnerDAO(
+            new foam.nanos.cron.CronScheduleDAO.Builder(x)
+              .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo()))
+              .build()))
+          .build())
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.cron.Cron.ENABLED).build(),

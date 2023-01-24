@@ -8,9 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceArrayView',
   extends: 'foam.u2.view.ArrayView',
-  imports: [
-    'foam.mlang.sink.Count'
-  ],
+
   properties: [
     {
       class: 'String',

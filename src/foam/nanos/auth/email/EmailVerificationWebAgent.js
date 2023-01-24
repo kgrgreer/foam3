@@ -32,7 +32,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EMAIL_VERIFIED_SUCCESS', message: 'Your email has now been verified.' },
+    { name: 'EMAIL_VERIFIED_SUCCESS', message: 'Your email has now been verified and you may close this tab.' },
     { name: 'EMAIL_VERIFIED_ERROR', message: 'There was a problem verifying your email.' },
     { name: 'TOKEN_NOT_FOUND', message: 'Token not found.' },
     { name: 'EMAIL_ALREADY_VERIFIED', message: 'Email already verified.' }

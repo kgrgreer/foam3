@@ -10,11 +10,9 @@ foam.CLASS({
 
   documentation: 'Tooltip handler for any class extending Element',
 
-  imports: [
-    'window'
-  ],
+  imports: [ 'window' ],
 
-  requires: ['foam.u2.TooltipView'],
+  requires: [ 'foam.u2.TooltipView' ],
 
   properties: [
     {
@@ -37,7 +35,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.target.removeAttribute('title');
+      this.target.removeAttribute('title'); // prevents regular tooltips
       this.target.on('mouseover', this.loadTooltip);
       this.target.onDetach(this.close);
       this.SUPER();

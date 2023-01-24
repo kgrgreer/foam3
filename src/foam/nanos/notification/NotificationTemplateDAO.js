@@ -91,6 +91,7 @@ the notification will be handled. `,
               return notification;
             }
           } else {
+            // NOTE: do not generate an error or warning log as this in tern generates an alarm which in tern generates a notification
             logger.warning("Template not found", notification.getTemplate());
             return notification;
           }
