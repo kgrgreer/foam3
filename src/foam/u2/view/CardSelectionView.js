@@ -61,7 +61,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
-      name: 'selectionPredicate'
+      name: 'selectionPredicate',
+      documentation: 'Predicate for selecting the default choice when not able to infer from data'
     }
   ],
 
