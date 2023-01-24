@@ -48,10 +48,10 @@ foam.CLASS({
     },
     async function load (wizardlet) {
       if ( wizardlet.loading ) return;
+      wizardlet.loading = true;
       const loader = foam.json.parse(this.loader, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
       await this.SUPER(wizardlet);
-      wizardlet.loading = true;
       wizardlet.data = await loader.load({ old: wizardlet.data });
       wizardlet.loading = false;
     },
