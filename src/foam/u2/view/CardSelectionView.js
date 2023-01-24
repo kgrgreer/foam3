@@ -58,6 +58,11 @@ foam.CLASS({
       name: 'choiceView',
       value: { class: 'foam.u2.view.CardSelectView' }
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'selectionPredicate'
+    }
   ],
 
   methods: [
@@ -73,9 +78,7 @@ foam.CLASS({
                 return self.E();
               }
 
-              // For default selection in case of empty data e.g. One time deposit
-              if ( choices[0] && ! self.data ) self.data = foam.Array.isInstance(choices[0]) ? choices[0][0] : choices[0];
-
+              var selection = self.data;
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
                   return self.choiceIsSelected(data, choices[index]);
@@ -87,7 +90,7 @@ foam.CLASS({
 
                 var valueSimpSlot;
 
-                if ( choice instanceof Array ){
+                if ( choice instanceof Array ) {
                   valueSimpSlot = self.mustSlot(choice[0]);
                   cardSelectViewConfig.label = choice[1];
                 } else {
@@ -96,6 +99,11 @@ foam.CLASS({
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
                 cardSelectViewConfig.data  = valueSimpSlot.get();
+
+                // Set choice selection based on predicate
+                if ( self.selectionPredicate && self.selectionPredicate.f(choice) ) {
+                  selection = choice;
+                }
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))
@@ -120,6 +128,11 @@ foam.CLASS({
                   .end()
 
               });
+
+              // For default selection in case of empty data e.g. One time deposit
+              if ( ! selection ) selection = choices[0];
+              self.data = foam.Array.isInstance(selection) ? selection[0] : selection;
+
               return toRender;
             })
           )
