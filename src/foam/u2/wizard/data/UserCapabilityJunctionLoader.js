@@ -36,9 +36,9 @@ foam.CLASS({
 
         // Finally, apply new data to wizardlet
         if ( wizardlet.data ) {
-          wizardlet.data.copyFrom(loadedData);
+          return old.copyFrom(loadedData);
         } else {
-          wizardlet.data = loadedData.clone(wizardlet.__subSubContext__);
+          return loadedData.clone(wizardlet.__subSubContext__);
         }
       } catch (e) {
         console.warn(e);

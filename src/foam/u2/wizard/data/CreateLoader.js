@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'CreateLoader',
-  implements: ['foam.u2.wizard.data.Loader'],
+  extends: 'foam.u2.wizard.data.ProxyLoader',
 
   imports: [
     'wizardletOf?'
@@ -43,6 +43,15 @@ foam.CLASS({
 
   methods: [
     async function load(o) {
+      // If CreateLoader has a delegate we assume copyFrom is expected
+      if ( this.delegate ) {
+        const delegateResult = await this.delegate.load(o);
+        if ( delegateResult ) {
+          return delegateResult.copyFrom(this.args);
+        }
+      }
+
+      // Otherwise behave as before
       return o?.old ?? this.of.create(this.args, this);
     }
   ]
