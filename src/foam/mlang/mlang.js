@@ -4477,6 +4477,50 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.mlang',
+  name: 'TemplateString',
+  extends: 'foam.mlang.AbstractExpr',
+  properties: [
+    {
+      class: 'FObjectArray',
+      of: 'foam.mlang.ExprProperty',
+      name: 'args',
+      documentation: "TODO"
+    },
+    {
+      class: 'String',
+      name: 'string',
+      documentation: "TODO"
+    },
+    {
+      name: 'templateGrammar'
+    }
+  ],
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+      var stringParser = new Alt(
+       new Literal("\\\"", "\""),
+       new NotChars("\"")
+     );
+      templateGrammar = new Repeat(
+        stringParser,
+        new Seq1(0, Literal.create("{{"), stringParser, Literal.create("}}")),
+        1
+      );
+      StringPStream ps = new StringPStream();
+      ps.setString(getString());
+      var ret = ps.apply(ps, null);
+      if ( ret == null ) return null;
+
+      return null;
+      `
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
   name: 'IdentityExpr',
   extends: 'foam.mlang.AbstractExpr',
   axioms: [

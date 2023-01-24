@@ -16,10 +16,8 @@ import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
-import foam.parse.NewlineParser;
 
 import java.lang.Exception;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -502,15 +500,35 @@ public class FScriptParser
     });
 
 
-    grammar.addSymbol("STRING", new Seq1(1,
-      Literal.create("\""),
-      new Repeat(new Alt(
-        new Literal("\\\"", "\""),
-        new NotChars("\"")
-      )),
-      Literal.create("\"")
+    grammar.addSymbol("STRING", new Alt(
+      grammar.sym("TEMPLATE_STRING"),
+      new Seq1(1,
+        Literal.create("\""),
+        new Repeat(new Alt(
+          new Literal("\\\"", "\""),
+          new NotChars("\"")
+        )),
+        Literal.create("\"")
+      )
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
+    var stringParser = new Alt(
+      new Literal("\\\"", "\""),
+      new NotChars("\"")
+    );
+
+    grammar.addSymbol("TEMPLATE_STRING", new Repeat(
+      stringParser,
+      new Seq1(0, Literal.create("{{"), stringParser, Literal.create("}}")),
+      1
+    ));
+    grammar.addAction("TEMPLATE_STRING", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      var templStr = new TemplateString();
+      templStr.setString("dsf");
+      templStr.setArgs(null);
+      return templStr;
+    });
 
 
     grammar.addSymbol("ENUM", new Seq(
