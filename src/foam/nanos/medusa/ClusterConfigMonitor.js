@@ -27,9 +27,12 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.MAX',
+    'static foam.mlang.MLang.MIN',
     'static foam.mlang.MLang.NEQ',
     'static foam.mlang.MLang.NOT',
     'foam.mlang.sink.Max',
+    'foam.mlang.sink.Min',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',
@@ -125,10 +128,17 @@ foam.CLASS({
             DAO dao = ((DAO) x.get("medusaNodeDAO"));
             if ( replaying.getEndTime() == null ) {
               replaying.setEndTime(new java.util.Date());
-              Max max = (Max) dao.select(MAX(MedusaEntry.INDEX));
+              Min min = (Min) MIN(MedusaEntry.INDEX);
+              Max max = (Max) MAX(MedusaEntry.INDEX);
+              Sequence seq = new Sequence.Builder(x)
+               .setArgs(new Sink[] {min, max})
+               .build();
+              dao.select(seq);
               replaying.setReplaying(false);
               if ( max != null &&
                    max.getValue() != null ) {
+                replaying.setMinIndex((Long)min.getValue());
+                replaying.setMaxIndex((Long)max.getValue());
                 replaying.updateIndex(x, (Long)max.getValue());
                 replaying.setReplayIndex((Long)max.getValue());
               }
