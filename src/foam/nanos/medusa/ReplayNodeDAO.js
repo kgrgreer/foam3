@@ -42,7 +42,7 @@ foam.CLASS({
     {
       name: 'maxRetryAttempts',
       class: 'Int',
-      value: 20
+      value: 25
     },
     {
       name: 'journal',
@@ -60,26 +60,28 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
+      Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
       if ( obj instanceof ReplayDetailsCmd ) {
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
+        logger.info("request", details);
+
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
         details.setMinIndex(info.getMinIndex());
         details.setMaxIndex(info.getIndex());
         details.setCount(info.getCount());
 
-        ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "ReplayDetailsCmd", "requester", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex(), "count", details.getCount());
+        logger.info("response", details);
 
         return details;
       }
 
       if ( obj instanceof ReplayCmd ) {
-        Logger logger = Loggers.logger(x, this, "cmd", "ReplayCmd");
         ReplayCmd cmd = (ReplayCmd) obj;
         ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
         long indexAtStart = info.getIndex();
 
-        logger.info("requester", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex());
+        logger.info("request", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex());
 
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
@@ -144,7 +146,7 @@ foam.CLASS({
       if ( obj instanceof foam.mlang.sink.Max ) {
         Max max = (Max) getDelegate().select((Max) obj);
         if ( max != null ) {
-          ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "Max", "response", max.getValue());
+          logger.info("response", max.getValue());
         }
         return max;
       }
