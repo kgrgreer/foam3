@@ -4479,10 +4479,12 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'TemplateString',
   extends: 'foam.mlang.AbstractExpr',
+  javaImports: ['foam.lib.parse.*'],
   properties: [
     {
       class: 'FObjectArray',
-      of: 'foam.mlang.ExprProperty',
+//      of: 'foam.mlang.ExprProperty',
+      of: 'foam.mlang.expr.PropertyExpr',
       name: 'args',
       documentation: "TODO"
     },
@@ -4500,17 +4502,17 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       var stringParser = new Alt(
-       new Literal("\\\"", "\""),
-       new NotChars("\"")
+       new Literal("\\\\\\"", "\\\""),
+       new NotChars("\\"")
      );
-      templateGrammar = new Repeat(
+      var templateGrammar = new Repeat(
         stringParser,
         new Seq1(0, Literal.create("{{"), stringParser, Literal.create("}}")),
         1
       );
       StringPStream ps = new StringPStream();
       ps.setString(getString());
-      var ret = ps.apply(ps, null);
+      var ret = ps.apply(templateGrammar, null);
       if ( ret == null ) return null;
 
       return null;

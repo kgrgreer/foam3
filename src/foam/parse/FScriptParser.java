@@ -425,6 +425,7 @@ public class FScriptParser
       grammar.sym("DATE"),
       grammar.sym("VAR"),
       grammar.sym("STRING"),
+      grammar.sym("TEMPLATE_STRING"),
       new Literal("true", true),
       new Literal("false", false),
       new Literal("null", null),
@@ -501,7 +502,6 @@ public class FScriptParser
 
 
     grammar.addSymbol("STRING", new Alt(
-      grammar.sym("TEMPLATE_STRING"),
       new Seq1(1,
         Literal.create("\""),
         new Repeat(new Alt(
@@ -512,15 +512,19 @@ public class FScriptParser
       )
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
-    var stringParser = new Alt(
+    var stringParser = new Repeat(new Alt(
       new Literal("\\\"", "\""),
-      new NotChars("\"")
-    );
+      new NotChars("{{")
+    ));
+    var stringParser2 = new Repeat(new Alt(
+      new Literal("\\\"", "\""),
+      new NotChars("}}")
+    ));
 
     grammar.addSymbol("TEMPLATE_STRING", new Repeat(
       stringParser,
-      new Seq1(0, Literal.create("{{"), stringParser, Literal.create("}}")),
-      1
+      new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}"))),
+      2
     ));
     grammar.addAction("TEMPLATE_STRING", (val, x) -> {
       Object[] vals = (Object[]) val;
