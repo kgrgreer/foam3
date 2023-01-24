@@ -22,6 +22,7 @@ foam.CLASS({
 
   methods: [
     async function load({ old }) {
+      let initialData = this.delegate ? await this.delegate.load({ old }) : old;
       const wizardlet = await this.wizardlets.find(w => w.id === this.wizardletId);
       try {
         let ucj = this.subject ? await this.crunchService.getJunctionFor(
@@ -31,7 +32,7 @@ foam.CLASS({
         );
         wizardlet.status = ucj.status;
         // Load UCJ data to wizardlet
-        var loadedData =  old ? old : wizardlet.of.create({}, wizardlet);
+        let loadedData =  initialData ? initialData : wizardlet.of.create({}, wizardlet);
         if ( ucj.data ) loadedData.copyFrom(ucj.data);
 
         // Finally, apply new data to wizardlet

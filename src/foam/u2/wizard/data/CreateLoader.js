@@ -43,7 +43,8 @@ foam.CLASS({
 
   methods: [
     async function load(o) {
-      return o?.old ?? this.of.create(this.args, this);
+      let initialData = this.delegate ? await this.delegate.load(o) : o.old;
+      return initialData?.copyFrom(this.args) ?? this.of.create(this.args, this);
     }
   ]
 });
