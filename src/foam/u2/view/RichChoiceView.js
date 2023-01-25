@@ -55,6 +55,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hideIfEmpty',
+      value: true,
       documentation: 'This section will be hidden if there are no items in it if this is set to true.'
     },
     {
