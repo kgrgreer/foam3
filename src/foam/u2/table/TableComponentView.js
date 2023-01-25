@@ -94,21 +94,5 @@ foam.CLASS({
         objForCurrentProperty
       ];
     }
-  ],
-
-  listeners: [
-    {
-      name: 'shouldEscapeEvts',
-      documentation: `Use this function to skip clicks/doubleclicks on table
-                      elements such as checkboxes/context menus`,
-      code: function(evt) {
-        if (
-          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-        ) {
-          return true;
-        }
-      }
-    }
   ]
 });
