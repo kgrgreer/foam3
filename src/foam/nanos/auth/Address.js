@@ -233,9 +233,11 @@ foam.CLASS({
       },
       gridColumns: 6,
       validationPredicates: [
+        // Requirement for PK is postalCode is optional
+        // real country distictions to come with NP-8818-facade Address
         {
           args: ['postalCode'],
-          query: 'postalCode.len>0',
+          query: 'postalCode.len>0||countryId=="PK"',
           errorMessage: 'POSTAL_CODE_REQUIRE'
         },
         {

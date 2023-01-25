@@ -25,7 +25,9 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.log.LogLevel',
-    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.GTE',
+    'static foam.mlang.MLang.MAX',
+    'foam.mlang.sink.Max',
     'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -192,10 +194,26 @@ foam.CLASS({
           setEventRecord(er);
         }
 
+        // REVIEW: currently experiencing replay issues whereby the first
+        // entry is sent by the nodes, but not processed by the mediators.
+        // The appear to recieve 'almost' all data. Then wait for this monitor
+        // timeout to re-request replay.
+        // Attempting here to re-request sooner if 'almost' all the data has been
+        // received.
+        Max max = (Max) medusaDAO.select(MAX(MedusaEntry.INDEX));
+        MedusaEntry maxEntry = (MedusaEntry) medusaDAO.find((Long) max.getValue());
+        if ( maxEntry != null &&
+             maxEntry.getConsensusNodes().length > 1 ) {
+          logger.debug("maxEntry", maxEntry, "count", maxEntry.getConsensusNodes().length);
+        }
+
         // TOOD: getMinReplayInterval has to be adjusted based on count.
         // Nodes with multiple mediator requests are constrained on memory and
         // 1m records might take 10 minutes to read and send.
-        if ( getLastReplay() == 0L ||
+        if ( ( maxEntry != null &&
+               maxEntry.getConsensusNodes().length > 1 &&
+               maxEntry.getIndex() >= replaying.getReplayIndex() ) ||
+             getLastReplay() == 0L ||
              System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
           logger.info("request replay");
           final ReplayRequestCmd cmd = new ReplayRequestCmd();

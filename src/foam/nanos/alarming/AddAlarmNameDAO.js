@@ -37,9 +37,7 @@ foam.CLASS({
         try {
           configDAO.put(config);
         } catch ( Exception e ) {
-          // NOTE: do not use warning or error as they in turn
-          // generate alarms
-          ((Logger) x.get("logger")).info("ERROR", e);
+          ((Logger) x.get("logger")).error(e);
         }
       }
       return getDelegate().put_(x, alarm);

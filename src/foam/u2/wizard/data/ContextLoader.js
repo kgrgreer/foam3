@@ -20,6 +20,10 @@ foam.CLASS({
         OPTIONAL: For loading into the CapabilityJunction's data using a path
       `,
       name: 'loadIntoPath'
+    },
+    {
+      name: 'of',
+      class: 'Class'
     }
   ],
 

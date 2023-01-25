@@ -201,16 +201,15 @@ p({
   }
 })
 
-// Example
-// p({
-//   class:"foam.nanos.boot.NSpec",
-//   name:"emailFolderAgent",
-//   lazy: false,
-//   service:{
-//     class:"foam.nanos.notification.email.EmailFolderAgent",
-//     id: 'default'
-//   }
-// })
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"emailFolderAgent",
+  lazy: false,
+  service:{
+    class:"foam.nanos.notification.email.EmailFolderAgent",
+    id: 'default'
+  }
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
