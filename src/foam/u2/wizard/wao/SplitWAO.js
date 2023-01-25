@@ -48,13 +48,12 @@ foam.CLASS({
     },
     async function load (wizardlet) {
       if ( wizardlet.loading ) return;
-      wizardlet.loading = true;
-      const SUPER = this.SUPER.bind(this);
       const loader = foam.json.parse(this.loader, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
+      await this.SUPER(wizardlet);
+      wizardlet.loading = true;
       wizardlet.data = await loader.load({ old: wizardlet.data });
       wizardlet.loading = false;
-      await SUPER(wizardlet);
     },
     async function save (wizardlet) {
       const saver = foam.json.parse(this.saver, undefined, wizardlet.__subContext__);
