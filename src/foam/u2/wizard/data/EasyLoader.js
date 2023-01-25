@@ -16,8 +16,10 @@ foam.CLASS({
       name: 'loaders',
       postSet: function (_, n) {
         if ( n.length < 2 ) return;
-        for ( let i = 1 ; i < n.length ; i++ ) {
-          n[i].delegate = n[i-1];
+        for ( let i = 0 ; i < n.length - 1 ; i++ ) {
+          if ( ! foam.u2.wizard.data.ProxyLoader.isInstance(n[i]) )
+            console.warn('Loaders inside EasyLoader must extend ProxyLoader');
+          n[i].delegate = n[i+1];
         }
       }
     }
@@ -25,7 +27,9 @@ foam.CLASS({
 
   methods: [
     async function load({ old }) {
-      return await this.loaders[this.loaders.length - 1].load(...arguments);
+      if ( ! this.loaders[this.loaders.length-1].delegate )
+        this.loaders[this.loaders.length-1].delegate = this.delegate;
+      return await this.loaders[0].load(...arguments);
     }
   ]
 });
