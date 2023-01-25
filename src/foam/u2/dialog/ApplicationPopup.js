@@ -165,7 +165,7 @@ foam.CLASS({
       padding: 1.2rem 0;
     }
 
-    ^ .p-legal-light {
+    ^footer.p-legal-light {
       color: #6F6F6F;
     }
 
