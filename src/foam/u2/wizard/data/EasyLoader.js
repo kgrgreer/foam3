@@ -18,7 +18,7 @@ foam.CLASS({
         if ( n.length < 2 ) return;
         for ( let i = 0 ; i < n.length - 1 ; i++ ) {
           if ( ! foam.u2.wizard.data.ProxyLoader.isInstance(n[i]) )
-            console.log('Loaders inside EasyLoader must extend ProxyLoader');
+            console.warn('Loaders inside EasyLoader must extend ProxyLoader');
           n[i].delegate = n[i+1];
         }
       }
