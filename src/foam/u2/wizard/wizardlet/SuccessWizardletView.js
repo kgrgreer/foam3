@@ -21,8 +21,8 @@ foam.CLASS({
     }
     ^image {
       width: 120pt;
-      margin: 30px 0px;
-      margin-top: 0px;
+      margin-bottom: 69px;
+      margin-top: 122px;
     }
   `,
 
@@ -38,10 +38,6 @@ foam.CLASS({
       view: 'foam.u2.view.ImageView',
       // value: '/images/checkmark-small-green.svg'
       value: '/images/checkmark-outline-green.svg'
-    },
-    {
-      class: 'String',
-      name: 'confirmationNumber'
     }
   ],
 
@@ -57,10 +53,6 @@ foam.CLASS({
         .start()
           .addClass('h200')
           .add(this.message$)
-        .end()
-        .start()
-          .addClass('h300')
-          .add(this.confirmationNumber$)
         .end();
     }
   ]
