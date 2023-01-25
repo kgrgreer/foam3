@@ -19,6 +19,16 @@ foam.CLASS({
       name: 'message'
     },
     {
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'confirmationNumberPath'
+    },
+    {
+      name: 'confirmationNumber',
+      expression: function(confirmationNumberPath, data) {
+        return confirmationNumberPath.f(data);
+      }
+    },
+    {
       class: 'String',
       name: 'actionLabel',
       factory: function() {
@@ -45,6 +55,7 @@ foam.CLASS({
             isAvailable: true,
             customView: {
               class: 'foam.u2.wizard.wizardlet.SuccessWizardletView',
+              confirmationNumber$: this.confirmationNumber$,
               message$: this.message$
             }
           })

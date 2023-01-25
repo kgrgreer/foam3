@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilityToPrerequisite',
+    'capabilityToPrerequisite?',
     'wizardController',
     'wizardletId',
     'wizardletOf',

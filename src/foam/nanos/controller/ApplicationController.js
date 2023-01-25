@@ -776,7 +776,7 @@ foam.CLASS({
       notification.severity        = severity || this.LogLevel.INFO;
       notification.transient       = transient;
       notification.icon            = icon;
-      this.__subContext__.myNotificationDAO.put(notification);
+      this.__subContext__.myNotificationDAO?.put(notification);
     },
 
     function displayToastMessage(sub, on, put, obj) {
