@@ -242,7 +242,7 @@ foam.CLASS({
               try ( InputStream in = part.getInputStream();
                     ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
                 org.apache.commons.io.IOUtils.copy(in, os);
-                if ( config.getSaveAttachments() ) {
+                if ( config.getProcessAttachments() ) {
                   byte[] bytes = os.toByteArray();
                   long fileLength = bytes.length;
                   try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
