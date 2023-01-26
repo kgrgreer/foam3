@@ -133,10 +133,9 @@ foam.CLASS({
           omLogger.log(this.getClass().getSimpleName(), "store", "connecting");
           Properties props = new Properties();
           props.setProperty("mail.store.protocol", getProtocol());
-          props.setProperty("mail.smtp.auth", config.getAuthenticate() ? "true" : "false");
-          props.setProperty("mail.smtp.starttls.enable", config.getStarttls() ? "true" : "false");
-          props.setProperty("mail.smtp.host", config.getHost());
-          props.setProperty("mail.smtp.port", config.getPort());
+          props.setProperty("mail.imaps.starttls.enable", config.getStarttls() ? "true" : "false");
+          props.setProperty("mail.imaps.host", config.getHost());
+          props.setProperty("mail.imaps.port", config.getPort());
           Session session = Session.getInstance(props);
           store = session.getStore(getProtocol());
           try {
