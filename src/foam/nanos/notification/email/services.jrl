@@ -197,7 +197,7 @@ p({
   lazy: false,
   service:{
     class:"foam.nanos.notification.email.SMTPAgent",
-    id: 'default'
+    id: 'smtp'
   }
 })
 
@@ -207,7 +207,7 @@ p({
   lazy: false,
   service:{
     class:"foam.nanos.notification.email.EmailFolderAgent",
-    id: 'default'
+    id: 'imap'
   }
 })
 

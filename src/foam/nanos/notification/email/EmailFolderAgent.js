@@ -51,7 +51,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.notification.email.EmailServiceConfig',
       targetDAOKey: 'emailServiceConfigDAO',
-      value: 'default'
+      value: 'imap'
     },
     {
       name: 'protocol',
