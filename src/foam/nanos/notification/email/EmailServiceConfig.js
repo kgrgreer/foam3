@@ -85,9 +85,9 @@ foam.CLASS({
       value: 'INBOX'
     },
     {
-      name: 'saveAttachments',
+      name: 'processAttachments',
       class: 'Boolean',
-      value: false
+      value: true
     },
     {
       documentation: 'Relevant to fetch/receive - delete remote email after receive.',
