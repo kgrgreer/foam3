@@ -54,11 +54,6 @@ foam.CLASS({
       value: 'imap'
     },
     {
-      name: 'protocol',
-      class: 'String',
-      value: 'imaps'
-    },
-    {
       documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
       name: 'timer',
       class: 'Object',
@@ -132,13 +127,13 @@ foam.CLASS({
         try {
           omLogger.log(this.getClass().getSimpleName(), "store", "connecting");
           Properties props = new Properties();
-          props.setProperty("mail.store.protocol", getProtocol());
-          props.setProperty("mail.smtp.auth", config.getAuthenticate() ? "true" : "false");
-          props.setProperty("mail.smtp.starttls.enable", config.getStarttls() ? "true" : "false");
-          props.setProperty("mail.smtp.host", config.getHost());
-          props.setProperty("mail.smtp.port", config.getPort());
+          props.setProperty("mail.store.protocol", config.getProtocol());
+          props.setProperty(String.format("mail.%s.auth", config.getProtocol()), config.getAuthenticate() ? "true" : "false");
+          props.setProperty(String.format("mail.%s.starttls.enable", config.getProtocol()), config.getStarttls() ? "true" : "false");
+          props.setProperty(String.format("mail.%s.host", config.getProtocol()), config.getHost());
+          props.setProperty(String.format("mail.%s.port", config.getProtocol()), config.getPort());
           Session session = Session.getInstance(props);
-          store = session.getStore(getProtocol());
+          store = session.getStore(config.getProtocol());
           try {
             store.connect(config.getHost(), Integer.valueOf(config.getPort()), config.getUsername(), config.getPassword());
           } catch ( Exception e ) {
@@ -189,24 +184,18 @@ foam.CLASS({
         EmailServiceConfig config = findId(x);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setSubject(message.getSubject());
-        emailMessage.setFrom(message.getFrom()[0].toString().toLowerCase());
-        emailMessage.setReplyTo(message.getReplyTo()[0].toString().toLowerCase());
-
-        String fromAddr = message.getFrom()[0].toString().toLowerCase();
-        String fromEmail = fromAddr;
-        if ( fromAddr.contains("<") && fromAddr.contains(">") ) {
-          fromEmail = fromAddr.substring(fromAddr.indexOf("<")+1, fromAddr.indexOf(">"));
-        }
+        emailMessage.setFrom(formatEmail(message.getFrom()[0].toString().toLowerCase()));
+        emailMessage.setReplyTo(formatEmail(message.getReplyTo()[0].toString().toLowerCase()));
 
         DAO userDAO = (DAO) getX().get("localUserDAO");
-        User user = (User) userDAO.find(EQ(User.EMAIL, fromEmail));
-        if ( user == null ) throw new foam.core.FOAMException("Can not find user: " + fromEmail);
+        User user = (User) userDAO.find(EQ(User.EMAIL, emailMessage.getFrom()));
+        if ( user == null ) throw new foam.core.FOAMException("Can not find user: " + emailMessage.getFrom());
 
         Address[] addresses = message.getRecipients(Message.RecipientType.TO);
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setTo(recipients);
         }
@@ -214,7 +203,7 @@ foam.CLASS({
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setCc(recipients);
         }
@@ -222,7 +211,7 @@ foam.CLASS({
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setBcc(recipients);
         }
@@ -264,6 +253,17 @@ foam.CLASS({
         }
 
         return emailMessage;
+      `
+    },
+    {
+      name: 'formatEmail',
+      args: 'String email',
+      type: 'String',
+      javaCode: `
+        if ( email != null && email.contains("<") && email.contains(">") ) {
+          email = email.substring(email.indexOf("<")+1, email.indexOf(">"));
+        }
+        return email;
       `
     }
   ]
