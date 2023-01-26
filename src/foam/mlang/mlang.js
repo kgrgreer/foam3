@@ -4493,7 +4493,20 @@ foam.CLASS({
       documentation: "TODO"
     },
     {
-      name: 'templateGrammar'
+      class: 'FObjectProperty',
+      of: 'foam.lib.parse.Parser',
+      name: 'parser',
+      documentation: `the syntax for a JSON is "fieldname": value. The grammar finds all the occurrences of fieldnames in
+        a JSON formatted string and replaces them with alternative field name provided in the map`,
+      javaFactory: `
+      return new Seq1(0,
+       new Repeat(
+         new Seq1(1, new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
+         ), Literal.create("}}"), 1),
+       Literal.create("}}"),
+       new Optional(new Repeat(AnyChar.instance()))
+     );
+      `
     }
   ],
   methods: [
@@ -4501,13 +4514,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       var fobj = (FObject) obj;
-      var templparse = new Seq1(0,
-        new Repeat(
-          new Seq1(1, new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
-          ), Literal.create("}}"), 1),
-        Literal.create("}}"),
-        new Optional(new Repeat(AnyChar.instance()))
-      );
+      var templparse = getParser();
       StringPStream ps = new StringPStream();
       ps.setString(getString());
       var psRet = ps.apply(templparse, null);
