@@ -42,7 +42,8 @@ foam.CLASS({
     'java.util.Timer',
     'javax.mail.*',
     'javax.mail.Message',
-    'javax.mail.internet.MimeBodyPart'
+    'javax.mail.internet.MimeBodyPart',
+    'javax.mail.internet.MimeMultipart'
   ],
 
   properties: [
@@ -218,6 +219,9 @@ foam.CLASS({
         emailMessage.setSentDate(message.getSentDate());
         emailMessage.setStatus(Status.RECEIVED);
 
+        // Set emailMessage body
+        emailMessage.setBody(getTextFromMessage(message));
+
         DAO fileDAO = (DAO) getX().get("fileDAO");
 
         // Check if message contents multipart.
@@ -264,6 +268,60 @@ foam.CLASS({
           email = email.substring(email.indexOf("<")+1, email.indexOf(">"));
         }
         return email;
+      `
+    },
+    {
+      name: 'getTextFromMessage',
+      args: 'javax.mail.Message message',
+      type: 'String',
+      javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
+      javaCode: `
+        if (message.isMimeType("text/plain")) {
+          return message.getContent().toString();
+        }
+        if (message.isMimeType("multipart/*")) {
+          MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+          return getTextFromMimeMultipart(mimeMultipart);
+        }
+
+        return "";
+      `
+    },
+    {
+      name: 'getTextFromMimeMultipart',
+      args: 'javax.mail.internet.MimeMultipart mimeMultipart',
+      type: 'String',
+      javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
+      javaCode: `
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < mimeMultipart.getCount(); i++) {
+          BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+          if (bodyPart.isMimeType("text/plain")) {
+            result.append("\\n");
+            result.append(bodyPart.getContent().toString());
+          } else {
+            result.append(this.parseBodyPart(bodyPart));
+          }
+        }
+
+        return result.toString();
+      `
+    },
+    {
+      name: 'parseBodyPart',
+      args: 'javax.mail.BodyPart bodyPart',
+      type: 'String',
+      javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
+      javaCode: `
+        if (bodyPart.isMimeType("text/html")) {
+          return "\\n" + org.jsoup.Jsoup
+            .parse(bodyPart.getContent().toString())
+            .text();
+        }
+        if (bodyPart.getContent() instanceof MimeMultipart){
+          return getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
+        }
+        return "";
       `
     }
   ]
