@@ -207,8 +207,7 @@ p({
   lazy: false,
   service:{
     class:"foam.nanos.notification.email.EmailFolderAgent",
-    id: 'imap',
-    protocol: 'imaps'
+    id: 'imap'
   }
 })
 
