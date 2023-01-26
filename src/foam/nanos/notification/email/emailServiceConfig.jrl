@@ -4,5 +4,7 @@ p({
 })
 p({
   class: 'foam.nanos.notification.email.EmailServiceConfig',
-  id: 'imap'
+  id: 'imap',
+  protocol: 'imaps',
+  port: '993'
 })
