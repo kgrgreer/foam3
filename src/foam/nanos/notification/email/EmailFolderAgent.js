@@ -186,12 +186,13 @@ foam.CLASS({
       type: 'foam.nanos.notification.email.EmailMessage',
       javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
       javaCode: `
+        EmailServiceConfig config = findId(x);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setSubject(message.getSubject());
-        emailMessage.setFrom(message.getFrom()[0].toString());
-        emailMessage.setReplyTo(message.getReplyTo()[0].toString());
+        emailMessage.setFrom(message.getFrom()[0].toString().toLowerCase());
+        emailMessage.setReplyTo(message.getReplyTo()[0].toString().toLowerCase());
 
-        String fromAddr = message.getFrom()[0].toString();
+        String fromAddr = message.getFrom()[0].toString().toLowerCase();
         String fromEmail = fromAddr;
         if ( fromAddr.contains("<") && fromAddr.contains(">") ) {
           fromEmail = fromAddr.substring(fromAddr.indexOf("<")+1, fromAddr.indexOf(">"));
@@ -241,18 +242,20 @@ foam.CLASS({
               try ( InputStream in = part.getInputStream();
                     ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
                 org.apache.commons.io.IOUtils.copy(in, os);
-                byte[] bytes = os.toByteArray();
-                long fileLength = bytes.length;
-                try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
-                  Blob data = new InputStreamBlob(bin, fileLength);
-                  File file = new File();
-                  file.setOwner(user.getId());
-                  file.setFilename(part.getFileName());
-                  file.setFilesize(fileLength);
-                  file.setData(data);
-                  file.setLifecycleState(LifecycleState.ACTIVE);
-                  file = (File) fileDAO.put(file);
-                  attachments.add(file.getId());
+                if ( config.getSaveAttachments() ) {
+                  byte[] bytes = os.toByteArray();
+                  long fileLength = bytes.length;
+                  try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
+                    Blob data = new InputStreamBlob(bin, fileLength);
+                    File file = new File();
+                    file.setOwner(user.getId());
+                    file.setFilename(part.getFileName());
+                    file.setFilesize(fileLength);
+                    file.setData(data);
+                    file.setLifecycleState(LifecycleState.ACTIVE);
+                    file = (File) fileDAO.put(file);
+                    attachments.add(file.getId());
+                  }
                 }
               }
             }
