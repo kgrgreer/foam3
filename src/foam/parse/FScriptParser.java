@@ -6,6 +6,7 @@
 
 package foam.parse;
 
+import com.sun.codemodel.JForEach;
 import foam.core.*;
 import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
@@ -79,7 +80,7 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
 
-    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
+    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("TEMPLATE_STRING"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
 
     grammar.addSymbol(
       "OR",
@@ -425,7 +426,6 @@ public class FScriptParser
       grammar.sym("DATE"),
       grammar.sym("VAR"),
       grammar.sym("STRING"),
-      grammar.sym("TEMPLATE_STRING"),
       new Literal("true", true),
       new Literal("false", false),
       new Literal("null", null),
@@ -512,25 +512,36 @@ public class FScriptParser
       )
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
-    var stringParser = new Repeat(new Alt(
-      new Literal("\\\"", "\""),
-      new NotChars("{{")
-    ));
+    var stringParser = new Repeat(new NotChars("{{"));
     var stringParser2 = new Repeat(new Alt(
       new Literal("\\\"", "\""),
       new NotChars("}}")
     ));
 
-    grammar.addSymbol("TEMPLATE_STRING", new Repeat(
-      stringParser,
-      new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}"))),
-      2
+    grammar.addSymbol("TEMPLATE_STRING", new Seq2(0,2,
+      new Repeat(
+        new Seq(new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
+        ), Literal.create("}}"), 1),
+      Literal.create("}}"),
+      new Optional(new Repeat(AnyChar.instance()))
     ));
+//    grammar.addSymbol("TEMPLATE_STRING", new Seq( new Until(Literal.create("}}")), new Repeat(new Alt(new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}"))), AnyChar.instance()))));
+
     grammar.addAction("TEMPLATE_STRING", (val, x) -> {
       Object[] vals = (Object[]) val;
+      Object[] repeat = (Object[]) vals[0];
+      String ret = "";
+      for ( Object v : repeat )  {
+        Object[] seq = (Object[]) v;
+        ret += compactToString(seq[0]);
+        ret += "{{" + compactToString(seq[1]) + "}}";
+      }
+      ret += compactToString(vals[1]);
+      if ( vals.length == 3 ) {
+        ret += compactToString(vals[2]);
+      }
       var templStr = new TemplateString();
-      templStr.setString("dsf");
-      templStr.setArgs(null);
+      templStr.setString(ret);
       return templStr;
     });
 

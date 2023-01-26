@@ -4479,15 +4479,14 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'TemplateString',
   extends: 'foam.mlang.AbstractExpr',
-  javaImports: ['foam.lib.parse.*'],
+  javaImports: [
+    'foam.lib.parse.*',
+    'foam.core.AbstractStringPropertyInfo',
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'java.util.ArrayList'
+  ],
   properties: [
-    {
-      class: 'FObjectArray',
-//      of: 'foam.mlang.ExprProperty',
-      of: 'foam.mlang.expr.PropertyExpr',
-      name: 'args',
-      documentation: "TODO"
-    },
     {
       class: 'String',
       name: 'string',
@@ -4501,21 +4500,36 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      var stringParser = new Alt(
-       new Literal("\\\\\\"", "\\\""),
-       new NotChars("\\"")
-     );
-      var templateGrammar = new Repeat(
-        stringParser,
-        new Seq1(0, Literal.create("{{"), stringParser, Literal.create("}}")),
-        1
+      var fobj = (FObject) obj;
+      var templparse = new Seq1(0,
+        new Repeat(
+          new Seq1(1, new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
+          ), Literal.create("}}"), 1),
+        Literal.create("}}"),
+        new Optional(new Repeat(AnyChar.instance()))
       );
       StringPStream ps = new StringPStream();
       ps.setString(getString());
-      var ret = ps.apply(templateGrammar, null);
-      if ( ret == null ) return null;
+      var psRet = ps.apply(templparse, null);
+      if ( psRet == null ) return null;
+      var axiomsArr = (Object[]) psRet.value();
+      var axioms = new ArrayList<PropertyInfo>();
+      for ( Object a : axiomsArr ) {
+        Object[] arr = (Object[]) a;
+        StringBuilder sb = new StringBuilder();
+        for ( Object num: arr ) {
+          sb.append(num);
+        }
+        var p = (PropertyInfo) fobj.getClassInfo().getAxiomByName(sb.toString());
+        if ( p == null || !( p instanceof AbstractStringPropertyInfo ) ) return null;
+        axioms.add((PropertyInfo)fobj.getClassInfo().getAxiomByName(sb.toString()));
+      }
+      String ret = getString();
+      for ( PropertyInfo prop : axioms ) {
+        ret = ret.replace("{{"+prop.getName()+"}}", (String) prop.f(obj));
+      }
 
-      return null;
+      return ret;
       `
     }
   ]
