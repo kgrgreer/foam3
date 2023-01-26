@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'ResetPasswordByCode',
   extends: 'foam.nanos.auth.resetPassword.ResetPassword',
 
+  mixins: [
+    'foam.nanos.analytics.Analyticable'
+  ],
+
   documentation: 'Reset Password By Code Model',
 
   imports: [
@@ -42,6 +46,12 @@ foam.CLASS({
     { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
+
+  css: `
+    .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+      justify-content: flex-start;
+    }
+  `,
 
   properties: [
     {
@@ -118,8 +128,20 @@ foam.CLASS({
 
         try {
           var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.resetPasswordCode);
+          this.report('^verify-success', ['email-verification']);
+          this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
+
+          // Clear new/confirmation passwords after the reset password
+          // code is verified and user must re-enter the password fields.
+          if ( this.codeVerified ) {
+            this.clearProperty('newPassword');
+            this.clearProperty('confirmationPassword');
+          }
         } catch (error) {
+          this.report('^verify-failure', ['email-verification'], {
+            errorAsString: error.toString()
+          });
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
@@ -167,7 +189,10 @@ foam.CLASS({
       name: 'resendCode',
       label: 'Resend Code',
       section: 'verificationCodeSection',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
+      },
       code: async function() {
         try {
           await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);

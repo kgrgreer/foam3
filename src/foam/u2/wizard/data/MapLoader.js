@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'MapLoader',
   extends: 'foam.u2.wizard.data.ProxyLoader',
 
+  imports: [
+    'wizardlets?'
+  ],
+
   requires: [
     'foam.u2.wizard.data.CreateLoader'
   ],
@@ -16,12 +20,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Object',
-      name: 'args',
-      expression: function (spec) {
-        const cloned = { ...spec };
-        delete cloned.class;
-        return cloned;
-      }
+      name: 'args'
+    },
+    {
+      class: 'Object',
+      name: 'bind'
     },
     {
       name: 'delegate',
@@ -30,12 +33,22 @@ foam.CLASS({
           spec: { class: 'foam.core.MapHolder' }
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isHolder',
+      documentation: `
+        Leave as true when using a MapHolder,
+        set to false if populating an FObject.
+      `,
+      value: true
     }
   ],
 
   methods: [
     async function load(...a) {
       const target = await this.delegate.load(...a);
+      const objectToSet = this.isHolder ? target.value : target;
       for ( const k in this.args ) {
         let loader = this.args[k];
         // If it's not an FObject, parse it
@@ -45,7 +58,11 @@ foam.CLASS({
           console.log('after parse');
         }
 
-        target.value[k] = await loader.load({});
+        objectToSet[k] = await loader.load({});
+      }
+      for ( const k in this.bind ) {
+        const wizardlet = this.wizardlets.find(w => w.id == this.bind[k]);
+        objectToSet[k] = wizardlet.data$;
       }
 
       return target;

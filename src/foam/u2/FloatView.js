@@ -37,8 +37,7 @@ foam.CLASS({
           when the arrow buttons in the input are clicked.`,
       value: 0.01
     },
-    'preventFeedback',
-    'isMerged'
+    'preventFeedback'
   ],
 
   methods: [
@@ -76,10 +75,10 @@ foam.CLASS({
         self.feedback_ = false;
       });
 
-      view.sub(self.isMerged ? self.mergedViewListener : self.viewListener);
+      view.sub(self.viewListener);
 
-      data.sub(function() {
-        view.set(self.dataToText(data.get()));
+      data.sub(() => {
+        this.deFeedback(() => { view.set(self.dataToText(data.get())); });
       });
     },
 
@@ -118,8 +117,7 @@ foam.CLASS({
         let selectNewText = el.selectionEnd == el.value.length;
 
         // check bounds on data update and set to boundary values if out of bounds
-        data.set(this.textToData(
-          foam.Number.clamp(this.min, view.get(), this.max)));
+        data.set(foam.Number.clamp(this.min, this.textToData(view.get()), this.max));
 
         // preserve caret location, maybe selecting new text
         el.selectionStart = Math.min(pos, el.value.length);
@@ -131,12 +129,6 @@ foam.CLASS({
   listeners: [
     {
       name: 'viewListener',
-      code: function() { this.viewListenerFn(); }
-    },
-    {
-      name: 'mergedViewListener',
-      isMerged: true,
-      mergeDelay: 500,
       code: function() { this.viewListenerFn(); }
     }
   ]

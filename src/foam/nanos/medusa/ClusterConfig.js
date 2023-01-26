@@ -163,6 +163,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -180,6 +181,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -207,6 +209,7 @@ foam.CLASS({
       visibility: 'RO',
       storageOptional: true,
       javaCompare: 'return 0;',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -224,6 +227,7 @@ foam.CLASS({
       visibility: 'RO',
       storageOptional: true,
       javaCompare: 'return 0;',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {

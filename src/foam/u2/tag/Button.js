@@ -330,7 +330,6 @@ foam.CLASS({
 
     ^medium {
       padding: 8px 12px;
-      max-height: 34px;
     }
 
     ^large {
@@ -381,8 +380,8 @@ foam.CLASS({
     }
     ^medium svg,
     ^medium img {
-      width: 1.71em;
-      height: 1.71em;
+      width: 1.42em;
+      height: 1.42em;
     }
     ^large svg,
     ^large img {
@@ -517,6 +516,8 @@ foam.CLASS({
           } else {
             this.start().addClass('h600').add(this.label$).end();
           }
+        } else if ( this.label.render ) {
+          this.tag(this.label);
         } else {
           this.add(this.label$);
         }

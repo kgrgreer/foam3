@@ -776,7 +776,7 @@ foam.CLASS({
       notification.severity        = severity || this.LogLevel.INFO;
       notification.transient       = transient;
       notification.icon            = icon;
-      this.__subContext__.myNotificationDAO.put(notification);
+      this.__subContext__.myNotificationDAO?.put(notification);
     },
 
     function displayToastMessage(sub, on, put, obj) {
@@ -832,7 +832,13 @@ foam.CLASS({
         var ucj = await ucjCheck();
 
         if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createWizardSequence(group.generalCapability, this.__subContext__).execute();
+          await this.crunchController.createTransientWizardSequence(this.__subContext__)
+            .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
+            .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
+            .remove('RequirementsPreviewAgent')
+            .execute();
+            this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+            this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
           let postCheck = await ucjCheck();
           if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
             this.add(foam.u2.dialog.ConfirmationModal.create({

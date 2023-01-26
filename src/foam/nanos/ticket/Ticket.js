@@ -149,6 +149,7 @@ foam.CLASS({
       section: 'infoSection',
       order: 3,
       tableWidth: 130,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.ticketStatusDAO.find(value).then(function(status) {
           if (status) {
@@ -227,6 +228,7 @@ foam.CLASS({
           errorString: 'Please provide a comment.'
         }
       ],
+      projectionSafe: false,
       tableCellFormatter: function(_, obj) {
         obj.ticketCommentDAO
           .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
@@ -247,6 +249,7 @@ foam.CLASS({
       value: '',
       storageTransient: true,
       section: 'infoSection',
+      projectionSafe: false,
       tableCellFormatter: function(_, obj) {
         obj.ticketCommentDAO
           .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
@@ -274,6 +277,7 @@ foam.CLASS({
       name: 'createdBy',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -289,6 +293,7 @@ foam.CLASS({
       name: 'createdByAgent',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -310,6 +315,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -324,6 +330,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -338,6 +345,7 @@ foam.CLASS({
       class: 'String',
       transient: true,
       hidden: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.add(obj.title);
       }

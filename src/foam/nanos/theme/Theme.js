@@ -752,6 +752,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showNavSearch',
       value: true
+    },
+    {
+      class: 'String',
+      name: 'emailLinkRedirect',
+      javaValue: `"/"`
     }
   ],
 

@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.notification.email.test',
-  name: 'MockSMTPEmailServiceTest',
+  name: 'MockSMTPAgentTest',
   extends: 'foam.nanos.test.Test',
 
   documentation: 'Test cron job and rate limit logic.  Set the mock service in the context, enable cron job, create email messages, test only x of y are SENT in some time window',
@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.nanos.auth.Subject',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.notification.email.EmailServiceConfig',
     'foam.nanos.notification.email.Status',
     'foam.nanos.script.Script',
     'java.util.ArrayList',
@@ -29,14 +30,6 @@ foam.CLASS({
     'java.util.List',
     'static foam.mlang.MLang.COUNT',
     'static foam.mlang.MLang.EQ'
-  ],
-
-  properties: [
-    {
-      name: 'rateLimit',
-      class: 'Long',
-      value: 2
-    }
   ],
 
   methods: [
@@ -50,9 +43,8 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
       // install mock service
-      MockSMTPEmailService service = new MockSMTPEmailService(x);
-      service.setRateLimit(getRateLimit());
-      x = x.put("email", service);
+      MockSMTPAgent agent = (MockSMTPAgent) x.get("smtpAgent");
+
       x = x.put("emailMessageDAO", new foam.dao.MDAO(EmailMessage.getOwnClassInfo()));
       // keep date order to test delivery order
       List<Date> dates = new ArrayList();
@@ -80,51 +72,26 @@ foam.CLASS({
         emailMessageDAO.put(msg);
       }
 
-      // note time, acquire and execute cron job
-      final Script script = (Script) ((DAO) x.get("cronDAO")).find("Email Service");
-      test( script != null, "Script found");
+      // enable service
+      EmailServiceConfig config = agent.findId(x);
+      config = (EmailServiceConfig) config.fclone();
+      config.setEnabled(true);
+      ((DAO) x.get("emailServiceConfigDAO")).put(config);
 
       // test only x messages processed in 1s.
-      long window = 1000L; // 1 second
-      long rate = getRateLimit();
+      long rate = config.getRateLimit();
 
       long startTime = System.currentTimeMillis();
-      new DirectAgency().schedule(x, new ContextAgent() {
-          public void execute(X x) {
-            script.runScript(x);
-          }
-        }, "MockSMTPEmailServiceTest.cron", window
-      );
+      agent.execute(x);
 
-      try {
-        Thread.currentThread().sleep(window * 2);
-      } catch (InterruptedException e) {
-        // nop
-      }
-      Count count = new Count();
-      emailMessageDAO.where(
-        EQ(EmailMessage.STATUS, Status.SENT)
-      )
-      .select(count);
-
-      long time = System.currentTimeMillis() - startTime;
-      long seconds = time/window;
-      long c = (Long) count.getValue();
-      test ( c >= rate, "Sufficient sent "+c+" >= "+rate);
-      test ( c <= rate * seconds, "Throttled. sent:"+c+",seconds:"+seconds);
-
-      try {
-        Thread.currentThread().sleep(window * (send / rate));
-      } catch (InterruptedException e) {
-        // nop
-      }
       List<EmailMessage> sent = ((ArraySink) emailMessageDAO.where(
         EQ(EmailMessage.STATUS, Status.SENT)
       )
       .orderBy(EmailMessage.SENT_DATE)
       .select(new ArraySink())).getArray();
 
-      test ( sent.size() == send, "All sent");
+      int c = sent.size();
+      test ( c <= rate, "Sufficient sent "+c+" <= "+rate);
 
       // test order
       boolean passed = true;

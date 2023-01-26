@@ -31,7 +31,6 @@ import java.security.MessageDigest;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
 
 import foam.core.Detachable;
 import foam.core.FObject;
@@ -79,49 +78,46 @@ public class HTTPDigestSink extends AbstractSink {
     FObject fobj = (FObject) obj;
     Object id = fobj.getProperty("id");
     String className = fobj.getClass().getSimpleName();
+    int responseCode = -1;
+    int retryCount = 3;
 
-    try {
-      int responseCode = sendRequest(fobj);
-
-      if ( responseCode == HttpServletResponse.SC_OK ) return;
-
-      if ( responseCode == HttpServletResponse.SC_BAD_REQUEST ) { // client error
-        String name = "HTTP DIGEST 400 RESPONSE";
-        String note = "[" + className + ", " + id + ", " + new Date() + "]";
-        createAlarm(name, note, LogLevel.WARN);
-
-      } else if ( responseCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR )  { // server error
-        try {
-          Thread.sleep(5000);
-        } catch (InterruptedException e) {}
-
-        // make a new request
+    while ( retryCount > 0 ) {
+      try {
         responseCode = sendRequest(fobj);
 
-        if ( responseCode == HttpServletResponse.SC_OK ) return;
+        // resend on 4xx and 5xx
+        if ( responseCode >= 400 && responseCode <= 599 )  {
 
-        String name = "HTTP DIGEST " + responseCode + " RESPONSE";
-        String note = "[" + className + ", " + id + ", " + new Date() + "]";
-        createAlarm(name, note, LogLevel.WARN);
+          try {
+            Thread.sleep(5000);
+          } catch (InterruptedException e) {}
 
-      } else if ( responseCode == HttpServletResponse.SC_GATEWAY_TIMEOUT ) {
-        String name = "HTTP DIGEST 504 RESPONSE";
+          retryCount--;
+        } else {
+          return;
+        } 
+      } catch (SocketException e) {
+        // create an alarm on connection timeout
+        String name = "HTTP DIGEST CONNECTION TIMEOUT";
         String note = "[" + className + ", " + id + ", " + new Date() + "]";
-        createAlarm(name, note, LogLevel.WARN);
+        createAlarm(name, note, LogLevel.ERROR);
+
+        throw new RuntimeException(e);
+      } catch (Throwable t) {
+        String name = "HTTP DIGEST UNEXPECTED FAILURE";
+        String note = "[" + className + ", " + id + ", " + new Date() + "]";
+        createAlarm(name, note, LogLevel.ERROR);
+
+        throw new RuntimeException(t);
       }
-
-      throw new RuntimeException(this.getClass().getSimpleName() + "[" + className + ", " + id + ", " + responseCode + "]");
-
-    } catch (SocketException e) {
-      // create an alarm on connection timeout
-      String name = "HTTP DIGEST CONNECTION TIMEOUT";
-      String note = "[" + className + ", " + id + ", " + new Date() + "]";
-      createAlarm(name, note, LogLevel.WARN);
-
-      throw new RuntimeException(e);
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
     }
+
+    // failed to send successfully
+    String name = "HTTP DIGEST " + responseCode + " RESPONSE";
+    String note = "[" + className + ", " + id + ", " + new Date() + "]";
+    createAlarm(name, note, LogLevel.ERROR);
+
+    throw new RuntimeException(this.getClass().getSimpleName() + "[" + className + ", " + id + ", " + responseCode + "]");
   }
 
   private int sendRequest(Object obj) throws Exception {
@@ -165,7 +161,7 @@ public class HTTPDigestSink extends AbstractSink {
           writer.flush();
         }
       }
-      ((Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "Sent DUG webhook with digest", url_, payload, digest, conn.getResponseCode());
+      ((Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "Sent DUG webhook with digest", url_, payload, digest, "Status code: " + conn.getResponseCode());
 
       return conn.getResponseCode();
     } finally {

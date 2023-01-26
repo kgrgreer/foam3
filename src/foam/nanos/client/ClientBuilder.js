@@ -128,7 +128,7 @@ foam.CLASS({
                     try {
                       json = JSON.parse(spec.client);
                     } catch (err) {
-                      console.error('invalid nspec.client', spec.client, err);
+                      self.error('invalid nspec.client', spec.client, err);
                     }
 
                     if ( ! spec.lazyClient )

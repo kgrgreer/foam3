@@ -52,8 +52,11 @@ foam.CLASS({
     function getNext(wizardlets) {
       let wi = this.wizardletIndex;
 
-      // Move to next section if one exists
-      if ( this.sectionIndex < wizardlets[wi].sections.length - 1 ) {
+      // Move to next section if one exists but skip to the next wizardlet if
+      // the current wizardlet is not visible
+      if ( wizardlets[wi].isVisible
+        && this.sectionIndex < wizardlets[wi].sections.length - 1
+      ) {
         return this.cls_.create({
           wizardletIndex: wi,
           sectionIndex: this.sectionIndex + 1

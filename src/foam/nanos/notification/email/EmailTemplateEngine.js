@@ -15,8 +15,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
@@ -69,29 +67,7 @@ foam.CLASS({
             String value = (String) ((Map) x.get("values")).get(v.toString());
             if ( value == null ) {
               value = "";
-
-              final String message = "No value provided for variable "+v;
-              foam.nanos.logger.StdoutLogger.instance().warning(message);
-              // At runtime, getX() is valid, during test case run
-              // XLocator is valid.  Need to determine which X to use.
-              X y = getX();
-              Agency agency = (Agency) y.get("threadPool");
-              if ( agency == null ) {
-                y = foam.core.XLocator.get();
-                agency = (Agency) y.get("threadPool");
-              }
-              if ( agency != null ) {
-                agency.submit(y, new ContextAgent() {
-                  public void execute(X x) {
-                    Alarm alarm = new Alarm();
-                    alarm.setName("Email template config");
-                    alarm.setReason(AlarmReason.CONFIGURATION);
-                    alarm.setNote(message);
-                    alarm.setClusterable(false);
-                    ((DAO) x.get("alarmDAO")).put(alarm);
-                  }
-                }, this.getClass().getSimpleName()+"-alarm");
-              }
+              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
             }
             ((StringBuilder) x.get("sb")).append(value);
             return value;
@@ -293,22 +269,13 @@ foam.CLASS({
 
             // At runtime, getX() is valid, during test case run
             // XLocator is valid.  Need to determine which X to use.
-            X y = getX();
-            DAO alarmDAO = (DAO) y.get("alarmDAO");
-            if ( alarmDAO == null ) {
-              y = foam.core.XLocator.get();
-              alarmDAO = (DAO) y.get("alarmDAO");
+            X y = foam.core.XLocator.get();
+            if ( y.get("emailTemplateDAO") == null ) {
+              y = getX();
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
             if ( extendedEmailTemplate == null ) {
               foam.nanos.logger.StdoutLogger.instance().warning("Extended template not found", templateName);
-              if ( alarmDAO != null ) {
-                Alarm alarm = new Alarm();
-                alarm.setName("Email template config");
-                alarm.setReason(AlarmReason.CONFIGURATION);
-                alarm.setNote("Extended template not found " + templateName);
-                alarmDAO.put(alarm);
-              }
               return val;
             }
             StringBuilder content = new StringBuilder();
@@ -415,8 +382,8 @@ foam.CLASS({
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
       getIncludeGrammar().parse(ps, parserX, "");
-
       if ( ! (Boolean) parserX.get("isNextTemplateExtending") ) return sbJoin;
+
       return joinTemplates(x, sbJoin);
       `
     }

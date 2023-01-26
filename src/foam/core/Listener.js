@@ -103,7 +103,7 @@ foam.CLASS({
 
           if ( ! this.hasOwnPrivate_(name) ) {
             var self = this;
-            var l = function(sub) {
+            var l = function() {
               // Don't deliver stale notifications after an object has been detached.
               if ( ! self.isDetached() ) return code.apply(self, arguments);
             };

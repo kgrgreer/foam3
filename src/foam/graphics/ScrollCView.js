@@ -78,10 +78,10 @@ foam.CLASS({
       class: 'Float',
       name: 'handleSize',
       expression: function(vertical, minHandleSize, size, extent, height, width, innerBorder) {
-        var h  = (this.vertical ? height : width) - 2 * innerBorder;
+        var h  = (this.vertical ? height : width) - 2*innerBorder;
         var hs = size > 0 ? extent * h / size : 0;
 
-        return hs < minHandleSize ? minHandleSize : hs;
+        return Math.max(hs, minHandleSize);
       }
     },
     {
@@ -102,27 +102,27 @@ foam.CLASS({
     {
       name: 'xMax',
       expression: function(width, innerBorder, handleSize)  {
-        return width - innerBorder - handleSize;
+        return width - handleSize;
       }
     },
     {
       name: 'yMax',
       expression: function(height, innerBorder, handleSize)  {
-        return height - innerBorder - handleSize;
+        return height - handleSize;
       }
     },
     {
       name: 'rate',
       expression: function(size, extent, yMax, innerBorder) {
-        return size ? ( yMax - innerBorder ) / (size - extent) : 0;
+        return size ? ( yMax - 2*innerBorder ) / (size - extent) : 0;
       }
     },
     {
       name: 'xrate',
       expression: function(size, extent, xMax, innerBorder) {
-        return size ? ( xMax - innerBorder ) / (size - extent) : 0;
+        return size ? ( xMax - 2*innerBorder ) / (size - extent) : 0;
       }
-    },
+    }
   ],
 
   methods: [
