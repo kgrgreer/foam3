@@ -213,6 +213,7 @@ foam.CLASS({
           .remove('CheckNoDataAgent')
           .remove('AutoSaveWizardletsAgent')
           .remove('SaveAllAgent')
+          .remove('LoadWizardletsAgent')
           .remove('WizardStateAgent') // does not make sense in transient wizards
           .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
           .remove('GrantedEditAgent')
