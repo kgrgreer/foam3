@@ -60,7 +60,8 @@ foam.CLASS({
     async function save(data) {
       const dataToPut = this.path ? this.path.f(data) : data;
       if ( ! dataToPut ) return Promise.resolve();
-      return await this.dao.put(dataToPut);
+      let newData = await this.dao.put(dataToPut);
+      return await this.delegate.save(newData);
     }
   ]
 });

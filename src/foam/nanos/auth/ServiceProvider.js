@@ -76,7 +76,7 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       javaCode: `
-        return super.grantsPermission(permission) || prerequisiteImplies(getX(), permission);
+        return super.grantsPermission(x, permission) || prerequisiteImplies(x, permission);
       `
     },
     {

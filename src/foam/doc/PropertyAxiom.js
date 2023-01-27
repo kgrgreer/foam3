@@ -18,6 +18,7 @@ foam.CLASS({
   properties: [
     {
       name: 'name',
+      projectionSafe: false,
       tableCellFormatter: function(_, o) {
         this.
           start('code').

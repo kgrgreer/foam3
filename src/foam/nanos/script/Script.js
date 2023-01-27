@@ -41,8 +41,8 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.*',
     'foam.nanos.er.EventRecord',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
 
     'java.io.BufferedReader',
@@ -127,6 +127,7 @@ foam.CLASS({
       name: 'enabled',
       includeInDigest: true,
       documentation: 'Enables script.',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.start()
           .style({ color: value ? /*%APPROVAL3*/ 'green' : /*%GREY2%*/ 'grey' })
@@ -326,10 +327,21 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         Language l = getLanguage();
+        ScriptParameter sp = null;
+        try {
+          sp = (ScriptParameter) ((DAO) x.get("scriptParameterDAO"))
+            .find(AND(
+              EQ(ScriptParameter.ENABLED, true),
+              EQ(ScriptParameter.NAME, getId())
+            ));
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed retrieving ScriptParameter", t);
+        }
         if ( l == foam.nanos.script.Language.JSHELL ) {
           JShell jShell = new JShellExecutor().createJShell(ps);
           Script.X_HOLDER[0] = x.put("out",  ps)
-            .put("currentScript", this);
+            .put("currentScript", this)
+            .put("scriptParameter", sp);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
           return jShell;
@@ -337,6 +349,7 @@ foam.CLASS({
           Interpreter shell = new Interpreter();
           try {
             shell.set("currentScript", this);
+            shell.set("scriptParameter", sp);
             shell.set("x", x.put("out", ps));
             shell.eval("runScript(String name) { script = x.get("+getDaoKey()+").find(name); if ( script != null ) eval(script.code); }");
             shell.eval("foam.core.X sudo(String user) { foam.util.Auth.sudo(x, (String) user); }");

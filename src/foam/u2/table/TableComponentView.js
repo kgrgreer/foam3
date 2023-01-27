@@ -43,7 +43,7 @@ foam.CLASS({
         // so if such an action is called from DAOSummaryView we go back to TableView
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
-      },
+      }
     }
   ],
 
@@ -69,14 +69,11 @@ foam.CLASS({
       return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
     },
     async function filterUnpermitted(arr) {
-      if ( this.auth ) {
-        const results = await Promise.all(arr.map( async p =>
-          p.hidden ? false :
-          ! p.columnPermissionRequired ||
-          await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
-        return arr.filter((_v, index) => results[index]);
-      }
-      return arr;
+      const results = await Promise.all(arr.map( async p =>
+        p.hidden ? false :
+        (! this.auth) ? true : ! p.columnPermissionRequired ||
+        await this.auth.check(ctrl.__subContext__, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+      return arr.filter((_v, index) => results[index]);
     },
     function getCellData(obj, prop, nestedPropertiesObjsMap) {
       var objForCurrentProperty = obj;
@@ -93,22 +90,6 @@ foam.CLASS({
         prop && prop.property ? prop.property : this.data.of.getAxiomByName(propName)),
         objForCurrentProperty
       ];
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'shouldEscapeEvts',
-      documentation: `Use this function to skip clicks/doubleclicks on table
-                      elements such as checkboxes/context menus`,
-      code: function(evt) {
-        if (
-          evt.target.nodeName === 'DROPDOWN-OVERLAY' ||
-          evt.target.classList.contains(this.myClass('vertDots')) || evt.target.nodeName === 'INPUT'
-        ) {
-          return true;
-        }
-      }
     }
   ]
 });

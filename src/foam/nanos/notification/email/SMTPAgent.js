@@ -6,11 +6,11 @@
 
 foam.CLASS({
   package: 'foam.nanos.notification.email',
-  name: 'SMTPEmailService',
+  name: 'SMTPAgent',
 
   implements: [
-    'foam.nanos.NanoService',
-    'foam.nanos.notification.email.EmailService'
+    'foam.core.ContextAgent',
+    'foam.nanos.NanoService'
   ],
 
   documentation: 'Implementation of Email Service using SMTP',
@@ -21,12 +21,15 @@ foam.CLASS({
     'foam.blob.FileBlob',
     'foam.blob.IdentifiedBlob',
     'foam.blob.InputStreamBlob',
+    'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
+    'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
     'foam.log.LogLevel',
     'foam.nanos.er.EventRecord',
     'foam.nanos.cron.Cron',
     'foam.nanos.fs.File',
-    'foam.nanos.notification.email.SMTPConfig',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
@@ -35,7 +38,10 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.InputStream',
     'java.util.Date',
+    'java.util.List',
+    'java.util.Map',
     'java.util.Properties',
+    'java.util.Timer',
     'javax.activation.DataHandler',
     'javax.activation.DataSource',
     'javax.mail.*',
@@ -63,51 +69,31 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'host',
-      value: '127.0.0.1'
-    },
-    {
-      class: 'String',
-      name: 'port',
-      value: '587'
-    },
-    {
-      class: 'String',
-      name: 'username'
-    },
-    {
-      class: 'String',
-      name: 'password'
-    },
-    {
-      class: 'Boolean',
-      name: 'authenticate',
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'starttls',
-      value: true
-    },
-    {
-      documentation: 'Provider imposed rateLimit (per second), at which point they will throttle or block completely for some time window',
-      class: 'Long',
-      name: 'rateLimit',
-      units: 's',
-      value: 14 // default for smtp.gmail.com
-    },
-    {
-      documentation: 'Associated cron service to be disabled on excessive errors',
-      class: 'String',
-      name: 'cronId',
-      value: 'Email Service'
+      name: 'id',
+      class: 'Reference',
+      of: 'foam.nanos.notification.email.EmailServiceConfig',
+      targetDAOKey: 'emailServiceConfigDAO',
+      value: 'smtp'
     },
     {
       documentation: 'Track WARN EventRecord so it can be cleared on a successful operation',
+      name: 'er',
       class: 'FObjectProperty',
-      of: 'foam.nanos.er.EventRecord',
-      name: 'er'
+      of: 'foam.nanos.er.EventRecord'
+    },
+    {
+      name: 'lastConfig',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.notification.email.EmailServiceConfig',
+      visibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
+      name: 'timer',
+      class: 'Object',
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'session_',
@@ -117,12 +103,13 @@ foam.CLASS({
       transient: true,
       javaFactory: `
         Properties props = new Properties();
-        props.setProperty("mail.smtp.auth", getAuthenticate() ? "true" : "false");
-        props.setProperty("mail.smtp.starttls.enable", getStarttls() ? "true" : "false");
-        props.setProperty("mail.smtp.host", getHost());
-        props.setProperty("mail.smtp.port", getPort());
-        if ( getAuthenticate() ) {
-          return Session.getInstance(props, new SMTPAuthenticator(getUsername(), getPassword()));
+        EmailServiceConfig config = findId(getX());
+        props.setProperty("mail.smtp.auth", config.getAuthenticate() ? "true" : "false");
+        props.setProperty("mail.smtp.starttls.enable", config.getStarttls() ? "true" : "false");
+        props.setProperty("mail.smtp.host", config.getHost());
+        props.setProperty("mail.smtp.port", config.getPort());
+        if ( config.getAuthenticate() ) {
+          return Session.getInstance(props, new SMTPAuthenticator(config.getUsername(), config.getPassword()));
         }
         return Session.getInstance(props);
       `
@@ -136,11 +123,12 @@ foam.CLASS({
       javaFactory: `
         Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
+        EmailServiceConfig config = findId(getX());
         Transport transport = null;
         try {
           omLogger.log(this.getClass().getSimpleName(), "transport", "connecting");
           transport = getSession_().getTransport("smtp");
-          transport.connect(getUsername(), getPassword());
+          transport.connect(config.getUsername(), config.getPassword());
           logger.info("transport", "connected");
           omLogger.log(this.getClass().getSimpleName(), "transport", "connected");
           EventRecord er = getEr();
@@ -151,17 +139,9 @@ foam.CLASS({
             ((DAO) getX().get("eventRecordDAO")).put(er);
           }
         } catch ( Exception e ) {
-          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
+          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
           clearSession_();
-
-          DAO cronDAO = (DAO) getX().get("cronDAO");
-          Cron cron = (Cron) cronDAO.find(getCronId());
-          if ( cron != null ) {
-            cron = (Cron) cron.fclone();
-            cron.setEnabled(false);
-            cronDAO.put(cron);
-            ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), "Cron", getCronId(), "disable on error", LogLevel.WARN, null));
-          }
+          disable();
           throw new foam.core.FOAMException(e);
         }
         return transport;
@@ -173,25 +153,113 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-        // SMTPConfig migration support
-        if ( USERNAME.isDefaultValue(this) &&
-             PASSWORD.isDefaultValue(this) ) {
-          SMTPConfig cfg = (SMTPConfig) getX().get("SMTPConfig");
-          if ( cfg != null &&
-               ! SMTPConfig.USERNAME.isDefaultValue(cfg) &&
-               ! SMTPConfig.PASSWORD.isDefaultValue(cfg) ) {
-            Loggers.logger(getX(), this).info("initializing from SMTPConfig");
-            copyFrom(cfg);
-          }
-        }
+      String partner = getId();
+      EmailServiceConfig config = findId(getX());
+      if ( config == null ) {
+        config = new EmailServiceConfig(); // use default timer values
+      } else {
+        partner = config.getHost();
+      }
+      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "start", partner, null, null, LogLevel.INFO, null));
+      Timer timer = new Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
+      timer.schedule(new ContextAgentTimerTask(getX(), this),
+        config.getInitialDelay(),
+        config.getPollInterval()
+      );
       `,
+    },
+    {
+      name: 'stop',
+      javaCode: `
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        Loggers.logger(getX(), this).info("stop");
+        timer.cancel();
+        clearTimer();
+      }
+      `
+    },
+    {
+      name: 'sleep',
+      args: 'Long interval',
+      javaCode: `
+      EmailServiceConfig config = findId(getX());
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        timer.cancel();
+      }
+      timer = new Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
+      timer.schedule(new ContextAgentTimerTask(getX(), this),
+        interval,
+        config.getPollInterval()
+      );
+      `
     },
     {
       name: 'reload',
       javaCode: `
-        Loggers.logger(getX(), this).info("reload");
+      EmailServiceConfig config = findId(getX());
+      EmailServiceConfig lastConfig = getLastConfig();
+      if ( lastConfig != null &&
+           ((Map) config.diff(lastConfig)).size() > 0 ) {
+
+        ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "reload", config.getHost(), null, null, LogLevel.INFO, null));
         clearTransport_();
         clearSession_();
+        setLastConfig(config);
+      }
+      `
+    },
+    {
+      name: 'disable',
+      javaCode: `
+      EmailServiceConfig config = (EmailServiceConfig) findId(getX()).fclone();
+      config.setEnabled(false);
+      ((DAO) getX().get("emailServiceConfigDAO")).put(config);
+      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", config.getHost(), null, "disable on error", LogLevel.WARN, null));
+      `
+    },
+    {
+      name: 'execute',
+      javaCode: `
+      while ( true ) {
+        reload();
+        EmailServiceConfig config = findId(getX());
+        if ( ! config.getEnabled() ) break;
+
+        DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
+        List<EmailMessage> emailMessages = (List) ((ArraySink)
+          emailMessageDAO
+            .where(config.getPredicate())
+            .orderBy(foam.nanos.notification.email.EmailMessage.CREATED)
+            .select(new ArraySink()))
+            .getArray();
+
+        if ( emailMessages.size() == 0 ) break;
+
+        long second = 1000L;
+        long limit = config.getRateLimit();
+
+        long endTime = System.currentTimeMillis() + second;
+        long count = 1;
+        for ( EmailMessage emailMessage : emailMessages ) {
+          emailMessageDAO.put(send(x, emailMessage));
+          count++;
+          if ( limit > 0 &&
+               count > limit ) {
+            // super simple rate limiting.
+            long remaining = endTime - System.currentTimeMillis();
+            if ( remaining > 0 ) {
+              sleep(remaining);
+              return;
+            }
+            count = 1;
+            endTime = System.currentTimeMillis() + second;
+          }
+        }
+      }
       `
     },
     {
@@ -307,13 +375,13 @@ foam.CLASS({
       `
     },
     {
-      name: 'sendEmail',
+      name: 'send',
+      args: 'X x, foam.nanos.notification.email.EmailMessage emailMessage',
+      type: 'foam.nanos.notification.email.EmailMessage',
       javaCode: `
         Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
-        String alarmName = this.getClass().getSimpleName()+".sendEmail";
 
-        emailMessage = (EmailMessage) emailMessage.fclone();
         if ( emailMessage.getStatus() == Status.FAILED ) {
           // ignore
           logger.debug("Email not sent, already FAILED.", emailMessage.getId());
@@ -324,6 +392,8 @@ foam.CLASS({
         if ( message == null ) {
           return emailMessage;
         }
+
+        emailMessage = (EmailMessage) emailMessage.fclone();
         try {
           getTransport_().send(message);
           emailMessage.setStatus(Status.SENT);
@@ -338,21 +408,15 @@ foam.CLASS({
             ((DAO) getX().get("eventRecordDAO")).put(er);
           }
         } catch ( SendFailedException | ParseException e ) {
+          EmailServiceConfig config = getLastConfig();
           if ( e.getMessage().contains("Too many login attempts") ) {
-            setEr((EventRecord) ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
+             EventRecord er = new EventRecord(getX(), this, "send", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e);
+            ((DAO) getX().get("eventRecordDAO")).put(er);
+            setEr(er);
             clearSession_();
-
-            DAO cronDAO = (DAO) getX().get("cronDAO");
-            Cron cron = (Cron) cronDAO.find(getCronId());
-            if ( cron != null ) {
-              cron = (Cron) cron.fclone();
-              cron.setEnabled(false);
-              cronDAO.put(cron);
-              ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), "Cron", getCronId(), "disable on error", LogLevel.WARN, null));
-            }
+            disable();
           } else {
             emailMessage.setStatus(Status.FAILED);
-            setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.WARN, e)));
           }
         } catch ( MessagingException e ) {
           try {
@@ -362,7 +426,10 @@ foam.CLASS({
           }
           clearTransport_();
           clearSession_();
-          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "send", getHost(), null, e.getMessage(), LogLevel.WARN, e)));
+          EmailServiceConfig config = getLastConfig();
+          EventRecord er = new EventRecord(getX(), this, "send", config.getHost(), null, e.getMessage(), LogLevel.WARN, null);
+          ((DAO) getX().get("eventRecordDAO")).put(er);
+          setEr(er);
         } catch ( RuntimeException e ) {
           // already reported.
           logger.error("send failed", e.getMessage());

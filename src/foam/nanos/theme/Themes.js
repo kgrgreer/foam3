@@ -11,11 +11,11 @@ foam.CLASS({
   documentation: `Support methods for Theme`,
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeDomain',
+    'foam.nanos.theme.ThemeDomain'
   ],
 
   imports: [
@@ -46,12 +46,7 @@ Later themes:
 3. user`,
       name: 'findTheme',
       type: 'foam.nanos.theme.Theme',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       code: async function(x) {
         var theme;
         var themeDomain;

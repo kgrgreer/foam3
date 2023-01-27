@@ -64,7 +64,6 @@ foam.CLASS({
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
-        this.progressMax = n?.length;
       }
     },
     {
@@ -83,8 +82,9 @@ foam.CLASS({
           sectionIndex: 0,
         });
       },
-      preSet: function(_, n){
-        this.wizardlets[n.wizardletIndex].load()
+      preSet: function(o, n) {
+        if ( n?.wizardletIndex != o?.wizardletIndex )
+          this.wizardlets[n.wizardletIndex].load({});
         return n;
       },
       postSet: function (o, n) {
@@ -92,7 +92,8 @@ foam.CLASS({
           this.wizardlets[o.wizardletIndex].isCurrent = false;
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
-        this.progressValue = n?.wizardletIndex;
+        let a = this.wizardlets.slice(0, n?.wizardletIndex + 1);
+        this.progressValue = a.filter(v => v.isVisible).length;
         this.activePosition = n;
       }
     },
@@ -253,6 +254,11 @@ foam.CLASS({
         var isAvailable$ = w.isAvailable$;
         this.wsub.onDetach(isAvailable$.sub(() => {
           this.onWizardletAvailability(wizardletIndex, isAvailable$.get());
+        }));
+
+        var isVisible$ = w.isVisible$;
+        this.wsub.onDetach(isVisible$.sub(() => {
+          this.onWizardletVisibility();
         }));
 
         // Bind availability listener for each wizardlet section
@@ -423,20 +429,7 @@ foam.CLASS({
         }
         if ( ! nextWizardlet ) break;
 
-        try {
-          debugLog('loading wizardlet', nextPosition, {
-            wizardlet: nextWizardlet
-          });
-          await nextWizardlet.load();
-        } catch (e) {
-          let { exception, hint } = await nextWizardlet.handleException(
-            this.WizardEventType.WIZARDLET_LOAD, e
-          );
-
-          if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
-            throw this.lastException = exception || e;
-          }
-        }
+        await this.tryWizardletLoad(nextWizardlet, nextPosition);
 
         if ( this.canLandOn(nextPosition) ) {
           console.debug(`%clanding: %c${nextPosition && nextPosition.toSummary()}`,
@@ -459,6 +452,22 @@ foam.CLASS({
       // }
       this.status = this.WizardStatus.COMPLETED;
       return true;
+    },
+    async function tryWizardletLoad(wizardlet, wizardletPosition) {
+      try {
+        this.debugLog('loading wizardlet', wizardletPosition, {
+          wizardlet: wizardlet
+        });
+        await wizardlet.load();
+      } catch (e) {
+        let { exception, hint } = await wizardlet.handleException(
+          this.WizardEventType.WIZARDLET_LOAD, e
+        );
+
+        if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+          throw this.lastException = exception || e;
+        }
+      }
     },
     function back() {
       let previousScreen = this.previousScreen;
@@ -524,6 +533,14 @@ foam.CLASS({
         if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
+      },
+    },
+    {
+      name: 'onWizardletVisibility',
+      framed: true,
+      code: function() {
+        // Force a position update so views recalculate state
+        this.progressMax = this.wizardlets?.filter(v => v.isVisible).length;
       },
     },
     function onWizardletValidity() {

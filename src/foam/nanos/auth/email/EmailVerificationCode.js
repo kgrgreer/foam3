@@ -10,6 +10,7 @@ foam.CLASS({
   ids: [ 'email', 'userName' ],
 
   mixins: [
+    'foam.nanos.analytics.Analyticable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware'
   ],
@@ -18,6 +19,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.email.VerificationCodeException',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.FragmentedTextField',
@@ -32,18 +34,30 @@ foam.CLASS({
   messages: [
     { name: 'SUCCESS_MSG', message: 'Email verified.' },
     { name: 'ERROR_MSG', message: 'Email verification failed.' },
-    { name: 'TITLE', message: 'Please enter your email verification code' }
+    { name: 'TITLE', message: 'Please enter your email verification code' },
+    { name: 'VERIFICATION_EMAIL_TITLE', message: 'Verification Email Sent'},
+    { name: 'RESEND_ERROR_MSG', message: 'There was an issue with resending your verification email.' },
+    { name: 'VERIFICATION_EMAIL', message: 'Email sent to' },
+    { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
+    { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
+    { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
   properties: [
     {
       class: 'String',
       name: 'verificationCode',
-      required: true,
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
         delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
+      },
+      validateObj: function(verificationCode, codeVerified, remainingAttempts) {
+        if ( ! verificationCode || verificationCode.length != 6 )
+          return this.EMPTY_CODE;
+        if ( codeVerified ) return;
+        if ( remainingAttempts > 0 ) return this.INVALID_CODE + remainingAttempts;
+        return this.NO_ATTEMPTS_LEFT;
       }
     },
     {
@@ -76,8 +90,63 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'codeVerified',
+      documentation: `
+        Updated by verifyCode method whenever code is updated and of valid format.
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
+    },
+    {
+      name: 'remainingAttempts',
+      documentation: `
+        Number of remaining attempts to enter current verification code.
+        Used in resetPasswordCode error message.
+      `,
+      section: 'verificationCodeSection',
+      hidden: true
+    },
+    {
+      class: 'Boolean',
       name: 'showAction',
       hidden: true
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.verificationCode$.sub(() => this.verifyCode());
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'verifyCode',
+      mergeDelay: 100,
+      code: async function() {
+        if ( ! this.verificationCode || this.verificationCode.length != 6 ) {
+          this.codeVerified = false;
+          return;
+        }
+
+        try {
+          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
+          this.report('^verify-success', ['email-verification']);
+          this.assert(verified, 'verified should be true when no exception was thrown')
+          this.codeVerified = verified;
+        } catch (error) {
+          this.report('^verify-failure', ['email-verification'], {
+            errorAsString: error.toString()
+          });
+          if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
+            this.remainingAttempts = error.data.exception.remainingAttempts;
+            this.codeVerified = false;
+            if ( ! this.remainingAttempts ) {
+              this.resendCode();
+            }
+          }
+        }
+      }
     }
   ],
 
@@ -87,8 +156,12 @@ foam.CLASS({
       isAvailable: function(showAction) {
         return showAction;
       },
+      isEnabled: function(codeVerified) {
+        return codeVerified;
+      },
       code: async function() {
         var success, err;
+        if ( ! this.codeVerified ) return;
         try {
           success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.userName, this.verificationCode);
         } catch ( error ) {
@@ -111,8 +184,12 @@ foam.CLASS({
     },
     {
       name: 'resendCode',
-      buttonStyle: 'LINK',
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
+      },
+      buttonStyle: 'TEXT',
       code: async function() {
+        if ( this.codeVerified ) return;
         try {
           await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
           this.ctrl.add(this.NotificationMessage.create({
@@ -124,7 +201,7 @@ foam.CLASS({
         } catch ( err ) {
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
-            message: this.ERROR_MSG_EMAIL,
+            message: this.RESEND_ERROR_MSG,
             type: this.LogLevel.ERROR
           }));
           return false;

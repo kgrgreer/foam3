@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'UserCapabilityJunctionSaver',
-  implements: [ 'foam.u2.wizard.data.Saver' ],
+  extends: 'foam.u2.wizard.data.ProxySaver',
 
   documentation: `
     Will save ucj data from wizardlets
@@ -16,23 +16,33 @@ foam.CLASS({
   imports: [
     'crunchService',
     'subject',
-    'wizardletId',
+    'wizardletId as importedWizardletId',
     'wizardlets'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'wizardletId'
+    }
   ],
 
 
   methods: [
     async function save(data) {
-      const wizardlet = await this.wizardlets.find(w => w.id === this.wizardletId);
+      let useId = this.wizardletId || this.importedWizardletId;
+      const wizardlet = await this.wizardlets.find(w => w.id === useId);
+      let useData = this.wizardletId ? wizardlet.data : data;
       let p = this.subject ? this.crunchService.updateJunctionFor(
-        null, this.wizardletId, data, null,
+        null, useId, useData, null,
         this.subject.user, this.subject.realUser
       ) : this.crunchService.updateJunction(null,
-        this.wizardletId, data, null
+        useId, useData, null
       );
       await p.then(ucj => {
         wizardlet.status = ucj.status;
       }).catch(e => console.debug(e) );
+      await this.delegate.save(data);
     }
   ]
 });

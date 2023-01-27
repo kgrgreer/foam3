@@ -16,7 +16,6 @@
     'emailToken',
     'emailVerificationService',
     'loginVariables',
-    'resetPasswordToken',
     'userDAO'
   ],
 
@@ -144,14 +143,13 @@
       },
       code: async function() {
         try {
-          this.checkUser();
+          var user = await this.checkUser();
           if ( this.verifyByCode ) {
             await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
             instructionTitle = this.CODE_INSTRUC_TITLE;
             instruction = this.CODE_INSTRUC;
           } else {
-            const user = await this.User.create({ email: this.email, userName: this.userName });
-            await this.resetPasswordToken.generateToken(null, user);
+            await this.emailToken.generateToken(null, user);
             instructionTitle = this.TOKEN_INSTRUC_TITLE;
             instruction = this.TOKEN_INSTRUC + this.email;
           }

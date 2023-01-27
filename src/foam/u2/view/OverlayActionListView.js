@@ -22,7 +22,6 @@ foam.CLASS({
   imports: [
     'ctrl',
     'document',
-    'dropdown',
     'theme'
   ],
 

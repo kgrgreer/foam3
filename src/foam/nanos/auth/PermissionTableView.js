@@ -226,7 +226,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({
           'padding-left':  '16px',
-          'padding-top':   '16px',
+          'padding-top':   '0',
           'padding-right': '16px',
         })
 
