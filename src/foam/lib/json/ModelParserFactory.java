@@ -50,7 +50,7 @@ public class ModelParserFactory {
     propertyParsers[i] = new UnknownPropertyParser();
 
     return new Repeat0(
-      new Seq0( new Optional(new Seq0(Whitespace.instance(), Literal.create("//"),new Repeat(new Not(NewlineParser.create(), AnyChar.instance())))),
+      new Seq0( new Optional(new Repeat(new Seq0(Whitespace.instance(), Literal.create("//"),new Until(NewlineParser.create())))),
         Whitespace.instance(), new Alt(propertyParsers)),
       Literal.create(",")
     );
