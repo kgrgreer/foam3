@@ -64,7 +64,7 @@ foam.CLASS({
 
           return self.E()
             .add(arraySlot.map(visibilities => {
-              var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
+              var availableSections = visibilities.length == sections.length ? sections.filter((s, i) => s.title && visibilities[i]) : sections;
               var e = availableSections.length == 1 ?
                 this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
                   .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })
