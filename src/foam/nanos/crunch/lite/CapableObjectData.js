@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CapableObjectData',
 
   imports: [
-    'auth',
+    'auth?',
     'crunchController?'
   ],
 
@@ -21,8 +21,7 @@ foam.CLASS({
       of: 'foam.nanos.crunch.CapabilityJunctionPayload',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
-      autoValidate: true,
-      columnPermissionRequired: true
+      autoValidate: true
     },
     {
       name: 'userCapabilityRequirements',
@@ -82,7 +81,7 @@ foam.CLASS({
     {
       name: 'openCapableWizard',
       isAvailable: auth => {
-        return auth.check(null, 'developer.capableObjectData.openCapableWizard');
+        return auth?.check(null, 'developer.capableObjectData.openCapableWizard');
       },
       code: async function () {
         if ( ! this.crunchController ) return;
