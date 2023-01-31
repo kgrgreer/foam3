@@ -73,7 +73,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.notification.email.EmailServiceConfig',
       targetDAOKey: 'emailServiceConfigDAO',
-      value: 'default'
+      value: 'smtp'
     },
     {
       documentation: 'Track WARN EventRecord so it can be cleared on a successful operation',

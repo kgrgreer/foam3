@@ -4,15 +4,14 @@ p({
   "lazy":true,
   "serve":true,
   "serviceScript":"""
-    dao = new foam.dao.EasyDAO.Builder(x)
+    return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("capabilityCategories")
       .setOf(foam.nanos.crunch.CapabilityCategory.getOwnClassInfo())
       .setPm(true)
-      .build();
-      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.SOURCE_ID, foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
-      dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
-    return dao;
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.SOURCE_ID, foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.CapabilityCategoryJunction.TARGET_ID });
   """,
   "client":"{\"of\":\"foam.nanos.crunch.CapabilityCategory\"}"
 })

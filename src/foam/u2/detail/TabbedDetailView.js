@@ -64,7 +64,16 @@ foam.CLASS({
 
           return self.E()
             .add(arraySlot.map(visibilities => {
-              var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
+              var availableSections = visibilities.length == sections.length ? sections.filter((s, i) => s.title && visibilities[i]) : sections;
+              var availableSectionsWithoutTitle = visibilities.length == sections.length ? sections.filter((s, i) => !s.title && visibilities[i]) : sections;
+              
+              // Check available sections with a title
+              if ( ( !availableSections || availableSections.length == 0 ) && availableSectionsWithoutTitle && availableSectionsWithoutTitle.length > 0) {
+                availableSections = availableSectionsWithoutTitle;
+              } else {
+                console.warn('No visible sections in tabbed view for entity: ', self.of ? self.of.id : 'unknown');
+              }
+                
               var e = availableSections.length == 1 ?
                 this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
                   .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })

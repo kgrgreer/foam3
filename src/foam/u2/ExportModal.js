@@ -150,18 +150,18 @@ foam.CLASS({
         self.exportDriverRegistryDAO.find(self.dataType).then(function(val) {
           if ( ! val ) {
             self.exportDriverReg = self.unknownExportDriverRegistry;
-            self.exportDriver = undefined;
+            self.exportDriver    = undefined;
           } else {
             self.exportDriverReg = val;
-            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
+            self.exportDriver    = foam.lookup(self.exportDriverReg.driverName).create();
           }
         });
       });
 
       self.exportDriverReg$.sub(function() {
-        self.isConvertAvailable =  self.exportDriverReg.isConvertible;
+        self.isConvertAvailable  =  self.exportDriverReg.isConvertible;
         self.isDownloadAvailable = self.exportDriverReg.isDownloadable;
-        self.isOpenAvailable = self.exportDriverReg.isOpenable;
+        self.isOpenAvailable     = self.exportDriverReg.isOpenable;
       });
 
       this
@@ -176,7 +176,7 @@ foam.CLASS({
           .add(this.slot(function (exportDriver) {
             return this.E()
               .show(exportDriver && exportDriver.cls_.getAxiomsByClass(foam.core.Property).some(p => ! p.hidden))
-              .add(exportDriver);
+              .start({class: 'foam.u2.detail.MDDetailView', data: exportDriver}).style({'margin-left': '-22px'}).end();
           }))
           .start().show(this.isDataTypeSelected$)
             .start().addClass('label').style({'padding-top': '14px'}).add(this.RESPONSE).end()

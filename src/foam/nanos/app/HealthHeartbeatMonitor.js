@@ -64,6 +64,10 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+        Loggers.logger(getX(), this).info("start, disabled on localhost");
+        return;
+      }
       Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       timer.scheduleAtFixedRate(

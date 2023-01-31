@@ -68,7 +68,7 @@ foam.CLASS({
           final ServerSocket serverSocket = serverSocket0;
 
           Agency agency = (Agency) getX().get(getThreadPoolName());
-          logger.info("start", "threadPoolName", getThreadPoolName(), "threadsPerCore", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getThreadsPerCore());
+          logger.info("start", "threadPoolName", getThreadPoolName(), "threadsPerCore", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getThreadsPerCore(), "numberOfThreads", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getNumberOfThreads());
           agency.submit(
             getX(),
             new ContextAgent() {
