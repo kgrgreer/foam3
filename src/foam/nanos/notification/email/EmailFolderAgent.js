@@ -197,9 +197,7 @@ foam.CLASS({
 
         DAO userDAO = (DAO) getX().get("localUserDAO");
         User user = (User) userDAO.find(EQ(User.EMAIL, emailMessage.getFrom()));
-        if ( user == null ) {
-          Loggers.logger(x, this).debug("User not found", emailMessage.getFrom());
-        } else {
+        if ( user != null ) {
           emailMessage.setUser(user.getId());
         }
 
@@ -290,6 +288,9 @@ foam.CLASS({
       javaCode: `
         if ( email != null && email.contains("<") && email.contains(">") ) {
           email = email.substring(email.indexOf("<")+1, email.indexOf(">"));
+        }
+        if ( email != null ) {
+          email = email.toLowerCase();
         }
         return email;
       `
