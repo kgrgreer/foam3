@@ -224,6 +224,13 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
+      foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
+      if ( support != null &&
+           ! support.cronEnabled(x, false) ) {
+        // Loggers.logger(x, this).debug("execution disabled");
+        return;
+      }
+
       while ( true ) {
         reload();
         EmailServiceConfig config = findId(getX());
