@@ -42,6 +42,9 @@ foam.CLASS({
       adapt: function(_, v) { return v.trim(); }
     },
     {
+      name: 'xsdPath'
+    },
+    {
       name: 'simpleTypes',
       factory: () => []
     },
@@ -580,7 +583,6 @@ foam.CLASS({
         if ( child.nodeType !== 1 ) continue;
 
         var name = child.getAttribute('name');
-
         // confirm element is a simple type
         if ( child.localName === 'simpleType' ) {
           for ( var childKey in child.childNodes ) {
@@ -624,6 +626,8 @@ foam.CLASS({
               }
             }
           }
+        } else {
+          console.log("preparse, not parsed", child.localName);
         }
       }
     },
@@ -724,10 +728,95 @@ foam.CLASS({
           this.genModel(m);
         }
       }
+    },
+
+    function compileAll() {
+      console.info('compileAll');
+      var sep = require('path').sep;
+      var fs = require('fs');
+      var DOMParser = (globalThis.DOMParser || require('xmldom').DOMParser);
+      var elements = new Map();
+      this.xmlns = ''; // docElement._nsMap[''] || '';
+
+      var path = __dirname + sep + this.xsdPath; // .replace(/\//g, sep);
+      fs.readdirSync(path).forEach(file => {
+        var f = path+sep+file;
+        console.info('file', f);
+        var text = fs.readFileSync(f, 'utf8').trim();
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(text, 'text/xml');
+        var docElement = doc.documentElement;
+        var children = docElement.childNodes;
+
+        // preparse all the simple types
+        this.preparse(children);
+
+        Array.from(children).forEach(child => {
+          if ( ! child.nodeType ||
+               child.nodeType !== 1 ) {
+            return;
+          }
+          var name = child.getAttribute && child.getAttribute("name");
+          if ( ! name ) {
+            return;
+          }
+          name = name.replaceAll("-", "_");
+          // many simpleTypes are lower case
+          name[0].toUpperCase() + name.slice(1);
+          elements.set(name, child);
+        });
+      });
+
+      elements.forEach((child, name) => {
+        console.info("xml", name, child.nodeType, child.nodeName, child.localName);
+        var id   = this.package + '.' + name;
+
+        // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
+        if ( name !== 'Document' &&  foam.maybeLookup(id) ) return;
+        console.info("id", id);
+
+        // create foam model
+        var m = this.createClass(this.package, name);
+
+        switch ( child.localName ) {
+          case 'complexType':
+            // process complex type
+            this.processComplexType(m, child);
+            m.flags = [ "java", "complexType" ];
+            break;
+          case 'simpleType':
+            // process simple type
+            this.processSimpleType(m, child);
+            m.flags = m.extends ? [] : [ "java", "simpleType" ];
+            break;
+          case 'group':
+            // process group type
+            this.processSequence(m, child);
+            m.flags = m.extends ? [] : [ "java", "groupType" ];
+            break;
+          default:
+            break;
+        }
+
+        if ( m.type === 'enum' ) {
+          delete m.type;
+          this.genModel(m, 'ENUM');
+        } else {
+          this.genModel(m);
+        }
+      });
     }
   ]
 });
 
 foam.XSD = function(model) {
-  foam.xsd.XSDCompiler.create(model).compile();
+  var compiler = foam.xsd.XSDCompiler.create(model);
+  if ( compiler.xsdPath ) {
+    compiler.compileAll();
+  } else if ( compiler.xsd ) {
+    compiler.compile();
+  } else {
+    // console.info("compiler neither xsd or xsdPath set");
+    throw new Error("compiler neither xsd or xsdPath set");
+  }
 };
