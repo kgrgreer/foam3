@@ -599,7 +599,7 @@ foam.CLASS({
   methods: [
     // from state
 
-    function replaceElement(el) {
+    function replaceElement_(el) {
       el.parentNode.replaceChild(this.element_, el);
       this.load();
     },

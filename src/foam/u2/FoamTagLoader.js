@@ -60,7 +60,7 @@ foam.CLASS({
 
       // this.setAttributes(el, view);
 
-      view.replaceElement(el);
+      view.replaceElement_(el);
       /*
       el.outerHTML = view.outerHTML;
       view.load();

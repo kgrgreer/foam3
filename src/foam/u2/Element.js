@@ -870,7 +870,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function loadOverElement(el) {
+    function replaceElement_(el) {
       el.outerHTML = this.outerHTML;
       this.load();
     },
