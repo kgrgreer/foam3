@@ -96,6 +96,10 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+        Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getSendPort(), getPort(), "disabled on localhost");
+        return;
+      }
       Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getSendPort(), getPort());
       Agency agency = (Agency) getX().get("threadPool");
       agency.submit(getX(), this, this.getClass().getSimpleName());
