@@ -8,7 +8,7 @@
    package: 'foam.nanos.auth',
    name: 'Permission',
 
-   documentation: 'A permission represent access to system resources.',
+   documentation: 'A permission represents access to system resources.',
 
    properties: [
      {
