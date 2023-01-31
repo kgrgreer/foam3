@@ -73,6 +73,14 @@ foam.CLASS({
     'createdFor'
   ],
 
+  searchColumns: [
+    'id',
+    'status',
+    'comment',
+    'created',
+    'title'
+  ],
+
   messages: [
     {
       name: 'SUCCESS_ASSIGNED',
@@ -248,6 +256,7 @@ foam.CLASS({
       name: 'dateCommented',
       value: '',
       storageTransient: true,
+      visibility: 'RO',
       section: 'infoSection',
       projectionSafe: false,
       tableCellFormatter: function(_, obj) {
