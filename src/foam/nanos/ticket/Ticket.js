@@ -76,7 +76,6 @@ foam.CLASS({
   searchColumns: [
     'id',
     'status',
-    'comment',
     'created',
     'title'
   ],
