@@ -42,7 +42,8 @@ foam.CLASS({
     'java.util.Timer',
     'javax.mail.*',
     'javax.mail.Message',
-    'javax.mail.internet.MimeBodyPart'
+    'javax.mail.internet.MimeBodyPart',
+    'javax.mail.search.FlagTerm'
   ],
 
   properties: [
@@ -144,23 +145,30 @@ foam.CLASS({
           omLogger.log(this.getClass().getSimpleName(), "store", "connected");
 
           folder = store.getFolder(config.getFolderName());
-          if ( config.getDelete() ) {
+          // if ( config.getDelete() ) {
             folder.open(Folder.READ_WRITE);
-          } else {
-            folder.open(Folder.READ_ONLY);
-          }
+          // } else {
+          //  folder.open(Folder.READ_ONLY);
+          // }
 
           DAO dao = (DAO) x.get(config.getEmailMessageReceiveDAOKey());
-          Message[] messages = folder.getMessages();
-          logger.debug("messages", messages.length);
-          ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, String.valueOf(messages.length), LogLevel.INFO, null));
+          Message[] messages = folder.search(
+            new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+          );
+          if ( messages.length > 0 ) {
+            ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, String.valueOf(messages.length), LogLevel.INFO, null));
+          }
 
           for ( Message message : messages ) {
             try {
               dao.put(buildEmailMessage(x, message));
-              message.setFlag(Flags.Flag.DELETED, config.getDelete());
+              if ( config.getDelete() ) {
+                message.setFlag(Flags.Flag.DELETED, true);
+              } else {
+                message.setFlag(Flags.Flag.SEEN, true);
+              }
             } catch ( Exception e ) {
-              logger.error("unable to process email ","email-from", message.getFrom()[0].toString(), "email-subject", message.getSubject(), e);
+              ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e));
             }
           }
         } catch ( Exception e ) {
@@ -189,7 +197,11 @@ foam.CLASS({
 
         DAO userDAO = (DAO) getX().get("localUserDAO");
         User user = (User) userDAO.find(EQ(User.EMAIL, emailMessage.getFrom()));
-        if ( user == null ) throw new foam.core.FOAMException("Can not find user: " + emailMessage.getFrom());
+        if ( user == null ) {
+          Loggers.logger(x, this).debug("User not found", emailMessage.getFrom());
+        } else {
+          emailMessage.setUser(user.getId());
+        }
 
         Address[] addresses = message.getRecipients(Message.RecipientType.TO);
         if ( addresses != null && addresses.length > 0 ) {
@@ -218,7 +230,7 @@ foam.CLASS({
         emailMessage.setSentDate(message.getSentDate());
         emailMessage.setStatus(Status.RECEIVED);
 
-        DAO fileDAO = (DAO) getX().get("fileDAO");
+        StringBuilder body = new StringBuilder();
 
         // Check if message contents multipart.
         if ( message.getContentType().contains("multipart") ) {
@@ -227,7 +239,7 @@ foam.CLASS({
           for (int i = 0; i < multiPart.getCount(); i++) {
             MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(i);
             // Check if part represents an email attachment.
-            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+            if ( Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition()) ) {
               try ( InputStream in = part.getInputStream();
                     ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
                 org.apache.commons.io.IOUtils.copy(in, os);
@@ -242,14 +254,30 @@ foam.CLASS({
                     file.setFilesize(fileLength);
                     file.setData(data);
                     file.setLifecycleState(LifecycleState.ACTIVE);
-                    file = (File) fileDAO.put(file);
+                    file = (File) ((DAO) getX().get("fileDAO")).put(file);
                     attachments.add(file.getId());
                   }
                 }
               }
+            } else if ( Part.INLINE.equalsIgnoreCase(part.getDisposition()) ||
+                        part.isMimeType("text/*") ) {
+              body.append(part.getContent());
+            } else {
+              Loggers.logger(x, this).warning("Unsupported multipart content type", part.getContentType());
             }
+            if ( attachments.size() > 0 ) emailMessage.setAttachments(attachments.toArray(new String[0]));
           }
-          if ( attachments.size() > 0 ) emailMessage.setAttachments(attachments.toArray(new String[0]));
+        } else if ( message.isMimeType("text/*") ) {
+          body.append(message.getContent().toString());
+        } else {
+          Loggers.logger(x, this).warning("Unsupported content type", message.getContentType());
+        }
+
+        if ( body.length() > 0 ) {
+          emailMessage.setBody(body.toString());
+        //   Loggers.logger(x, this).debug("body", body.toString());
+        // } else {
+        //   Loggers.logger(x, this).debug("body", "no body detected");
         }
 
         return emailMessage;

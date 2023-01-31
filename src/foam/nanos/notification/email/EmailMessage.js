@@ -245,7 +245,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       storageTransient: true,
       javaGetter: `
-        if ( spidIsSet_ ) return spid_;
+        if ( spidIsSet_ || ! userIsSet_ ) return spid_;
         var map = new java.util.HashMap();
         map.put(
           EmailMessage.class.getName(),
