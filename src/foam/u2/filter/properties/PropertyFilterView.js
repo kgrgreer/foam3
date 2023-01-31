@@ -170,23 +170,17 @@ foam.CLASS({
         this.initView();
       this.isFiltering();
       this.isInit = false;
-      this.checkPresetPredicate();
-    },
-
-    function checkPresetPredicate() {
-      if ( this.preSetPredicate != null ) {
-        this.initView();
-      }
     }
   ],
 
   listeners: [
     function initView() {
-      this.container_.tag(this.searchView, {
-        property: this.property,
-        dao$: this.dao$
-      }, this.view_$);
-
+      if ( this.firstTime_ ) {
+        this.container_.tag(this.searchView, {
+          property: this.property,
+          dao$: this.dao$
+        }, this.view_$);
+      }
       // Restore the search view using an existing predicate for that view
       // This requires that every search view implements restoreFromPredicate
       var existingPredicate = this.filterController.getExistingPredicate(this.criteria, this.property);
