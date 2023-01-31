@@ -46,15 +46,15 @@ foam.CLASS({
 
   methods: [
     async function exportFObjectAndReturnTable(X, obj, propNames) {
-      var propToColumnMapping = this.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.cls_, propNames);
+      var propToColumnMapping  = this.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.cls_, propNames);
       var propertyNamesToQuery = this.columnHandler.returnPropNamesToQuery(propToColumnMapping);
 
       return await this.outputter.objectToTable(X, obj.cls_, propertyNamesToQuery, obj, propNames.length);
     },
     async function exportDAOAndReturnTable(X, dao, propNames) {
-      var propToColumnMapping = this.columnConfigToPropertyConverter.returnPropertyColumnMappings(dao.of, propNames);
+      var propToColumnMapping  = this.columnConfigToPropertyConverter.returnPropertyColumnMappings(dao.of, propNames);
       var propertyNamesToQuery = this.columnHandler.returnPropNamesToQuery(propToColumnMapping);
-      
+
       var expr = ( foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder.create() ).buildProjectionForPropertyNamesArray(dao.of, propertyNamesToQuery);
       var sink = await dao.select(expr);
       return await this.outputter.returnTable(X, dao.of, propertyNamesToQuery, sink.projection, propNames.length, true);
