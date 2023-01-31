@@ -32,18 +32,24 @@ foam.CLASS({
 
    methods: [
     function render() {
-    this.SUPER();
-      this.setAttribute('type', 'checkbox');
-      this.addClass()
-        .on('click', function() {
-           if ( this.getAttribute('disabled') ) return;
-           this.data = ! this.data;
-         }.bind(this));
+      this.SUPER();
+        this.setAttribute('type', 'checkbox');
+        this.addClass()
+          .on('click', function() {
+             if ( this.getAttribute('disabled') ) return;
+             this.data = ! this.data;
+           }.bind(this));
 
-      this.start()
-        .addClass('label')
-        .add(this.label$)
-      .end();
+        this.start()
+          .addClass('label')
+          .add(this.label)
+        .end();
     },
+
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      this.label = p.label;
+    }
   ]
 });
