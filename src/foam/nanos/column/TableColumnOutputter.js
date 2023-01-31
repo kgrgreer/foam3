@@ -14,7 +14,7 @@ foam.CLASS({
     'java.util.StringJoiner',
     'org.apache.commons.lang.ArrayUtils',
     'org.apache.commons.lang3.StringUtils'
-  ], 
+  ],
 
   documentation: 'Class for returning 2d-array ( ie table ) for array of values ',
 
@@ -44,19 +44,20 @@ foam.CLASS({
             return ( val / 100 ).toString();
           }
           if ( foam.core.DateTime.isInstance(prop) ) {
-            return val.toString();
+            return this.dateTimeToString(val);
           }
           if ( foam.core.Date.isInstance(prop) ) {
-            return val.toLocaleDateString(foam.locale);
+            return this.dateToString(val);
           }
           if ( foam.core.Time.isInstance(prop) ) {
-            return val.toString().substring(0, 8);
+            return this.timeToString(val);
           }
           return await this.valueToString(val);
         }
-        return ''; 
+        return '';
       }
     },
+
     async function valueToString(val) {
       if ( val.toSummary ) {
         if ( val.toSummary() instanceof Promise )
@@ -65,6 +66,19 @@ foam.CLASS({
       }
       return val.toString();
     },
+
+    function dateToString(d) {
+      return d.toLocaleDateString('en-us');
+    },
+
+    function timeToString(d) {
+      return d.toLocaleTimeString('en-us');
+    },
+
+    function dateTimeToString(dt) {
+      return dt.toLocaleDateString('en-us') + ' ' + dt.toLocaleTimeString('en-us');
+    },
+
     {
       name: 'arrayOfValuesToArrayOfStrings',
       code: async function(x, props, values, lengthOfPrimaryPropsRequested, addUnitPropValueToStr) {
@@ -155,7 +169,7 @@ foam.CLASS({
       javaType: 'java.util.List<java.util.List<Object>>',
       javaCode: `
         java.util.List<java.util.List<Object>> result = new ArrayList<>();
-      
+
         java.util.List<Object> columnHeaders = new ArrayList<>();
 
         for ( int i = 0 ; i < metadata.length ; i++ ) {
