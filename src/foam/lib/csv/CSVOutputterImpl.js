@@ -25,11 +25,16 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Boolean',
+      name: 'sheetsCompatible',
+      documentation: 'If enabled dates and times will be output in a Google Sheets compatible format without the timezone.'
+    },
+    {
       class: 'StringArray',
       name: 'props',
       factory: null,
       expression: function(of) {
-        return of.getAxiomByName('tableColumns') 
+        return of.getAxiomByName('tableColumns')
           ? of.getAxiomByName('tableColumns').columns
           : of.getAxiomsByClass()
             .filter((p) => ! p.networkTransient)
@@ -108,7 +113,11 @@ foam.CLASS({
             value = '"' + ((String)value).replace("\\"", "\\"\\"") + '"';
           getSb().append(value);
         } else if ( value instanceof Date ) {
-          getSb().append(value.toString());
+          if ( getSheetsCompatible() ) {
+            getSb().append("Sheets: " + value); // TODO: use real format
+          } else {
+            getSb().append(value.toString());
+          }
         } else if ( value == null ) {
         } else {
           outputValue_(value.toString());

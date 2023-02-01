@@ -50,6 +50,16 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "csvSheetsDigDriver",
+  "description": "Driver for handling CSV requests from DIG, exporting to Google Sheets.",
+  "serve": false,
+  "service": {
+    "class": "foam.nanos.dig.drivers.DigCsvSheetsDriver"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "htmlDigDriver",
   "description": "Driver for handling HTML requests from DIG.",
   "serve": false,

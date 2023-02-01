@@ -24,6 +24,14 @@ p({
 
 p({
   "class":"foam.nanos.dig.format.DigFormat",
+  "id":"CSVSHEETS",
+  "name":"CSV/Sheets",
+  "driverNSpec":"csvSheetsDigDriver",
+  "format": 0
+})
+
+p({
+  "class":"foam.nanos.dig.format.DigFormat",
   "id":"HTML",
   "name":"HTML",
   "driverNSpec":"htmlDigDriver",
