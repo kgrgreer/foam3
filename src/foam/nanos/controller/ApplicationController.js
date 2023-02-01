@@ -824,6 +824,7 @@ foam.CLASS({
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },
 
+    // TODO: simplify in NP-8928
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
       var group = await groupDAO.find(this.subject.user.group);
@@ -832,34 +833,62 @@ foam.CLASS({
         var ucj = await ucjCheck();
 
         if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createTransientWizardSequence(this.__subContext__)
-            .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
-            .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
-            .remove('RequirementsPreviewAgent')
-            .execute();
-            this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-            this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-          let postCheck = await ucjCheck();
-          if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
-            this.add(foam.u2.dialog.ConfirmationModal.create({
-              title: this.GC_ERROR_TITLE,
-              modalStyle: 'DESTRUCTIVE',
-              primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
-              closeable: false,
-              showCancel: false
-            }, this)
-              .start()
-              .style({ 'min-width': '25vw'})
-              .add(this.GC_ERROR)
-              .end());
-            return false;
+
+          const lastWizard = this.crunchController.lastActiveWizard;
+          if ( lastWizard &&
+            lastWizard.status === this.crunchController.WizardStatus.IN_PROGRESS
+          ) {
+            let x = this.__subContext__.createSubContext({
+              wizardController: lastWizard
+            });
+            const seq = await this.crunchController.createUCJInlineWizardSequence(x)
+              .addBefore('CapabilityAdaptAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
+              ;
+
+            lastWizard.status$.sub(async () => {
+              if ( lastWizard.status !== this.crunchController.WizardStatus.IN_PROGRESS ) {
+                await this.doGeneralCapabilityPostCheck(ucjCheck);
+              }
+            })
+
+            await this.crunchController.inlineWizardFromSequence(lastWizard, seq);
+
           } else {
-            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+            await this.crunchController.createTransientWizardSequence(this.__subContext__)
+              .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
+              .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
+              .remove('RequirementsPreviewAgent')
+              .execute();
+            
+            await this.doGeneralCapabilityPostCheck(ucjCheck);
           }
+
         }
       }
       return true;
+    },
+
+    async function doGeneralCapabilityPostCheck (ucjCheck) {
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      let postCheck = await ucjCheck();
+      if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
+        this.add(foam.u2.dialog.ConfirmationModal.create({
+          title: this.GC_ERROR_TITLE,
+          modalStyle: 'DESTRUCTIVE',
+          primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
+          closeable: false,
+          showCancel: false
+        }, this)
+          .start()
+          .style({ 'min-width': '25vw'})
+          .add(this.GC_ERROR)
+          .end());
+        return false;
+      } else {
+        this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+        this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      }
     },
 
     function addMacroLayout() {
