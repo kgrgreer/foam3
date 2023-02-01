@@ -28,7 +28,8 @@ foam.CLASS({
     function fromProperty(prop) {
       this.SUPER(prop);
       if ( this.sections?.length == 0 ) {
-        let dao = this.__context__[prop.targetDAOKey] || this.__context__.data[prop.name + '$dao'];
+        let dao = this.__context__[prop.targetDAOKey] || this.__context__[foam.String.daoize(prop.of.name)];
+        if ( prop.name == 'destinationAccount')debugger;
         this.sections = [ this.RichChoiceViewSection.create({ heading: (prop.of?.model_?.plural || 'Selections'), dao: dao }) ];
       }
     }
