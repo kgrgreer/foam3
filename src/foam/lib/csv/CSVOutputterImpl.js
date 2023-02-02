@@ -15,7 +15,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'java.util.List',
-    'java.util.Date'
+    'java.util.Date',
+    'java.text.*'
   ],
 
   properties: [
@@ -25,11 +26,16 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Boolean',
+      name: 'sheetsCompatible',
+      documentation: 'If enabled dates and times will be output in a Google Sheets compatible format without the timezone.'
+    },
+    {
       class: 'StringArray',
       name: 'props',
       factory: null,
       expression: function(of) {
-        return of.getAxiomByName('tableColumns') 
+        return of.getAxiomByName('tableColumns')
           ? of.getAxiomByName('tableColumns').columns
           : of.getAxiomsByClass()
             .filter((p) => ! p.networkTransient)
@@ -108,7 +114,14 @@ foam.CLASS({
             value = '"' + ((String)value).replace("\\"", "\\"\\"") + '"';
           getSb().append(value);
         } else if ( value instanceof Date ) {
-          getSb().append(value.toString());
+          if ( getSheetsCompatible() ) {
+            Date date = (Date) value;
+            SimpleDateFormat DateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+            String getSheetsCompatibleDate = DateFormat.format(value);
+            getSb().append(getSheetsCompatibleDate); // TODO: use real format 
+          } else {
+            getSb().append(value.toString());
+          }
         } else if ( value == null ) {
         } else {
           outputValue_(value.toString());
