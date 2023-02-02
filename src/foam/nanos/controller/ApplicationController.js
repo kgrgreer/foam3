@@ -105,7 +105,10 @@ foam.CLASS({
   ],
 
   topics: [
-    'themeChange'
+    'themeChange',
+    // Published by reloadClient(), can be subbed to by client side services 
+    // that need to refresh or cleanup on client reload
+    'clientReloading'
   ],
 
   constants: [
@@ -528,6 +531,7 @@ foam.CLASS({
     },
 
     async function reloadClient() {
+      this.clientReloading.pub();
       var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
