@@ -78,6 +78,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'resetPasswordCode',
+      label: 'Verification Code',
       section: 'verificationCodeSection',
       required: true,
       view: function(_, X) {
