@@ -422,6 +422,15 @@ foam.CLASS({
 
       const wi = wizardController.activePosition.wizardletIndex;
       console.log('splicing at wizard position', wi);
+      // Remove intercept wizardlets if user goes back beyond th intercept
+      wizardController.wizardlets[wi].wao = this.TopicWAO.create({
+        delegate: wizardController.wizardlets[wi].wao
+      });
+      wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
+        foam.events.oneTime(() => {
+          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length) 
+        })
+      ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
     },
 

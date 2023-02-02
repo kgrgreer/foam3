@@ -11,7 +11,7 @@ foam.CLASS({
   flags: ['web'],
   extends: 'foam.u2.wizard.wao.ProxyWAO',
 
-  topics: ['loaded', 'saved'],
+  topics: ['loaded', 'saved','saving'],
 
   methods: [
     async function load(wizardlet) {
@@ -20,6 +20,7 @@ foam.CLASS({
       return result;
     },
     async function save(wizardlet) {
+      this.saving.pub();
       const result =  await this.delegate.save(wizardlet);
       this.saved.pub();
       return result;
