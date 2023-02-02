@@ -224,6 +224,35 @@ foam.CLASS({
       }
     },
 
+    // TODO: remove this during NP-8927
+    function createUCJInlineWizardSequence (x) {
+      const capable = foam.nanos.crunch.lite.BaseCapable.create();
+      x = x || this.__subContext__;
+      x = x.createSubContext({ capable });
+
+      return this.Sequence.create(null, x)
+        .add(this.CapabilityAdaptAgent)
+        .add(this.LoadCapabilitiesAgent)
+        .add(this.LoadCapabilityGraphAgent)
+        .add(this.WAOSettingAgent, {
+          waoSetting: this.WAOSettingAgent.WAOSetting.UCJ
+        })
+        .add(this.GraphWizardletsAgent)
+        .add(this.PublishToWizardletsAgent, { event: 'onReady' })
+    },
+
+    function createInlineWizardSequence (x) {
+      return this.Sequence.create(null, x)
+        .add(this.CapabilityAdaptAgent)
+        .add(this.LoadCapabilitiesAgent)
+        .add(this.LoadCapabilityGraphAgent)
+        .add(this.WAOSettingAgent, {
+          waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
+        })
+        .add(this.GraphWizardletsAgent)
+        .add(this.PublishToWizardletsAgent, { event: 'onReady' })
+    },
+
     function wizardSequenceToViewSequence_(sequence) {
       return sequence
         .remove('WizardStateAgent')
@@ -348,15 +377,8 @@ foam.CLASS({
         rootCapability: capabilityId,
         wizardlets: []
       });
-      const seq = this.Sequence.create(null, x)
-        .add(this.CapabilityAdaptAgent)
-        .add(this.LoadCapabilitiesAgent)
-        .add(this.LoadCapabilityGraphAgent)
-        .add(this.WAOSettingAgent, {
-          waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE
-        })
-        .add(this.GraphWizardletsAgent)
-        .add(this.PublishToWizardletsAgent, { event: 'onReady' })
+
+      const seq = this.createInlineWizardSequence(x);
 
       if ( opt_sequenceExtras ) {
         for ( const fluentSpec of opt_sequenceExtras ) {
@@ -364,30 +386,39 @@ foam.CLASS({
         }
       }
 
-      x = await seq.execute();
+      const options = {};
+      if ( flags.put )  {
+        options.onLastWizardletSaved = async x => {
+          const targetDAO = x[opt_intercept.daoKey];
+          await targetDAO.put(capable);
+        }
+      }
 
-      // When the last wizardlet of the intercept (entry capability) is
-      // saved the Capable will be put in its respective DAO. This also
-      // means the intercept invoker WILL NOT get the return object.
-      if ( flags.put ) {
+      await this.inlineWizardFromSequence(wizardController, seq, options);
+
+      if ( opt_intercept ) opt_intercept.resolve(capable);
+    },
+
+    async function inlineWizardFromSequence(wizardController, seq, options) {
+      options = options || {};
+
+      if ( ! wizardController ) wizardController = this.lastActiveWizard;
+
+      let x = await seq.execute();
+
+      if ( options.onLastWizardletSaved ) {
         const lastWizardlet = x.wizardlets[x.wizardlets.length - 1];
         lastWizardlet.wao = this.TopicWAO.create({
           delegate: lastWizardlet.wao
         });
 
-        lastWizardlet.wao.saved.sub(async () => {
-          const targetDAO = x[opt_intercept.daoKey];
-          await targetDAO.put(capable);
-        });
+        lastWizardlet.wao.saved.sub(options.onLastWizardletSaved);
       }
-      // TODO: choose better location for this or ensure it's in context
+
       for ( let i = 0; i < x.wizardlets.length; i++ ) {
         let w = x.wizardlets[i];
         w.wizardController = wizardController;
       }
-      // Resolve to current object - inline intercepts cannot provide
-      // the return object as the wizard must continue.
-      if ( opt_intercept ) opt_intercept.resolve(capable);
 
       const wi = wizardController.activePosition.wizardletIndex;
       console.log('splicing at wizard position', wi);
