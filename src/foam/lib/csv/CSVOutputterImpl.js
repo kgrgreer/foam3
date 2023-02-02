@@ -121,8 +121,7 @@ foam.CLASS({
           getSb().append(value);
         } else if ( value instanceof Date ) {
           if ( getSheetsCompatible() ) {
-            Date date = (Date) value;
-            String getSheetsCompatibleDate = getDateFormatter().format(date);
+            String getSheetsCompatibleDate = getDateFormatter().format(value);
             getSb().append(getSheetsCompatibleDate);
           } else {
             getSb().append(value.toString());
