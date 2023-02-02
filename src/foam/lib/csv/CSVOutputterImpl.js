@@ -118,7 +118,7 @@ foam.CLASS({
             Date date = (Date) value;
             SimpleDateFormat DateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
             String getSheetsCompatibleDate = DateFormat.format(value);
-            getSb().append(getSheetsCompatibleDate); // TODO: use real format 
+            getSb().append(getSheetsCompatibleDate);
           } else {
             getSb().append(value.toString());
           }
