@@ -31,7 +31,7 @@ foam.CLASS({
     { name: 'TOKEN_INSTRUC_TITLE',      message: 'Password Reset Instructions Sent' },
     { name: 'TOKEN_INSTRUC',            message: 'Please check your inbox to continue' },
     { name: 'CODE_INSTRUC_TITLE',       message: 'Verification code sent' },
-    { name: 'CODE_INSTRUC',             message: 'Please check your inbox to verify your email' },
+    { name: 'CODE_INSTRUC',             message: 'Please check you inbox to reset your password' },
     { name: 'REDIRECTION_TO',           message: 'Back to Sign in' },
     { name: 'DUPLICATE_ERROR_MSG',      message: 'This account requires username' },
     { name: 'ERROR_MSG',                message: 'Issue resetting your password. Please try again' },
