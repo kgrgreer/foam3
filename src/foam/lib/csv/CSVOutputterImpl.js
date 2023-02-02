@@ -15,7 +15,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'java.util.List',
-    'java.util.Date'
+    'java.util.Date',
+    'java.text.*'
   ],
 
   properties: [
@@ -114,7 +115,10 @@ foam.CLASS({
           getSb().append(value);
         } else if ( value instanceof Date ) {
           if ( getSheetsCompatible() ) {
-            getSb().append("Sheets: " + value); // TODO: use real format
+            Date date = (Date) value;
+            SimpleDateFormat DateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");
+            String getSheetsCompatibleDate = DateFormat.format(value);
+            getSb().append(getSheetsCompatibleDate); // TODO: use real format 
           } else {
             getSb().append(value.toString());
           }
