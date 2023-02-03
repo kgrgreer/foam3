@@ -25,6 +25,7 @@ foam.CLASS({
     'java.lang.reflect.Method',
     'static foam.mlang.MLang.*',
   ],
+
   properties: [
     {
       name: 'objClass',
@@ -36,6 +37,7 @@ foam.CLASS({
       class: 'String'
     }
   ],
+
   methods: [
     {
       name: 'set',
@@ -50,7 +52,7 @@ foam.CLASS({
         }
       ],
       code: function(o, val) {
-        if ( this.nestedProperty.includes('.') ) return; 
+        if ( this.nestedProperty.includes('.') ) return;
         o.cls_.getAxiomByName(this.nestedProperty).set(o, val);
       },
       javaCode: `
@@ -244,6 +246,8 @@ foam.CLASS({
 
   documentation: 'Class for creating expression for array of property\'s names',
 
+  requires: [ 'foam.mlang.sink.Projection' ],
+
   javaImports: [
     'foam.core.ClassInfo',
     'foam.core.X',
@@ -252,6 +256,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'static foam.mlang.MLang.*'
   ],
+
   methods: [
     {
       name: 'returnArrayOfExprForArrayOfProperties',
@@ -317,7 +322,7 @@ foam.CLASS({
         }
       ],
       code: function(of, propNames, useProjection) {
-        return foam.mlang.sink.Projection.create({ exprs: this.returnArrayOfExprForArrayOfProperties(of, propNames), useProjection: useProjection });
+        return this.Projection.create({ exprs: this.returnArrayOfExprForArrayOfProperties(of, propNames), useProjection: useProjection });
       },
       javaCode: `
         Expr[] exprs = returnArrayOfExprForArrayOfProperties(x, of, propNames);
