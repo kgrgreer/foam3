@@ -115,7 +115,7 @@ foam.CLASS({
           let nspec = foam.nanos.boot.NSpec;
 
           self.nSpecDAO.where(query).select(
-            foam.mlang.Expressions.create().PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
+            self.PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
             .then(p => {
               foam.dao.ArrayDAO.create({array: p.array})
               .select({
