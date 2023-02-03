@@ -50,8 +50,8 @@
       factory: function() {
         return this.loginVariables.identifier;
       },
-      visibility: function() {
-        return this.emailDisabled ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
+      visibility: function(emailDisabled) {
+        return emailDisabled ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
       }
     },
     {
