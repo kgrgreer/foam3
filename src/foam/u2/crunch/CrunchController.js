@@ -426,7 +426,7 @@ foam.CLASS({
       wizardController.wizardlets[wi].wao = this.TopicWAO.create({
         delegate: wizardController.wizardlets[wi].wao
       });
-      wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
+      wizardController.onDetach(wizardController.wizardlets[wi].wao.saving?.sub(
         foam.events.oneTime(() => {
           wizardController.wizardlets$splice(wi + 1, x.wizardlets.length) 
         })
