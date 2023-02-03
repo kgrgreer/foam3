@@ -25,7 +25,6 @@ foam.CLASS({
       name: 'children_',
       factory: function() {
         var aDAO = this.ArrayDAO.create();
-        // var pDAO = this.PromisedDAO.create();
         if ( this.appConfig.termsAndCondLink ) {
           aDAO.put(this.Menu.create({
             id: this.id + '/T&C',
