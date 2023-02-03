@@ -142,6 +142,7 @@ foam.CLASS({
 
     ^dropdown svg {
       font-size: 0.6rem;
+      fill: currentcolor;
     }
 
     ^iconContainer {
@@ -154,12 +155,8 @@ foam.CLASS({
       this.SUPER();
 
       this.shown = false;
-      for ( let action of this.data ) {
-        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-          this.shown = true;
-          break;
-        }
-      }
+      this.onDetach(this.data$.sub(this.recheckShown));
+      await this.recheckShown();
     },
 
     function addContent() {
@@ -305,6 +302,15 @@ foam.CLASS({
         if ( this.document.activeElement === this.lastEl_.el_() ) {
           this.firstEl_.focus();
           e.preventDefault();
+        }
+      }
+    },
+
+    async function recheckShown() {
+      for ( let action of this.data ) {
+        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
+          this.shown = true;
+          break;
         }
       }
     }
