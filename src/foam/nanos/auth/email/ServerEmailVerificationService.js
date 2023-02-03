@@ -103,7 +103,7 @@ foam.CLASS({
         message.setTo(new String[]{user.getEmail()});
         message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
-        args.put("name", user.getUserName());
+        args.put("name", SafetyUtil.isEmpty(user.getFirstName()) ? user.getUserName() : user.getFirstName());
         args.put("code", code.getVerificationCode());
         args.put("expiry", code.getExpiry());
         args.put("templateSource", this.getClass().getName());
