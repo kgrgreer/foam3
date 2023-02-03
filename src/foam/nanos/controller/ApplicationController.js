@@ -682,7 +682,7 @@ foam.CLASS({
         this.buildingStack = false;
         return;
       }
-      /**  Used for data management menus that are constructed on the fly
+      /**  Used for menus that are constructed on the fly (data management, support, legal)
        * required as those menus are not put in menuDAO and hence fail the
        * find call in pushMenu_.
        * This approach allows any generated menus to be permissioned/loaded as long as

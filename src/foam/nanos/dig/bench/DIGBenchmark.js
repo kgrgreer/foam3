@@ -33,7 +33,7 @@ foam.CLASS({
       class: 'String'
     },
     {
-      documentation: 'single load-balancer url, or many for manual psuedo load-balancing',
+      documentation: 'single load-balancer url, or many for manual Pseudo load-balancing',
       name: 'urls',
       label: 'URLs (Load-Balanced)',
       class: 'StringArray',

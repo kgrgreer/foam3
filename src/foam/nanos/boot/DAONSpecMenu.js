@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DAONSpecMenu',
-  extends: 'foam.nanos.menu.Menu',
+  extends: 'foam.nanos.menu.PseudoMenu',
 
   documentation: 'Psedo-menu to display all DAO NSpecs as sub-menus.',
 
@@ -15,7 +15,6 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOControllerConfig',
-    'foam.dao.ArrayDAO',
     'foam.dao.PromisedDAO',
     'foam.nanos.controller.Memento',
     'foam.nanos.menu.LinkMenu',
@@ -47,12 +46,6 @@ foam.CLASS({
 
         return pDAO;
       }
-    },
-    {
-      name: 'children',
-      // Use getter instead of factory to have higher precedence
-      // than than 'children' factory from relationship
-      getter: function() { return this.children_; }
     }
   ]
 });
