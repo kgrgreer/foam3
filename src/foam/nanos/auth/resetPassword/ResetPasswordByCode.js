@@ -40,7 +40,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
-    { name: 'INSTRUC',          message: 'Please check your inbox to verify your email' },
+    { name: 'INSTRUC',          message: 'Please check you inbox to reset your password' },
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
     { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
