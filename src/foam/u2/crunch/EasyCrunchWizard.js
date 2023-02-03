@@ -7,6 +7,12 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+  implements: [
+    {
+      path: 'foam.core.ContextAgent',
+      flags: 'web'
+    }
+  ],
 
   documentation: `
     EasyCrunchWizard is a facade to configure context agents typically found
@@ -96,7 +102,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function applyTo(sequence) {
+    async function applyTo(sequence) {
       var config = this.StepWizardConfig.create({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
@@ -130,8 +136,10 @@ foam.CLASS({
         fluentSpec.apply(sequence);
       }
     },
-    async function execute () {
-      // Subclasses which fetch information asynchronously can override this
+    async function execute (x) {
+      x = x ?? this.__context__;
+
+      await this.applyTo(x.sequence);
     }
   ]
 });

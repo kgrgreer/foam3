@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.ContextAgent',
     'foam.core.NullAgent'
   ],
 
@@ -57,6 +58,12 @@ foam.CLASS({
 
   methods: [
     // Sequence DSL
+
+    function tag(spec, args) {
+      let name = typeof spec.getImpliedId === 'function'
+        ? spec.getImpliedId(args) : foam.uuid.randomGUID();
+      return this.addAs(name, spec, args);
+    },
 
     function add(spec, args) {
       return this.addAs(spec.name, spec, args);
@@ -164,7 +171,9 @@ foam.CLASS({
         var spec = seqspec.spec;
         var args = seqspec.args;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
-        if ( spec.create ) {
+        if ( this.ContextAgent.isInstance(spec) ) {
+          contextAgent = spec.copyFrom(args);
+        } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
@@ -172,6 +181,14 @@ foam.CLASS({
           if ( ! cls ) foam.assert(false,
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
+        }
+
+        // Flatten a child Sequence
+        if ( this.cls_.isInstance(contextAgent) ) {
+          debugger;
+          this.contextAgentSpecs$splice(i, contextAgent.contextAgentSpecs.length,
+            ...contextAgent.contextAgentSpecs);
+          return await nextStep(x);
         }
         
         // Setup a timeout to warn about unresolved promises
