@@ -226,10 +226,8 @@ foam.CLASS({
     {
       name: 'createWizardFlowSequence',
       documentation: `
-        A transient wizard has disposable CRUNCH payloads and is used for it's side effects.
-        To use this sequence, a context agent exporting rootCapabilityId should be inserted
-        before CapabilityAdaptAgent; this capability will be set as the requirement for a
-        new BaseCapable object that will be discarded at the end of the sequence.
+        This wizard sequence does not load a capability graph or any wizardlets.
+        This is intended for use with WizardFlow (Fluent/DSL for wizards).
       `,
       code: function createWizardFlowSequence(x) {
         const seq = this.createTransientWizardSequence(x);
