@@ -15,7 +15,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'java.util.List',
-    'java.util.Date'
+    'java.util.Date',
+    'java.text.*'
   ],
 
   properties: [
@@ -70,6 +71,12 @@ foam.CLASS({
       flags: ['java'],
       javaType: 'java.lang.StringBuilder',
       javaFactory: 'return new StringBuilder();'
+    },
+    {
+      class: 'Object',
+      name: 'dateFormatter',
+      javaType: 'java.text.DateFormat',
+      javaFactory: 'return new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");'
     }
   ],
 
@@ -114,7 +121,8 @@ foam.CLASS({
           getSb().append(value);
         } else if ( value instanceof Date ) {
           if ( getSheetsCompatible() ) {
-            getSb().append("Sheets: " + value); // TODO: use real format
+            String getSheetsCompatibleDate = getDateFormatter().format(value);
+            getSb().append(getSheetsCompatibleDate);
           } else {
             getSb().append(value.toString());
           }

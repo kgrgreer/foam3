@@ -55,7 +55,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       flex: 1;
-      padding: 0 4rem;
       align-self: center;
       width: 100%;
       overflow: auto;
@@ -107,7 +106,6 @@ foam.CLASS({
 
     ^fullscreen ^bodyWrapper {
       max-height: var(--max-height, 100vh);
-      padding: 0 2rem;
     }
 
     ^logo img, ^logo svg {
@@ -178,12 +176,22 @@ foam.CLASS({
       display: inline-block;
     }
 
+    ^dialogActionsView-with-footer .foam-u2-dialog-DialogActionsView-actions {
+      padding: 1.2rem 0 0 0;
+    }
+
+    @media only screen and (max-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^bodyWrapper {
+        padding: 0 2rem;
+      }
+    }
+
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^:not(^fullscreen) ^inner {
         width: 65vw;
       }
       ^fullscreen ^bodyWrapper {
-        width: 75%;
+        width: 65%;
       }
       ^footer {
         grid-template-columns: 1fr auto 1fr;
@@ -200,7 +208,7 @@ foam.CLASS({
         width: 35vw;
       }
       ^fullscreen ^bodyWrapper {
-        width: 65%;
+        width: 50%;
       }
     }
   `,
@@ -380,9 +388,12 @@ foam.CLASS({
               .addClass(this.myClass('body'))
               .call(function() { content = this.content; })
             .end()
-            .tag(this.DialogActionsView, {
-              data$: this.primaryActions$
-            })
+            .start()
+              .enableClass(this.myClass('dialogActionsView-with-footer'), this.dynamicFooter$.map(footer => !! footer))
+              .tag(this.DialogActionsView, {
+                data$: this.primaryActions$
+              })
+            .end()
             .add(this.slot(function (dynamicFooter) {
               if ( ! dynamicFooter ) return;
               return this.E()
