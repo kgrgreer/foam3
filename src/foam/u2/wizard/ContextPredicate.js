@@ -40,8 +40,6 @@
         throw new Error(`Predicate check failed.`);
 
       var valueToCheck = this.valuePath.f(objToCheck);
-      if ( ! valueToCheck )
-        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.contextKey}`);
     
       if ( ! foam.util.equals(valueToCheck, this.matchValue) )
         throw new Error(`Predicate check failed.`);
