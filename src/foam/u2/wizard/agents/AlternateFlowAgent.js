@@ -17,9 +17,9 @@ foam.CLASS({
       name: 'alternateFlow'
     },
     {
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'foam.u2.wizard.ContextPredicate',
-      name: 'contextPredicate',
+      name: 'contextPredicates',
       documentation: `
         If a contextPredicate is given, the alternate flow will only be executed
         if this returns true.
@@ -29,14 +29,17 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      if ( this.contextPredicate ) {
-        try  {
-          var check = await this.contextPredicate.execute(this.__context__);
-        } catch (e) {
-          console.info('Predicate check failed.');
-          return
+      if ( this.contextPredicates ) {
+        var check = true;
+        for ( var p of this.contextPredicates ) {
+          try  {
+            check = await p.execute(this.__context__);
+          } catch (e) {
+            console.info('Predicate check failed.');
+            return
+          }
+          if ( ! check ) return;
         }
-        if ( ! check ) return;
       }
         
       this.alternateFlow.execute(this.__context__);
