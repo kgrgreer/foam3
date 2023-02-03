@@ -55,6 +55,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       flex: 1;
+      padding: 0 4rem;
       align-self: center;
       width: 100%;
       overflow: auto;
@@ -106,6 +107,7 @@ foam.CLASS({
 
     ^fullscreen ^bodyWrapper {
       max-height: var(--max-height, 100vh);
+      padding: 0 2rem;
     }
 
     ^logo img, ^logo svg {
