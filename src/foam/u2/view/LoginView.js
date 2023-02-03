@@ -61,6 +61,15 @@ foam.CLASS({
     margin: 0 auto;
   }
 
+
+  .foam-u2-dialog-ApplicationPopup ^content-form {
+    width: 100%;
+    padding: 2vw 0;
+  }
+  .foam-u2-dialog-ApplicationPopup ^ .centerVertical {
+    max-width: 100vw;
+  }
+
   /* SET ABOVE DATA */
   ^ .topBar-logo-Back {
     display: flex;
