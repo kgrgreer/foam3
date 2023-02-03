@@ -32,7 +32,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
     'window'
   ],
 
@@ -291,7 +290,7 @@ foam.CLASS({
 
       String permission = "nspec.update." + getId();
       AuthService auth = (AuthService) x.get("auth");
-  
+
       if ( ! auth.check(x, permission) ) {
         ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
         throw new AuthorizationException("Permission denied: Cannot update this NSpec.");
@@ -308,7 +307,7 @@ foam.CLASS({
       javaCode: `
         String permission  = "nspec.remove." + getId();
         AuthService auth = (AuthService) x.get("auth");
-    
+
         if ( ! auth.check(x, permission) ) {
           ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
           throw new AuthorizationException("Permission denied: Cannot delete this NSpec.");
