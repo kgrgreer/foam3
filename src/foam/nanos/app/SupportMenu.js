@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.app',
   name: 'SupportMenu',
-  extends: 'foam.nanos.menu.PsuedoMenu',
+  extends: 'foam.nanos.menu.PseudoMenu',
 
   imports: [
     'theme'

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DAONSpecMenu',
-  extends: 'foam.nanos.menu.PsuedoMenu',
+  extends: 'foam.nanos.menu.PseudoMenu',
 
   documentation: 'Psedo-menu to display all DAO NSpecs as sub-menus.',
 

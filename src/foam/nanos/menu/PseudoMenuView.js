@@ -6,9 +6,9 @@
 
 foam.CLASS({
   package: 'foam.nanos.menu',
-  name: 'PsuedoMenuView',
+  name: 'PseudoMenuView',
   extends: 'foam.u2.view.OverlayActionListView',
-  documentation: 'View for PsuedoMenus, sets children and labels for OverlayActionListView',
+  documentation: 'View for PseudoMenus, sets children and labels for OverlayActionListView',
   imports: [
     'menu'
   ],

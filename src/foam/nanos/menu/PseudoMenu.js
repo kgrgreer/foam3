@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.menu',
-  name: 'PsuedoMenu',
+  name: 'PseudoMenu',
   extends: 'foam.nanos.menu.Menu',
 
   documentation: `Psedo-menu base class that can be used to create 
@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       name: 'view',
-      factory: function() { return 'foam.nanos.menu.PsuedoMenuView' }
+      factory: function() { return 'foam.nanos.menu.PseudoMenuView' }
     }
   ]
 });
