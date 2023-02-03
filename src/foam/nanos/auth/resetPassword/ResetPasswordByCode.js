@@ -51,6 +51,17 @@ foam.CLASS({
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
       justify-content: flex-start;
     }
+    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
+      padding: 0;
+    }
+    
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
+      text-align: center;
+    }
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
+      width: fit-content;
+      align-self: center
+    }
   `,
 
   properties: [
@@ -71,7 +82,7 @@ foam.CLASS({
       required: true,
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
-        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       },
       validateObj: function(resetPasswordCode, codeVerified, remainingAttempts) {
