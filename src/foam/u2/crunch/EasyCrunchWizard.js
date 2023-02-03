@@ -7,6 +7,12 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+  implements: [
+    {
+      path: 'foam.core.ContextAgent',
+      flags: 'web'
+    }
+  ],
 
   documentation: `
     EasyCrunchWizard is a facade to configure context agents typically found
@@ -132,6 +138,7 @@ foam.CLASS({
     },
     async function execute (x) {
       x = x ?? this.__context__;
+      debugger;
 
       await this.applyTo(x.sequence);
     }
