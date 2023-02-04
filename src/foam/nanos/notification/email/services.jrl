@@ -12,6 +12,7 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailTemplate.getOwnClassInfo())
+      .setGuid(true)
       .setAuthorize(false)
       .setPm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -29,7 +30,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailTemplate.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localEmailTemplateDAO"))
-      .setGuid(true)
+      .setRuler(false)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailTemplate\"}"
@@ -63,8 +64,9 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageDAO"))
-      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setRuler(false)
       .setEnableInterfaceDecorators(false)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
@@ -79,6 +81,7 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessagesReceived")
+      .setServiceProviderAware(false)
       .setSAF(true)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
@@ -97,8 +100,10 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
       .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageReceivedDAO"))
-      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setRuler(false)
       .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(false)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
@@ -114,6 +119,7 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessagesProcessed")
+      .setServiceProviderAware(false)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
         .setSize(100000)
@@ -130,9 +136,11 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
-      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageProcessedDAO"))
-      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
+      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageProcessedDAO")      .setRuler(false)
+)
       .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(false)
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.notification.email.EmailMessage\"}"
