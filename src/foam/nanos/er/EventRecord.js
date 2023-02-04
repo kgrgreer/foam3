@@ -33,7 +33,8 @@ foam.CLASS({
     'code',
     'severity',
     'message',
-    'hostname'
+    'hostname',
+    'created'
   ],
 
   searchColumns: [
