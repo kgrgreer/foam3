@@ -238,22 +238,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      includeInDigest: true,
       tableWidth: 120,
       section: 'systemInformation',
       order: 10,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      storageTransient: true,
-      javaFactory: `
-        var map = new java.util.HashMap();
-        map.put(
-          EmailMessage.class.getName(),
-          new foam.core.PropertyInfo[] { EmailMessage.USER }
-        );
-        return new ServiceProviderAwareSupport()
-          .findSpid(foam.core.XLocator.get(), map, this);
-      `
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
