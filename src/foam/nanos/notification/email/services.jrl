@@ -136,8 +136,8 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
-      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageProcessedDAO")      .setRuler(false)
-)
+      .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageProcessedDAO"))
+      .setRuler(false)
       .setEnableInterfaceDecorators(false)
       .setServiceProviderAware(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
