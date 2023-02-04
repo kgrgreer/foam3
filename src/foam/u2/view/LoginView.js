@@ -61,6 +61,15 @@ foam.CLASS({
     margin: 0 auto;
   }
 
+
+  .foam-u2-dialog-ApplicationPopup ^content-form {
+    width: 100%;
+    padding: 2vw 0;
+  }
+  .foam-u2-dialog-ApplicationPopup ^ .centerVertical {
+    max-width: 100vw;
+  }
+
   /* SET ABOVE DATA */
   ^ .topBar-logo-Back {
     display: flex;
@@ -291,34 +300,38 @@ foam.CLASS({
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()
-        .callIf(self.data.showAction, function() {
-          this
-            .br()
-            .br()
-            .start()
-              .startContext({ data: self.data })
-              .addClass(self.myClass('center-footer'))
-              // first footer
-              .start()
-                .addClass(self.myClass('signupLink'))
-                .start('span')
-                  .addClass('bold-text-with-pad')
-                  .add(self.data.FOOTER_TXT)
-                .end()
-                .start('span')
-                  .add(self.data.FOOTER)
-                .end()
-              .end()
-                // second footer
-              .start()
-                .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
-                .start('span')
-                  .add(self.data.SUB_FOOTER)
-                .end()
-              .end()
-              .endContext()
-            .end();
-        })
+        .add(
+          this.slot(function(data$showAction) {
+            return self.E().callIf(data$showAction, function() {
+              this
+                .br()
+                .br()
+                .start()
+                  .startContext({ data: self.data })
+                  .addClass(self.myClass('center-footer'))
+                  // first footer
+                  .start()
+                    .addClass(self.myClass('signupLink'))
+                    .start('span')
+                      .addClass('bold-text-with-pad')
+                      .add(self.data.FOOTER_TXT)
+                    .end()
+                    .start('span')
+                      .add(self.data.FOOTER)
+                    .end()
+                  .end()
+                    // second footer
+                  .start()
+                    .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
+                    .start('span')
+                      .add(self.data.SUB_FOOTER)
+                    .end()
+                  .end()
+                  .endContext()
+                .end();
+            })
+          })
+        )
         
 
       // CREATE SPLIT VIEW

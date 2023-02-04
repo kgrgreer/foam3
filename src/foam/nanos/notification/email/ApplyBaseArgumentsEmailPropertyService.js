@@ -40,9 +40,7 @@ foam.CLASS({
         User user = (User) emailMessage.findUser(getX());
         x = foam.util.Auth.sudo(x, user);
 
-        if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-          emailMessage.setSpid(user.getSpid());
-        }
+        emailMessage.setSpid(user.getSpid());
 
         Theme theme = (Theme) x.get("theme");
         SupportConfig supportConfig = theme.getSupportConfig();

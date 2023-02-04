@@ -870,6 +870,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function replaceElement_(el) {
+      el.outerHTML = this.outerHTML;
+      this.load();
+    },
+
     function detach() {
       this.SUPER();
       this.childNodes = [];
@@ -1488,6 +1493,17 @@ foam.CLASS({
 
     function toE() { return this; },
 
+    function recall(fn, opt_self) {
+      var slot = (opt_self || this).slot(fn);
+      update = () => {
+        this.removeAllChildren();
+        slot.get();
+      };
+      update();
+      slot.sub(update);
+      return this;
+    },
+
     function add_(cs, parentNode) {
       // Common case is one String, so optimize that case.
       if ( cs.length == 1 && typeof cs[0] === 'string' ) {
@@ -1530,7 +1546,7 @@ foam.CLASS({
         } else if ( c.then ) {
           this.add(this.PromiseSlot.create({ promise: c }));
         } else if ( typeof c === 'function' ) {
-          throw new Error('Unsupported');
+          console.warn('Unsupported use of add(function).');
         } else {
           // String or Number
           es.push(c);
@@ -2728,8 +2744,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateMode_(this.mode);
-      // this.enableClass('error', this.error_$);
-      this.setAttribute('title', this.error_$);
+      this.enableClass('error', this.error_$);
+      // this.setAttribute('title', this.error_$);
     },
 
     function updateMode_() {

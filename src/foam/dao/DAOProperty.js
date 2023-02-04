@@ -62,6 +62,13 @@ foam.CLASS({
 
           return result;
         }
+        if ( foam.Array.isInstance(v) && v.length ) {
+          var dao = new foam.dao.MDAO.create({of: v[0].cls})
+
+          v.forEach(i => dao.put(i));
+
+          return dao;
+        }
         return foam.core.FObjectProperty.ADAPT.value.call(this, o, v, prop);
       }
     }
