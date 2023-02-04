@@ -223,6 +223,23 @@ foam.CLASS({
           ;
       }
     },
+    {
+      name: 'createWizardFlowSequence',
+      documentation: `
+        This wizard sequence does not load a capability graph or any wizardlets.
+        This is intended for use with WizardFlow (Fluent/DSL for wizards).
+      `,
+      code: function createWizardFlowSequence(x) {
+        const seq = this.createTransientWizardSequence(x);
+        return seq
+          .remove('LoadCapabilitiesAgent')
+          .remove('LoadTopConfig')
+          .remove('CreateWizardletsAgent')
+          .remove('RequirementsPreviewAgent')
+          .remove('RequirementsPreviewAgent')
+          ;
+      }
+    },
 
     // TODO: remove this during NP-8927
     function createUCJInlineWizardSequence (x) {
