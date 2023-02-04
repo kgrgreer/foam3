@@ -39,6 +39,10 @@ foam.CLASS({
       String locale = (String) templateArgs.get("locale");
 
       // STEP 1) Find EmailTemplate
+
+      // retrieve spid from user as it may not be set on emailMessage,
+      // or could be set to a spid associated with a Theme which may differ
+      // from the email user, if the user is super user
       String spid = emailMessage.getSpid();
       User user = emailMessage.findUser(x);
       if ( user != null ) {
