@@ -429,7 +429,7 @@ foam.CLASS({
           delegate: lastWizardlet.wao
         });
 
-        lastWizardlet.wao.saved.sub(options.onLastWizardletSaved);
+        lastWizardlet.wao.saved.sub(async () => {options.onLastWizardletSaved(x)});
       }
 
       for ( let i = 0; i < x.wizardlets.length; i++ ) {
