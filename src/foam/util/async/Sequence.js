@@ -60,6 +60,17 @@ foam.CLASS({
     // Sequence DSL
 
     function tag(spec, args) {
+      if ( ! spec ) {
+        throw new Error(
+          'Undefined argument in call to .tag: ' +
+          foam.json.stringify({
+            flow: this.cls_.name,
+            after: this.contextAgentSpecs.length > 0
+              ? this.contextAgentSpecs[this.contextAgentSpecs.length - 1]
+              : null
+          })
+        );
+      }
       let name = typeof spec.getImpliedId === 'function'
         ? spec.getImpliedId(args) : foam.uuid.randomGUID();
       return this.addAs(name, spec, args);
@@ -184,10 +195,8 @@ foam.CLASS({
         }
 
         // Flatten a child Sequence
-        if ( this.cls_.isInstance(contextAgent) ) {
-          debugger;
-          this.contextAgentSpecs$splice(i, contextAgent.contextAgentSpecs.length,
-            ...contextAgent.contextAgentSpecs);
+        if ( foam.util.async.SequenceInstaller.isInstance(contextAgent) ) {
+          contextAgent.install(this, i);
           return await nextStep(x);
         }
         

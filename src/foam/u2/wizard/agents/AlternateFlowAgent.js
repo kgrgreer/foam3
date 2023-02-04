@@ -10,6 +10,11 @@ foam.CLASS({
   implements: [
     'foam.core.ContextAgent'
   ],
+
+  requires: [
+    'foam.u2.wizard.WizardPosition'
+  ],
+
   properties: [
     {
       class: 'FObjectProperty',
@@ -40,8 +45,25 @@ foam.CLASS({
       }
         
       this.alternateFlow.execute(this.__context__);
-      if ( this.alternateFlow.wizardletId)
-        this.alternateFlow.handleNext(this.__subContext__.wizardController);
+
+      if ( this.alternateFlow.wizardletId ) {
+        if ( this.__context__.wizardController ) {
+          this.alternateFlow.handleNext(this.__context__.wizardController);
+          return;
+        }
+
+        const wizardletId = this.alternateFlow.wizardletId;
+        const x = this.__context__;
+        const wi = x.wizardlets.findIndex(w => w.id == wizardletId);
+        if ( wi < 0 ) {
+          throw new Error('wizardlet not found with id: ' + wizardletId);
+        }
+        const pos = this.WizardPosition.create({
+          wizardletIndex: wi,
+          sectionIndex: 0
+        })
+        x.initialPosition = pos;
+      }
     }
   ]
 });
