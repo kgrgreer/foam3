@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
@@ -38,7 +39,16 @@ foam.CLASS({
       String locale = (String) templateArgs.get("locale");
 
       // STEP 1) Find EmailTemplate
-      EmailTemplate emailTemplate = EmailTemplateSupport.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
+
+      // retrieve spid from user as it may not be set on emailMessage,
+      // or could be set to a spid associated with a Theme which may differ
+      // from the email user, if the user is super user
+      String spid = emailMessage.getSpid();
+      User user = emailMessage.findUser(x);
+      if ( user != null ) {
+        spid = user.getSpid();
+      }
+      EmailTemplate emailTemplate = EmailTemplateSupport.findTemplate(x, templateName, group, locale, spid, templateArgs);
       if ( emailTemplate == null ) {
         logger.warning("EmailTemplate not found", templateName, group);
         return emailMessage;
