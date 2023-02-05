@@ -228,12 +228,13 @@ foam.CLASS({
         // check whether user has permission to check group permissions
         if ( ! check(x, CHECK_USER_PERMISSION) ) throw new AuthorizationException();
         try {
+          Permission p = new AuthPermission(permission);
           while ( ! SafetyUtil.isEmpty(groupId) ) {
             Group group = (Group) ((DAO) getLocalGroupDAO()).find(groupId);
             // if group is null break
             if ( group == null ) break;
             // check permission
-            if ( group.implies(x, new AuthPermission(permission)) ) return true;
+            if ( group.implies(x, p) ) return true;
             // check parent group
             groupId = group.getParent();
           }
@@ -463,7 +464,7 @@ foam.CLASS({
         ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
 
         if ( serviceProvider == null ||
-             serviceProvider.getAnonymousUser() == 0 || 
+             serviceProvider.getAnonymousUser() == 0 ||
              session == null ||
              user.getId() != serviceProvider.getAnonymousUser() )
              return false;
