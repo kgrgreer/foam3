@@ -116,7 +116,7 @@ foam.CLASS({
         }
         return foam.mlang.MLang.EQ(EmailMessage.STATUS, Status.UNSENT);
       `,
-      visibility: 'RO' // default display is to verbose
+      visibility: 'HIDDEN' // default display is to verbose
     },
     {
       name: 'emailMessageSendDAOKey',

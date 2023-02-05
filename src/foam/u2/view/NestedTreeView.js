@@ -87,7 +87,12 @@ foam.CLASS({
 
   properties: [
     { name: 'currentRootStack', class: 'Array'  },
-    'currentRoot'
+    'currentRoot',
+    {
+      class: 'Boolean',
+      name: 'continueNesting',
+      documentation: 'When set to true, all parent/child relationships are opened as nested trees instead of inline trees'
+    }
   ],
 
   methods: [
@@ -129,7 +134,8 @@ foam.CLASS({
               expanded:     self.startExpanded,
               formatter:    self.formatter,
               query:        self.query,
-              onClickAddOn: self.onClickAddOn1,
+              // Unless specified, stop nesting after one level
+              onClickAddOn: this.continueNesting || ! currentRoot ? self.onClickAddOn1 : self.onClickAddOn,
               level:        1
             });
           });
