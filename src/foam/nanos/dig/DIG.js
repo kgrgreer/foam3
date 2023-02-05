@@ -341,9 +341,12 @@ NOTE: when using the java client, the first call to a newly started instance may
       view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 144 }
     },
     {
+      documentation: 'deprecated',
       name: 'nSpecName',
       class: 'String',
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true,
+      javaSetter: 'setDaoKey(val);'
     },
     {
       documentation: 'Session token / BEARER token',
@@ -567,7 +570,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       type: 'foam.core.FObject',
       javaCode: `
       // Special support for Sessions as they must go through SUGAR
-      if ( "sessionDAO".equals(getNSpecName()) ) {
+      if ( "sessionDAO".equals(getDaoKey()) ) {
         Session session = (Session) obj;
         String id = createSession(x, session);
         session.setId(id);
@@ -688,7 +691,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'String',
       javaCode: `
-      PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getDaoKey(), dop);
       try {
         FObjectFormatter formatter = formatter_.get();
         formatter.output(obj);
@@ -716,7 +719,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'Object',
       javaCode: `
-      PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getDaoKey(), dop);
       try {
         Object result = parser_.get().parseString(data.toString(), getOf().getObjClass());
         if ( result == null ) {
@@ -734,7 +737,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         while ( cause.getCause() != null ) {
           cause = cause.getCause();
         }
-        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), getOf(), data, cause);
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getDaoKey(), getOf(), data, cause);
         throw e;
       } finally {
         pm.log(x);
@@ -765,9 +768,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       sb.append(getServiceName());
       sb.append("?cmd=");
       sb.append(dop.getLabel());
-      if ( ! SafetyUtil.isEmpty(getNSpecName()) ) {
+      if ( ! SafetyUtil.isEmpty(getDaoKey()) ) {
         sb.append("&dao=");
-        sb.append(getNSpecName());
+        sb.append(getDaoKey());
       }
       if ( dop == DOP.FIND ||
            dop == DOP.SELECT ||
@@ -821,7 +824,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       try {
         HttpClient client = client_.get();
         HttpResponse<String> response = null;
-        PM pm = PM.create(x, "DIG", "send", getPostURL(), getNSpecName(), dop);
+        PM pm = PM.create(x, "DIG", "send", getPostURL(), getDaoKey(), dop);
         try {
           response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } finally {
