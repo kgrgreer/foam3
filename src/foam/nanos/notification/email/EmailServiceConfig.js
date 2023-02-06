@@ -14,6 +14,40 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'emailServiceConfigDAO'
+  ],
+
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
+  requires: [
+    'foam.dao.AbstractDAO',
+    'foam.log.LogLevel'
+  ],
+  
+  messages: [
+    {
+      name: 'SUCCESS_ENABLED',
+      message: 'Successfully enabled'
+    },
+    {
+      name: 'SUCCESS_DISABLED',
+      message: 'Successfully disabled'
+    }
+  ],
+
+  tableColumns: [
+    'id',
+    'enabled',
+    'host',
+    'port',
+    'username',
+    'protocol'
+  ],
+
   properties: [
     {
       name: 'id',
@@ -56,6 +90,11 @@ foam.CLASS({
       value: true
     },
     {
+      name: 'protocol',
+      class: 'String',
+      value: 'smtp'
+    },
+    {
       documentation: 'Relevant to send - Provider imposed rateLimit (per second), at which point they will throttle or block completely for some time window',
       name: 'rateLimit',
       class: 'Long',
@@ -66,12 +105,18 @@ foam.CLASS({
       name: 'predicate',
       class: 'foam.mlang.predicate.PredicateProperty',
       factory: function () {
+        if ( this.protocol === 'imaps' ) {
+          return foam.mlang.MLang.EQ(EmailMessage.STATUS, Status.RECEIVED);
+        }
         return foam.mlang.MLang.EQ(EmailMessage.STATUS, Status.UNSENT);
       },
       javaFactory: `
+        if ( "imaps".equals(getProtocol()) ) {
+          return foam.mlang.MLang.EQ(EmailMessage.STATUS, Status.RECEIVED);
+        }
         return foam.mlang.MLang.EQ(EmailMessage.STATUS, Status.UNSENT);
       `,
-      visibility: 'RO' // default display is to verbose
+      visibility: 'HIDDEN' // default display is to verbose
     },
     {
       name: 'emailMessageSendDAOKey',
@@ -85,10 +130,15 @@ foam.CLASS({
       value: 'INBOX'
     },
     {
-      documentation: 'Relevant to fetch/receive - delete remote email after receive.',
-      name: 'delete',
+      name: 'processAttachments',
       class: 'Boolean',
       value: true
+    },
+    {
+      documentation: 'Relevant to fetch/receive - delete remote email after receive. When false, emails are marked SEEN.',
+      name: 'delete',
+      class: 'Boolean',
+      value: false
     },
     {
       name: 'emailMessageReceiveDAOKey',
@@ -104,6 +154,49 @@ foam.CLASS({
       name: 'initialDelay',
       class: 'Int',
       value: 60000
+    }
+  ],
+  
+  actions: [
+    {
+      name: 'disable',
+      isAvailable: function() {
+        return this.enabled;
+      },
+      code: function(X) {
+        var emailServiceConfig = this.clone();
+        emailServiceConfig.enabled = false;
+
+        this.emailServiceConfigDAO.put(emailServiceConfig).then(req => {
+          this.emailServiceConfigDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.emailServiceConfigDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          X.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
+        }, e => {
+          this.throwError.pub(e);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'enable',
+      isAvailable: function() {
+        return ! this.enabled;
+      },
+      code: function(X) {
+        var emailServiceConfig = this.clone();
+        emailServiceConfig.enabled = true;
+
+        this.emailServiceConfigDAO.put(emailServiceConfig).then(req => {
+          this.emailServiceConfigDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.emailServiceConfigDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          X.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
+        }, e => {
+          this.throwError.pub(e);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
     }
   ]
 });

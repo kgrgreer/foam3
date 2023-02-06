@@ -42,7 +42,8 @@ foam.CLASS({
     'java.util.Timer',
     'javax.mail.*',
     'javax.mail.Message',
-    'javax.mail.internet.MimeBodyPart'
+    'javax.mail.internet.MimeBodyPart',
+    'javax.mail.search.FlagTerm'
   ],
 
   properties: [
@@ -51,12 +52,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.notification.email.EmailServiceConfig',
       targetDAOKey: 'emailServiceConfigDAO',
-      value: 'default'
-    },
-    {
-      name: 'protocol',
-      class: 'String',
-      value: 'imaps'
+      value: 'imap'
     },
     {
       documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
@@ -118,6 +114,13 @@ foam.CLASS({
         }
         if ( ! config.getEnabled() ) return;
 
+        foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
+        if ( support != null &&
+             ! support.cronEnabled(x, false) ) {
+          // Loggers.logger(x, this).debug("execution disabled");
+          return;
+        }
+
         Logger logger = new PrefixLogger(
           new Object[] {
             this.getClass().getSimpleName(),
@@ -132,13 +135,13 @@ foam.CLASS({
         try {
           omLogger.log(this.getClass().getSimpleName(), "store", "connecting");
           Properties props = new Properties();
-          props.setProperty("mail.store.protocol", getProtocol());
-          props.setProperty("mail.smtp.auth", config.getAuthenticate() ? "true" : "false");
-          props.setProperty("mail.smtp.starttls.enable", config.getStarttls() ? "true" : "false");
-          props.setProperty("mail.smtp.host", config.getHost());
-          props.setProperty("mail.smtp.port", config.getPort());
+          props.setProperty("mail.store.protocol", config.getProtocol());
+          props.setProperty(String.format("mail.%s.auth", config.getProtocol()), config.getAuthenticate() ? "true" : "false");
+          props.setProperty(String.format("mail.%s.starttls.enable", config.getProtocol()), config.getStarttls() ? "true" : "false");
+          props.setProperty(String.format("mail.%s.host", config.getProtocol()), config.getHost());
+          props.setProperty(String.format("mail.%s.port", config.getProtocol()), config.getPort());
           Session session = Session.getInstance(props);
-          store = session.getStore(getProtocol());
+          store = session.getStore(config.getProtocol());
           try {
             store.connect(config.getHost(), Integer.valueOf(config.getPort()), config.getUsername(), config.getPassword());
           } catch ( Exception e ) {
@@ -149,23 +152,30 @@ foam.CLASS({
           omLogger.log(this.getClass().getSimpleName(), "store", "connected");
 
           folder = store.getFolder(config.getFolderName());
-          if ( config.getDelete() ) {
+          // if ( config.getDelete() ) {
             folder.open(Folder.READ_WRITE);
-          } else {
-            folder.open(Folder.READ_ONLY);
-          }
+          // } else {
+          //  folder.open(Folder.READ_ONLY);
+          // }
 
           DAO dao = (DAO) x.get(config.getEmailMessageReceiveDAOKey());
-          Message[] messages = folder.getMessages();
-          logger.debug("messages", messages.length);
-          ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, String.valueOf(messages.length), LogLevel.INFO, null));
+          Message[] messages = folder.search(
+            new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+          );
+          if ( messages.length > 0 ) {
+            ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, String.valueOf(messages.length), LogLevel.INFO, null));
+          }
 
           for ( Message message : messages ) {
             try {
               dao.put(buildEmailMessage(x, message));
-              message.setFlag(Flags.Flag.DELETED, config.getDelete());
+              if ( config.getDelete() ) {
+                message.setFlag(Flags.Flag.DELETED, true);
+              } else {
+                message.setFlag(Flags.Flag.SEEN, true);
+              }
             } catch ( Exception e ) {
-              logger.error("unable to process email ","email-from", message.getFrom()[0].toString(), "email-subject", message.getSubject(), e);
+              ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "fetch", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e));
             }
           }
         } catch ( Exception e ) {
@@ -186,26 +196,23 @@ foam.CLASS({
       type: 'foam.nanos.notification.email.EmailMessage',
       javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
       javaCode: `
+        EmailServiceConfig config = findId(x);
         EmailMessage emailMessage = new EmailMessage();
         emailMessage.setSubject(message.getSubject());
-        emailMessage.setFrom(message.getFrom()[0].toString());
-        emailMessage.setReplyTo(message.getReplyTo()[0].toString());
-
-        String fromAddr = message.getFrom()[0].toString();
-        String fromEmail = fromAddr;
-        if ( fromAddr.contains("<") && fromAddr.contains(">") ) {
-          fromEmail = fromAddr.substring(fromAddr.indexOf("<")+1, fromAddr.indexOf(">"));
-        }
+        emailMessage.setFrom(formatEmail(message.getFrom()[0].toString().toLowerCase()));
+        emailMessage.setReplyTo(formatEmail(message.getReplyTo()[0].toString().toLowerCase()));
 
         DAO userDAO = (DAO) getX().get("localUserDAO");
-        User user = (User) userDAO.find(EQ(User.EMAIL, fromEmail));
-        if ( user == null ) throw new foam.core.FOAMException("Can not find user: " + fromEmail);
+        User user = (User) userDAO.find(EQ(User.EMAIL, emailMessage.getFrom()));
+        if ( user != null ) {
+          emailMessage.setUser(user.getId());
+        }
 
         Address[] addresses = message.getRecipients(Message.RecipientType.TO);
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setTo(recipients);
         }
@@ -213,7 +220,7 @@ foam.CLASS({
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setCc(recipients);
         }
@@ -221,14 +228,14 @@ foam.CLASS({
         if ( addresses != null && addresses.length > 0 ) {
           String[] recipients = new String[addresses.length];
           for ( int i = 0; i < addresses.length; i++ ) {
-            recipients[i] = addresses[i].toString();
+            recipients[i] = formatEmail(addresses[i].toString());
           }
           emailMessage.setBcc(recipients);
         }
         emailMessage.setSentDate(message.getSentDate());
         emailMessage.setStatus(Status.RECEIVED);
 
-        DAO fileDAO = (DAO) getX().get("fileDAO");
+        StringBuilder body = new StringBuilder();
 
         // Check if message contents multipart.
         if ( message.getContentType().contains("multipart") ) {
@@ -237,30 +244,62 @@ foam.CLASS({
           for (int i = 0; i < multiPart.getCount(); i++) {
             MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(i);
             // Check if part represents an email attachment.
-            if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
+            if ( Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition()) ) {
               try ( InputStream in = part.getInputStream();
                     ByteArrayOutputStream os = new ByteArrayOutputStream() ) {
                 org.apache.commons.io.IOUtils.copy(in, os);
-                byte[] bytes = os.toByteArray();
-                long fileLength = bytes.length;
-                try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
-                  Blob data = new InputStreamBlob(bin, fileLength);
-                  File file = new File();
-                  file.setOwner(user.getId());
-                  file.setFilename(part.getFileName());
-                  file.setFilesize(fileLength);
-                  file.setData(data);
-                  file.setLifecycleState(LifecycleState.ACTIVE);
-                  file = (File) fileDAO.put(file);
-                  attachments.add(file.getId());
+                if ( config.getProcessAttachments() ) {
+                  byte[] bytes = os.toByteArray();
+                  long fileLength = bytes.length;
+                  try ( ByteArrayInputStream bin = new ByteArrayInputStream(bytes); ) {
+                    Blob data = new InputStreamBlob(bin, fileLength);
+                    File file = new File();
+                    file.setOwner(user.getId());
+                    file.setFilename(part.getFileName());
+                    file.setFilesize(fileLength);
+                    file.setData(data);
+                    file.setLifecycleState(LifecycleState.ACTIVE);
+                    file = (File) ((DAO) getX().get("fileDAO")).put(file);
+                    attachments.add(file.getId());
+                  }
                 }
               }
+            } else if ( Part.INLINE.equalsIgnoreCase(part.getDisposition()) ||
+                        part.isMimeType("text/*") ) {
+              body.append(part.getContent());
+            } else {
+              Loggers.logger(x, this).warning("Unsupported multipart content type", part.getContentType());
             }
+            if ( attachments.size() > 0 ) emailMessage.setAttachments(attachments.toArray(new String[0]));
           }
-          if ( attachments.size() > 0 ) emailMessage.setAttachments(attachments.toArray(new String[0]));
+        } else if ( message.isMimeType("text/*") ) {
+          body.append(message.getContent().toString());
+        } else {
+          Loggers.logger(x, this).warning("Unsupported content type", message.getContentType());
+        }
+
+        if ( body.length() > 0 ) {
+          emailMessage.setBody(body.toString());
+        //   Loggers.logger(x, this).debug("body", body.toString());
+        // } else {
+        //   Loggers.logger(x, this).debug("body", "no body detected");
         }
 
         return emailMessage;
+      `
+    },
+    {
+      name: 'formatEmail',
+      args: 'String email',
+      type: 'String',
+      javaCode: `
+        if ( email != null && email.contains("<") && email.contains(">") ) {
+          email = email.substring(email.indexOf("<")+1, email.indexOf(">"));
+        }
+        if ( email != null ) {
+          email = email.toLowerCase();
+        }
+        return email;
       `
     }
   ]

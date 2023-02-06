@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',

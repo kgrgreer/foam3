@@ -38,6 +38,13 @@ foam.CLASS({
         delete cloned.class;
         return cloned;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'updateWithSpec',
+      documentation: `
+        Set to true when we always want to update wizardlet data with spec data.
+      `
     }
   ],
 
@@ -52,6 +59,7 @@ foam.CLASS({
       }
 
       // Otherwise behave as before
+      if ( o.old && this.updateWithSpec ) o.old.copyFrom(this.args);
       return o?.old ?? this.of.create(this.args, this);
     }
   ]

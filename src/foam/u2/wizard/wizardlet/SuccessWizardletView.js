@@ -21,8 +21,8 @@ foam.CLASS({
     }
     ^image {
       width: 120pt;
-      margin: 30px 0px;
-      margin-top: 0px;
+      margin-bottom: 69px;
+      margin-top: 122px;
     }
   `,
 
@@ -38,10 +38,6 @@ foam.CLASS({
       view: 'foam.u2.view.ImageView',
       // value: '/images/checkmark-small-green.svg'
       value: '/images/checkmark-outline-green.svg'
-    },
-    {
-      class: 'String',
-      name: 'confirmationNumber'
     }
   ],
 
@@ -60,10 +56,10 @@ foam.CLASS({
           .add(this.message$)
         .end()
         .start()
-        .callIf(this.confirmationNumber, function() {
-          return self.addClass('h300')
-            .add('Transaction Reference No: ', self.confirmationNumber);
-        })
+          .callIf(this.confirmationNumber, function() {
+            return self.addClass('h300')
+              .add('Transaction Reference No: ', self.confirmationNumber);
+          })
         .end();
     }
   ]

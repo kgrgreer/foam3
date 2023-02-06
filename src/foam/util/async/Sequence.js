@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.ContextAgent',
     'foam.core.NullAgent'
   ],
 
@@ -57,6 +58,23 @@ foam.CLASS({
 
   methods: [
     // Sequence DSL
+
+    function tag(spec, args) {
+      if ( ! spec ) {
+        throw new Error(
+          'Undefined argument in call to .tag: ' +
+          foam.json.stringify({
+            flow: this.cls_.name,
+            after: this.contextAgentSpecs.length > 0
+              ? this.contextAgentSpecs[this.contextAgentSpecs.length - 1]
+              : null
+          })
+        );
+      }
+      let name = typeof spec.getImpliedId === 'function'
+        ? spec.getImpliedId(args) : foam.uuid.randomGUID();
+      return this.addAs(name, spec, args);
+    },
 
     function add(spec, args) {
       return this.addAs(spec.name, spec, args);
@@ -156,15 +174,17 @@ foam.CLASS({
     async function execute() {
       let i = 0;
       let nextStep = async x => {
-        if ( i >= this.contextAgentSpecs.length ) return await Promise.resolve(x);
+        if ( i >= this.contextAgentSpecs.length ) return x;
         await this.waitForUnpause();
-        if ( this.halted_ ) return await Promise.resolve(x);
+        if ( this.halted_ ) return x;
         let seqspec = this.contextAgentSpecs[i++];
         let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
-        if ( spec.create ) {
+        if ( this.ContextAgent.isInstance(spec) ) {
+          contextAgent = spec.copyFrom(args);
+        } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
@@ -172,6 +192,12 @@ foam.CLASS({
           if ( ! cls ) foam.assert(false,
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
+        }
+
+        // Flatten a child Sequence
+        if ( foam.util.async.SequenceInstaller.isInstance(contextAgent) ) {
+          contextAgent.install(this, i);
+          return await nextStep(x);
         }
         
         // Setup a timeout to warn about unresolved promises

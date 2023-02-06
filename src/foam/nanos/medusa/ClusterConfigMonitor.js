@@ -87,6 +87,7 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
       timer.schedule(
@@ -99,6 +100,7 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
+        Loggers.logger(getX(), this).info("execute");
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
 

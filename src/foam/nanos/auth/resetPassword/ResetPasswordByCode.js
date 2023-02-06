@@ -40,7 +40,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
-    { name: 'INSTRUC',          message: 'Please check your inbox to verify your email' },
+    { name: 'INSTRUC',          message: 'Please check you inbox to reset your password' },
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
     { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
@@ -50,6 +50,17 @@ foam.CLASS({
   css: `
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
       justify-content: flex-start;
+    }
+    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
+      padding: 0;
+    }
+    
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
+      text-align: center;
+    }
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
+      width: fit-content;
+      align-self: center
     }
   `,
 
@@ -67,11 +78,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'resetPasswordCode',
+      label: 'Verification Code',
       section: 'verificationCodeSection',
       required: true,
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
-        delegates = [].concat(...delegates.map(n => [n, '-'])).slice(0, -1);
+        delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       },
       validateObj: function(resetPasswordCode, codeVerified, remainingAttempts) {

@@ -3,7 +3,7 @@ p({
   id: "foam-nanos-notification-email-EmailMessagePropertyServiceRule",
   name: "EmailMessage EmailPropertyService",
   ruleGroup: "EmailMessage",
-  daoKey: "emailMessageDAO",
+  daoKey: "localEmailMessageDAO",
   priority: 1000,
   operation: 3,
   predicate: {
@@ -31,7 +31,7 @@ p({
   id: "foam-nanos-notification-email-EmailMessageStatusRule",
   name: "EmailMessage Status",
   ruleGroup: "EmailMessage",
-  daoKey: "emailMessageDAO",
+  daoKey: "localEmailMessageDAO",
   priority: 100,
   operation: 3,
   predicate: {
@@ -60,7 +60,7 @@ p({
   name: "EmailMessage Status - Processed",
   documentation: "Move Processed EmailMessages to EmailMesageProcessedDAO",
   ruleGroup: "EmailMessage",
-  daoKey: "emailMessageReceivedDAO",
+  daoKey: "localEmailMessageReceivedDAO",
   priority: 0,
   operation: 3,
   predicate: {
