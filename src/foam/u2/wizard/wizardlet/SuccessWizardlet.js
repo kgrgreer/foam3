@@ -25,7 +25,7 @@ foam.CLASS({
     {
       name: 'confirmationNumber',
       expression: function(confirmationNumberPath, data) {
-        return confirmationNumberPath.f(data);
+        return confirmationNumberPath ? confirmationNumberPath.f(data) : '';
       }
     },
     {

@@ -47,6 +47,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      const self = this;
       this
         .addClass(this.myClass())
         .startContext({ data: this })
@@ -59,8 +60,10 @@ foam.CLASS({
           .add(this.message$)
         .end()
         .start()
-          .addClass('h300')
-          .add(this.confirmationNumber$)
+        .callIf(this.confirmationNumber, function() {
+          return self.addClass('h300')
+            .add('Transaction Reference No: ', self.confirmationNumber);
+        })
         .end();
     }
   ]
