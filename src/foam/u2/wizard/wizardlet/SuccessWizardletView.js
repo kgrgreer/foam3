@@ -38,6 +38,10 @@ foam.CLASS({
       view: 'foam.u2.view.ImageView',
       // value: '/images/checkmark-small-green.svg'
       value: '/images/checkmark-outline-green.svg'
+    },
+    {
+      class: 'String',
+      name: 'confirmationNumber'
     }
   ],
 
