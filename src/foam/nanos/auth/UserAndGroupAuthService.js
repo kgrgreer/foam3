@@ -148,8 +148,7 @@ foam.CLASS({
         if ( user == null ) {
           throw new UserNotFoundException();
         }
-        // check that the user is active
-        assertUserIsActive(user);
+        user.validateAuth(x);
         // check if user enabled
         if ( ! user.getEnabled() ) {
           throw new AccessDeniedException();
