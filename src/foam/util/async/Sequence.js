@@ -174,9 +174,9 @@ foam.CLASS({
     async function execute() {
       let i = 0;
       let nextStep = async x => {
-        if ( i >= this.contextAgentSpecs.length ) return await Promise.resolve(x);
+        if ( i >= this.contextAgentSpecs.length ) return x;
         await this.waitForUnpause();
-        if ( this.halted_ ) return await Promise.resolve(x);
+        if ( this.halted_ ) return x;
         let seqspec = this.contextAgentSpecs[i++];
         let contextAgent;
         var spec = seqspec.spec;

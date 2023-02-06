@@ -11,6 +11,10 @@ foam.CLASS({
     'foam.core.ContextAgent'
   ],
 
+  imports: [
+    'wizardController?'
+  ],
+
   requires: [
     'foam.u2.wizard.WizardPosition'
   ],
@@ -47,8 +51,8 @@ foam.CLASS({
       this.alternateFlow.execute(this.__context__);
 
       if ( this.alternateFlow.wizardletId ) {
-        if ( this.__context__.wizardController ) {
-          this.alternateFlow.handleNext(this.__context__.wizardController);
+        if ( this.wizardController ) {
+          this.alternateFlow.handleNext(this.wizardController);
           return;
         }
 
