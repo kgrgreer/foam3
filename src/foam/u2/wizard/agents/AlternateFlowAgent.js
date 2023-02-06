@@ -8,7 +8,8 @@ foam.CLASS({
   package: 'foam.u2.wizard.agents',
   name: 'AlternateFlowAgent',
   implements: [
-    'foam.core.ContextAgent'
+    'foam.core.ContextAgent',
+    'foam.mlang.Expressions'
   ],
 
   imports: [
@@ -26,8 +27,7 @@ foam.CLASS({
       name: 'alternateFlow'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.u2.wizard.ContextPredicate',
+      class: 'foam.mlang.predicate.PredicateProperty',
       name: 'contextPredicate',
       documentation: `
         If a contextPredicate is given, the alternate flow will only be executed
@@ -39,12 +39,7 @@ foam.CLASS({
   methods: [
     async function execute() {
       if ( this.contextPredicate ) {
-        try  {
-          var check = await this.contextPredicate.execute(this.__context__);
-        } catch (e) {
-          console.info('Predicate check failed.');
-          return
-        }
+        const check = this.contextPredicate.f(this.__context__);
         if ( ! check ) return;
       }
         
