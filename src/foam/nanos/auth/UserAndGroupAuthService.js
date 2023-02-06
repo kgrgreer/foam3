@@ -114,6 +114,7 @@ foam.CLASS({
         // get user from session id
         User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
         user.validateAuth(x);
+
         // check if group enabled
         Group group = getCurrentGroup(x);
         if ( group != null && ! group.getEnabled() ) {
@@ -173,6 +174,10 @@ foam.CLASS({
         }
 
         Session session = x.get(Session.class);
+        // check for two-factor authentication
+        if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
+          throw new AuthenticationException("User requires two-factor authentication");
+        }
         // Re use the session context if the current session context's user id matches the id of the user trying to log in
         if ( session.getUserId() == user.getId() ) {
           return user;
@@ -228,12 +233,13 @@ foam.CLASS({
         // check whether user has permission to check group permissions
         if ( ! check(x, CHECK_USER_PERMISSION) ) throw new AuthorizationException();
         try {
+          Permission p = new AuthPermission(permission);
           while ( ! SafetyUtil.isEmpty(groupId) ) {
             Group group = (Group) ((DAO) getLocalGroupDAO()).find(groupId);
             // if group is null break
             if ( group == null ) break;
             // check permission
-            if ( group.implies(x, new AuthPermission(permission)) ) return true;
+            if ( group.implies(x, p) ) return true;
             // check parent group
             groupId = group.getParent();
           }
@@ -463,7 +469,7 @@ foam.CLASS({
         ServiceProvider serviceProvider = (ServiceProvider) dao.find((String) x.get("spid"));
 
         if ( serviceProvider == null ||
-             serviceProvider.getAnonymousUser() == 0 || 
+             serviceProvider.getAnonymousUser() == 0 ||
              session == null ||
              user.getId() != serviceProvider.getAnonymousUser() )
              return false;
