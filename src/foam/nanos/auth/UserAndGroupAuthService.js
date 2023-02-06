@@ -113,7 +113,6 @@ foam.CLASS({
         }
         // get user from session id
         User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
-        user.validateAuth(x);
         // check if group enabled
         Group group = getCurrentGroup(x);
         if ( group != null && ! group.getEnabled() ) {
