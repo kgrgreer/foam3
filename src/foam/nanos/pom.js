@@ -616,6 +616,7 @@ foam.POM({
     { name: "crunch/ui/ReviewCapabilityView",                                             flags: "js" },
     { name: "crunch/ui/ReviewUCJView",                                                    flags: "js" },
     { name: "crunch/ui/CapableView",                                                      flags: "js" },
+    { name: "crunch/ui/CapablePayloadView",                                             flags: "js" },
     { name: "crunch/ui/UCJView",                                                          flags: "js" },
     { name: "crunch/ui/PrerequisiteAwareWizardlet",                                       flags: "js|java" },
     { name: "crunch/ui/LiftingAwareWizardlet",                                            flags: "js|java" },
