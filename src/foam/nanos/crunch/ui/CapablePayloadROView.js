@@ -30,7 +30,8 @@ foam.CLASS({
     'foam.u2.PropertyBorder',
     'foam.u2.layout.GUnit',
     'foam.u2.layout.Grid',
-    'foam.u2.detail.VerticalDetailView'
+    'foam.u2.detail.VerticalDetailView',
+    'foam.u2.detail.FlexSectionedDetailView'
   ],
 
   css: `
@@ -115,7 +116,11 @@ foam.CLASS({
 
         // OPTION TWO
         // view.start().tag(this.VerticalDetailView, { data: data }).end()
-        view.start().add(data).end()
+        view.start()
+          .tag(this.FlexSectionedDetailView, {
+            data: this.capableObj.capablePayloads[i].data
+          })
+        .end() 
       }
       return view.end();
     }
