@@ -116,11 +116,7 @@ foam.CLASS({
 
         // OPTION TWO
         // view.start().tag(this.VerticalDetailView, { data: data }).end()
-        view.start()
-          .tag(this.FlexSectionedDetailView, {
-            data: this.capableObj.capablePayloads[i].data
-          })
-        .end() 
+        view.tag(this.FlexSectionedDetailView, {data: this.capableObj.capablePayloads[i].data})
       }
       return view.end();
     }
