@@ -113,6 +113,8 @@ foam.CLASS({
         }
         // get user from session id
         User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
+        user.validateAuth(x);
+
         // check if group enabled
         Group group = getCurrentGroup(x);
         if ( group != null && ! group.getEnabled() ) {
@@ -172,6 +174,10 @@ foam.CLASS({
         }
 
         Session session = x.get(Session.class);
+        // check for two-factor authentication
+        if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
+          throw new AuthenticationException("User requires two-factor authentication");
+        }
         // Re use the session context if the current session context's user id matches the id of the user trying to log in
         if ( session.getUserId() == user.getId() ) {
           return user;
