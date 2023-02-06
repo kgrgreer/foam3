@@ -27,7 +27,9 @@ foam.CLASS({
       var view = this.start().addClass(this.myClass());
       for ( let i = 0; i < this.capableObj?.capablePayloads?.length; i++ ) {
         view.start()
-          .add(this.capableObj.capablePayloads[i].data)
+          .tag(this.FlexSectionedDetailView, {
+            data$: this.capableObj.capablePayloads[i].data$
+          })
         .end()
       }
       return view.end();
