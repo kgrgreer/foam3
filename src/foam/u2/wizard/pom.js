@@ -133,5 +133,10 @@ foam.POM({
     { name: "wizardlet/FacadeWizardletSpec",           flags: "web" },
     { name: "wizardflow/AddCapabilityHierarchy",       flags: "web" },
     { name: "wizardflow/WizardFlow",                   flags: "web" },
+    { name: "wizardflow/Export",                       flags: "web" },
+    { name: "wizardflow/WizardDSL",                    flags: "web" },
+    { name: "wizardflow/SubDSL",                       flags: "web" },
+    { name: "wizardflow/EditWizardlet",                flags: "web" },
+    { name: "wizardflow/Predicated",                   flags: "web" },
   ]
 });
