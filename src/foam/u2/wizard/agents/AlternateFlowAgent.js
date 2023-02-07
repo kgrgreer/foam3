@@ -27,7 +27,8 @@ foam.CLASS({
       name: 'alternateFlow'
     },
     {
-      class: 'foam.mlang.predicate.PredicateProperty',
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
       name: 'contextPredicate',
       documentation: `
         If a contextPredicate is given, the alternate flow will only be executed
