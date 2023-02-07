@@ -7,11 +7,13 @@
 foam.CLASS({
   package: 'foam.u2.wizard.wizardflow',
   name: 'WizardFlow',
-  extends: 'foam.util.async.Sequence',
+  extends: 'foam.util.async.SequenceInstaller',
   requires: [
     'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardType',
-    'foam.u2.wizard.wizardflow.AddCapabilityHierarchy'
+    'foam.u2.wizard.wizardflow.AddCapabilityHierarchy',
+    'foam.util.async.AdvanceToAgent'
   ],
   methods: [
     function init () {
@@ -21,10 +23,13 @@ foam.CLASS({
       this.sequence();
     },
     async function execute (x) {
-      debugger;
       x = x || this.__context__;
       x = x.createSubContext({
-        wizardlets: []
+        wizardlets: [],
+        initialPosition: this.WizardPosition.create({
+          wizardletIndex: 0,
+          sectionIndex: 0
+        })
       });
       return await this.SUPER(x);
     }

@@ -44,6 +44,10 @@ foam.CLASS({
   ],
 
   sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
     { name: 'verificationCodeSection' }
   ],
 

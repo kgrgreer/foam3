@@ -27,7 +27,7 @@ import static foam.mlang.MLang.EQ;
 
 public class Boot {
   // Context key used to store the top-level root context in the context.
-  public final static String ROOT = "_ROOT_";
+  public final static String ROOT      = "_ROOT_";
   public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
