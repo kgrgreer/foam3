@@ -97,12 +97,14 @@ foam.CLASS({
     }
 
     ^body {
-      flex-grow: 1;
       max-height: 90vh;
       overflow: auto;
       display: flex;
       align-items: center;
       flex-direction: column;
+    }
+    ^fullHeightBody {
+      flex-grow: 1;
     }
 
     ^fullscreen ^bodyWrapper {
@@ -193,7 +195,7 @@ foam.CLASS({
         width: 65vw;
       }
       ^fullscreen ^bodyWrapper {
-        width: 65%;
+        width: 56%;
       }
       ^footer {
         grid-template-columns: 1fr auto 1fr;
@@ -210,7 +212,7 @@ foam.CLASS({
         width: 35vw;
       }
       ^fullscreen ^bodyWrapper {
-        width: 50%;
+        width: 36%;
       }
     }
   `,
@@ -261,7 +263,8 @@ foam.CLASS({
       name: 'dynamicFooter'
     },
     [ 'forceFullscreen', false ],
-    [ 'includeSupport', false ]
+    [ 'includeSupport', false ],
+    [ 'forceFullHeightBody', false]
   ],
 
   methods: [
@@ -371,6 +374,7 @@ foam.CLASS({
             .addClass(this.myClass('bodyWrapper'))
             .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
+              this.forceFullHeightBody = false;
               let titleSlot = null;
               for ( const child of content$childNodes ) {
                 if ( ! child.viewTitle ) continue;
@@ -388,6 +392,7 @@ foam.CLASS({
             }))
             .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
               .addClass(this.myClass('body'))
+              .enableClass(this.myClass('fullHeightBody'), this.forceFullHeightBody$.or(this.fullscreen$.or(this.forceFullscreen$).not()))
               .call(function() { content = this.content; })
             .end()
             .start()
