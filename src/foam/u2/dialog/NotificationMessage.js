@@ -41,7 +41,7 @@ foam.CLASS({
       justify-content: flex-end;
       position: fixed;
       /* TODO: reduce max width when notification messages are updated */
-      max-width: calc(min(100vw, 48rem) - 3.2rem);
+      max-width: calc(min(75vw, 48rem) - 3.2rem);
       min-width: calc(max(30vw, 30rem) - 3.2rem);
       right: 1.6rem;
       top: 2.4rem;
@@ -118,8 +118,8 @@ foam.CLASS({
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^ {
-        max-width: calc(min(100vw, 48rem) - 6.4rem);
-        min-width: calc(max(48vw, 30rem) - 6.4rem);
+        max-width: calc(min(75vw, 48rem) - 3.2rem);
+      min-width: calc(max(30vw, 30rem) - 3.2rem);
         right: 3.2rem;
       }
     }
