@@ -49,6 +49,10 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
+      class: 'Int',
+      name: 'insertPosition_'
+    },
+    {
       class: 'Duration',
       name: 'timeout',
       documentation: `amount of time before a warning is displayed for an unresolved promise`,
@@ -79,6 +83,13 @@ foam.CLASS({
     function add(spec, args) {
       return this.addAs(spec.name, spec, args);
     },
+
+    function start (spec, args) {
+      const ins = spec.create(args, this.__subContext__);
+      ins.parent = this;
+      return ins;
+    },
+
     function addAs(name, spec, args) {
       this.contextAgentSpecs$push(this.Step.create({
         name: name || spec.class?.split('.').slice(-1)[0],
@@ -194,12 +205,6 @@ foam.CLASS({
           contextAgent = cls.create(spec, x).copyFrom(args || {});
         }
 
-        // Flatten a child Sequence
-        if ( foam.util.async.SequenceInstaller.isInstance(contextAgent) ) {
-          contextAgent.install(this, i);
-          return await nextStep(x);
-        }
-        
         // Setup a timeout to warn about unresolved promises
         const stepResolvedTimeout = setTimeout(() => {
           console.warn(
@@ -212,6 +217,7 @@ foam.CLASS({
         // Call the context agent and pass its exports to the next one
         let newX;
         try {
+          this.insertPosition_ = i;
           newX = await contextAgent.execute();
         } catch (e) {
           console.error(`sequence:`, seqspec, e);

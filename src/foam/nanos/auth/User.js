@@ -856,20 +856,10 @@ foam.CLASS({
           throw new AuthenticationException("User disabled");
         }
 
-        // check if user login enabled
-        if ( ! this.getLoginEnabled() ) {
-          throw new AuthenticationException("Login disabled");
-        }
-
         // fetch context from session and check two factor success if enabled.
         Session session = x.get(Session.class);
         if ( session == null ) {
           throw new AuthenticationException("No session exists.");
-        }
-
-        // check for two-factor authentication
-        if ( this.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
-          throw new AuthenticationException("User requires two-factor authentication");
         }
 
         if ( this instanceof LifecycleAware && ((LifecycleAware) this).getLifecycleState() != LifecycleState.ACTIVE ) {

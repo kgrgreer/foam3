@@ -298,7 +298,7 @@ foam.CLASS({
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown', size: 'SMALL' })
                 .show(filters && filters.length)
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
@@ -430,7 +430,7 @@ foam.CLASS({
             }
           }
         } else {
-        if ( predicate.arg1 && predicate.arg1.name == property.name ) retPred = predicate;
+          return this.unwrapPredicate(predicate, property);
         }
       }
       return retPred;

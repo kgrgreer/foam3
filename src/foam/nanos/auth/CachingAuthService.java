@@ -106,6 +106,10 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     DAO userDAO = (DAO) getX().get("localUserDAO");
     if ( userDAO != null ) userDAO.listen(purgeSink, TRUE);
 
+    // Capability.permissionsGranted could change check() outcome.
+    DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
+    if ( capabilityDAO != null ) capabilityDAO.listen(purgeSink, TRUE);
+
     DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
     if ( userCapabilityJunctionDAO != null ) userCapabilityJunctionDAO.listen(purgeSink, TRUE);
 
