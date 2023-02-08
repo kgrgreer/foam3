@@ -337,11 +337,11 @@ foam.CLASS({
         details || {}
       );
     },
-    async function next() {
+    async function next(firstWizardletAlreadySaved) {
       const debugLog = this.debugLog.bind(this);
 
-      let wizardlet = this.currentWizardlet;
-
+      let wizardlet      = this.currentWizardlet;
+      let firstWizardlet = this.currentWizardlet;
       // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
       // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
       // (i.e. we're in the loop below instead)
@@ -394,7 +394,7 @@ foam.CLASS({
           debugLog('saving wizardlet', referencePosition, {
             wizardlet
           });
-          await wizardlet.save();
+          if ( wizardlet != firstWizardlet || ! firstWizardletAlreadySaved ) await wizardlet.save();
         } catch (e) {
           let { exception, hint } = await wizardlet.handleException(
             this.WizardEventType.WIZARDLET_SAVE, e
