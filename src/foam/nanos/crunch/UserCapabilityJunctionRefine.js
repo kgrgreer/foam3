@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
 
-  implements: [ 'foam.nanos.auth.LifecycleAware' ],
+  implements: [ 'foam.nanos.auth.LifecycleAware', 'net.nanopay.liquidity.crunch.TransactionAware' ],//TODO move to NANOPAY project
 
   mixins: [
     'foam.nanos.auth.CreatedAwareMixin',
