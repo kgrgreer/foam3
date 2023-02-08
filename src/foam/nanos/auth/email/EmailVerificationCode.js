@@ -44,12 +44,16 @@ foam.CLASS({
   ],
 
   sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
     { name: 'verificationCodeSection' }
   ],
 
   css: `
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
-      justify-content: flex-start;
+      justify-content: center;
     }
     .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
       padding: 0;

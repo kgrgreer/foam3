@@ -48,7 +48,7 @@ foam.CLASS({
   methods: [
     async function execute (x) {
       x = x || this.__context__;
-      const seq = this['createSequence_' + this.type.name](ctrl.__subContext__);
+      const seq = this['createSequence_' + this.type.name](x);
       subX = await seq.execute();
       this.wizardlets_ = [
         ...(this.previousWizardlets || []),
