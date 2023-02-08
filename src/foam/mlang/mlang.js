@@ -339,7 +339,7 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function(_, o) {
-        if ( typeof o === 'object' && o.class ) {
+        if ( foam.Object.isInstance(o) && o.class ) {
           var obj = (foam.lookup(o.class))?.create(o);
           if ( obj && foam.mlang.predicate.Predicate.isInstance(obj) ) return obj;
         }
