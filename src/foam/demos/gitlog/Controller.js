@@ -270,6 +270,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'query',
+      view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
     },
@@ -332,10 +333,10 @@ foam.CLASS({
       this.
         start('h2').add('GitLog').end().
         start('span').
-          style({float: 'left', 'padding-right': '20px'}).
+          style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
           add('Year: ').br().add(this.year).
           br().br().
-          add('Query: ', this.QUERY).
+          add('Query: ').start(this.QUERY).attrs({'autocomplete': 'off'}).end().
           br().br().
           add('Project: ', this.PROJECT).
           br().br().
