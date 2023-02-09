@@ -48,7 +48,11 @@ foam.CLASS({
       name: 'simpleTypes',
       factory: () => []
     },
-    'xmlns'
+    'xmlns',
+    {
+      name: 'enums',
+      factory: function() { return new Map(); }
+    }
   ],
 
   methods: [
@@ -218,13 +222,24 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1) continue;
         var value = child.getAttribute('value');
+        var duplicate = false;
+        for ( var idx in m.values ) {
+          var val = m.values[idx];
+          if ( val.name.toUpperCase() === value.toUpperCase() ) {
+            // console.info("processEnum,duplicate",value);
+            duplicate = true;
+            continue;
+          }
+        }
+        if ( duplicate ) continue;
         var label = value;
         if ( Number.isInteger(value[0] - '0') ) value = '_' + value;
         m.values.push({
           name: value,
           label: label
-        })
+        });
       }
+      this.enums.set(m.name, m);
     },
 
     /**
@@ -286,6 +301,42 @@ foam.CLASS({
     },
 
     /**
+     * Processes a union
+     * @param  {Object} m   FOAM model
+     * @param  {Object} doc DOM model
+     */
+    function processUnion(m, doc) {
+      // split memberTypes and
+      var keys = new Set();
+      var memberTypes = doc.getAttribute('memberTypes').split(' ');
+      for ( var idx in memberTypes ) {
+        var mt = memberTypes[idx];
+        var st = this.simpleTypes[mt];
+        if ( st ) {
+          // all the types to be joined need to be the same type
+          this.simpleTypes[m.name] = st;
+          if ( st === 'foam.core.Enum' ) {
+            var e = this.enums.get(mt);
+            m.values = m.values || [];
+            m.values = m.values.concat(e.values);
+            // FIXME: just add the first. The concatenation
+            // cannot have duplicates else the Enum class creation
+            // will fail - silently.
+            break;
+          }
+        } else {
+          console.warn("processUnion,not found", mt);
+        }
+      }
+
+      if ( m.values ) {
+        delete m.extends;
+        m.type = 'enum';
+        this.enums.set(m.name, m);
+      }
+    },
+
+    /**
      * Processes a simple type and it's children
      * @param  {Object} m   FOAM model
      * @param  {Object} doc DOM model
@@ -300,6 +351,9 @@ foam.CLASS({
           case 'restriction':
             // process restriction tags
             this.processRestriction(m, child);
+            break;
+          case 'union':
+            this.processUnion(m, child);
             break;
         }
       }
@@ -358,7 +412,7 @@ foam.CLASS({
 
         let property = {
           class: classType,
-          name: name,
+          name: name.replaceAll("-", "_"),
           shortName: name
         };
 
@@ -368,7 +422,7 @@ foam.CLASS({
 
         // check if enum
         if ( this.simpleTypes[child.getAttribute('type')] === 'foam.core.Enum' ) {
-          property.class = 'foam.core.Enum'
+          property.class = 'foam.core.Enum';
           property.of = this.package + '.' + child.getAttribute('type');
         }
 
@@ -397,7 +451,7 @@ foam.CLASS({
         let property = {
           class: this.getPropType(child.getAttribute('type')),
           name: name,
-          shortName: name
+          shortName: name.replaceAll("-", "_")
         };
 
         if ( child.localName === 'attribute' ) {
@@ -448,7 +502,8 @@ foam.CLASS({
     function createProperty(modelName, type, name) {
       return {
         class: this.getPropType(type),
-        name: name
+        name: name.replaceAll("-", "_"),
+        shortName: name
       };
     },
 
@@ -601,6 +656,11 @@ foam.CLASS({
                 if ( a.localName === 'base' ) this.simpleTypes[name] = this.TYPES[a.value];
               }
             }
+
+            if ( grandChild.localName === 'union' ) {
+              // REVIEW: no other assumption can be made
+              this.simpleTypes[name] = 'foam.core.Enum';
+            }
           }
         } else if ( child.localName === 'complexType' ) {
           for ( var childKey in child.childNodes ) {
@@ -668,11 +728,11 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1 ) continue;
 
-        var name = child.getAttribute('name')
+        var name = child.getAttribute('name');
         var id   = this.package + '.' + name;
 
         // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-        if ( name !== 'Document' &&  foam.maybeLookup(id) ) continue;
+        if ( name !== 'Document' && foam.maybeLookup(id) ) continue;
 
         // create foam model
         var m = this.createClass(this.package, name);
@@ -731,17 +791,18 @@ foam.CLASS({
     },
 
     function compileAll() {
-      console.info('compileAll');
+      // console.info('compileAll');
       var sep = require('path').sep;
       var fs = require('fs');
       var DOMParser = (globalThis.DOMParser || require('xmldom').DOMParser);
       var elements = new Map();
+
       this.xmlns = ''; // docElement._nsMap[''] || '';
 
       var path = __dirname + sep + this.xsdPath; // .replace(/\//g, sep);
       fs.readdirSync(path).forEach(file => {
         var f = path+sep+file;
-        console.info('file', f);
+        // console.info('file', f);
         var text = fs.readFileSync(f, 'utf8').trim();
         var parser = new DOMParser();
         var doc = parser.parseFromString(text, 'text/xml');
@@ -760,20 +821,16 @@ foam.CLASS({
           if ( ! name ) {
             return;
           }
-          name = name.replaceAll("-", "_");
-          // many simpleTypes are lower case
-          name[0].toUpperCase() + name.slice(1);
           elements.set(name, child);
         });
       });
 
       elements.forEach((child, name) => {
-        console.info("xml", name, child.nodeType, child.nodeName, child.localName);
+        // console.info("xml", name, child.nodeType, child.nodeName, child.localName);
         var id   = this.package + '.' + name;
 
         // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
         if ( name !== 'Document' &&  foam.maybeLookup(id) ) return;
-        console.info("id", id);
 
         // create foam model
         var m = this.createClass(this.package, name);
@@ -816,7 +873,6 @@ foam.XSD = function(model) {
   } else if ( compiler.xsd ) {
     compiler.compile();
   } else {
-    // console.info("compiler neither xsd or xsdPath set");
     throw new Error("compiler neither xsd or xsdPath set");
   }
 };
