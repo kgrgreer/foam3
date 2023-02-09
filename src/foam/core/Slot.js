@@ -361,7 +361,7 @@ foam.CLASS({
 
       // If the new class has the same axiom as the old class, then we keep this
       // SubSlot attached instead of detaching it.
-      if ( o && o.cls_?.getAxiomByName(this.name) == null ) {
+      if ( o && o.cls_.getAxiomByName(this.name) == null ) {
         this.prevSub = null;
         this.detach();
         return;
