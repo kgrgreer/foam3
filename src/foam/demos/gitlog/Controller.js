@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
+    ^ table { font-size: smaller; }
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
@@ -315,21 +316,19 @@ foam.CLASS({
 
       this.
         start('h2').add('GitLog').end().
-        add('year: ', this.year).
-        br().
-        add('Query: ', this.QUERY).
-        br().
-        /*
-        add('Author: ', this.AUTHOR).
-        br().
-        */
+        start('span').
+          style({float: 'left', 'padding-right': '20px'}).
+          add('Year: ').br().add(this.year).
+          br().br().
+          add('Query: ', this.QUERY).
+          br().br().
+          add('File: ', this.FILE).
+          br().br().
+          add('Path: ', this.PATH).
+          br().br().
+          add('Show Files: ', this.SHOW_FILES).
+        end().
         tag(this.UserMonthView, {data: this}).
-        br().
-        add('File: ', this.FILE).
-        br().
-        add('Path: ', this.PATH).
-        br().
-        add('Show Files: ', this.SHOW_FILES).
         br().
         start('table').attrs({cellpadding: '4px'}).
           start('tr').
@@ -354,7 +353,7 @@ foam.CLASS({
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
               start('td').style({'white-space': 'nowrap'}).add(d.project).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
-              start('td').show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
+              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
 //          this.add(d.commit, ' ', d.date.toISOString().substring(0,10), ' ', d.author, ' ', d.subject).br();
         });
