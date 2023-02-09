@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
-  name: 'CapablePayloadView',
+  name: 'CapablePayloadROView',
   extends: 'foam.u2.View',
   documentation: 'A view for displaying capable objects',
 
@@ -28,9 +28,9 @@ foam.CLASS({
       for ( let i = 0; i < this.capableObj?.capablePayloads?.length; i++ ) {
         view.start()
           .tag(this.FlexSectionedDetailView, {
-            data$: this.capableObj.capablePayloads[i].data$
+            data: this.capableObj.capablePayloads[i].data
           })
-        .end()
+        .end();
       }
       return view.end();
     }
