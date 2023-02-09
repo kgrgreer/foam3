@@ -338,13 +338,11 @@ foam.CLASS({
     ['type', 'foam.mlang.predicate.Predicate'],
     {
       name: 'adapt',
-      value: function(_, o) {
-        if ( foam.Object.isInstance(o) && o.class ) {
-          var obj = (foam.lookup(o.class))?.create(o);
-          if ( obj && foam.mlang.predicate.Predicate.isInstance(obj) ) return obj;
-        }
-        if ( typeof o === 'function' && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
-        return o;
+      value: function(_, o, prop) {
+        const OLD_ADAPT = foam.core.FObjectProperty.ADAPT.value;;
+        if ( foam.Function.isInstance(o) && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
+
+        return OLD_ADAPT(null, o, prop);
       }
     }
   ]
