@@ -186,7 +186,7 @@ foam.CLASS({
       "nanopay-arthur": 'Arthur Pavlovs',
       "olhabn": 'Olha Bahatiuk',
     },
-    PROJECTS: [
+    PROJECT_RULES: [
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'medusa', 'mdao' ]
@@ -205,8 +205,7 @@ foam.CLASS({
         var authors = { '-- All --': this.commits.length };
         this.commits.forEach(c => this.incr(authors, c.author));
         return Object.keys(authors).sort().map(a => [a, a + ' ' + authors[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -218,13 +217,29 @@ foam.CLASS({
     },
     {
       class: 'Array',
+      name: 'projects',
+      factory: function() {
+        var projects = { '-- All --': this.commits.length };
+        this.commits.forEach(c => this.incr(projects, c.project || '-- Unknown --'));
+        return Object.keys(projects).sort().map(a => [a, a + ' ' + projects[a]]);
+      }
+    },
+    {
+      class: 'String',
+      name: 'project',
+      value: '-- All --',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({choices: X.data.projects}, X);
+      }
+    },
+    {
+      class: 'Array',
       name: 'files',
       factory: function() {
         var files = { '/': this.commits.length };
         this.commits.forEach(c => c.files.forEach(f => this.incr(files, f)));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -322,6 +337,8 @@ foam.CLASS({
           br().br().
           add('Query: ', this.QUERY).
           br().br().
+          add('Project: ', this.PROJECT).
+          br().br().
           add('File: ', this.FILE).
           br().br().
           add('Path: ', this.PATH).
@@ -330,6 +347,7 @@ foam.CLASS({
         end().
         tag(this.UserMonthView, {data: this}).
         br().
+        tag('hr').
         start('table').attrs({cellpadding: '4px'}).
           start('tr').
             start('th').add('Commit').end().
