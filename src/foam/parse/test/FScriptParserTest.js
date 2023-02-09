@@ -367,6 +367,14 @@ foam.CLASS({
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == 40, "expect: 30+20-10 == 40, found: "+result);
 
+    sps.setString("Hello, {{firstName}}. Is {{lastName}} your last name?");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((String) result).equals("Hello, "+user.getFirstName()+". Is "+user.getLastName()+" your last name?"), "Hello, {{firstName}}. Is {{lastName}} your last name?");
+
+    sps.setString("Hello, {{firstName}}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((String) result).equals("Hello, "+user.getFirstName()+""), "Hello, {{firstName}}");
+
     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+(lit_int_20-lit_int_10))");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
     test(((Double) result) == -870.0, "expect: (10*20)-(111.0*10)+(30+(20-10)) == -870.0, found: "+result);

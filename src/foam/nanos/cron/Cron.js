@@ -13,7 +13,14 @@ foam.CLASS({
     'cronDAO'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   requires: [
+    'foam.dao.AbstractDAO',
+    'foam.log.LogLevel',
     'foam.nanos.cron.IntervalSchedule',
     'foam.nanos.cron.TimeHMS'
   ],
@@ -289,16 +296,10 @@ foam.CLASS({
           this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
+          X.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
         }, e => {
           this.throwError.pub(e);
-          this.notify(e.message, '', this.LogLevel.ERROR, true);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     },
@@ -315,16 +316,10 @@ foam.CLASS({
           this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
+          X.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
         }, e => {
           this.throwError.pub(e);
-          this.notify(e.message, '', this.LogLevel.ERROR, true);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     }

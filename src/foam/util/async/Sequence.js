@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.core.ContextAgent',
     'foam.core.NullAgent'
   ],
 
@@ -48,6 +49,10 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
+      class: 'Int',
+      name: 'insertPosition_'
+    },
+    {
       class: 'Duration',
       name: 'timeout',
       documentation: `amount of time before a warning is displayed for an unresolved promise`,
@@ -58,9 +63,33 @@ foam.CLASS({
   methods: [
     // Sequence DSL
 
+    function tag(spec, args) {
+      if ( ! spec ) {
+        throw new Error(
+          'Undefined argument in call to .tag: ' +
+          foam.json.stringify({
+            flow: this.cls_.name,
+            after: this.contextAgentSpecs.length > 0
+              ? this.contextAgentSpecs[this.contextAgentSpecs.length - 1]
+              : null
+          })
+        );
+      }
+      let name = typeof spec.getImpliedId === 'function'
+        ? spec.getImpliedId(args) : foam.uuid.randomGUID();
+      return this.addAs(name, spec, args);
+    },
+
     function add(spec, args) {
       return this.addAs(spec.name, spec, args);
     },
+
+    function start (spec, args) {
+      const ins = spec.create(args, this.__subContext__);
+      ins.parent = this;
+      return ins;
+    },
+
     function addAs(name, spec, args) {
       this.contextAgentSpecs$push(this.Step.create({
         name: name || spec.class?.split('.').slice(-1)[0],
@@ -156,15 +185,17 @@ foam.CLASS({
     async function execute() {
       let i = 0;
       let nextStep = async x => {
-        if ( i >= this.contextAgentSpecs.length ) return await Promise.resolve(x);
+        if ( i >= this.contextAgentSpecs.length ) return x;
         await this.waitForUnpause();
-        if ( this.halted_ ) return await Promise.resolve(x);
+        if ( this.halted_ ) return x;
         let seqspec = this.contextAgentSpecs[i++];
         let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
-        if ( spec.create ) {
+        if ( this.ContextAgent.isInstance(spec) ) {
+          contextAgent = spec.copyFrom(args);
+        } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
@@ -173,7 +204,7 @@ foam.CLASS({
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
         }
-        
+
         // Setup a timeout to warn about unresolved promises
         const stepResolvedTimeout = setTimeout(() => {
           console.warn(
@@ -186,6 +217,7 @@ foam.CLASS({
         // Call the context agent and pass its exports to the next one
         let newX;
         try {
+          this.insertPosition_ = i;
           newX = await contextAgent.execute();
         } catch (e) {
           console.error(`sequence:`, seqspec, e);

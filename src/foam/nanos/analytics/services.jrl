@@ -21,7 +21,8 @@ p({
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.NAME })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.SESSION_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.TIMESTAMP })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.TRACE_ID });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.TRACE_ID })
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.analytics.AnalyticEvent.TIMESTAMP));
   """,
   "client":
   """

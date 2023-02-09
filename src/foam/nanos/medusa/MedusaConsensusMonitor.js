@@ -138,6 +138,7 @@ foam.CLASS({
       args: 'Context x',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
+      logger.info("execute");
       PM pm = PM.create(x, this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");

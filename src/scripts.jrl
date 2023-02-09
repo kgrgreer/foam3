@@ -155,7 +155,7 @@ p({
   class:"foam.nanos.script.Script",
   id:"CommentJShell",
   description:"Test for comment in JShell",
-  language:2,
+  language:"JSHELL",
   code:"""
   import java.io.PrintStream;
 

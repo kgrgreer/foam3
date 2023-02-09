@@ -43,10 +43,36 @@ foam.CLASS({
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
+    { name: 'verificationCodeSection' }
+  ],
+
+  css: `
+    .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+      justify-content: center;
+    }
+    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
+      padding: 0;
+    }
+    
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
+      text-align: center;
+    }
+    .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
+      width: fit-content;
+      align-self: center
+    }
+  `,
+
   properties: [
     {
       class: 'String',
       name: 'verificationCode',
+      section: 'verificationCodeSection',
       view: function(_, X) {
         var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
         delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
@@ -184,6 +210,7 @@ foam.CLASS({
     },
     {
       name: 'resendCode',
+      section: 'verificationCodeSection',
       isAvailable: function(codeVerified) {
         return ! codeVerified;
       },

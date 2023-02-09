@@ -10,7 +10,12 @@ foam.CLASS({
   implements: ['foam.u2.wizard.data.Loader'],
 
   documentation: `
-    Delegates to the loader in the specified wizardlet
+    Delegates to the loader in the specified wizardlet.
+
+    It is important to note that the loader from the wizardlet
+    specified will execute under that wizardlet's subcontext
+    rather than the subcontext of the wizardlet which is using
+    WizardletChainLoader.
   `,
 
   imports: [
@@ -48,7 +53,8 @@ foam.CLASS({
         foam.assert(false, errorMsg);
       }
 
-      const loader = foam.json.parse(wizardlet.wao.loader, undefined, this.__subContext__);
+      const loader = foam.json.parse(
+        wizardlet.wao.loader, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
       return await loader.load({ ...a, old: wizardlet.data });
     }
