@@ -24,7 +24,7 @@ foam.CLASS({
       class: 'String'
     },
     {
-      documentation: 'Offset from last address to pull as client IP (0 = last address in the list)',
+      documentation: 'Offset from last address to pull as client IP (0 = last address in the list, 1 = next to last). Value must be positive.',
       name: 'indexOffset',
       class: 'Int'
     }
