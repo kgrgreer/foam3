@@ -6,10 +6,85 @@
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
+  name: 'UserMonthView',
+  extends: 'foam.u2.View',
+
+  css: `
+    ^ table { font-size: smaller; }
+    ^ th { text-align: right; }
+    ^ th:first-child { text-align: left; }
+    ^ td { align: rigth; }
+    ^ .selected { color: red; }
+  `,
+
+  methods: [
+    function render() {
+      var self         = this;
+      var commits      = this.data.commits;
+      var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
+      var authorCounts = {};
+
+      commits.forEach(c => {
+        var month   = c.date.getMonth();
+        var author  = c.author;
+        var aCounts = authorCounts[author] || ( authorCounts[author] = [0,0,0,0,0,0,0,0,0,0,0,0] );
+        counts[month]++;
+        aCounts[month]++;
+      });
+
+      this.addClass(this.myClass()).start('table')
+        .attrs({cellpadding: 4, cellspacing: 0, border: 1}).
+        start('tr').
+          start('th').add('Author').end().
+          start('th').add('Jan').end().
+          start('th').add('Feb').end().
+          start('th').add('Mar').end().
+          start('th').add('Apr').end().
+          start('th').add('May').end().
+          start('th').add('Jun').end().
+          start('th').add('July').end().
+          start('th').add('Aug').end().
+          start('th').add('Sept').end().
+          start('th').add('Oct').end().
+          start('th').add('Nov').end().
+          start('th').add('Dec').end().
+          start('th').add('').end().
+        end().
+        forEach(this.data.authors, function(a) {
+          var total = 0;
+          if ( ! authorCounts[a[0]] ) return;
+          this.start('tr').
+            enableClass('selected', self.data.author$.map(auth => auth == a[0])).
+            start('th').
+              start('href').on('click', () => self.data.author = a[0]).add(a[0]).end().
+            end().
+            forEach(authorCounts[a[0]], function(c) {
+              total += c;
+              this.start('td').add(c || '-').end();
+            }).
+            start('th').add(total).end().
+          end();
+        }).
+        start('tr').
+          start('th').on('click', () => self.data.author = '-- All --').add('All:').end().
+          forEach(counts, function(c) {
+            this.start('th').add(c).end();
+          }).
+          start('th').add(this.data.commits.length).end().
+        end().
+      end();
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
   name: 'Controller',
   extends: 'foam.u2.Controller',
 
   requires: [
+    'foam.demos.gitlog.UserMonthView'
   ],
 
   exports: [
@@ -49,7 +124,9 @@ foam.CLASS({
       'Fix indentation.',
       'fixing pr',
       'syntax error',
-      'format'
+      'format',
+      'Remove unused code.',
+      'Indentation.'
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
@@ -108,7 +185,13 @@ foam.CLASS({
       "Kevin Glen Roy Greer": "Kevin Greer",
       "nanopay-arthur": 'Arthur Pavlovs',
       "olhabn": 'Olha Bahatiuk',
-    }
+    },
+    PROJECT_RULES: [
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'medusa', 'mdao' ]
+      }
+    ]
   },
   properties: [
     {
@@ -122,8 +205,7 @@ foam.CLASS({
         var authors = { '-- All --': this.commits.length };
         this.commits.forEach(c => this.incr(authors, c.author));
         return Object.keys(authors).sort().map(a => [a, a + ' ' + authors[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -135,13 +217,29 @@ foam.CLASS({
     },
     {
       class: 'Array',
+      name: 'projects',
+      factory: function() {
+        var projects = { '-- All --': this.commits.length };
+        this.commits.forEach(c => this.incr(projects, c.project || '-- Unknown --'));
+        return Object.keys(projects).sort().map(a => [a, a + ' ' + projects[a]]);
+      }
+    },
+    {
+      class: 'String',
+      name: 'project',
+      value: '-- All --',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({choices: X.data.projects}, X);
+      }
+    },
+    {
+      class: 'Array',
       name: 'files',
       factory: function() {
         var files = { '/': this.commits.length };
         this.commits.forEach(c => c.files.forEach(f => this.incr(files, f)));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -172,6 +270,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'query',
+      view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
     },
@@ -198,6 +297,22 @@ foam.CLASS({
           }).
           map(c => { c.files = c.files.trim().split('\n').map(s => s.trim()); return c; }).
           map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
+          map(c => {
+            c.subjectLC = c.subject.toLowerCase();
+            if ( c.subjectLC.indexOf('bench') != -1 )  c.project = 'Performance';
+            if ( c.subjectLC.indexOf('pm') != -1 )  c.project = 'Performance';
+            if ( c.subjectLC.indexOf('view') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('medusa') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('json') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('dao') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('mlang') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('demo') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('example') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('u2') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('capab') != -1 )  c.project = 'CRUNCH';
+            if ( c.subjectLC.indexOf('nanos') != -1 )  c.project = 'NANOS';
+            return c;
+          }).
           map(c => { c.date = new Date(c.date * 1000); return c; });
       }
     }
@@ -217,23 +332,29 @@ foam.CLASS({
 
       this.
         start('h2').add('GitLog').end().
-        add('year: ', this.year).
+        start('span').
+          style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
+          add('Year: ').br().add(this.year).
+          br().br().
+          add('Query: ').start(this.QUERY).attrs({'autocomplete': 'off'}).end().
+          br().br().
+          add('Project: ', this.PROJECT).
+          br().br().
+          add('File: ', this.FILE).
+          br().br().
+          add('Path: ', this.PATH).
+          br().br().
+          add('Show Files: ', this.SHOW_FILES).
+        end().
+        tag(this.UserMonthView, {data: this}).
         br().
-        add('Query: ', this.QUERY).
-        br().
-        add('Author: ', this.AUTHOR).
-        br().
-        add('File: ', this.FILE).
-        br().
-        add('Path: ', this.PATH).
-        br().
-        add('Show Files: ', this.SHOW_FILES).
-        br().
+        tag('hr').
         start('table').attrs({cellpadding: '4px'}).
           start('tr').
             start('th').add('Commit').end().
             start('th').add('Date').end().
             start('th').add('Author').end().
+            start('th').add('Project').end().
             start('th').add('Message').end().
             start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
@@ -249,8 +370,9 @@ foam.CLASS({
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
+              start('td').style({'white-space': 'nowrap'}).add(d.project).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
-              start('td').show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
+              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
 //          this.add(d.commit, ' ', d.date.toISOString().substring(0,10), ' ', d.author, ' ', d.subject).br();
         });
