@@ -342,7 +342,7 @@ foam.CLASS({
         const OLD_ADAPT = foam.core.FObjectProperty.ADAPT.value;
         if ( foam.Function.isInstance(o) && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
 
-        return OLD_ADAPT(null, o, prop);
+        return OLD_ADAPT.call(this, null, o, prop);
       }
     }
   ]
