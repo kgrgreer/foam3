@@ -189,8 +189,46 @@ foam.CLASS({
     PROJECT_RULES: [
       {
         name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'mdao' ]
-      }
+        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
+        paths: [ 'medusa', 'dao', 'box', 'net', 'mlang', 'formatter', 'json', 'Linked', 'util' ]
+      },
+      {
+        name: 'Core',
+        keywords: [ ],
+        paths: [ 'core', 'pattern' ]
+      },
+      {
+        name: 'Approval',
+        keywords: [ 'approval' ],
+        paths: [ ]
+      },
+      {
+        name: 'Performance ',
+        keywords: [ 'pm', 'performance', 'bench' ],
+        paths: [ 'pm', 'concurrent' ]
+      },
+      {
+        name: 'CRUNCH',
+        keywords: [ 'crunch', 'capab' ],
+        paths: [ 'crunch' ]
+      },
+      {
+        name: 'NANOS',
+        keywords: [ 'nanos' ],
+        paths: [ 'nanos', 'dashboard', 'parse', 'Email', '.jrl', 'java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
+      },
+      {
+        name: 'U2/U3',
+        keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
+        paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
+      },
+      /*
+      {
+        name: '',
+        keywords: [ ],
+        paths: [ ]
+      },
+      */
     ]
   },
   properties: [
@@ -298,19 +336,34 @@ foam.CLASS({
           map(c => { c.files = c.files.trim().split('\n').map(s => s.trim()); return c; }).
           map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
           map(c => {
-            c.subjectLC = c.subject.toLowerCase();
-            if ( c.subjectLC.indexOf('bench') != -1 )  c.project = 'Performance';
-            if ( c.subjectLC.indexOf('pm') != -1 )  c.project = 'Performance';
-            if ( c.subjectLC.indexOf('view') != -1 )  c.project = 'U3';
-            if ( c.subjectLC.indexOf('medusa') != -1 ) c.project = 'Hybrid Blockchain';
-            if ( c.subjectLC.indexOf('json') != -1 ) c.project = 'Hybrid Blockchain';
-            if ( c.subjectLC.indexOf('dao') != -1 ) c.project = 'Hybrid Blockchain';
-            if ( c.subjectLC.indexOf('mlang') != -1 ) c.project = 'Hybrid Blockchain';
-            if ( c.subjectLC.indexOf('demo') != -1 )  c.project = 'U3';
-            if ( c.subjectLC.indexOf('example') != -1 )  c.project = 'U3';
-            if ( c.subjectLC.indexOf('u2') != -1 )  c.project = 'U3';
-            if ( c.subjectLC.indexOf('capab') != -1 )  c.project = 'CRUNCH';
-            if ( c.subjectLC.indexOf('nanos') != -1 )  c.project = 'NANOS';
+            var subject = c.subjectLC = c.subject.toLowerCase();
+            this.PROJECT_RULES.forEach(r => {
+              if ( c.project ) return;
+              for ( var i = 0 ; i < r.keywords.length ; i++ ) {
+                var keyword = r.keywords[i];
+                if ( subject.indexOf(keyword) != -1 ) {
+                  c.project = r.name;
+                  return;
+                }
+              }
+              for ( var i = 0 ; i < r.paths.length ; i++ ) {
+                var path = r.paths[i];
+                for ( var j = 0 ; j < c.files.length ; j++ ) {
+                  var file = c.files[j];
+                  if ( file.indexOf(path) != -1 ) {
+                    c.project = r.name;
+                    return;
+                  }
+                }
+              }
+            });
+            /*
+            {
+              name: '',
+              keywords: [ ],
+              paths: [ ]
+            },
+            */
             return c;
           }).
           map(c => { c.date = new Date(c.date * 1000); return c; });
@@ -358,14 +411,17 @@ foam.CLASS({
             start('th').add('Message').end().
             start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
-            var subject = d.subject.toLowerCase();
+            var subject = d.subjectLC;
             var href = 'https://github.com/kgrgreer/foam3/commit/' + d.commit;
             this.start('tr').
-              show(self.slot(function(query, author, file, path) {
+              show(self.slot(function(query, author, file, path, project) {
+                if ( project === '-- Unknown --' ) project = undefined;
                 return ( author === '-- All --' || author === d.author ) &&
                   ( query === '' || subject.indexOf(query) != -1 ) &&
                   ( file === '/' || d.files.some(f => f === file) ) &&
-                  ( path === '/' || d.files.some(f => f.startsWith(path)) ) ;
+                  ( path === '/' || d.files.some(f => f.startsWith(path)) ) &&
+                  ( project === '-- All --' || d.project === project )
+                  ;
               })).
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
