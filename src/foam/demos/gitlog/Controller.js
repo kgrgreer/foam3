@@ -368,10 +368,26 @@ foam.CLASS({
           }).
           map(c => { c.date = new Date(c.date * 1000); return c; });
       }
+    },
+    {
+      name: 'filteredCommits',
+      expression: function(commits) {
+        return [];
+      }
     }
   ],
 
   methods: [
+    function match(commit, query, author, file, path, project) {
+      if ( project === '-- Unknown --' ) project = undefined;
+
+      return ( author === '-- All --' || author === d.author ) &&
+        ( query === '' || commit.subjectLC.indexOf(query) != -1 ) &&
+        ( file === '/' || commit.files.some(f => f === file) ) &&
+        ( path === '/' || commit.files.some(f => f.startsWith(path)) ) &&
+        ( project === '-- All --' || commit.project === project )
+        ;
+    },
     function fileToPath(file) {
       var i = file.lastIndexOf('/');
       if ( i == -1 ) return '/';
@@ -411,17 +427,10 @@ foam.CLASS({
             start('th').add('Message').end().
             start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
-            var subject = d.subjectLC;
             var href = 'https://github.com/kgrgreer/foam3/commit/' + d.commit;
             this.start('tr').
               show(self.slot(function(query, author, file, path, project) {
-                if ( project === '-- Unknown --' ) project = undefined;
-                return ( author === '-- All --' || author === d.author ) &&
-                  ( query === '' || subject.indexOf(query) != -1 ) &&
-                  ( file === '/' || d.files.some(f => f === file) ) &&
-                  ( path === '/' || d.files.some(f => f.startsWith(path)) ) &&
-                  ( project === '-- All --' || d.project === project )
-                  ;
+                return self.match(d, query, author, file, path, project);
               })).
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
@@ -430,7 +439,6 @@ foam.CLASS({
               start('td', {tooltip: d.files}).add(d.subject).end().
               start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
-//          this.add(d.commit, ' ', d.date.toISOString().substring(0,10), ' ', d.author, ' ', d.subject).br();
         });
       ;
     }
