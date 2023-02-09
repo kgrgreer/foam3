@@ -9,6 +9,12 @@ foam.CLASS({
   name: 'UserMonthView',
   extends: 'foam.u2.View',
 
+  css: `
+    ^ th { text-align: right; }
+    ^ th:first-child { text-align: left; }
+    ^ td { align: rigth; }
+  `,
+
   methods: [
     function render() {
       var commits      = this.data.commits;
@@ -23,9 +29,10 @@ foam.CLASS({
         aCounts[month]++;
       });
 
-      this.start('table').
+      this.addClass(this.myClass()).start('table')
+        .attrs({cellpadding: 4, cellspacing: 0, border: 1}).
         start('tr').
-          start('th').add('Author').attrs({align: 'left'}).end().
+          start('th').add('Author').end().
           start('th').add('Jan').end().
           start('th').add('Feb').end().
           start('th').add('Mar').end().
@@ -45,22 +52,21 @@ foam.CLASS({
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
             start('th').
-              attrs({align: 'left'}).
               add(a[0]).
             end().
             forEach(authorCounts[a[0]], function(c) {
               total += c;
-              this.start('td').attrs({align: 'right'}).add(c || '-').end();
+              this.start('td').add(c || '-').end();
             }).
-            start('th').add(total).attrs({align: 'right'}).end().
+            start('th').add(total).end().
           end();
         }).
         start('tr').
-          start('th').add('').end().
+          start('th').add('All:').end().
           forEach(counts, function(c) {
             this.start('th').add(c).end();
           }).
-          start('th').add(this.data.commits.length).attrs({align: 'right'}).end().
+          start('th').add(this.data.commits.length).end().
         end().
       end();
     }
