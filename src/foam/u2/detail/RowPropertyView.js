@@ -18,6 +18,13 @@ foam.CLASS({
     ^ {
       display: flex;
       justify-content: space-between;
+      gap: 2rem;
+    }
+    ^label{
+      flex-basis: 50%;
+    }
+    ^body{
+      flex-shrink: 2;
     }
     ^ > .note {
       white-space: pre;
@@ -39,6 +46,7 @@ foam.CLASS({
         .addClass()
         .start()
           .add(this.prop.columnLabel).show(this.prop.columnLabel)
+          .addClass(this.myClass('label'))
         .end()
         .add(this.slot(function (data) {
           const el = this.E();
@@ -50,7 +58,8 @@ foam.CLASS({
             prop
           );
           return el;
-        }))
+        })).addClass(this.myClass('body'))
+
         ;
     }
   ]
