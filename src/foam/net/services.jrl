@@ -40,8 +40,7 @@ p({
       .setOf(foam.net.XForwardedForConfig.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("xForwardedForConfig")
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.net.XForwardedForConfig.IP_MATCH });
+      .build();
   """,
   "client":"{\"of\":\"foam.net.XForwardedForConfig\"}"
 })
