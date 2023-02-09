@@ -40,9 +40,18 @@ foam.CLASS({
       }
       String forwardedForHeader = req.getHeader("X-Forwarded-For");
       if ( ! foam.util.SafetyUtil.isEmpty(forwardedForHeader) ) {
-        String[] addresses = forwardedForHeader.split(",");
-        int indexOffset = getXForwardedForIndexOffset(x, req.getRemoteHost());
-        return addresses[addresses.length - indexOffset].trim(); // counting back from right most IP in list
+            String[] addresses = forwardedForHeader.split(",");
+
+            // Take last address in the list and check for x-forwarded-for config based on ip
+            String address = addresses[addresses.length - 1].trim();
+
+            int indexOffset = getXForwardedForIndexOffset(x, address);
+            if ( indexOffset > 1 ) {
+              // counting back from right most IP in list
+              address = addresses[addresses.length - indexOffset].trim();
+            }
+
+            return address;
       }
 
       return req.getRemoteHost();
@@ -56,7 +65,7 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'remoteHostIP',
+          name: 'lookupIP',
           type: 'String'
         }
       ],
@@ -66,7 +75,7 @@ foam.CLASS({
 
       DAO xDAO = (DAO) x.get("xForwardedForConfigDAO");
       XForwardedForConfig config = null;
-      String subnetCheck = remoteHostIP;
+      String subnetCheck = lookupIP;
 
       if ( xDAO != null ) {
         // Check for ip match small subnet range to largest
