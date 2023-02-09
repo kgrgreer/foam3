@@ -381,7 +381,7 @@ foam.CLASS({
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
 
-      return ( author === '-- All --' || author === d.author ) &&
+      return ( author === '-- All --' || author === commit.author ) &&
         ( query === '' || commit.subjectLC.indexOf(query) != -1 ) &&
         ( file === '/' || commit.files.some(f => f === file) ) &&
         ( path === '/' || commit.files.some(f => f.startsWith(path)) ) &&
@@ -444,7 +444,6 @@ foam.CLASS({
         });
       ;
     }
-
   ],
 
   actions: [
