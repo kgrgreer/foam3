@@ -73,7 +73,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.notification.email.EmailServiceConfig',
       targetDAOKey: 'emailServiceConfigDAO',
-      value: 'default'
+      value: 'smtp'
     },
     {
       documentation: 'Track WARN EventRecord so it can be cleared on a successful operation',
@@ -224,6 +224,13 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
+      foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
+      if ( support != null &&
+           ! support.cronEnabled(x, false) ) {
+        // Loggers.logger(x, this).debug("execution disabled");
+        return;
+      }
+
       while ( true ) {
         reload();
         EmailServiceConfig config = findId(getX());

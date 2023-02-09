@@ -56,6 +56,10 @@ NOTE: when using the java client, the first call to a newly started instance may
     'javax.servlet.http.HttpServletRequest',
   ],
 
+  imports: [
+    'AuthenticatedNSpecDAO'
+  ],
+
   tableColumns: [
     'id',
     'daoKey.name',
@@ -69,10 +73,6 @@ NOTE: when using the java client, the first call to a newly started instance may
       value: 2000,
       type: 'Integer'
     }
-  ],
-
-  imports: [
-    'AuthenticatedNSpecDAO'
   ],
 
   sections: [
@@ -147,6 +147,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       of: 'foam.nanos.boot.NSpec',
       label: 'Data Access Object (DAO)',
       name: 'daoKey',
+      // required: true, // TODO: make required when working
       documentation: `The DAO in the DIG request.`,
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
@@ -245,22 +246,17 @@ NOTE: when using the java client, the first call to a newly started instance may
       }
     },
     {
-      class: 'URL',
+// Don't make a URL because JS doesn't include the protocol host or port,
+// meaning it doesn't pass validation.
+//      class: 'URL',
+      class: 'String',
       name: 'postURL',
-      javaFactory: `
-      return "http://"+System.getProperty("hostname", "localhost")+":8080";
-      `,
-      hidden: true
-    },
-    {
-      name: 'snippet',
-      label: 'Snippet',
-      documentation: 'show a specific type of request would look like in a given language.',
-      section: 'details',
-      view: { class: 'foam.nanos.dig.DigSnippetView' },
-      expression: function(key, data, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
+      hidden: true,
+      // Why is the javaFactory needed?
+      javaFactory: 'return "http://"+System.getProperty("hostname", "localhost")+":8080";',
+      expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
         var query = false;
-        var url = "/service/dig";
+        var url   = "/service/dig";
 
         if ( daoKey ) {
           url += "?";
@@ -307,17 +303,26 @@ NOTE: when using the java client, the first call to a newly started instance may
           query = true;
           url += "skip=" + skip;
         }
-        this.postURL = url;
 
+        return url;
+      }
+    },
+    {
+      name: 'snippet',
+      label: 'Snippet',
+      documentation: 'show a specific type of request would look like in a given language.',
+      section: 'details',
+      view: { class: 'foam.nanos.dig.DigSnippetView' },
+      transient: true,
+      expression: function(postURL, data) {
         if ( data ) {
-          if ( data.length + url.length < this.MAX_URL_SIZE ) {
-            url += query ? "&" : "?";
-            query = true;
-            url += "data=" + encodeURIComponent(data);
+          if ( data.length + postURL.length < this.MAX_URL_SIZE ) {
+            postURL += postURL.indexOf('?') == -1 ? "?" : "&";
+            postURL += "data=" + encodeURIComponent(data);
           }
         }
 
-        return url;
+        return postURL;
       }
     },
     {
@@ -326,6 +331,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       value: 'No Request Sent Yet.',
       view: { class: 'foam.nanos.dig.ResultView' },
       section: 'details',
+      transient: true,
       visibility: 'RO'
     },
     {
@@ -335,9 +341,12 @@ NOTE: when using the java client, the first call to a newly started instance may
       view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 144 }
     },
     {
+      documentation: 'deprecated',
       name: 'nSpecName',
       class: 'String',
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      transient: true,
+      javaSetter: 'setDaoKey(val);'
     },
     {
       documentation: 'Session token / BEARER token',
@@ -410,17 +419,12 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'of',
       class: 'Class',
       javaFactory: `
-        DAO dao = (DAO) getX().get(getNSpecName());
-        if ( dao instanceof foam.dao.ProxyDAO ) {
-          return ((foam.dao.ProxyDAO) dao).getOf();
-        } else if ( dao instanceof foam.dao.MDAO ) {
-          return ((foam.dao.MDAO) dao).getOf();
-        }
-        throw new IllegalArgumentException("of undefined");
+        DAO dao = (DAO) foam.core.XLocator.get().get(getDaoKey());
+        return dao.getOf();
       `,
-      visibility: 'HIDDEN',
+      hidden: true,
       transient: true
-    },
+    }
   ],
 
   actions: [
@@ -429,8 +433,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
+        var url = window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
         var req = this.HTTPRequest.create({
-          url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.postURL + "&sessionId=" + localStorage.defaultSession,
+          url: url,
           method: 'POST',
           payload: this.data,
         }).send();
@@ -533,7 +538,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      Object result = submit(x, DOP.SELECT, "id="+id.toString());
+      Object result = submit(x, DOP.SELECT, "id=" + id.toString());
       if ( result == null ) return null;
       if ( result instanceof FObject[] ) {
         if ( ((FObject[])result).length > 0 ) {
@@ -565,7 +570,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       type: 'foam.core.FObject',
       javaCode: `
       // Special support for Sessions as they must go through SUGAR
-      if ( "sessionDAO".equals(getNSpecName()) ) {
+      if ( "sessionDAO".equals(getDaoKey()) ) {
         Session session = (Session) obj;
         String id = createSession(x, session);
         session.setId(id);
@@ -686,7 +691,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'String',
       javaCode: `
-      PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getDaoKey(), dop);
       try {
         FObjectFormatter formatter = formatter_.get();
         formatter.output(obj);
@@ -714,7 +719,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       ],
       type: 'Object',
       javaCode: `
-      PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getNSpecName(), dop);
+      PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getDaoKey(), dop);
       try {
         Object result = parser_.get().parseString(data.toString(), getOf().getObjClass());
         if ( result == null ) {
@@ -732,7 +737,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         while ( cause.getCause() != null ) {
           cause = cause.getCause();
         }
-        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getNSpecName(), getOf(), data, cause);
+        Loggers.logger(x, this).error("unAdapt", "Failed to parse", getDaoKey(), getOf(), data, cause);
         throw e;
       } finally {
         pm.log(x);
@@ -763,9 +768,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       sb.append(getServiceName());
       sb.append("?cmd=");
       sb.append(dop.getLabel());
-      if ( ! SafetyUtil.isEmpty(getNSpecName()) ) {
+      if ( ! SafetyUtil.isEmpty(getDaoKey()) ) {
         sb.append("&dao=");
-        sb.append(getNSpecName());
+        sb.append(getDaoKey());
       }
       if ( dop == DOP.FIND ||
            dop == DOP.SELECT ||
@@ -819,7 +824,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       try {
         HttpClient client = client_.get();
         HttpResponse<String> response = null;
-        PM pm = PM.create(x, "DIG", "send", getPostURL(), getNSpecName(), dop);
+        PM pm = PM.create(x, "DIG", "send", getPostURL(), getDaoKey(), dop);
         try {
           response = client.send(request, HttpResponse.BodyHandlers.ofString());
         } finally {

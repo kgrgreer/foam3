@@ -155,8 +155,8 @@ foam.CLASS({
         }
 
         return foam.core.Listener.isInstance(o) ?
-            o :
-            foam.core.Listener.create(o) ;
+          o :
+          foam.core.Listener.create(o) ;
       }
     }
   ]

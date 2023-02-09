@@ -11,6 +11,7 @@ foam.CLASS({
   documentation: 'IP address helper/support methods',
 
   javaImports: [
+    'foam.dao.DAO',
     'java.net.InetAddress',
     'javax.servlet.http.HttpServletRequest'
   ],
@@ -40,9 +41,50 @@ foam.CLASS({
       String forwardedForHeader = req.getHeader("X-Forwarded-For");
       if ( ! foam.util.SafetyUtil.isEmpty(forwardedForHeader) ) {
         String[] addresses = forwardedForHeader.split(",");
-        return addresses[addresses.length -1].trim(); // right most
+        int indexOffset = getXForwardedForIndexOffset(x, req.getRemoteHost());
+        return addresses[addresses.length - indexOffset].trim(); // counting back from right most IP in list
       }
+
       return req.getRemoteHost();
+      `
+    },
+    {
+      name: 'getXForwardedForIndexOffset',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'remoteHostIP',
+          type: 'String'
+        }
+      ],
+      type: 'int',
+      javaCode: `
+      int offset = 0;
+
+      DAO xDAO = (DAO) x.get("xForwardedForConfigDAO");
+      XForwardedForConfig config = null;
+      String subnetCheck = remoteHostIP;
+
+      if ( xDAO != null ) {
+        // Check for ip match small subnet range to largest
+        while (subnetCheck.indexOf(".") > 0 ) {
+          config = (XForwardedForConfig) xDAO.find(subnetCheck);
+          if ( config != null ) {
+            offset = config.getIndexOffset();
+            break;
+          }
+
+          subnetCheck = subnetCheck.substring(0, subnetCheck.lastIndexOf("."));
+        }
+      }
+
+      // Return value must be >= 1 as we are subtracting from array length (array.length - indexOffset)
+      // Last in list would be 1 + offset of 0 (default)
+      // Next to last would be 1 + offset of 1
+      return 1 + offset;
       `
     },
     {

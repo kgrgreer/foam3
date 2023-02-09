@@ -9,6 +9,7 @@ foam.POM({
   version: 1,
   files: [
     { name: "ContextPredicate",                        flags: "web" },
+    { name: "WizardType",                              flags: "web" },
     { name: "crunch/CapabilityRefinement",             flags: "web" },
     { name: "agents/ConfigureFlowAgent",               flags: "web" },
     { name: "agents/DeveloperModeAgent",               flags: "web" },
@@ -71,7 +72,7 @@ foam.POM({
     { name: "data/Canceler",                           flags: "web" },
     { name: "data/lib",                                flags: "web" },
     { name: "data/DAOSaver",                           flags: "web" },
-    { name: "data/CapableSaver",                           flags: "web" },
+    { name: "data/CapableSaver",                       flags: "web" },
     { name: "data/ExecuteActionsSaver",                flags: "web" },
     { name: "data/AlternateFlowSaver",                 flags: "web" },
     { name: "data/AnalyticsSaver",                     flags: "web" },
@@ -116,7 +117,7 @@ foam.POM({
     { name: "wao/AlternateFlowWAO",                    flags: "web" },
     { name: "wizardlet/Wizardlet",                     flags: "js|java" },
     { name: "wizardlet/BaseWizardlet",                 flags: "js|java" },
-    { name: "wizardlet/ValidationFeedbackWizardlet",                 flags: "js|java" },
+    { name: "wizardlet/ValidationFeedbackWizardlet",   flags: "js|java" },
     { name: "wizardlet/WizardletSection",              flags: "web" },
     { name: "wizardlet/SuccessWizardlet",              flags: "web" },
     { name: "wizardlet/SuccessWizardletView",          flags: "web" },
@@ -129,6 +130,13 @@ foam.POM({
     { name: "wizardlet/FlowAgentWizardlet",            flags: "web" },
     { name: "wizardlet/DAOWizardlet",                  flags: "web" },
     { name: "wizardlet/FacadeCapabilityWizardlet",     flags: "web" },
-    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" }
+    { name: "wizardlet/FacadeWizardletSpec",           flags: "web" },
+    { name: "wizardflow/AddCapabilityHierarchy",       flags: "web" },
+    { name: "wizardflow/WizardFlow",                   flags: "web" },
+    { name: "wizardflow/Export",                       flags: "web" },
+    { name: "wizardflow/WizardDSL",                    flags: "web" },
+    { name: "wizardflow/SubDSL",                       flags: "web" },
+    { name: "wizardflow/EditWizardlet",                flags: "web" },
+    { name: "wizardflow/Predicated",                   flags: "web" },
   ]
 });

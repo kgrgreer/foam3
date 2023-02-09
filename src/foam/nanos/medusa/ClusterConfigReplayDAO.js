@@ -12,6 +12,9 @@ foam.CLASS({
   documentation: `On status change to ONLINE initiate replay, in Active Region.`,
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'static foam.mlang.MLang.AND',
@@ -175,16 +178,21 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-      Logger logger = Loggers.logger(x, this, "cmd");
+      final Logger logger = Loggers.logger(x, this, "cmd");
       if ( obj instanceof ReplayRequestCmd ) {
-        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-        ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
+        final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        final ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
 
         logger.info("ReplayRequestCmd", cmd.getDetails());
 
-        java.util.List<ClusterConfig> nodes = support.getReplayNodes();
+        final List<ClusterConfig> nodes = support.getReplayNodes();
+
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
         for ( ClusterConfig cfg : nodes ) {
+          agency.submit(x,
+            new ContextAgent() {
+              public void execute(X x) {
           ReplayCmd c = new ReplayCmd();
           ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
           details.setRequester(myConfig.getId());
@@ -196,6 +204,9 @@ foam.CLASS({
           logger.info("ReplayRequestCmd", "request", c.getDetails());
           c = (ReplayCmd) clientDAO.cmd_(x, c);
           logger.info("ReplayRequestCmd", "response", c.getDetails());
+              }
+            }, this.getClass().getSimpleName()
+          );
         }
         return obj;
       }

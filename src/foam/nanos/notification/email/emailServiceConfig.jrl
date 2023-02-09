@@ -1,4 +1,10 @@
 p({
   class: 'foam.nanos.notification.email.EmailServiceConfig',
-  id: 'default'
+  id: 'smtp'
+})
+p({
+  class: 'foam.nanos.notification.email.EmailServiceConfig',
+  id: 'imap',
+  protocol: 'imaps',
+  port: '993'
 })

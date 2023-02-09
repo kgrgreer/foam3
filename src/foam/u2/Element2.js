@@ -44,6 +44,7 @@ PORTING U2 to U3:
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
   - NEXT_ID() removed. Use new Object().$UID instead. (all done)
   - onAddChildren() no longer supported
+  - setChildren(slot) replace with this.add(function())
 
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
@@ -597,6 +598,11 @@ foam.CLASS({
 
   methods: [
     // from state
+
+    function replaceElement_(el) {
+      el.parentNode.replaceChild(this.element_, el);
+      this.load();
+    },
 
     // TODO: for backward compatibility with U2, remove when all code ported
     function el() {
@@ -1154,6 +1160,11 @@ foam.CLASS({
       return this.add(opt_default);
     },
 
+    function recall(fn, opt_self) {
+      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this}, this));
+      return this;
+    },
+
     function add() {
       if ( this.content ) {
         this.content.add(arguments, this);
@@ -1170,6 +1181,7 @@ foam.CLASS({
       }
 
       if ( foam.Function.isInstance(c) ) {
+        console.warn('Deprecated use of add(Function). Use recall() instead.');
         c = foam.u2.FunctionNode.create({self: this, code: c});
       } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
@@ -1268,11 +1280,13 @@ foam.CLASS({
     //   return this.insertAt_(children, reference, true);
     // },
 
-    function setChildren() {
+    function setChildren(slot) {
       this.removeAllChildren();
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        this.add(arguments[0]);
-      }
+      this.add(slot);
+      /*.map(a => {
+        this.add(a);
+      });
+      */
     },
 
     function removeAllChildren() {

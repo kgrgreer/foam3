@@ -7,6 +7,9 @@
  foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'ContextPredicate',
+  extends: 'foam.mlang.predicate.AbstractPredicate',
+  implements: ['foam.core.Serializable'],
+
   documentation: `
     Predicate to check if (or property of) a context object matches some value.
   `,
@@ -30,7 +33,7 @@
   ],
 
   methods: [
-    function execute(x) {
+    function f(x) {
       var objToCheck = x[this.contextKey];
 
       if ( ! objToCheck )
@@ -40,13 +43,7 @@
         throw new Error(`Predicate check failed.`);
 
       var valueToCheck = this.valuePath.f(objToCheck);
-      if ( ! valueToCheck )
-        throw new Error(`Unable to find path ${this.valuePath} on Context Object ${this.contextKey}`);
-    
-      if ( ! foam.util.equals(valueToCheck, this.matchValue) )
-        throw new Error(`Predicate check failed.`);
-
-      return true;
+      return foam.util.equals(valueToCheck, this.matchValue);
     }
   ]
 });

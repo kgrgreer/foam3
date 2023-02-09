@@ -33,8 +33,13 @@ foam.CLASS({
     'foam.nanos.pm.PM',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.Timer'
+    'java.util.Timer',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
+
+  javaCode: `
+    protected AtomicBoolean executing_ = new AtomicBoolean();
+  `,
 
   axioms: [
     {
@@ -89,7 +94,7 @@ foam.CLASS({
       visibility: 'HIDDEN',
       networkTransient: true
     }
- ],
+  ],
 
   methods: [
     {
@@ -106,13 +111,18 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
-      PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, getId());
+      if ( ! config.getEnabled() ) {
+        return;
+      }
+      if ( executing_.get() ) {
+        return;
+      }
+    synchronized ( this ) {
+      executing_.set(true);
+      PM pm = PM.create(x, this.getClass().getSimpleName(), getId());
       try {
-        if ( ! config.getEnabled() ) {
-          return;
-        }
         ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         try {
@@ -175,7 +185,9 @@ foam.CLASS({
         pm.error(x, t);
       } finally {
         pm.log(x);
+        executing_.set(false);
       }
+    }
       `
     }
   ]
