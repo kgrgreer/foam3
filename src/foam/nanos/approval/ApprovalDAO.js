@@ -74,11 +74,17 @@ foam.CLASS({
             } else {
               // since no more needs to be done with the request from this point onwards
               request.setIsFulfilled(true);
-              request.setAssignedTo(0);
+              request.clearAssignedTo();
               getDelegate().put(request);
             }
           }
         }
+        if ( old != null && old.getStatus() == request.getStatus() &&
+             request.getStatus() == ApprovalStatus.REQUESTED &&
+             old.getAssignedTo() != request.getAssignedTo() ) {
+          assignAllRequests(requests, request);
+        }
+
         return request;
       `
     },
@@ -128,6 +134,20 @@ foam.CLASS({
       ],
       javaCode: `
         dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).removeAll();
+      `
+    },
+    {
+      name: 'assignAllRequests',
+      visibility: 'protected',
+      type: 'Void',
+      args: 'DAO dao, ApprovalRequest request',
+      javaCode: `
+        List<ApprovalRequest> requests = (List) ((ArraySink) dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).select(new ArraySink())).getArray();
+        for ( ApprovalRequest r : requests ) {
+          if ( r.getId() == request.getId() ) continue;
+          r.setAssignedTo(request.getAssignedTo());
+          getDelegate().put(r);
+        }
       `
     },
     {
