@@ -6,10 +6,35 @@
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
+  name: 'UserMonthView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function render() {
+      this.start('table').
+        start('tr').
+          start('th').add('Author').end().
+        end().
+        forEach(this.data.authors, function(a) {
+          this.start('tr').
+            start('td').
+              add(a[0]).
+            end().
+          end();
+        }).
+      end();
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
   name: 'Controller',
   extends: 'foam.u2.Controller',
 
   requires: [
+    'foam.demos.gitlog.UserMonthView'
   ],
 
   exports: [
@@ -49,7 +74,9 @@ foam.CLASS({
       'Fix indentation.',
       'fixing pr',
       'syntax error',
-      'format'
+      'format',
+      'Remove unused code.',
+      'Indentation.'
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
@@ -108,7 +135,13 @@ foam.CLASS({
       "Kevin Glen Roy Greer": "Kevin Greer",
       "nanopay-arthur": 'Arthur Pavlovs',
       "olhabn": 'Olha Bahatiuk',
-    }
+    },
+    PROJECTS: [
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'medusa', 'mdao' ]
+      }
+    ]
   },
   properties: [
     {
@@ -198,6 +231,22 @@ foam.CLASS({
           }).
           map(c => { c.files = c.files.trim().split('\n').map(s => s.trim()); return c; }).
           map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
+          map(c => {
+            c.subjectLC = c.subject.toLowerCase();
+            if ( c.subjectLC.indexOf('bench') != -1 )  c.project = 'Performance';
+            if ( c.subjectLC.indexOf('pm') != -1 )  c.project = 'Performance';
+            if ( c.subjectLC.indexOf('view') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('medusa') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('json') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('dao') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('mlang') != -1 ) c.project = 'Hybrid Blockchain';
+            if ( c.subjectLC.indexOf('demo') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('example') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('u2') != -1 )  c.project = 'U3';
+            if ( c.subjectLC.indexOf('capab') != -1 )  c.project = 'CRUNCH';
+            if ( c.subjectLC.indexOf('nanos') != -1 )  c.project = 'NANOS';
+            return c;
+          }).
           map(c => { c.date = new Date(c.date * 1000); return c; });
       }
     }
@@ -223,6 +272,8 @@ foam.CLASS({
         br().
         add('Author: ', this.AUTHOR).
         br().
+        tag(this.UserMonthView, {data: this}).
+        br().
         add('File: ', this.FILE).
         br().
         add('Path: ', this.PATH).
@@ -234,6 +285,7 @@ foam.CLASS({
             start('th').add('Commit').end().
             start('th').add('Date').end().
             start('th').add('Author').end().
+            start('th').add('Project').end().
             start('th').add('Message').end().
             start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
@@ -249,6 +301,7 @@ foam.CLASS({
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
+              start('td').style({'white-space': 'nowrap'}).add(d.project).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
               start('td').show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
