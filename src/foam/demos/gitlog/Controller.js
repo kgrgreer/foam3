@@ -20,7 +20,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self         = this;
-      var commits      = this.data.commits;
+      var commits      = this.data.filteredCommits;
       var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts = {};
 
@@ -70,7 +70,7 @@ foam.CLASS({
           forEach(counts, function(c) {
             this.start('th').add(c).end();
           }).
-          start('th').add(this.data.commits.length).end().
+          start('th').add(this.data.filteredCommits.length).end().
         end().
       end();
     }
@@ -371,8 +371,8 @@ foam.CLASS({
     },
     {
       name: 'filteredCommits',
-      expression: function(commits) {
-        return [];
+      expression: function(commits, query, file, path, project) {
+        return commits.filter(c => this.match(c, query, '-- All --', file, path, project));
       }
     }
   ],
@@ -415,7 +415,9 @@ foam.CLASS({
           br().br().
           add('Show Files: ', this.SHOW_FILES).
         end().
-        tag(this.UserMonthView, {data: this}).
+        add(this.slot(function (filteredCommits) {
+          return self.UserMonthView.create({data: self}, self);
+        })).
         br().
         tag('hr').
         start('table').attrs({cellpadding: '4px'}).
