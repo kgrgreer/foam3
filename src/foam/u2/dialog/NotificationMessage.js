@@ -41,7 +41,7 @@ foam.CLASS({
       justify-content: flex-end;
       position: fixed;
       /* TODO: reduce max width when notification messages are updated */
-      max-width: calc(min(76vw, 30rem) - 3.2rem);
+      max-width: calc(min(100vw, 48rem) - 3.2rem);
       min-width: calc(max(30vw, 30rem) - 3.2rem);
       right: 1.6rem;
       top: 2.4rem;
