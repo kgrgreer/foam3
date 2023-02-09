@@ -87,6 +87,25 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      // TODO: class and method?
+      name: 'source',
+      class: 'Object',
+      updateVisibility: 'RO',
+      javaSetter: `
+      if ( val == null ) {
+        source_ = val;
+        sourceIsSet_ = false;
+        return;
+      }
+      if ( val instanceof String ) {
+        source_ = val;
+      } else {
+        source_ = val.getClass().getSimpleName();
+      }
+      sourceIsSet_ = true;
+      `
+    },
+    {
       name: 'event',
       class: 'String',
       visibility: 'RO'
@@ -176,25 +195,6 @@ foam.CLASS({
       setFoid(val.getProperty("id"));
       `
     },
-    {
-      // TODO: class and method?
-      name: 'source',
-      class: 'Object',
-      updateVisibility: 'RO',
-      javaSetter: `
-      if ( val == null ) {
-        source_ = val;
-        sourceIsSet_ = false;
-        return;
-      }
-      if ( val instanceof String ) {
-        source_ = val;
-      } else {
-        source_ = val.getClass().getSimpleName();
-      }
-      sourceIsSet_ = true;
-      `
-    },
     // {
     //  ?? first byte of session? if not otherwise specified? Only helpful on user generated events. system and medusa will always be the same.
     //   name: 'traceId',
@@ -218,6 +218,11 @@ foam.CLASS({
         cols: 80
       },
       javaFormatJSON: 'formatter.output(get_(obj).toString());',
+      javaPostSet: `
+      if ( ! messageIsSet_ ) {
+        setMessage(((Exception)val).getMessage());
+      }
+      `
     },
     {
       name: 'clusterable',
@@ -295,6 +300,12 @@ foam.CLASS({
         }
         sb.append(getCode());
       }
+      if ( ! SafetyUtil.isEmpty(getMessage()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getMessage());
+      }
       return sb.toString();
       `
     },
@@ -327,6 +338,13 @@ foam.CLASS({
         }
         sb.append(getCode());
       }
+      if ( ! SafetyUtil.isEmpty(getMessage()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append(",");
+        }
+        sb.append(getMessage());
+      }
+
       return sb.toString();
       `
     }
