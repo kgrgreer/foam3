@@ -112,6 +112,10 @@ foam.CLASS({
   },
   properties: [
     {
+      class: 'Boolean',
+      name: 'showFiles'
+    },
+    {
       class: 'Array',
       name: 'authors',
       factory: function() {
@@ -223,12 +227,15 @@ foam.CLASS({
         br().
         add('Path: ', this.PATH).
         br().
+        add('Show Files: ', this.SHOW_FILES).
+        br().
         start('table').attrs({cellpadding: '4px'}).
           start('tr').
             start('th').add('Commit').end().
             start('th').add('Date').end().
             start('th').add('Author').end().
             start('th').add('Message').end().
+            start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
             var subject = d.subject.toLowerCase();
             var href = 'https://github.com/kgrgreer/foam3/commit/' + d.commit;
@@ -243,6 +250,7 @@ foam.CLASS({
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
+              start('td').show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
 //          this.add(d.commit, ' ', d.date.toISOString().substring(0,10), ' ', d.author, ' ', d.subject).br();
         });
