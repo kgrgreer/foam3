@@ -26,6 +26,8 @@ foam.CLASS({
       this.wizardlets = [];
       var view = this.start().addClass(this.myClass());
       for ( let i = 0; i < this.capableObj?.capablePayloads?.length; i++ ) {
+        var t = (await this.capableObj.capablePayloads[i].capability$find)?.name;
+        if ( !! t ) view.start('h3').add(t).end();
         view.tag(this.FlexSectionedDetailView, {
           data: this.capableObj.capablePayloads[i].data
         });
