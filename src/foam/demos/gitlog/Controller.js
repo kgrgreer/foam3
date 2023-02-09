@@ -13,10 +13,12 @@ foam.CLASS({
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
+    ^ .selected { color: red; }
   `,
 
   methods: [
     function render() {
+      var self         = this;
       var commits      = this.data.commits;
       var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts = {};
@@ -51,8 +53,9 @@ foam.CLASS({
           var total = 0;
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
+            enableClass('selected', self.data.author$.map(auth => auth == a[0])).
             start('th').
-              add(a[0]).
+              start('href').on('click', () => self.data.author = a[0]).add(a[0]).end().
             end().
             forEach(authorCounts[a[0]], function(c) {
               total += c;
@@ -62,7 +65,7 @@ foam.CLASS({
           end();
         }).
         start('tr').
-          start('th').add('All:').end().
+          start('th').on('click', () => self.data.author = '-- All --').add('All:').end().
           forEach(counts, function(c) {
             this.start('th').add(c).end();
           }).
@@ -316,8 +319,10 @@ foam.CLASS({
         br().
         add('Query: ', this.QUERY).
         br().
+        /*
         add('Author: ', this.AUTHOR).
         br().
+        */
         tag(this.UserMonthView, {data: this}).
         br().
         add('File: ', this.FILE).
