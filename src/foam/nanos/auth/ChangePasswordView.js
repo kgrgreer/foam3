@@ -127,7 +127,7 @@ foam.CLASS({
             this.addClass(self.myClass('content-vertical'));
           })
           // section
-          .start().addClass(this.myClass('section'))
+          .start('form').addClass(this.myClass('section'))
             .start(this.MODEL).end()
           .end()
           // link
