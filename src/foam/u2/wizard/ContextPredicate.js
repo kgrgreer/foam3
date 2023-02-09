@@ -39,7 +39,7 @@
       if ( ! objToCheck )
         throw new Error(`Unable to find ${this.contextKey} in this context`);
 
-      if ( ! this.valuePath && ! foam.util.equals(valueToCheck, this.matchValue) )
+      if ( ! this.valuePath && ! foam.util.equals(objToCheck, this.matchValue) )
         throw new Error(`Predicate check failed.`);
 
       var valueToCheck = this.valuePath.f(objToCheck);
