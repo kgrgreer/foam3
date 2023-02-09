@@ -339,9 +339,9 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function(_, o, prop) {
-        const OLD_ADAPT = foam.core.FObjectProperty.ADAPT.value;
         if ( foam.Function.isInstance(o) && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
 
+        const OLD_ADAPT = foam.core.FObjectProperty.ADAPT.value;
         return OLD_ADAPT.call(this, null, o, prop);
       }
     }
