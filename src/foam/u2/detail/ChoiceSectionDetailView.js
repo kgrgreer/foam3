@@ -73,11 +73,11 @@ foam.CLASS({
           if ( ! data ) return;
 
           var arraySlot = self.ArraySlot.create({
-            slots: sections.map(s => s.createIsAvailableFor(self.data$))
+            slots: sections.map((s) => s.createIsAvailableFor(self.data$))
           });
 
           return self.E()
-            .add(arraySlot.map(visibilities => {
+            .add(arraySlot.map((visibilities) => {
               self.visibleSections = sections.filter((s, i) => visibilities[i]);
               return this.E()
                 .startContext({ controllerMode: 'EDIT' })
@@ -104,7 +104,7 @@ foam.CLASS({
                     }).end()
                   .end()
                 .endContext()
-                .add(this.slot(currentIndex => {
+                .add(this.slot(function(currentIndex) {
                   return this.E()
                     .tag(self.SectionView, {
                       data$: self.data$,

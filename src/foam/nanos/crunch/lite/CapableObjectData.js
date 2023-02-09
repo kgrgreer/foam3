@@ -21,7 +21,8 @@ foam.CLASS({
       of: 'foam.nanos.crunch.CapabilityJunctionPayload',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
-      autoValidate: true
+      autoValidate: true,
+      columnPermissionRequired: true
     },
     {
       name: 'userCapabilityRequirements',
