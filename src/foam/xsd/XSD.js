@@ -412,7 +412,7 @@ foam.CLASS({
 
         let property = {
           class: classType,
-          name: name.replaceAll("-", "_"),
+          name: this.toPropertyName(name),
           shortName: name
         };
 
@@ -450,8 +450,8 @@ foam.CLASS({
         let name = child.getAttribute('name');
         let property = {
           class: this.getPropType(child.getAttribute('type')),
-          name: name,
-          shortName: name.replaceAll("-", "_")
+          name: this.toPropertyName(name),
+          shortName: name
         };
 
         if ( child.localName === 'attribute' ) {
@@ -502,7 +502,7 @@ foam.CLASS({
     function createProperty(modelName, type, name) {
       return {
         class: this.getPropType(type),
-        name: name.replaceAll("-", "_"),
+        name: this.toPropertyName(name),
         shortName: name
       };
     },
@@ -582,6 +582,9 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1 ) continue;
         switch ( child.localName ) {
+          // case 'group':
+          //   this.processGroup(m, child);
+          // break;
           case 'element':
             this.processSequenceElement(m, child);
             break;
@@ -729,75 +732,17 @@ foam.CLASS({
         if ( child.nodeType !== 1 ) continue;
 
         var name = child.getAttribute('name');
-        var id   = this.package + '.' + name;
-
-        // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-        if ( name !== 'Document' && foam.maybeLookup(id) ) continue;
-
-        // create foam model
-        var m = this.createClass(this.package, name);
-
-        /*
-        // check iso20022 type & add documentation
-        var type = iso20022Types[name];
-        if ( type && type.documentation && this.package === 'net.nanopay.iso20022' ) {
-          m.documentation = type.documentation;
-        }
-        */
-
-        /*
-        // Add xmlns for ISO20022 messages
-        if ( m.name === 'Document' ) {
-          if ( ! m.implements ) m.implements = [];
-          if ( ! m.properties ) m.properties = [];
-
-          m.implements = [ 'net.nanopay.iso20022.Document' ];
-          m.properties.push({
-            class: 'String',
-            name: 'xmlns',
-            value: "urn:iso:std:iso:20022:tech:xsd:" + filename.replace(/\.[^/.]+$/, ""),
-            xmlAttribute: true
-          });
-        }
-        */
-
-        switch ( child.localName ) {
-          case 'complexType':
-            // process complex type
-            this.processComplexType(m, child);
-            m.flags = [ "java", "complexType" ];
-            break;
-          case 'simpleType':
-            // process simple type
-            this.processSimpleType(m, child);
-            m.flags = m.extends ? [] : [ "java", "simpleType" ];
-            break;
-          case 'group':
-            // process group type
-            this.processSequence(m, child);
-            m.flags = m.extends ? [] : [ "java", "groupType" ];
-            break;
-          default:
-            break;
-        }
-
-        if ( m.type === 'enum' ) {
-          delete m.type;
-          this.genModel(m, 'ENUM');
-        } else {
-          this.genModel(m);
-        }
-      }
+        this.process(child, name);
+     }
     },
 
     function compileAll() {
-      // console.info('compileAll');
       var sep = require('path').sep;
       var fs = require('fs');
       var DOMParser = (globalThis.DOMParser || require('xmldom').DOMParser);
       var elements = new Map();
 
-      this.xmlns = ''; // docElement._nsMap[''] || '';
+      this.xmlns = '';
 
       var path = __dirname + sep + this.xsdPath; // .replace(/\//g, sep);
       fs.readdirSync(path).forEach(file => {
@@ -826,42 +771,53 @@ foam.CLASS({
       });
 
       elements.forEach((child, name) => {
-        // console.info("xml", name, child.nodeType, child.nodeName, child.localName);
-        var id   = this.package + '.' + name;
-
-        // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-        if ( name !== 'Document' &&  foam.maybeLookup(id) ) return;
-
-        // create foam model
-        var m = this.createClass(this.package, name);
-
-        switch ( child.localName ) {
-          case 'complexType':
-            // process complex type
-            this.processComplexType(m, child);
-            m.flags = [ "java", "complexType" ];
-            break;
-          case 'simpleType':
-            // process simple type
-            this.processSimpleType(m, child);
-            m.flags = m.extends ? [] : [ "java", "simpleType" ];
-            break;
-          case 'group':
-            // process group type
-            this.processSequence(m, child);
-            m.flags = m.extends ? [] : [ "java", "groupType" ];
-            break;
-          default:
-            break;
-        }
-
-        if ( m.type === 'enum' ) {
-          delete m.type;
-          this.genModel(m, 'ENUM');
-        } else {
-          this.genModel(m);
-        }
+        this.process(child, name);
       });
+    },
+
+    function process(child, name) {
+      var id   = this.package + '.' + name;
+
+      // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
+      if ( name !== 'Document' &&  foam.maybeLookup(id) ) return;
+
+      // create foam model
+      var m = this.createClass(this.package, name);
+
+      switch ( child.localName ) {
+      case 'complexType':
+        // process complex type
+        this.processComplexType(m, child);
+        m.flags = [ "java", "complexType" ];
+        break;
+      case 'simpleType':
+        // process simple type
+        this.processSimpleType(m, child);
+        m.flags = m.extends ? [] : [ "java", "simpleType" ];
+        break;
+      case 'group':
+        // process group type
+        this.processSequence(m, child);
+        m.flags = m.extends ? [] : [ "java", "groupType" ];
+        break;
+      default:
+        break;
+      }
+
+      if ( m.type === 'enum' ) {
+        delete m.type;
+        this.genModel(m, 'ENUM');
+      } else {
+        this.genModel(m);
+      }
+    },
+
+    function toPropertyName(name) {
+      var propName = name.replaceAll("-", "_");
+      if ( propName[0] !== propName[0].toLowerCase() ) {
+        propName = name[0].toLowerCase() + propName.substring(1);
+      }
+      return propName;
     }
   ]
 });
