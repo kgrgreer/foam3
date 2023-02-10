@@ -13,13 +13,14 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'static foam.mlang.MLang.*',
     'foam.mlang.sink.Sum',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.util.SafetyUtil',
-
-    'static foam.mlang.MLang.*'
+    'java.util.List'
   ],
 
   javaCode: `
@@ -78,11 +79,11 @@ foam.CLASS({
               getDelegate().put(request);
             }
           }
-        }
-        if ( old != null && old.getStatus() == request.getStatus() &&
-             request.getStatus() == ApprovalStatus.REQUESTED &&
-             old.getAssignedTo() != request.getAssignedTo() ) {
-          assignAllRequests(requests, request);
+        } else if ( old != null &&
+                    old.getStatus() == request.getStatus() &&
+                    request.getStatus() == ApprovalStatus.REQUESTED &&
+                    old.getAssignedTo() != request.getAssignedTo() ) {
+          assignAllRequests(x, request);
         }
 
         return request;
@@ -140,8 +141,9 @@ foam.CLASS({
       name: 'assignAllRequests',
       visibility: 'protected',
       type: 'Void',
-      args: 'DAO dao, ApprovalRequest request',
+      args: 'X x, ApprovalRequest request',
       javaCode: `
+        DAO dao = ApprovalRequestUtil.getAllRequests(x, getDelegate().inX(x), request.getObjId(), request.getClassification());
         List<ApprovalRequest> requests = (List) ((ArraySink) dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).select(new ArraySink())).getArray();
         for ( ApprovalRequest r : requests ) {
           if ( r.getId() == request.getId() ) continue;
