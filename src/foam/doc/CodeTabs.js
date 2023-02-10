@@ -23,7 +23,7 @@ foam.CLASS({
       border: 1px solid black;
       border-radius: 3px 3px 0 0;
       display: inline-block;
-      height: 12px;
+      height: -2px;
       padding: 8px;
     }
     ^tab.selected {
@@ -45,7 +45,7 @@ foam.CLASS({
       background:$white;
       border: 1px solid black;
       position: relative;
-      top: -13px;
+      top: 5px;
       left: -4px;
     }
   `
