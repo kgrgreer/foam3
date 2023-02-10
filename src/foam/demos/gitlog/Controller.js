@@ -92,6 +92,7 @@ foam.CLASS({
 
   css: `
     tr:hover { background: lightskyblue; }
+    .foam-u2-TextField { margin-bottom: 14px }
   `,
 
   constants: {
@@ -246,6 +247,16 @@ foam.CLASS({
       }
     },
     {
+      class: 'Int',
+      name: 'year',
+      value: '2021',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({choices: [
+          [0, '-- All --'], [ 2021, '2021' ], [ 2022, '2022' ]
+        ]}, X);
+      }
+    },
+    {
       class: 'String',
       name: 'author',
       value: '-- All --',
@@ -308,13 +319,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'query',
-      view: 'foam.u2.SearchField',
+      // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
-    },
-    {
-      name: 'year',
-      value: 2021
     },
     {
       name: 'commits',
@@ -403,16 +410,16 @@ foam.CLASS({
         start('h2').add('GitLog').end().
         start('span').
           style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
-          add('Year: ').br().add(this.year).
-          br().br().
-          add('Query: ').start(this.QUERY).attrs({'autocomplete': 'off'}).end().
-          br().br().
+          add('Year: ', this.YEAR).
+          br().
+          add('Keyword: ', this.QUERY).
+          br().
           add('Project: ', this.PROJECT).
-          br().br().
+          br().
           add('File: ', this.FILE).
-          br().br().
+          br().
           add('Path: ', this.PATH).
-          br().br().
+          br().
           add('Show Files: ', this.SHOW_FILES).
         end().
         add(this.slot(function (filteredCommits) {
