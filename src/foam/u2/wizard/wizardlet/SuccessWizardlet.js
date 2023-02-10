@@ -36,6 +36,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'children'
+    },
+//    {
+//      name: 'children2',
+//      value: { class: 'foam.u2.view.ValueView', prop: 'green' }
+//    },
+    {
       name: 'sections',
       class: 'FObjectArray',
       of: 'foam.u2.wizard.wizardlet.WizardletSection',
@@ -55,8 +62,10 @@ foam.CLASS({
             isAvailable: true,
             customView: {
               class: 'foam.u2.wizard.wizardlet.SuccessWizardletView',
-              confirmationNumber$: this.confirmationNumber$,
-              message$: this.message$
+//              confirmationNumber$: this.confirmationNumber$,
+              message$: this.message$,
+              children2$: this.children$,
+//              children2: this.children2
             }
           })
         ];

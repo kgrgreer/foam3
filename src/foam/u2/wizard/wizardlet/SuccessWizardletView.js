@@ -40,8 +40,9 @@ foam.CLASS({
       value: '/images/checkmark-outline-green.svg'
     },
     {
-      class: 'String',
-      name: 'confirmationNumber'
+      class: 'Array',
+      of: 'foam.u2.ViewSpec',
+      name: 'children2'
     }
   ],
 
@@ -59,12 +60,16 @@ foam.CLASS({
           .addClass('h200')
           .add(this.message$)
         .end()
-        .start()
-          .callIf(this.confirmationNumber, function() {
-            return self.addClass('h300')
-              .add('Transaction Reference No: ', self.confirmationNumber);
-          })
-        .end();
+//        .start()
+//          .callIf(this.confirmationNumber, function() {
+//            return self.addClass('h300')
+//              .add('Transaction Reference No: ', self.confirmationNumber);
+//          })
+//        .end()
+//        .start(this.children2)
+        .add(this.children2)
+//        .end()
+        ;
     }
   ]
 });
