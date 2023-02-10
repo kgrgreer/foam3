@@ -444,7 +444,7 @@ foam.CLASS({
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
-              start('td').style({'white-space': 'nowrap'}).add(d.project).end().
+              start('td').style({'white-space': 'nowrap', 'font-weight': '600'}).add(d.project).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
               start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
             end();
