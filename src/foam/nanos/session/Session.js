@@ -71,7 +71,7 @@ foam.CLASS({
       },
       required: true,
       updateVisibility: 'RO',
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'Reference',
