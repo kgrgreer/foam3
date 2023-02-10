@@ -124,7 +124,7 @@ foam.CLASS({
         // if ucj data is set but does not match expected data, do not put
         Capability capability = (Capability) ucj.findTargetId(x);
         if ( capability == null ||
-             ( ! ( capability.getOf() == null || capability.getOf() instanceof foam.core.ClassInfoImpl || ucj.getData() == null ) &&
+             ( ! ( capability.getOf() == null || ucj.getData() == null ) &&
                ! ( capability.getOf().isInstance(ucj.getData()) )
              )
            ) {
