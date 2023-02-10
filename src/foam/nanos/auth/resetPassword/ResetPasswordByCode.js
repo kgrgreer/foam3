@@ -205,6 +205,7 @@ foam.CLASS({
         return ! codeVerified;
       },
       code: async function() {
+        this.report('^resend-verification');
         try {
           await this.resetPasswordService.resetPasswordByCode(null, this.email, this.username);
 
@@ -215,6 +216,7 @@ foam.CLASS({
             transient: true
           }));
         } catch(err) {
+          this.assert('false', 'exception when resending verification', err.message);
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
               this.ctrl.add(this.NotificationMessage.create({
                 err: err.data,
