@@ -444,7 +444,9 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            query: this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+            query:
+              this.name +' !exists||' +
+              this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
             errorString: this.INVALID_PHONE_NUMBER
           }
         ];
