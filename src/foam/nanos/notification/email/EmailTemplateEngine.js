@@ -268,10 +268,14 @@ foam.CLASS({
             }
 
             // At runtime, getX() is valid, during test case run
-            // XLocator is valid.  Need to determine which X to use.
-            X y = foam.core.XLocator.get();
-            if ( y.get("emailTemplateDAO") == null ) {
+            // notice passed context is set on ParserContext
+            X y = (X) x.get("x");
+            if ( y == null || y.get("emailTemplateDAO") == null ) {
               y = getX();
+            }
+            // XLocator is valid.  Need to determine which X to use.
+            if ( y == null || y.get("emailTemplateDAO") == null ) {
+              y = foam.core.XLocator.get();
             }
             EmailTemplate extendedEmailTemplate = EmailTemplateSupport.findTemplate(y, templateName.toString());
             if ( extendedEmailTemplate == null ) {
@@ -337,6 +341,7 @@ foam.CLASS({
       parserX.set("values", values);
       parserX.set("logger", x.get("logger"));
       parserX.set("alarmDAO", x.get("alarmDAO"));
+      parserX.set("x", x);
       getGrammar().parse(ps, parserX, "");
       return sb;
       `
