@@ -443,7 +443,10 @@ foam.CLASS({
               })).
               start('td').start('a').attrs({href: href}).add(d.commit).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
-              start('td').style({'white-space': 'nowrap'}).add(d.author).end().
+              start('td').style({'white-space': 'nowrap'}).
+                start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
+                end().
+              end().
               start('td').style({'white-space': 'nowrap'}).
                 start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
                 end().
