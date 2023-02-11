@@ -83,7 +83,7 @@ foam.CLASS({
   refines: 'foam.core.Property',
 
   messages: [
-    { name: 'PLEASE_ENTER', message: 'Please enter' }
+    { name: 'REQUIRED', message: 'required' }
   ],
 
   properties: [
@@ -107,25 +107,28 @@ foam.CLASS({
       var required = this.required;
       var self_ = this;
       var validationPredicates = this.validationPredicates;
-        if ( validationPredicates.length ) {
-          var args = foam.Array.unique(validationPredicates
-            .map(vp => vp.args)
-            .flat());
-          return [args, function() {
-            for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
-              var vp   = validationPredicates[i];
-              var self = this;
-              if ( vp.jsFunc.call(self_, this) ) return vp.jsErr.call(self, self);
-            }
-            return null;
-          }];
-        }
-        return ! required ? null : [[name],
-          function() {
-            const axiom = this.cls_.getAxiomByName(name);
-            return axiom.isDefaultValue(this[name]) && (`${self_.PLEASE_ENTER} ${label.toLowerCase()}`); 
-            // TODO: normalise all reqired-esque predicates to use the same message, currently split between "<prop> required" and "Please enter <prop>"
-          }];
+      if ( validationPredicates.length ) {
+        var args = foam.Array.unique(validationPredicates
+          .map(vp => vp.args)
+          .flat());
+        return [args, function() {
+          if ( required && self_.isDefaultValue(this[name]) ) {
+            return `${label} ${self_.REQUIRED} `; 
+          }
+          for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
+            var vp   = validationPredicates[i];
+            var self = this;
+            if ( vp.jsFunc.call(self_, this) ) return vp.jsErr.call(self, self);
+          }
+          return null;
+        }];
+      }
+      return ! required ? null : [[name],
+        function() {
+          const axiom = this.cls_.getAxiomByName(name);
+          return axiom.isDefaultValue(this[name]) && (`${label} ${self_.REQUIRED} `);
+          // TODO: normalise all reqired-esque predicates to use the same message, currently split between "<prop> required" and "Please enter <prop>"
+        }];
       }
     }
   ]
@@ -168,15 +171,6 @@ foam.CLASS({
             args: [this.name],
             query: this.name+'.len<='+self.maxLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
-          });
-        }
-
-        if ( this.required && ! foam.Number.isInstance(this.minLength) ) {
-          a.push({
-            args: [this.name],
-            query: this.name+'.len!=0',
-           // errorString: `${this.label} ${foam.core.String.REQUIRED}`
-            errorString: foam.core.String.REQUIRED
           });
         }
         return a;
@@ -447,26 +441,15 @@ foam.CLASS({
       name: 'validationPredicates',
       factory: function() {
         var self = this;
-        return this.required
-          ? [
-              {
-                args: [this.name],
-                query: this.name +' exists',
-                errorString: this.PHONE_NUMBER_REQUIRED
-              },
-              {
-                args: [this.name],
-                query: this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
-                errorString: this.INVALID_PHONE_NUMBER
-              }
-            ]
-          : [
-              {
-                args: [this.name],
-                query: this.name +' !exists||' + this.name+'~'+foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
-                errorString: this.INVALID_PHONE_NUMBER
-              }
-            ];
+        return [
+          {
+            args: [this.name],
+            query:
+              this.name +' !exists||' +
+              this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+            errorString: this.INVALID_PHONE_NUMBER
+          }
+        ];
       }
     }
   ]
