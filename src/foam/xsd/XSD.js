@@ -398,9 +398,9 @@ foam.CLASS({
      * @param  {Object} doc DOM model
      */
     function processChoice(m, doc) {
+      m.type = 'choice';
       // add properties if it doesn't exist
       if ( ! m.properties ) m.properties = [];
-
       var children = doc.childNodes;
       for ( var key in children ) {
         var child = children[key];
@@ -521,6 +521,18 @@ foam.CLASS({
       if ( maxOccurs !== 'unbounded') maxOccurs = parseInt(maxOccurs, 10);
       let minOccurs = parseInt(doc.getAttribute('minOccurs'), 10) || 1;
 
+      // group ref
+      let ref = doc.getAttribute('ref');
+      if ( ref ) {
+        // FIXME: ref is a forward reference, how to defer?
+        m.properties.push({
+          class: 'StringArray',
+          name: this.toPropertyName(ref),
+          shortName: ref
+        });
+        return;
+      }
+
       let property  = this.createProperty(m.name, doc.getAttribute('type'), doc.getAttribute('name'));
 
       /*
@@ -544,7 +556,7 @@ foam.CLASS({
       }
 
       // change classType to appropriate array class if maxOccurs is greater than 1
-      if (maxOccurs > 1 || maxOccurs === 'unbounded') {
+      if ( maxOccurs > 1 || maxOccurs === 'unbounded' ) {
         if ( property.class === 'FObjectProperty' ) {
           property.class = 'FObjectArray';
         } else if ( this.simpleTypes[doc.getAttribute('type')] == 'foam.core.String' ||
@@ -556,7 +568,9 @@ foam.CLASS({
       }
 
       // add "of" property if class is FObjectProperty or FObjectArray
-      if ( property.class === 'FObjectProperty' || property.class === 'FObjectArray' || property.class === 'foam.core.Enum' ) {
+      if ( property.class === 'FObjectProperty' ||
+           property.class === 'FObjectArray' ||
+           property.class === 'foam.core.Enum' ) {
         property.of = this.package + '.' + doc.getAttribute('type');
       }
 
@@ -582,14 +596,15 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1 ) continue;
         switch ( child.localName ) {
-          // case 'group':
-          //   this.processGroup(m, child);
-          // break;
           case 'element':
             this.processSequenceElement(m, child);
             break;
           case 'choice':
             this.processChoice(m, child);
+            break;
+          // group ref
+          case 'group':
+            this.processSequenceElement(m, child);
             break;
         }
       }
@@ -779,7 +794,8 @@ foam.CLASS({
       var id   = this.package + '.' + name;
 
       // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-      if ( name !== 'Document' &&  foam.maybeLookup(id) ) return;
+      if ( name !== 'Document' &&
+           foam.maybeLookup(id) ) return;
 
       // create foam model
       var m = this.createClass(this.package, name);
