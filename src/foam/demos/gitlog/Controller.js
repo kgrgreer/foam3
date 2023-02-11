@@ -446,7 +446,7 @@ foam.CLASS({
               start('td').style({'white-space': 'nowrap'}).add(d.author).end().
               start('td').style({'white-space': 'nowrap', 'font-weight': '600'}).add(d.project).end().
               start('td', {tooltip: d.files}).add(d.subject).end().
-              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start().add(f).end(); } ).end().
+              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br(); } ).end().
             end();
         });
       ;
