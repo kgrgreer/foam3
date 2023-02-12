@@ -157,6 +157,7 @@ public class Outputter
   protected void outputProperty_(FObject obj, PropertyInfo prop) {
     if ( mode_ == OutputterMode.NETWORK && prop.getNetworkTransient() ) return;
     if ( mode_ == OutputterMode.STORAGE && prop.getStorageTransient() ) return;
+    if ( mode_ == OutputterMode.EXTERNAL && prop.getExternalTransient() ) return;
     if ( ! outputDefaultValues_ && ! prop.isSet(obj) ) return;
 
     Object value = prop.get(obj);
