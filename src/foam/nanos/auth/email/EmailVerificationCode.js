@@ -53,7 +53,7 @@ foam.CLASS({
 
   css: `
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
-      justify-content: flex-start;
+      justify-content: center;
     }
     .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
       padding: 0;
@@ -216,6 +216,7 @@ foam.CLASS({
       },
       buttonStyle: 'TEXT',
       code: async function() {
+        this.report('^resend-verification');
         if ( this.codeVerified ) return;
         try {
           await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
@@ -226,6 +227,7 @@ foam.CLASS({
           }));
           return true;
         } catch ( err ) {
+          this.assert('false', 'exception when resending verification', err.message);
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
             message: this.RESEND_ERROR_MSG,

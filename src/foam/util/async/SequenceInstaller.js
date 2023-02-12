@@ -51,6 +51,11 @@ foam.CLASS({
         )
         targetPosition$.set(targetPosition$.get() + 1);
       }
+    },
+    async function execute (x) {
+      x = x || this.__context__;
+      await this.install(x.sequence, x.sequence.insertPosition_);
+      return x;
     }
   ]
 });

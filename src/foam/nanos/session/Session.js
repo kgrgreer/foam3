@@ -18,11 +18,13 @@ foam.CLASS({
     'foam.core.OrX',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Subject',
     'foam.nanos.boot.NSpec',
     'foam.nanos.crunch.ServerCrunchService',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
@@ -69,7 +71,7 @@ foam.CLASS({
       },
       required: true,
       updateVisibility: 'RO',
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'Reference',
@@ -241,12 +243,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       // Do not allow IP to change if not in whitelist
       if ( ! SafetyUtil.isEmpty(getRemoteHost()) &&
            ! SafetyUtil.equals(getRemoteHost(), remoteIp) ) {
-        ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "IP change detected", getRemoteHost(), remoteIp, getUserId());
+        User user = findUserId(x);
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, "Session", "IP change detected", (user != null ? user.getLegalName() : ""), null, getRemoteHost()+" -> "+remoteIp, LogLevel.WARN, null));
         throw new foam.core.ValidationException("IP changed");
       }
-
-      ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "Restricted IP address not allowed", getRemoteHost(), remoteIp, getUserId());
-      throw new foam.core.ValidationException("Restricted IP");
       `
     },
     {

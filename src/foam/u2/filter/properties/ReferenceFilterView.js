@@ -19,7 +19,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.CheckBox'
+    'foam.u2.CheckBox',
+    'foam.dao.FnSink'
   ],
 
   css: `
@@ -260,7 +261,7 @@ foam.CLASS({
         return;
       }
       this.onDetach(this.daoContents$.sub(this.updateReferenceObjectsArray));
-      this.onDetach(this.dao$.sub(this.daoUpdate));
+      this.onDetach(this.dao$proxy.listen(this.FnSink.create({ fn: this.daoUpdate })));
       this.daoUpdate();
 
       this.addClass()
@@ -351,16 +352,11 @@ foam.CLASS({
      */
     function restoreFromPredicate(predicate) {
       if ( predicate === this.TRUE ) return;
-
       var selections = Array.isArray(predicate.arg2.value) ? predicate.arg2.value : [predicate.arg2.value];
       // wait for idToStringDisplayMap to populate
-      this.idToStringDisplayMap$.sub(() => {
-        var options = [];
-        selections.forEach((selection) => {
-          options.push(selection);
-        });
-        this.selectedOptions = options;
-      })
+      this.idToStringDisplayMap$.sub(foam.events.oneTime(() => {
+        this.selectedOptions = selections;
+      }));
     },
 
     /**
@@ -375,6 +371,8 @@ foam.CLASS({
   listeners: [
     {
       name: 'daoUpdate',
+      isMerged: true,
+      mergeDelay: 250,
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
