@@ -108,11 +108,23 @@ foam.CLASS({
       'Fix build',
       'typo',
       'Fix spacing',
+      'spacing fixes',
+      'fix spacing',
       'Merge release',
       'Release-',
       'revert'
     ],
     IGNORE_EQUALS: [
+      'space',
+      'fix spaces',
+      'fix space',
+      'remove space',
+      'removed a space',
+      'Remove space.',
+      'Remove extra space',
+      'Add space',
+      'added space',
+      'adding spaces',
       'Updated.',
       'Formatting',
       'Formatting.',
@@ -426,8 +438,7 @@ foam.CLASS({
           return self.UserMonthView.create({data: self}, self);
         })).
         br().
-        tag('hr').
-        start('table').attrs({cellpadding: '4px'}).
+        start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
           start('tr').
             start('th').add('Commit').end().
             start('th').add('Date').end().
