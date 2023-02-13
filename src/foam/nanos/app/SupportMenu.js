@@ -18,7 +18,6 @@ foam.CLASS({
   messages: [
     { name: 'CONTACT_SUPPORT', message: 'Contact Support' },
     { name: 'EMAIL_LABEL', message: 'Email' },
-    { name: 'PHONE_LABEL', message: 'Phone' }
   ],
   properties: [
     {
@@ -34,19 +33,6 @@ foam.CLASS({
               class: 'foam.nanos.menu.LinkMenu',
               link$: this.slot(function(theme$supportConfig) {
                 return 'mailto:' + this.theme.supportConfig.supportEmail;
-              })
-            }
-          }, this));
-        }
-        if ( this.theme && this.theme.supportConfig.supportPhone ) {
-          aDAO.put(this.Menu.create({
-            id: this.id + '/phone',
-            label: `${this.PHONE_LABEL}: ${this.theme.supportConfig.supportPhone}`,
-            parent: this.id,
-            handler: {
-              class: 'foam.nanos.menu.LinkMenu',
-              link$: this.slot(function(theme$supportConfig) {
-                return 'tel:' + this.theme.supportConfig.supportPhone;
               })
             }
           }, this));
