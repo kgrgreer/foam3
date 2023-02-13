@@ -211,6 +211,7 @@ foam.POM({
     { name: "auth/UserMDCitationView",                                                    flags: "js" },
     { name: "auth/CommonPassword",                                                        flags: "js|java" },
     { name: "auth/AddressConfig",                                                         flags: "js|java" },
+    { name: "auth/ViewPropertyConfig",                                                         flags: "js|java" },
     { name: "auth/AuthorizeAnonymousClientDecorator",                                     flags: "js" },
     { name: "auth/CreatedAwareMixin",                                                     flags: "js" },
     { name: "auth/CreatedByAwareMixin",                                                   flags: "js" },

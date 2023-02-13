@@ -10,6 +10,10 @@
 
   documentation: 'Base class for storing street address component order',
 
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   ids: ['country'],
 
   properties: [
@@ -30,6 +34,17 @@
     {
       class: 'Int',
       name: 'suite'
+    },
+    {
+      class: 'Array',
+      of: 'foam.nanos.auth.ViewPropertyConfig',
+      name: 'propertyConfig'
+    }
+  ],
+  methods: [
+    function getProperties() {
+      const filtered = this.propertyConfig.filter( p => p.visibility != 'HIDDEN' ).sort((a, b) => a.order - b.order);
+      return filtered.map( v => this.Address.getAxiomByName(v.propertyName));
     }
   ]
 });
