@@ -1,5 +1,3 @@
-p({"class":"foam.nanos.auth.Country", "code":"", "iso31661Code":"","name":""})
-p({"class":"foam.nanos.auth.Country", "code":"", "iso31661Code":"alpha-3","name":""})
 p({"class":"foam.nanos.auth.Country", "code":"AD", "iso31661Code":"AND","name":"Andorra"})
 p({"class":"foam.nanos.auth.Country", "code":"AE", "iso31661Code":"ARE","name":"United Arab Emirates"})
 p({"class":"foam.nanos.auth.Country", "code":"AF", "iso31661Code":"AFG","name":"Afghanistan"})
