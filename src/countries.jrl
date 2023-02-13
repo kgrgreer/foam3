@@ -89,7 +89,7 @@ p({"class":"foam.nanos.auth.Country", "code":"GT", "iso31661Code":"GTM","name":"
 p({"class":"foam.nanos.auth.Country", "code":"GU", "iso31661Code":"GUM","name":"Guam"})
 p({"class":"foam.nanos.auth.Country", "code":"GW", "iso31661Code":"GNB","name":"Guinea-Bissau"})
 p({"class":"foam.nanos.auth.Country", "code":"GY", "iso31661Code":"GUY","name":"Guyana"})
-p({"class":"foam.nanos.auth.Country", "code":"GZ", "iso31661Code":"","name":"Gaza Strip"})
+p({"class":"foam.nanos.auth.Country", "code":"GZ", "iso31661Code":"GZA","name":"Gaza Strip"})
 p({"class":"foam.nanos.auth.Country", "code":"HK", "iso31661Code":"HKG","name":"Hong Kong"})
 p({"class":"foam.nanos.auth.Country", "code":"HM", "iso31661Code":"HMD","name":"Heard Island and McDonald Islands"})
 p({"class":"foam.nanos.auth.Country", "code":"HN", "iso31661Code":"HND","name":"Honduras"})
