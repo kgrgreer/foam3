@@ -255,7 +255,7 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'authors',
-      factory: function() {
+      expression: function(commits) {
         var authors = { '-- All --': this.commits.length };
         this.commits.forEach(c => this.incr(authors, c.author));
         return Object.keys(authors).sort().map(a => [a, a + ' ' + authors[a]]);
@@ -339,8 +339,12 @@ foam.CLASS({
       onKey: true
     },
     {
+      name: 'data',
+      factory: function() { return []; }
+    },
+    {
       name: 'commits',
-      factory: function() {
+      expression: function(data) {
         return data.
           reverse().
           filter(c => {
@@ -355,7 +359,7 @@ foam.CLASS({
             }
             return true;
           }).
-          map(c => { c.files = c.files.trim().split('\n').map(s => s.trim()); return c; }).
+          map(c => { c.files = c.files.map(s => s.trim()); return c; }).
           map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
@@ -402,10 +406,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-//      this.loadData();
+      this.loadData('data2021.log');
     },
-    function loadData() {
-      fetch('data2021.log')
+    function loadData(f) {
+      fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
     },
@@ -450,8 +454,7 @@ foam.CLASS({
           }
         }
       }
-      debugger;
-      return data;
+      this.data = this.data.concat(data);
     },
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
@@ -473,7 +476,15 @@ foam.CLASS({
     },
     function render() {
       var self = this;
+      this.recall(function(commits) {
+        self.projects = self.files = self.paths = undefined;
+        this.render_();
+      });
+    },
+    function render_() {
+      var self = this;
 
+console.log(this.commits.length, this.projects.length);
       this.
         start('h2').add('GitLog').end().
         start('span').
