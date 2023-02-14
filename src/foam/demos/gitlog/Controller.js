@@ -6,6 +6,41 @@
 
  // git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
 
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'UserMonthView',
+
+  properties: [
+    {
+      name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'author'
+    },
+    {
+      class: 'Date',
+      name: 'date'
+    },
+    {
+      class: 'String',
+      name: 'subject'
+    },
+    {
+      class: 'String',
+      name: 'body'
+    },
+    {
+      class: 'StringArray',
+      name: 'files'
+    },
+    {
+      class: 'String',
+      name: 'diff'
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
@@ -422,7 +457,7 @@ foam.CLASS({
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { commit: line.substring(7), subject: '', diff: '', files: [] };
+            commit = { id: line.substring(7), subject: '', diff: '', files: [] };
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
@@ -512,12 +547,12 @@ console.log(this.commits.length, this.projects.length);
             start('th').add('Message').end().
             start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
-            var href = 'https://github.com/kgrgreer/foam3/commit/' + d.commit;
+            var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
             this.start('tr').
               show(self.slot(function(query, author, file, path, project) {
                 return self.match(d, query, author, file, path, project);
               })).
-              start('td').start('a').attrs({href: href}).add(d.commit.substring(0,8)).end().end().
+              start('td').start('a').attrs({href: href}).add(d.id.substring(0,8)).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).
                 start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
