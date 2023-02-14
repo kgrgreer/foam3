@@ -18,6 +18,7 @@ foam.CLASS({
   messages: [
     { name: 'CONTACT_SUPPORT', message: 'Contact Support' },
     { name: 'EMAIL_LABEL', message: 'Email' },
+    { name: 'PHONE_LABEL', message: 'Phone' }
   ],
   properties: [
     {
