@@ -43,11 +43,11 @@ foam.CLASS({
 
   cssTokens: [
     {
-      name: 'borderSize',
+      name: 'borderSizeDAOBrowseControllerView',
       value: '1px'
     },
     {
-      name: 'boxShadowSize',
+      name: 'boxShadowSizeDAOBrowseControllerView',
       value: '0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1)'
     }
   ],
@@ -73,10 +73,10 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      border: $borderSize solid $grey300;
+      border: $borderSizeDAOBrowseControllerView solid $grey300;
       border-radius: 4px;
       box-sizing: border-box;
-      box-shadow: $boxShadowSize;
+      box-shadow: $boxShadowSizeDAOBrowseControllerView;
       height: 100%;
       padding: 0;
     }

@@ -26,7 +26,7 @@ foam.CLASS({
       value: '$foam.nanos.menu.VerticalMenu.menuBackground'
     },
     {
-      name: 'borderSize',
+      name: 'borderSizeResponsiveTopNav',
       value: '2px'
     }
   ],
@@ -35,7 +35,7 @@ foam.CLASS({
     ^ {
       align-items: center;
       background-color: $topNavBackground;
-      border-bottom: $borderSize solid rgba(0, 0, 0, 0.06);
+      border-bottom: $borderSizeResponsiveTopNav solid rgba(0, 0, 0, 0.06);
       display: flex;
       min-height: 64px;
       justify-content: space-between;

@@ -11,7 +11,7 @@
 
   cssTokens: [
     {
-      name: 'borderSize',
+      name: 'borderSizeTableView',
       value: '2px'
     }
   ],
@@ -61,7 +61,7 @@
     }
 
     ^thead > ^tr {
-      border-bottom: $borderSize solid $grey300;
+      border-bottom: $borderSizeTableView solid $grey300;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
       width: 100%;

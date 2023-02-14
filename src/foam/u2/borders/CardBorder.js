@@ -11,7 +11,7 @@ foam.CLASS({
 
   cssTokens: [
     {
-      name: 'borderSize',
+      name: 'borderSizeCardBorder',
       value: '4px'
     }
   ],
@@ -21,7 +21,7 @@ foam.CLASS({
       min-height: 60px;
 
       background-color: $white;
-      border: solid $borderSize $grey300;
+      border: solid $borderSizeCardBorder $grey300;
       border-radius: 5px;
 
       padding: 16px;
