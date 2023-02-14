@@ -8,7 +8,7 @@
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
-  name: 'UserMonthView',
+  name: 'Commit',
 
   properties: [
     {
@@ -37,6 +37,33 @@ foam.CLASS({
     {
       class: 'String',
       name: 'diff'
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'CommitDetailView',
+  extends: 'foam.u2.View',
+
+  css: `
+  `,
+
+  methods: [
+    function render() {
+      this.recall(function(data) {
+        // this.add('data: ', data);
+        if ( ! data ) return;
+        this.
+        add('Hash: ', data.id).br().br().
+        add('Files: ').br().forEach(data.files,
+          function(f) {
+            this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
+          }
+        ).br().br().
+        add('Diff:  ').br().start('div').style({'white-space': 'pre'}).add(data.diff).end();
+      });
     }
   ]
 });
@@ -284,10 +311,6 @@ foam.CLASS({
   },
   properties: [
     {
-      class: 'Boolean',
-      name: 'showFiles'
-    },
-    {
       class: 'Array',
       name: 'authors',
       expression: function(commits) {
@@ -369,6 +392,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'query',
+value: 'kgr',
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
@@ -376,6 +400,13 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() { return []; }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.demos.gitlog.Commit',
+      name: 'selected',
+      view: 'foam.demos.gitlog.CommitDetailView',
+      postSet: function(_, c) { console.log('selected: ', c); }
     },
     {
       name: 'commits',
@@ -483,7 +514,7 @@ foam.CLASS({
             if ( line.startsWith('+++ ') ) {
               commit.files.push(line.substring(6));
             }
-            commit.diff += line.trim();
+            commit.diff += (line.length ? '\n' : '') + line.trim();
           }
         }
       }
@@ -509,15 +540,16 @@ foam.CLASS({
     },
     function render() {
       var self = this;
-      this.recall(function(commits) {
+      this.commits$.sub(function() {
         self.projects = self.files = self.paths = undefined;
-        this.render_();
+        self.removeAllChildren();
+        self.render_();
       });
+      this.commits;
     },
     function render_() {
       var self = this;
 
-console.log(this.commits.length, this.projects.length);
       this.
         start('h2').add('GitLog').end().
         start('span').
@@ -545,10 +577,10 @@ console.log(this.commits.length, this.projects.length);
             start('th').add('Author').end().
             start('th').add('Project').end().
             start('th').add('Message').end().
-            start('th').show(this.showFiles$).add('Files').end().
           end().forEach(this.commits, function(d) {
             var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
             this.start('tr').
+              on('mouseover', () => self.selected = d).
               show(self.slot(function(query, author, file, path, project) {
                 return self.match(d, query, author, file, path, project);
               })).
@@ -562,10 +594,13 @@ console.log(this.commits.length, this.projects.length);
                 start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
                 end().
               end().
-              start('td', {tooltip: d.files}).add(d.subject).end().
-              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br(); } ).end().
+              start('td').add(d.subject).end().
             end();
-        });
+          }).
+        end().
+        tag('hr').
+        br().br().
+        add(this.SELECTED).br().br().tag('hr');
       ;
     }
   ],
