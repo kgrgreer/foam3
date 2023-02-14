@@ -391,8 +391,7 @@ foam.CLASS({
             },
             */
             return c;
-          }).
-          map(c => { c.date = new Date(c.date * 1000); return c; });
+          });
       }
     },
     {
@@ -423,9 +422,8 @@ foam.CLASS({
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { hash: line.substring(7), subject: '', diff: '', files: [] };
+            commit = { commit: line.substring(7), subject: '', diff: '', files: [] };
             data.push(commit);
-            console.log(commit.hash);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
           } else if ( line.startsWith('Date: ') ) {
@@ -519,7 +517,7 @@ console.log(this.commits.length, this.projects.length);
               show(self.slot(function(query, author, file, path, project) {
                 return self.match(d, query, author, file, path, project);
               })).
-              start('td').start('a').attrs({href: href}).add(d.commit).end().end().
+              start('td').start('a').attrs({href: href}).add(d.commit.substring(0,8)).end().end().
               start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
               start('td').style({'white-space': 'nowrap'}).
                 start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
