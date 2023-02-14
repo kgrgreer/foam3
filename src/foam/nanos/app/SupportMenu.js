@@ -37,6 +37,19 @@ foam.CLASS({
             }
           }, this));
         }
+        if ( this.theme && this.theme.supportConfig.supportPhone ) {
+          aDAO.put(this.Menu.create({
+            id: this.id + '/phone',
+            label: `${this.PHONE_LABEL}: ${this.theme.supportConfig.supportPhone}`,
+            parent: this.id,
+            handler: {
+              class: 'foam.nanos.menu.LinkMenu',
+              link$: this.slot(function(theme$supportConfig) {
+                return 'tel:' + this.theme.supportConfig.supportPhone;
+              })
+            }
+          }, this));
+        }
         return aDAO;
       }
     }
