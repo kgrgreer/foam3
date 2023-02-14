@@ -4,6 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+ // git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
+
+
 foam.CLASS({
   package: 'foam.demos.gitlog',
   name: 'UserMonthView',
@@ -108,11 +111,23 @@ foam.CLASS({
       'Fix build',
       'typo',
       'Fix spacing',
+      'spacing fixes',
+      'fix spacing',
       'Merge release',
       'Release-',
       'revert'
     ],
     IGNORE_EQUALS: [
+      'space',
+      'fix spaces',
+      'fix space',
+      'remove space',
+      'removed a space',
+      'Remove space.',
+      'Remove extra space',
+      'Add space',
+      'added space',
+      'adding spaces',
       'Updated.',
       'Formatting',
       'Formatting.',
@@ -385,6 +400,59 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+//      this.loadData();
+    },
+    function loadData() {
+      fetch('data2021.log')
+      .then(r => r.text())
+      .then(t => this.parseLog(t));
+    },
+    function parseLog(t) {
+      var data = [];
+      var state  = 0;
+      var lines  = t.split('\n');
+      var commit;
+      t = null;
+      for ( var i = 0 ; i < lines.length ; i++ ) {
+        var line = lines[i];
+        if ( state == 0 ) {
+          if ( line.startsWith('commit ') ) {
+            commit = { hash: line.substring(7), subject: '', diff: '', files: [] };
+            data.push(commit);
+            console.log(commit.hash);
+          } else if ( line.startsWith('Author: ') ) {
+            commit.author = line.substring(8, line.indexOf('<')).trim();
+          } else if ( line.startsWith('Date: ') ) {
+            commit.date = new Date(line.substring(6).trim());
+            i++;
+            state = 1;
+          }
+        } else if ( state == 1 ) {
+          if ( line.startsWith('diff') ) {
+            state = 2;
+          } else if ( line.startsWith('commit') ) {
+            state = 0;
+            i--;
+          } else {
+            commit.subject += line.trim();
+          }
+        } else if ( state == 2 ) {
+          if ( line.startsWith('commit') ) {
+            state = 0;
+            i--;
+          } else {
+            if ( line.startsWith('+++ ') ) {
+              commit.files.push(line.substring(6));
+            }
+            commit.diff += line.trim();
+          }
+        }
+      }
+      debugger;
+      return data;
+    },
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
 
@@ -426,8 +494,7 @@ foam.CLASS({
           return self.UserMonthView.create({data: self}, self);
         })).
         br().
-        tag('hr').
-        start('table').attrs({cellpadding: '4px'}).
+        start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
           start('tr').
             start('th').add('Commit').end().
             start('th').add('Date').end().
