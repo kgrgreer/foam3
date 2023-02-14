@@ -37,6 +37,26 @@ p({
 })
 
 p({
+  class: 'foam.nanos.ruler.Rule',
+  id: 'foam.nanos.crunch.invoke-edit-behaviour',
+  name: 'Invoke Edit Behaviour on Granted->Granted',
+  priority: 940,
+  ruleGroup: 'ucjDAO',
+  daoKey: 'userCapabilityJunctionDAO',
+  operation: 1,
+  after: false,
+  enabled: true,
+  action: {
+    class: 'foam.nanos.crunch.ruler.InvokeEditBehaviourRuleAction'
+  },
+  lifecycleState: 1,
+  predicate: {
+    class: 'foam.nanos.crunch.predicate.StatusWas',
+    status: 'GRANTED'
+  }
+})
+
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-1-create",
   "name":"Validate UCJ Data On Create",
@@ -116,11 +136,11 @@ p({
             ]
           }
         ],
-        "documentation":"""
+        "documentation": `
           When the ucj status is in a renewable state its data should be validated only when the data has changed
           OR if it is a reput ( i.e., old is also EXPIRED ) so that the ucj won't be re-granted right after
           changing to EXPIRED
-        """
+        `
       },
       {
         "class":"foam.mlang.predicate.And",
