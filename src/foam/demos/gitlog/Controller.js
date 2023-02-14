@@ -56,7 +56,9 @@ foam.CLASS({
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
-        add('Hash: ', data.id).br().br().
+//        add('Hash: ', data.id).br().br().
+        start('b').add(data.subject).end().br().br().
+        start('p').add(data.body).end().br().br().
         add('Files: ').br().forEach(data.files,
           function(f) {
             this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
@@ -472,6 +474,10 @@ value: 'kgr',
     function init() {
       this.SUPER();
       this.loadData('data2021.log');
+      /*
+      this.loadData('foam2021.log');
+      this.loadData('np2021.log');
+      */
     },
     function loadData(f) {
       fetch(f)
@@ -488,7 +494,7 @@ value: 'kgr',
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { id: line.substring(7), subject: '', diff: '', files: [] };
+            commit = { id: line.substring(7), subject: '', body: '', diff: '', files: [] };
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
@@ -504,7 +510,11 @@ value: 'kgr',
             state = 0;
             i--;
           } else {
-            commit.subject += line.trim();
+            if ( ! commit.subject ) {
+              commit.subject = line.trim();
+            } else {
+              commit.body += (commit.body.length ? '\n' : '') + line.trim();
+            }
           }
         } else if ( state == 2 ) {
           if ( line.startsWith('commit') ) {
@@ -563,8 +573,6 @@ value: 'kgr',
           add('File: ', this.FILE).
           br().
           add('Path: ', this.PATH).
-          br().
-          add('Show Files: ', this.SHOW_FILES).
         end().
         add(this.slot(function (filteredCommits) {
           return self.UserMonthView.create({data: self}, self);
@@ -576,7 +584,7 @@ value: 'kgr',
             start('th').add('Date').end().
             start('th').add('Author').end().
             start('th').add('Project').end().
-            start('th').add('Message').end().
+            start('th').add('Subject').end().
           end().forEach(this.commits, function(d) {
             var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
             this.start('tr').
