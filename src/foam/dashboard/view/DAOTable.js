@@ -33,7 +33,7 @@ foam.CLASS({
       flex-direction: column;
     }
     ^ .table-row:hover {
-      background: $grey50;
+      background: #E5F1FC;
       cursor: pointer;
     }
     ^ .table-row {

@@ -9,12 +9,19 @@ foam.CLASS({
   name: 'CardBorder',
   extends: 'foam.u2.Element',
 
+  cssTokens: [
+    {
+      name: 'borderSize',
+      value: '4px'
+    }
+  ],
+
   css: `
     ^ {
       min-height: 60px;
 
       background-color: $white;
-      border: solid 1px $grey300;
+      border: solid $borderSize $grey300;
       border-radius: 5px;
 
       padding: 16px;
