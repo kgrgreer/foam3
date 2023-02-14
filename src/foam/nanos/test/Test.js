@@ -350,6 +350,9 @@ foam.CLASS({
 
         setPassed(0);
         setFailed(0);
+
+        Throwable thrown = null;
+        
         try {
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, null);
@@ -367,6 +370,8 @@ foam.CLASS({
           }
           runTest(x);
         } catch (Throwable t) {
+          thrown = t;
+
           setFailed(getFailed() + 1);
           ps.println("FAILURE: " + t.getMessage());
           t.printStackTrace(ps);
@@ -375,12 +380,24 @@ foam.CLASS({
           pm.error(x, t);
         } finally {
           pm.log(x);
-        }
 
-        setLastRun(new Date());
-        setLastDuration(pm.getTime());
-        ps.flush();
-        setOutput(baos.toString() + getOutput());
+          setLastRun(new Date());
+          setLastDuration(pm.getTime());
+          ps.flush();
+          setOutput(baos.toString() + getOutput());
+
+          ScriptEvent event = new ScriptEvent(x);
+          event.setLastRun(this.getLastRun());
+          event.setLastDuration(this.getLastDuration());
+          event.setOutput(this.getOutput());
+          if ( thrown != null ) event.setLastStatus(ScriptStatus.ERROR);
+          event.setScriptType(this.getClass().getSimpleName());
+          event.setOwner(this.getId());
+          event.setScriptId(this.getId());
+          event.setHostname(System.getProperty("hostname", "localhost"));
+          event.setClusterable(this.getClusterable());
+          ((foam.dao.DAO) x.get(getEventDaoKey())).put(event);
+        }
       `
     }
   ]
