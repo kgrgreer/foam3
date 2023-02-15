@@ -10,10 +10,6 @@
 
   documentation: 'Base class for storing street address component order',
 
-  requires: [
-    'foam.nanos.auth.Address'
-  ],
-
   ids: ['country'],
 
   properties: [
