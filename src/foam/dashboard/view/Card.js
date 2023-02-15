@@ -69,7 +69,7 @@ foam.CLASS({
     ^ {
       border-radius: 10px;
       background: $white;
-      box-shadow: 3px 8px 6px -2px $grey300;;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     ^header {
