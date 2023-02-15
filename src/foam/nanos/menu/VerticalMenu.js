@@ -34,6 +34,14 @@ foam.CLASS({
     {
       name: 'menuBackground',
       value: '$white'
+    },
+    {
+      name: 'borderSize',
+      value: '1px solid $grey200'
+    },
+    {
+      name: 'boxShadowSize',
+      value: '0px'
     }
   ],
 
@@ -44,7 +52,8 @@ foam.CLASS({
 
   ^ {
     background: $menuBackground;
-    border-right: 1px solid $grey200;
+    border-right: $borderSize;
+    box-shadow: $boxShadowSize;
     color: $grey500;
     display: flex;
     flex-direction: column;
