@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction'
@@ -37,7 +38,12 @@ foam.CLASS({
             // If user has permission to update junctions for other users
             // then we ignore edit behaviour entirely.
             AuthService auth = (AuthService) x.get("auth");
-            if ( auth.check(x, "service.crunchService.updateUserContext") ) {
+            if ( ucj.getSkipEditBehaviour() == true ) {
+              if ( ! auth.check(x, "crunchPermissions.skipEditBehaviour") ) {
+                throw new AuthorizationException(
+                  "insufficient permission to apply UCJ edits"
+                );
+              }
               return;
             }
 

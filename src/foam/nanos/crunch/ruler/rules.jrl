@@ -51,8 +51,14 @@ p({
   },
   lifecycleState: 1,
   predicate: {
-    class: 'foam.nanos.crunch.predicate.StatusWas',
-    status: 'GRANTED'
+    class: 'foam.mlang.predicate.And',
+    args: [
+      { class: 'foam.nanos.crunch.predicate.DataChanged' },
+      {
+        class: 'foam.nanos.crunch.predicate.StatusWas',
+        status: 'GRANTED'
+      }
+    ]
   }
 })
 

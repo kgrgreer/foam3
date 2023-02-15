@@ -15,6 +15,11 @@ p({
 })
 p({
   class: "foam.nanos.auth.Permission",
+  id: "crunchPermissions.skipEditBehaviour",
+  description: "Allows applying edits to a UCJ (i.e. skip edit behaviour)"
+})
+p({
+  class: "foam.nanos.auth.Permission",
   id: "userCapabilityJunctionApprovable.create",
   description: ""
 })

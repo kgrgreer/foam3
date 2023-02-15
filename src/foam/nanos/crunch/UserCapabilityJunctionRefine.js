@@ -254,6 +254,11 @@ foam.CLASS({
       name: 'gracePeriod',
       includeInDigest: true,
       section: 'ucjExpirySection'
+    },
+    {
+      class: 'Boolean',
+      name: 'skipEditBehaviour',
+      storageTransient: true
     }
   ],
 

@@ -598,6 +598,7 @@ foam.POM({
     { name: "crunch/predicate/CapabilityPrerequisitesGranted",                            flags: "js|java" },
     { name: "crunch/predicate/StatusChangedTo",                                           flags: "js|java" },
     { name: "crunch/predicate/StatusWas",                                                 flags: "js|java" },
+    { name: "crunch/predicate/DataChanged",                                               flags: "js|java" },
     { name: "crunch/predicate/IsAgent",                                                   flags: "js|java" },
     { name: "crunch/predicate/IsSpid",                                                    flags: "js|java" },
     { name: "crunch/predicate/CapabilityJunctionTransitionToStatus",                      flags: "js|java" },
