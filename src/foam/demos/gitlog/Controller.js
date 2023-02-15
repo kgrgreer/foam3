@@ -47,8 +47,11 @@ foam.CLASS({
   name: 'CommitDetailView',
   extends: 'foam.u2.View',
 
+  imports: [ 'file' ],
+
   methods: [
     function render() {
+      var self = this;
       this.recall(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
@@ -149,6 +152,8 @@ foam.CLASS({
   requires: [
     'foam.demos.gitlog.UserMonthView'
   ],
+
+  exports: [ 'file' ],
 
   css: `
     tr:hover { background: lightskyblue; }
