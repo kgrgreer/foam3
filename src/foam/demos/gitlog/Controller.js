@@ -232,7 +232,7 @@ foam.CLASS({
       'blakegreen': 'Blake Green',
       'carl-zzz': 'Carl Chen',
       'Christine': 'Christine Lee',
-      'Eric DubÃ©': 'Eric Dube',
+      'Eric Dube': 'Eric Dube',
       'Eric': 'Eric Dube',
       'garfield jian': 'Garfiled Jian',
       'hchoura': 'Hassene Choura',
