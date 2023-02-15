@@ -12,7 +12,7 @@
   cssTokens: [
     {
       name: 'borderSize',
-      value: '2px'
+      value: '2px solid $grey300'
     }
   ],
 
@@ -61,7 +61,7 @@
     }
 
     ^thead > ^tr {
-      border-bottom: $borderSize solid $grey300;
+      border-bottom: $borderSize;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
       width: 100%;

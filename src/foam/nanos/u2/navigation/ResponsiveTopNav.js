@@ -27,7 +27,7 @@ foam.CLASS({
     },
     {
       name: 'borderSize',
-      value: '2px'
+      value: '2px solid rgba(0, 0, 0, 0.06)'
     }
   ],
 
@@ -35,7 +35,7 @@ foam.CLASS({
     ^ {
       align-items: center;
       background-color: $topNavBackground;
-      border-bottom: $borderSize solid rgba(0, 0, 0, 0.06);
+      border-bottom: $borderSize;
       display: flex;
       min-height: 64px;
       justify-content: space-between;

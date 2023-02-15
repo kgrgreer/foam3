@@ -44,7 +44,7 @@ foam.CLASS({
   cssTokens: [
     {
       name: 'borderSize',
-      value: '1px'
+      value: '1px solid $grey300'
     },
     {
       name: 'boxShadowSize',
@@ -73,7 +73,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      border: $borderSize solid $grey300;
+      border: $borderSize;
       border-radius: 4px;
       box-sizing: border-box;
       box-shadow: $boxShadowSize;
