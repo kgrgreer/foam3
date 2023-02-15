@@ -315,7 +315,7 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'authors',
-      expression: function(commits) {
+      factory: function() {
         var authors = { '-- All --': this.commits.length };
         this.commits.forEach(c => this.incr(authors, c.author));
         return Object.keys(authors).sort().map(a => [a, a + ' ' + authors[a]]);
@@ -551,7 +551,7 @@ value: 'kgr',
     function render() {
       var self = this;
       this.commits$.sub(function() {
-        self.projects = self.files = self.paths = undefined;
+        self.projects = self.files = self.paths = self.authors = undefined;
         self.removeAllChildren();
         self.render_();
       });
