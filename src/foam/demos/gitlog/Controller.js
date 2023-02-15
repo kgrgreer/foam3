@@ -47,17 +47,12 @@ foam.CLASS({
   name: 'CommitDetailView',
   extends: 'foam.u2.View',
 
-  css: `
-  `,
-
   methods: [
     function render() {
       this.recall(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
-//        add('Hash: ', data.id).br().br().
-        br().
         start('b').add(data.subject).end().br().
         start('p').style({'white-space': 'pre'}).add(data.body).end().
         start('b').add('Files: ').end().br().br().forEach(data.files,
@@ -153,9 +148,6 @@ foam.CLASS({
 
   requires: [
     'foam.demos.gitlog.UserMonthView'
-  ],
-
-  exports: [
   ],
 
   css: `
@@ -609,7 +601,7 @@ foam.CLASS({
     },
 
     function commitTable(self) {
-      this.start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
+      this.start('table').attrs({cellpadding: '4px'}).style({'width': '100%'}).
         start('tr').
           start('th').add('Commit').end().
           start('th').add('Date').end().
