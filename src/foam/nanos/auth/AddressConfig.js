@@ -24,27 +24,8 @@
       of: 'foam.nanos.auth.Country'
     },
     {
-      class: 'Int',
-      name: 'streetNumber'
-    },
-    {
-      class: 'Int',
-      name: 'streetName'
-    },
-    {
-      class: 'Int',
-      name: 'suite'
-    },
-    {
-      class: 'Array',
-      of: 'foam.nanos.auth.ViewPropertyConfig',
-      name: 'propertyConfig'
-    }
-  ],
-  methods: [
-    function getProperties() {
-      const filtered = this.propertyConfig.filter( p => p.visibility != 'HIDDEN' ).sort((a, b) => a.order - b.order);
-      return filtered.map( v => this.Address.getAxiomByName(v.propertyName));
+      class: 'Map',
+      name: 'config'
     }
   ]
 });
