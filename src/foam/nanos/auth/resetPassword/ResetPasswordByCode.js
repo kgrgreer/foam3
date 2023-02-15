@@ -151,9 +151,7 @@ foam.CLASS({
             this.clearProperty('confirmationPassword');
           }
         } catch (error) {
-          this.report('^verify-failure', ['email-verification'], {
-            errorAsString: error.toString()
-          });
+          this.error('^verify-failure', error);
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
@@ -181,6 +179,7 @@ foam.CLASS({
         try {
           await this.resetPasswordService.resetPassword(null, this);
         } catch (err) {
+          this.error('^reset-failure', err);
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
             message: this.ERROR_MSG,
@@ -189,6 +188,8 @@ foam.CLASS({
           }));
           throw err;
         }
+
+        this.report('^reset-success');
         this.ctrl.add(this.NotificationMessage.create({
           message: this.SUCCESS_MSG_TITLE,
           description: this.SUCCESS_MSG,
