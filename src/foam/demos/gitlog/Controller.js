@@ -586,17 +586,12 @@ foam.CLASS({
     },
 
     function searchPane(self) {
-      this.start('span').
-        style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
-        add('Year: ', self.YEAR).
-        br().
-        add('Keyword: ', self.QUERY).
-        br().
-        add('Project: ', self.PROJECT).
-        br().
-        add('File: ', self.FILE).
-        br().
-        add('Path: ', self.PATH).
+      this.start('').
+//        add('Year: ',    self.YEAR).br().
+        add('Keyword: ', self.QUERY).br().
+        add('Project: ', self.PROJECT).br().
+        add('File: ',    self.FILE).br().
+        add('Path: ',    self.PATH).
       end();
     },
 
