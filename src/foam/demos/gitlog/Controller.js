@@ -578,38 +578,43 @@ value: 'kgr',
           return self.UserMonthView.create({data: self}, self);
         })).
         br().
-        start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
-          start('tr').
-            start('th').add('Commit').end().
-            start('th').add('Date').end().
-            start('th').add('Author').end().
-            start('th').add('Project').end().
-            start('th').add('Subject').end().
-          end().forEach(this.commits, function(d) {
-            var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
-            this.start('tr').
-              on('mouseover', () => self.selected = d).
-              show(self.slot(function(query, author, file, path, project) {
-                return self.match(d, query, author, file, path, project);
-              })).
-              start('td').start('a').attrs({href: href}).add(d.id.substring(0,8)).end().end().
-              start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
-              start('td').style({'white-space': 'nowrap'}).
-                start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
-                end().
-              end().
-              start('td').style({'white-space': 'nowrap'}).
-                start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
-                end().
-              end().
-              start('td').add(d.subject).end().
-            end();
-          }).
-        end().
+        call(this.commitTable.bind(this)).
         tag('hr').
         br().br().
         add(this.SELECTED).br().br().tag('hr');
       ;
+    },
+
+    function commitTable() {
+      var self = this;
+      this.start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
+        start('tr').
+          start('th').add('Commit').end().
+          start('th').add('Date').end().
+          start('th').add('Author').end().
+          start('th').add('Project').end().
+          start('th').add('Subject').end().
+        end().forEach(this.commits, function(d) {
+          var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
+          this.start('tr').
+            on('mouseover', () => self.selected = d).
+            show(self.slot(function(query, author, file, path, project) {
+              return self.match(d, query, author, file, path, project);
+            })).
+            start('td').start('a').attrs({href: href}).add(d.id.substring(0,8)).end().end().
+            start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
+            start('td').style({'white-space': 'nowrap'}).
+              start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
+              end().
+            end().
+            start('td').style({'white-space': 'nowrap'}).
+              start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
+              end().
+            end().
+            start('td').add(d.subject).end().
+          end();
+        }).
+      end();
     }
   ],
 
