@@ -57,14 +57,15 @@ foam.CLASS({
         if ( ! data ) return;
         this.
 //        add('Hash: ', data.id).br().br().
-        start('b').add(data.subject).end().br().br().
-        start('p').add(data.body).end().br().
-        add('Files: ').br().forEach(data.files,
+        br().
+        start('b').add(data.subject).end().br().
+        start('p').style({'white-space': 'pre'}).add(data.body).end().
+        start('b').add('Files: ').end().br().br().forEach(data.files,
           function(f) {
             this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
           }
-        ).br().br().
-        add('Diff:  ').br().start('div').style({'white-space': 'pre'}).add(data.diff).end();
+        ).br().
+        start('b').add('Diff:  ').end().start('div').style({'white-space': 'pre'}).add(data.diff).end();
       });
     }
   ]
@@ -394,7 +395,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'query',
-value: 'kgr',
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
@@ -561,35 +561,54 @@ value: 'kgr',
 
       this.
         start('h2').add('GitLog').end().
-        call(this.searchPane.bind(this)).
-        add(this.slot(function (filteredCommits) {
-          return self.UserMonthView.create({data: self}, self);
-        })).
+
+        start().
+          style({display: 'flex'}).
+          start().
+            style({width: '50%'}).
+            call(function() { self.searchPane.call(this, self); }).
+          end().
+          start().
+            style({width: '50%', 'padding-left': '60px'}).
+            add(this.slot(function (filteredCommits) {
+              return self.UserMonthView.create({data: self}, self);
+            })).
+          end().
+        end().
+
         br().
-        call(this.commitTable.bind(this)).
         tag('hr').
-        br().br().
-        add(this.SELECTED).br().br().tag('hr');
+
+        start().
+          style({display: 'flex'}).
+          start().
+            style({width: '50%', height: '100vh', 'overflow-y': 'scroll'}).
+            call(function() { self.commitTable.call(this, self); }).
+          end().
+          start().
+            style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
+            add(this.SELECTED)
+          end().
+        end();
       ;
     },
 
-    function searchPane() {
+    function searchPane(self) {
       this.start('span').
         style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
-        add('Year: ', this.YEAR).
+        add('Year: ', self.YEAR).
         br().
-        add('Keyword: ', this.QUERY).
+        add('Keyword: ', self.QUERY).
         br().
-        add('Project: ', this.PROJECT).
+        add('Project: ', self.PROJECT).
         br().
-        add('File: ', this.FILE).
+        add('File: ', self.FILE).
         br().
-        add('Path: ', this.PATH).
+        add('Path: ', self.PATH).
       end();
     },
 
-    function commitTable() {
-      var self = this;
+    function commitTable(self) {
       this.start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
         start('tr').
           start('th').add('Commit').end().
@@ -597,7 +616,7 @@ value: 'kgr',
           start('th').add('Author').end().
           start('th').add('Project').end().
           start('th').add('Subject').end().
-        end().forEach(this.commits, function(d) {
+        end().forEach(self.commits, function(d) {
           var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
           this.start('tr').
             on('mouseover', () => self.selected = d).
