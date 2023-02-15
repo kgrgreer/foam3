@@ -58,7 +58,7 @@ foam.CLASS({
         this.
 //        add('Hash: ', data.id).br().br().
         start('b').add(data.subject).end().br().br().
-        start('p').add(data.body).end().br().br().
+        start('p').add(data.body).end().br().
         add('Files: ').br().forEach(data.files,
           function(f) {
             this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
@@ -407,8 +407,7 @@ value: 'kgr',
       class: 'FObjectProperty',
       of: 'foam.demos.gitlog.Commit',
       name: 'selected',
-      view: 'foam.demos.gitlog.CommitDetailView',
-      postSet: function(_, c) { console.log('selected: ', c); }
+      view: 'foam.demos.gitlog.CommitDetailView'
     },
     {
       name: 'commits',
@@ -562,18 +561,7 @@ value: 'kgr',
 
       this.
         start('h2').add('GitLog').end().
-        start('span').
-          style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
-          add('Year: ', this.YEAR).
-          br().
-          add('Keyword: ', this.QUERY).
-          br().
-          add('Project: ', this.PROJECT).
-          br().
-          add('File: ', this.FILE).
-          br().
-          add('Path: ', this.PATH).
-        end().
+        call(this.searchPane.bind(this)).
         add(this.slot(function (filteredCommits) {
           return self.UserMonthView.create({data: self}, self);
         })).
@@ -583,6 +571,21 @@ value: 'kgr',
         br().br().
         add(this.SELECTED).br().br().tag('hr');
       ;
+    },
+
+    function searchPane() {
+      this.start('span').
+        style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
+        add('Year: ', this.YEAR).
+        br().
+        add('Keyword: ', this.QUERY).
+        br().
+        add('Project: ', this.PROJECT).
+        br().
+        add('File: ', this.FILE).
+        br().
+        add('Path: ', this.PATH).
+      end();
     },
 
     function commitTable() {
