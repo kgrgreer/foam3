@@ -41,7 +41,6 @@
 
   methods: [
     function render() {
-      debugger
       this
         .addClasses([this.myClass(), this.myClass('flex')])
         .start('h1').add(this.data.TITLE).end()
