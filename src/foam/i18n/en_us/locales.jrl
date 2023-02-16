@@ -49,10 +49,7 @@ p({class:"foam.i18n.Locale",locale:"en",source:"Currency.decimalCharacter",targe
 
 
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.SECTION_RESET_PASSWORD_SECTION.title",target:"Set a new password"})
-p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.SECTION_RESET_PASSWORD_SECTION.title",target:"Set a new password"})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.SECTION_RESET_PASSWORD_SECTION.subTitle",target:"Create a new password for your account."})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.SECTION_VERIFICATION_CODE_SECTION.title",target:"Enter verification code"})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.ResetPasswordByCode.SECTION_VERIFICATION_CODE_SECTION.subTitle",target:"Please enter the verification code we sent to your email."})
-p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.EmailVerificationCode.SECTION_VERIFICATION_CODE_SECTION.title",target:""})
-p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.resetPassword.EmailVerificationCode.SECTION_VERIFICATION_CODE_SECTION.subTitle",target:"q"})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.RetrievePassword.SECTION_EMAIL_PASSWORD_SECTION.subTitle",target:"We will send a verification code to your email to reset your password."})
