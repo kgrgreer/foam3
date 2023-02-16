@@ -47,6 +47,13 @@ foam.CLASS({
       view: 'foam.u2.view.AnyView'
     },
     {
+      name: 'arrayData',
+      class: 'List',
+      autoValidate: true,
+      documentation: `arry of data for capability.of`,
+      view: 'foam.u2.view.AnyView'
+    },
+    {
       name: 'status',
       class: 'Enum',
       of: 'foam.nanos.crunch.CapabilityJunctionStatus',
