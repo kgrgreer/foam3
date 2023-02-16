@@ -191,6 +191,9 @@ foam.CLASS({
             let logedInUser = await this.auth.login(x, this.identifier, this.password);
             this.loginFailed = false;
             if ( ! logedInUser ) return;
+            this.email = logedInUser.email;
+            this.username = logedInUser.userName;
+            this.identifier = this.email;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
