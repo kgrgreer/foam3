@@ -48,7 +48,7 @@ foam.CLASS({
           AND(
             EQ(User.EMAIL, email),
             EQ(User.LOGIN_ENABLED, true),
-            EQ(User.SPID, x.get("spid"))
+            EQ(User.SPID, foam.core.XLocator.get().get("spid"))
           ))
           .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();
