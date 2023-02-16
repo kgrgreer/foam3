@@ -163,9 +163,7 @@ foam.CLASS({
           this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
         } catch (error) {
-          this.report('^verify-failure', ['email-verification'], {
-            errorAsString: error.toString()
-          });
+          this.report('^verify-failure', error);
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
@@ -231,6 +229,7 @@ foam.CLASS({
           }));
           return true;
         } catch ( err ) {
+          this.error('^resend-verification-failed', err);
           this.assert('false', 'exception when resending verification', err.message);
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
