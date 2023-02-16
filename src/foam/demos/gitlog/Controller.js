@@ -6,6 +6,69 @@
 
  // git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
 
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'Commit',
+
+  properties: [
+    {
+      name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'author'
+    },
+    {
+      class: 'Date',
+      name: 'date'
+    },
+    {
+      class: 'String',
+      name: 'subject'
+    },
+    {
+      class: 'String',
+      name: 'body'
+    },
+    {
+      class: 'StringArray',
+      name: 'files'
+    },
+    {
+      class: 'String',
+      name: 'diff'
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'CommitDetailView',
+  extends: 'foam.u2.View',
+
+  imports: [ 'file' ],
+
+  methods: [
+    function render() {
+      var self = this;
+      this.recall(function(data) {
+        // this.add('data: ', data);
+        if ( ! data ) return;
+        this.
+        start('b').add(data.subject).end().br().
+        start('p').style({'white-space': 'pre'}).add(data.body).end().
+        start('b').add('Files: ').end().br().br().forEach(data.files,
+          function(f) {
+            this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
+          }
+        ).br().
+        start('b').add('Diff:  ').end().start('div').style({'white-space': 'pre'}).add(data.diff).end();
+      });
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
@@ -90,8 +153,7 @@ foam.CLASS({
     'foam.demos.gitlog.UserMonthView'
   ],
 
-  exports: [
-  ],
+  exports: [ 'file' ],
 
   css: `
     tr:hover { background: lightskyblue; }
@@ -168,7 +230,7 @@ foam.CLASS({
       'blakegreen': 'Blake Green',
       'carl-zzz': 'Carl Chen',
       'Christine': 'Christine Lee',
-      'Eric DubÃ©': 'Eric Dube',
+      'Eric Dube': 'Eric Dube',
       'Eric': 'Eric Dube',
       'garfield jian': 'Garfiled Jian',
       'hchoura': 'Hassene Choura',
@@ -248,10 +310,6 @@ foam.CLASS({
     ]
   },
   properties: [
-    {
-      class: 'Boolean',
-      name: 'showFiles'
-    },
     {
       class: 'Array',
       name: 'authors',
@@ -339,8 +397,18 @@ foam.CLASS({
       onKey: true
     },
     {
+      name: 'data',
+      factory: function() { return []; }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.demos.gitlog.Commit',
+      name: 'selected',
+      view: 'foam.demos.gitlog.CommitDetailView'
+    },
+    {
       name: 'commits',
-      factory: function() {
+      expression: function(data) {
         return data.
           reverse().
           filter(c => {
@@ -355,7 +423,7 @@ foam.CLASS({
             }
             return true;
           }).
-          map(c => { c.files = c.files.trim().split('\n').map(s => s.trim()); return c; }).
+          map(c => { c.files = c.files.map(s => s.trim()); return c; }).
           map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
@@ -387,8 +455,7 @@ foam.CLASS({
             },
             */
             return c;
-          }).
-          map(c => { c.date = new Date(c.date * 1000); return c; });
+          });
       }
     },
     {
@@ -402,10 +469,14 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-//      this.loadData();
+      this.loadData('data2021.log');
+      /*
+      this.loadData('foam2021.log');
+      this.loadData('np2021.log');
+      */
     },
-    function loadData() {
-      fetch('data2021.log')
+    function loadData(f) {
+      fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
     },
@@ -419,9 +490,8 @@ foam.CLASS({
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { hash: line.substring(7), subject: '', diff: '', files: [] };
+            commit = { id: line.substring(7), subject: '', body: '', diff: '', files: [] };
             data.push(commit);
-            console.log(commit.hash);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
           } else if ( line.startsWith('Date: ') ) {
@@ -436,7 +506,11 @@ foam.CLASS({
             state = 0;
             i--;
           } else {
-            commit.subject += line.trim();
+            if ( ! commit.subject ) {
+              commit.subject = line.trim();
+            } else {
+              commit.body += (commit.body.length ? '\n' : '') + line.trim();
+            }
           }
         } else if ( state == 2 ) {
           if ( line.startsWith('commit') ) {
@@ -446,12 +520,11 @@ foam.CLASS({
             if ( line.startsWith('+++ ') ) {
               commit.files.push(line.substring(6));
             }
-            commit.diff += line.trim();
+            commit.diff += (line.length ? '\n' : '') + line.trim();
           }
         }
       }
-      debugger;
-      return data;
+      this.data = this.data.concat(data);
     },
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
@@ -473,56 +546,89 @@ foam.CLASS({
     },
     function render() {
       var self = this;
+      this.commits$.sub(function() {
+        self.projects = self.files = self.paths = self.authors = undefined;
+        self.removeAllChildren();
+        self.render_();
+      });
+      this.commits;
+    },
+    function render_() {
+      var self = this;
 
       this.
         start('h2').add('GitLog').end().
-        start('span').
-          style({float: 'left', 'padding-right': '40px', 'max-width': '50%'}).
-          add('Year: ', this.YEAR).
-          br().
-          add('Keyword: ', this.QUERY).
-          br().
-          add('Project: ', this.PROJECT).
-          br().
-          add('File: ', this.FILE).
-          br().
-          add('Path: ', this.PATH).
-          br().
-          add('Show Files: ', this.SHOW_FILES).
+
+        start().
+          style({display: 'flex'}).
+          start().
+            style({width: '50%'}).
+            call(function() { self.searchPane.call(this, self); }).
+          end().
+          start().
+            style({width: '50%', 'padding-left': '60px'}).
+            add(this.slot(function (filteredCommits) {
+              return self.UserMonthView.create({data: self}, self);
+            })).
+          end().
         end().
-        add(this.slot(function (filteredCommits) {
-          return self.UserMonthView.create({data: self}, self);
-        })).
+
         br().
-        start('table').attrs({cellpadding: '4px'}).style({'width': '100%', 'padding-top': '40px'}).
-          start('tr').
-            start('th').add('Commit').end().
-            start('th').add('Date').end().
-            start('th').add('Author').end().
-            start('th').add('Project').end().
-            start('th').add('Message').end().
-            start('th').show(this.showFiles$).add('Files').end().
-          end().forEach(this.commits, function(d) {
-            var href = 'https://github.com/kgrgreer/foam3/commit/' + d.commit;
-            this.start('tr').
-              show(self.slot(function(query, author, file, path, project) {
-                return self.match(d, query, author, file, path, project);
-              })).
-              start('td').start('a').attrs({href: href}).add(d.commit).end().end().
-              start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
-              start('td').style({'white-space': 'nowrap'}).
-                start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
-                end().
-              end().
-              start('td').style({'white-space': 'nowrap'}).
-                start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
-                end().
-              end().
-              start('td', {tooltip: d.files}).add(d.subject).end().
-              start('td').style({'font-size': 'smaller'}).show(self.showFiles$).forEach(d.files, function(f) { this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br(); } ).end().
-            end();
-        });
+        tag('hr').
+
+        start().
+          style({display: 'flex'}).
+          start().
+            style({width: '50%', height: '100vh', 'overflow-y': 'scroll'}).
+            call(function() { self.commitTable.call(this, self); }).
+          end().
+          start().
+            style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
+            add(this.SELECTED)
+          end().
+        end();
       ;
+    },
+
+    function searchPane(self) {
+      this.start('').
+//        add('Year: ',    self.YEAR).br().
+        add('Keyword: ', self.QUERY).br().
+        add('Project: ', self.PROJECT).br().
+        add('File: ',    self.FILE).br().
+        add('Path: ',    self.PATH).
+      end();
+    },
+
+    function commitTable(self) {
+      this.start('table').attrs({cellpadding: '4px'}).style({'width': '100%'}).
+        start('tr').
+          start('th').add('Commit').end().
+          start('th').add('Date').end().
+          start('th').add('Author').end().
+          start('th').add('Project').end().
+          start('th').add('Subject').end().
+        end().forEach(self.commits, function(d) {
+          var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
+          this.start('tr').
+            on('mouseover', () => self.selected = d).
+            show(self.slot(function(query, author, file, path, project) {
+              return self.match(d, query, author, file, path, project);
+            })).
+            start('td').start('a').attrs({href: href}).add(d.id.substring(0,8)).end().end().
+            start('td').style({'white-space': 'nowrap'}).add(d.date.toISOString().substring(0,10)).end().
+            start('td').style({'white-space': 'nowrap'}).
+              start('a').attrs({href:'#'}).on('click', () => self.author = d.author).add(d.author).
+              end().
+            end().
+            start('td').style({'white-space': 'nowrap'}).
+              start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
+              end().
+            end().
+            start('td').add(d.subject).end().
+          end();
+        }).
+      end();
     }
   ],
 

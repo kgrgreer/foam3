@@ -40,7 +40,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUC_TITLE',    message: 'Verification code sent' },
-    { name: 'INSTRUC',          message: 'Please check you inbox to reset your password' },
+    { name: 'INSTRUC',          message: 'Please check your inbox to reset your password' },
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue resending your verification code' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
     { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
@@ -151,9 +151,7 @@ foam.CLASS({
             this.clearProperty('confirmationPassword');
           }
         } catch (error) {
-          this.report('^verify-failure', ['email-verification'], {
-            errorAsString: error.toString()
-          });
+          this.error('^verify-failure', error);
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
@@ -181,6 +179,7 @@ foam.CLASS({
         try {
           await this.resetPasswordService.resetPassword(null, this);
         } catch (err) {
+          this.error('^reset-failure', err);
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
             message: this.ERROR_MSG,
@@ -189,6 +188,8 @@ foam.CLASS({
           }));
           throw err;
         }
+
+        this.report('^reset-success');
         this.ctrl.add(this.NotificationMessage.create({
           message: this.SUCCESS_MSG_TITLE,
           description: this.SUCCESS_MSG,

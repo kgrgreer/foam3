@@ -198,7 +198,16 @@ foam.CLASS({
           location.reload();
         } else {
           this.stack.push(this.StackBlock.create({
-            view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+            view: {
+              class: 'foam.nanos.auth.email.VerificationCodeView',
+              data: {
+                class: 'foam.nanos.auth.email.EmailVerificationCode',
+                email: this.subject.user.email,
+                userName: this.subject.user.userName,
+                showAction: true,
+                signinOnSubmit: true
+              }
+            }
           }));
         }
       }

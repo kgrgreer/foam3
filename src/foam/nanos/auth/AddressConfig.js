@@ -20,16 +20,8 @@
       of: 'foam.nanos.auth.Country'
     },
     {
-      class: 'Int',
-      name: 'streetNumber'
-    },
-    {
-      class: 'Int',
-      name: 'streetName'
-    },
-    {
-      class: 'Int',
-      name: 'suite'
+      class: 'Map',
+      name: 'config'
     }
   ]
 });

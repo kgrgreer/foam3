@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   axioms: [
-    foam.pattern.Faceted.create()
+    foam.pattern.Faceted.create({inherit: true})
   ],
 
   css: `

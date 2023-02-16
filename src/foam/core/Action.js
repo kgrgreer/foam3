@@ -69,6 +69,10 @@ foam.CLASS({
       generateJava: false
     },
     {
+      name: 'themeIcon',
+      generateJava: false
+    },
+    {
       class: 'Function',
       generateJava: false,
       name: 'confirmationRequired',

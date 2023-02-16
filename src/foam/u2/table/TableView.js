@@ -9,6 +9,13 @@
   name: 'TableView',
   extends: 'foam.u2.table.UnstyledTableView',
 
+  cssTokens: [
+    {
+      name: 'borderSize',
+      value: '2px solid $grey300'
+    }
+  ],
+
   css: `
     ^ {
       border-spacing: 0px;
@@ -54,7 +61,7 @@
     }
 
     ^thead > ^tr {
-      border-bottom: 2px solid $grey300;
+      border-bottom: $borderSize;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
       width: 100%;
