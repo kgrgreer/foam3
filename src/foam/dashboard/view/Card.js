@@ -17,8 +17,8 @@ foam.CLASS({
   exports: [
     'contentWidth as visualizationWidth',
     'contentHeight as visualizationHeight',
-    'data.colors as visualizationColors',
-    'data.dao.of as of',
+    'visualizationColors',
+    'dataof as of',
   ],
   constants: [
     {
@@ -63,7 +63,19 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'cardData'
-    }
+    },
+    {
+      name: 'visualizationColors',
+      expression: function(data$colors) {
+        return data$colors;
+      }
+    },
+    {
+      name: 'dataof',
+      expression: function(data$dao$of) {
+        return data$dao$of;
+      }
+    },
   ],
   css: `
     ^ {
@@ -90,7 +102,7 @@ foam.CLASS({
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
         this.data.update();
       }.bind(this)));
-      this.data.update();
+      this.data?.update?.();
 
       var view = this;
 
