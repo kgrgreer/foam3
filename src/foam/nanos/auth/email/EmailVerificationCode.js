@@ -28,7 +28,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'emailVerificationService'
+    'emailVerificationService',
+    'pushMenu'
   ],
 
   messages: [
@@ -136,7 +137,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
-    }
+    },
+    [ 'signinOnSubmit', false ]
   ],
 
   methods: [
@@ -177,6 +179,7 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
+      section: 'verificationCodeSection',
       isAvailable: function(showAction) {
         return showAction;
       },
@@ -196,6 +199,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
+          if ( this.signinOnSubmit ) this.pushMenu('sign-in', true);
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,
