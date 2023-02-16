@@ -28,7 +28,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'emailVerificationService'
+    'emailVerificationService',
+    'pushMenu'
   ],
 
   messages: [
@@ -136,7 +137,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
-    }
+    },
+    [ 'signinOnSubmit', false ]
   ],
 
   methods: [
@@ -161,9 +163,7 @@ foam.CLASS({
           this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
         } catch (error) {
-          this.report('^verify-failure', ['email-verification'], {
-            errorAsString: error.toString()
-          });
+          this.report('^verify-failure', error);
           if ( error?.data?.exception && this.VerificationCodeException.isInstance(error.data.exception) ) {
             this.remainingAttempts = error.data.exception.remainingAttempts;
             this.codeVerified = false;
@@ -179,6 +179,7 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
+      section: 'verificationCodeSection',
       isAvailable: function(showAction) {
         return showAction;
       },
@@ -198,6 +199,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
+          if ( this.signinOnSubmit ) this.pushMenu('sign-in', true);
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,
@@ -227,6 +229,7 @@ foam.CLASS({
           }));
           return true;
         } catch ( err ) {
+          this.error('^resend-verification-failed', err);
           this.assert('false', 'exception when resending verification', err.message);
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,

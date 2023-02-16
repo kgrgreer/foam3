@@ -148,10 +148,20 @@ foam.CLASS({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
         } else {
+          var user = this.subject.realUser;
           if ( ! this.subject.realUser.emailVerified ) {
             await this.auth.logout();
             this.stack.push(this.StackBlock.create({
-              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+              view: {
+                class: 'foam.nanos.auth.email.VerificationCodeView',
+                data: {
+                  class: 'foam.nanos.auth.email.EmailVerificationCode',
+                  email: user.email,
+                  userName: user.userName,
+                  showAction: true,
+                  signinOnSubmit: true
+                }
+              }
             }));
           } else {
             this.loginSuccess = !! this.subject;

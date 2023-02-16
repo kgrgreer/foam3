@@ -36,6 +36,29 @@ foam.CLASS({
         });
       }
     },
+    function error (name, opt_e, opt_tags) {
+      console.error('[Analyticable.error]', name, opt_e, opt_tags);
+      let exceptionMessage = '';
+      if ( opt_e ) {
+        if ( typeof opt_e === 'string' ) {
+          exceptionMessage = opt_e;
+        } else {
+          exceptionMessage = opt_e?.toString?.();
+        }
+        if ( ! exceptionMessage ) {
+          console.error('Analyticable.error called but '
+            + 'no exception message was available');
+        }
+      }
+      const tags = [
+        ...(opt_tags || []),
+        'error',
+        ...(opt_e ? ['exception'] : [])
+      ];
+      this.report(name, tags, {
+        extra: foam.json.stringify({ exceptionMessage })
+      });
+    },
     function report_ (evt) {
       if ( ! this.analyticsAgent ) {
         console.warn('no agent in context to log event', evt);
