@@ -92,16 +92,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'cache'
-    },
-    {
-      class: 'Int',
-      name: 'timeout',
-      value: 3000
-    },
-    {
-      class: 'Int',
-      name: 'maxRetries',
-      value: 3
     }
   ],
 
