@@ -13,10 +13,6 @@
        class: 'String',
        name: 'input',
        onKey: true
-     },
-     {
-       class: 'String',
-       name: 'tracing'
      }
    ],
 
@@ -34,8 +30,8 @@
      function test() {
        this.input = '';
        var s = 'This is a test this is only a test.';
-       for ( var i = 0 ; i < s.length ; i++ ) {
-         this.input = s.substring(0, i);
+       for ( let i = 0 ; i < s.length ; i++ ) {
+         window.setTimeout(() => this.input = s.substring(0, i), i*8);
        }
      }
    ],
@@ -69,6 +65,6 @@
        code: function() {
          this.start().style({color: 'blue'}).add('idled: ', this.input).end();
        }
-     },
+     }
    ]
  });
