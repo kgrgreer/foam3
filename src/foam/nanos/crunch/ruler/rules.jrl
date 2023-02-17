@@ -55,8 +55,8 @@ p({
     args: [
       { class: 'foam.nanos.crunch.predicate.DataChanged' },
       {
-        class: 'foam.nanos.crunch.predicate.StatusWas',
-        status: 'GRANTED'
+        class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+        query: 'o.status==foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
       }
     ]
   }
