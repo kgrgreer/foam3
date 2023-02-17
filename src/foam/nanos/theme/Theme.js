@@ -137,9 +137,8 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
-      class: 'Array',
+      class: 'StringArray',
       name: 'domains',
-      of: 'String',
       factory: function() {
         return  ['localhost'];
       },
