@@ -44,6 +44,57 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
+  name: 'DiffView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function render() {
+      this.
+        style({'white-space': 'pre'}).
+        forEach(this.data.split('\n'), l => {
+          if ( l.startsWith('+++') ) {
+            this.start('b').add(l, '\n').end();
+          } else if ( l.startsWith('+') ) {
+            this.start('span').style({color: 'green'}).add(l, '\n').end();
+          } else if ( l.startsWith('-') && ! l.startsWith('---') ) {
+            this.start('b').style({color: 'red'}).add(l, '\n').end();
+          } else {
+            this.add(l, '\n');
+          }
+        });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'CommitMessageView',
+  extends: 'foam.u2.View',
+
+  constants: {
+    REGEX: /(\[[A-Za-z]{2,}-\d{4,}\])/
+  },
+
+  methods: [
+    function render() {
+      this.
+        style({'white-space': 'pre'}).
+        forEach(this.data.split(this.REGEX), l => {
+          if ( l.match(this.REGEX) ) {
+            // TODO: make this configurable
+            this.start('a').attrs({href: 'https://nanopay.atlassian.net/browse/' + l.substring(1,l.length-1)}).add(l).end();
+          } else {
+            this.add(l);
+          }
+        });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
   name: 'CommitDetailView',
   extends: 'foam.u2.View',
 
@@ -63,7 +114,7 @@ foam.CLASS({
             this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
           }
         ).br().
-        start('b').add('Diff:  ').end().start('div').style({'white-space': 'pre'}).add(data.diff).end();
+        start('b').add('Diff:  ').end().tag({class: 'foam.demos.gitlog.DiffView'}, {data: data.diff});
       });
     }
   ]
@@ -469,6 +520,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+      // TODO: make this configurable
       this.loadData('data2021.log');
       /*
       this.loadData('foam2021.log');
@@ -592,7 +644,7 @@ foam.CLASS({
 
     function searchPane(self) {
       this.start('').
-//        add('Year: ',    self.YEAR).br().
+        add('Year: ',    self.YEAR).br().
         add('Keyword: ', self.QUERY).br().
         add('Project: ', self.PROJECT).br().
         add('File: ',    self.FILE).br().
@@ -625,7 +677,7 @@ foam.CLASS({
               start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
               end().
             end().
-            start('td').add(d.subject).end().
+            start('td').tag({class: 'foam.demos.gitlog.CommitMessageView', data: d.subject}).end().
           end();
         }).
       end();
