@@ -44,6 +44,14 @@ foam.CLASS({
   package: 'foam.pattern',
   name: 'Faceted',
 
+  properties: [
+    {
+      class: 'String',
+      name: 'ofProperty',
+      value: 'of'
+    }
+  ],
+
   methods: [
     function installInClass(cls) {
       const axiom = this;
@@ -80,7 +88,7 @@ foam.CLASS({
       cls.create = function(args, X, ignoreFacets) {
         if ( ! ignoreFacets ) {
           // If class does not have an 'of', then check for 'data.of' instead.
-          var of       = args && ( args.of || ( args.data && ( args.data.of || args.data.cls_ ) ) );
+          var of       = args && ( args[this.ofProperty] || ( args.data && ( args.data[this.ofProperty] || args.data.cls_ ) ) );
           var facetCls = this.getFacetOf(of, X);
 
           if ( facetCls !== this ) return facetCls.create(args, X, true);
