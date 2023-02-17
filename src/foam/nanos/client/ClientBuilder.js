@@ -146,8 +146,7 @@ foam.CLASS({
                           return null;
                         }
                         var defaults = {
-                          serviceName: 'service/' + spec.name,
-                          retryBoxMaxAttempts: 0
+                          serviceName: 'service/' + spec.name
                         };
                         if ( cls == foam.dao.EasyDAO ) {
                           defaults.cache              = true;
