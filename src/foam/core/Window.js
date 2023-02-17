@@ -56,6 +56,7 @@ foam.CLASS({
     'document',
     'error',
     'framed',
+    'idled',
     'info',
     'installCSS',
     'log',
@@ -174,6 +175,31 @@ foam.CLASS({
 
         return f;
       }(), 'merged(' + l.name + ')');
+    },
+
+    function idled(l, opt_delay) {
+      var delay = opt_delay || 16;
+      var ctx   = this;
+
+      return foam.Function.setName(function() {
+        var lastArgs = null;
+        var timeout;
+        function idledListener() {
+          timeout  = undefined;
+          var args = Array.from(lastArgs);
+          lastArgs = null;
+          l.apply(this, args);
+        }
+
+        var f = function() {
+          lastArgs = arguments;
+
+          timeout && this.clearTimeout(timeout);
+          timeout = ctx.setTimeout(idledListener, delay);
+        };
+
+        return f;
+      }(), 'idled(' + l.name + ')');
     },
 
     function framed(l) {
