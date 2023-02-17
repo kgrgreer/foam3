@@ -146,6 +146,6 @@ foam.CLASS({
     'inputBorderRadius': '4px',
 
     // FONT
-    'font1': `'Source Sans Pro', 'Sans pro'`
+    'font1': `'Source Sans Pro', sans-serif`
   }
 });
