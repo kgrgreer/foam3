@@ -149,9 +149,12 @@ foam.CLASS({
       var scrollY      = this.window.scrollY;
       var parentCheck  = this.parentEdgePadding > -1;
       if ( domRect.top - scrollY < screenHeight / 2 ) {
-        this.top = parentCheck ? domRect.bottom + this.parentEdgePadding : y; this.bottom = 'auto';
+        this.top = parentCheck ? domRect.bottom + this.parentEdgePadding : y; 
+        this.bottom = 'auto';
       } else {
-        this.top = 'auto'; this.bottom = parentCheck ? screenHeight - domRect.top + this.parentEdgePadding : screenHeight - y;
+        this.top = 'auto'; 
+        this.bottom = parentCheck ? 
+          screenHeight - domRect.top + this.parentEdgePadding : screenHeight - y;
       }
       if ( domRect.left > 3 * (screenWidth / 4) ) {
         this.left = 'auto';
