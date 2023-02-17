@@ -45,6 +45,18 @@ foam.CLASS({
   name: 'Faceted',
 
   properties: [
+    [ 'name', 'foam.pattern.Faceted' ],
+    {
+      class: 'Boolean',
+      name: 'inherit',
+      documentation: `
+        Setting this to true will enable climbing the inheritance tree when
+        searching for an implementation. This works well with views that
+        display a subset of an object's properties such as CitationView or
+        RowView as it may result in a generalized representation with missing
+        information.
+      `
+    },
     {
       class: 'String',
       name: 'ofProperty',
@@ -88,7 +100,7 @@ foam.CLASS({
       cls.create = function(args, X, ignoreFacets) {
         if ( ! ignoreFacets ) {
           // If class does not have an 'of', then check for 'data.of' instead.
-          var of       = args && ( args[this.ofProperty] || ( args.data && ( args.data[this.ofProperty] || args.data.cls_ ) ) );
+          var of       = args && ( args[axiom.ofProperty] || ( args.data && ( args.data[axiom.ofProperty] || args.data.cls_ ) ) );
           var facetCls = this.getFacetOf(of, X);
 
           if ( facetCls !== this ) return facetCls.create(args, X, true);
@@ -96,21 +108,6 @@ foam.CLASS({
 
         return oldCreate.apply(this, arguments);
       }
-    }
-  ],
-
-  properties: [
-    ['name', 'foam.pattern.Faceted'],
-    {
-      class: 'Boolean',
-      name: 'inherit',
-      documentation: `
-        Setting this to true will enable climbing the inheritance tree when
-        searching for an implementation. This works well with views that
-        display a subset of an object's properties such as CitationView or
-        RowView as it may result in a generalized representation with missing
-        information.
-      `
     }
   ]
 });
