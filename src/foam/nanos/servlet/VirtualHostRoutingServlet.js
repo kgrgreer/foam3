@@ -177,6 +177,8 @@ foam.CLASS({
       }
       // default fonts
       if ( headConfig == null || ! headConfig.containsKey("customFonts") || customFontsFailed ) {
+        out.println("<link href=\\"https://fonts.googleapis.com/css?family=Roboto:100,300,400,500\\" rel=\\"stylesheet\\">");
+        out.println("<link href=\\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i,900,900i\\" rel=\\"stylesheet\\">");
         out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap\\" rel=\\"stylesheet\\">");
       }
       `
