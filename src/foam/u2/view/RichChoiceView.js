@@ -133,7 +133,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'window', 'ctrl'
+    'window', 'ctrl?'
   ],
 
   exports: [
@@ -494,7 +494,11 @@ foam.CLASS({
       this
         .add(this.slot(function(mode, fullObject_) {
           if ( mode !== foam.u2.DisplayMode.RO && mode !== foam.u2.DisplayMode.HIDDEN ) {
-            self.ctrl.add(this.dropdown_);
+            if ( self.ctrl ) {
+              self.ctrl.add(this.dropdown_);
+            } else {
+              this.dropdown_.write();
+            }
             self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
               if ( ! hasBeenOpenedYet_ ) return this.E();
               return this.E()
