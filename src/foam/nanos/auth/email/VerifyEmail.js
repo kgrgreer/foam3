@@ -13,7 +13,6 @@
 
   imports: [
     'ctrl',
-    'emailToken',
     'emailVerificationService',
     'loginVariables',
     'userDAO'
@@ -34,8 +33,6 @@
   ],
 
   messages: [
-    { name: 'TOKEN_INSTRUC_TITLE',      message: 'Verification Email Sent' },
-    { name: 'TOKEN_INSTRUC',            message: 'Verification email sent to ' },
     { name: 'CODE_INSTRUC_TITLE',       message: 'Verification code sent' },
     { name: 'CODE_INSTRUC',             message: 'Please check your inbox to verify your email' },
   ],
@@ -80,11 +77,6 @@
     {
       class: 'Boolean',
       name: 'showAction',
-      hidden: true
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyByCode',
       hidden: true
     }
   ],
@@ -143,16 +135,10 @@
       },
       code: async function() {
         try {
-          var user = await this.checkUser();
-          if ( this.verifyByCode ) {
-            await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
-            instructionTitle = this.CODE_INSTRUC_TITLE;
-            instruction = this.CODE_INSTRUC;
-          } else {
-            await this.emailToken.generateToken(null, user);
-            instructionTitle = this.TOKEN_INSTRUC_TITLE;
-            instruction = this.TOKEN_INSTRUC + this.email;
-          }
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
+          instructionTitle = this.CODE_INSTRUC_TITLE;
+          instruction = this.CODE_INSTRUC;
+
           this.ctrl.add(this.NotificationMessage.create({
             message: instructionTitle,
             description: instruction,
