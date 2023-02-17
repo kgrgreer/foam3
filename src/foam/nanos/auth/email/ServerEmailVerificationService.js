@@ -49,7 +49,7 @@ foam.CLASS({
           AND(
             EQ(User.EMAIL, email),
             EQ(User.LOGIN_ENABLED, true),
-            OR(EQ(spid, null), EQ(User.SPID, spid))
+            OR(EQ(spid, null), EQ(User.SPID, spid)) // null check done for running in test mode as we don't always set up spid
           ))
           .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();
