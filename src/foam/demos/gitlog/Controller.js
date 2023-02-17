@@ -73,7 +73,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   constants: {
-    REGEX: /(\[[A-Za-z]{2,}-\d{4,}\])/
+    REGEX: /(\[[A-Za-z]{2,}-\d{4,}\]|\(#\d+\))/
   },
 
   methods: [
@@ -81,7 +81,12 @@ foam.CLASS({
       this.
         style({'white-space': 'pre'}).
         forEach(this.data.split(this.REGEX), l => {
-          if ( l.match(this.REGEX) ) {
+          if ( l.startsWith('(#') ) {
+            // Pull Request
+            // TODO: make this configurable
+            this.start('a').attrs({href: 'https://github.com/foam-framework/foam2/pull/' + l.substring(1,l.length-1)}).add(l).end();
+          } else if ( l.match(this.REGEX) ) {
+            // Jira Ticket
             // TODO: make this configurable
             this.start('a').attrs({href: 'https://nanopay.atlassian.net/browse/' + l.substring(1,l.length-1)}).add(l).end();
           } else {
