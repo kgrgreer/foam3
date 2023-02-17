@@ -24,6 +24,9 @@ foam.CLASS({
     'foam.blob.Blob',
     'foam.blob.BlobBlob'
   ],
+  mixins: [
+    'foam.nanos.analytics.Analyticable'
+  ],
 
   topics: [
     'data'
@@ -92,6 +95,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'cache'
+    },
+    {
+      class: 'Int',
+      name: 'timeout',
+      value: 3000
+    },
+    {
+      class: 'Int',
+      name: 'maxRetries',
+      value: 3
     }
   ],
 
@@ -143,27 +156,36 @@ foam.CLASS({
         }
       }
 
-      var request = new Request(
-        ( this.protocol ? ( this.protocol + '://' ) : '' ) +
-        this.hostname +
-        ( this.port ? ( ':' + this.port ) : '' ) +
-        this.path,
-        options);
-
-      return fetch(request).then(resp => {
-        var resp = this.HTTPResponse.create({
-          resp: resp,
-          responseType: this.responseType
+      var retries = 0;
+      function fetchResponse() {
+        var resp;
+        var request = new Request(
+          ( self.protocol ? ( self.protocol + '://' ) : '' ) +
+          self.hostname +
+          ( self.port ? ( ':' + self.port ) : '' ) +
+          self.path,
+          options);
+        return fetch(request).then(res => {
+          resp = self.HTTPResponse.create({
+            resp: res,
+            responseType: self.responseType
+          });
+          if ( resp.success ) {
+            return resp;
+          }
+          return Promise.reject(resp);
+        }).catch( err => {
+          if ( retries >= self.maxRetries ) {
+            throw new Error(self.GENERAL_ERROR + err);
+          } else {
+            retries += 1;
+            console.log(retries);
+            return new Promise(resolve => setTimeout(resolve, self.timeout))
+                      .then(fetchResponse());
+          }
         });
-
-        if ( resp.success ) return resp;
-
-        // Use Promise.reject so crappy debuggers don't pause here
-        // throw resp;
-        return Promise.reject(resp);
-      }).catch( _ => {
-        throw new Error(this.GENERAL_ERROR);
-      });
+      }
+      return fetchResponse();
     },
 
     function addContentHeaders() {
