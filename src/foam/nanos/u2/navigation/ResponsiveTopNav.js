@@ -44,10 +44,10 @@ foam.CLASS({
       width: 100%;
     }
     ^components-container {
-      align-items: center;
-      display: flex;
       flex: 1;
-      gap: 8px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
     }
     ^components-container^logo-adjust {
       gap: 16px;
@@ -103,6 +103,8 @@ foam.CLASS({
             .on('click', () => {
               this.pushMenu('', true);
             })
+          .end()
+          .start().addClass(this.myClass('header-button-placeholder'))
           .end()
         .end()
         .add(this.slot(function(displayWidth) {
