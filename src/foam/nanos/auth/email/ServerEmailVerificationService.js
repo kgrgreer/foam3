@@ -44,11 +44,12 @@ foam.CLASS({
       args: 'Context x, String email, String userName',
       type: 'foam.nanos.auth.User',
       javaCode: `
+        String spid = (String) foam.core.XLocator.get().get("spid");
         DAO userDAO = ((DAO) x.get("localUserDAO")).where(
           AND(
             EQ(User.EMAIL, email),
             EQ(User.LOGIN_ENABLED, true),
-            EQ(User.SPID, foam.core.XLocator.get().get("spid"))
+            OR(EQ(spid, null), EQ(User.SPID, spid))
           ))
           .limit(2);
         List list = ((ArraySink) userDAO.select(new ArraySink())).getArray();
