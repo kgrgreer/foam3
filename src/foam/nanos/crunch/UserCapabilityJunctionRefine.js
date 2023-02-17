@@ -258,6 +258,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'skipEditBehaviour',
+      writePermissionRequired: true,
       storageTransient: true
     }
   ],

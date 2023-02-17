@@ -39,11 +39,7 @@ foam.CLASS({
             // then we ignore edit behaviour entirely.
             AuthService auth = (AuthService) x.get("auth");
             if ( ucj.getSkipEditBehaviour() == true ) {
-              if ( ! auth.check(x, "crunchPermissions.skipEditBehaviour") ) {
-                throw new AuthorizationException(
-                  "insufficient permission to apply UCJ edits"
-                );
-              }
+              ucj.setSkipEditBehaviour(false);
               return;
             }
 
