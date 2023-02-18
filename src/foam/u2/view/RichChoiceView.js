@@ -491,75 +491,75 @@ foam.CLASS({
 
       this.onDetach(() => this.dropdown_.remove());
 
+      self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
+        if ( ! hasBeenOpenedYet_ ) return this.E();
+        return this.E()
+          .addClass(self.myClass('container'))
+          .add(self.search$.map(searchEnabled => {
+            if ( ! searchEnabled ) return null;
+            return this.E()
+              .start()
+                .start('img')
+                  .attrs({ src: 'images/ic-search.svg' })
+                .end()
+                .startContext({ data: self })
+                  .addClass(self.myClass('search'))
+                  .add(self.FILTER_.clone().copyFrom({ view: {
+                    class: 'foam.u2.view.TextField',
+                    placeholder: this.searchPlaceholder,
+                    onKey: true
+                  } }))
+                .endContext()
+              .end();
+          }))
+          .add(self.slot(function(sections) {
+            var promiseArray = [];
+            sections.forEach(function(section) {
+              promiseArray.push(section.dao.select(self.COUNT()));
+            });
+            return Promise.all(promiseArray).then(resp => {
+              var index = 0;
+              return this.E().forEach(sections, function(section) {
+                this.addClass(self.myClass('setAbove'))
+                  .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
+                    .addClass(self.myClass('heading'))
+                    .translate(section.heading, section.heading)
+                  .end()
+                  .start()
+                    .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
+                      return this.E()
+                        .start(self.rowView, { data: obj })
+                          .enableClass('disabled', section.disabled)
+                          .callIf(! section.disabled, function() {
+                            this.on('click', () => {
+                              self.onSelect(obj);
+                              self.dropdown_.close();
+                            });
+                          })
+                        .end();
+                    }, false, self.comparator)
+                  .end()
+                  .callIf(section.choicesLimit, function() {
+                    this.start()
+                      .addClass(self.myClass('moreChoices'))
+                      .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                    .end();
+                  });
+                  index++;
+              });
+            });
+          }))
+          .add(this.slot(self.addAction));
+      }));
+
       this
-        .add(this.slot(function(mode, fullObject_) {
+        .add(this.slot(function(mode) {
           if ( mode !== foam.u2.DisplayMode.RO && mode !== foam.u2.DisplayMode.HIDDEN ) {
             if ( self.ctrl ) {
               self.ctrl.add(this.dropdown_);
             } else {
               this.dropdown_.write();
             }
-            self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
-              if ( ! hasBeenOpenedYet_ ) return this.E();
-              return this.E()
-                .addClass(self.myClass('container'))
-                .add(self.search$.map(searchEnabled => {
-                  if ( ! searchEnabled ) return null;
-                  return this.E()
-                    .start()
-                      .start('img')
-                        .attrs({ src: 'images/ic-search.svg' })
-                      .end()
-                      .startContext({ data: self })
-                        .addClass(self.myClass('search'))
-                        .add(self.FILTER_.clone().copyFrom({ view: {
-                          class: 'foam.u2.view.TextField',
-                          placeholder: this.searchPlaceholder,
-                          onKey: true
-                        } }))
-                      .endContext()
-                    .end();
-                }))
-                .add(self.slot(function(sections) {
-                  var promiseArray = [];
-                  sections.forEach(function(section) {
-                    promiseArray.push(section.dao.select(self.COUNT()));
-                  });
-                  return Promise.all(promiseArray).then(resp => {
-                    var index = 0;
-                    return this.E().forEach(sections, function(section) {
-                      this.addClass(self.myClass('setAbove'))
-                        .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                          .addClass(self.myClass('heading'))
-                          .translate(section.heading, section.heading)
-                        .end()
-                        .start()
-                          .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
-                            return this.E()
-                              .start(self.rowView, { data: obj })
-                                .enableClass('disabled', section.disabled)
-                                .callIf(! section.disabled, function() {
-                                  this.on('click', () => {
-                                    self.onSelect(obj);
-                                    self.dropdown_.close();
-                                  });
-                                })
-                              .end();
-                          }, false, self.comparator)
-                        .end()
-                        .callIf(section.choicesLimit, function() {
-                          this.start()
-                            .addClass(self.myClass('moreChoices'))
-                            .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
-                          .end();
-                        });
-                        index++;
-                    });
-                  });
-                }))
-                .add(this.slot(self.addAction));
-            }));
-
             return self.E()
               .attrs({
                 name: this.name,
@@ -584,7 +584,7 @@ foam.CLASS({
                   .add(this.slot(data => {
                     return this.E().tag(self.selectionView, {
                       data: data,
-                      fullObject$: this.fullObject_$,
+                      fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
                   }))
@@ -598,12 +598,13 @@ foam.CLASS({
                 }))
               .end();
           } else {
+            this.dropdown_.remove();
             return self.E()
               .addClass(this.myClass())
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
-                    fullObject: fullObject_,
+                    fullObject: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
                 .end();
