@@ -264,61 +264,79 @@ foam.CLASS({
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
+      'Alexey Greer': 'Alexey Greer',
+      'AlexeyGreer': 'Alexey Greer',
+      'Anna Doulatshahi': 'Anna Doulatshahi',
+      'Anna': 'Anna Doulatshahi',
       'Arthur Pavlovs': 'Arthur Pavlovs',
+      'Artur Linnik': 'Artur Linnik',
       'Blake Green': 'Blake Green',
+      'blakegreen': 'Blake Green',
       'Carl Chen': 'Carl Chen',
+      'carl-zzz': 'Carl Chen',
       'Chanmann Lim': 'Chanmann Lim',
       'Christine Lee': 'Christine Lee',
-      'Danny Tharma': 'Danny Tharma',
-      'Jin Jung': 'Jin Jung',
-      'Joel Hughes': 'Joel Hughes',
-      'Kenny Qi Yen Kan': 'Kenny Qi Yen Kan',
-      'Kristina Smirnova': 'Kristina Smirnova',
-      'Mayowa Olurin': 'Mayowa Olurin',
-      'Mykola Kolombet': 'Mykola Kolombet',
-      'Nick Prat': 'Nick Prat',
-      'Olha Bahatiuk': 'Olha Bahatiuk',
-      'Patrick Zanowski': 'Patrick Zanowski',
-      'Scott Head': 'Scott Head',
-      "Kevin Greer": "Kevin Greer",
-
-      'Anna': 'Anna Doulatshahi',
-      'blakegreen': 'Blake Green',
-      'carl-zzz': 'Carl Chen',
       'Christine': 'Christine Lee',
+      'Danny Tharma': 'Danny Tharma',
       'Eric Dube': 'Eric Dube',
       'Eric': 'Eric Dube',
       'garfield jian': 'Garfiled Jian',
+      'Hassene Choura': 'Hassene Choura',
       'hchoura': 'Hassene Choura',
+      'Jin Jung': 'Jin Jung',
       'Jin': 'Jin Jung',
       'JIn': 'Jin Jung',
       'jinn9': 'Jin Jung',
+      'Joel Hughes': 'Joel Hughes',
+      'Kenny Qi Yen Kan': 'Kenny Qi Yen Kan',
+      'KernelDeimos': 'Eric Dube',
+      'Kevin Glen Roy Greer': 'Kevin Greer',
+      'Kevin Greer': 'Kevin Greer',
+      'Kristina Smirnova': 'Kristina Smirnova',
       'kristina': 'Kristina Smirnova',
+      'Lenore Chen': 'Lenore Chen',
+      'LenoreChen': 'Lenore Chen',
+      'Mayowa Olurin': 'Mayowa Olurin',
+      'mayowa': 'Mayowa Olurin',
       'mcarcaso': 'Mike Carcasole',
+      'Michal Pasternak': 'Michal Pasternak',
       'Michal': 'Michal Pasternak',
       'microArtur': 'Artur Linnik',
+      'Minsun Kim': 'Minsun Kim',
       'MINSUN KIM': 'Minsun Kim',
       'Minsun': 'Minsun Kim',
+      'Mykola Kolombet': 'Mykola Kolombet',
       'Mykola97': 'Mykola Kolombet',
       'nanoArtur': 'Artur Linnik',
       'nanokristina': 'Kristina Smirnova',
       'nanoMichal': 'Michal Pasternak',
       'nanoNeel': 'Neel Patel',
+      'nanopay-arthur': 'Arthur Pavlovs',
       'Nauna': 'Anna Doulatshahi',
+      'Neel Patel': 'Neel Patel',
       'Neelkanth Patel': 'Neel Patel',
       'Nicholas Prat': 'Nick Prat',
+      'Nick Prat': 'Nick Prat',
       'noodlemoodle': 'Ruby Zhang',
+      'Olha Bahatiuk': 'Olha Bahatiuk',
+      'olhabn': 'Olha Bahatiuk',
+      'Patrick Zanowski': 'Patrick Zanowski',
+      'penzital': 'Kristina Smirnova',
+      'Pete Conway': 'Pete Conway',
+      'petenanopay': 'Pete Conway',
       'RachaelDing': 'Rachael Ding',
+      'Ruby Zhang': 'Ruby Zhang',
       'Ruby': 'Ruby Zhang',
+      'Sarthak Marwaha': 'Sarthak Marwaha',
       'sarthak-marwaha': 'Sarthak Marwaha',
       'sarthak': 'Sarthak Marwaha',
+      'Scott Head': 'Scott Head',
+      'Tala Abu Adas': 'Tala Abu Adas',
       'tala': 'Tala Abu Adas',
       'Tala': 'Tala Abu Adas',
+      'Xuerong Wu': 'Xuerong Wu',
       'xuerongNanopay': 'Xuerong Wu',
       'yij793': 'Garfiled Jian',
-      "Kevin Glen Roy Greer": "Kevin Greer",
-      "nanopay-arthur": 'Arthur Pavlovs',
-      "olhabn": 'Olha Bahatiuk',
     },
     PROJECT_RULES: [
       {
@@ -480,7 +498,7 @@ foam.CLASS({
             return true;
           }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).
-          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
+          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
@@ -527,6 +545,7 @@ foam.CLASS({
       this.SUPER();
       // TODO: make this configurable
       this.loadData('data2021.log');
+      this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
       this.loadData('np2021.log');
@@ -582,6 +601,7 @@ foam.CLASS({
         }
       }
       this.data = this.data.concat(data);
+      this.authors = this.files = this.projects = undefined;
     },
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
