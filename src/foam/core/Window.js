@@ -194,7 +194,7 @@ foam.CLASS({
         var f = function() {
           lastArgs = arguments;
 
-          timeout && this.clearTimeout(timeout);
+          timeout && ctx.clearTimeout(timeout);
           timeout = ctx.setTimeout(idledListener, delay);
         };
 

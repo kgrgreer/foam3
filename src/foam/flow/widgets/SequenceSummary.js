@@ -76,7 +76,7 @@ foam.CLASS({
                         .start('td').add(k).end()
                         .start('td')
                           .callIfElse(views[k] == null, function () {
-                            this.add(step.args(k));
+                            this.add(step.args[k]);
                           }, function () {
                             this
                               .startContext({ data: step.args[k] })

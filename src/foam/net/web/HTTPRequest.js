@@ -142,7 +142,6 @@ foam.CLASS({
           options.body = this.payload;
         }
       }
-
       var request = new Request(
         ( this.protocol ? ( this.protocol + '://' ) : '' ) +
         this.hostname +
@@ -161,8 +160,6 @@ foam.CLASS({
         // Use Promise.reject so crappy debuggers don't pause here
         // throw resp;
         return Promise.reject(resp);
-      }).catch( _ => {
-        throw new Error(this.GENERAL_ERROR);
       });
     },
 
