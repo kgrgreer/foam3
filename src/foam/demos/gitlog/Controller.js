@@ -136,8 +136,20 @@ foam.CLASS({
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
-    ^ .selected { color: red; }
+    ^ .selected { background: lightskyblue; }
   `,
+
+  properties: [
+    'softSelection',
+    'hardSelection',
+    {
+      name: 'selection',
+      expression: function(softSelection, hardSelection) {
+        console.log('******', softSelection, hardSelection);
+        return softSelection || hardSelection || '-- All --';
+      }
+    }
+  ],
 
   methods: [
     function render() {
@@ -145,6 +157,12 @@ foam.CLASS({
       var commits      = this.data.filteredCommits;
       var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts = {};
+
+      // this.data.author$.follow(this.selection$);
+
+      this.hardSelection$.sub(this.updateSelection);
+      this.softSelection$.sub(this.updateSelection);
+      this.selection$.sub(this.updateSelection);
 
       commits.forEach(c => {
         var month   = c.date.getMonth();
@@ -176,9 +194,14 @@ foam.CLASS({
           var total = 0;
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
-            enableClass('selected', self.data.author$.map(auth => auth == a[0])).
+            enableClass('selected', self.data.author$.map(s => s === a[0])).
             start('th').
-              start('href').on('click', () => self.data.author = a[0]).add(a[0]).end().
+              start('href').
+                on('click',     () => self.hardSelection = a[0]).
+                on('mouseover', () => self.softSelection = a[0]).
+                on('mouseout',  () => self.softSelection = '').
+                add(a[0]).
+              end().
             end().
             forEach(authorCounts[a[0]], function(c) {
               total += c;
@@ -188,13 +211,26 @@ foam.CLASS({
           end();
         }).
         start('tr').
-          start('th').on('click', () => self.data.author = '-- All --').add('All:').end().
+          start('th').on('click', () => self.selection = '-- All --').add('All:').end().
           forEach(counts, function(c) {
             this.start('th').add(c).end();
           }).
           start('th').add(this.data.filteredCommits.length).end().
         end().
       end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateSelection',
+      isIdled: true,
+      delay: 160,
+//      on: [ 'this.propertyChange.selection' ],
+      code: function() {
+        console.log('selection: ', this.selection);
+        this.data.author = this.selection;
+      }
     }
   ]
 });
@@ -281,6 +317,8 @@ foam.CLASS({
       'Eric Dube': 'Eric Dube',
       'Eric': 'Eric Dube',
       'garfield jian': 'Garfiled Jian',
+      'Garfield Jian': 'Garfiled Jian',
+      'Garfiled Jian': 'Garfiled Jian',
       'Hassene Choura': 'Hassene Choura',
       'hchoura': 'Hassene Choura',
       'Jin Jung': 'Jin Jung',
@@ -302,6 +340,7 @@ foam.CLASS({
       'Michal Pasternak': 'Michal Pasternak',
       'Michal': 'Michal Pasternak',
       'microArtur': 'Artur Linnik',
+      'Mike Carcasole': 'Mike Carcasole',
       'Minsun Kim': 'Minsun Kim',
       'MINSUN KIM': 'Minsun Kim',
       'Minsun': 'Minsun Kim',
@@ -324,6 +363,7 @@ foam.CLASS({
       'penzital': 'Kristina Smirnova',
       'Pete Conway': 'Pete Conway',
       'petenanopay': 'Pete Conway',
+      'Rachael Ding': 'Rachael Ding',
       'RachaelDing': 'Rachael Ding',
       'Ruby Zhang': 'Ruby Zhang',
       'Ruby': 'Ruby Zhang',
@@ -661,7 +701,7 @@ foam.CLASS({
           end().
           start().
             style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
-            add(this.SELECTED)
+            add(this.SELECTED).
           end().
         end();
       ;
@@ -707,8 +747,5 @@ foam.CLASS({
         }).
       end();
     }
-  ],
-
-  actions: [
   ]
 });
