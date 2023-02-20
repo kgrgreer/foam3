@@ -20,6 +20,10 @@ foam.ENUM({
       label: 'Storage'
     },
     {
+      name: 'EXTERNAL',
+      label: 'External'
+    },
+    {
       name: 'FULL',
       label: 'Full',
       documentation: 'Outputs all of the properties.'
