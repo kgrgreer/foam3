@@ -29,7 +29,9 @@
       // long-form
       {
         name: 'onClear',
-        isFramed: true,
+        isMerged: true, // optional, could also be isFramed: or isIdled:
+        delay: 160,
+        on: [ 'this.propertyChange.prop1', 'data.propChange' ], // optional
         code: function() { ... }
       }
     ]
@@ -42,6 +44,12 @@
   to so you would need to do something like:
     <pre>alarm.ring.sub(sprinker.onAlarm.bind(sprinkler));</pre>
   But listeners are pre-bound.
+<p>
+  If on: is specified, each listed topic is subscribed to and the listener
+  is called whenever an event is fired. If the first part of the topic is
+  either 'this' or '', then the subscription is on 'this', otherwise it is
+  on this[firstWord], for example, 'data.propertyChange' would listen to
+  the 'propertyChange' topic on this.data.
 */
 // TODO(kgr): Add SUPER support.
 foam.CLASS({
@@ -135,11 +143,14 @@ foam.CLASS({
       if ( this.on.length > 0 ) {
         var listener = obj[this.name];
         for ( var i = 0 ; i < this.on.length ; i++ ) {
-          let o        = this.on[i].split('.');
-          let objectOn = o.shift();
-          let topic    = o;
-
-          obj.onDetach(obj.sub.apply(obj, topic.concat(listener)));
+          var o       = this.on[i].split('.');
+          var prop    = o.shift();
+          var topic   = o;
+          var subject = prop === 'this' || ! prop ? obj : obj[prop];
+          if ( subject ) {
+            var sub = subject.sub.apply(subject, topic.concat(listener));
+            if ( obj !== subject ) obj.onDetach(sub);
+          }
         }
       }
     }
