@@ -672,8 +672,9 @@ foam.CLASS({
       generateJava: false
     },
     {
+      class: 'Int',
       name: 'retryBoxMaxAttempts',
-      class: 'Boolean',
+      value: 5,
       generateJava: false,
     },
     {

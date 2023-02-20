@@ -56,7 +56,13 @@ foam.CLASS({
   properties: [
     { class: 'Boolean', name: 'isFramed',   value: false },
     { class: 'Boolean', name: 'isMerged',   value: false },
-    { class: 'Int',     name: 'mergeDelay', value: 16, units: 'ms' },
+    { class: 'Boolean', name: 'isIdled',    value: false },
+    { class: 'Int',     name: 'delay',      value: 16, units: 'ms' },
+    // legacy support, aliases to 'delay'
+    { class: 'Int',     name: 'mergeDelay', value: 16,
+      getter: function() { return this.delay; },
+      setter: function(v) { this.delay = v; }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.core.Argument',
@@ -91,11 +97,12 @@ foam.CLASS({
           foam.core.Listener.isInstance(superAxiom),
         'Attempt to override non-listener', this.name);
 
-      var name       = this.name;
-      var code       = this.override_(proto, foam.Function.setName(this.code, name), superAxiom);
-      var isMerged   = this.isMerged;
-      var isFramed   = this.isFramed;
-      var mergeDelay = this.mergeDelay;
+      var name     = this.name;
+      var code     = this.override_(proto, foam.Function.setName(this.code, name), superAxiom);
+      var isMerged = this.isMerged;
+      var isIdled  = this.isIdled;
+      var isFramed = this.isFramed;
+      var delay    = this.delay;
 
       var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
@@ -109,7 +116,9 @@ foam.CLASS({
             };
 
             if ( isMerged ) {
-              l = this.__context__.merged(l, mergeDelay);
+              l = this.__context__.merged(l, delay);
+            } else if ( isIdled ) {
+              l = this.__context__.idled(l, delay);
             } else if ( isFramed ) {
               l = this.__context__.framed(l);
             }

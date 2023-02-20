@@ -89,7 +89,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.CitationView',
-    'foam.u2.view.RichChoiceViewI18NComparator'
+    'foam.u2.view.RichChoiceViewI18NComparator',
+    'foam.u2.md.OverlayDropdown'
   ],
 
   documentation: `
@@ -132,7 +133,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'window'
+    'window', 'ctrl?'
   ],
 
   exports: [
@@ -165,13 +166,9 @@ foam.CLASS({
     }
 
     ^container {
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      transform: translateY(100%);
       background: $white;
       border: 1px solid $grey400;
-      max-height: 378px;
+      max-height: min(400px, 40vh);
       overflow-y: auto;
       box-sizing: border-box;
       width: 100%;
@@ -196,7 +193,7 @@ foam.CLASS({
       align-items: center;
       justify-content: space-between;
       width: 100%;
-
+      position: relative;
       height: $inputHeight;
       padding-left: $inputHorizontalPadding;
       padding-right: $inputHorizontalPadding;
@@ -234,13 +231,12 @@ foam.CLASS({
       overflow: hidden;
     }
 
-    ^ .search .property-filter_ {
+    ^search .property-filter_ {
       width: 100%;
     }
 
-    ^ .search input {
+    ^search input {
       border-bottom: none;
-
       width: 100%;
       border: none;
       padding-left: $inputHorizontalPadding;
@@ -248,13 +244,13 @@ foam.CLASS({
       height: $inputHeight;
     }
 
-    ^ .search img {
+    ^search img {
       top: 8px;
       width: 15px;
       margin-left: 8px;
     }
 
-    ^ .search {
+    ^search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
       padding: 0rem 1.6rem;
@@ -464,7 +460,16 @@ foam.CLASS({
       name: 'idProperty',
       class: 'String',
       value: 'id'
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.u2.Element',
+      name: 'dropdown_',
+      factory: function() {
+        return this.OverlayDropdown.create({ parentEl$: this.selectionEl_$, closeOnLeave: false, styled: false, parentEdgePadding: '4' });
+      }
+    },
+    'selectionEl_'
   ],
 
   methods: [
@@ -484,68 +489,102 @@ foam.CLASS({
       this.onDetach(this.data$.sub(this.onDataUpdate));
       this.onDataUpdate();
 
-      // Set up an event listener on the window so we can close the dropdown
-      // when the user clicks somewhere else.
-      var containerU2Element;
-      const fn = async function(evt) {
-        // This prevents a console error when opening the dropdown.
-        if ( containerU2Element === undefined ) return;
+      this.onDetach(() => this.dropdown_.remove());
 
-        var selfDOMElement = await self.el();
-        var containerDOMElement = await containerU2Element.el();
-
-        // If an ancestor U2 Element was removed but didn't properly detach us,
-        // then the DOM elements will be removed but the listener will still be
-        // in place. Here we detect such a situation and remove the listener if
-        // it arises, preventing a memory leak.
-        if ( selfDOMElement == null || containerDOMElement == null ) {
-          self.window.removeEventListener('click', fn);
-          return;
-        }
-
-        var selfRect = selfDOMElement.getClientRects()[0];
-        var containerRect = containerDOMElement.getClientRects()[0];
-
-        // This prevents a console error when making a selection.
-        if ( containerRect === undefined ) return;
-
-        if (
-          ! (
-              evt.clientX >= selfRect.x &&
-              evt.clientX <= selfRect.x + selfRect.width &&
-              evt.clientY >= selfRect.y &&
-              evt.clientY <= containerRect.y + containerRect.height
-            )
-        ) {
-          self.isOpen_ = false;
-        }
-      };
-      this.window.addEventListener('click', fn);
-      this.onDetach(() => this.window.removeEventListener('click', fn));
+      self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
+        if ( ! hasBeenOpenedYet_ ) return this.E();
+        return this.E()
+          .addClass(self.myClass('container'))
+          .add(self.search$.map(searchEnabled => {
+            if ( ! searchEnabled ) return null;
+            return this.E()
+              .start()
+                .start('img')
+                  .attrs({ src: 'images/ic-search.svg' })
+                .end()
+                .startContext({ data: self })
+                  .addClass(self.myClass('search'))
+                  .add(self.FILTER_.clone().copyFrom({ view: {
+                    class: 'foam.u2.view.TextField',
+                    placeholder: this.searchPlaceholder,
+                    onKey: true
+                  } }))
+                .endContext()
+              .end();
+          }))
+          .add(self.slot(function(sections) {
+            var promiseArray = [];
+            sections.forEach(function(section) {
+              promiseArray.push(section.dao.select(self.COUNT()));
+            });
+            return Promise.all(promiseArray).then(resp => {
+              var index = 0;
+              return this.E().forEach(sections, function(section) {
+                this.addClass(self.myClass('setAbove'))
+                  .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
+                    .addClass(self.myClass('heading'))
+                    .translate(section.heading, section.heading)
+                  .end()
+                  .start()
+                    .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
+                      return this.E()
+                        .start(self.rowView, { data: obj })
+                          .enableClass('disabled', section.disabled)
+                          .callIf(! section.disabled, function() {
+                            this.on('click', () => {
+                              self.onSelect(obj);
+                              self.dropdown_.close();
+                            });
+                          })
+                        .end();
+                    }, false, self.comparator)
+                  .end()
+                  .callIf(section.choicesLimit, function() {
+                    this.start()
+                      .addClass(self.myClass('moreChoices'))
+                      .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                    .end();
+                  });
+                  index++;
+              });
+            });
+          }))
+          .add(this.slot(self.addAction));
+      }));
 
       this
-        .add(this.slot(function(mode, fullObject_) {
-          if ( mode !== foam.u2.DisplayMode.RO ) {
+        .add(this.slot(function(mode) {
+          if ( mode !== foam.u2.DisplayMode.RO && mode !== foam.u2.DisplayMode.HIDDEN ) {
+            if ( self.ctrl ) {
+              self.ctrl.add(this.dropdown_);
+            } else {
+              this.dropdown_.write();
+            }
             return self.E()
               .attrs({
                 name: this.name,
                 tabindex: 0
               })
               .addClass(this.myClass())
-              .start()
+              .start('', {}, this.selectionEl_$)
                 .addClass(this.myClass('selection-view'))
                 .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
-                .on('click', function() {
+                .on('click', function(e) {
+                  var x = e.clientX || this.getBoundingClientRect().x;
+                  var y = e.clientY || this.getBoundingClientRect().y;
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.isOpen_ = ! self.isOpen_;
+                    self.dropdown_.open(x, y);
                   }
+                  e.preventDefault();
+                  e.stopPropagation();
                 })
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
-                  .add(this.slot((data) => {
+                  .add(this.slot(data => {
                     return this.E().tag(self.selectionView, {
                       data: data,
-                      fullObject$: this.fullObject_$,
+                      fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     });
                   }))
@@ -555,77 +594,17 @@ foam.CLASS({
                   return this.E()
                     .addClass(self.myClass('clear-btn'))
                     .on('click', self.clearSelection)
-                    .add(self.CLEAR_SELECTION)
+                    .add(self.CLEAR_SELECTION);
                 }))
-              .end()
-              .add(this.slot(function(hasBeenOpenedYet_) {
-                if ( ! hasBeenOpenedYet_ ) return this.E();
-                return this.E()
-                  .addClass(self.myClass('container'))
-                  .call(function() { containerU2Element = this; })
-                  .show(self.isOpen_$)
-                  .add(self.search$.map((searchEnabled) => {
-                    if ( ! searchEnabled ) return null;
-                    return this.E()
-                      .start()
-                        .start('img')
-                          .attrs({ src: 'images/ic-search.svg' })
-                        .end()
-                        .startContext({ data: self })
-                          .addClass('search')
-                          .add(self.FILTER_.clone().copyFrom({ view: {
-                            class: 'foam.u2.view.TextField',
-                            placeholder: this.searchPlaceholder,
-                            onKey: true
-                          } }))
-                        .endContext()
-                      .end();
-                  }))
-                  .add(self.slot(function(sections) {
-                    var promiseArray = [];
-                    sections.forEach(function(section) {
-                      promiseArray.push(section.dao.select(self.COUNT()));
-                    });
-                    return Promise.all(promiseArray).then((resp) => {
-                      var index = 0;
-                      return this.E().forEach(sections, function(section) {
-                        this.addClass(self.myClass('setAbove'))
-                          .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                            .addClass(self.myClass('heading'))
-                            .translate(section.heading, section.heading)
-                          .end()
-                          .start()
-                            .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
-                              return this.E()
-                                .start(self.rowView, { data: obj })
-                                  .enableClass('disabled', section.disabled)
-                                  .callIf(! section.disabled, function() {
-                                    this.on('click', () => {
-                                      self.onSelect(obj);
-                                    });
-                                  })
-                                .end();
-                            }, false, self.comparator)
-                          .end()
-                          .callIf(section.choicesLimit, function() {
-                            this.start()
-                              .addClass(self.myClass('moreChoices'))
-                              .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
-                            .end();
-                          });
-                          index++;
-                      });
-                    });
-                  }))
-                  .add(this.slot(self.addAction));
-              }));
+              .end();
           } else {
+            this.dropdown_.remove();
             return self.E()
               .addClass(this.myClass())
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
-                    fullObject: fullObject_,
+                    fullObject: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
                 .end();
