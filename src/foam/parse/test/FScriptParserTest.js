@@ -314,6 +314,10 @@ foam.CLASS({
     sps.setString("let testVar = 4+7; address.regionId.len<testVar");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
 
+    sps.setString("let testVar11 = 4+7; if ( testVar > 8 ) { if (testVar11 < 0 ) { 0 } else { testVar11 } } else { 0 }");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 11, "let testVar11 = 4+7; if ( testVar11 > 8 ) { testVar } else { 0 }");
+
     sps.setString("let newVar = address.regionId.len; address.regionId.len==newVar");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
 
