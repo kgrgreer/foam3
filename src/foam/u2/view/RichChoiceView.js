@@ -736,12 +736,13 @@ foam.CLASS({
             'text-overflow': 'ellipsis'
           });
 
-          if ( this.fullObject ) {
-            var summary = this.fullObject.toSummary();
-            return this.translate(summary, summary);
-          }
-
-          return this.add(this.defaultSelectionPrompt);
+          this.add(this.slot(async function(fullObject) {
+            if ( fullObject ) {
+              var summary = await this.fullObject.toSummary();
+              return summary;
+            }
+            return this.defaultSelectionPrompt;
+          }));
         }
       ]
     },
