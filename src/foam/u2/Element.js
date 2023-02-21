@@ -1477,7 +1477,7 @@ foam.CLASS({
         }
         return this.add(translation);
       }
-      console.warn('Missing Translation Service in ', this.cls_.name);
+      // console.warn('Missing Translation Service in ', this.cls_.name);
       if ( opt_default === undefined ) opt_default = source;
       return this.add(opt_default);
     },
@@ -2744,8 +2744,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateMode_(this.mode);
-      this.enableClass('error', this.error_$);
-      // this.setAttribute('title', this.error_$);
+      // this.enableClass('error', this.error_$);
+      this.setAttribute('title', this.error_$);
     },
 
     function updateMode_() {
