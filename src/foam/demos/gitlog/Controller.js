@@ -11,33 +11,13 @@ foam.CLASS({
   name: 'Commit',
 
   properties: [
-    {
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'author'
-    },
-    {
-      class: 'Date',
-      name: 'date'
-    },
-    {
-      class: 'String',
-      name: 'subject'
-    },
-    {
-      class: 'String',
-      name: 'body'
-    },
-    {
-      class: 'StringArray',
-      name: 'files'
-    },
-    {
-      class: 'String',
-      name: 'diff'
-    }
+    { class: 'String',      name: 'id' },
+    { class: 'String',      name: 'author' },
+    { class: 'Date',        name: 'date' },
+    { class: 'String',      name: 'subject' },
+    { class: 'String',      name: 'body' },
+    { class: 'StringArray', name: 'files' },
+    { class: 'String',      name: 'diff' }
   ]
 });
 
@@ -158,12 +138,6 @@ foam.CLASS({
       var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts = {};
 
-      // this.data.author$.follow(this.selection$);
-
-      this.hardSelection$.sub(this.updateSelection);
-      this.softSelection$.sub(this.updateSelection);
-      this.selection$.sub(this.updateSelection);
-
       commits.forEach(c => {
         var month   = c.date.getMonth();
         var author  = c.author;
@@ -174,22 +148,9 @@ foam.CLASS({
 
       this.addClass(this.myClass()).start('table')
         .attrs({cellpadding: 4, cellspacing: 0, border: 1}).
-        start('tr').
-          start('th').add('Author').end().
-          start('th').add('Jan').end().
-          start('th').add('Feb').end().
-          start('th').add('Mar').end().
-          start('th').add('Apr').end().
-          start('th').add('May').end().
-          start('th').add('Jun').end().
-          start('th').add('July').end().
-          start('th').add('Aug').end().
-          start('th').add('Sept').end().
-          start('th').add('Oct').end().
-          start('th').add('Nov').end().
-          start('th').add('Dec').end().
-          start('th').add('').end().
-        end().
+        start('tr').forEach('Author Jan Feb Mar Apr May Jun July Aug Sept Oct Nov Dec Total'.split(' '), function(h) {
+          this.start('th').add(h).end();
+        }).end().
         forEach(this.data.authors, function(a) {
           var total = 0;
           if ( ! authorCounts[a[0]] ) return;
@@ -225,8 +186,8 @@ foam.CLASS({
     {
       name: 'updateSelection',
       isIdled: true,
-      delay: 160,
-//      on: [ 'this.propertyChange.selection' ],
+      delay: 60,
+      on: [ 'this.propertyChange.selection', 'this.propertyChange.hardSelection', 'this.propertyChange.softSelection' ],
       code: function() {
         console.log('selection: ', this.selection);
         this.data.author = this.selection;
@@ -254,49 +215,49 @@ foam.CLASS({
 
   constants: {
     IGNORE_CONTAINS: [
-      'merge',
-      'Revert',
-      'fix syntax error',
-      'Cleanup',
-      "Small fix",
       'Add test',
       'broken build',
+      'Cleanup',
       'fix build',
       'Fix build',
-      'typo',
-      'Fix spacing',
-      'spacing fixes',
       'fix spacing',
+      'Fix spacing',
+      'fix syntax error',
       'Merge release',
+      'merge',
       'Release-',
-      'revert'
+      'revert',
+      'Revert',
+      'Small fix',
+      'spacing fixes',
+      'typo'
     ],
     IGNORE_EQUALS: [
-      'space',
-      'fix spaces',
-      'fix space',
-      'remove space',
-      'removed a space',
-      'Remove space.',
-      'Remove extra space',
+      'Add comment.',
       'Add space',
       'added space',
       'adding spaces',
-      'Updated.',
-      'Formatting',
-      'Formatting.',
-      'Cleanup',
       'cleanup',
-      'remove extra space',
-      'Add comment.',
-      'Spacing.',
-      'Sort exports.',
+      'Cleanup',
       'Fix indentation.',
+      'fix space',
+      'fix spaces',
       'fixing pr',
-      'syntax error',
       'format',
+      'Formatting.',
+      'Formatting',
+      'Indentation.',
+      'remove extra space',
+      'Remove extra space',
+      'Remove space.',
+      'remove space',
       'Remove unused code.',
-      'Indentation.'
+      'removed a space',
+      'Sort exports.',
+      'space',
+      'Spacing.',
+      'syntax error',
+      'Updated.'
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
