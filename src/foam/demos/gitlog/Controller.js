@@ -139,7 +139,9 @@ foam.CLASS({
         aCounts[month]++;
       });
 
-      this.addClass(this.myClass()).start('table')
+      this.
+        addClass(this.myClass()).
+        start('table')
         .attrs({cellpadding: 4, cellspacing: 0, border: 1}).
         start('tr').forEach('Author Jan Feb Mar Apr May Jun July Aug Sept Oct Nov Dec Total'.split(' '), function(h) {
           this.start('th').add(h).end();
@@ -204,7 +206,7 @@ foam.CLASS({
   exports: [ 'file' ],
 
   css: `
-//    tr:hover { background: lightskyblue; }
+    ^ .selected { background: lightskyblue; }
     .foam-u2-TextField { margin-bottom: 14px }
   `,
 
@@ -470,10 +472,11 @@ foam.CLASS({
       name: 'data',
       factory: function() { return []; }
     },
+    { class: 'Boolean', name: 'isHardSelection' },
     {
       class: 'FObjectProperty',
       of: 'foam.demos.gitlog.Commit',
-      name: 'selected',
+      name: 'selection',
       view: 'foam.demos.gitlog.CommitDetailView'
     },
     {
@@ -630,6 +633,7 @@ foam.CLASS({
       var self = this;
 
       this.
+        addClass(this.myClass()).
         start('h2').add('GitLog').end().
 
         start().
@@ -657,7 +661,7 @@ foam.CLASS({
           end().
           start().
             style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
-            add(this.SELECTED).
+            add(this.SELECTION).
           end().
         end();
       ;
@@ -684,7 +688,18 @@ foam.CLASS({
         end().forEach(self.commits, function(d) {
           var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
           this.start('tr').
-            on('mouseover', () => self.selected = d).
+            enableClass('selected', self.selection$.map(s => { return s && s.id === d.id; })).
+            on('click', () => {
+              if ( d.id == self.selection.id ) {
+                self.isHardSelection = ! self.isHardSelection;
+              } else {
+                self.selection = d;
+              }
+            }).
+            on('mouseover', () => { if ( ! self.isHardSelection ) self.selection = d; }).
+            /*
+            on('mouseover', () => self.selection = d).
+            */
             show(self.slot(function(query, author, file, path, project) {
               return self.match(d, query, author, file, path, project);
             })).
