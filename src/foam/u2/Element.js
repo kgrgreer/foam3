@@ -1526,7 +1526,7 @@ foam.CLASS({
         } else if ( c.toE ) {
           var e = c.toE(null, Y);
           if ( foam.core.Slot.isInstance(e) ) {
-            var v = this.slotE_(c);
+            var v = this.slotE_(e);
             if ( Array.isArray(v) ) {
               for ( var j = 0 ; j < v.length ; j++ ) {
                 var u = v[j];
