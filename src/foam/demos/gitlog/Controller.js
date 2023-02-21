@@ -120,15 +120,8 @@ foam.CLASS({
   `,
 
   properties: [
-    'softSelection',
-    'hardSelection',
-    {
-      name: 'selection',
-      expression: function(softSelection, hardSelection) {
-        console.log('******', softSelection, hardSelection);
-        return softSelection || hardSelection || '-- All --';
-      }
-    }
+    { class: 'Boolean', name: 'isHardSelection' },
+    { name: 'selection' }
   ],
 
   methods: [
@@ -155,12 +148,17 @@ foam.CLASS({
           var total = 0;
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
-            enableClass('selected', self.data.author$.map(s => s === a[0])).
+            enableClass('selected', self.selection$.map(s => s === a[0])).
             start('th').
               start('href').
-                on('click',     () => self.hardSelection = a[0]).
-                on('mouseover', () => self.softSelection = a[0]).
-                on('mouseout',  () => self.softSelection = '').
+                on('click',     () => {
+                  if ( self.selection == a[0] ) {
+                    self.isHardSelection = ! self.isHardSelection;
+                  } else {
+                    self.selection = a[0];
+                  }
+                }).
+                on('mouseover', () => { if ( ! self.isHardSelection ) self.selection = a[0]; }).
                 add(a[0]).
               end().
             end().
@@ -186,12 +184,9 @@ foam.CLASS({
     {
       name: 'updateSelection',
       isIdled: true,
-      delay: 60,
-      on: [ 'this.propertyChange.selection', 'this.propertyChange.hardSelection', 'this.propertyChange.softSelection' ],
-      code: function() {
-        console.log('selection: ', this.selection);
-        this.data.author = this.selection;
-      }
+      delay: 160,
+      on: [ 'this.propertyChange.selection' ],
+      code: function() { this.data.author = this.selection; }
     }
   ]
 });
@@ -209,7 +204,7 @@ foam.CLASS({
   exports: [ 'file' ],
 
   css: `
-    tr:hover { background: lightskyblue; }
+//    tr:hover { background: lightskyblue; }
     .foam-u2-TextField { margin-bottom: 14px }
   `,
 
