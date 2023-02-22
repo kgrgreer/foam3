@@ -100,7 +100,7 @@ foam.CLASS({
     function render() {
       const self = this;
 
-      const data$ = this.data$.map(str => foam.String.dedent(str));
+      const data$ = this.data$.map(str => this.dedent_(str));
       this.add(data$.map(function (data) {
         const el = self.E();
         self.renderMarkdown(data, el);
@@ -185,6 +185,32 @@ foam.CLASS({
           break;
         }
       }
+    },
+    function dedent_ (str) {
+      console.log('dedent on ', str)
+      const lines = str.split('\n');
+      let mindent;
+      let checkIndent = line => {
+        const match = line.match(/^(\s+)\S+/);
+        if ( ! match ) return;
+        const indent = match[1].length;
+        mindent = indent;
+        checkIndent = line => {
+          const match = line.match(/^(\s+)\S+/);
+          if ( ! match ) return;
+          const indent = match[1].length;
+          if ( indent >= mindent ) return;
+          mindent = indent;
+        };
+      };
+      for ( const line of lines ) {
+        checkIndent(line);
+      }
+
+      // No lines? No contents!
+      if ( mindent === undefined ) return '';
+
+      return lines.map(l => l.slice(mindent)).join('\n').trim();
     }
   ]
 });

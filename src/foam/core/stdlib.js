@@ -731,37 +731,6 @@ foam.LIB({
         return newString;
       }
     },
-    {
-      name: 'dedent',
-      documentation: `
-        Remove indentation on a block of text.
-      `,
-      code: function (str) {
-        const lines = str.split('\n');
-        let mindent;
-        let checkIndent = line => {
-          const match = line.match(/^(\s+)\S+/);
-          if ( ! match ) return;
-          const indent = match[1].length;
-          mindent = indent;
-          checkIndent = line => {
-            const match = line.match(/^(\s+)\S+/);
-            if ( ! match ) return;
-            const indent = match[1].length;
-            if ( indent >= mindent ) return;
-            mindent = indent;
-          };
-        };
-        for ( const line of lines ) {
-          checkIndent(line);
-        }
-
-        // No lines? No contents!
-        if ( mindent === undefined ) return '';
-
-        return lines.map(l => l.slice(mindent)).join('\n').trim();
-      }
-    }
   ]
 });
 
