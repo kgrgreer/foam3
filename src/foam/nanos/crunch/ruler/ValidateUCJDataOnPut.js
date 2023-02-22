@@ -38,9 +38,6 @@ foam.CLASS({
 
             Logger logger = (Logger) x.get("logger");
             logger.debug("ValidateUCJDataOnPut", "start", ucj);
-            try {
-              Thread.sleep(500);
-            } catch (InterruptedException e) {}
 
             try {
               boolean isRenewable = ucj.getIsRenewable(); // ucj either expired, in grace period, or in renewal period
@@ -79,8 +76,6 @@ foam.CLASS({
             } finally {
               logger.debug("ValidateUCJDataOnPut", "end", ucj);
             }
-
-            
           }
         }, "validate ucj data on put");
       `
