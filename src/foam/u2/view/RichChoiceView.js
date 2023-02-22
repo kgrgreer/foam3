@@ -604,7 +604,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
-                    fullObject: self.fullObject_$,
+                    fullObject$: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
                 .end();
@@ -642,6 +642,9 @@ foam.CLASS({
     function fromProperty(property) {
       this.SUPER(property);
       this.prop = property;
+      if ( ! this.choosePlaceholder && prop.placeholder ) {
+        this.choosePlaceholder = prop.placeholder;
+      }
     }
   ],
 
