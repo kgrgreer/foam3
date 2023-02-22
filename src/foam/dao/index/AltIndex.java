@@ -66,7 +66,7 @@ public class AltIndex
     Object[] s = toObjectArray(state);
 
     for ( int i = 0 ; i < delegates_.size() ; i++ )
-      s[i] = delegates_.get(i).put(s[i], value);
+      try { s[i] = delegates_.get(i).put(s[i], value); } catch (Throwable t) { }
 
     return s;
   }
@@ -76,7 +76,7 @@ public class AltIndex
     Object[] s = toObjectArray(state);
 
     for ( int i = 0 ; i < delegates_.size() ; i++ )
-      s[i] = delegates_.get(i).remove(s[i], value);
+      try { s[i] = delegates_.get(i).remove(s[i], value); } catch (Throwable t) { }
 
     return s;
   }

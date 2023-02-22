@@ -161,20 +161,38 @@ This is the heart of Medusa.`,
             nodes.put(entry.getNode(), entry);
           }
           if ( existing.isFrozen() ) {
+            PM pmClone = PM.create(x, this.getClass().getSimpleName(), "put:clone");
             existing = (MedusaEntry) existing.fclone();
-            ((OMLogger) x.get("OMLogger")).log("medusa.consensus.put.fclone");
+            pmClone.log(x);
           }
           existing.setConsensusHashes(hashes);
           if ( nodes.size() > existing.getConsensusCount() ) {
             existing.setConsensusCount(nodes.size());
             existing.setConsensusNodes(nodes.keySet().toArray(new String[0]));
           }
-          existing = (MedusaEntry) getDelegate().put_(x, existing);
           pm.log(x);
+          if ( replaying.getReplaying() ) {
+            // REVIEW: puts throught the normal stack can be expensive as new entries
+            // broadcast to outer zone instances.  This broadcast is not required
+            // during replay, so write directly to the local medusa MDAO
+            PM pmPut = PM.create(x, this.getClass().getSimpleName(), "put:put:replaying");
+            existing = (MedusaEntry) ((DAO) x.get("internalMedusaDAO")).put_(x, existing);
+            pmPut.log(x);
+          } else {
+            PM pmPut = PM.create(x, this.getClass().getSimpleName(), "put:put");
+            existing = (MedusaEntry) getDelegate().put_(x, existing);
+            pmPut.log(x);
+          }
 
-          if ( nodes.size() >= support.getNodeQuorum() &&
+          // NOTE: no performance change noticed with this commented out.
+          // But if commented out, promote does not need to synchronize, and
+          // one less sychronization is always a good thing.
+          if ( ! replaying.getReplaying() &&
+               nodes.size() >= support.getNodeQuorum() &&
                existing.getIndex() == replaying.getIndex() + 1 ) {
+            PM pmPromote = PM.create(x, this.getClass().getSimpleName(), "put:promote");
             existing = promote(x, existing);
+            pmPromote.log(x);
           }
         }
 
@@ -210,7 +228,6 @@ This is the heart of Medusa.`,
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       DaggerService dagger = (DaggerService) x.get("daggerService");
       PM pm = null;
-      try {
         synchronized ( entry.getId().toString().intern() ) {
           ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
           entry = (MedusaEntry) getDelegate().find_(x, entry.getId());
@@ -250,6 +267,7 @@ This is the heart of Medusa.`,
           entry.setPromoted(true);
           entry = (MedusaEntry) getDelegate().put_(x, entry);
         }
+
         pm = PM.create(x, this.getClass().getSimpleName(), "promote:notify");
 
         // Notify any blocked Primary puts
@@ -257,16 +275,13 @@ This is the heart of Medusa.`,
         registry.notify(x, entry);
 
         replaying.updateIndex(x, entry.getIndex());
+        pm.log(x);
+
         if ( replaying.getReplaying() &&
              replaying.getIndex() >= replaying.getReplayIndex() ) {
           getLogger().info("promote", "replayComplete", replaying.getIndex());
           ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
         }
-      } finally {
-        if ( pm != null ) {
-          pm.log(x);
-        }
-      }
       return entry;
       `
     },

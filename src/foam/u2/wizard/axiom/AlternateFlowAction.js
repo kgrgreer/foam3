@@ -30,8 +30,15 @@ foam.CLASS({
     {
       name: 'code',
       value: function (slot, action) {
+        // If alternateFlow was specified in a journal it needs a relevant context
+        // ???: Maybe the alternateFlow property should be an FObjectSpec instead
+        if ( action.alternateFlow.__context__ != action.__subContext__ ) {
+          action.alternateFlow = action.alternateFlow.clone(action.__subContext__);
+        }
+
         const wizardController = slot.data$.get();
-        wizardController.currentWizardlet.isInAltFlow = true;
+        // only set inaltflow if using altflowwao since it is the only place where this boolean is used
+        if ( wizardController.currentWizardlet.useAltFlowWAO ) wizardController.currentWizardlet.isInAltFlow = true;
         action.alternateFlow.execute((wizardController.data || wizardController).__subContext__);
         action.alternateFlow.handleNext(wizardController);
       }
@@ -40,6 +47,12 @@ foam.CLASS({
       name: 'buttonStyle',
       expression: function (alternateFlow) {
         return alternateFlow.buttonStyle;
+      }
+    },
+    {
+      name: 'icon',
+      expression: function (alternateFlow) {
+        return alternateFlow.icon;
       }
     }
   ]

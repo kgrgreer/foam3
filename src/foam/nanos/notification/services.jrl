@@ -185,18 +185,24 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"pop3",
-  "lazy":true,
-  "serve":true,
-  "boxClass":"foam.nanos.notification.email.POP3EmailSkeleton",
-  "serviceClass":"foam.nanos.notification.email.POP3EmailService",
-  "client":"{ \"class\":\"foam.nanos.notification.email.ClientPOP3EmailService\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/pop3\" } }"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"SMTPConfig",
-  "lazy": false,
-  "service":{"class":"foam.nanos.notification.email.SMTPConfig"}
+  "class": "foam.nanos.boot.NSpec",
+  "name": "resendNotificationService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass":"foam.nanos.notification.ResendNotificationServiceInterfaceSkeleton",
+  "serviceClass": "foam.nanos.notification.ResendNotificationService",
+  "client":
+    """
+      {
+        "class":"foam.nanos.notification.ClientResendNotificationService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/resendNotificationService"
+          }
+        }
+      }
+    """
 })

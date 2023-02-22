@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.data',
   name: 'InlineTransientSaver',
-  implements: [ 'foam.u2.wizard.data.Saver' ],
+  extends: 'foam.u2.wizard.data.ProxySaver',
   documentation: `
     This saver invokes an inline wizard based on the root capability for a
     transient wizard (a Capable wizard where the Capable object is disposed).
@@ -17,9 +17,14 @@ foam.CLASS({
     MapHolder, it will be used to populate the subcontext.
   `,
 
+  issues: [
+    'inline transient wizards cannot be re-loaded via alternate flows'
+  ],
+
   imports: [
     'crunchController',
-    'wizardController'
+    'wizardController',
+    'wizardlet'
   ],
 
   requires: [
@@ -46,6 +51,10 @@ foam.CLASS({
 
   methods: [
     async function save (data) {
+      // InlineTransientSaver will create duplicate wizards if it is called
+      // more than once, so deactivate this wizardlet's saver.
+      this.wizardlet.wao.saver = { class: 'foam.u2.wizard.data.NullSaver' };
+
       let subX = this.wizardController.__subContext__;
       if ( data && this.MapHolder.isInstance(data) ) {
         subX = subX.createSubContext(data.value);
@@ -67,7 +76,7 @@ foam.CLASS({
           { put: false },
           subX, this.sequenceExtras
         );
-        return;
+        return await this.delegate.save(data);
       }
 
       if ( this.Capable.isInstance(root) ) {
@@ -82,9 +91,9 @@ foam.CLASS({
           );
         }
 
-        return;
+        return await this.delegate.save(data);
       }
-
+      await this.delegate.save(data);
       throw new Error('could not instantiate a wizard from this object:', root);
     }
   ]

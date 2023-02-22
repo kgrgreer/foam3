@@ -64,7 +64,6 @@ foam.CLASS({
       postSet: function (_, n) {
         this.setupWizardletListeners(n);
         this.determineWizardActions(n);
-        this.progressMax = n?.length;
       }
     },
     {
@@ -83,8 +82,9 @@ foam.CLASS({
           sectionIndex: 0,
         });
       },
-      preSet: function(_, n){
-        this.wizardlets[n.wizardletIndex].load()
+      preSet: function(o, n) {
+        if ( n?.wizardletIndex != o?.wizardletIndex )
+          this.wizardlets[n.wizardletIndex].load({});
         return n;
       },
       postSet: function (o, n) {
@@ -92,7 +92,8 @@ foam.CLASS({
           this.wizardlets[o.wizardletIndex].isCurrent = false;
           this.wizardlets[n.wizardletIndex].isCurrent = true;
         }
-        this.progressValue = n?.wizardletIndex;
+        let a = this.wizardlets.slice(0, n?.wizardletIndex + 1);
+        this.progressValue = a.filter(v => v.isVisible).length;
         this.activePosition = n;
       }
     },
@@ -255,6 +256,11 @@ foam.CLASS({
           this.onWizardletAvailability(wizardletIndex, isAvailable$.get());
         }));
 
+        var isVisible$ = w.isVisible$;
+        this.wsub.onDetach(isVisible$.sub(() => {
+          this.onWizardletVisibility();
+        }));
+
         // Bind availability listener for each wizardlet section
         w.sections.forEach((section, sectionIndex) => {
           var sectionPosition = this.WizardPosition.create({
@@ -322,9 +328,20 @@ foam.CLASS({
       if ( ! section.isAvailable ) return false;
       return true;
     },
-    async function next() {
-      let wizardlet = this.currentWizardlet;
+    function debugLog (title, position, details) {
+      const logger = console;
 
+      logger.debug(`%c${title}: %c${position && position.toSummary() || '--'} %o`,
+        "font-weight: bold",
+        "color: #fc0373;",
+        details || {}
+      );
+    },
+    async function next(firstWizardletAlreadySaved) {
+      const debugLog = this.debugLog.bind(this);
+
+      let wizardlet      = this.currentWizardlet;
+      let firstWizardlet = this.currentWizardlet;
       // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
       // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
       // (i.e. we're in the loop below instead)
@@ -340,59 +357,117 @@ foam.CLASS({
 
       const iterator = this.wizardPosition.iterate(this.wizardlets);
 
-      for ( const pos of iterator ) {
-        nextPositionWizardlet = this.wizardlets[pos.wizardletIndex];
-        if ( ! nextPositionWizardlet.isAvailable ) continue;
+      let referencePosition = this.wizardPosition;
 
-        if ( nextPositionWizardlet != wizardlet ) {
-          try {
-            await wizardlet.save();
-          } catch (e) {
-            let { exception, hint } = await wizardlet.handleException(
-              this.WizardEventType.WIZARDLET_SAVE, e
-            );
+      while ( referencePosition ) {
+        let wizardlet = this.wizardlets[referencePosition.wizardletIndex];
+        let nextPosition = referencePosition.getNext(this.wizardlets);
+        nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+        // if ( ! nextPositionWizardlet.isAvailable ) continue;
 
-            if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
-              if ( this.canLandOn(this.wizardPosition) ) return false;
-              hint = this.WizardErrorHint.ABORT_FLOW;
-            }
+        // It is possible that 'referencePosition' and 'nextPosition' are
+        // sections of the same wizardlet.
+        const atWizardletBoundary = ! nextPosition || nextWizardlet != wizardlet;
 
-            if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
-              throw this.lastException = exception || e;
-            }
+        debugLog('analyzing wizard position', referencePosition, {
+          atWizardletBoundary,
+          nextWizardlet,
+          nextPosition
+        });
+        
+        // Not much to do between sections of the same wizardlet, just
+        // land on one if it's available
+        if ( ! atWizardletBoundary ) {
+          if ( this.canLandOn(nextPosition) ) {
+            debugLog('landing on section', referencePosition, {
+              nextPosition
+            });
+            this.wizardPosition = nextPosition;
+            return false;
           }
 
-          this.onWizardletCompleted(wizardlet);
-          wizardlet = nextPositionWizardlet;
-          this.activePosition = pos;
+          referencePosition = referencePosition.getNext(this.wizardlets);
+          continue;
+        }
 
-          try {
-            await wizardlet.load();
-          } catch (e) {
-            let { exception, hint } = await wizardlet.handleException(
-              this.WizardEventType.WIZARDLET_LOAD, e
-            );
+        try {
+          debugLog('saving wizardlet', referencePosition, {
+            wizardlet
+          });
+          if ( wizardlet != firstWizardlet || ! firstWizardletAlreadySaved ) await wizardlet.save();
+        } catch (e) {
+          let { exception, hint } = await wizardlet.handleException(
+            this.WizardEventType.WIZARDLET_SAVE, e
+          );
 
-            if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
-              throw this.lastException = exception || e;
-            }
+          if ( hint == this.WizardErrorHint.AWAIT_FURTHER_ACTION ) {
+            if ( this.canLandOn(this.wizardPosition) ) return false;
+            hint = this.WizardErrorHint.ABORT_FLOW;
+          }
+
+          if ( hint == this.WizardErrorHint.ABORT_FLOW ) {
+            throw this.lastException = exception || e;
           }
         }
 
-        if ( this.canLandOn(pos) ) {
-          this.wizardPosition = pos;
+        this.onWizardletCompleted(wizardlet);
+        this.activePosition = nextPosition;;
+
+        // Re-calculate next position and next wizardlet
+        // (in case an inline wizard was added while saving)
+        nextPosition = referencePosition.getNext(this.wizardlets);
+        nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+        if ( ! nextWizardlet ) break;
+
+        // Load the next available wizardlets; ignore unavailable wizardlets
+        while ( nextWizardlet && ! nextWizardlet.isAvailable ) {
+          debugLog('skipping unavailable wizardlet', nextPosition, {
+            wizardlet: nextWizardlet
+          });
+          nextPosition = nextPosition.getNext(this.wizardlets);
+          nextWizardlet = nextPosition && this.wizardlets[nextPosition.wizardletIndex];
+        }
+        if ( ! nextWizardlet ) break;
+
+        await this.tryWizardletLoad(nextWizardlet, nextPosition);
+
+        if ( this.canLandOn(nextPosition) ) {
+          console.debug(`%clanding: %c${nextPosition && nextPosition.toSummary()}`,
+            "font-weight: bold",
+            "color: #fc0373;");
+          debugLog('landing on wizardlet', nextPosition);
+          this.wizardPosition = nextPosition;
           return false;
         }
+
+        referencePosition = nextPosition;
       }
 
-      try {
-        await wizardlet.save();
-      } catch (e) {
-        this.lastException = e;
-        throw e;
-      }
+
+      // try {
+      //   await wizardlet.save();
+      // } catch (e) {
+      //   this.lastException = e;
+      //   throw e;
+      // }
       this.status = this.WizardStatus.COMPLETED;
       return true;
+    },
+    async function tryWizardletLoad(wizardlet, wizardletPosition) {
+      try {
+        this.debugLog('loading wizardlet', wizardletPosition, {
+          wizardlet: wizardlet
+        });
+        await wizardlet.load();
+      } catch (e) {
+        let { exception, hint } = await wizardlet.handleException(
+          this.WizardEventType.WIZARDLET_LOAD, e
+        );
+
+        if ( hint != this.WizardErrorHint.CONTINUE_AS_NORMAL ) {
+          throw this.lastException = exception || e;
+        }
+      }
     },
     function back() {
       let previousScreen = this.previousScreen;
@@ -458,6 +533,14 @@ foam.CLASS({
         if ( ! this.autoPositionUpdates ) return;
         // Force a position update so views recalculate state
         this.wizardPosition = this.wizardPosition.clone();
+      },
+    },
+    {
+      name: 'onWizardletVisibility',
+      framed: true,
+      code: function() {
+        // Force a position update so views recalculate state
+        this.progressMax = this.wizardlets?.filter(v => v.isVisible).length;
       },
     },
     function onWizardletValidity() {

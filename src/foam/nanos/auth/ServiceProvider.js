@@ -69,13 +69,6 @@ foam.CLASS({
       class: 'Long',
       name: 'anonymousUser',
       documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.crunch.Capability',
-      name: 'generalCapability',
-      documentation: `Capability that needs to be granted to proceed to the app.
-      Checked for status in ApplicationController.`
     }
   ],
 
@@ -83,7 +76,7 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       javaCode: `
-        return super.grantsPermission(permission) || prerequisiteImplies(getX(), permission);
+        return super.grantsPermission(x, permission) || prerequisiteImplies(x, permission);
       `
     },
     {

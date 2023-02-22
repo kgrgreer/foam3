@@ -16,20 +16,32 @@ foam.CLASS({
   properties: [
     ['precision', 2],
     ['trimZeros', false],
-    ['isMerged',  false]
+    ['onKey', true],
+    {
+      class: 'Reference',
+      name: 'currency',
+      of: 'foam.core.Currency',
+      value: 'CAD'
+    },
+    'curr_'
   ],
 
   methods: [
-    function dataToText(val) {
-      return this.SUPER(val / 100);
+    async function render() {
+      let sup = this.SUPER;
+      let self = this;
+      this.curr_ = await this.currency$find;
+      sup.call(self);
     },
 
     function textToData(text) {
-      return Math.round(this.SUPER(text) * 100);
+      const delim = new RegExp((this.curr_?.delimiter ?? ','), 'g');
+      let plainText = text.replace(delim, '')
+      return Math.round(this.SUPER(plainText) * 100);
     },
 
     function formatNumber(val) {
-      return val.toFixed(2);
+      return this.curr_ ? this.curr_.format(val, true, true) : val.toFixed(2);
     },
 
     function link() {

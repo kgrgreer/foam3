@@ -1342,7 +1342,7 @@ foam.CLASS({
       postSet: function(o, n) {
         n.canvas = this;
 
-        if ( this.attributeMap.width === undefined || this.attributeMap.height === undefined ) {
+        if ( this.getAttribute('width') === undefined || this.getAttribute('height') === undefined ) {
           this.setAttribute('width',  n.width);
           this.setAttribute('height', n.height);
         }

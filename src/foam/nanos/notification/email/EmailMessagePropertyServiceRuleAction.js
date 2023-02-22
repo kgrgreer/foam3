@@ -32,7 +32,7 @@ foam.CLASS({
         EmailPropertyService service = (EmailPropertyService) x.get("emailPropertyService");
         service.apply(x, null, emailMessage, null);
       } catch (Exception e) {
-        Loggers.logger(x, this).warning("EmailPropertyService error", e.getMessage(), e);
+        Loggers.logger(x, this).warning("EmailPropertyService", e.getMessage(), e);
         throw new RuntimeException("EmailPropertyService error: "+e.getMessage());
       }
 

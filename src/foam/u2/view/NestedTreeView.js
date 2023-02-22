@@ -28,7 +28,7 @@ foam.CLASS({
         addClass(self.myClass('toggle-icon')).
         style({ 'transform': 'rotate(180deg)' }).
         end().
-        callIfElse(self.rowConfig?.[this.data.id], 
+        callIfElse(self.rowConfig?.[this.data.id],
           function() {
             this.tag(self.rowConfig[self.data.id]);
           },
@@ -87,7 +87,12 @@ foam.CLASS({
 
   properties: [
     { name: 'currentRootStack', class: 'Array'  },
-    'currentRoot'
+    'currentRoot',
+    {
+      class: 'Boolean',
+      name: 'continueNesting',
+      documentation: 'When set to true, all parent/child relationships are opened as nested trees instead of inline trees'
+    }
   ],
 
   methods: [
@@ -103,7 +108,7 @@ foam.CLASS({
           var dao = this.data$proxy.where(
             this.EQ(of.getAxiomByName(this.relationship.inverseName), currentRoot || this.defaultRoot));
           return this.E()
-          .callIf(currentRoot, function() { 
+          .callIf(currentRoot, function() {
             this
               .startContext({ data: self })
                 .tag(self.TreeViewHeading, {
@@ -122,15 +127,17 @@ foam.CLASS({
               self.selection = obj;
               isFirstSet = true;
             }
-            return self.TreeViewRow.create({
+            return this.E().tag({
+              class:        foam.u2.view.TreeViewRow,
               data:         obj,
               relationship: self.relationship,
               expanded:     self.startExpanded,
               formatter:    self.formatter,
               query:        self.query,
-              onClickAddOn: self.onClickAddOn1,
+              // Unless specified, stop nesting after one level
+              onClickAddOn: this.continueNesting || ! currentRoot ? self.onClickAddOn1 : self.onClickAddOn,
               level:        1
-            }, this);
+            });
           });
         }));
     }

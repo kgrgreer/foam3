@@ -16,6 +16,11 @@ foam.CLASS({
       name: 'fontFamily',
       value: '$font1',
       fallback: ' -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
+    },
+    {
+      name: 'background',
+      value: '$grey50',
+      fallback: 'white'
     }
   ],
   css: `
@@ -25,7 +30,7 @@ foam.CLASS({
     }
 
     body {
-      background: $grey50;
+      background: $background;
       color: $black;
       font-family: $fontFamily;
       font-size: 1.4rem;

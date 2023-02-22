@@ -103,13 +103,11 @@ foam.CLASS({
         foam.nanos.logger.Loggers.logger(x).error("crunchService not present in x");
         throw new AuthorizationException();
       }
-      
+
       DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
       ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
-      
-      if ( sp == null ) {
-        return false;
-      }
+
+      if ( sp == null ) return false;
 
       // need to do setX() here. at this point we know that
       // the crunchService is present, but it might not be
@@ -117,7 +115,7 @@ foam.CLASS({
       // a crash
       sp.setX(x);
 
-      return sp.grantsPermission(ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
+      return sp.grantsPermission(x, ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
       `
     }
   ]

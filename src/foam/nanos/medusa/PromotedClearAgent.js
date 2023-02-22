@@ -45,7 +45,6 @@ foam.CLASS({
       value: 'internalMedusaDAO'
     },
     {
-      // REVIEW: Get this from DaggerService?
       documentation: 'Presently Dagger service bootstraps two entries.',
       name: 'minIndex',
       class: 'Long',
@@ -81,6 +80,7 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
       timer.schedule(new ContextAgentTimerTask(getX(), this),
@@ -90,18 +90,30 @@ foam.CLASS({
       `
     },
     {
+      name: 'stop',
+      javaCode: `
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        Loggers.logger(getX(), this).info("stop");
+        timer.cancel();
+        clearTimer();
+      }
+      `
+    },
+    {
       name: 'execute',
       args: 'Context x',
       javaCode: `
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      long minIndex = Math.max(getMinIndex(), ((DaggerService) x.get("daggerService")).getMinIndex());
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       long maxIndex = replaying.getIndex() - getRetain();
       try {
         DAO dao = (DAO) x.get(getServiceName());
         dao = dao.where(
           AND(
-            GT(MedusaEntry.INDEX, getMinIndex()),
+            GT(MedusaEntry.INDEX, minIndex),
             LTE(MedusaEntry.INDEX, maxIndex),
             EQ(MedusaEntry.PROMOTED, true)
           )

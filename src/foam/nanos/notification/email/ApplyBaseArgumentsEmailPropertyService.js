@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.notification.email',
   name: 'ApplyBaseArgumentsEmailPropertyService',
 
@@ -40,9 +40,7 @@
         User user = (User) emailMessage.findUser(getX());
         x = foam.util.Auth.sudo(x, user);
 
-        if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-          emailMessage.setSpid(user.getSpid());
-        }
+        emailMessage.setSpid(user.getSpid());
 
         Theme theme = (Theme) x.get("theme");
         SupportConfig supportConfig = theme.getSupportConfig();
@@ -67,7 +65,7 @@
         // template name check
         String templateName = (String) templateArgs.get("template");
         if ( SafetyUtil.isEmpty(templateName) ) {
-          logger.info("EmailTemplate not found");
+          logger.debug("EmailTemplate not found");
           return emailMessage;
         }
 
@@ -86,12 +84,21 @@
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+        templateArgs.put("supportLogo", supportConfig.getSupportLogo());
         templateArgs.put("termsAndCondLink", url + appConfig.getTermsAndCondLink());
         templateArgs.put("termsAndCondLabel", appConfig.getTermsAndCondLabel());
         templateArgs.put("copyright", appConfig.getCopyright());
         templateArgs.put("privacyUrl", url + appConfig.getPrivacyUrl());
         templateArgs.put("privacyLabel", appConfig.getPrivacy());
 
+        // Temporary color until token support is added for email
+        templateArgs.put("theme.primary1", theme.getPrimary1());
+        templateArgs.put("theme.primary2", theme.getPrimary2());
+        templateArgs.put("theme.primary3", theme.getPrimary3());
+        templateArgs.put("theme.primary4", theme.getPrimary4());
+        templateArgs.put("theme.primary5", theme.getPrimary5());
+        templateArgs.put("theme.white", theme.getWhite());
+        templateArgs.put("theme.black", theme.getBlack());
 
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());

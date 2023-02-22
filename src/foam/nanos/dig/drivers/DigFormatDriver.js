@@ -46,8 +46,9 @@ foam.CLASS({
   properties: [
     {
       name: 'format',
-      class: 'Enum',
-      of: 'foam.nanos.http.Format'
+      class: 'Reference',
+      of: 'foam.nanos.dig.format.DigFormat',
+      targetDAOKey: 'digFormatDAO'
     },
     {
       name: 'logger',
@@ -177,8 +178,15 @@ foam.CLASS({
 
       long pageSize = DigFormatDriver.MAX_PAGE_SIZE;
       if ( ! SafetyUtil.isEmpty(limit) ) {
+        AuthService auth = (AuthService) x.get("auth");
         long l = Long.valueOf(limit);
-        if ( l != AbstractDAO.MAX_SAFE_INTEGER && l < pageSize) {
+        
+        if ( l == 0 ) {
+          if ( auth.check(x, "service.dig.read-all-records") ) {
+            // page size of 0 allows for maximum record count
+            pageSize = AbstractDAO.MAX_SAFE_INTEGER;
+          }
+        } else if ( l != AbstractDAO.MAX_SAFE_INTEGER && l < pageSize && l > 0 ) {
           pageSize = l;
         }
       }

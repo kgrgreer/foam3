@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// To run, include ?u3=true in URL
+
 /*
 TODO:
  - Remove use of E() and replace with create-ing axiom to add same behaviour.
@@ -40,7 +42,10 @@ PORTING U2 to U3:
   - remove slotE_()
   - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
-  - NEXT_ID() removed. Use new Object().$UID instead.
+  - NEXT_ID() removed. Use new Object().$UID instead. (all done)
+  - onAddChildren() no longer supported
+  - setChildren(slot) replace with this.add(function())
+
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -60,71 +65,6 @@ becomes:
   - could we get rid of subSubContext be updating subContext?
   - Move CSS code out and share with U2
 */
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'ControllerMode',
-
-  documentation: 'CRUD controller modes: CREATE/VIEW/EDIT.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'modePropertyName'
-    },
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode; }
-    }
-  ],
-
-  methods: [
-    function getVisibilityValue(prop) {
-      return prop.visibility || prop[this.modePropertyName];
-    }
-  ],
-
-  values: [
-    {
-      name: 'CREATE',
-      modePropertyName: 'createVisibility'
-    },
-    {
-      name: 'VIEW',
-      modePropertyName: 'readVisibility',
-      restrictDisplayMode: function(mode) {
-        return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
-      }
-    },
-    {
-      name: 'EDIT',
-      modePropertyName: 'updateVisibility'
-    }
-  ]
-});
-
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'DisplayMode',
-
-  documentation: 'View display mode; how or if a view is displayed.',
-
-  properties: [
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode === foam.u2.DisplayMode.RW ? this : mode; }
-    }
-  ],
-
-  values: [
-    { name: 'RW', label: 'Read-Write' },
-    { name: 'DISABLED' },
-    { name: 'RO', label: 'Read-Only' },
-    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
-  ]
-});
-
 
 foam.CLASS({
   package: 'foam.u2',
@@ -166,13 +106,19 @@ foam.CLASS({
   name: 'SlotNode',
   extends: 'foam.u2.Node',
 
+  // TODO: store the proxy node instead of element_ so it can be properly detached
+
   properties: [
     'slot',
+    {
+      name: 'node',
+      factory: function() { return foam.u2.Text.create({text: 'filler'}, this); }
+    },
     {
       name: 'element_',
       // Create a placeholder to insert into the right location, to be replaced
       // by slot value.
-      factory: function() { return this.document.createTextNode(''); }
+      getter: function() { return this.node.element_; }
     }
   ],
 
@@ -180,6 +126,10 @@ foam.CLASS({
     function load() {
       this.slot.sub(this.update);
       this.update();
+    },
+
+    function style(map) {
+      this.node.style && this.node.style(map);
     }
   ],
 
@@ -188,26 +138,31 @@ foam.CLASS({
       name: 'update',
 //      isFramed: true,
       code: function() {
-        var update_ = (val) => {
-          var e;
+        var update_ = val => {
+          var n;
+
           if ( val === undefined || val === null ) {
-            e = foam.u2.Text.create({}, this);
+            n = foam.u2.Text.create({}, this);
           } else if ( this.isLiteral(val) ) {
-            e = foam.u2.Text.create({text: val}, this);
+            n = foam.u2.Text.create({text: val}, this);
           } else if ( foam.u2.Element.isInstance(val) ) {
-            e = val;
+            n = val;
           } else if ( foam.Array.isInstance(val) ) {
-            e = foam.u2.Element.create({nodeName:'span'}, this);
-            e.add.apply(e, val);
+            n = foam.u2.Element.create({nodeName:'span'}, this);
+            n.add.apply(n, val);
           } else if ( val.then ) {
-            val.then(e => update_(e));
+            val.then(n => update_(n));
             return;
           } else {
             console.log('Unknown slot type: ', typeof val);
             debugger;
           }
-          this.element_.parentNode.replaceChild(e.element_, this.element_);
-          this.element_ = e.element_;
+
+          this.element_.parentNode.replaceChild(n.element_, this.element_);
+          n.load && n.load();
+          var old = this.node;
+          this.node = n;
+          old.detach();
         };
 
         update_(this.slot.get());
@@ -356,122 +311,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'CSS',
-
-  documentation: 'Axiom to install CSS.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'code'
-    },
-    {
-      class: 'String',
-      name: 'allCode_',
-      factory: function() {
-      }
-    },
-    {
-      name: 'name',
-      factory: function() { return 'CSS-' + Math.abs(foam.util.hashCode(this.code)); }
-    },
-    {
-      class: 'Boolean',
-      name: 'expands_',
-      documentation: 'True iff the CSS contains a ^ which needs to be expanded.',
-      expression: function(code) {
-        return code.includes('^') || code.includes(foam.u2.Element.CSS_SELF);
-      }
-    }
-  ],
-
-  methods: [
-    function maybeInstallInDocument(X, cls) {
-      var document = X.document;
-      if ( ! document ) return;
-      var installedStyles = document.installedStyles || ( document.installedStyles = {} );
-      if ( this.expands_ ) {
-        var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
-        if ( ! map[cls.id] ) {
-          map[cls.id] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
-        }
-      } else {
-        if ( ! installedStyles[this.$UID] ) {
-          installedStyles[this.$UID] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
-        }
-      }
-    },
-
-    function installInClass(cls) {
-      // Install myself in this Window, if not already there.
-      var oldCreate  = cls.create;
-      var axiom      = this;
-      var isFirstCSS = ! cls.private_.hasCSS;
-
-      if ( isFirstCSS ) cls.private_.hasCSS = true;
-
-      cls.create = function(args, opt_parent) {
-        var X = opt_parent ?
-          ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
-          foam.__context__;
-
-        // Now call through to the original create
-        try {
-          return oldCreate.call(this, args, X);
-        } finally {
-          // if a class has inheritCSS: false then finish installing its other
-          // CSS axioms, but prevent any parent classes from installing theirs
-          // We put this in the context to communicate to other CSSAxioms
-          // down the chain. The last/first one will revert back to the original
-          // X so that objects aren't created with lastClassToInstallCSSFor
-          // in their contexts.
-          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-            // Install CSS if not already installed in this document for this cls
-            axiom.maybeInstallInDocument(X, this);
-          }
-
-          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-            X = X.createSubContext({
-              lastClassToInstallCSSFor: this,
-              originalX: X
-            });
-          }
-
-          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-        }
-      };
-    },
-
-    function expandCSS(cls, text) {
-      if ( ! this.expands_ ) return text;
-
-      /* Performs expansion of the ^/<< shorthand on the CSS. */
-      // TODO: Parse and validate the CSS.
-      // TODO: Add the automatic prefixing once we have the parser.
-      var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
-        var c = next.charCodeAt(0);
-        // Check if the next character is an uppercase or lowercase letter,
-        // number, - or _. If so, add a - because this is a modified string.
-        // If not, there's no extra -.
-        if ( (65 <= c && c <= 90) || (97 <= c && c <= 122) ||
-            (48 <= c && c <= 57) || c === 45 || c === 95 ) {
-          return base + '-' + next;
-        }
-
-        return base + next;
-      });
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'DefaultValidator',
 
   documentation: 'Default Element validator.',
@@ -545,6 +384,10 @@ foam.CLASS({
     'translationService?'
   ],
 
+  exports: [
+    'namespace'
+  ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -590,11 +433,6 @@ foam.CLASS({
         '39': 'right',
         '40': 'down'
       }
-    },
-    // ???: alternatively, there could be a sub-class of Element called SVGElement
-    {
-      name: 'SVG_TAGS',
-      value: { svg: true, g: true, rect: true, path: true }
     }
   ],
 
@@ -609,8 +447,8 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        var ret = this.SVG_TAGS[this.nodeName] ?
-          this.document.createElementNS("http://www.w3.org/2000/svg", this.nodeName) :
+        var ret = this.namespace ?
+          this.document.createElementNS(this.namespace, this.nodeName) :
           this.document.createElement(this.nodeName);
         if ( this.hasOwnProperty('id') ) ret.id = this.id;
         return ret;
@@ -636,6 +474,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'tooltip',
+      attribute: true,
       postSet: function(o, n) {
         if ( n && ! o ) {
           this.Tooltip.create({target: this, text$: this.tooltip$});
@@ -681,20 +520,10 @@ foam.CLASS({
       value: 'div'
     },
     {
-      name: 'attributeMap',
-      documentation: 'Same information as "attributes", but in map form for faster lookup',
-      transient: true,
-      factory: function() { return {}; }
-    },
-    {
-      name: 'attributes',
-      documentation: 'Array of {name: ..., value: ...} attributes.',
-      factory: function() { return []; },
-      postSet: function(_, attrs) {
-        this.attributeMap = {};
-        for ( var i = 0 ; i < attrs.length ; i++ ) {
-          this.attributeMap[attrs[i].name] = attrs[i];
-        }
+      class: 'String',
+      name: 'namespace',
+      factory: function() {
+        return this.__context__['namespace'] || this.nodeName === 'svg' ? 'http://www.w3.org/2000/svg' : '';
       }
     },
     {
@@ -770,6 +599,11 @@ foam.CLASS({
   methods: [
     // from state
 
+    function replaceElement_(el) {
+      el.parentNode.replaceChild(this.element_, el);
+      this.load();
+    },
+
     // TODO: for backward compatibility with U2, remove when all code ported
     function el() {
       return Promise.resolve(this.el_());
@@ -780,16 +614,20 @@ foam.CLASS({
     },
 
     function load() {
+      // Needed for OverlayDropdown which overrides add(), but shouldn't.
+      // TODO: Fix OverlayDropdown to use content$ and then remove this.
+      var customAdd = this.add != foam.u2.Element.prototype.add;
       // disable adding to content$ during render()
-      this.add = function() { return this.add_(arguments, this); }
+      if ( ! customAdd ) this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
       this.render();
-      this.add = foam.u2.Element.prototype.add;
+      if ( ! customAdd ) this.add = foam.u2.Element.prototype.add;
 
       // Is also called in postSet of focused property, but if DOM not added
       // to document yet, then that doesn't work, so try again now.
       if ( this.focused ) this.element_.focus();
     },
+
     function remove() {
       if ( this.parentNode ) {
         // parent will remove from DOM and detach
@@ -798,16 +636,6 @@ foam.CLASS({
         this.element_.remove();
         this.detach();
       }
-    },
-    function onReplaceChild(oldE, newE) {
-      var e = this.el_();
-      if ( ! e ) {
-        console.warn('Missing Element: ', this.id);
-        return;
-      }
-      // TODO
-      oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
-      newE.load && newE.load();
     },
 
     function getBoundingClientRect() {
@@ -1032,10 +860,6 @@ foam.CLASS({
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
 
-      if ( name === 'title' && ! this.tooltip && value ) {
-        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
-      }
-
       // handle slot binding, ex.: data$: ...,
       // Remove if we add a props() method
       if ( name.endsWith('$') ) {
@@ -1068,16 +892,6 @@ foam.CLASS({
         } else {
           foam.assert(foam.util.isPrimitive(value), 'Attribute value must be a primitive type.');
 
-          var attr = this.getAttributeNode(name);
-
-          if ( attr ) {
-            attr.value = value;
-          } else {
-            attr = { name: name, value: value };
-            this.attributes.push(attr);
-            this.attributeMap[name] = attr;
-          }
-
           if ( this.PSEDO_ATTRIBUTES[name] ) {
             this.element_[name] = value;
           } else {
@@ -1086,57 +900,32 @@ foam.CLASS({
         }
       }
 
+      if ( name === 'title' && ! this.tooltip && value ) {
+        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
+      }
+
       return this;
     },
 
     function removeAttribute(name) {
-      /* Remove attribute named 'name'. */
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        if ( this.attributes[i].name === name ) {
-          this.attributes.splice(i, 1);
-          delete this.attributeMap[name];
-          if ( this.PSEDO_ATTRIBUTES[name] ) {
-            this.element_[name] = '';
-          } else {
-            this.element_.removeAttribute(name);
-          }
-          break;
-        }
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        this.element_[name] = '';
+      } else {
+        this.element_.removeAttribute(name);
       }
       return this;
     },
 
-    function getAttributeNode(name) {
-      /*
-        Get {name: ..., value: ...} attributeNode associated
-        with 'name', if exists.
-      */
-      return this.attributeMap[name];
-    },
-
     function getAttribute(name) {
-      // TODO: add support for other dynamic attributes also
-      // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
-        var value = this.el_()[name];
-        var attr  = this.getAttributeNode(name);
-
-        if ( attr ) {
-          attr.value = value;
-        } else {
-          attr = { name: name, value: value };
-          this.attributes.push(attr);
-          this.attributeMap[name] = attr;
-        }
-
-        return value;
+      if ( this.PSEDO_ATTRIBUTES[name] ) {
+        return this.element_[name];
       }
 
       /*
         Get value associated with attribute 'name',
         or undefined if attribute not set.
       */
-      var attr = this.getAttributeNode(name);
+      var attr = this.element_.getAttributeNode(name);
       return attr && attr.value;
     },
 
@@ -1170,7 +959,10 @@ foam.CLASS({
         if ( cs[i] === oldE ) {
           cs[i] = newE;
           newE.parentNode = this;
-          this.onReplaceChild.call(this, oldE, newE);
+          debugger;
+          oldE.element_.parentNode.replaceChild(oldE.element_, newE.element_);
+//          oldE.element_.outerHTML = '<' + this.nodeName + '></' + this.nodeName + '>';
+          newE.load && newE.load();
           oldE.remove();
           return;
         }
@@ -1185,7 +977,6 @@ foam.CLASS({
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
-      debugger;
       var ls = this.elListeners;
       for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
@@ -1364,9 +1155,14 @@ foam.CLASS({
         }
         return this.add(translation);
       }
-      console.warn('Missing Translation Service in ', this.cls_.name);
+//      console.warn('Missing Translation Service in ', this.cls_.name);
       opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
+    },
+
+    function recall(fn, opt_self) {
+      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this}, this));
+      return this;
     },
 
     function add() {
@@ -1385,6 +1181,7 @@ foam.CLASS({
       }
 
       if ( foam.Function.isInstance(c) ) {
+        console.warn('Deprecated use of add(Function). Use recall() instead.');
         c = foam.u2.FunctionNode.create({self: this, code: c});
       } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
@@ -1483,11 +1280,13 @@ foam.CLASS({
     //   return this.insertAt_(children, reference, true);
     // },
 
-    function setChildren() {
+    function setChildren(slot) {
       this.removeAllChildren();
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        this.add(arguments[0]);
-      }
+      this.add(slot);
+      /*.map(a => {
+        this.add(a);
+      });
+      */
     },
 
     function removeAllChildren() {
@@ -1791,23 +1590,40 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyBorder
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     }
   ],
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
-
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
-
-      e.fromProperty && e.fromProperty(this);
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: this }, args, X);
+    },
+
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        el.data$ = X.data$.dot(this.name);
+      }
+
+      el.fromProperty && el.fromProperty(this);
+
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2035,16 +1851,16 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      expression: function(label, labelFormatter) {
+      expression: function(label, checkboxLabelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
           label: this.help,
-          labelFormatter: labelFormatter
+          labelFormatter: checkboxLabelFormatter
         };
       }
     },
     {
-      name: 'labelFormatter'
+      name: 'checkboxLabelFormatter'
     }
   ]
 });
@@ -2353,8 +2169,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       this.updateMode_(this.mode);
-      // this.enableClass('error', this.error_$);
-      this.setAttribute('title', this.error_$);
+      this.enableClass('error', this.error_$);
+      // this.setAttribute('title', this.error_$);
     },
 
     function updateMode_() {
@@ -2493,7 +2309,7 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.onDetach(this.data$.sub(this.update));
+      this.data$.sub(this.update);
     }
   ],
 

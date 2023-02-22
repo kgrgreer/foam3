@@ -316,9 +316,7 @@ foam.CLASS({
 
   listeners: [
     function mementoChange() {
-      if ( ! this.currentDAO ) {
-        return;
-      }
+      if ( ! this.currentDAO ) return;
       var x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');

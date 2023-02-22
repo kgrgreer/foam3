@@ -27,6 +27,10 @@ foam.CLASS({
       name: 'label'
     },
     {
+      class: 'String',
+      name: 'icon'
+    },
+    {
       class: 'StringArray',
       name: 'available'
     },
@@ -64,6 +68,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'canSkipData',
       documentation: 'Set to true if the alternateflow action should always be enabled'
+    },
+    {
+      class: 'Boolean',
+      name: 'saveCurrent',
+      documentation: `
+        When a wizardletId is given, we jump to the given wizardlet instead of calling gonext which
+        saves the current wizardlet.
+        Set this boolean to true if the current wizardlet should be saved before executing alt flow where
+        wizardletId is given.
+      `
     }
   ],
 
@@ -90,7 +104,8 @@ foam.CLASS({
       ].forEach(([listProp, propToChange, newValue]) => {
         for ( const wizardletId of this[listProp] ) {
           const w = x.wizardlets.find(w => w.id == wizardletId);
-          w[propToChange] = newValue;
+          if ( w )
+            w[propToChange] = newValue;
         }
       })
     },
@@ -103,6 +118,8 @@ foam.CLASS({
       if ( foam.u2.wizard.controllers.WizardController.isInstance(wizardController) )
         wizardController = wizardController.data;
 
+      if  ( this.saveCurrent ) wizardController.currentWizardlet.save();
+
       const wi = wizardController.wizardlets.findIndex(w => w.id == this.wizardletId);
       if ( wi < 0 ) {
         throw new Error('wizardlet not found with id: ' + this.wizardletId);
@@ -112,6 +129,11 @@ foam.CLASS({
         sectionIndex: 0
       })
       wizardController.wizardPosition = pos;
+
+      if ( ! wizardController.currentWizardlet.isVisible || 
+           ! wizardController.currentSection?.isAvailable ) {
+        wizardController.next();
+      }
     }
   ]
 })

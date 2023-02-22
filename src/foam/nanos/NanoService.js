@@ -19,6 +19,12 @@ foam.INTERFACE({
       `
     },
     {
+      name: 'stop',
+      javaCode: `
+        // nop
+      `
+    },
+    {
       name: 'reload',
       javaCode: `
         // nop

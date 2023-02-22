@@ -121,6 +121,11 @@ foam.CLASS({
           }
           if ( action.name === 'goPrev' ) {
             goPrevAction = action;
+            goPrevAction.buttonStyle = 'PRIMARY';
+            const copyProperties = ['isAvailable', 'isEnabled', 'themeIcon', 'icon'];
+            for ( const k of copyProperties ) {
+              if ( ! goPrevAction[k] ) goPrevAction[k] = this.GO_PREV[k];
+            }
             continue;
           }
           actionBar.push(action);
@@ -141,6 +146,7 @@ foam.CLASS({
     async function setFirstPosition() {
       // Auto-next if first wizardlet is invisible
       if ( ! this.data.canLandOn(this.data.wizardPosition) ) {
+        await this.data.tryWizardletLoad(this.data.currentWizardlet, this.data.wizardPosition);
         await this.data.next();
       }
     }

@@ -20,15 +20,15 @@ foam.CLASS({
   javaImports: [
     'foam.core.Detachable',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.LimitedSink',
     'foam.dao.ProxySink',
-    'foam.dao.AbstractSink',
     'foam.dao.Sink',
     'foam.mlang.predicate.AbstractPredicate',
-    'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.CapabilityAuthServicePredicate',
+    'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.AssociatedEntity',
@@ -39,25 +39,30 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
     'foam.nanos.session.Session',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.Date',
     'java.util.List',
     'java.util.Map',
-    'java.util.concurrent.ConcurrentHashMap',
+    'javax.security.auth.AuthPermission',
     'static foam.mlang.MLang.*'
   ],
 
   properties: [
     {
       name: 'capabilityPermissions',
+      documentation: `All permissions granted by any Capability. Used to
+      short-circuit permission checks for permissions that can't possibly be
+      granted by any UCJ.`,
       class: 'Map',
       javaFactory: `
-        Map  m    = new java.util.concurrent.ConcurrentHashMap();
+        // There is no ConcurrentHashSet, which is why we need to use a Map.
+        Map  m    = new ConcurrentHashMap<String, AuthPermission>();
         Sink sink = new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             Capability c = (Capability) obj;
             for ( var j = 0 ; j < c.getPermissionsGranted().length ; j++ ) {
               String p = c.getPermissionsGranted()[j];
-              m.put(p, Boolean.TRUE);
+              m.put(p, new AuthPermission(p));
             }
           }
         };
@@ -79,15 +84,14 @@ foam.CLASS({
       type: 'Boolean',
       args: 'String p',
       javaCode: `
-        if ( p.startsWith("serviceprovider") ) return true; // TODO: why?
+        if ( p.startsWith("serviceprovider") ) return true;
 
-        while ( true ) {
-          if ( getCapabilityPermissions().containsKey(p) ) return true;
-          if ( p.endsWith(".*") ) p = p.substring(0,p.length()-2);
-          int i = p.lastIndexOf(".");
-          if ( i == -1 ) return false;
-          p = p.substring(0,i+1) + "*";
-        }
+        java.security.Permission p2 = new AuthPermission(p);
+
+        for ( Object perm : getCapabilityPermissions().values() )
+          if ( ((AuthPermission) perm).implies(p2) ) return true;
+
+        return false;
       `
     },
     {
@@ -131,11 +135,7 @@ foam.CLASS({
     },
     {
       name: 'checkSpid_',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'spid', type: 'String' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String spid, String permission',
       type: 'Boolean',
       documentation: `
         When there is no user in the context, try to check if the permission is granted by the context spid
@@ -148,7 +148,7 @@ foam.CLASS({
           // service provider needs system context (getX())
           // to bypass auth call in prerequisiteImplies
           sp.setX(getX());
-          return sp.grantsPermission(permission);
+          return sp.grantsPermission(x, permission);
         }
         return false;
       `
@@ -185,6 +185,7 @@ foam.CLASS({
           DAO capabilityDAO = ( x.get("localCapabilityDAO") == null ) ? (DAO) x.get("capabilityDAO") : (DAO) x.get("localCapabilityDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
+          // TODO: Is the first check required? If a UCJ doesn't have an EXPIRY, then would it ever be EXPIRED?
           Predicate capabilityScope = OR(
               NOT(HAS(UserCapabilityJunction.EXPIRY)),
               NOT(EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.EXPIRED))
@@ -196,27 +197,27 @@ foam.CLASS({
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
             NOT(INSTANCE_OF(AgentCapabilityJunction.class))
           );
-          
+
           // if realuser and user is the same, we can check without specifying entity
-          if ( realUser != null && realUser.getId() == user.getId() && 
+          if ( realUser != null && realUser.getId() == user.getId() &&
               userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
             return true;
-          } else {
-            predicate.setEntity(AssociatedEntity.USER);
+          }
+
+          predicate.setEntity(AssociatedEntity.USER);
+          if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
+            return true;
+          }
+
+          // Check if a ucj implies the subject.realUser has this permission
+          if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
+            userPredicate = AND(
+              EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+              NOT(INSTANCE_OF(AgentCapabilityJunction.class))
+            );
+            predicate.setEntity(AssociatedEntity.REAL_USER);
             if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
               return true;
-            }
-  
-            // Check if a ucj implies the subject.realUser has this permission
-            if ( realUser != null && realUser.getId() != user.getId() && realUser.getSpid().equals(user.getSpid()) ) {
-              userPredicate = AND(
-                EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-                NOT(INSTANCE_OF(AgentCapabilityJunction.class))
-              );
-              predicate.setEntity(AssociatedEntity.REAL_USER);
-              if ( userCapabilityJunctionDAO.find(AND(userPredicate, capabilityScope, predicate)) != null ) {
-                return true;
-              }
             }
           }
 

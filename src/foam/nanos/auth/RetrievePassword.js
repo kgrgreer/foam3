@@ -28,13 +28,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TOKEN_INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
-    { name: 'TOKEN_INSTRUC',       message: 'Please check your inbox to continue' },
-    { name: 'CODE_INSTRUC_TITLE',  message: 'Verification code sent' },
-    { name: 'CODE_INSTRUC',        message: 'Please check your inbox for to verify your email' },
-    { name: 'REDIRECTION_TO',      message: 'Back to Sign in' },
-    { name: 'DUPLICATE_ERROR_MSG', message: 'This account requires username' },
-    { name: 'ERROR_MSG',           message: 'Issue resetting your password. Please try again' }
+    { name: 'TOKEN_INSTRUC_TITLE',      message: 'Password Reset Instructions Sent' },
+    { name: 'TOKEN_INSTRUC',            message: 'Please check your inbox to continue' },
+    { name: 'CODE_INSTRUC_TITLE',       message: 'Verification code sent' },
+    { name: 'CODE_INSTRUC',             message: 'Please check you inbox to reset your password' },
+    { name: 'REDIRECTION_TO',           message: 'Back to Sign in' },
+    { name: 'DUPLICATE_ERROR_MSG',      message: 'This account requires username' },
+    { name: 'ERROR_MSG',                message: 'Issue resetting your password. Please try again' },
+    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'Unabled to find user with email: '}
   ],
 
   sections: [
@@ -132,15 +133,10 @@ foam.CLASS({
           }));
           this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
         } catch(err) {
-          if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
-              this.ctrl.add(this.NotificationMessage.create({
-                err: err.data,
-                type: this.LogLevel.ERROR,
-                transient: true
-              }));
-              return;
-          }
           var msg = this.ERROR_MSG;
+          if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
+            msg = this.USER_NOT_FOUND_ERROR_MSG + this.email;
+          }
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
             this.usernameRequired = true;
             msg = this.DUPLICATE_ERROR_MSG;

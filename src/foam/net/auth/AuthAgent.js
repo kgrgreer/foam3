@@ -53,7 +53,6 @@ foam.CLASS({
       this.SUPER();
     },
     function validate() {
-      this.SUPER();
       foam.assert(
           this.__context__.lookup('foam.net.BaseHTTPRequest') !==
               this.__subContext__.lookup('foam.net.HTTPRequest'),

@@ -9,13 +9,15 @@ foam.CLASS({
   name: 'DigSnippetView',
   extends: 'foam.u2.View',
   documentation: 'View used to show snippets of select API calls.',
+
+  requires: [
+    'foam.doc.CodeTabs',
+    'foam.u2.Tab'
+  ],
+
   imports: [
     'appConfig',
     'user'
-  ],
-  requires: [
-    'foam.doc.CodeTabs',
-    'foam.u2.Tab',
   ],
 
   css: `
@@ -187,7 +189,7 @@ foam.CLASS({
                         end().
                       end().
 
-            end()
+            end();
           })
       })
       )

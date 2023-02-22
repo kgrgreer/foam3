@@ -148,10 +148,10 @@ foam.CLASS({
       var delegates = this.delegates ? this.delegates.map(resolveName) : [];
 
       var forwards = this.forwards ?
-          this.forwards.map(resolveName) :
-          // TODO(adamvy): This isn't the right check.  Once we have modeled interfaces
-          // we can proxy only that which is defined in the interface.
-          delegate.getOwnAxiomsByClass(foam.core.Method);
+        this.forwards.map(resolveName) :
+        // TODO(adamvy): This isn't the right check.  Once we have modeled interfaces
+        // we can proxy only that which is defined in the interface.
+        delegate.getOwnAxiomsByClass(foam.core.Method);
 
       var axioms = [];
       for ( var i = 0 ; i < forwards.length ; i++ ) {
@@ -189,6 +189,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 /**
  * ProxiedMethod is a type of method that delegates or forwards calls
@@ -378,7 +379,7 @@ for (key, child) in children {
     return
   }
 }
-      `,
+      `
     },
 
     {
@@ -412,7 +413,7 @@ if children[key] == nil {
   ])!
 }
 return children[key]!
-      `,
+      `
     },
 
     {
@@ -421,7 +422,7 @@ return children[key]!
         {
           name: 'topics',
           type: 'String[]',
-        },
+        }
       ],
       code: function addProxy(topic) {
         var c = this;
@@ -443,8 +444,8 @@ for t in topics {
 }
 
 c.active = active;
-      `,
-    },
+      `
+    }
   ],
 
   listeners: [
@@ -462,10 +463,11 @@ if active {
   let c = dest.pub(args);
   if c == 0 { detach() }
 }
-      `,
-    },
+      `
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.core',

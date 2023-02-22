@@ -38,6 +38,7 @@ TODO: handle node roll failure - or timeout
     'foam.dao.ProxySink',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Sequence',
+    'foam.nanos.NanoService',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
@@ -133,6 +134,10 @@ TODO: handle node roll failure - or timeout
         logger.info("health");
         health(x);
 
+        // setup
+        logger.info("stopServices");
+        stopServices(x);
+
         // block
         logger.info("block");
         setBlocking(true);
@@ -152,7 +157,7 @@ TODO: handle node roll failure - or timeout
 
         // dagger
         logger.info("dagger");
-        long oldIndex = dagger(x);
+        long oldGlobalIndex = dagger(x);
 
         // unblock
         logger.info("unblock");
@@ -165,7 +170,11 @@ TODO: handle node roll failure - or timeout
 
         // purge
         logger.info("purge");
-        purge(x, oldIndex, compactionTime);
+        purge(x, oldGlobalIndex, compactionTime);
+
+        // startServices
+        logger.info("startServices");
+        startServices(x);
 
         logger.info("end");
       } catch (Throwable t) {
@@ -173,6 +182,42 @@ TODO: handle node roll failure - or timeout
         throw t;
       } finally {
         logger.info("end", "duration", Duration.ofMillis(System.currentTimeMillis() - startTime));
+      }
+      `
+    },
+    {
+      name: 'stopServices',
+      args: 'X x',
+      javaCode: `
+      NanoService service = (NanoService) x.get("promotedClearAgent");
+      if ( service != null ) {
+        service.stop();
+      }
+      service = (NanoService) x.get("medusaConsensusMonitor");
+      if ( service != null ) {
+        service.stop();
+      }
+      `
+    },
+    {
+      name: 'startServices',
+      args: 'X x',
+      javaCode: `
+      NanoService service = (NanoService) x.get("promotedClearAgent");
+      if ( service != null ) {
+        try {
+          service.start();
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed to start", "promotedClearAgent");
+        }
+      }
+      service = (NanoService) x.get("medusaConsensusMonitor");
+      if ( service != null ) {
+        try {
+          service.start();
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed to start", "promotedClearAgent");
+        }
       }
       `
     },
@@ -331,7 +376,7 @@ TODO: handle node roll failure - or timeout
 
       long newIndex = service.getGlobalIndex(x);
       if ( oldIndex == newIndex ||
-           ! ( newIndex == oldIndex + bootstrap.getBootstrapHashEntries()) ) {
+           newIndex != oldIndex + bootstrap.getBootstrapHashEntries() )  {
         logger.error("primary, reconfigurate, failed", "old", oldIndex, "new", newIndex);
         throw new CompactionException("dagger");
       }
@@ -452,22 +497,23 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      long compactionRatio = ((long) ((((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue()) * 100.0)) - 100;
+      double ratio = ((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue();
+      double compressed = ((((Long) processed.getValue()) - ((Long) compacted.getValue())) / ((Long) processed.getValue()).doubleValue()) * 100.0;
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", compactionRatio, "%");
+      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", String.format("%.2f", ratio), "compressed", String.format("%.2f%%", compressed));
       return compactionTime;
       `
     },
     {
       documentation: 'Clean up memory medusa entry daos after compaction',
       name: 'purge',
-      args: 'X x, Long oldIndex, Long compactionTime',
+      args: 'X x, Long oldGlobalIndex, Long compactionTime',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "purge");
-      logger.info("oldIndex", oldIndex);
+      logger.info("oldIndex", oldGlobalIndex);
       final MedusaEntryPurgeCmd cmd = new MedusaEntryPurgeCmd.Builder(x)
         .setMinIndex(0L)
-        .setMaxIndex(oldIndex)
+        .setMaxIndex(oldGlobalIndex)
         .build();
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -615,9 +661,9 @@ TODO: handle node roll failure - or timeout
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK
-              logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+              logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             } else {
-              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.getObjectId());
+              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             }
           } else {
             MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");

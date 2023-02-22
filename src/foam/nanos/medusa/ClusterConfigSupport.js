@@ -447,8 +447,9 @@ configuration for contacting the primary node.`,
       javaCode: `
       int c = getNodeCount();
       if ( c < 3 ) return 0; // size 2 test cluster - sacrifice HA
-      if ( c < 9 ) return 1;
-      return 2;
+      if ( c < 6 ) return 1; 
+      if ( c < 12 ) return 2; // 6 -> 2 buckets of 3, 9 -> 3 buckets of 3
+      return 3;
       `
     },
     // {

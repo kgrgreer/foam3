@@ -27,11 +27,14 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.MAX',
+    'static foam.mlang.MLang.MIN',
     'static foam.mlang.MLang.NEQ',
     'static foam.mlang.MLang.NOT',
     'foam.mlang.sink.Max',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.mlang.sink.Min',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
@@ -76,19 +79,6 @@ foam.CLASS({
       class: 'Object',
       visibility: 'HIDDEN',
       networkTransient: true
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -97,6 +87,7 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
       timer.schedule(
@@ -109,40 +100,44 @@ foam.CLASS({
       name: 'execute',
       args: 'Context x',
       javaCode: `
+        Loggers.logger(getX(), this).info("execute");
         ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ClusterConfig config = support.getConfig(x, support.getConfigId());
 
         if ( config.getType() == MedusaType.NODE ) {
-           if ( config.getEnabled() &&
-                config.getStatus() == Status.OFFLINE ) {
+           synchronized (this) {
+             if ( config.getEnabled() &&
+                  config.getStatus() == Status.OFFLINE ) {
 
-            // // Wait for own replay to complete,
-            // // then set node ONLINE.
-            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            if ( replaying.getStartTime() == null ) {
+              // Wait for own replay to complete, then set node ONLINE.
+              ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
               replaying.setStartTime(new java.util.Date());
-            }
-            DAO dao = ((DAO) x.get("medusaNodeDAO"));
-            if ( replaying.getEndTime() == null ) {
+              DAO dao = ((DAO) x.get("medusaNodeDAO"));
               replaying.setEndTime(new java.util.Date());
-              Max max = (Max) dao.select(MAX(MedusaEntry.INDEX));
+              Min min = (Min) MIN(MedusaEntry.INDEX);
+              Max max = (Max) MAX(MedusaEntry.INDEX);
+              Sequence seq = new Sequence.Builder(x)
+               .setArgs(new Sink[] {min, max})
+               .build();
+              dao.select(seq);
               replaying.setReplaying(false);
-              if ( max != null &&
-                   max.getValue() != null ) {
-                replaying.updateIndex(x, (Long)max.getValue());
-                replaying.setReplayIndex((Long)max.getValue());
-              }
+              replaying.setMinIndex((Long)min.getValue());
+              replaying.setMaxIndex((Long)max.getValue());
+              replaying.updateIndex(x, (Long)max.getValue());
+              replaying.setReplayIndex((Long)max.getValue());
+              Loggers.logger(x, this).debug("execute,replayComplate", replaying.getReplayIndex());
+
+              config = (ClusterConfig) config.fclone();
+              config.setStatus(Status.ONLINE);
+              ((DAO) x.get("localClusterConfigDAO")).put(config);
+
+              // Cancel timer, no longer needed
+              Timer timer = (Timer) getTimer();
+              timer.cancel();
+              timer.purge();
+              Loggers.logger(x, this).debug("execute,timer,cancel");
             }
-
-            // TODO: deal with digest failures - and Node taking self OFFLINE.
-            // this timer will continually set it back to ONLINE.
-
-            config = (ClusterConfig) config.fclone();
-            config.setStatus(Status.ONLINE);
-            ((DAO) x.get("localClusterConfigDAO")).put(config);
-
           }
-          // TODO/REVIEW: disable monitor? is it needed
           return;
         } else if ( config.getType() != MedusaType.MEDIATOR &&
                     config.getType() != MedusaType.NERF &&
@@ -175,7 +170,7 @@ foam.CLASS({
           Timer timer = (Timer) getTimer();
           timer.cancel();
           timer.purge();
-          getLogger().debug("timer", "cancel");
+          Loggers.logger(x, this).debug("execute,timer,cancel");
           return;
         }
 
@@ -198,7 +193,7 @@ foam.CLASS({
           if ( getAgents().get(cfg.getId()) == null ) {
             ClusterConfigMonitorAgent agent = new ClusterConfigMonitorAgent(x, cfg.getId(), dao);
             getAgents().put(cfg.getId(), agent);
-            getLogger().debug("starting,ClusterConfigMonitorAgent", cfg.getId());
+            Loggers.logger(x, this).debug("starting,ClusterConfigMonitorAgent", cfg.getId());
             agent.start();
           }
           // TODO: deal with instance ENABLED true -> false.

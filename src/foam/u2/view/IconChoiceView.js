@@ -14,10 +14,6 @@ foam.CLASS({
   `,
 
   css: `
-    ^ {
-      display: flex;
-    }
-
     ^item {
       display: flex;
     }
@@ -26,14 +22,8 @@ foam.CLASS({
       display: none;
     }
 
-    ^ label {
-      cursor: pointer;
-      line-height: 48px;
-    }
-
-
-
     ^ {
+      display: flex;
       background-color: $primary50;
       border-radius: 4px;
       display: flex;
@@ -42,33 +32,41 @@ foam.CLASS({
       overflow-x: auto;
       white-space: nowrap;
     }
+
     ^label {
+      cursor: pointer;
+      line-height: 48px;
       align-items: center;
       background: none;
       border-radius: 4px;
       color: $primary400;
-      
+
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
-    ^label svg path{
+
+    ^label svg path {
       fill: $primary400;
     }
+
     ^label:hover {
       background: $primary700;
       color: $white;
       cursor: pointer;
     }
+
     ^label:hover svg path{
       fill: $white;
     }
+
     ^label^disabled-icon {
       background: $primary400;
       color: $white;
       fill: $white;
       font-weight: 600;
     }
+
     ^label^disabled-icon svg path {
       fill: $white;
     }
@@ -94,37 +92,36 @@ foam.CLASS({
   listeners: [
     function onChoicesUpdate() {
       var self = this;
-      var id;
 
       this.removeAllChildren();
 
-      this.add(this.choices.map(function(c) {
-        return this.E().
-          addClass(this.myClass('item')).
-          start('input').
+      this.choices.forEach(c => {
+        var id = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
+        self.start().
+          addClass(self.myClass('item')).
+          start('input', {id: id}).
             attrs({
               type: 'radio',
-              name: this.id,
+              name: id,
               checked: self.slot(function(data) { return data === c[0]; })
             }).
-            setID(id = self.NEXT_ID()).
             on('change', function(evt) {
               self.data = c[0];
             }).
           end().
           start('label', { tooltip: c[2] }).
-            addClass(this.myClass('label')).
+            addClass(self.myClass('label')).
             // this should be called selected
-            enableClass(this.myClass('disabled-icon'), self.slot(function(data) { return data === c[0] })).
-            attrs({ for: id }).
-            start({
-                class: 'foam.u2.tag.Image',
-                data: c[1],
-                embedSVG: true
-              }).
-            end().
-          end();
-      }.bind(this)));
+            enableClass(self.myClass('disabled-icon'), self.slot(function(data) { return data === c[0] })).
+            attrs({for: id}).
+            tag({
+              class: 'foam.u2.tag.Image',
+              data: c[1],
+              embedSVG: true
+            }).
+          end().
+        end();
+      });
     }
   ]
 });

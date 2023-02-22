@@ -7,8 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'MedusaEntryPurgeCmd',
-  documentation: `
-  `,
+  documentation: `Instruction to internalMedusaDAO to remove entries between min and max index, inclusive`,
 
   properties: [
     {

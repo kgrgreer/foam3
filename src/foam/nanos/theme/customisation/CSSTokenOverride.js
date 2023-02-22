@@ -15,13 +15,22 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+
+  searchColumns: [
+    'theme',
+    'enabled',
+    'source',
+    'target'
+  ],
+
   properties: [
     {
       class: 'Reference',
       of: 'foam.nanos.theme.Theme',
       name: 'theme',
       documentation: 'Id of the theme this override is applied on',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter'}
     },
     // {
     //   class: 'String',

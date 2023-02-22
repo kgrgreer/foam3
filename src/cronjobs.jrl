@@ -3,28 +3,6 @@ p({
   "schedule": {
     "class": "foam.nanos.cron.CronSchedule",
     "minute": 0,
-    "hour": 1,
-    "dayOfMonth": -1,
-    "month": -1,
-    "dayOfWeek": -1,
-    "second": 0
-  },
-  "scheduledTime": "2019-09-10T05:00:00.000Z",
-  "id": "expired notification",
-  "description": "remove expired notifications",
-  "code":
-  """
-    import foam.nanos.cron.RemoveExpiredNotificationCronjob;
-    cron = new RemoveExpiredNotificationCronjob();
-    cron.execute(x);
-    print("s");
-  """
-})
-p({
-  "class": "foam.nanos.cron.Cron",
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "minute": 0,
     "hour": -1,
     "dayOfMonth": -1,
     "month": -1,
@@ -38,28 +16,6 @@ p({
   """
     import foam.nanos.ruler.cron.RenewRuleHistoryCron;
     cron = new RenewRuleHistoryCron();
-    cron.execute(x);
-    print("done");
-  """
-})
-p({
-  "class": "foam.nanos.cron.Cron",
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "minute": -1,
-    "hour": -1,
-    "dayOfMonth": -1,
-    "month": -1,
-    "dayOfWeek": -1,
-    "second": 0
-  },
-  "scheduledTime": "2019-09-09T16:56:00.000Z",
-  "id": "expireSessionsCron",
-  "description": "Expire sessions every minute based on ttl",
-  "code":
-  """
-    import foam.nanos.session.cron.ExpireSessionsCron;
-    cron = new ExpireSessionsCron();
     cron.execute(x);
     print("done");
   """

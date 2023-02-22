@@ -19,6 +19,7 @@ foam.CLASS({
     {
       name: 'name',
       label: 'Method and Description',
+      projectionSafe: false,
       tableCellFormatter: function(_, o) {
         this.
           start('code').

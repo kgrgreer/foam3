@@ -23,8 +23,7 @@ foam.CLASS({
   methods: [
     async function execute() {
       if ( this.rootCapability.wizardConfig ) {
-        await this.rootCapability.wizardConfig.clone(this).execute();
-        this.rootCapability.wizardConfig.applyTo(this.sequence);
+        await this.rootCapability.wizardConfig.applyTo(this.sequence);
       }
     }
   ]

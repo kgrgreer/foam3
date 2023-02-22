@@ -47,6 +47,10 @@ foam.CLASS({
           threadKey.append(System.getProperty("CLUSTER_NAME", notification.getAlarm().getHostname()));
           threadKey.append("-");
           threadKey.append(notification.getAlarm().getName().replaceAll(" ", "_"));
+          if ( ! SafetyUtil.isEmpty(notification.getAlarm().getExternalId()) ) {
+            threadKey.append("-");
+            threadKey.append(notification.getAlarm().getExternalId());
+          }
           Map thread = new HashMap();
           thread.put("threadKey", threadKey.toString());
           map.put("thread", thread);
@@ -76,7 +80,7 @@ foam.CLASS({
 
         // Loggers.logger(x, this).debug(response.body());
         if ( response.statusCode() != 200 ) {
-          Loggers.logger(x, this).warning("Failed posting to Google", response.statusCode(), response.body());
+          Loggers.logger(x, this).warning("Failed posting to Google", response.statusCode(), response.body(), "message", message);
         }
       } catch (Throwable t) {
         Loggers.logger(x, this).error(t);

@@ -455,23 +455,6 @@ p({"class":"foam.nanos.boot.NSpec", "name":"resetPasswordToken",                
 p({"class":"foam.nanos.boot.NSpec", "name":"demoObjectDAO",                      "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"demoObjects\").setGuid(true).setOf(foam.nanos.demo.DemoObject.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.demo.DemoObject\", \"remoteListenerSupport\": false}"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler",                      "lazy":false,  "serve":false, "authenticate": false, "serviceClass":"foam.nanos.http.LiveScriptBundler"})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"emailToken",
-  "serve":true,
-  "authenticate": false,
-  "serviceClass":"foam.nanos.auth.email.EmailTokenService",
-  "boxClass":"foam.nanos.auth.token.TokenServiceSkeleton",
-  "client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "verifyEmail",
-  "lazy": false,
-  "authenticate": false,
-  "serviceClass": "foam.nanos.auth.email.EmailVerificationWebAgent"
-})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"twofactor",                          "serve":true,  "authenticate": false, "boxClass":"foam.nanos.auth.twofactor.OTPAuthServiceSkeleton", "serviceClass":"foam.nanos.auth.twofactor.GoogleTOTPAuthService", "client":"{\"class\":\"foam.nanos.auth.twofactor.ClientOTPAuthService\"}"})
 p({
@@ -831,13 +814,6 @@ p({
         }
       }
     """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "templateEngine",
-  "serve": false,
-  "serviceClass": "foam.nanos.notification.email.EmailTemplateEngine"
 })
 
 p({

@@ -24,8 +24,8 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.log.LogLevel',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.concurrent.AbstractAssembly',
@@ -41,7 +41,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'ALARM_NAME',
+      name: 'EVENT_NAME',
       type: 'String',
       value: 'Medusa Primary Announce'
     }
@@ -94,15 +94,7 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      // generate an alarm
-      Alarm alarm = new Alarm.Builder(x)
-        .setName(ALARM_NAME)
-        .setIsActive(false)
-        .setReason(AlarmReason.MANUAL)
-        .setNote(myConfig.getId())
-        .setClusterable(false)
-        .build();
-      alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification starting", LogLevel.WARN, null));
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> counts = new ConcurrentHashMap();
@@ -167,21 +159,19 @@ foam.CLASS({
       if ( replies.size() < nodes.size() -1 ||
            count == null ||
            count < support.getNodeQuorum() ) {
+        String message = null;
         if ( replies.size() < nodes.size() -1 ) {
           logger.debug("replies", replies.size(), "nodes", nodes.size());
-          logger.error("Index verification", "failed", "Unable to determine max index", "PAUSING");
+          message = "Index verification failed; unable to determine max index.";
         } else {
           logger.debug("max", max, "count", count, "quorum", quorum);
-          logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
+          message = "Index verification failed; max index does not have quorum.";
         }
 
-        alarm = (Alarm) alarm.fclone();
-        alarm.setSeverity(foam.log.LogLevel.ERROR);
-        alarm.setNote("Index Verification Failed");
-        ((DAO) x.get("alarmDAO")).put(alarm);
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, message, LogLevel.ERROR, null));
 
         // Halt the system.
-        logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null));
         ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
         cfg.setStatus(Status.OFFLINE);
         cfg.setErrorMessage("Index verification failed");
@@ -193,9 +183,7 @@ foam.CLASS({
         replaying.setReplaying(false);
         logger.info("Index verification", "complete");
 
-        alarm = (Alarm) alarm.fclone();
-        alarm.setIsActive(false);
-        ((DAO) x.get("alarmDAO")).put(alarm);
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification complete"));
       }
       `
     }

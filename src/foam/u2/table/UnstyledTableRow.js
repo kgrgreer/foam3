@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'UnstyledTableRow',
   extends: 'foam.u2.table.TableComponentView',
 
+  mixins: ['foam.comics.v2.Clickable'],
+
   requires: [
     'foam.core.SimpleSlot',
     'foam.u2.CheckBox',
@@ -32,7 +34,7 @@ foam.CLASS({
     // Added for scrollTableView support
     {
       name: 'actionDAO',
-      factory: function () { return this.data.data; }
+      factory: function() { return this.data.data; }
     }
   ],
 
@@ -44,19 +46,7 @@ foam.CLASS({
       var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
       var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
-      callIf( this.dblclick && ! this.data.disableUserSelection, function() {
-        this.on('dblclick', function(evt) {
-            if ( self.data.shouldEscapeEvts(evt) ) return;
-            self.dblclick.call(self, null, obj.id);
-        });
-      }).
-      callIf( this.click && ! this.data.disableUserSelection, function() {
-        this.on('click', function(evt) {
-          if ( self.data.shouldEscapeEvts(evt) ) return;
-          self.data.selection = obj.id;
-          self.click.call(self, null, obj.id);
-        });
-      }).
+      call(this.insertClick.bind(self), [obj]).
       addClass(this.data.myClass('row')).
       style({ 'min-width': this.data.tableWidth_$ }).
 
@@ -153,6 +143,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.table',

@@ -20,6 +20,16 @@ foam.CLASS({
   name: 'ProgressView',
   extends: 'foam.u2.View',
 
+  cssTokens: [
+    {
+      name: 'progressColor',
+      value: '$primary400'
+    },
+    {
+      name: 'trackColor',
+      value: '$grey100'
+    }
+  ],
   css: `
     ^ {
       width: 100%;
@@ -27,11 +37,11 @@ foam.CLASS({
       height: 2px;
     }
     ^::-webkit-progress-bar {
-      background-color: $grey100;
+      background-color: $trackColor;
       border-radius: 25px;
     }
     ^::-webkit-progress-value {
-      background-color: $primary400;
+      background-color: $progressColor;
       transition: all 0.2s ease;
     }
   `,

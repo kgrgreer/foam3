@@ -8,7 +8,12 @@ foam.CLASS({
   package: 'foam.demos.u2',
   name: 'SampleData',
   properties: [
-    'id', 'name', 'value'
+    {
+      class: 'String',
+      name: 'id'
+    }, 
+    'name', 
+    'value'
   ],
   methods: [
     function toSummary() { return this.id + ' ' + this.value; }

@@ -55,12 +55,13 @@ public class SessionServerBox
   }
 
   public void send(X x, Box delegate, boolean authenticate, Message msg) {
-    NSpec  spec   = x.get(NSpec.class);
-    Logger logger = Loggers.logger(x, this, spec.getName());
+    NSpec   spec       = x.get(NSpec.class);
+    Logger  logger     = Loggers.logger(x, this, spec.getName());
     DAO     sessionDAO = (DAO) x.get("localSessionDAO");
     Session session    = null;
-    String   sessionID = null;
-    PM     pm = PM.create(x, "SessionServerBox", spec.getName());
+    String  sessionID  = null;
+    PM      pm         = PM.create(x, "SessionServerBox", spec.getName());
+
     try {
       HttpServletRequest req = x.get(HttpServletRequest.class);
       if ( req != null ) {
@@ -76,12 +77,12 @@ public class SessionServerBox
               if ( st.hasMoreTokens() ) {
                 sessionID = st.nextToken();
               } else {
-                logger.warning("send", "Authorization: "+authType+" token not found.");
+                logger.warning("send", "Authorization: " + authType + " token not found.");
                 msg.replyWithException(new IllegalArgumentException("Authorization: "+authType+ " token not found."));
                 return;
               }
             } else {
-              logger.warning("send", "Authorization: "+authType+" not supported.");
+              logger.warning("send", "Authorization: " + authType + " not supported.");
               msg.replyWithException(new IllegalArgumentException("Authorization: "+authType+ " not supported."));
               return;
             }
@@ -120,6 +121,7 @@ public class SessionServerBox
         session.setId(sessionID == null ? "anonymous" : sessionID);
         session = (Session) sessionDAO.put(session);
       }
+
       if ( req != null ) {
         // if req == null it means that we're being accessed via webSockets
         try {

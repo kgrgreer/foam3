@@ -41,7 +41,7 @@ foam.CLASS({
           // Ensure actions are sorted by button type
           data.sort((a, b) => {
             let buttonStyleA = a.action.buttonStyle;
-            let buttomStyleB = b.action.buttonStyle;
+            let buttonStyleB = b.action.buttonStyle;
 
             // Adapt strings to enum values
             if ( typeof buttonStyleA === 'string' ) {
@@ -51,7 +51,7 @@ foam.CLASS({
               buttonStyleB = foam.u2.ButtonStyle[buttonStyleB];
             }
 
-            return buttonStyleA.ordinal - buttomStyleB.ordinal;
+            return buttonStyleA.ordinal - buttonStyleB.ordinal;
           });
 
           let slots = [];

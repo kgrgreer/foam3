@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.net.Port',
     'java.io.IOException',
     'java.net.ServerSocket',
@@ -45,19 +45,6 @@ foam.CLASS({
       class: 'Int',
       name: 'soTimeout',
       value: 60000
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -65,8 +52,8 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+        final Logger logger = Loggers.logger(getX(), this, "port", String.valueOf(getPort()));
         try {
-          getLogger().info("Starting,port", getPort());
           ServerSocket serverSocket0 = null;
           SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
 
@@ -81,6 +68,7 @@ foam.CLASS({
           final ServerSocket serverSocket = serverSocket0;
 
           Agency agency = (Agency) getX().get(getThreadPoolName());
+          logger.info("start", "threadPoolName", getThreadPoolName(), "threadsPerCore", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getThreadsPerCore(), "numberOfThreads", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getNumberOfThreads());
           agency.submit(
             getX(),
             new ContextAgent() {
@@ -97,7 +85,7 @@ foam.CLASS({
                     );
                   }
                 } catch ( IOException ioe ) {
-                  getLogger().error(ioe);
+                  logger.error(ioe);
                 }
               }
             },
@@ -105,10 +93,10 @@ foam.CLASS({
           );
 
         } catch (java.net.BindException e) {
-          getLogger().error(e.getMessage(), e);
+          logger.error(e.getMessage(), e);
           System.exit(1);
         } catch ( Exception e ) {
-          getLogger().error(e);
+          logger.error(e);
         }
       `
     }

@@ -14,25 +14,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.UniqueConstraintException',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger'
-  ],
-
-  properties: [
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
-    }
+    'foam.log.LogLevel',
+    'foam.nanos.er.EventRecord'
   ],
 
   methods: [
@@ -41,12 +24,7 @@ foam.CLASS({
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
       if ( getDelegate().find_(x, entry.getId()) != null ) {
-        Alarm alarm = new Alarm.Builder(x)
-          .setName("Medusa Duplicate Index")
-          .setIsActive(true)
-          .setNote(entry.toString())
-          .build();
-        ((DAO) x.get("alarmDAO")).put(alarm);
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "Medusa Duplicate Index", entry.toString(), LogLevel.WARN, null));
         throw new UniqueConstraintException("MedusaEntry duplicate index: "+entry.getIndex());
       }
       // test for missing hash

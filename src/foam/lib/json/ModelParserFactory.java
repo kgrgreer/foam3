@@ -9,6 +9,8 @@ package foam.lib.json;
 import foam.core.ClassInfo;
 import foam.core.PropertyInfo;
 import foam.lib.parse.*;
+import foam.parse.NewlineParser;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
@@ -48,7 +50,9 @@ public class ModelParserFactory {
     propertyParsers[i] = new UnknownPropertyParser();
 
     return new Repeat0(
-      new Seq0(Whitespace.instance(), new Alt(propertyParsers)),
-      Literal.create(","));
+      new Seq0( new Optional(new Repeat(new Seq0(Whitespace.instance(), Literal.create("//"),new Until(NewlineParser.create())))),
+        Whitespace.instance(), new Alt(propertyParsers)),
+      Literal.create(",")
+    );
   }
 }

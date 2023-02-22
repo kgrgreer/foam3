@@ -9,9 +9,7 @@ foam.CLASS({
   name: 'Grid',
   extends: 'foam.u2.Element',
 
-  documentation: `
-    A grid of responsive elements
-  `,
+  documentation: 'A grid of responsive elements',
 
   imports: [
     'displayWidth?'
@@ -28,6 +26,31 @@ foam.CLASS({
     }
   `,
 
+  methods: [
+    function render() {
+      this.SUPER();
+      this.addClass();
+
+      if ( this.displayWidth ) {
+        this.onDetach(this.displayWidth$.sub(this.resizeChildren));
+        this.style(
+          { 'grid-template-columns': this.displayWidth$.map((dw) => {
+              dw = dw || foam.u2.layout.DisplayWidth.XL;
+              return `repeat(${dw.cols}, 1fr)`;
+            })
+          }
+        );
+//         this.shown = false;
+      }
+    },
+
+    function add_() {
+      this.SUPER.apply(this, arguments);
+      this.resizeChildren();
+      return this;
+    }
+  ],
+
   listeners: [
     {
       name: 'resizeChildren',
@@ -35,7 +58,7 @@ foam.CLASS({
       code: function() {
         this.shown = false;
         var currentWidth = 0;
-        this.childNodes.forEach(ret => {
+        this.children.forEach(ret => {
           var cols = 12, width = 12;
           if ( this.displayWidth ) {
             cols = this.displayWidth.cols;
@@ -59,29 +82,6 @@ foam.CLASS({
         });
         this.shown = true;
       }
-    }
-  ],
-
-  methods: [
-    function render() {
-      this.SUPER();
-      this.addClass();
-
-      if ( this.displayWidth ) {
-        this.onDetach(this.displayWidth$.sub(this.resizeChildren));
-        this.style(
-          { 'grid-template-columns': this.displayWidth$.map((dw) => {
-              dw = dw || foam.u2.layout.DisplayWidth.XL;
-              return `repeat(${dw.cols}, 1fr)`;
-            })
-          }
-        );
-        this.shown = false;
-      }
-    },
-
-    function onAddChildren() {
-      this.resizeChildren();
     }
   ]
 });

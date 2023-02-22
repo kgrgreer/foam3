@@ -12,11 +12,8 @@ foam.CLASS({
   documentation: `Broadcast MedusaEntry to Nodes. Each entry is distributed to set of nodes for redundancy and consensus.`,
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.ContextAgent',
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -30,7 +27,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.Map',
     'java.util.Set',
-    'java.util.concurrent.atomic.AtomicLong',
+    'java.util.concurrent.atomic.AtomicLong'
   ],
 
   javaCode: `

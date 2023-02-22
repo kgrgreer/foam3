@@ -48,9 +48,10 @@ foam.CLASS({
     },
     async function load (wizardlet) {
       if ( wizardlet.loading ) return;
-      wizardlet.loading = true;
       const loader = foam.json.parse(this.loader, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
+      await this.SUPER(wizardlet);
+      wizardlet.loading = true;
       wizardlet.data = await loader.load({ old: wizardlet.data });
       wizardlet.loading = false;
     },
@@ -60,7 +61,7 @@ foam.CLASS({
       // temp workaround until daosaver is implemented
       try {
         if ( this.NullSaver.isInstance(saver) && this.delegate ) {
-          await this.delegate.save(wizardlet);
+        // No-op handled in finally
         } else {
           if ( wizardlet.loading ) return;
           if ( ! wizardlet.isAvailable ) return;
@@ -68,6 +69,7 @@ foam.CLASS({
           await saver.save(wizardlet.data);
         }
       } finally {
+        await this.delegate.save(wizardlet);
         wizardlet.loading = false;
       }
     }

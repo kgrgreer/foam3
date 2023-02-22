@@ -23,9 +23,9 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.*',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
@@ -94,6 +94,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.DaggerBootstrap',
       javaFactory: 'return new DaggerBootstrap();'
+    },
+    {
+      documentation: 'Indexes with values less than minIndex are involved in bootstrapping and should not be deleted.',
+      name: 'minIndex',
+      class: 'Long',
+      value: 2
     },
     {
       documentation: 'Current max promoted index',
@@ -243,6 +249,7 @@ foam.CLASS({
       }
       logger.info("end", "index", getIndex());
       setBootstrap(bootstrap);
+      setMinIndex(getIndex());
       return bootstrap;
      `
     },
@@ -280,13 +287,7 @@ foam.CLASS({
           return hashes[index];
         } catch (ArrayIndexOutOfBoundsException e) {
           getLogger().warning("Keystore error", alias, "expected", index, "found", hashes.length);
-          Alarm alarm = new Alarm.Builder(x)
-            .setName("DaggerService Hash Exhaustion")
-            .setIsActive(true)
-            .setReason(AlarmReason.CONFIGURATION)
-            .setClusterable(false)
-            .build();
-          alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+          ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "bootstrap", "hash exhaustion", LogLevel.ERROR, null));
         }
       } catch (java.security.GeneralSecurityException | java.io.IOException e) {
         getLogger().warning("Keystore error", alias, e.getMessage());

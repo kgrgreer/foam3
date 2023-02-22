@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.edit.EditBehaviour',
+    'foam.nanos.crunch.edit.NullEditBehaviour',
     'foam.nanos.logger.Logger',
     'java.util.Date',
     'java.util.List',
@@ -250,6 +252,14 @@ foam.CLASS({
       view: { class: 'foam.u2.CheckBox', showLabel: false }
     },
     {
+      class: 'FObjectProperty',
+      javaType: 'foam.nanos.crunch.edit.EditBehaviour',
+      name: 'editBehaviour',
+      javaFactory: `
+        return new foam.nanos.crunch.edit.NullEditBehaviour();
+      `
+    },
+    {
       name: 'associatedEntity',
       class: 'Enum',
       of: 'foam.nanos.crunch.AssociatedEntity',
@@ -346,9 +356,7 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       type: 'Boolean',
-      args: [
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'X x, String permission',
       documentation: `Checks if a permission or capability string is implied by the current capability`,
       javaCode: `
         if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
@@ -370,7 +378,7 @@ foam.CLASS({
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
       javaCode: `
-        if ( this.grantsPermission(permission) ) return true;
+        if ( this.grantsPermission(x, permission) ) return true;
         return this.prerequisiteImplies(x, permission);
       `
     },

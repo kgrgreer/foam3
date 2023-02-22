@@ -143,6 +143,11 @@ foam.INTERFACE({
         }
       ],
       type: 'Long'
-    }
+    },
+    {
+      documentation: 'Indexes with values equal to or less than minIndex are involved in bootstrapping and should not be deleted.',
+      name: 'getMinIndex',
+      type: 'Long'
+    },
   ]
 });

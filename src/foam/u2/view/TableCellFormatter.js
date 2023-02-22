@@ -63,12 +63,21 @@ foam.CLASS({
           f: function(value, obj, axiom) {
             this.add(value);
           }
-        })
+        });
+      },
+      // Allows formatters to decide if they are projectionSafe or not
+      postSet: function(_,n) {
+        if ( 'projectionSafe' in n ) this.projectionSafe = n.projectionSafe;
       }
     },
     {
       class: 'Int',
       name: 'tableWidth'
+    },
+    {
+      class: 'Boolean',
+      name: 'projectionSafe',
+      value: true
     },
     {
       class: 'String',
@@ -79,7 +88,6 @@ foam.CLASS({
     }
   ]
 });
-
 
 foam.CLASS({
   package: 'foam.u2.view',
@@ -128,7 +136,8 @@ foam.CLASS({
        type: 'Int',
        name: 'tableWidth',
        value: 130
-    }
+    },
+    ['projectionSafe', false]
   ]
 });
 
@@ -251,7 +260,8 @@ foam.CLASS({
           }
         }));
       }
-    }
+    },
+    ['projectionSafe', false]
   ]
 });
 
@@ -260,6 +270,13 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceToSummaryCellFormatter',
   implements: ['foam.u2.view.Formatter'],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'projectionSafe'
+    }
+  ],
 
   methods: [
     function format(e, value, obj, axiom) {

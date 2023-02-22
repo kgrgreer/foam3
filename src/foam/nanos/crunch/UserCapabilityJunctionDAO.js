@@ -125,7 +125,7 @@ foam.CLASS({
         Capability capability = (Capability) ucj.findTargetId(x);
         if ( capability == null ||
              ( ! ( capability.getOf() == null || ucj.getData() == null ) &&
-               ! ( ucj.getData().getClassInfo().equals(capability.getOf()) )
+               ! ( capability.getOf().isInstance(ucj.getData()) )
              )
            ) {
           Alarm alarm = new Alarm("CRUNCH Configuration", AlarmReason.CONFIGURATION);

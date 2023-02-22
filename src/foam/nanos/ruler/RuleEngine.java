@@ -89,8 +89,8 @@ public class RuleEngine extends ContextAwareSupport {
       // Allow network exceptions to pass through
       // TODO: use foam.core.Exception when interface properties
       //       are supported in Java generation
-      if ( e instanceof foam.core.ExceptionInterface ) {
-        RuntimeException clientE = (RuntimeException) ((ExceptionInterface) e).getClientRethrowException();
+      if ( e instanceof foam.core.FOAMException ) {
+        RuntimeException clientE = (RuntimeException) ((foam.core.FOAMException) e).getClientRethrowException();
         if ( clientE != null ) throw clientE;
       }
 

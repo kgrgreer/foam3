@@ -35,6 +35,13 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  cssTokens: [
+    {
+      name: 'borderSize',
+      value: '1px solid'
+    }
+  ],
+
   css: `
     ^wrapper {
       box-sizing: border-box;
@@ -112,7 +119,7 @@ foam.CLASS({
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
-      border: 1px solid;
+      border: $borderSize;
     }
   `,
 
@@ -294,6 +301,10 @@ foam.CLASS({
               controllerMode: foam.u2.ControllerMode.EDIT
             }));
           }
+
+          this.onDetach(this.cannedPredicate$.sub(() => {
+            filterView?.clearAll();
+          }));
 
           if ( config$cannedQueries.length >= 1 ) {
             cannedView = foam.u2.ViewSpec.createView(self.cannedQueriesView, {

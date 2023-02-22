@@ -20,6 +20,8 @@ Update: it appears there are multiple DAOs in the context.`,
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.GT',
+    'static foam.mlang.MLang.GTE',
+    'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
     'static foam.mlang.MLang.NOT',
     'foam.mlang.sink.Count',
@@ -66,7 +68,7 @@ Update: it appears there are multiple DAOs in the context.`,
         MedusaEntryPurgeCmd cmd = (MedusaEntryPurgeCmd) obj;
         DAO dao = this.where(
           AND(
-            GT(MedusaEntry.INDEX, cmd.getMinIndex()),
+            GTE(MedusaEntry.INDEX, cmd.getMinIndex()),
             LTE(MedusaEntry.INDEX, cmd.getMaxIndex()),
             EQ(MedusaEntry.PROMOTED, true)
           )

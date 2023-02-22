@@ -160,7 +160,7 @@
           start().
             add(prop.view$.map(v => {
               // Add the Property's View
-              return this.E().add(prop.toE_({ ...self.viewArgs, mode$: modeSlot}, this.__context__))
+              return this.E().add(prop.toE({ ...self.viewArgs, mode$: modeSlot}, this.__context__))
                 .style({ 'flex-grow': 1,'max-width': '100%' })
                 .enableClass('error', errorSlot.and(colorSlot));
             })).

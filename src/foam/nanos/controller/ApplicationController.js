@@ -105,7 +105,10 @@ foam.CLASS({
   ],
 
   topics: [
-    'themeChange'
+    'themeChange',
+    // Published by reloadClient(), can be subbed to by client side services 
+    // that need to refresh or cleanup on client reload
+    'clientReloading'
   ],
 
   constants: [
@@ -528,6 +531,7 @@ foam.CLASS({
     },
 
     async function reloadClient() {
+      this.clientReloading.pub();
       var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
@@ -678,7 +682,7 @@ foam.CLASS({
         this.buildingStack = false;
         return;
       }
-      /**  Used for data management menus that are constructed on the fly
+      /**  Used for menus that are constructed on the fly (data management, support, legal)
        * required as those menus are not put in menuDAO and hence fail the
        * find call in pushMenu_.
        * This approach allows any generated menus to be permissioned/loaded as long as
@@ -776,7 +780,7 @@ foam.CLASS({
       notification.severity        = severity || this.LogLevel.INFO;
       notification.transient       = transient;
       notification.icon            = icon;
-      this.__subContext__.myNotificationDAO.put(notification);
+      this.__subContext__.myNotificationDAO?.put(notification);
     },
 
     function displayToastMessage(sub, on, put, obj) {
@@ -824,36 +828,71 @@ foam.CLASS({
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },
 
+    // TODO: simplify in NP-8928
     async function checkGeneralCapability() {
-      var capDAO = this.__subContext__.capabilityDAO;
-      var spid = await capDAO.find(this.subject.user.spid);
-      if ( spid && spid.generalCapability != '' ) {
-        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, spid.generalCapability);
+      var groupDAO = this.__subContext__.groupDAO;
+      var group = await groupDAO.find(this.subject.user.group);
+      if ( group && group.generalCapability != '' ) {
+        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
         var ucj = await ucjCheck();
 
         if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
-          await this.crunchController.createWizardSequence(spid.generalCapability, this.__subContext__).execute();
-          let postCheck = await ucjCheck();
-          if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
-            this.add(foam.u2.dialog.ConfirmationModal.create({
-              title: this.GC_ERROR_TITLE,
-              modalStyle: 'DESTRUCTIVE',
-              primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
-              closeable: false,
-              showCancel: false
-            }, this)
-              .start()
-              .style({ 'min-width': '25vw'})
-              .add(this.GC_ERROR)
-              .end());
-            return false;
+
+          const lastWizard = this.crunchController.lastActiveWizard;
+          if ( lastWizard &&
+            lastWizard.status === this.crunchController.WizardStatus.IN_PROGRESS
+          ) {
+            let x = this.__subContext__.createSubContext({
+              wizardController: lastWizard
+            });
+            const seq = await this.crunchController.createUCJInlineWizardSequence(x)
+              .addBefore('CapabilityAdaptAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
+              ;
+
+            lastWizard.status$.sub(async () => {
+              if ( lastWizard.status !== this.crunchController.WizardStatus.IN_PROGRESS ) {
+                await this.doGeneralCapabilityPostCheck(ucjCheck);
+              }
+            })
+
+            await this.crunchController.inlineWizardFromSequence(lastWizard, seq);
+
           } else {
-            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-            this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+            await this.crunchController.createTransientWizardSequence(this.__subContext__)
+              .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
+              .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
+              .remove('RequirementsPreviewAgent')
+              .execute();
+            
+            await this.doGeneralCapabilityPostCheck(ucjCheck);
           }
+
         }
       }
       return true;
+    },
+
+    async function doGeneralCapabilityPostCheck (ucjCheck) {
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      let postCheck = await ucjCheck();
+      if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
+        this.add(foam.u2.dialog.ConfirmationModal.create({
+          title: this.GC_ERROR_TITLE,
+          modalStyle: 'DESTRUCTIVE',
+          primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
+          closeable: false,
+          showCancel: false
+        }, this)
+          .start()
+          .style({ 'min-width': '25vw'})
+          .add(this.GC_ERROR)
+          .end());
+        return false;
+      } else {
+        this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+        this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+      }
     },
 
     function addMacroLayout() {

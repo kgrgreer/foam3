@@ -370,6 +370,9 @@ foam.CLASS({
             ( delegate instanceof ProxyDAO ) )
             delegate = foam.dao.PipelinePMDAO.decorate(getX(), getNSpec(), delegate, 1);
 
+        if ( getOm() )
+          delegate = new foam.nanos.om.DAOOMLogger.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
+
         if ( getPm() )
           delegate = new foam.dao.PMDAO.Builder(getX()).setNSpec(getNSpec()).setDelegate(delegate).build();
 
@@ -580,6 +583,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'om'
+    },
+    {
+      class: 'Boolean',
       name: 'pm'
     },
     {
@@ -665,8 +672,9 @@ foam.CLASS({
       generateJava: false
     },
     {
+      class: 'Int',
       name: 'retryBoxMaxAttempts',
-      class: 'Boolean',
+      value: 5,
       generateJava: false,
     },
     {

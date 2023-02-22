@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CapableObjectData',
 
   imports: [
-    'auth',
+    'auth?',
     'crunchController?'
   ],
 
@@ -82,7 +82,7 @@ foam.CLASS({
     {
       name: 'openCapableWizard',
       isAvailable: auth => {
-        return auth.check(null, 'developer.capableObjectData.openCapableWizard');
+        return auth?.check(null, 'developer.capableObjectData.openCapableWizard');
       },
       code: async function () {
         if ( ! this.crunchController ) return;

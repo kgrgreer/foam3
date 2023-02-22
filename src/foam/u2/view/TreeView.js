@@ -435,7 +435,8 @@ foam.CLASS({
             self.selection = obj;
             isFirstSet = true;
           }
-          return self.TreeViewRow.create({
+          return this.E().tag({
+            class:        foam.u2.view.TreeViewRow,
             data:         obj,
             relationship: self.relationship,
             expanded:     self.startExpanded,
@@ -443,7 +444,7 @@ foam.CLASS({
             query:        self.query,
             onClickAddOn: self.onClickAddOn,
             level:        1
-          }, this);
+          });
         });
     },
 

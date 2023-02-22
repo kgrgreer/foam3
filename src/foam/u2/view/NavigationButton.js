@@ -50,6 +50,10 @@ foam.CLASS({
       class: 'foam.u2.ColorToken',
       name: 'NavButtonSelectedLabelColor',
       value: '$primary600'
+    },
+    {
+      name: 'NavButtonSelectedBackgroundColor',
+      value: '$NavButtonBackgroundColor$hover'
     }
   ],
   css: `
@@ -61,7 +65,7 @@ foam.CLASS({
       fill: $NavButtonBackgroundColor$hover$foreground;
     }
     ^:active, ^.selected {
-      background-color: $NavButtonBackgroundColor$hover;
+      background-color: $NavButtonSelectedBackgroundColor;
       color:  $NavButtonSelectedLabelColor;
     }
     ^:active svg,^.selected svg {

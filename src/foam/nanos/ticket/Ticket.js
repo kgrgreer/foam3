@@ -29,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
+    'foam.nanos.auth.User',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -62,7 +63,7 @@ foam.CLASS({
     'type',
     // REVIEW: view fails to display when owner in tableColumn, the 2nd entry in allColumns is undefined.
     // 'owner',
-    'assignedTo.legalName',
+    'assignedToSummary',
     'createdBy.legalName',
     'lastModified',
     'status',
@@ -70,6 +71,13 @@ foam.CLASS({
     'comment',
     'dateCommented',
     'createdFor'
+  ],
+
+  searchColumns: [
+    'id',
+    'status',
+    'created',
+    'title'
   ],
 
   messages: [
@@ -148,6 +156,7 @@ foam.CLASS({
       section: 'infoSection',
       order: 3,
       tableWidth: 130,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.ticketStatusDAO.find(value).then(function(status) {
           if (status) {
@@ -226,6 +235,7 @@ foam.CLASS({
           errorString: 'Please provide a comment.'
         }
       ],
+      projectionSafe: false,
       tableCellFormatter: function(_, obj) {
         obj.ticketCommentDAO
           .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
@@ -245,7 +255,9 @@ foam.CLASS({
       name: 'dateCommented',
       value: '',
       storageTransient: true,
+      visibility: 'RO',
       section: 'infoSection',
+      projectionSafe: false,
       tableCellFormatter: function(_, obj) {
         obj.ticketCommentDAO
           .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
@@ -273,6 +285,7 @@ foam.CLASS({
       name: 'createdBy',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -288,6 +301,7 @@ foam.CLASS({
       name: 'createdByAgent',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -309,6 +323,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -323,6 +338,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -337,6 +353,7 @@ foam.CLASS({
       class: 'String',
       transient: true,
       hidden: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.add(obj.title);
       }
@@ -369,8 +386,36 @@ foam.CLASS({
           this.assignedToGroup = '';
         }
       },
+      javaPostSet: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(val);
+          if ( user != null ) {
+            clearAssignedToSummary();
+            setAssignedToSummary(user.getLegalName());
+          }
+        }
+      `,
       order: 7,
       gridColumns: 6
+    },
+    {
+      class: 'String',
+      label: 'Assigned To',
+      name: 'assignedToSummary',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      javaGetter: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(getAssignedTo());
+          if ( user != null ) {
+            return user.getLegalName();
+          }
+        }
+        return null;
+      `
     },
     {
       class: 'Reference',
@@ -587,6 +632,7 @@ foam.CLASS({
         assignedTicket.assignedTo = X.subject.user.id;
 
         this.ticketDAO.put(assignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
@@ -613,6 +659,7 @@ foam.CLASS({
         unassignedTicket.assignedTo = 0;
 
         this.ticketDAO.put(unassignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);

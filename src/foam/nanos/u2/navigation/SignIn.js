@@ -71,6 +71,11 @@ foam.CLASS({
       }
     },
     {
+      flags: ['web'],
+      name: 'email',
+      hidden: true
+    },
+    {
       class: 'Boolean',
       name: 'usernameRequired',
       hidden: true
@@ -96,7 +101,9 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'password',
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+      required: true,
+      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true },
+      validationTextVisible: false
     },
     {
       class: 'Boolean',
@@ -120,6 +127,13 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'loginFailed',
+      value: true,
+      hidden: true,
+      documentation: 'Used to control flow in transient wizard signin'
     }
   ],
 
@@ -134,10 +148,20 @@ foam.CLASS({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
         } else {
+          var user = this.subject.realUser;
           if ( ! this.subject.realUser.emailVerified ) {
             await this.auth.logout();
             this.stack.push(this.StackBlock.create({
-              view: { class: 'foam.nanos.auth.ResendVerificationEmail' }
+              view: {
+                class: 'foam.nanos.auth.email.VerificationCodeView',
+                data: {
+                  class: 'foam.nanos.auth.email.EmailVerificationCode',
+                  email: user.email,
+                  userName: user.userName,
+                  showAction: true,
+                  signinOnSubmit: true
+                }
+              }
             }));
           } else {
             this.loginSuccess = !! this.subject;
@@ -175,7 +199,11 @@ foam.CLASS({
           }
           try {
             let logedInUser = await this.auth.login(x, this.identifier, this.password);
+            this.loginFailed = false;
             if ( ! logedInUser ) return;
+            this.email = logedInUser.email;
+            this.username = logedInUser.userName;
+            this.identifier = this.email;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
@@ -192,11 +220,13 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
           } catch (err) {
+              this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
                 if ( this.username ) {
                   try {
                     logedInUser = await this.auth.login(x, this.username, this.password);
+                    this.loginFailed = false;
                     this.subject.user = logedInUser;
                     this.subject.realUser = logedInUser;
                     if ( ! this.pureLoginFunction ) await this.nextStep();
@@ -206,6 +236,7 @@ foam.CLASS({
                   }
                 }
                 this.usernameRequired = true;
+                this.email = this.identifier;
               }
               this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }

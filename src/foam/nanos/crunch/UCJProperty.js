@@ -15,10 +15,6 @@ foam.CLASS({
     UCJProperty properties will render in an inline CRUNCH wizard.
   `,
 
-  imports: [
-    'crunchService'
-  ],
-
   properties: [
     ['transient', true],
     ['of', 'foam.nanos.crunch.UserCapabilityJunction'],

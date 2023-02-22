@@ -36,6 +36,10 @@ foam.CLASS({
       factory: function() {
         return foam.nanos.auth.Address.create({}, this);
       }
+    },
+    {
+      class: 'String',
+      name: 'supportLogo'
     }
   ]
 });

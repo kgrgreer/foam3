@@ -1,0 +1,4 @@
+p({
+  class:"foam.nanos.ruler.RuleGroup",
+  id:"EventRecord"
+})

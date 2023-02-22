@@ -261,7 +261,7 @@ foam.CLASS({
         return;
       }
       if ( voters.size() < support.getMediatorQuorum() ) {
-        getLogger().debug("callVote", getState(), "insuficient votes", "voters", voters.size());
+        getLogger().debug("callVote", getState(), "insuficient votes", "voters", voters.size(), "quorum", support.getMediatorQuorum());
         return;
       }
       getLogger().debug("callVote", getState(), "achieved mediator and node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum());
@@ -398,11 +398,12 @@ foam.CLASS({
         getLogger().debug("callReport", getState(), "votes", getVotes(), "voters", voters.size());
 
         if ( voters.size() < support.getMediatorQuorum() ) {
-          getLogger().debug("callReport", getState(), "insuficient voters", "votes", getVotes(), "voters", voters.size());
+          getLogger().debug("callReport", getState(), "insuficient voters", "votes", getVotes(), "voters", voters.size(), "mediatorQuorum", support.getMediatorQuorum());
           return;
         }
-        if ( getVotes() < voters.size() ) {
-          getLogger().debug("callReport", getState(), "insuficient votes", "votes", getVotes(), "voters", voters.size());
+        int voterQuorum = (int) Math.floor((voters.size() / 2) + 1);
+        if ( getVotes() < voterQuorum ) {
+          getLogger().debug("callReport", getState(), "insuficient votes", "votes", getVotes(), "voters", voters.size(), "voterQuorum", voterQuorum);
           return;
         }
 

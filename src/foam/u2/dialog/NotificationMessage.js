@@ -118,8 +118,8 @@ foam.CLASS({
     }
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^ {
-        max-width: calc(min(100vw, 48rem) - 6.4rem);
-        min-width: calc(max(48vw, 30rem) - 6.4rem);
+        max-width: calc(min(75vw, 48rem) - 3.2rem);
+        min-width: calc(max(30vw, 30rem) - 3.2rem);
         right: 3.2rem;
       }
     }
@@ -146,12 +146,16 @@ foam.CLASS({
         // exception name and message.
         var ex = this.err.exception || this.err;
         if ( ex.id ) {
-          this.message = ex.id.split('.').pop();
-          if ( this.message.endsWith('Exception') ) {
-            this.message = this.message.replace('Exception', '');
+          if ( ex.title ) {
+            this.message = ex.title;
+          } else {
+            this.message = ex.id.split('.').pop();
+            if ( this.message.endsWith('Exception') ) {
+              this.message = this.message.replace('Exception', '');
+            }
+            this.message = foam.String.labelize(this.message);
           }
-          this.message = foam.String.capitalize(foam.String.labelize(this.message).toLowerCase());
-          this.message = this.translationService.getTranslation(foam.locale, ex.id, this.message);
+          this.message = this.translationService.getTranslation(foam.locale, ex.title || ex.id, this.message);
         }
         if ( ex.getTranslation ) {
           this.description = ex.getTranslation();

@@ -255,6 +255,11 @@ foam.CLASS({
           Loggers.logger(x, this).warning("Multiple Primaries detected");
           ElectoralService electoral = (ElectoralService) x.get("electoralService");
           electoral.dissolve(x);
+          if ( config.getIsPrimary() ) {
+            config = (ClusterConfig) config.fclone();
+            config.setIsPrimary(false);
+            getDelegate().put_(x, config);
+          }
         } catch (PrimaryNotFoundException e) {
           if ( support.hasQuorum(x) ) {
             Loggers.logger(x, this).warning("No Primary detected");

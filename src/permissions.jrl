@@ -32,6 +32,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.read.permissionDAO","descr
 p({"class":"foam.nanos.auth.Permission","id":"service.read.pmInfoDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.read.regionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.read.userDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.dig.read-all-records","description":"Allows for reading all records on a table using DIG"})
 p({"class":"foam.nanos.auth.Permission","id":"user.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"user.read.deleted","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.compliance","description":""})

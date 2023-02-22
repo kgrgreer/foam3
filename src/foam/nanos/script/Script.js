@@ -37,10 +37,12 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'foam.dao.*',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.*',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
 
     'java.io.BufferedReader',
@@ -125,6 +127,7 @@ foam.CLASS({
       name: 'enabled',
       includeInDigest: true,
       documentation: 'Enables script.',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.start()
           .style({ color: value ? /*%APPROVAL3*/ 'green' : /*%GREY2%*/ 'grey' })
@@ -300,20 +303,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       documentation: 'Name of dao to store script run/event report. To set from inheritor just change property value',
       tableWidth: 120
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `,
-      javaCloneProperty: '//noop'
     }
   ],
 
@@ -338,10 +327,21 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         Language l = getLanguage();
+        ScriptParameter sp = null;
+        try {
+          sp = (ScriptParameter) ((DAO) x.get("scriptParameterDAO"))
+            .find(AND(
+              EQ(ScriptParameter.ENABLED, true),
+              EQ(ScriptParameter.NAME, getId())
+            ));
+        } catch (Throwable t) {
+          Loggers.logger(x, this).warning("Failed retrieving ScriptParameter", t);
+        }
         if ( l == foam.nanos.script.Language.JSHELL ) {
           JShell jShell = new JShellExecutor().createJShell(ps);
           Script.X_HOLDER[0] = x.put("out",  ps)
-            .put("currentScript", this);
+            .put("currentScript", this)
+            .put("scriptParameter", sp);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
           return jShell;
@@ -349,6 +349,7 @@ foam.CLASS({
           Interpreter shell = new Interpreter();
           try {
             shell.set("currentScript", this);
+            shell.set("scriptParameter", sp);
             shell.set("x", x.put("out", ps));
             shell.eval("runScript(String name) { script = x.get("+getDaoKey()+").find(name); if ( script != null ) eval(script.code); }");
             shell.eval("foam.core.X sudo(String user) { foam.util.Auth.sudo(x, (String) user); }");
@@ -405,6 +406,9 @@ foam.CLASS({
         try {
           Thread.currentThread().setPriority(getPriority());
           setLastRun(new Date());
+          if ( ! ( this instanceof foam.nanos.cron.Cron ) ) {
+            er(x, null, LogLevel.INFO, null);
+          }
           if ( l == foam.nanos.script.Language.BEANSHELL ) {
             Interpreter shell = (Interpreter) createInterpreter(x, ps);
             setOutput("");
@@ -417,13 +421,12 @@ foam.CLASS({
             throw new RuntimeException("Script language not supported");
           }
           pm.log(x);
-        } catch (Throwable t) {
+       } catch (Throwable t) {
           thrown = new RuntimeException(t);
           pm.error(x, t);
           ps.println();
           t.printStackTrace(ps);
-          Logger logger = (Logger) x.get("logger");
-          logger.error(this.getClass().getSimpleName(), "runScript", getId(), t);
+          er(x, t.getMessage(), LogLevel.ERROR, t);
           throw thrown;
         } finally {
           setLastDuration(pm.getTime());
@@ -445,6 +448,13 @@ foam.CLASS({
           ((DAO) x.get(getEventDaoKey())).put(event);
         }
     `
+    },
+    {
+      name: 'er',
+      args: 'X x, String message, LogLevel severity, Throwable t',
+      javaCode: `
+      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, getId(), null, null, message, severity, t));
+      `
     },
     {
       name: 'poll',

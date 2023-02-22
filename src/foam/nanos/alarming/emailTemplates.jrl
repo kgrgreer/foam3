@@ -11,5 +11,6 @@ started: {{alarm.started}}
 severity: {{alarm.severity}}
 reason: {{alarm.reason}}
 {% if alarm.note %}info: {{alarm.note}}{% endif %}
+{% if url && alarm.eventRecord %}eventRecord: {{url}}/#er?id={{alarm.eventRecord}}{% endif %}
   """
 })

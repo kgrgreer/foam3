@@ -10,21 +10,22 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-  'java.text.SimpleDateFormat',
-  'foam.core.X',
-  'foam.lib.parse.PStream',
-  'foam.lib.parse.ParserContext',
-  'foam.lib.parse.ParserContextImpl',
-  'foam.lib.parse.StringPStream',
-  'foam.mlang.Constant',
-  'foam.mlang.predicate.Predicate',
-  'foam.mlang.Expr',
-  'foam.nanos.auth.Address',
-  'foam.parse.FScriptParserTestUser',
-  'foam.nanos.ruler.Rule',
-  'foam.parse.FScriptParser',
-  'java.util.Date',
-  'net.nanopay.payroll.PayrollTransaction'
+    'java.text.SimpleDateFormat',
+    'foam.core.X',
+    'foam.lib.parse.LiteralIC',
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContext',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.mlang.Constant',
+    'foam.mlang.predicate.Predicate',
+    'foam.mlang.Expr',
+    'foam.nanos.auth.Address',
+    'foam.nanos.ruler.Rule',
+    'foam.parse.FScriptParser',
+    'java.util.Date',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   methods: [
@@ -40,17 +41,18 @@ foam.CLASS({
 
     var addr = new Address();
     addr.setRegionId("CA-ON");
-var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
-
 
     StringPStream sps    = new StringPStream();
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
-//    PayrollTransaction tx = new PayrollTransaction();
-//    tx.setPayPeriodFactor(new Float(1.2));
-//    tx.setPayPeriods(2);
-//    sps.setString("payPeriodFactor * (24000 / payPeriods)");
-//    test(((Predicate) parser2.parse(sps, px).value()).f(tx), "payPeriodFactor * (24000 / payPeriods)");
+
+    // var parser2 = new FScriptParser(net.nanopay.payroll.PayrollTransaction.getOwnClassInfo());
+    // net.nanopay.payroll.PayrollTransaction tx = new net.nanopay.payroll.PayrollTransaction();
+    // tx.setPayPeriods(2);
+    // sps.setString("1.2 * (24000 / payPeriods)");
+    // var r = ((Double)((Expr) parser2.parse(sps, px).value()).f(tx));
+    // test(((Double)((Expr) parser2.parse(sps, px).value()).f(tx))==10000.0, "expected: 1.2 * (24000/2) == 14400.0, found: "+r);
+
     var parser = new FScriptParser(FScriptParserTestUser.FIRST_NAME);
     sps.setString("address==null");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
@@ -127,6 +129,11 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
 
     sps.setString("organization==\\"name-with-dashes\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "organization==\\"name-with-dashes\\"");
+    sps.setString("firstName~/[a-z]+/i");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
+
+    sps.setString("firstName~/[a-z]+/im");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "firstName~/[a-z]+/");
 
     sps.setString("address isValid");
     test(! ((Predicate) parser.parse(sps, px).value()).f(user), "!address isValid");
@@ -278,7 +285,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     sps.setString("if(unknown exists){999}else{0}");
     test(parser.parse(sps, px) == null, "if(unknown exists){999}else{0} -> null");
     // sps.setString("if(unknown exists){999}else{0}");
-    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==999, "if(exists unknown){999}else{0} -> 0");
+    // test(Double.valueOf(((Expr) parser.parse(sps, px).value()).f(user).toString())==0, "if(exists unknown){999}else{0} -> 0");
 
     Object result = null;
     sps.setString("if(address.regionId.len==5){firstName}else{lastName.len+3}");
@@ -307,6 +314,10 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     sps.setString("let testVar = 4+7; address.regionId.len<testVar");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar = 4+7; address.regionId.len<testVar");
 
+    sps.setString("let testVar11 = 4+7; if ( testVar > 8 ) { if (testVar11 < 0 ) { 0 } else { testVar11 } } else { 0 }");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 11, "let testVar11 = 4+7; if ( testVar11 > 8 ) { testVar } else { 0 }");
+
     sps.setString("let newVar = address.regionId.len; address.regionId.len==newVar");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
 
@@ -318,6 +329,7 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     parser = new FScriptParser(foam.nanos.theme.Theme.SUPPORT_CONFIG);
 
     sps.setString("supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
+    test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId!=supportConfig.supportAddress.countryId");
     sps.setString("supportConfig.supportAddress.regionId==\\"CA-ON\\"");
     test(((Predicate) parser.parse(sps, px).value()).f(theme), "supportConfig.supportAddress.regionId==\\"CA-ON\\"");
@@ -331,7 +343,86 @@ var parser2 = new FScriptParser(PayrollTransaction.getOwnClassInfo());
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue==foam.nanos.dao.Operation.CREATE");
     sps.setString("instanceof foam.nanos.ruler.Rule");
     test(((Predicate) parser.parse(sps, px).value()).f(rule), "thisValue instanceof foam.nanos.ruler.Rule");
-    `
+
+    parser = new FScriptParser(foam.parse.test.FScriptParserTestUser.getOwnClassInfo());
+    List<LiteralIC> expressions = new ArrayList();
+    expressions.add(new LiteralIC("lit_int_10", new Constant(10)));
+    expressions.add(new LiteralIC("lit_int_20", new Constant(20)));
+    expressions.add(new LiteralIC("lit_int_30", new Constant(30)));
+    expressions.add(new LiteralIC("lit_float_111", new Constant(111.0)));
+    expressions.add(new LiteralIC("lit_float_222", new Constant(222.0)));
+    expressions.add(new LiteralIC("lit_float_333", new Constant(333.0)));
+    expressions.add(new LiteralIC("region", new Constant("CA-ON")));
+    parser.addExpressions(expressions);
+
+    sps.setString("if (address.regionId==region) {firstName} else {null}");
+    result = (String) ((Expr)parser.parse(sps, px).value()).f(user);
+    test("marmelad".equals(result), "if (address.regionId==region) {firstName} else {null}");
+
+    sps.setString("lit_int_10 * lit_int_20");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 200, "expect: 10 * 20 == 200, found: "+result);
+
+    sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -910.0, "expect: (10*20)-(111.0*10) == -910.0, found: "+result);
+
+    sps.setString("lit_int_30+lit_int_20-lit_int_10");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 40, "expect: 30+20-10 == 40, found: "+result);
+
+    sps.setString("Hello, {{firstName}}. Is {{lastName}} your last name?");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((String) result).equals("Hello, "+user.getFirstName()+". Is "+user.getLastName()+" your last name?"), "Hello, {{firstName}}. Is {{lastName}} your last name?");
+
+    sps.setString("Hello, {{firstName}}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((String) result).equals("Hello, "+user.getFirstName()+""), "Hello, {{firstName}}");
+
+    sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+(lit_int_20-lit_int_10))");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -870.0, "expect: (10*20)-(111.0*10)+(30+(20-10)) == -870.0, found: "+result);
+
+    sps.setString("((lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10))-(lit_int_30+(lit_int_20-lit_int_10))");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == -950.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -950.0, found: "+result);
+
+    sps.setString("if(lit_int_20 > lit_int_10){lit_int_30}else{0}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 30, "expect: if(lit_int_20 > lit_int_10){lit_int_30}else{0} == 30, found: "+result);
+
+    sps.setString("if(lit_int_20 > lit_int_10){lit_int_30*10}else{0}");
+    result = ((Expr) parser.parse(sps, px).value()).f(user);
+    test(((Double) result) == 300, "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+
+    user.setTestint1(11);
+    user.setTestint2(22);
+    user.setTestint3(33);
+    sps.setString("MAX(0, (testint1 * testint2) - testint3) == (testint1 * testint2) - testint3");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: MAX(0, (testint1 * testint2) - testint3) == (testint1 * testint2) - testint3 -> true, found: "+result);
+
+    // MAX rounds, so these will never be equal.
+    // sps.setString("(Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == MAX(0, (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA))");
+    // result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    // test(((Boolean) result), "expect: equation == MAX(0, equation) -> true, found: "+result);
+
+     sps.setString("if(lit_int_20 > lit_int_10){(Employee_Earnings_CA + Employee_Reimbursement_CA)}else{0} - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA) == (Employee_Earnings_CA + Employee_Reimbursement_CA) - (Employee_Tax_CA_Federal + Employee_Tax_Non_Periodic_CA_Federal + Employee_Tax_CA_Provincial + Employee_Tax_Non_Periodic_CA_Provincial + Employee_EI_Contribution_CA + Employee_CPP_Contribution_CA + Employee_Deductions_CA)");
+    result = ((Predicate) parser.parse(sps, px).value()).f(user);
+    test(((Boolean) result), "expect: if(lit_int_20 > lit_int_10){equation = equation}else{false} -> true , found: "+result);
+
+     sps.setString("0 / 1");
+     result = ((Expr) parser.parse(sps, px).value()).f(user);
+     test (((Double)result) == 0, "expect: 0 / 1 -> 0, found: "+result);
+
+     sps.setString("1 / 0");
+     try {
+       result = ((Expr) parser.parse(sps, px).value()).f(user);
+       test (false, "expect: 1 / 0 -> exception, found: "+result);
+     } catch (RuntimeException e) {
+       test (true, "expect: 1 / 0 -> exception, found: "+e.getMessage());
+     }
+     `
     }
   ]
 });

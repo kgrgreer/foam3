@@ -84,6 +84,7 @@ foam.CLASS({
         {
           class: 'String',
           name: 'text',
+          projectionSafe: false,
           tableCellFormatter: function(val, obj, prop) {
             this.startContext({data: obj}).add(prop).endContext();
           },

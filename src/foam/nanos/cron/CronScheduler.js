@@ -134,8 +134,7 @@ foam.CLASS({
       logger.info("initialize", "cronjobs", "complete");
 
       while ( true ) {
-        foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-       if ( getEnabled() ) {
+        if ( getEnabled() ) {
           Date now = new Date();
           cronJobDAO.where(
                          MLang.AND(

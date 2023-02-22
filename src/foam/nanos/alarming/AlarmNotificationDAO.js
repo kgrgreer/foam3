@@ -20,6 +20,8 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
+    'foam.util.AUIDGenerator',
+    'foam.util.SafetyUtil',
     'java.util.HashMap'
   ],
 
@@ -28,6 +30,14 @@ foam.CLASS({
       name: 'notificationTemplate',
       class: 'String',
       value: 'NOC'
+    },
+    {
+      name: 'auid',
+      class: 'FObjectProperty',
+      of: 'foam.util.AUIDGenerator',
+      javaFactory: `
+        return new AUIDGenerator(getX(), "alarmDAO");
+      `
     }
   ],
 
@@ -36,25 +46,38 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       Alarm old = (Alarm) getDelegate().find_(x, ((Alarm)obj).getId());
-      Alarm alarm = (Alarm) getDelegate().put_(x, obj);
+      Alarm alarm = (Alarm) obj;
       if ( ( old != null &&
              old.getIsActive() == alarm.getIsActive() ) ||
            ( ( old == null ||
                old.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) &&
                alarm.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) ) {
-        return alarm;
+        getDelegate().put_(x, obj);
       }
 
       if ( "localhost".equals(System.getProperty("hostname", "localhost")) &&
            ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
-        return alarm;
+        getDelegate().put_(x, obj);
       }
+
+      if ( old == null ||
+           ! old.getIsActive() && alarm.getIsActive() ) {
+        // raise alarm
+        // If alarm becomes active again, then requires new external id.
+        alarm.setExternalId(getAuid().getNextString());
+      } else if ( old.getIsActive() && ! alarm.getIsActive() ) {
+        // clear alarm
+        alarm.setExternalId(old.getExternalId());
+      }
+      alarm = (Alarm) getDelegate().put_(x, alarm);
 
       // TODO: Occuring from medusa during replay
       if ( alarm.getCreated() ==  null ) {
         alarm = (Alarm) alarm.fclone();
         alarm.setCreated(new java.util.Date());
+        alarm = (Alarm) getDelegate().put_(x, alarm);
       }
+
       // create body for non-email notifications
       StringBuilder body = new StringBuilder();
       body.append("[");
@@ -81,6 +104,10 @@ foam.CLASS({
       }
       body.append("\\ninfo: ");
       body.append(alarm.getNote());
+      if ( alarm.getEventRecord() != null ) {
+        body.append("\\neventRecord: ");
+        body.append("/#er?id="+alarm.getEventRecord());
+      }
 
       HashMap args = new HashMap();
       args.put("alarm.name", alarm.getName());
@@ -93,6 +120,9 @@ foam.CLASS({
         args.put("alarm.cleared", alarm.getLastModified().toString());
       }
       args.put("alarm.note", alarm.getNote());
+      if ( ! SafetyUtil.isEmpty(alarm.getEventRecord()) ) {
+        args.put("alarm.eventRecord", alarm.getEventRecord());
+      }
 
       // Notifications are ServiceProviderAware
       String spid = ServiceProviderAware.GLOBAL_SPID;
@@ -110,7 +140,6 @@ foam.CLASS({
         .setSeverity(alarm.getSeverity())
         .setSpid(spid)
         .setTemplate(getNotificationTemplate())
-        .setToastMessage(alarm.getName())
         .setAlarm(alarm)
         .build();
 

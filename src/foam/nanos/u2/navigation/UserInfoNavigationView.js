@@ -31,7 +31,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
     }
-    ^horizontal { 
+    ^horizontal {
       flex-direction: row;
     }
     ^horizontal > * + * {
@@ -112,11 +112,16 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.nanos.u2.navigation',
   name: 'UserInfoView',
   extends: 'foam.u2.View',
+
   documentation: '',
+
+  imports: [ 'subject' ],
+
   css: `
     ^name-container {
       max-width: 90px;
@@ -141,9 +146,7 @@ foam.CLASS({
       flex-direction: column;
     }
   `,
-  imports: [
-    'subject'
-  ],
+
   methods: [
     function render() {
       var self = this;

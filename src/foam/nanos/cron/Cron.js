@@ -13,7 +13,14 @@ foam.CLASS({
     'cronDAO'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   requires: [
+    'foam.dao.AbstractDAO',
+    'foam.log.LogLevel',
     'foam.nanos.cron.IntervalSchedule',
     'foam.nanos.cron.TimeHMS'
   ],
@@ -26,6 +33,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date'
@@ -64,6 +72,17 @@ foam.CLASS({
       name: '_defaultSection',
       title: 'Info',
       order: 1
+    }
+  ],
+
+  messages: [
+    {
+      name: 'SUCCESS_ENABLED',
+      message: 'Successfully enabled'
+    },
+    {
+      name: 'SUCCESS_DISABLED',
+      message: 'Successfully disabled'
     }
   ],
 
@@ -212,66 +231,42 @@ foam.CLASS({
            getReattempts() < getMaxReattempts() ) {
         setReattempts(getReattempts() +1);
         setReattemptRequested(false);
+        String attempt = "reattempt ("+getReattempts()+" of "+getMaxReattempts()+")";
         try {
+          er(x, attempt, LogLevel.WARN, null);
           super.runScript(x);
           if ( ! getReattemptRequested() ) {
             resetReattempts();
             getReattemptSchedule().postExecution();
           } else if ( getReattempts() >= getMaxReattempts() ) {
-            alarm(x, AlarmReason.THRESHOLD, "max reattempts reached", true);
+            er(x, "max reattempts reached", LogLevel.ERROR, null);
+            er(x, "disable on error", LogLevel.WARN, null);
+            setEnabled(false);
+          } else if ( getReattempts() == 0 ) {
+            er(x, "reattempt requested", LogLevel.WARN, null);
+          } else {
+            er(x, attempt+" failed", LogLevel.WARN, null);
           }
         } catch ( RuntimeException e ) {
-          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
-         throw e;
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
         }
       } else if ( ! getReattemptRequested() ) {
         try {
+          er(x, null, LogLevel.INFO, null);
           super.runScript(x);
           getSchedule().postExecution();
-          DAO alarmDAO = (DAO) x.get("alarmDAO");
-          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
-          }
         } catch ( RuntimeException e ) {
-          alarm(x, AlarmReason.CONFIGURATION, e.getMessage(), true);
+          er(x, "disable on error", LogLevel.WARN, null);
+          setEnabled(false);
+          throw e;
         }
       }
       `
     },
     {
-      documentation: 'generate alarm and optionally disable self',
-      name: 'alarm',
-      args: 'X x, AlarmReason reason, String note, Boolean disable',
-      javaCode: `
-        DAO alarmDAO = (DAO) x.get("alarmDAO");
-        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, getId()));
-        if ( alarm != null ) {
-          if ( ! alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(true);
-            alarmDAO.put(alarm);
-          }
-        } else {
-          alarm = new Alarm(getId(), true);
-          alarm.setSeverity(LogLevel.ERROR);
-          alarm.setReason(reason);
-          alarm.setNote(note);
-          alarmDAO.put(alarm);
-        }
-
-        setStatus(ScriptStatus.ERROR);
-        resetReattempts();
-        if ( disable ) {
-          setEnabled(false);
-        }
-      `
-    },
-    {
-      documentation: 'Request job is rescheduled',
+     documentation: 'Request job is rescheduled',
       name: 'reattempt',
       javaCode: `
       setReattemptRequested(true);
@@ -294,10 +289,17 @@ foam.CLASS({
         return this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = false;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = false;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          X.notify(this.SUCCESS_DISABLED, '', this.LogLevel.INFO, true);
+        }, e => {
+          this.throwError.pub(e);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     },
@@ -307,10 +309,17 @@ foam.CLASS({
         return ! this.enabled;
       },
       code: function(X) {
-        var self = this;
-        this.enabled = true;
-        this.__context__['cronDAO'].put(this).then(function(cron) {
-          self.copyFrom(cron);
+        var cron = this.clone();
+        cron.enabled = true;
+
+        this.cronDAO.put(cron).then(req => {
+          this.cronDAO.cmd(this.AbstractDAO.PURGE_CMD);
+          this.cronDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          X.notify(this.SUCCESS_ENABLED, '', this.LogLevel.INFO, true);
+        }, e => {
+          this.throwError.pub(e);
+          X.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
     }

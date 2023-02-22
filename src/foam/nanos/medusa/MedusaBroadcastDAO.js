@@ -9,28 +9,40 @@ foam.CLASS({
   name: 'MedusaBroadcastDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Broadcast MedusaEntries.`,
+  documentation: `Broadcast MedusaEntry to Mediators.`,
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.ContextAgent',
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.DOP',
-    'static foam.mlang.MLang.COUNT',
-    'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.Map'
+    'java.util.Map',
+    'java.util.concurrent.atomic.AtomicLong'
   ],
   
+  javaCode: `
+    protected AtomicLong inFlight_ = new AtomicLong();
+  `,
+
+  constants: [
+    {
+      documentation: 'return inFlight_ count.',
+      name: 'IN_FLIGHT_CMD',
+      type: 'String',
+      value: 'IN_FLIGHT_CMD',
+    }
+  ],
+
   properties: [
     {
       name: 'serviceName',
@@ -40,30 +52,29 @@ foam.CLASS({
       `
     },
     {
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      value: 4
+    },
+    {
       // TODO: clear on ClusterConfig DAO updates
       name: 'clients',
       class: 'Map',
       javaFactory: 'return new HashMap();'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      name: 'logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return Loggers.logger(getX(), this, this.getServiceName());
-      `
-    },
+      name: 'queues',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
+    }
   ],
-  
+
   methods: [
     {
       name: 'put_',
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
-      // getLogger().debug("put", entry.getIndex());
+      // Loggers.logger(x, this).debug("put", entry.getIndex());
 
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
@@ -98,6 +109,10 @@ foam.CLASS({
       Object cmd = getDelegate().cmd_(x, obj);
       if ( ! DAO.PURGE_CMD.equals(obj) ) {
         submit(x, obj, DOP.CMD);
+        return cmd;
+      }
+      if ( IN_FLIGHT_CMD.equals(obj) ) {
+        return inFlight_.get();
       }
       return cmd;
       `
@@ -121,43 +136,66 @@ foam.CLASS({
       ],
       type: 'Object',
       javaCode: `
-    try {
-      // getLogger().debug("submit", dop.getLabel(), obj.getClass().getSimpleName());
+      final Logger logger = Loggers.logger(x, this);
+      // logger.debug("submit", dop.getLabel(), obj.getClass().getSimpleName());
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      Agency agency = (Agency) x.get(support.getThreadPoolName());
       for ( ClusterConfig config : support.getBroadcastMediators() ) {
-        // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
-        agency.submit(x, new ContextAgent() {
-          public void execute(X x) {
-             // getLogger().debug("agency", "execute", config.getId());
-             try {
-              DAO dao = (DAO) getClients().get(config.getId());
+        String id = config.getId();
+        // logger.debug("submit", "job", id, dop.getLabel(), "assembly");
+        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
+        if ( queue == null ) {
+          synchronized ( this ) {
+            queue = (AssemblyLine) getQueues().get(id);
+            if ( queue == null ) {
+              DAO dao = (DAO) getClients().get(id);
               if ( dao == null ) {
-                dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                getClients().put(config.getId(), dao);
+                // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+                dao = new RetryClientSinkDAO.Builder(x)
+                 .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+                 .setMaxRetryAttempts(getMaxRetryAttempts())
+                 .setMaxRetryDelay(support.getMaxRetryDelay())
+                 .build();
+                getClients().put(id, dao);
               }
-
-              if ( DOP.PUT == dop ) {
-                dao.put_(x, (FObject) obj);
-              } else if ( DOP.CMD == dop ) {
-                dao.cmd_(x, obj);
-              }
-              ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.node-mediator");
-            } catch ( Throwable t ) {
-              getLogger().error("agency", "execute", config.getId(), t);
+              // Create one AssemblyLine per mediator and perform dao put under lock
+              // so there will only be one retry, rather than every thread retrying.
+              // To be replaced by SAF (Store and Forward)
+              queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+              getQueues().put(id, queue);
             }
           }
-        }, this.getClass().getSimpleName());
+        }
+        queue.enqueue(new AbstractAssembly() {
+          public void executeUnderLock() {
+            // logger.debug("AssemblyLine", "executeUnderLock", id);
+            try {
+              if ( DOP.PUT == dop ) {
+                ((DAO) getClients().get(id)).put_(x, (FObject) obj);
+              } else if ( DOP.CMD == dop ) {
+                ((DAO) getClients().get(id)).cmd_(x, obj);
+              }
+              ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.node-mediator");
+              inFlight_.getAndDecrement();
+            } catch ( Throwable t ) {
+              logger.error("assembly", "executeUnderLock", id, t);
+            }
+          }
+        });
       }
       return obj;
-    } catch (Throwable t) {
-      getLogger().error(t.getMessage(), t);
-      throw t;
-    }
+    `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( IN_FLIGHT_CMD.equals(obj) ) {
+        return inFlight_.get();
+      }
+      return getDelegate().cmd_(x, obj);
       `
     }
-   ]
+  ]
 });

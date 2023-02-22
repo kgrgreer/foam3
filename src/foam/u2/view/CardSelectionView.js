@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'CardSelectionView',
   extends: 'foam.u2.View',
@@ -58,6 +58,12 @@
       name: 'choiceView',
       value: { class: 'foam.u2.view.CardSelectView' }
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.mlang.predicate.Predicate',
+      name: 'selectionPredicate',
+      documentation: 'Predicate for selecting the default choice when not able to infer from data'
+    }
   ],
 
   methods: [
@@ -73,9 +79,8 @@
                 return self.E();
               }
 
-              // For default selection e.g. One time deposit
-              if ( choices[0] ) self.data = choices[0][0];
-
+              // Set default choice selection based on data
+              var selection = choices.find(c => self.choiceIsSelected(self.data, c));
               var toRender = choices.map((choice, index) => {
                 var isSelectedSlot = self.slot(function(choices, data) {
                   return self.choiceIsSelected(data, choices[index]);
@@ -87,15 +92,20 @@
 
                 var valueSimpSlot;
 
-                if ( choice instanceof Array ){
+                if ( choice instanceof Array ) {
                   valueSimpSlot = self.mustSlot(choice[0]);
                   cardSelectViewConfig.label = choice[1];
                 } else {
                   valueSimpSlot = self.mustSlot(choice);
-                  cardSelectViewConfig.of = choice.cls_.id;
                 }
 
                 cardSelectViewConfig.data$ = valueSimpSlot;
+                cardSelectViewConfig.data  = valueSimpSlot.get();
+
+                // No default selection, set choice selection based on predicate
+                if ( selection === undefined && self.selectionPredicate?.f(choice) ) {
+                    selection = choice;
+                }
 
                 return self.E()
                   .addClass(self.myClass('innerFlexer'))
@@ -120,6 +130,11 @@
                   .end()
 
               });
+
+              // No default selection, select the first choice
+              if ( selection === undefined ) selection = choices[0];
+              self.data = foam.Array.isInstance(selection) ? selection[0] : selection;
+
               return toRender;
             })
           )

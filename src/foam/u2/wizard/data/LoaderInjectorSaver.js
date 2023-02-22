@@ -47,8 +47,9 @@ foam.CLASS({
       }
 
       if ( ! this.SplitWAO.isInstance(target.wao) ) {
-        console.error(`LoaderInjectorSaver only supported on wizardlets with SplitWAO`);
-        return;
+        target.wao = this.SplitWAO.create({ delegate: target.wao });
+        // console.error(`LoaderInjectorSaver only supported on wizardlets with SplitWAO`);
+        // return;
       }
 
       let node = target.wao.loader;
@@ -57,6 +58,7 @@ foam.CLASS({
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
 
       target.wao.loader = loader;
+      await this.delegate.save(data);
 
       // TODO: fix all this
       if ( false ) {

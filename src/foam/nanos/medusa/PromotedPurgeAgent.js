@@ -28,7 +28,9 @@ foam.CLASS({
     'static foam.mlang.MLang.GT',
     'static foam.mlang.MLang.LT',
     'static foam.mlang.MLang.LTE',
+    'static foam.mlang.MLang.MAX',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Max',
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -43,7 +45,6 @@ foam.CLASS({
       value: 'internalMedusaDAO'
     },
     {
-      // REVIEW: Get this from DaggerService?
       documentation: 'Presently Dagger service bootstraps two entries.',
       name: 'minIndex',
       class: 'Long',
@@ -84,6 +85,7 @@ foam.CLASS({
       documentation: 'Start as a NanoService',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
       timer.schedule(new ContextAgentTimerTask(getX(), this),
@@ -93,11 +95,23 @@ foam.CLASS({
       `
     },
     {
+      name: 'stop',
+      javaCode: `
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        Loggers.logger(getX(), this).info("stop");
+        timer.cancel();
+        clearTimer();
+      }
+      `
+    },
+    {
       name: 'execute',
       args: 'Context x',
       javaCode: `
       PM pm = new PM(this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      long minIndex = Math.max(getMinIndex(), ((DaggerService) x.get("daggerService")).getMinIndex());
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       long maxIndex = getMaxIndex();
       if ( maxIndex == 0 ) {
@@ -112,15 +126,17 @@ foam.CLASS({
             EQ(MedusaEntry.PROMOTED, true)
           )
         );
+        Max max = (Max) MAX(MedusaEntry.INDEX);
         Count count = new Count();
         PurgeSink purgeSink = new PurgeSink(x, new foam.dao.RemoveSink(x, dao));
         Sequence seq = new Sequence.Builder(x)
-          .setArgs(new Sink[] {count, purgeSink})
+          .setArgs(new Sink[] {count, max, purgeSink})
           .build();
         dao.select(seq);
         if ( count.getValue() > 0 ) {
           Loggers.logger(x, this).debug("purged", count.getValue());
         }
+        setMinIndex((Long) max.getValue());
       } catch ( Throwable t ) {
         pm.error(x, t);
         Loggers.logger(x, this).error(t);

@@ -20,7 +20,18 @@ foam.CLASS({
       'xs:int'          : 'foam.core.Int',
       'xs:long'         : 'foam.core.Long',
       'xs:short'        : 'foam.core.Int',
-      'xs:double'       : 'foam.core.Double'
+      'xs:double'       : 'foam.core.Double',
+      'xsd:boolean'     : 'foam.core.Boolean',
+      'xsd:date'        : 'foam.core.Date',
+      'xsd:dateTime'    : 'foam.core.Date',
+      'xsd:decimal'     : 'foam.core.Double',
+      'xsd:string'      : 'foam.core.String',
+      'xsd:time'        : 'foam.core.Date',
+      'xsd:base64Binary': 'foam.core.String',
+      'xsd:int'         : 'foam.core.Int',
+      'xsd:long'        : 'foam.core.Long',
+      'xsd:short'       : 'foam.core.Int',
+      'xsd:double'      : 'foam.core.Double'
     }
   },
 
@@ -31,10 +42,17 @@ foam.CLASS({
       adapt: function(_, v) { return v.trim(); }
     },
     {
+      name: 'xsdPath'
+    },
+    {
       name: 'simpleTypes',
       factory: () => []
     },
-    'xmlns'
+    'xmlns',
+    {
+      name: 'enums',
+      factory: function() { return new Map(); }
+    }
   ],
 
   methods: [
@@ -204,13 +222,24 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1) continue;
         var value = child.getAttribute('value');
+        var duplicate = false;
+        for ( var idx in m.values ) {
+          var val = m.values[idx];
+          if ( val.name.toUpperCase() === value.toUpperCase() ) {
+            // console.info("processEnum,duplicate",value);
+            duplicate = true;
+            continue;
+          }
+        }
+        if ( duplicate ) continue;
         var label = value;
         if ( Number.isInteger(value[0] - '0') ) value = '_' + value;
         m.values.push({
           name: value,
           label: label
-        })
+        });
       }
+      this.enums.set(m.name, m);
     },
 
     /**
@@ -272,6 +301,42 @@ foam.CLASS({
     },
 
     /**
+     * Processes a union
+     * @param  {Object} m   FOAM model
+     * @param  {Object} doc DOM model
+     */
+    function processUnion(m, doc) {
+      // split memberTypes and
+      var keys = new Set();
+      var memberTypes = doc.getAttribute('memberTypes').split(' ');
+      for ( var idx in memberTypes ) {
+        var mt = memberTypes[idx];
+        var st = this.simpleTypes[mt];
+        if ( st ) {
+          // all the types to be joined need to be the same type
+          this.simpleTypes[m.name] = st;
+          if ( st === 'foam.core.Enum' ) {
+            var e = this.enums.get(mt);
+            m.values = m.values || [];
+            m.values = m.values.concat(e.values);
+            // FIXME: just add the first. The concatenation
+            // cannot have duplicates else the Enum class creation
+            // will fail - silently.
+            break;
+          }
+        } else {
+          console.warn("processUnion,not found", mt);
+        }
+      }
+
+      if ( m.values ) {
+        delete m.extends;
+        m.type = 'enum';
+        this.enums.set(m.name, m);
+      }
+    },
+
+    /**
      * Processes a simple type and it's children
      * @param  {Object} m   FOAM model
      * @param  {Object} doc DOM model
@@ -286,6 +351,9 @@ foam.CLASS({
           case 'restriction':
             // process restriction tags
             this.processRestriction(m, child);
+            break;
+          case 'union':
+            this.processUnion(m, child);
             break;
         }
       }
@@ -330,9 +398,9 @@ foam.CLASS({
      * @param  {Object} doc DOM model
      */
     function processChoice(m, doc) {
+      m.type = 'choice';
       // add properties if it doesn't exist
       if ( ! m.properties ) m.properties = [];
-
       var children = doc.childNodes;
       for ( var key in children ) {
         var child = children[key];
@@ -344,7 +412,7 @@ foam.CLASS({
 
         let property = {
           class: classType,
-          name: name,
+          name: this.toPropertyName(name),
           shortName: name
         };
 
@@ -354,7 +422,7 @@ foam.CLASS({
 
         // check if enum
         if ( this.simpleTypes[child.getAttribute('type')] === 'foam.core.Enum' ) {
-          property.class = 'foam.core.Enum'
+          property.class = 'foam.core.Enum';
           property.of = this.package + '.' + child.getAttribute('type');
         }
 
@@ -382,7 +450,7 @@ foam.CLASS({
         let name = child.getAttribute('name');
         let property = {
           class: this.getPropType(child.getAttribute('type')),
-          name: name,
+          name: this.toPropertyName(name),
           shortName: name
         };
 
@@ -434,7 +502,8 @@ foam.CLASS({
     function createProperty(modelName, type, name) {
       return {
         class: this.getPropType(type),
-        name: name
+        name: this.toPropertyName(name),
+        shortName: name
       };
     },
 
@@ -451,6 +520,18 @@ foam.CLASS({
       // convert to int if not set to "unbounded"
       if ( maxOccurs !== 'unbounded') maxOccurs = parseInt(maxOccurs, 10);
       let minOccurs = parseInt(doc.getAttribute('minOccurs'), 10) || 1;
+
+      // group ref
+      let ref = doc.getAttribute('ref');
+      if ( ref ) {
+        // FIXME: ref is a forward reference, how to defer?
+        m.properties.push({
+          class: 'StringArray',
+          name: this.toPropertyName(ref),
+          shortName: ref
+        });
+        return;
+      }
 
       let property  = this.createProperty(m.name, doc.getAttribute('type'), doc.getAttribute('name'));
 
@@ -475,7 +556,7 @@ foam.CLASS({
       }
 
       // change classType to appropriate array class if maxOccurs is greater than 1
-      if (maxOccurs > 1 || maxOccurs === 'unbounded') {
+      if ( maxOccurs > 1 || maxOccurs === 'unbounded' ) {
         if ( property.class === 'FObjectProperty' ) {
           property.class = 'FObjectArray';
         } else if ( this.simpleTypes[doc.getAttribute('type')] == 'foam.core.String' ||
@@ -487,7 +568,9 @@ foam.CLASS({
       }
 
       // add "of" property if class is FObjectProperty or FObjectArray
-      if ( property.class === 'FObjectProperty' || property.class === 'FObjectArray' || property.class === 'foam.core.Enum' ) {
+      if ( property.class === 'FObjectProperty' ||
+           property.class === 'FObjectArray' ||
+           property.class === 'foam.core.Enum' ) {
         property.of = this.package + '.' + doc.getAttribute('type');
       }
 
@@ -519,6 +602,10 @@ foam.CLASS({
           case 'choice':
             this.processChoice(m, child);
             break;
+          // group ref
+          case 'group':
+            this.processSequenceElement(m, child);
+            break;
         }
       }
     },
@@ -544,6 +631,9 @@ foam.CLASS({
           case 'sequence':
             this.processSequence(m, child);
             break;
+          case 'all':
+            this.processSequence(m, child);
+            break;
         }
       }
     },
@@ -566,7 +656,6 @@ foam.CLASS({
         if ( child.nodeType !== 1 ) continue;
 
         var name = child.getAttribute('name');
-
         // confirm element is a simple type
         if ( child.localName === 'simpleType' ) {
           for ( var childKey in child.childNodes ) {
@@ -585,6 +674,11 @@ foam.CLASS({
                 if ( a.localName === 'base' ) this.simpleTypes[name] = this.TYPES[a.value];
               }
             }
+
+            if ( grandChild.localName === 'union' ) {
+              // REVIEW: no other assumption can be made
+              this.simpleTypes[name] = 'foam.core.Enum';
+            }
           }
         } else if ( child.localName === 'complexType' ) {
           for ( var childKey in child.childNodes ) {
@@ -598,6 +692,20 @@ foam.CLASS({
               }
             }
           }
+        } else if ( child.localName === 'group' ) {
+          for ( var childKey in child.childNodes ) {
+            var grandChild = child.childNodes[childKey];
+            // check if nodeType is an element node
+            if ( grandChild.nodeType !== 1 ) continue;
+            if ( grandChild.localName === 'choice' ) {
+              for ( var grandChildKey in grandChild.childNodes ) {
+                var greatGrandChild = grandChild.childNodes[grandChildKey];
+                if ( greatGrandChild.nodeType !== 1 ) continue;
+              }
+            }
+          }
+        } else {
+          console.log("preparse, not parsed", child.localName);
         }
       }
     },
@@ -638,65 +746,105 @@ foam.CLASS({
         // check if nodeType is an element node
         if ( child.nodeType !== 1 ) continue;
 
-        var name = child.getAttribute('name')
-        var id   = this.package + '.' + name;
+        var name = child.getAttribute('name');
+        this.process(child, name);
+     }
+    },
 
-        // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-        if ( name !== 'Document' &&  foam.maybeLookup(id) ) continue;
+    function compileAll() {
+      var sep = require('path').sep;
+      var fs = require('fs');
+      var DOMParser = (globalThis.DOMParser || require('xmldom').DOMParser);
+      var elements = new Map();
 
-        // create foam model
-        var m = this.createClass(this.package, name);
+      this.xmlns = '';
 
-        /*
-        // check iso20022 type & add documentation
-        var type = iso20022Types[name];
-        if ( type && type.documentation && this.package === 'net.nanopay.iso20022' ) {
-          m.documentation = type.documentation;
-        }
-        */
+      var path = __dirname + sep + this.xsdPath; // .replace(/\//g, sep);
+      fs.readdirSync(path).forEach(file => {
+        var f = path+sep+file;
+        // console.info('file', f);
+        var text = fs.readFileSync(f, 'utf8').trim();
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(text, 'text/xml');
+        var docElement = doc.documentElement;
+        var children = docElement.childNodes;
 
-        /*
-        // Add xmlns for ISO20022 messages
-        if ( m.name === 'Document' ) {
-          if ( ! m.implements ) m.implements = [];
-          if ( ! m.properties ) m.properties = [];
+        // preparse all the simple types
+        this.preparse(children);
 
-          m.implements = [ 'net.nanopay.iso20022.Document' ];
-          m.properties.push({
-            class: 'String',
-            name: 'xmlns',
-            value: "urn:iso:std:iso:20022:tech:xsd:" + filename.replace(/\.[^/.]+$/, ""),
-            xmlAttribute: true
-          });
-        }
-        */
+        Array.from(children).forEach(child => {
+          if ( ! child.nodeType ||
+               child.nodeType !== 1 ) {
+            return;
+          }
+          var name = child.getAttribute && child.getAttribute("name");
+          if ( ! name ) {
+            return;
+          }
+          elements.set(name, child);
+        });
+      });
 
-        switch ( child.localName ) {
-          case 'complexType':
-            // process complex type
-            this.processComplexType(m, child);
-            m.flags = [ "java", "complexType" ];
-            break;
-          case 'simpleType':
-            // process simple type
-            this.processSimpleType(m, child);
-            m.flags = m.extends ? [] : [ "java", "simpleType" ];
-            break;
-          default:
-            break;
-        }
+      elements.forEach((child, name) => {
+        this.process(child, name);
+      });
+    },
 
-        if ( m.type === 'enum' ) {
-          delete m.type;
-          this.genModel(m, 'ENUM');
-        } else {
-          this.genModel(m);
-        }
+    function process(child, name) {
+      var id   = this.package + '.' + name;
+
+      // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
+      if ( name !== 'Document' &&
+           foam.maybeLookup(id) ) return;
+
+      // create foam model
+      var m = this.createClass(this.package, name);
+
+      switch ( child.localName ) {
+      case 'complexType':
+        // process complex type
+        this.processComplexType(m, child);
+        m.flags = [ "java", "complexType" ];
+        break;
+      case 'simpleType':
+        // process simple type
+        this.processSimpleType(m, child);
+        m.flags = m.extends ? [] : [ "java", "simpleType" ];
+        break;
+      case 'group':
+        // process group type
+        this.processSequence(m, child);
+        m.flags = m.extends ? [] : [ "java", "groupType" ];
+        break;
+      default:
+        break;
       }
+
+      if ( m.type === 'enum' ) {
+        delete m.type;
+        this.genModel(m, 'ENUM');
+      } else {
+        this.genModel(m);
+      }
+    },
+
+    function toPropertyName(name) {
+      var propName = name.replaceAll("-", "_");
+      if ( propName[0] !== propName[0].toLowerCase() ) {
+        propName = name[0].toLowerCase() + propName.substring(1);
+      }
+      return propName;
     }
   ]
 });
 
 foam.XSD = function(model) {
-  foam.xsd.XSDCompiler.create(model).compile();
+  var compiler = foam.xsd.XSDCompiler.create(model);
+  if ( compiler.xsdPath ) {
+    compiler.compileAll();
+  } else if ( compiler.xsd ) {
+    compiler.compile();
+  } else {
+    throw new Error("compiler neither xsd or xsdPath set");
+  }
 };

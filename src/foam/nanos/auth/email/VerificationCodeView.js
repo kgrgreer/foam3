@@ -12,7 +12,11 @@
   documentation: 'view to enter email verification code',
 
   imports: [
-    'stack'
+    'pushMenu'
+  ],
+
+  requires: [
+    'foam.u2.detail.SectionView'
   ],
 
   css: `
@@ -27,19 +31,22 @@
     }
   `,
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.email.EmailVerificationCode',
+      name: 'data'
+    }
+  ],
+
   methods: [
     function render() {
       this
         .addClasses([this.myClass(), this.myClass('flex')])
         .start('h1').add(this.data.TITLE).end()
-        .start()
-          .add(this.data.VERIFICATION_CODE)
-        .end()
+        .tag(this.SectionView, { data$: this.data$, sectionName: 'verificationCodeSection' })
         .startContext({ data: this.data })
           .addClass(this.myClass('flex'))
-          .start()
-            .add(this.data.SUBMIT)
-          .end()
           .start()
             .add(this.BACK)
           .end()
@@ -53,7 +60,7 @@
       label: 'Back to Sign In',
       buttonStyle: 'LINK',
       code: function(X) {
-        X.stack.back();
+        X.pushMenu('sign-in', true);
       }
     }
   ]

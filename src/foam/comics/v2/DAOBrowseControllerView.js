@@ -41,6 +41,17 @@ foam.CLASS({
     'foam.u2.view.OverlayActionListView'
   ],
 
+  cssTokens: [
+    {
+      name: 'borderSize',
+      value: '1px solid $grey300'
+    },
+    {
+      name: 'boxShadowSize',
+      value: '0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1)'
+    }
+  ],
+
   css: `
     ^container {
       padding: 36px 16px 8px 16px;
@@ -62,10 +73,10 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      border: 1px solid $grey300;
+      border: $borderSize;
       border-radius: 4px;
       box-sizing: border-box;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: $boxShadowSize;
       height: 100%;
       padding: 0;
     }
@@ -126,16 +137,19 @@ foam.CLASS({
     {
       name: 'click',
       expression: function(config$click) {
+        if (this.config.disableSelection) {
+          return () => {};
+        }
         if ( this.config.click && typeof this.config.click === 'function' )
           return this.config.click;
         // This function is exported and is not always called with the 'this' being the current view
         // which is why we need to fetch config from subContext
         return function(obj, id) {
-          if ( ! this.stack ) {
+          if ( ! this.stack && ! this.__subContext__.stack ) {
             console.warn('Missing stack, can not push view');
             return;
           }
-          this.stack.push(foam.u2.stack.StackBlock.create({
+          (this.stack || this.__subContext__.stack).push(foam.u2.stack.StackBlock.create({
           view: {
             class: 'foam.comics.v2.DAOSummaryView',
             data: obj,
@@ -276,7 +290,7 @@ foam.CLASS({
                           }
                         });
                     }))
-                    .callIf( ! config.detailView, function() {
+                    .callIf( ! config.detailView && ! ( config.createControllerView || config$primaryAction ), function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
                             label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),

@@ -6,6 +6,7 @@
 
 package foam.parse;
 
+import com.sun.codemodel.JForEach;
 import foam.core.*;
 import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
@@ -16,10 +17,8 @@ import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
-import foam.parse.NewlineParser;
 
 import java.lang.Exception;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -29,7 +28,7 @@ public class FScriptParser
   protected List expressions;
 
   public FScriptParser(PropertyInfo property) {
-    Map<String, PropertyInfo> props = new HashMap<String, PropertyInfo>();
+    Map<String, PropertyInfo> props = new HashMap();
     props.put("thisValue", property);
     setup(property.getClassInfo(), props);
   }
@@ -43,6 +42,13 @@ public class FScriptParser
     this.expressions.addAll(expressions);
     this.expressions.sort(Comparator.comparing(LiteralIC::getString).reversed());
     // foam.nanos.logger.StdoutLogger.instance().info(this.getClass().getSimpleName(), "expressions", this.expressions.stream().map(Object::toString).collect(java.util.stream.Collectors.joining(",")));
+  }
+
+  /**
+   * return copy, for inspection only
+   */
+  public List getExpressions() {
+    return new ArrayList(expressions);
   }
 
   public void setup(ClassInfo classInfo, Map<String, PropertyInfo> props) {
@@ -81,7 +87,8 @@ public class FScriptParser
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
 
-    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), new Alt(grammar.sym("OR"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE"))));
+    grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), grammar.sym("START_VALUES"), EOF.instance()));
+    grammar.addSymbol("START_VALUES", new Alt(grammar.sym("OR"), grammar.sym("TEMPLATE_STRING"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")));
 
     grammar.addSymbol(
       "OR",
@@ -237,6 +244,7 @@ public class FScriptParser
       if ( vals[0] == null ) return null;
       Expr[] args = new Expr[vals.length];
       for ( int i = 0; i < vals.length; i++ ) {
+        if ( vals[i] instanceof If && ! isPropNumber(((If) vals[i]).getTrueExpr())) return Action.NO_PARSE;
         args[i] = (Expr)vals[i];
       }
       Formula formula = new Subtract();
@@ -251,7 +259,8 @@ public class FScriptParser
         grammar.sym("FIELD_LEN"),
         grammar.sym("FIELD"),
         grammar.sym("MAX"),
-        grammar.sym("MIN")
+        grammar.sym("MIN"),
+        grammar.sym("IF_ELSE")
       ),
       new Alt(
         new Repeat(
@@ -276,7 +285,8 @@ public class FScriptParser
               grammar.sym("FIELD_LEN"),
               grammar.sym("FIELD"),
               grammar.sym("MAX"),
-              grammar.sym("MIN")
+              grammar.sym("MIN"),
+              grammar.sym("IF_ELSE")
             )
           ), 1
         ),
@@ -287,8 +297,9 @@ public class FScriptParser
     ));
     grammar.addAction("FORM_EXPR", (val, x) -> {
       Object[] vals = (Object[]) val;
-      if ( vals[0] instanceof AbstractPropertyInfo && !(vals[0] instanceof AbstractDoublePropertyInfo) && !(vals[0] instanceof AbstractFloatPropertyInfo) &&
-        !(vals[0] instanceof AbstractIntPropertyInfo) && !(vals[0] instanceof AbstractLongPropertyInfo) || (vals[0] instanceof Dot) ) {
+      if ( vals[0] instanceof Expr && ! isPropNumber((Expr)vals[0]) || (vals[0] instanceof Dot) ||
+        vals[0] instanceof Constant && ((Constant)vals[0]).f(null) instanceof String
+      ) {
         return Action.NO_PARSE;
       }
       if ( vals.length == 1 || vals[1] == null || !(vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
@@ -322,7 +333,7 @@ public class FScriptParser
       Literal.create("{"),
       new Alt(NewlineParser.create(), Whitespace.instance()),
       new Alt(
-        grammar.sym("START"),
+        grammar.sym("START_VALUES"),
         grammar.sym("VALUE")
       ),
       new Alt(NewlineParser.create(), Whitespace.instance()),
@@ -335,7 +346,7 @@ public class FScriptParser
           Literal.create("{"),
           new Alt(NewlineParser.create(), Whitespace.instance()),
           new Alt(
-            grammar.sym("START"),
+            grammar.sym("START_VALUES"),
             grammar.sym("VALUE")
           ),
           new Alt(NewlineParser.create(), Whitespace.instance()),
@@ -437,12 +448,36 @@ public class FScriptParser
       grammar.sym("FIELD")
     ));
 
-    grammar.addSymbol("REGEX", new Seq1(
-      1, Literal.create("/"),
+    grammar.addSymbol("REGEX", new Seq2(
+      1, 3, Literal.create("/"),
       new Repeat(new Alt(Literal.create("\\/"), new NotChars("/"))),
-      Literal.create("/")
+      Literal.create("/"),
+      new Optional(new Repeat(
+        new Alt(
+          Literal.create("i"), //CASE_INSENSITIVE
+          Literal.create("m"), //MULTILINE
+          Literal.create("s"), //DOTALL
+          Literal.create("x") //COMMENTS
+        ), 1
+      ))
     ));
-    grammar.addAction("REGEX", (val, x) -> Pattern.compile(compactToString(val)));
+    grammar.addAction("REGEX", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      HashMap hm = new HashMap();
+      hm.put("i", Pattern.CASE_INSENSITIVE);
+      hm.put("m", Pattern.MULTILINE);
+      hm.put("s", Pattern.DOTALL);
+      hm.put("x", Pattern.COMMENTS);
+      var flags = -1;
+      if ( vals[1] != null ) {
+        Object[] flagsArr = (Object[]) vals[1];
+        for (int i = 0; i < flagsArr.length-1; i++ ) {
+          var en = hm.get(flagsArr[i]);
+          flags = en == null ? flags : flags | (int) en;
+        }
+      }
+      return flags < 0 ? Pattern.compile(compactToString(vals[0])) : Pattern.compile(compactToString(vals[0]), flags);
+    });
 
     grammar.addSymbol("DATE", new Alt(
       new Seq(
@@ -502,15 +537,49 @@ public class FScriptParser
     });
 
 
-    grammar.addSymbol("STRING", new Seq1(1,
-      Literal.create("\""),
-      new Repeat(new Alt(
-        new Literal("\\\"", "\""),
-        new NotChars("\"")
-      )),
-      Literal.create("\"")
+    grammar.addSymbol("STRING", new Alt(
+      new Seq1(1,
+        Literal.create("\""),
+        new Repeat(new Alt(
+          new Literal("\\\"", "\""),
+          new NotChars("\"")
+        )),
+        Literal.create("\"")
+      )
     ));
     grammar.addAction("STRING", (val, x) -> compactToString(val));
+    var stringParser = new Repeat(new NotChars("{{"));
+    var stringParser2 = new Repeat(new Alt(
+      new Literal("\\\"", "\""),
+      new NotChars("}}")
+    ));
+
+    grammar.addSymbol("TEMPLATE_STRING", new Seq2(0,2,
+      new Repeat(
+        new Seq(new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
+        ), Literal.create("}}"), 1),
+      Literal.create("}}"),
+      new Optional(new Repeat(AnyChar.instance()))
+    ));
+//    grammar.addSymbol("TEMPLATE_STRING", new Seq( new Until(Literal.create("}}")), new Repeat(new Alt(new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}"))), AnyChar.instance()))));
+
+    grammar.addAction("TEMPLATE_STRING", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      Object[] repeat = (Object[]) vals[0];
+      String ret = "";
+      for ( Object v : repeat )  {
+        Object[] seq = (Object[]) v;
+        ret += compactToString(seq[0]);
+        ret += "{{" + compactToString(seq[1]) + "}}";
+      }
+      ret += compactToString(vals[1]);
+      if ( vals.length == 3 ) {
+        ret += compactToString(vals[2]);
+      }
+      var templStr = new TemplateString();
+      templStr.setString(ret);
+      return templStr;
+    });
 
 
     grammar.addSymbol("ENUM", new Seq(
@@ -752,5 +821,10 @@ public class FScriptParser
       if ( ! Character.isUpperCase(str.charAt(i)) ) return false;
     }
     return true;
+  }
+
+  protected Boolean isPropNumber(Expr expr) {
+    return ! (expr instanceof AbstractPropertyInfo && !(expr instanceof AbstractDoublePropertyInfo) && !(expr instanceof AbstractFloatPropertyInfo) &&
+      !(expr instanceof AbstractIntPropertyInfo) && !(expr instanceof AbstractLongPropertyInfo) || (expr instanceof Dot));
   }
 }

@@ -13,6 +13,13 @@ foam.CLASS({
 
   imports: ['theme'],
 
+  cssTokens: [
+    {
+      name: 'indicatorColor',
+      value: '$primary400'
+    }
+  ],
+
   css: `
     ^{
       position: relative;

@@ -18,7 +18,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction'
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Logger'
   ],
 
   methods: [
@@ -29,40 +30,47 @@ foam.CLASS({
           X systemX = ruler.getX();
           @Override
           public void execute(X x) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) obj; 
-            
-            // other relevant possibilities for ucj statuses are EXPIRED, ACTION_REQUIRED.
-            // However, if the ucj is in either of these two statuses, it implies that the data
-            // was not validated in previous ruleaction. Thus we know that it is in the correct status
-            // already and do not need to go through this step
-            if ( 
-              ucj.getStatus() != CapabilityJunctionStatus.PENDING && 
-              ucj.getStatus() != CapabilityJunctionStatus.APPROVED && 
-              ucj.getStatus() != CapabilityJunctionStatus.GRANTED 
-            ) 
-              return;
+            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
 
-            CapabilityJunctionStatus chainedStatus = checkPrereqsChainedStatus(x, ucj);
+            Logger logger = (Logger) x.get("logger");
+            logger.debug("SetUCJStatusOnPut", "start", ucj);
 
-            // if the ucj is already equal to the chainedStatus, it does not need to be updated
-            if ( chainedStatus == ucj.getStatus() ) return;
+            try {
+              // other relevant possibilities for ucj statuses are EXPIRED, ACTION_REQUIRED.
+              // However, if the ucj is in either of these two statuses, it implies that the data
+              // was not validated in previous ruleaction. Thus we know that it is in the correct status
+              // already and do not need to go through this step
+              if ( 
+                ucj.getStatus() != CapabilityJunctionStatus.PENDING && 
+                ucj.getStatus() != CapabilityJunctionStatus.APPROVED && 
+                ucj.getStatus() != CapabilityJunctionStatus.GRANTED 
+              ) 
+                return;
 
-            // the following should be checked if the result of previous rule ( validateUCJDataOnPut ) 
-            // is not ACTION_REQUIRED. In the ACTION_REQUIRED case, the ucj should be put into the
-            // dao without any additional checks
+              CapabilityJunctionStatus chainedStatus = checkPrereqsChainedStatus(x, ucj);
 
-            Capability capability = (Capability) ucj.findTargetId(systemX);
+              // if the ucj is already equal to the chainedStatus, it does not need to be updated
+              if ( chainedStatus == ucj.getStatus() ) return;
 
-            boolean reviewRequired = capability.getReviewRequired();
-            boolean wasApproved = ucj.getStatus() == CapabilityJunctionStatus.APPROVED;
+              // the following should be checked if the result of previous rule ( validateUCJDataOnPut ) 
+              // is not ACTION_REQUIRED. In the ACTION_REQUIRED case, the ucj should be put into the
+              // dao without any additional checks
 
-            // Update current UCJ status
+              Capability capability = (Capability) ucj.findTargetId(systemX);
 
-            ucj.setStatus(chainedStatus);
-            if ( chainedStatus == CapabilityJunctionStatus.PENDING && reviewRequired && wasApproved ) {
-              ucj.setStatus(CapabilityJunctionStatus.APPROVED);
-            } else if ( chainedStatus == CapabilityJunctionStatus.GRANTED && reviewRequired ) {
-              ucj.setStatus(wasApproved ? CapabilityJunctionStatus.GRANTED : CapabilityJunctionStatus.PENDING);
+              boolean reviewRequired = capability.getReviewRequired();
+              boolean wasApproved = ucj.getStatus() == CapabilityJunctionStatus.APPROVED;
+
+              // Update current UCJ status
+
+              ucj.setStatus(chainedStatus);
+              if ( chainedStatus == CapabilityJunctionStatus.PENDING && reviewRequired && wasApproved ) {
+                ucj.setStatus(CapabilityJunctionStatus.APPROVED);
+              } else if ( chainedStatus == CapabilityJunctionStatus.GRANTED && reviewRequired ) {
+                ucj.setStatus(wasApproved ? CapabilityJunctionStatus.GRANTED : CapabilityJunctionStatus.PENDING);
+              }
+            } finally {
+              logger.debug("SetUCJStatusOnPut", "end", ucj);
             }
           }
         }, "set ucj status on put");

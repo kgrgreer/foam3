@@ -1,0 +1,15 @@
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"emailServiceConfig",
+  label:"Email Service Configuration",
+  keywords: ["email","config","smtp"],
+  handler:{
+    class:"foam.nanos.menu.DAOMenu2",
+    config:{
+      class:"foam.comics.v2.DAOControllerConfig",
+      daoKey:"emailServiceConfigDAO",
+      browseTitle:"Email Service Configuration"
+    }
+  },
+  parent:"admin"
+})

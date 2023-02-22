@@ -38,7 +38,7 @@ foam.CLASS({
     function init() {
       this.addClass()
         .start().addClass(this.myClass('bar'))
-          .style({ 'background' : this.color$, 'border' : '1px solid' + this.color$ })
+          .style({'background' : foam.CSS.returnTokenValue(this.color, this.cls_, this.__subContext__), 'border' : '1px solid' + foam.CSS.returnTokenValue(this.color, this.cls_, this.__subContext__) })
         .end()
         .start('div', null, this.content$)
           .addClass(this.myClass('container'))
