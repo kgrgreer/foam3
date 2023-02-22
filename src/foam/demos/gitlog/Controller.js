@@ -220,14 +220,50 @@ foam.CLASS({
       'fix spacing',
       'Fix spacing',
       'fix syntax error',
+      'foam peg',
+      'Foam peg',
+      'FOAM peg',
+      'FOAM Peg',
       'Merge release',
       'merge',
+      'Peg  foam',
+      'peg -foam',
+      'peg dev',
+      'peg foam',
+      'peg FOAM',
+      'Peg foam',
+      'Peg FOAM',
+      'peg master',
+      'peg nwe foam',
+      'peg to foam',
+      'Peg to foam',
+      'peg to matching foam',
+      'peg to',
+      'pege foam',
+      'peged',
+      'pegFoam',
+      'Pegged to dev foam',
+      'pegged',
+      'Pegged',
+      'pegging',
+      'Pegging',
+      'pegMaster',
       'Release-',
+      'remove peg',
+      'Repeg  foam',
+      'REPEG foam',
+      'Repeg master',
+      'repeg',
+      'Repeg',
       'revert',
       'Revert',
       'Small fix',
       'spacing fixes',
-      'typo'
+      'typo',
+      ' -> ',
+      'v4.',
+      '4.',
+      'v2.',
     ],
     IGNORE_EQUALS: [
       'Add comment.',
@@ -244,6 +280,9 @@ foam.CLASS({
       'Formatting.',
       'Formatting',
       'Indentation.',
+      'Peg to foam',
+      'Peg to mcv foam',
+      'peg',
       'remove extra space',
       'Remove extra space',
       'Remove space.',
@@ -254,6 +293,8 @@ foam.CLASS({
       'space',
       'Spacing.',
       'syntax error',
+      'Update FOAM peg',
+      'Update FOAM Peg',
       'Updated.'
     ],
     AUTHOR_MAP: {
@@ -299,9 +340,12 @@ foam.CLASS({
       'Michal': 'Michal Pasternak',
       'microArtur': 'Artur Linnik',
       'Mike Carcasole': 'Mike Carcasole',
+      'Mike': 'Michael Magahey',
       'Minsun Kim': 'Minsun Kim',
       'MINSUN KIM': 'Minsun Kim',
       'Minsun': 'Minsun Kim',
+      'moorthy': 'Moorthy Rathinasamy',
+      'Moorthy': 'Moorthy Rathinasamy',
       'Mykola Kolombet': 'Mykola Kolombet',
       'Mykola97': 'Mykola Kolombet',
       'nanoArtur': 'Artur Linnik',
@@ -309,6 +353,7 @@ foam.CLASS({
       'nanoMichal': 'Michal Pasternak',
       'nanoNeel': 'Neel Patel',
       'nanopay-arthur': 'Arthur Pavlovs',
+      'nanopay-moorthy': 'Moorthy Rathinasamy',
       'Nauna': 'Anna Doulatshahi',
       'Neel Patel': 'Neel Patel',
       'Neelkanth Patel': 'Neel Patel',
@@ -333,8 +378,9 @@ foam.CLASS({
       'tala': 'Tala Abu Adas',
       'Tala': 'Tala Abu Adas',
       'Xuerong Wu': 'Xuerong Wu',
+      'Xuerong': 'Xuerong Wu',
       'xuerongNanopay': 'Xuerong Wu',
-      'yij793': 'Garfiled Jian',
+      'yij793': 'Garfiled Jian'
     },
     PROJECT_RULES: [
       {
@@ -544,7 +590,8 @@ foam.CLASS({
       this.SUPER();
       // TODO: make this configurable
       this.loadData('data2021.log');
-      this.loadData('data2022.log');
+      this.loadData('np2021.log');
+//      this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
       this.loadData('np2021.log');
@@ -592,7 +639,7 @@ foam.CLASS({
             state = 0;
             i--;
           } else {
-            if ( line.startsWith('+++ ') ) {
+            if ( line.startsWith('+++ ') && ! line.startsWith('+++ b/.') ) {
               commit.files.push(line.substring(6));
             }
             commit.diff += (line.length ? '\n' : '') + line.trim();
