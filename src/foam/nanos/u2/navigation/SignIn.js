@@ -64,10 +64,6 @@ foam.CLASS({
       name: 'username',
       visibility: function(usernameRequired) {
         return usernameRequired ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      postSet: function(_, n) {
-        this.identifier = n;
-        return n;
       }
     },
     {
@@ -198,12 +194,12 @@ foam.CLASS({
             return;
           }
           try {
-            let logedInUser = await this.auth.login(x, this.identifier, this.password);
+            var loginId = this.usernameRequired ? this.username : this.identifier;
+            let logedInUser = await this.auth.login(x, loginId, this.password);
             this.loginFailed = false;
             if ( ! logedInUser ) return;
             this.email = logedInUser.email;
             this.username = logedInUser.userName;
-            this.identifier = this.email;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
@@ -223,6 +219,7 @@ foam.CLASS({
               this.loginFailed = true;
               let e = err && err.data ? err.data.exception : err;
               if ( this.DuplicateEmailException.isInstance(e) ) {
+                this.email = this.identifier;
                 if ( this.username ) {
                   try {
                     logedInUser = await this.auth.login(x, this.username, this.password);
@@ -236,7 +233,6 @@ foam.CLASS({
                   }
                 }
                 this.usernameRequired = true;
-                this.email = this.identifier;
               }
               this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
