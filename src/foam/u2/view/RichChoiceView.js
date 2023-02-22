@@ -641,10 +641,10 @@ foam.CLASS({
 
     function fromProperty(property) {
       this.SUPER(property);
+      this.prop = property;
       if ( ! this.choosePlaceholder && prop.placeholder ) {
         this.choosePlaceholder = prop.placeholder;
       }
-      this.prop = property;
     }
   ],
 
