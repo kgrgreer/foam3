@@ -730,7 +730,7 @@ foam.LIB({
         if ( ! safe ) console.warn('performed foam.String.applyMask with unsafe inputs');
         return newString;
       }
-    },
+    }
   ]
 });
 

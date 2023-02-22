@@ -109,7 +109,7 @@ foam.CLASS({
     },
 
     function renderMarkdown(markup, el) {
-      for (const token of this.lexMarkdown(markup)) {
+      for ( const token of this.lexMarkdown(markup) ) {
         token.render(el);
       }
     },
@@ -165,29 +165,27 @@ foam.CLASS({
       ];
 
       let pos = 0;
-      while (pos < markup.length) {
+      while ( pos < markup.length ) {
         const str = markup.slice(pos);
 
         let ruleMatched = false;
-        for (rule of rules) {
+        for ( rule of rules ) {
           const m = str.match(rule.pattern);
-          if (!m) continue;
+          if ( ! m ) continue;
           ruleMatched = true;
           pos += m[0].length;
 
-          console.log(rule.create.toString(), m);
           yield rule.create(m);
           break;
         }
 
-        if (!ruleMatched) {
+        if ( ! ruleMatched ) {
           console.error('could not find any matches', str);
           break;
         }
       }
     },
     function dedent_ (str) {
-      console.log('dedent on ', str)
       const lines = str.split('\n');
       let mindent;
       let checkIndent = line => {
