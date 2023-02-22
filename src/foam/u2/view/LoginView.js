@@ -71,11 +71,8 @@ foam.CLASS({
   }
 
   /* SET ABOVE DATA */
-  ^ .topBar-logo-Back {
-    display: flex;
-    justify-content: center;
-    height: 6vh;
-    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+  ^.topBar-logo-Back {
+    display: none;
   }
 
   /* SET ON LOGO IMG */
@@ -156,18 +153,24 @@ foam.CLASS({
     align-items: center;
   }
   ^image-one {
-    width: 28vw;
+    width: 48vw;
+    margin-top: 25px;
   }
-  @media (max-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(1) {
-      grid-column: none;
-      display: none;
-    }
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder-split-screen:nth-child(2) {
-      grid-column: 1 / 13 !important;
-    } 
+  
+  @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
       padding: 0 4vw;
+    }
+  }
+  @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
+    .topBar-logo-Back {
+      display: flex;
+      justify-content: center;
+      height: 6vh;
+      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    }
+    .foam-u2-view-LoginView-image-one {
+      width: 28vw;
     }
   }
   `,
