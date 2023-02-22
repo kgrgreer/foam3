@@ -200,7 +200,6 @@ foam.CLASS({
             if ( ! logedInUser ) return;
             this.email = logedInUser.email;
             this.username = logedInUser.userName;
-            this.identifier = this.email;
             if ( this.token_ ) {
               logedInUser.signUpToken = this.token_;
               try {
