@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Logger',
     'java.util.HashMap',
     'static foam.nanos.crunch.CapabilityJunctionStatus.*'
   ],
@@ -37,6 +38,9 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+        Logger logger = (Logger) x.get("logger");
+        String className = getClass().getSimpleName();
+
         agency.submit(x, new ContextAgent() {
           X systemX = ruler.getX();
           @Override
@@ -44,6 +48,8 @@ foam.CLASS({
             var ol = (UserCapabilityJunction) oldObj;
             var nu = (UserCapabilityJunction) obj;
             var auth = (AuthService) x.get("auth");
+
+            logger.debug(className, "start", nu);
 
             if ( nu.getStatus() == AVAILABLE ||
               nu.getStatus() == ACTION_REQUIRED
@@ -53,11 +59,17 @@ foam.CLASS({
             }
 
             if ( ol == null ) {
-              if ( ! auth.check(x, PERMISSION) ) nu.setStatus(ACTION_REQUIRED);
+              if ( ! auth.check(x, PERMISSION) ) {
+                nu.setStatus(ACTION_REQUIRED);
+                logger.debug(className, "permission denied", PERMISSION, nu);
+              }
               return;
             }
 
-            if ( ! auth.check(x, PERMISSION) ) nu.setStatus(ol.getStatus());
+            if ( ! auth.check(x, PERMISSION) ) {
+              nu.setStatus(ol.getStatus());
+              logger.debug(className, "permission denied", PERMISSION, nu);
+            }
 
           }
         }, "authorize ucj status on put");
