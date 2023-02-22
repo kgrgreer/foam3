@@ -34,10 +34,7 @@ foam.CLASS({
 
             Logger logger = (Logger) x.get("logger");
             logger.debug("SetUCJStatusOnPut", "start", ucj);
-            try {
-              Thread.sleep(500);
-            } catch (InterruptedException e) {}
-            
+
             try {
               // other relevant possibilities for ucj statuses are EXPIRED, ACTION_REQUIRED.
               // However, if the ucj is in either of these two statuses, it implies that the data
@@ -75,8 +72,6 @@ foam.CLASS({
             } finally {
               logger.debug("SetUCJStatusOnPut", "end", ucj);
             }
-            
-            
           }
         }, "set ucj status on put");
       `
