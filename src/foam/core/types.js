@@ -832,6 +832,12 @@ foam.CLASS({
 
         var type = foam.lookup(prop.type);
 
+        // Example: type = Predicate and v=foam.mlang.predicate.True
+        if ( type.isSubClass(v) ) {
+          console.warn('Invalid setting of property to class rather than instance for ', prop.name, 'of type', type.id);
+          return v.create();
+        }
+
         return type.isInstance(v) ?
           v :
           ( v.class ?
