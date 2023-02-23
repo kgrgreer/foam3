@@ -13,7 +13,7 @@ foam.CLASS({
   properties: [
     { class: 'String',      name: 'id' },
     { class: 'String',      name: 'author' },
-    { class: 'Date',        name: 'date' },
+    { class: 'DateTime',    name: 'date' },
     { class: 'String',      name: 'subject' },
     { class: 'String',      name: 'body' },
     { class: 'StringArray', name: 'files' },
@@ -200,6 +200,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
+    'foam.demos.gitlog.Commit',
     'foam.demos.gitlog.UserMonthView'
   ],
 
@@ -427,6 +428,7 @@ foam.CLASS({
       */
     ]
   },
+
   properties: [
     {
       class: 'Array',
@@ -612,7 +614,7 @@ foam.CLASS({
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { id: line.substring(7), subject: '', body: '', diff: '', files: [] };
+            commit = this.Commit.create({id: line.substring(7)});
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
@@ -735,9 +737,9 @@ foam.CLASS({
         end().forEach(self.commits, function(d) {
           var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
           this.start('tr').
-            enableClass('selected', self.selection$.map(s => { return s && s.id === d.id; })).
+            enableClass('selected', self.selection$.map(s => { return s && s === d; })).
             on('click', () => {
-              if ( d.id == self.selection.id ) {
+              if ( d == self.selection ) {
                 self.isHardSelection = ! self.isHardSelection;
               } else {
                 self.selection = d;
