@@ -641,7 +641,7 @@ foam.CLASS({
             state = 0;
             i--;
           } else {
-            if ( line.startsWith('+++ ') && ! line.startsWith('+++ b/.') ) {
+            if ( line.startsWith('+++ b/') && ! line.startsWith('+++ b/.') ) {
               commit.files.push(line.substring(6));
             }
             commit.diff += (line.length ? '\n' : '') + line.trim();
