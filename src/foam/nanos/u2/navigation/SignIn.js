@@ -147,6 +147,9 @@ foam.CLASS({
           var user = this.subject.realUser;
           if ( ! this.subject.realUser.emailVerified ) {
             await this.auth.logout();
+            await this.auth.authorizeAnonymous(null);
+            this.subject = await this.auth.getCurrentSubject(null);
+            this.loginSuccess = false;
             this.stack.push(this.StackBlock.create({
               view: {
                 class: 'foam.nanos.auth.email.VerificationCodeView',
