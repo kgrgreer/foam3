@@ -108,7 +108,7 @@ foam.CLASS({
           if ( getDelegate().check(x, permission) ) return true;
 
           if ( ! isMatch(permission) ) {
-            logger.debug(getClass().getSimpleName() + ".check", "Permission does not match any capability permissions", permission);
+            logger.debug(getClass().getSimpleName() + ".check", "Permission does not match any capability permissions", user, permission);
             return false;
           }
 
