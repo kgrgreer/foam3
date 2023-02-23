@@ -375,6 +375,7 @@ foam.CLASS({
       postSet: function(_, n) {
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
+        debugger
         if ( this.initSubject && n ) {
           if ( ! this.currentMenu?.id ) this.buildingStack = true;
           this.pushMenu(n);
@@ -441,25 +442,33 @@ foam.CLASS({
         self.installLanguage();
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
+        let menu 
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
-          var menu = await self.__subContext__.menuDAO.find(self.route);
-          // explicitly check that the menu is unauthenticated
-          // since if there is a user session on refresh, this would also
-          // find authenticated menus to try to push before fetching subject
-          if ( menu && menu.authenticate === false ) {
-            await self.fetchSubject(false);
-            if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
-              // only push the unauthenticated menu if there is no subject
-              // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-              // use the route instead of the menu so that the menu could be re-created under the updated context
-              self.pushMenu(self.route);
-              self.languageInstalled.resolve();
-              self.subToNotifications();
-              return;
-            }
+          menu = await self.__subContext__.menuDAO.find(self.route);
+        } 
+        if ( ! menu && self.theme.unauthenticatedDefaultMenu ) {
+          menu = await self.__subContext__.menuDAO.find(self.theme.unauthenticatedDefaultMenu)
+          console.log(menu);
+        }
+        // explicitly check that the menu is unauthenticated
+        // since if there is a user session on refresh, this would also
+        // find authenticated menus to try to push before fetching subject
+        if ( menu && menu.authenticate === false ) {
+        console.log("b")
+          await self.fetchSubject(false);
+          if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
+            // only push the unauthenticated menu if there is no subject
+            // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+            // use the route instead of the menu so that the menu could be re-created under the updated context
+        console.log("c")
+            self.pushMenu(menu.id);
+            self.languageInstalled.resolve();
+            self.subToNotifications();
+            return;
           }
         }
+        
 
         await self.fetchSubject();
 
@@ -711,6 +720,7 @@ foam.CLASS({
           this.memento_.str = m;
           return;
         }
+        console.log("look here:", menu)
         menu = await this.findFirstMenuIHavePermissionFor(dao);
         let newId = (menu && menu.id) || '';
         this.pushMenu(newId, opt_forceReload);
@@ -735,6 +745,7 @@ foam.CLASS({
       if ( ! menuArray || ! menuArray.length ) return null;
       for ( menuId in menuArray ) {
         menu = await dao.find(menuArray[menuId]);
+        console.log("looking at this:", menu);
         if ( menu ) break;
       };
       return menu;
