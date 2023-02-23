@@ -212,8 +212,11 @@ foam.CLASS({
           right: this.right$,
           bottom: this.bottom$
         })
-        .on('mouseenter', this.onMouseEnter)
-        .on('mouseleave', this.onMouseLeave)
+        .callIf(this.closeOnLeave, function() {
+          this
+          .on('mouseenter', this.onMouseEnter)
+          .on('mouseleave', this.onMouseLeave)
+        })
         .on('keydown', this.onKeyDown)
         .on('click', this.onClick);
 
