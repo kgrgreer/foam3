@@ -117,8 +117,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'lockToParent',
-      value: true
+      name: 'lockToParentWidth'
     },
     'ro_'
   ],
@@ -180,18 +179,18 @@ foam.CLASS({
       this.addToSelf_ = true;
       this.addClass(this.myClass('container'));
       var view = this;
-      if ( this.lockToParent ) {
-        let fn = () => {
-          if ( ! this.parentEl ) return;
-          this.ro_ = new ResizeObserver(() => {
+      let fn = () => {
+        if ( ! this.parentEl ) return;
+        this.ro_ = new ResizeObserver(() => {
+          if ( this.lockToParentWidth ) {
             this.dropdownE_.el_().style.width = this.parentEl.getBoundingClientRect().width;
-            this.setPosition();
-          });
-          this.onDetach(() => { this.ro_?.disconnect(); })
-        }
-        this.parentEl$.sub(fn);
-        fn();
+          }
+          this.setPosition();
+        });
+        this.onDetach(() => { this.ro_?.disconnect(); })
       }
+      this.parentEl$.sub(fn);
+      fn();
 
       this.addClass(this.slot(function(opened) {
         this.shown = opened;

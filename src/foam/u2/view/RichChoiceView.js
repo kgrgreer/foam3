@@ -466,7 +466,13 @@ foam.CLASS({
       of: 'foam.u2.Element',
       name: 'dropdown_',
       factory: function() {
-        return this.OverlayDropdown.create({ parentEl$: this.selectionEl_$, closeOnLeave: false, styled: false, parentEdgePadding: '4' });
+        return this.OverlayDropdown.create({
+          parentEl$: this.selectionEl_$,
+          closeOnLeave: false,
+          styled: false,
+          parentEdgePadding: '4',
+          lockToParentWidth: true
+        });
       }
     },
     'selectionEl_'
