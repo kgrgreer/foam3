@@ -126,16 +126,27 @@ foam.CLASS({
 
   methods: [
     function render() {
-      var self         = this;
-      var commits      = this.data.filteredCommits;
-      var counts       = [0,0,0,0,0,0,0,0,0,0,0,0];
-      var authorCounts = {};
+      var self            = this;
+      var allCommits      = this.data.commits;
+      var commits         = this.data.filteredCommits;
+      var allCounts       = [0,0,0,0,0,0,0,0,0,0,0,0];
+      var counts          = [0,0,0,0,0,0,0,0,0,0,0,0];
+      var authorCounts    = {};
+      var allAuthorCounts = {};
 
       commits.forEach(c => {
         var month   = c.date.getMonth();
         var author  = c.author;
         var aCounts = authorCounts[author] || ( authorCounts[author] = [0,0,0,0,0,0,0,0,0,0,0,0] );
         counts[month]++;
+        aCounts[month]++;
+      });
+
+      allCommits.forEach(c => {
+        var month   = c.date.getMonth();
+        var author  = c.author;
+        var aCounts = allAuthorCounts[author] || ( allAuthorCounts[author] = [0,0,0,0,0,0,0,0,0,0,0,0] );
+        allCounts[month]++;
         aCounts[month]++;
       });
 
@@ -147,13 +158,13 @@ foam.CLASS({
           this.start('th').add(h).end();
         }).end().
         forEach(this.data.authors, function(a) {
-          var total = 0;
+          var total = 0, allTotal = 0;
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
             enableClass('selected', self.selection$.map(s => s === a[0])).
             start('th').
               start('href').
-                on('click',     () => {
+                on('click', () => {
                   if ( self.selection == a[0] ) {
                     self.isHardSelection = ! self.isHardSelection;
                   } else {
@@ -164,19 +175,38 @@ foam.CLASS({
                 add(a[0]).
               end().
             end().
-            forEach(authorCounts[a[0]], function(c) {
+            forEach(authorCounts[a[0]], function(c, i) {
               total += c;
-              this.start('td').add(c || '-').end();
+              allTotal += allAuthorCounts[a[0]][i];
+              this.start('td').add(c || '-').call(function() {
+                if ( ! self.data.showPercentages ) return;
+                if ( c )
+                  this.add(' / ', (100*c/allAuthorCounts[a[0]][i]).toFixed(0) + '%');
+              }).end();
             }).
-            start('th').add(total).end().
+            start('th').
+              add(total).
+              call(function() {
+                if ( ! self.data.showPercentages ) return;
+                if ( total )
+                  this.add(' / ', (100*total/allTotal).toFixed(0) + '%');
+              }).
+            end().
           end();
         }).
         start('tr').
           start('th').on('click', () => self.selection = '-- All --').add('All:').end().
-          forEach(counts, function(c) {
-            this.start('th').add(c).end();
+          forEach(counts, function(c, i) {
+            this.start('th').add(c).call(function() {
+              if ( ! self.data.showPercentages ) return;
+              if ( c )
+                this.add(' / ', (100*c/allCounts[i]).toFixed(0) + '%');
+            }).end();
           }).
-          start('th').add(this.data.filteredCommits.length).end().
+          start('th').add(this.data.filteredCommits.length).call(function() {
+            if ( ! self.data.showPercentages ) return;
+            this.add(' / ', (100*self.data.filteredCommits.length/self.data.commits.length).toFixed(0) + '%');
+          }).end().
         end().
       end();
     }
@@ -418,7 +448,7 @@ foam.CLASS({
         name: 'U2/U3',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
         paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
-      },
+      }
       /*
       {
         name: '',
@@ -515,6 +545,10 @@ foam.CLASS({
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showPercentages'
     },
     {
       name: 'data',
@@ -688,12 +722,12 @@ foam.CLASS({
         start().
           style({display: 'flex'}).
           start().
-            style({width: '50%'}).
+            style({width: '30%'}).
             call(function() { self.searchPane.call(this, self); }).
           end().
           start().
-            style({width: '50%', 'padding-left': '60px'}).
-            add(this.slot(function (filteredCommits) {
+            style({width: '70%', 'padding-left': '60px'}).
+            add(this.slot(function (filteredCommits, showPercentages) {
               return self.UserMonthView.create({data: self}, self);
             })).
           end().
@@ -718,11 +752,12 @@ foam.CLASS({
 
     function searchPane(self) {
       this.start('').
-        add('Year: ',    self.YEAR).br().
-        add('Keyword: ', self.QUERY).br().
-        add('Project: ', self.PROJECT).br().
-        add('File: ',    self.FILE).br().
-        add('Path: ',    self.PATH).
+        add('Year: ',             self.YEAR).br().
+        add('Keyword: ',          self.QUERY).br().
+        add('Project: ',          self.PROJECT).br().
+        add('File: ',             self.FILE).br().
+        add('Path: ',             self.PATH).br().
+        add('Show Percentages: ', self.SHOW_PERCENTAGES).
       end();
     },
 
