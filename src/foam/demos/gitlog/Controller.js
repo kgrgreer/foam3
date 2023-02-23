@@ -11,32 +11,68 @@ foam.CLASS({
   name: 'Commit',
 
   properties: [
-    {
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'author'
-    },
-    {
-      class: 'Date',
-      name: 'date'
-    },
-    {
-      class: 'String',
-      name: 'subject'
-    },
-    {
-      class: 'String',
-      name: 'body'
-    },
-    {
-      class: 'StringArray',
-      name: 'files'
-    },
-    {
-      class: 'String',
-      name: 'diff'
+    { class: 'String',      name: 'id' },
+    { class: 'String',      name: 'author' },
+    { class: 'DateTime',    name: 'date' },
+    { class: 'String',      name: 'subject' },
+    { class: 'String',      name: 'body' },
+    { class: 'StringArray', name: 'files' },
+    { class: 'String',      name: 'diff' }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'DiffView',
+  extends: 'foam.u2.View',
+
+  methods: [
+    function render() {
+      this.
+        style({'white-space': 'pre'}).
+        forEach(this.data.split('\n'), l => {
+          if ( l.startsWith('+++') ) {
+            this.start('b').add(l, '\n').end();
+          } else if ( l.startsWith('+') ) {
+            this.start('span').style({color: 'green'}).add(l, '\n').end();
+          } else if ( l.startsWith('-') && ! l.startsWith('---') ) {
+            this.start('b').style({color: 'red'}).add(l, '\n').end();
+          } else {
+            this.add(l, '\n');
+          }
+        });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.gitlog',
+  name: 'CommitMessageView',
+  extends: 'foam.u2.View',
+
+  constants: {
+    REGEX: /(\[[A-Za-z]{2,}-\d{4,}\]|\(#\d+\))/
+  },
+
+  methods: [
+    function render() {
+      this.
+        style({'white-space': 'pre'}).
+        forEach(this.data.split(this.REGEX), l => {
+          if ( l.startsWith('(#') ) {
+            // Pull Request
+            // TODO: make this configurable
+            this.start('a').attrs({href: 'https://github.com/foam-framework/foam2/pull/' + l.substring(1,l.length-1)}).add(l).end();
+          } else if ( l.match(this.REGEX) ) {
+            // Jira Ticket
+            // TODO: make this configurable
+            this.start('a').attrs({href: 'https://nanopay.atlassian.net/browse/' + l.substring(1,l.length-1)}).add(l).end();
+          } else {
+            this.add(l);
+          }
+        });
     }
   ]
 });
@@ -63,7 +99,7 @@ foam.CLASS({
             this.start('a').attrs({href:'#'}).on('click', () => self.file = f).add(f).end().br();
           }
         ).br().
-        start('b').add('Diff:  ').end().start('div').style({'white-space': 'pre'}).add(data.diff).end();
+        start('b').add('Diff:  ').end().tag({class: 'foam.demos.gitlog.DiffView'}, {data: data.diff});
       });
     }
   ]
@@ -80,8 +116,13 @@ foam.CLASS({
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
-    ^ .selected { color: red; }
+    ^ .selected { background: lightskyblue; }
   `,
+
+  properties: [
+    { class: 'Boolean', name: 'isHardSelection' },
+    { name: 'selection' }
+  ],
 
   methods: [
     function render() {
@@ -98,31 +139,30 @@ foam.CLASS({
         aCounts[month]++;
       });
 
-      this.addClass(this.myClass()).start('table')
+      this.
+        addClass(this.myClass()).
+        start('table')
         .attrs({cellpadding: 4, cellspacing: 0, border: 1}).
-        start('tr').
-          start('th').add('Author').end().
-          start('th').add('Jan').end().
-          start('th').add('Feb').end().
-          start('th').add('Mar').end().
-          start('th').add('Apr').end().
-          start('th').add('May').end().
-          start('th').add('Jun').end().
-          start('th').add('July').end().
-          start('th').add('Aug').end().
-          start('th').add('Sept').end().
-          start('th').add('Oct').end().
-          start('th').add('Nov').end().
-          start('th').add('Dec').end().
-          start('th').add('').end().
-        end().
+        start('tr').forEach('Author Jan Feb Mar Apr May Jun July Aug Sept Oct Nov Dec Total'.split(' '), function(h) {
+          this.start('th').add(h).end();
+        }).end().
         forEach(this.data.authors, function(a) {
           var total = 0;
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
-            enableClass('selected', self.data.author$.map(auth => auth == a[0])).
+            enableClass('selected', self.selection$.map(s => s === a[0])).
             start('th').
-              start('href').on('click', () => self.data.author = a[0]).add(a[0]).end().
+              start('href').
+                on('click',     () => {
+                  if ( self.selection == a[0] ) {
+                    self.isHardSelection = ! self.isHardSelection;
+                  } else {
+                    self.selection = a[0];
+                  }
+                }).
+                on('mouseover', () => { if ( ! self.isHardSelection ) self.selection = a[0]; }).
+                add(a[0]).
+              end().
             end().
             forEach(authorCounts[a[0]], function(c) {
               total += c;
@@ -132,13 +172,23 @@ foam.CLASS({
           end();
         }).
         start('tr').
-          start('th').on('click', () => self.data.author = '-- All --').add('All:').end().
+          start('th').on('click', () => self.selection = '-- All --').add('All:').end().
           forEach(counts, function(c) {
             this.start('th').add(c).end();
           }).
           start('th').add(this.data.filteredCommits.length).end().
         end().
       end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateSelection',
+      isIdled: true,
+      delay: 160,
+      on: [ 'this.propertyChange.selection' ],
+      code: function() { this.data.author = this.selection; }
     }
   ]
 });
@@ -150,119 +200,188 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
+    'foam.demos.gitlog.Commit',
     'foam.demos.gitlog.UserMonthView'
   ],
 
   exports: [ 'file' ],
 
   css: `
-    tr:hover { background: lightskyblue; }
+    ^ .selected { background: lightskyblue; }
     .foam-u2-TextField { margin-bottom: 14px }
   `,
 
   constants: {
     IGNORE_CONTAINS: [
-      'merge',
-      'Revert',
-      'fix syntax error',
-      'Cleanup',
-      "Small fix",
       'Add test',
       'broken build',
+      'Cleanup',
       'fix build',
       'Fix build',
-      'typo',
-      'Fix spacing',
-      'spacing fixes',
       'fix spacing',
+      'Fix spacing',
+      'fix syntax error',
+      'foam peg',
+      'Foam peg',
+      'FOAM peg',
+      'FOAM Peg',
       'Merge release',
+      'merge',
+      'Peg  foam',
+      'peg -foam',
+      'peg dev',
+      'peg foam',
+      'peg FOAM',
+      'Peg foam',
+      'Peg FOAM',
+      'peg master',
+      'peg nwe foam',
+      'peg to foam',
+      'Peg to foam',
+      'peg to matching foam',
+      'peg to',
+      'pege foam',
+      'peged',
+      'pegFoam',
+      'Pegged to dev foam',
+      'pegged',
+      'Pegged',
+      'pegging',
+      'Pegging',
+      'pegMaster',
       'Release-',
-      'revert'
+      'remove peg',
+      'Repeg  foam',
+      'REPEG foam',
+      'Repeg master',
+      'repeg',
+      'Repeg',
+      'revert',
+      'Revert',
+      'Small fix',
+      'spacing fixes',
+      'typo',
+      ' -> ',
+      'v4.',
+      '4.',
+      'v2.',
     ],
     IGNORE_EQUALS: [
-      'space',
-      'fix spaces',
-      'fix space',
-      'remove space',
-      'removed a space',
-      'Remove space.',
-      'Remove extra space',
+      'Add comment.',
       'Add space',
       'added space',
       'adding spaces',
-      'Updated.',
-      'Formatting',
-      'Formatting.',
-      'Cleanup',
       'cleanup',
-      'remove extra space',
-      'Add comment.',
-      'Spacing.',
-      'Sort exports.',
+      'Cleanup',
       'Fix indentation.',
+      'fix space',
+      'fix spaces',
       'fixing pr',
-      'syntax error',
       'format',
+      'Formatting.',
+      'Formatting',
+      'Indentation.',
+      'Peg to foam',
+      'Peg to mcv foam',
+      'peg',
+      'remove extra space',
+      'Remove extra space',
+      'Remove space.',
+      'remove space',
       'Remove unused code.',
-      'Indentation.'
+      'removed a space',
+      'Sort exports.',
+      'space',
+      'Spacing.',
+      'syntax error',
+      'Update FOAM peg',
+      'Update FOAM Peg',
+      'Updated.'
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
+      'Alexey Greer': 'Alexey Greer',
+      'AlexeyGreer': 'Alexey Greer',
+      'Anna Doulatshahi': 'Anna Doulatshahi',
+      'Anna': 'Anna Doulatshahi',
       'Arthur Pavlovs': 'Arthur Pavlovs',
+      'Artur Linnik': 'Artur Linnik',
       'Blake Green': 'Blake Green',
+      'blakegreen': 'Blake Green',
       'Carl Chen': 'Carl Chen',
+      'carl-zzz': 'Carl Chen',
       'Chanmann Lim': 'Chanmann Lim',
       'Christine Lee': 'Christine Lee',
-      'Danny Tharma': 'Danny Tharma',
-      'Jin Jung': 'Jin Jung',
-      'Joel Hughes': 'Joel Hughes',
-      'Kenny Qi Yen Kan': 'Kenny Qi Yen Kan',
-      'Kristina Smirnova': 'Kristina Smirnova',
-      'Mayowa Olurin': 'Mayowa Olurin',
-      'Mykola Kolombet': 'Mykola Kolombet',
-      'Nick Prat': 'Nick Prat',
-      'Olha Bahatiuk': 'Olha Bahatiuk',
-      'Patrick Zanowski': 'Patrick Zanowski',
-      'Scott Head': 'Scott Head',
-      "Kevin Greer": "Kevin Greer",
-
-      'Anna': 'Anna Doulatshahi',
-      'blakegreen': 'Blake Green',
-      'carl-zzz': 'Carl Chen',
       'Christine': 'Christine Lee',
+      'Danny Tharma': 'Danny Tharma',
       'Eric Dube': 'Eric Dube',
       'Eric': 'Eric Dube',
       'garfield jian': 'Garfiled Jian',
+      'Garfield Jian': 'Garfiled Jian',
+      'Garfiled Jian': 'Garfiled Jian',
+      'Hassene Choura': 'Hassene Choura',
       'hchoura': 'Hassene Choura',
+      'Jin Jung': 'Jin Jung',
       'Jin': 'Jin Jung',
       'JIn': 'Jin Jung',
       'jinn9': 'Jin Jung',
+      'Joel Hughes': 'Joel Hughes',
+      'Kenny Qi Yen Kan': 'Kenny Qi Yen Kan',
+      'KernelDeimos': 'Eric Dube',
+      'Kevin Glen Roy Greer': 'Kevin Greer',
+      'Kevin Greer': 'Kevin Greer',
+      'Kristina Smirnova': 'Kristina Smirnova',
       'kristina': 'Kristina Smirnova',
+      'Lenore Chen': 'Lenore Chen',
+      'LenoreChen': 'Lenore Chen',
+      'Mayowa Olurin': 'Mayowa Olurin',
+      'mayowa': 'Mayowa Olurin',
       'mcarcaso': 'Mike Carcasole',
+      'Michal Pasternak': 'Michal Pasternak',
       'Michal': 'Michal Pasternak',
       'microArtur': 'Artur Linnik',
+      'Mike Carcasole': 'Mike Carcasole',
+      'Mike': 'Michael Magahey',
+      'Minsun Kim': 'Minsun Kim',
       'MINSUN KIM': 'Minsun Kim',
       'Minsun': 'Minsun Kim',
+      'moorthy': 'Moorthy Rathinasamy',
+      'Moorthy': 'Moorthy Rathinasamy',
+      'Mykola Kolombet': 'Mykola Kolombet',
       'Mykola97': 'Mykola Kolombet',
       'nanoArtur': 'Artur Linnik',
       'nanokristina': 'Kristina Smirnova',
       'nanoMichal': 'Michal Pasternak',
       'nanoNeel': 'Neel Patel',
+      'nanopay-arthur': 'Arthur Pavlovs',
+      'nanopay-moorthy': 'Moorthy Rathinasamy',
       'Nauna': 'Anna Doulatshahi',
+      'Neel Patel': 'Neel Patel',
       'Neelkanth Patel': 'Neel Patel',
       'Nicholas Prat': 'Nick Prat',
+      'Nick Prat': 'Nick Prat',
       'noodlemoodle': 'Ruby Zhang',
+      'Olha Bahatiuk': 'Olha Bahatiuk',
+      'olhabn': 'Olha Bahatiuk',
+      'Patrick Zanowski': 'Patrick Zanowski',
+      'penzital': 'Kristina Smirnova',
+      'Pete Conway': 'Pete Conway',
+      'petenanopay': 'Pete Conway',
+      'Rachael Ding': 'Rachael Ding',
       'RachaelDing': 'Rachael Ding',
+      'Ruby Zhang': 'Ruby Zhang',
       'Ruby': 'Ruby Zhang',
+      'Sarthak Marwaha': 'Sarthak Marwaha',
       'sarthak-marwaha': 'Sarthak Marwaha',
       'sarthak': 'Sarthak Marwaha',
+      'Scott Head': 'Scott Head',
+      'Tala Abu Adas': 'Tala Abu Adas',
       'tala': 'Tala Abu Adas',
       'Tala': 'Tala Abu Adas',
+      'Xuerong Wu': 'Xuerong Wu',
+      'Xuerong': 'Xuerong Wu',
       'xuerongNanopay': 'Xuerong Wu',
-      'yij793': 'Garfiled Jian',
-      "Kevin Glen Roy Greer": "Kevin Greer",
-      "nanopay-arthur": 'Arthur Pavlovs',
-      "olhabn": 'Olha Bahatiuk',
+      'yij793': 'Garfiled Jian'
     },
     PROJECT_RULES: [
       {
@@ -309,6 +428,7 @@ foam.CLASS({
       */
     ]
   },
+
   properties: [
     {
       class: 'Array',
@@ -400,10 +520,11 @@ foam.CLASS({
       name: 'data',
       factory: function() { return []; }
     },
+    { class: 'Boolean', name: 'isHardSelection' },
     {
       class: 'FObjectProperty',
       of: 'foam.demos.gitlog.Commit',
-      name: 'selected',
+      name: 'selection',
       view: 'foam.demos.gitlog.CommitDetailView'
     },
     {
@@ -424,7 +545,7 @@ foam.CLASS({
             return true;
           }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).
-          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: ' + c.author; return c; }).
+          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
@@ -469,7 +590,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+      // TODO: make this configurable
       this.loadData('data2021.log');
+      this.loadData('np2021.log');
+//      this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
       this.loadData('np2021.log');
@@ -490,7 +614,7 @@ foam.CLASS({
         var line = lines[i];
         if ( state == 0 ) {
           if ( line.startsWith('commit ') ) {
-            commit = { id: line.substring(7), subject: '', body: '', diff: '', files: [] };
+            commit = this.Commit.create({id: line.substring(7)});
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim();
@@ -517,7 +641,7 @@ foam.CLASS({
             state = 0;
             i--;
           } else {
-            if ( line.startsWith('+++ ') ) {
+            if ( line.startsWith('+++ b/') && ! line.startsWith('+++ b/.') ) {
               commit.files.push(line.substring(6));
             }
             commit.diff += (line.length ? '\n' : '') + line.trim();
@@ -525,6 +649,7 @@ foam.CLASS({
         }
       }
       this.data = this.data.concat(data);
+      this.authors = this.files = this.projects = undefined;
     },
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
@@ -557,6 +682,7 @@ foam.CLASS({
       var self = this;
 
       this.
+        addClass(this.myClass()).
         start('h2').add('GitLog').end().
 
         start().
@@ -584,7 +710,7 @@ foam.CLASS({
           end().
           start().
             style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
-            add(this.SELECTED)
+            add(this.SELECTION).
           end().
         end();
       ;
@@ -592,7 +718,7 @@ foam.CLASS({
 
     function searchPane(self) {
       this.start('').
-//        add('Year: ',    self.YEAR).br().
+        add('Year: ',    self.YEAR).br().
         add('Keyword: ', self.QUERY).br().
         add('Project: ', self.PROJECT).br().
         add('File: ',    self.FILE).br().
@@ -611,7 +737,18 @@ foam.CLASS({
         end().forEach(self.commits, function(d) {
           var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
           this.start('tr').
-            on('mouseover', () => self.selected = d).
+            enableClass('selected', self.selection$.map(s => { return s && s === d; })).
+            on('click', () => {
+              if ( d == self.selection ) {
+                self.isHardSelection = ! self.isHardSelection;
+              } else {
+                self.selection = d;
+              }
+            }).
+            on('mouseover', () => { if ( ! self.isHardSelection ) self.selection = d; }).
+            /*
+            on('mouseover', () => self.selection = d).
+            */
             show(self.slot(function(query, author, file, path, project) {
               return self.match(d, query, author, file, path, project);
             })).
@@ -625,13 +762,10 @@ foam.CLASS({
               start('a').attrs({href:'#'}).on('click', () => self.project = d.project).add(d.project).
               end().
             end().
-            start('td').add(d.subject).end().
+            start('td').tag({class: 'foam.demos.gitlog.CommitMessageView', data: d.subject}).end().
           end();
         }).
       end();
     }
-  ],
-
-  actions: [
   ]
 });

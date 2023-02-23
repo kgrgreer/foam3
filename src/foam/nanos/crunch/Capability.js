@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.edit.EditBehaviour',
+    'foam.nanos.crunch.edit.NullEditBehaviour',
     'foam.nanos.logger.Logger',
     'java.util.Date',
     'java.util.List',
@@ -248,6 +250,14 @@ foam.CLASS({
       includeInDigest: true,
       permissionRequired: true,
       view: { class: 'foam.u2.CheckBox', showLabel: false }
+    },
+    {
+      class: 'FObjectProperty',
+      javaType: 'foam.nanos.crunch.edit.EditBehaviour',
+      name: 'editBehaviour',
+      javaFactory: `
+        return new foam.nanos.crunch.edit.NullEditBehaviour();
+      `
     },
     {
       name: 'associatedEntity',

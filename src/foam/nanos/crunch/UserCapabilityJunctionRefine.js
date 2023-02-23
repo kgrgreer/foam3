@@ -9,14 +9,18 @@ foam.CLASS({
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
 
-  implements: [ 'foam.nanos.auth.LifecycleAware' ],
+  implements: [
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.crunch.lite.Capable'
+  ],
 
   mixins: [
     'foam.nanos.auth.CreatedAwareMixin',
     'foam.nanos.auth.CreatedByAwareMixin',
     'foam.nanos.auth.LastModifiedAwareMixin',
     'foam.nanos.auth.LastModifiedByAwareMixin',
-    'foam.nanos.crunch.CapabilityJunctionPayload'
+    'foam.nanos.crunch.CapabilityJunctionPayload',
+    'foam.nanos.crunch.lite.CapableObjectData'
   ],
 
   documentation: `
@@ -250,6 +254,12 @@ foam.CLASS({
       name: 'gracePeriod',
       includeInDigest: true,
       section: 'ucjExpirySection'
+    },
+    {
+      class: 'Boolean',
+      name: 'skipEditBehaviour',
+      writePermissionRequired: true,
+      storageTransient: true
     }
   ],
 
