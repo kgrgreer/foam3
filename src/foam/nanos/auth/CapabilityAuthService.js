@@ -101,16 +101,24 @@ foam.CLASS({
       `,
       javaCode: `
         PM pm = PM.create(getX(), this.getClass(), "check");
+        Logger logger = (Logger) x.get("logger");
         try {
           User user = ((Subject) x.get("subject")).getUser();
 
           if ( getDelegate().check(x, permission) ) return true;
 
-          if ( ! isMatch(permission) ) return false;
+          if ( ! isMatch(permission) ) {
+            logger.debug(getClass().getSimpleName() + ".check", "Permission does not match any capability permissions", permission);
+            return false;
+          }
 
-          return user == null ?
+          boolean result = user == null ?
             checkSpid_(x, (String) x.get("spid"), permission) :
             capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
+
+          logger.debug(getClass().getSimpleName() + ".check", "Capability Permission Check Result", user, permission, result);
+
+          return result;
         } finally {
           pm.log(getX());
         }
@@ -128,7 +136,7 @@ foam.CLASS({
         return user == null ?
           checkSpid_(x, (String) x.get("spid"), permission) :
           capabilityCheck(x, user, permission) || checkSpid_(x, user.getSpid(), permission) ;
-     } finally {
+      } finally {
         pm.log(getX());
       }
       `
@@ -175,9 +183,22 @@ foam.CLASS({
         implied by a capability in userCapabilityJunctions for a given user.
       `,
       javaCode: `
-        if ( x == null || permission == null ) return false;
-        if ( x.get(Session.class) == null ) return false;
-        if ( user == null || ! user.getEnabled() ) return false;
+        Logger logger = (Logger) x.get("logger");
+
+        if ( x == null || permission == null ) {
+          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "x or permission not provided", x, permission);
+          return false;
+        }
+
+        if ( x.get(Session.class) == null ) {
+          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "session not provided", x, permission);
+          return false;
+        }
+
+        if ( user == null || ! user.getEnabled() ) {
+          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "user not provided or is not enabled", user, permission);
+          return false;
+        }
 
         User realUser = ((Subject) x.get("subject")).getRealUser();
 
@@ -234,11 +255,11 @@ foam.CLASS({
             }
           }
         } catch ( Exception e ) {
-          Logger logger = (Logger) x.get("logger");
           logger.error("capabilityCheck", permission, e);
         }
 
         maybeIntercept(x, permission);
+        logger.debug(getClass().getSimpleName() + ".capabilityCheck", "capability check failed", user, realUser, permission);
         return false;
       `
     },

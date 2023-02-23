@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.NanoService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.session.Session'
   ],
 
@@ -34,11 +35,14 @@ foam.CLASS({
       javaCode: `
         Session session = x.get(Session.class);
         User user = ((Subject) x.get("subject")).getUser();
+        Logger logger = (Logger) x.get("logger");
 
-        return user != null &&
-          user.getTwoFactorEnabled() &&
-          ! session.getTwoFactorSuccess() ? false :
-            getDelegate().check(x , permission);
+        if ( user != null && user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
+          logger.debug(getClass().getSimpleName() + ".check", "2fa unsuccessful", user, permission);
+          return false;
+        }
+
+        return getDelegate().check(x , permission);
       `
     }
   ]

@@ -12,6 +12,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.nanos.crunch.UserCapabilityJunction;
+import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.util.LRULinkedHashMap;
 import java.security.Permission;
@@ -69,18 +70,27 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
 
   @Override
   public boolean check(foam.core.X x, String permission) {
-    if ( x == null || permission == null ) return false;
+    Logger logger = (Logger) x.get("logger");
+
+    if ( x == null || permission == null ) {
+      logger.debug(getClass().getSimpleName() + ".check", "x or permission not provided", x, permission);
+      return false;
+    }
 
     Permission p = new AuthPermission(permission);
 
     User user = getUserFromContext(x);
     Map<String, Boolean> map = getPermissionMap(user);
 
-    if ( map.containsKey(p.getName()) ) return map.get(p.getName());
+    if ( map.containsKey(p.getName()) ) {
+      logger.debug(getClass().getSimpleName() + ".check", "Found cached permission check result", x, p.getName(), map.get(p.getName()));
+      return map.get(p.getName());
+    }
 
     boolean permissionCheck = getDelegate().check(x, permission);
 
     map.put(p.getName(), permissionCheck);
+    logger.debug(getClass().getSimpleName() + ".check", "Cached permission check result", x, p.getName(), permissionCheck);
 
     return permissionCheck;
   }

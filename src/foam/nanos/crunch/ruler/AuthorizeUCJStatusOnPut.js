@@ -61,14 +61,14 @@ foam.CLASS({
             if ( ol == null ) {
               if ( ! auth.check(x, PERMISSION) ) {
                 nu.setStatus(ACTION_REQUIRED);
-                logger.debug(className, "permission denied", PERMISSION, nu);
+                logger.debug(className, x, "permission denied", PERMISSION, nu);
               }
               return;
             }
 
             if ( ! auth.check(x, PERMISSION) ) {
               nu.setStatus(ol.getStatus());
-              logger.debug(className, "permission denied", PERMISSION, nu);
+              logger.debug(className, x, "permission denied", PERMISSION, nu);
             }
 
           }
