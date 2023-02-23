@@ -154,7 +154,7 @@ foam.CLASS({
   }
   ^image-one {
     width: 48vw;
-    margin-top: 25px;
+    padding-top: 25px;
   }
   
   @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
