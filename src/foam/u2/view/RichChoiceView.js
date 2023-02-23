@@ -288,6 +288,7 @@ foam.CLASS({
   `,
 
   properties: [
+    'prop',
     {
       class: 'String',
       name: 'name',
@@ -467,7 +468,6 @@ foam.CLASS({
       name: 'dropdown_',
       factory: function() {
         return this.OverlayDropdown.create({
-          parentEl$: this.selectionEl_$,
           closeOnLeave: false,
           styled: false,
           parentEdgePadding: '4',
@@ -580,6 +580,7 @@ foam.CLASS({
                   var y = e.clientY || this.getBoundingClientRect().y;
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.isOpen_ = ! self.isOpen_;
+                    self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
                   }
                   e.preventDefault();
@@ -745,12 +746,14 @@ foam.CLASS({
             'text-overflow': 'ellipsis'
           });
 
-          this.add(this.slot(async function(fullObject) {
+          this.add(this.slot(function(fullObject) {
+            let summary;
             if ( fullObject ) {
-              var summary = await this.fullObject.toSummary();
-              return summary;
+              summary = fullObject.toSummary();
+            } else {
+              summary = this.defaultSelectionPrompt;
             }
-            return this.defaultSelectionPrompt;
+            return summary;
           }));
         }
       ]
