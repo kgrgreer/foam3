@@ -186,12 +186,12 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         if ( x == null || permission == null ) {
-          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "x or permission not provided", x, permission);
+          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "x or permission not provided", permission);
           return false;
         }
 
         if ( x.get(Session.class) == null ) {
-          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "session not provided", x, permission);
+          logger.debug(getClass().getSimpleName() + ".capabilityCheck", "session not provided", permission);
           return false;
         }
 

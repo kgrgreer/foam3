@@ -255,7 +255,7 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         if ( x == null || permission == null ) {
-          logger.debug(getClass().getSimpleName() + ".check", "x or permission not provided", x, permission);
+          logger.debug(getClass().getSimpleName() + ".check", "x or permission not provided", permission);
           return false;
         }
         Permission p = new AuthPermission(permission);
@@ -273,7 +273,7 @@ foam.CLASS({
         }
 
         logger.debug(getClass().getSimpleName() + ".check",
-          "user in the context does not have the permission", x, getCurrentGroup(x), permission);
+          "user in the context does not have the permission", x.get("subject"), getCurrentGroup(x), permission);
 
         return false;
       `
