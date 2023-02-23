@@ -24,7 +24,7 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
 
         if ( x == null || permission == null ) {
-          logger.debug(getClass().getSimpleName() + ".check", "x or permission not provided", x, permission);
+          logger.debug(getClass().getSimpleName() + ".check", "x or permission not provided", permission);
           return false;
         }
 
@@ -50,7 +50,7 @@ foam.CLASS({
         DAO localGroupDAO = ((DAO) x.get("localGroupDAO")).inX(x);
         while ( group != null ) {
           if ( ! group.getEnabled() ) {
-            logger.debug(getClass().getSimpleName() + ".check", "group is not enabled", group, user, permission);
+            logger.debug(getClass().getSimpleName() + ".check", "group is not enabled", group, user, realUser, permission);
             return false;
           }
           group = (Group) localGroupDAO.find(group.getParent());
