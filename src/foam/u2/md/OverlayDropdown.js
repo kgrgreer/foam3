@@ -136,7 +136,7 @@ foam.CLASS({
 
     function open(x, y) {
       this.setPosition(x, y);
-      this.ro_?.observe(this.parentEl.el_());
+      this.ro_?.observe(this.parentEl);
       this.opened = true;
       this.window.addEventListener('resize', this.onResize);
     },
@@ -169,10 +169,7 @@ foam.CLASS({
 
     function close() {
       this.opened = false;
-      this.parentEl.el().then(v => {
-        if ( ! v ) return;
-        this.ro_?.unobserve(v);
-      });
+      this.ro_?.unobserve(this.parentEl);
     },
 
     function render() {
