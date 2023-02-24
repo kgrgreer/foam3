@@ -563,6 +563,7 @@ foam.POM({
     { name: "foam/u2/view/PreView",                                   flags: "web" },
     { name: "foam/u2/view/TableCellFormatterReadView",                flags: "web" },
     { name: "foam/u2/view/MultiBoxInputView",                         flags: "web" },
+    { name: "foam/u2/view/MarkdownView",                              flags: "web" },
     { name: "foam/u2/FragmentedTextField",                            flags: "web" },
     { name: "foam/u2/FragmentedTextFieldFragment",                    flags: "web" },
     { name: "foam/u2/TextFormatter",                                  flags: "web" },
@@ -1142,6 +1143,7 @@ foam.POM({
     { name: "foam/u2/view/FUIDSearch",                                flags: "web" },
     { name: "foam/nanos/cron/SimpleIntervalScheduleView",             flags: "web" },
     { name: "foam/u2/view/ClassCompleterView",                        flags: "web" },
-    { name: "foam/css/TokenUtils",                                    flags: "web" }
+    { name: "foam/css/TokenUtils",                                    flags: "web" },
+    { name: "foam/demos/u2/AllViews",                                 flags: "web" }
  ]
 });
