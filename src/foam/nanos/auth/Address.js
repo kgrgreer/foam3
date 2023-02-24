@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'Address',
 
   documentation: 'The base model for the postal address.',
+  
+  axioms: [ foam.pattern.Faceted.create({ ofProperty: 'countryId' }) ],
 
   implements: [
     {
