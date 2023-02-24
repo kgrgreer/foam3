@@ -59,7 +59,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.
-        style({'white-space': 'pre'}).
+        addClass(this.myClass()).
         forEach(this.data.split(this.REGEX), l => {
           if ( l.startsWith('(#') ) {
             // Pull Request
@@ -237,6 +237,7 @@ foam.CLASS({
   exports: [ 'file' ],
 
   css: `
+    ^ th { text-align: left; }
     ^ .selected { background: lightskyblue; }
     .foam-u2-TextField { margin-bottom: 14px }
   `,
@@ -419,7 +420,7 @@ foam.CLASS({
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'net', 'mlang', 'formatter', 'json', 'Linked', 'util' ]
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util' ]
       },
       {
         name: 'Core',
@@ -451,13 +452,6 @@ foam.CLASS({
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
         paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
       }
-      /*
-      {
-        name: '',
-        keywords: [ ],
-        paths: [ ]
-      },
-      */
     ]
   },
 
@@ -553,6 +547,10 @@ foam.CLASS({
       name: 'showPercentages'
     },
     {
+      class: 'Boolean',
+      name: 'embedFiles'
+    },
+    {
       name: 'data',
       factory: function() { return []; }
     },
@@ -628,8 +626,8 @@ foam.CLASS({
       this.SUPER();
       // TODO: make this configurable
       this.loadData('data2021.log');
-      this.loadData('np2021.log');
-      this.loadData('data2022.log');
+     // this.loadData('np2021.log');
+      // this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
       this.loadData('np2021.log');
@@ -724,11 +722,11 @@ foam.CLASS({
         start().
           style({display: 'flex'}).
           start().
-            style({width: '30%'}).
+            style({width: '25%', 'padding-right': '60px'}).
             call(function() { self.searchPane.call(this, self); }).
           end().
           start().
-            style({width: '70%', 'padding-left': '60px'}).
+            style({width: '75%', 'padding-left': '60px'}).
             add(this.slot(function (filteredCommits, showPercentages) {
               return self.UserMonthView.create({data: self}, self);
             })).
@@ -741,12 +739,13 @@ foam.CLASS({
         start().
           style({display: 'flex'}).
           start().
-            style({width: '50%', height: '100vh', 'overflow-y': 'scroll'}).
+            style({width: self.embedFiles$.map(e => e ? '100%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
             call(function() { self.commitTable.call(this, self); }).
           end().
           start().
-            style({width: '50%', height: '100vh', 'padding-left': '40px', 'overflow-y': 'scroll'}).
-            add(this.SELECTION).
+            hide(self.embedFiles$).
+            style({width: self.embedFiles$.map(e => e ? '0%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
+            start(this.SELECTION).end().
           end().
         end();
       ;
@@ -759,7 +758,8 @@ foam.CLASS({
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().
         add('Path: ',             self.PATH).br().
-        add('Show Percentages: ', self.SHOW_PERCENTAGES).
+        add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
+        add('Embed Files: ',      self.EMBED_FILES).br().
       end();
     },
 
@@ -771,6 +771,7 @@ foam.CLASS({
           start('th').add('Author').end().
           start('th').add('Project').end().
           start('th').add('Subject').end().
+          start('th').show(self.embedFiles$).add('Files').end().
         end().forEach(self.commits, function(d) {
           var href = 'https://github.com/kgrgreer/foam3/commit/' + d.id;
           this.start('tr').
@@ -783,9 +784,6 @@ foam.CLASS({
               }
             }).
             on('mouseover', () => { if ( ! self.isHardSelection ) self.selection = d; }).
-            /*
-            on('mouseover', () => self.selection = d).
-            */
             show(self.slot(function(query, author, file, path, project) {
               return self.match(d, query, author, file, path, project);
             })).
@@ -800,6 +798,7 @@ foam.CLASS({
               end().
             end().
             start('td').tag({class: 'foam.demos.gitlog.CommitMessageView', data: d.subject}).end().
+            start('td').show(self.embedFiles$).forEach(d.files, function(f) { this.add(f).br(); }).end().
           end();
         }).
       end();
