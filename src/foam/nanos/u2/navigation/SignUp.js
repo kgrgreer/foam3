@@ -197,13 +197,18 @@ foam.CLASS({
           this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
+          // login function in signup sets the subject to the signed up user without logging in
+          // here we save the new user info to be used later in emailverification
+          // and reset the subject to the anonymous subject before verification step
+          var user = this.subject.user;
+          this.subject = await this.auth.getCurrentSubject(null);
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.nanos.auth.email.VerificationCodeView',
               data: {
                 class: 'foam.nanos.auth.email.EmailVerificationCode',
-                email: this.subject.user.email,
-                userName: this.subject.user.userName,
+                email: user.email,
+                userName: user.userName,
                 showAction: true,
                 signinOnSubmit: true
               }
