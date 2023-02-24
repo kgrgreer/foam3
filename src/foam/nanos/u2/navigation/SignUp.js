@@ -197,6 +197,9 @@ foam.CLASS({
           this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
+          // login function in signup sets the subject to the signed up user without logging in
+          // here we save the new user info to be used later in emailverification
+          // and reset the subject to the anonymous subject before verification step
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
           this.stack.push(this.StackBlock.create({
