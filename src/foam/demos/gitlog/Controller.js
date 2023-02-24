@@ -367,6 +367,7 @@ foam.CLASS({
       'Mayowa Olurin': 'Mayowa Olurin',
       'mayowa': 'Mayowa Olurin',
       'mcarcaso': 'Mike Carcasole',
+      'Michael Magahey': 'Michael Magahey',
       'Michal Pasternak': 'Michal Pasternak',
       'Michal': 'Michal Pasternak',
       'microArtur': 'Artur Linnik',
@@ -375,6 +376,7 @@ foam.CLASS({
       'Minsun Kim': 'Minsun Kim',
       'MINSUN KIM': 'Minsun Kim',
       'Minsun': 'Minsun Kim',
+      'Moorthy Rathinasamy': 'Moorthy Rathinasamy',
       'moorthy': 'Moorthy Rathinasamy',
       'Moorthy': 'Moorthy Rathinasamy',
       'Mykola Kolombet': 'Mykola Kolombet',
@@ -627,7 +629,7 @@ foam.CLASS({
       // TODO: make this configurable
       this.loadData('data2021.log');
       this.loadData('np2021.log');
-//      this.loadData('data2022.log');
+      this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
       this.loadData('np2021.log');
