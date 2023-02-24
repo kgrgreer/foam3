@@ -605,7 +605,6 @@ foam.CLASS({
                 }))
               .end();
           } else {
-            this.dropdown_.remove();
             return self.E()
               .addClass(this.myClass())
                 .start()
