@@ -998,7 +998,13 @@ foam.CLASS({
       return this.add('\xa0');
     },
 
-    function addClass(cls) { /* Slot | String */
+    function addClass(cls) { /* Slot | String | Array[String, Slot] */
+      if ( arguments.length > 1 ) {
+        for ( let i = 0; i < arguments.length; i++ ) {
+          this.addClass(arguments[i]);
+        }
+        return this;
+      }
       /* Add a CSS cls to this Element. */
       var self = this;
       if ( cls === undefined ) {
@@ -1022,7 +1028,9 @@ foam.CLASS({
     },
 
     function addClasses(a) {
-      a && a.forEach((i) => this.addClass(i));
+      // Deprecated: Use Add class with multiple args
+      console.warn('addClasses has been deprecated, use addClass instead');
+      this.addClass(...a);
       return this;
     },
 
