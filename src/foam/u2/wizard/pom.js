@@ -11,6 +11,7 @@ foam.POM({
     { name: "ContextPredicate",                        flags: "web" },
     { name: "WizardType",                              flags: "web" },
     { name: "crunch/CapabilityRefinement",             flags: "web" },
+    { name: "crunch/GroupRefinement",                  flags: "js|java" },
     { name: "agents/ConfigureFlowAgent",               flags: "web" },
     { name: "agents/DeveloperModeAgent",               flags: "web" },
     { name: "agents/RootCapabilityAgent",              flags: "web" },
