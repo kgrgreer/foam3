@@ -76,8 +76,13 @@ foam.CLASS({
         var name;
         var pkg;
         if ( foam.String.isInstance(of) ) {
-          name = of.substring(of.lastIndexOf('.') + 1);
-          pkg  = of.substring(0, of.lastIndexOf('.'))
+          if ( of.indexOf('.') != -1 ) {
+            name = of.substring(of.lastIndexOf('.') + 1);
+            pkg  = of.substring(0, of.lastIndexOf('.'))
+          } else {
+            name = of;
+            pkg  = this.package;
+          }
         } else {
           name = of.name;
           pkg  = of.package;
