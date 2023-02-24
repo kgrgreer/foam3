@@ -998,7 +998,7 @@ foam.CLASS({
       return this.add('\xa0');
     },
 
-    function addClass(cls) { /* Slot | String | Array[String, Slot] */
+    function addClass(cls) { /* ...( Slot | String ) */
       if ( arguments.length > 1 ) {
         for ( let i = 0; i < arguments.length; i++ ) {
           this.addClass(arguments[i]);
