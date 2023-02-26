@@ -298,6 +298,14 @@ foam.CLASS({
       'v2.',
     ],
     IGNORE_EQUALS: [
+      'foam',
+      'Merged dev',
+      'faom',
+      'foam again',
+      'foam2',
+      'formatting',
+      'master foam',
+      'update version',
       'Add comment.',
       'Add space',
       'added space',
@@ -418,27 +426,42 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
-        name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util' ]
+        name: 'Application',
+        keywords: [ 'afex' ],
+        paths: [ 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit' ]
       },
       {
-        name: 'Core',
+//        name: 'U2/U3',
+name: 'NANOS',
+        keywords: [ 'initE' ],
+        paths: [ 'u2' ]
+      },
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF' ]
+      },
+      {
+//        name: 'Core',
+        name: 'NANOS',
         keywords: [ ],
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Approval',
+        name: 'Application',
+//         name: 'Approval',
         keywords: [ 'approval' ],
         paths: [ ]
       },
       {
-        name: 'Performance ',
+//        name: 'Performance ',
+        name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
       },
       {
-        name: 'CRUNCH',
+//        name: 'CRUNCH',
+        name: 'NANOS',
         keywords: [ 'crunch', 'capab' ],
         paths: [ 'crunch' ]
       },
@@ -448,7 +471,8 @@ foam.CLASS({
         paths: [ 'nanos', 'dashboard', 'parse', 'Email', '.jrl', 'java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
       },
       {
-        name: 'U2/U3',
+//        name: 'U2/U3',
+        name: 'NANOS',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
         paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
       }
@@ -626,7 +650,7 @@ foam.CLASS({
       this.SUPER();
       // TODO: make this configurable
       this.loadData('data2021.log');
-     // this.loadData('np2021.log');
+      this.loadData('np2021.log');
       // this.loadData('data2022.log');
       /*
       this.loadData('foam2021.log');
@@ -739,12 +763,12 @@ foam.CLASS({
         start().
           style({display: 'flex'}).
           start().
-            style({width: self.embedFiles$.map(e => e ? '100%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
+            style({width: self.embedFiles$.map(e => e ? '80%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
             call(function() { self.commitTable.call(this, self); }).
           end().
           start().
-            hide(self.embedFiles$).
-            style({width: self.embedFiles$.map(e => e ? '0%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
+//            hide(self.embedFiles$).
+            style({width: self.embedFiles$.map(e => e ? '20%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
             start(this.SELECTION).end().
           end().
         end();
