@@ -361,18 +361,16 @@ foam.CLASS({
       name: 'download',
       code: function(a, X) {
         // TODO: Add logging for who has downloaded files etc.
-        var blob = this.data;
-        if ( foam.blob.BlobBlob.isInstance(blob) ) {
-          var link = document.createElement('a');
-          link.setAttribute("href", URL.createObjectURL(blob.blob));
-          link.setAttribute("download", this.filename);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          var url = this.address;
-          window.open(url);
+        var url = this.address;
+        if ( foam.blob.BlobBlob.isInstance(this.data) ) {
+          url = URL.createObjectURL(this.data.blob);
         }
+        var link = document.createElement('a');
+        link.setAttribute("href", url);
+        link.setAttribute("download", this.filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     },
     {
