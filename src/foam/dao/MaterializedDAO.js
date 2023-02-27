@@ -134,12 +134,10 @@ foam.CLASS({
                 getAdapter().onObservedDAOUpdate(obj);
               }
               public void remove(Object obj, Detachable sub) {
-                getAdapter().onObservedDAOUpdate(obj);
               }
               public void eof() {
               }
               public void reset(Detachable sub) {
-                getAdapter().onObservedDAOUpdate(null);
               }
             }, foam.mlang.MLang.TRUE);
           }        
