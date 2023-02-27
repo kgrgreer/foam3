@@ -21,6 +21,10 @@ foam.CLASS({
     {
       name: 'suite',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'countryId',
+      visibility: 'DISABLED'
     }
   ]
 });
