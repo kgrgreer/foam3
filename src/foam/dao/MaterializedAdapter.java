@@ -29,4 +29,20 @@ public interface MaterializedAdapter {
   default FObject fastAdapt(FObject source) {
     return adapt(source);
   }
+
+  /**
+   * DAOs to listen to
+   */
+  default String[] getObservedDAOs() {
+    return new String[]{};
+  }
+
+  /**
+   * Callback function on observed DAO update
+   * to be implemented by subclasses
+   * @param obj updated object from observed DAO
+   */
+  default void onObservedDAOUpdate(Object obj) {
+    throw new RuntimeException("the onDAOUpdate listener function is not implemented");
+  }
 }

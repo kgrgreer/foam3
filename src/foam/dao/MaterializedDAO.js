@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
     'foam.mlang.predicate.Predicate',
-    'foam.mlang.predicate.True'
+    'foam.core.Detachable'
   ],
 
   documentation: 'Create a Materialized View from a source DAO.',
@@ -103,6 +103,15 @@ foam.CLASS({
         */
       `,
       javaFactory: 'return new foam.dao.MDAO(getOf());'
+    },
+    {
+      class: 'Array',
+      of: 'String',
+      name: 'observedDAOs',
+      documentation: 'A list of DAOs that will be listened to',
+      javaFactory: `
+        return getAdapter().getObservedDAOs();
+        `
     }
   ],
 
@@ -115,6 +124,26 @@ foam.CLASS({
         cmd.setIndex(new MaterializedDAOIndex(this));
 
         getSourceDAO().cmd(cmd);
+
+        String[] daoKeys = getObservedDAOs();
+        if (daoKeys.length != 0) {
+          for ( String daoKey : daoKeys ) {
+            DAO dao = (DAO) getX().get(daoKey);
+            if ( dao != null ) dao.listen(new Sink() {
+              public void put(Object obj, Detachable sub) {
+                getAdapter().onObservedDAOUpdate(obj);
+              }
+              public void remove(Object obj, Detachable sub) {
+                getAdapter().onObservedDAOUpdate(obj);
+              }
+              public void eof() {
+              }
+              public void reset(Detachable sub) {
+                getAdapter().onObservedDAOUpdate(null);
+              }
+            }, foam.mlang.MLang.TRUE);
+          }        
+        }
       `
     },
 
