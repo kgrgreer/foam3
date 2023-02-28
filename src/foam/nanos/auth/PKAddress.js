@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'PKAddress',
   extends: 'foam.nanos.auth.Address',
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       name: 'streetNumber',
