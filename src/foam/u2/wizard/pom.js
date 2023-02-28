@@ -59,7 +59,6 @@ foam.POM({
     { name: "WizardletAware",                          flags: "js|java" },
     { name: "WizardletView",                           flags: "web" },
     { name: "StepWizardConfig",                        flags: "js|java" },
-    { name: "StepWizardController",                    flags: "web" },
     { name: "StepWizardletStepsView",                  flags: "web" },
     { name: "IncrementalStepWizardView",               flags: "web" },
     { name: "WizardletSearchController",               flags: "web" },

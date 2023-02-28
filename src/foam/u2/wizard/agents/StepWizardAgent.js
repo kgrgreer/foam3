@@ -50,39 +50,20 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      if ( ! this.wizardController || ! this.config )
-        console.warn('Missing controller or config');
-      const usingFormController = this.config && this.config.controller;
-
-      window.lastWizardController = this.wizardController;
-
-      const controller = usingFormController ?
-        this.config.controller$create({}, this.__subContext__) : this.wizardController;
-
-      const view = usingFormController ? {
-        // new approach
-        ...controller.defaultView,
-        data: controller
-      } : {
-        // deprecated
-        ...this.config.wizardView
+      const view = {
+        ...this.wizardController.defaultView,
+        data: this.wizardController
       };
 
-      // Temporary; NP-7869 should remove this
-      if ( usingFormController ) {
-        controller.data = this.wizardController;
-      }
-
-      view.data = controller;
-      controller.onClose = this.resolveAgent;
+      this.wizardController.onClose = this.resolveAgent;
       view.onClose = this.resolveAgent;
 
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
         this.wizardController.autoPositionUpdates = false;
       }
 
-      if ( usingFormController ) {
-        await controller.setFirstPosition();
+      if ( this.wizardController.setFirstPosition ) {
+        await this.wizardController.setFirstPosition();
       }
 
       this.wizardStackBlock = this.StackBlock.create({
