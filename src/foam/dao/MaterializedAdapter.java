@@ -42,7 +42,7 @@ public interface MaterializedAdapter {
    * to be implemented by subclasses
    * @param obj updated object from observed DAO
    */
-  default void onObservedDAOUpdate(MaterializedDAO matDAO, Object obj) {
+  default void onObservedDAOUpdate(MaterializedDAO matDAO, String daoKey, Object obj) {
     throw new RuntimeException("The onObservedDAOUpdate listener function is not implemented");
   }
 }

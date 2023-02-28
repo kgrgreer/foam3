@@ -131,15 +131,9 @@ foam.CLASS({
           for ( String daoKey : daoKeys ) {
             DAO dao = (DAO) getX().get(daoKey);
             var self = this;
-            if ( dao != null ) dao.listen(new Sink() {
+            if ( dao != null ) dao.listen(new AbstractSink() {
               public void put(Object obj, Detachable sub) {
-                getAdapter().onObservedDAOUpdate(self, obj);
-              }
-              public void remove(Object obj, Detachable sub) {
-              }
-              public void eof() {
-              }
-              public void reset(Detachable sub) {
+                getAdapter().onObservedDAOUpdate(self, daoKey, obj);
               }
             }, foam.mlang.MLang.TRUE);
           }        
