@@ -22,8 +22,8 @@ foam.CLASS({
     },
     {
       name: 'isEnabled',
-      value: function (data$canGoNext, isLoading_) {
-        return data$canGoNext && ! isLoading_;
+      value: function (canGoNext, isLoading_) {
+        return canGoNext && ! isLoading_;
       }
     }
   ],
