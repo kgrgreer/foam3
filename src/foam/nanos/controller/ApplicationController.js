@@ -441,23 +441,27 @@ foam.CLASS({
         self.installLanguage();
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
+        let menu 
         // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
         if ( self.route ) {
-          var menu = await self.__subContext__.menuDAO.find(self.route);
-          // explicitly check that the menu is unauthenticated
-          // since if there is a user session on refresh, this would also
-          // find authenticated menus to try to push before fetching subject
-          if ( menu && menu.authenticate === false ) {
-            await self.fetchSubject(false);
-            if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
-              // only push the unauthenticated menu if there is no subject
-              // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-              // use the route instead of the menu so that the menu could be re-created under the updated context
-              self.pushMenu(self.route);
-              self.languageInstalled.resolve();
-              self.subToNotifications();
-              return;
-            }
+          menu = await self.__subContext__.menuDAO.find(self.route);
+        } 
+        if ( ! menu && self.theme.unauthenticatedDefaultMenu ) {
+          menu = await self.__subContext__.menuDAO.find(self.theme.unauthenticatedDefaultMenu)
+        }
+        // explicitly check that the menu is unauthenticated
+        // since if there is a user session on refresh, this would also
+        // find authenticated menus to try to push before fetching subject
+        if ( menu && menu.authenticate === false ) {
+          await self.fetchSubject(false);
+          if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
+            // only push the unauthenticated menu if there is no subject
+            // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+            // use the route instead of the menu so that the menu could be re-created under the updated context
+            self.pushMenu(menu.id);
+            self.languageInstalled.resolve();
+            self.subToNotifications();
+            return;
           }
         }
 
