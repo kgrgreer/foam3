@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
     'foam.mlang.predicate.Predicate',
+    'foam.mlang.predicate.True',
     'foam.core.Detachable'
   ],
 
