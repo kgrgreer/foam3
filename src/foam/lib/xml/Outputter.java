@@ -131,6 +131,10 @@ public class Outputter
     writer_.append(value.name());
   }
 
+  public void outputProperties(FObject obj) {
+    outputProperties_(obj);
+  }
+
   protected void outputProperties_(FObject obj) {
     // output properties
     ClassInfo info = obj.getClassInfo();
