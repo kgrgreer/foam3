@@ -11,10 +11,13 @@ foam.CLASS({
   documentation: `User Signin model to be used with LoginView.
   `,
 
+  implements: [ 'foam.mlang.Expressions' ],
+
   imports: [
     'auth',
     'ctrl',
     'currentMenu',
+    'emailVerificationService',
     'loginSuccess',
     'loginView?',
     'memento_',
@@ -23,6 +26,7 @@ foam.CLASS({
     'stack',
     'subject',
     'translationService',
+    'userDAO',
     'window'
   ],
 
@@ -30,7 +34,8 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock',
-    'foam.nanos.auth.DuplicateEmailException'
+    'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.UnverifiedEmailException'
   ],
 
   messages: [
@@ -143,31 +148,25 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
-        } else {
-          var user = this.subject.realUser;
-          if ( ! this.subject.realUser.emailVerified ) {
-            await this.auth.logout();
-            await this.auth.authorizeAnonymous(null);
-            this.subject = await this.auth.getCurrentSubject(null);
-            this.loginSuccess = false;
-            this.stack.push(this.StackBlock.create({
-              view: {
-                class: 'foam.nanos.auth.email.VerificationCodeView',
-                data: {
-                  class: 'foam.nanos.auth.email.EmailVerificationCode',
-                  email: user.email,
-                  userName: user.userName,
-                  showAction: true,
-                  signinOnSubmit: true
-                }
-              }
-            }));
-          } else {
-            this.loginSuccess = !! this.subject;
-            // reload the client on loginsuccess in case login not called from controller
-            if ( this.loginSuccess ) await this.ctrl.reloadClient();
-          }
         }
+      }
+    },
+    {
+      name: 'verifyEmail',
+      code: async function(x, email, username) {
+        this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener);
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.nanos.auth.email.VerificationCodeView',
+            data: {
+              class: 'foam.nanos.auth.email.EmailVerificationCode',
+              email: email,
+              userName: username,
+              showAction: true,
+              signinOnSubmit: true
+            }
+          }
+        }, this));
       }
     },
     {
@@ -178,6 +177,15 @@ foam.CLASS({
           message: msg,
           type: type
         }));
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'emailVerifiedListener',
+      code: function() {
+        this.login();
       }
     }
   ],
@@ -218,26 +226,37 @@ foam.CLASS({
               this.subject.realUser = logedInUser;
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
+
+            this.loginSuccess = true;
+            await this.ctrl.reloadClient();
           } catch (err) {
-              this.loginFailed = true;
-              let e = err && err.data ? err.data.exception : err;
-              if ( this.DuplicateEmailException.isInstance(e) ) {
-                this.email = this.identifier;
-                if ( this.username ) {
-                  try {
-                    logedInUser = await this.auth.login(x, this.username, this.password);
-                    this.loginFailed = false;
-                    this.subject.user = logedInUser;
-                    this.subject.realUser = logedInUser;
-                    if ( ! this.pureLoginFunction ) await this.nextStep();
-                    return;
-                  } catch ( err ) {
-                    username = '';
-                  }
+            this.loginFailed = true;
+            let e = err && err.data ? err.data.exception : err;
+            if ( this.DuplicateEmailException.isInstance(e) ) {
+              this.email = this.identifier;
+              if ( this.username ) {
+                try {
+                  logedInUser = await this.auth.login(x, this.username, this.password);
+                  this.loginFailed = false;
+                  this.subject.user = logedInUser;
+                  this.subject.realUser = logedInUser;
+                  if ( ! this.pureLoginFunction ) await this.nextStep();
+                  return;
+                } catch ( err ) {
+                  this.username = '';
                 }
-                this.usernameRequired = true;
               }
-              this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
+              this.usernameRequired = true;
+            }
+            if ( this.UnverifiedEmailException.isInstance(e) ) {
+              // find user
+              var pred = this.usernameRequired ? 
+                this.AND(this.EQ(foam.nanos.auth.User.EMAIL, this.email), this.EQ(foam.nanos.auth.User.USER_NAME, this.username)) :
+                this.OR(this.EQ(foam.nanos.auth.User.EMAIL, this.identifier), this.EQ(foam.nanos.auth.User.USER_NAME, this.identifier));
+              var user = await this.userDAO.find(pred);
+              this.verifyEmail(x, user.email, user.username);
+            }
+            this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
         } else {
           this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
