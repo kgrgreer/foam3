@@ -158,7 +158,7 @@ foam.CLASS({
         }
 
         try {
-          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
+          var verified = await this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
           this.report('^verify-success', ['email-verification']);
           this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
@@ -199,7 +199,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
-          if ( this.signinOnSubmit ) this.pushMenu('sign-in', true);
+          if ( this.signinOnSubmit ) this.emailVerificationService.pub('emailVerified');
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,
