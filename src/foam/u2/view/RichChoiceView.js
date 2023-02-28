@@ -608,6 +608,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
+                    mode$: self.mode$,
                     fullObject$: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
