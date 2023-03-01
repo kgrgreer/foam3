@@ -192,11 +192,27 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     Group group = (Group) x.get("group");
 
     StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append(user != null ? Long.toString(user.getId()) : "no-user");
+    if ( user != null ) {
+      stringBuilder.append(user.getId());
+    } else {
+      stringBuilder.append("no-user");
+    }
+
     stringBuilder.append(".");
-    stringBuilder.append(realUser != null ? Long.toString(realUser.getId()) : "no-real-user");
+
+    if ( realUser != null ) {
+      stringBuilder.append(realUser.getId());
+    } else {
+      stringBuilder.append("no-real-user");
+    }
+
     stringBuilder.append(".");
-    stringBuilder.append(group != null ? group.getId() : "no-group");
+
+    if ( group != null ) {
+      stringBuilder.append(group.getId());
+    } else {
+      stringBuilder.append("no-group");
+    }
 
     return stringBuilder.toString();
   }
