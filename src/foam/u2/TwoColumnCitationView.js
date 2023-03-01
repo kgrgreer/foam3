@@ -1,0 +1,89 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2023] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'TwoColumnCitationView',
+  extends: 'foam.u2.View',
+
+  documentation: '2x2 column citation view',
+
+  css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.8rem 0.2rem;
+      font-size: 1.2rem;
+      border-bottom: 0.05rem solid #80808020;
+      gap: 0.64rem;
+      color: #6F6F6F;
+    }
+    ^row-1{
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem;
+    }
+    ^row-2{
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem;
+      font-size: 1rem;
+    }
+    ^row-1-section-1{
+
+    }
+    ^row-1-section-2{
+      display: flex;
+      gap: 0.5rem;
+    }
+    ^row-2-section-1{
+      
+    }
+    ^row-2-section-2{
+
+    }
+    ^primary{
+      font-weight: bold;
+      color: $black;
+    }
+  `,
+
+  methods: [
+    //Template
+    function render() {
+      this
+        .addClass(this.myClass())
+        .start().addClass(this.myClass('row-1'))
+          .start().addClass(this.myClass('row-1-section-1'))
+            .start().addClass(this.myClass('primary')).add("field 1").end()
+          .end()
+          .start().addClass(this.myClass('row-1-section-2'))
+            .add("field 2")
+          .end()
+        .end()
+        .start().addClass(this.myClass('row-2'))
+          .start().addClass(this.myClass('row-2-section-1'))
+            .add("field 3")
+          .end()
+          .start().addClass(this.myClass('row-2-section-2'))
+            .add("field 4")
+          .end()
+        .end();
+    }
+  ]
+});
