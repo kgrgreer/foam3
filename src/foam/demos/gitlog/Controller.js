@@ -592,8 +592,7 @@ name: 'NANOS',
     {
       name: 'commits',
       expression: function(data) {
-        return data.
-          reverse().
+        var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
               if ( c.subject.indexOf(this.IGNORE_CONTAINS[i]) != -1 ) return false;
@@ -640,6 +639,10 @@ name: 'NANOS',
             */
             return c;
           });
+
+          d2.sort((a, b) => foam.Date.compare(a.date, b.date));
+
+          return d2;
       }
     },
     {
