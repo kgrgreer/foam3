@@ -137,7 +137,7 @@ foam.CLASS({
             .callIf(self.developerMode, function () {
               this
                 .startContext({ data: self.data.data })
-                  .tag(self.data.data.OPEN_WIZARD_INSPECTOR)
+                  .tag(self.data.OPEN_WIZARD_INSPECTOR)
                 .endContext();
             })
             .startContext({ currentWizardletSectionView: current$ })

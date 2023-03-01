@@ -153,6 +153,9 @@ foam.CLASS({
         if ( ! user.getEnabled() ) {
           throw new AccessDeniedException();
         }
+        if ( ! user.getEmailVerified() ) {
+          throw new UnverifiedEmailException();
+        }
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
           throw new AccessDeniedException();

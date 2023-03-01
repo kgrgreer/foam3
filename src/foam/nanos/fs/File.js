@@ -145,6 +145,7 @@ foam.CLASS({
         return window.location.origin + '/service/httpFileService/' + id + '?sessionId=' + this.sessionID;
       }
     },
+
     {
       class: 'String',
       name: 'image',
@@ -344,7 +345,7 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'download',
+      name: 'view',
       code: function(a, X) {
         // TODO: Add logging for who has downloaded files etc.
         var blob = this.data;
@@ -354,6 +355,22 @@ foam.CLASS({
           var url = this.address;
           window.open(url);
         }
+      }
+    },
+    {
+      name: 'download',
+      code: function(a, X) {
+        // TODO: Add logging for who has downloaded files etc.
+        var url = this.address;
+        if ( foam.blob.BlobBlob.isInstance(this.data) ) {
+          url = URL.createObjectURL(this.data.blob);
+        }
+        var link = document.createElement('a');
+        link.setAttribute("href", url);
+        link.setAttribute("download", this.filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     },
     {

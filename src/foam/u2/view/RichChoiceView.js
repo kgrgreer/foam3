@@ -588,13 +588,11 @@ foam.CLASS({
                 })
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
-                  .add(this.slot(data => {
-                    return this.E().tag(self.selectionView, {
-                      data: data,
+                  .tag(self.selectionView, {
+                      data$: self.data$,
                       fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
-                    });
-                  }))
+                    })
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
@@ -610,6 +608,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
+                    mode$: self.mode$,
                     fullObject$: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })

@@ -54,9 +54,7 @@ foam.CLASS({
       name: 'wizardView',
       flags: ['web'], // Temporary
       documentation: `
-        Specify a view to use with this controller. This property isn't used by
-        StepWizardController, but it can be used where a wizard is launched so
-        that only providing this configuration object is necessary.
+        Specify a view to use with this controller.
       `,
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       expression: function (controller) {

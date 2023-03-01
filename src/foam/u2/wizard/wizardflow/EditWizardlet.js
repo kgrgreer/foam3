@@ -29,7 +29,7 @@ foam.CLASS({
           w.dynamicActions.push(this.AlternateFlowAction.create({
             ...args,
             alternateFlow: x[name]
-          }))
+          }, x))
         }
       })
       return this;
