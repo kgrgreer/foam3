@@ -50,7 +50,7 @@ foam.CLASS({
     { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak' },
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
-    { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing in to your account' }
+    { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing into your account' }
   ],
   
   sections: [
