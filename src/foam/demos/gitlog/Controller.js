@@ -430,6 +430,12 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
+//        name: 'Core',
+        name: 'NANOS',
+        keywords: [ 'fscript' ],
+        paths: [ ]
+      },
+      {
         name: 'Application',
         keywords: [ 'afex' ],
         paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
@@ -657,7 +663,7 @@ name: 'NANOS',
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      const year = 2021;
+      const year = 2022;
 
       if ( year == 2021 ) {
         this.loadData('data2021.log');
