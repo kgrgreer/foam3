@@ -78,7 +78,7 @@ foam.CLASS({
       } else if ( this.icon ) {
         this
           .start({ class: 'foam.u2.tag.Image', data$: this.icon$, role: 'presentation', embedSVG: true })
-            .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+            .addClass(this.myClass('SVGIcon'), this.myClass('imgSVGIcon'))
           .end();
       }
       this.start().addClass(this.labelClass$).add(this.label$).end();

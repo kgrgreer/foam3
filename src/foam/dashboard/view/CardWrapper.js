@@ -59,7 +59,7 @@ foam.CLASS({
         .enableClass(this.myClass('titled-container'), this.title)
         .style({ 'aspect-ratio': this.aspectRatio })
         .callIf(!!this.title, function () {
-          this.start().addClasses([this.myClass('title'), 'h500']).translate(this.title, this.title).end()
+          this.start().addClass(this.myClass('title'), 'h500').translate(this.title, this.title).end()
         })
         .start(this.border, { data: this })
         .tag(this.slot(function(currentView) {

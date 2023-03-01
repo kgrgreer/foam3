@@ -90,7 +90,7 @@ foam.CLASS({
           var group = this.groupExpr.f(obj);
           if ( group !== curGroup ) {
             this.start().
-              addClasses(['h300', this.myClass('group-title')]).
+              addClass('h300', this.myClass('group-title')).
               translate(group)
             .end();
           }

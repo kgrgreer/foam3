@@ -55,7 +55,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.addClasses([this.myClass(), 'h200'])
+      this.addClass(this.myClass(), 'h200')
         .start()
           .add(this.slot(function(subject$user) {
             return this.title + ((this.subject.user != null) ? ', ' + this.subject.user.firstName : '');

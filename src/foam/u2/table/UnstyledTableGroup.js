@@ -39,7 +39,7 @@ foam.CLASS({
       var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
       var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
-      addClasses([this.data.myClass('row-group'), this.data.myClass('row')]).
+      addClass(this.data.myClass('row-group'), this.data.myClass('row')).
       // If multi-select is enabled, then we show a checkbox in the
       // header that allows you to select all or select none.
       callIf(this.data.multiSelectEnabled, function() {
@@ -76,7 +76,7 @@ foam.CLASS({
       style({ 'min-width': this.data.tableWidth_$ });
       [prop, objReturned] = this.getCellData(objForCurrentProperty, this.data.groupBy, nestedPropertiesObjsMap);
       var elmt = this.E().style({ flex: '3 0 0' })
-        .addClasses(['h500', this.data.myClass('td')])
+        .addClass('h500', this.data.myClass('td'))
         .call(function() {
           prop.tableCellFormatter.format(
             this,
