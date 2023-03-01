@@ -52,6 +52,8 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
+    'foam.u2.crunch.WizardRunner',
+    'foam.u2.wizard.WizardType',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
@@ -836,44 +838,21 @@ foam.CLASS({
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
       var group = await groupDAO.find(this.subject.user.group);
-      if ( group && group.generalCapability != '' ) {
-        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
-        var ucj = await ucjCheck();
 
-        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+      if ( ! group || ! group.generalCapability ) return true;
 
-          const lastWizard = this.crunchController.lastActiveWizard;
-          if ( lastWizard &&
-            lastWizard.status === this.crunchController.WizardStatus.IN_PROGRESS
-          ) {
-            let x = this.__subContext__.createSubContext({
-              wizardController: lastWizard
-            });
-            const seq = await this.crunchController.createUCJInlineWizardSequence(x)
-              .addBefore('CapabilityAdaptAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
-              ;
-
-            lastWizard.status$.sub(async () => {
-              if ( lastWizard.status !== this.crunchController.WizardStatus.IN_PROGRESS ) {
-                await this.doGeneralCapabilityPostCheck(ucjCheck);
-              }
-            })
-
-            await this.crunchController.inlineWizardFromSequence(lastWizard, seq);
-
-          } else {
-            await this.crunchController.createTransientWizardSequence(this.__subContext__)
-              .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
-              .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
-              .remove('RequirementsPreviewAgent')
-              .execute();
-            
-            await this.doGeneralCapabilityPostCheck(ucjCheck);
-          }
-
-        }
+      const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
+      var ucj = await ucjCheck();
+      if ( ucj != null && ucj.status == this.CapabilityJunctionStatus.GRANTED ) {
+        return true;
       }
-      return true;
+
+      const wizardRunner = this.WizardRunner.create({
+        wizardType: this.WizardType.UCJ,
+        source: group.wizardFlow || group.generalCapability
+      });
+      await wizardRunner.launch();
+      await this.doGeneralCapabilityPostCheck(ucjCheck);
     },
 
     async function doGeneralCapabilityPostCheck (ucjCheck) {

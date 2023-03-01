@@ -230,12 +230,22 @@ foam.CLASS({
         This is intended for use with WizardFlow (Fluent/DSL for wizards).
       `,
       code: function createWizardFlowSequence(x) {
-        const seq = this.createTransientWizardSequence(x);
+        return this.toWizardFlowSequence(
+          this.createTransientWizardSequence(x)
+        );
+      }
+    },
+    {
+      name: 'toWizardFlowSequence',
+      documentation: `
+        This wizard sequence does not load a capability graph or any wizardlets.
+        This is intended for use with WizardFlow (Fluent/DSL for wizards).
+      `,
+      code: function toWizardFlowSequence(seq) {
         return seq
           .remove('LoadCapabilitiesAgent')
           .remove('LoadTopConfig')
           .remove('CreateWizardletsAgent')
-          .remove('RequirementsPreviewAgent')
           .remove('RequirementsPreviewAgent')
           ;
       }
