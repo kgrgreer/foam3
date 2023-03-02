@@ -65,7 +65,6 @@ foam.CLASS({
           isAvailable: true,
           customView: {
             class: 'foam.u2.detail.FlexSectionedDetailView'
-            // class: 'foam.u2.LoadingSpinner',
           }
         }, x)
       ];
