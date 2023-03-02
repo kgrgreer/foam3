@@ -117,8 +117,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'lockToParent',
-      value: true
+      name: 'lockToParentWidth'
     },
     'ro_'
   ],
@@ -137,7 +136,7 @@ foam.CLASS({
 
     function open(x, y) {
       this.setPosition(x, y);
-      this.ro_?.observe(this.parentEl.el_());
+      this.ro_?.observe(this.parentEl);
       this.opened = true;
       this.window.addEventListener('resize', this.onResize);
     },
@@ -170,28 +169,25 @@ foam.CLASS({
 
     function close() {
       this.opened = false;
-      this.parentEl.el().then(v => {
-        if ( ! v ) return;
-        this.ro_?.unobserve(v);
-      });
+      this.ro_?.unobserve(this.parentEl);
     },
 
     function render() {
       this.addToSelf_ = true;
       this.addClass(this.myClass('container'));
       var view = this;
-      if ( this.lockToParent ) {
-        let fn = () => {
-          if ( ! this.parentEl ) return;
-          this.ro_ = new ResizeObserver(() => {
+      let fn = () => {
+        if ( ! this.parentEl ) return;
+        this.ro_ = new ResizeObserver(() => {
+          if ( this.lockToParentWidth ) {
             this.dropdownE_.el_().style.width = this.parentEl.getBoundingClientRect().width;
-            this.setPosition();
-          });
-          this.onDetach(() => { this.ro_?.disconnect(); })
-        }
-        this.parentEl$.sub(fn);
-        fn();
+          }
+          this.setPosition();
+        });
+        this.onDetach(() => { this.ro_?.disconnect(); })
       }
+      this.parentEl$.sub(fn);
+      fn();
 
       this.addClass(this.slot(function(opened) {
         this.shown = opened;
@@ -216,8 +212,11 @@ foam.CLASS({
           right: this.right$,
           bottom: this.bottom$
         })
-        .on('mouseenter', this.onMouseEnter)
-        .on('mouseleave', this.onMouseLeave)
+        .callIf(this.closeOnLeave, function() {
+          this
+          .on('mouseenter', this.onMouseEnter)
+          .on('mouseleave', this.onMouseLeave)
+        })
         .on('keydown', this.onKeyDown)
         .on('click', this.onClick);
 

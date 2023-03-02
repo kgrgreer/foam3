@@ -102,10 +102,10 @@ foam.CLASS({
     {
       name: 'validateObj',
       factory: function(prop) {
-      var name = this.name;
-      var label = this.label;
+      var name     = this.name;
+      var label    = this.label;
       var required = this.required;
-      var self_ = this;
+      var self_    = this;
       var validationPredicates = this.validationPredicates;
       if ( validationPredicates.length ) {
         var args = foam.Array.unique(validationPredicates
@@ -113,7 +113,7 @@ foam.CLASS({
           .flat());
         return [args, function() {
           if ( required && self_.isDefaultValue(this[name]) ) {
-            return `${label} ${self_.REQUIRED} `; 
+            return `${label} ${self_.REQUIRED} `;
           }
           for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
             var vp   = validationPredicates[i];
@@ -295,7 +295,7 @@ foam.CLASS({
   name: 'Errors',
 
   documentation: `
-    A psedo-Property Axiom added to FObject which contains an object\'s validation errors.
+    A psedo-Property Axiom added to FObject which contains an object's validation errors.
     Adds the following attributes to an Object:
     <dl>
       <dt>errors_</dt><dd>list of current errors</dd>
@@ -316,7 +316,7 @@ foam.CLASS({
           return self.toSlot(this).get();
         },
         configurable: true,
-        enumerable: false
+        enumerable:   false
       });
 
       Object.defineProperty(proto, 'errors_$', {
@@ -324,7 +324,7 @@ foam.CLASS({
           return self.toSlot(this);
         },
         configurable: true,
-        enumerable: false
+        enumerable:   false
       });
     },
 
@@ -405,7 +405,7 @@ foam.CLASS({
           ret.push(
             {
               args: [this.name],
-              query: this.name+'!=""',
+              query: this.name + '!=""',
               errorString: this.EMAIL_REQUIRED
             }
           );
@@ -413,7 +413,7 @@ foam.CLASS({
         ret.push(
           {
             args: [this.name],
-            query:this.name+'==""||'+this.name+'~/\\S+@\\S+\\.\\S+/',
+            query: this.name + '==""||' + this.name + '~/\\S+@\\S+\\.\\S+/',
             errorString: this.VALID_EMAIL_REQUIRED
           }
         );
@@ -445,8 +445,8 @@ foam.CLASS({
           {
             args: [this.name],
             query:
-              this.name +' !exists||' +
-              this.name +'~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
+              this.name + ' !exists||' +
+              this.name + '~' + foam.nanos.auth.Phone.PHONE_NUMBER_REGEX,
             errorString: this.INVALID_PHONE_NUMBER
           }
         ];
@@ -471,7 +471,7 @@ foam.CLASS({
         return [
           {
             args: [self.name],
-            query: 'thisValue !exists||thisValue<='+foam.Date.MAX_DATE.toISOString().slice(1,16)+'&&thisValue>=' + foam.Date.MIN_DATE.toISOString().slice(0,16),
+            query: 'thisValue !exists||thisValue<=' + foam.Date.MAX_DATE.toISOString().slice(1,16) + '&&thisValue>=' + foam.Date.MIN_DATE.toISOString().slice(0,16),
             errorString: 'Invalid date value'
           }
         ];
@@ -501,7 +501,7 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            query: 'thisValue==""||thisValue~'+urlRegex,
+            query: 'thisValue==""||thisValue~' + urlRegex,
             errorString: this.INVALID_URL
           }
         ];
@@ -531,7 +531,7 @@ foam.CLASS({
         return [
           {
             args: [this.name],
-            query: 'thisValue==""||thisValue~'+websiteRegex,
+            query: 'thisValue==""||thisValue~' + websiteRegex,
             errorString: this.INVALID_WEBSITE
           }
         ];

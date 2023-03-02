@@ -192,8 +192,10 @@ foam.CLASS({
         let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
+        var argumentX = undefined;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
         if ( this.ContextAgent.isInstance(spec) ) {
+          argumentX = x;
           contextAgent = spec.copyFrom(args);
         } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
@@ -218,7 +220,7 @@ foam.CLASS({
         let newX;
         try {
           this.insertPosition_ = i;
-          newX = await contextAgent.execute();
+          newX = await contextAgent.execute(argumentX);
         } catch (e) {
           console.error(`sequence:`, seqspec, e);
           this.paused_ = true;

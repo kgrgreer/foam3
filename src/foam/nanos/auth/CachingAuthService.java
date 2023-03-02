@@ -39,7 +39,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
    */
   protected String[] extraDAOsToListenTo_;
 
-  protected LRULinkedHashMap<Long, Map<String, Boolean>> userPermissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
+  protected LRULinkedHashMap<String, Map<String, Boolean>> permissionCache_ = new LRULinkedHashMap<>(CACHE_NAME, CACHE_SIZE);
 
   // Sink for listening to DAOs for permission changes
   private final Sink purgeSink = new Sink() {
@@ -73,8 +73,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
 
     Permission p = new AuthPermission(permission);
 
-    User user = getUserFromContext(x);
-    Map<String, Boolean> map = getPermissionMap(user);
+    Map<String, Boolean> map = getPermissionMap(x);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
@@ -90,7 +89,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     if ( x == null || permission == null ) return false;
 
     Permission           p   = new AuthPermission(permission);
-    Map<String, Boolean> map = getPermissionMap(user);
+    Map<String, Boolean> map = getPermissionMap(x);
 
     if ( map.containsKey(p.getName()) ) return map.get(p.getName());
 
@@ -136,7 +135,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userId = ((UserCapabilityJunction) obj).getSourceId();
     } else if ( obj instanceof GroupPermissionJunction ) {
       GroupPermissionJunction gpj = (GroupPermissionJunction) obj;
-      for ( Object o  : userPermissionCache_.values() ) {
+      for ( Object o  : permissionCache_.values() ) {
         Map m = (Map) o;
         String p = gpj.getTargetId();
         if ( p.endsWith(".*") ) {
@@ -154,10 +153,10 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
 
     if ( userId != null ) {
       // Reset single user permission map
-      userPermissionCache_.remove(userId);
+      permissionCache_.remove(userId);
     } else {
       // Reset permission cache
-      userPermissionCache_.clear();
+      permissionCache_.clear();
     }
   }
 
@@ -166,7 +165,7 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     super.setX(x);
 
     // TODO: Context is set on user permission cache for OM support, this can be removed when OM is removed from LRULinkListHashMap
-    userPermissionCache_.setX(getX());
+    permissionCache_.setX(getX());
   }
 
   public void start() throws Exception {
@@ -174,23 +173,47 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     timer.schedule(new AgencyTimerTask(getX(), this), INITIAL_TIMER_DELAY);
   }
 
-  protected Map<String, Boolean> getPermissionMap(User user) {
-    long userId = user == null ? -1 : user.getId();
-    Map<String, Boolean> map = userPermissionCache_.get(userId);
+  protected Map<String, Boolean> getPermissionMap(X x) {
+    String cacheKey = createCacheKey(x);
+
+    Map<String, Boolean> map = permissionCache_.get(cacheKey);
     if ( map == null ) {
       map = new ConcurrentHashMap<>();
-      userPermissionCache_.put(userId, map);
+      permissionCache_.put(cacheKey, map);
     }
 
     return map;
   }
 
-  private User getUserFromContext(X x) {
-    if ( x != null ) {
-      Subject subject = (Subject) x.get("subject");
-      return subject.getUser();
+  private String createCacheKey(X x) {
+    Subject subject = (Subject) x.get("subject");
+    User user = subject != null ? subject.getUser() : null;
+    User realUser = subject != null ? subject.getRealUser() : null;
+    Group group = (Group) x.get("group");
+
+    StringBuilder stringBuilder = new StringBuilder();
+    if ( user != null ) {
+      stringBuilder.append(user.getId());
+    } else {
+      stringBuilder.append("no-user");
     }
 
-    return null;
+    stringBuilder.append(".");
+
+    if ( realUser != null ) {
+      stringBuilder.append(realUser.getId());
+    } else {
+      stringBuilder.append("no-real-user");
+    }
+
+    stringBuilder.append(".");
+
+    if ( group != null ) {
+      stringBuilder.append(group.getId());
+    } else {
+      stringBuilder.append("no-group");
+    }
+
+    return stringBuilder.toString();
   }
 }

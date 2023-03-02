@@ -93,29 +93,25 @@ foam.CLASS({
       javaCode: `
         String daoKey = request.getServerDaoKey() != null && ! SafetyUtil.isEmpty(request.getServerDaoKey()) ? request.getServerDaoKey() : request.getDaoKey();
         DAO dao = (DAO) x.get(daoKey);
-        FObject found = dao.find(request.getObjId()).fclone();
+        FObject obj = dao.find(request.getObjId()).fclone();
 
         DAO userDAO = (DAO) x.get("localUserDAO");
-        Subject subject = new Subject();
-
-        if ( ((ApprovalRequest) request).getCreatedForAgent() != 0 ) {
-          User initiatingAgent = (User) userDAO.find(((ApprovalRequest) request).getCreatedForAgent());
-          subject.setUser(initiatingAgent);
-        }
 
         User initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedBy());
         if ( ((ApprovalRequest) request).getCreatedFor() != 0 ) {
           initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedFor());
         }
-        subject.setUser(initiatingUser);
+        
+        // Update subject user but keep subject realUser
+        // realUser previlieges need to be maintained
+        ((Subject) x.get("subject")).setUser(initiatingUser);
 
-        X initiatingUserX = x.put("subject", subject)
-                             .put(ApprovalRequest.class, request);
+        x = x.put(ApprovalRequest.class, request);
 
         if ( ((ApprovalRequest) request).getOperation() == Operation.REMOVE ) {
-          dao.inX(initiatingUserX).remove(found);
+          dao.inX(x).remove(obj);
         } else {
-          dao.inX(initiatingUserX).put(found);
+          dao.inX(x).put(obj);
         }
       `
     },

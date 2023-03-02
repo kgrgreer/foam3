@@ -71,7 +71,7 @@ foam.CLASS({
 
       if ( self.developerMode ) {
         this
-          .start(this.data.data.OPEN_WIZARD_INSPECTOR, { data: this.data.data })
+          .start(this.data.OPEN_WIZARD_INSPECTOR, { data: this.data })
             .addClass(this.myClass('developer-btn'))
           .end()
       }
@@ -134,12 +134,6 @@ foam.CLASS({
             // Export the current wizardlet section view in context so that dynamicActions can use it
             // this only works for incremental wizard, we will need a better solution for wizards that
             // render multiple sections at once
-            .callIf(self.developerMode, function () {
-              this
-                .startContext({ data: self.data.data })
-                  .tag(self.data.data.OPEN_WIZARD_INSPECTOR)
-                .endContext();
-            })
             .startContext({ currentWizardletSectionView: current$ })
             .forEach(actions.reverse(), function (action) {
               this.tag(action, {

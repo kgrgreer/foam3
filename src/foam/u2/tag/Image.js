@@ -95,7 +95,7 @@ foam.CLASS({
 
             return e;
           }
-
+          if ( ! data) return null;
           return this.E()
             .start('img')
               .attrs({ src: data, role: this.role })

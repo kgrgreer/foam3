@@ -288,6 +288,7 @@ foam.CLASS({
   `,
 
   properties: [
+    'prop',
     {
       class: 'String',
       name: 'name',
@@ -466,7 +467,12 @@ foam.CLASS({
       of: 'foam.u2.Element',
       name: 'dropdown_',
       factory: function() {
-        return this.OverlayDropdown.create({ parentEl$: this.selectionEl_$, closeOnLeave: false, styled: false, parentEdgePadding: '4' });
+        return this.OverlayDropdown.create({
+          closeOnLeave: false,
+          styled: false,
+          parentEdgePadding: '4',
+          lockToParentWidth: true
+        });
       }
     },
     'selectionEl_'
@@ -574,6 +580,7 @@ foam.CLASS({
                   var y = e.clientY || this.getBoundingClientRect().y;
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.isOpen_ = ! self.isOpen_;
+                    self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
                   }
                   e.preventDefault();
@@ -581,13 +588,11 @@ foam.CLASS({
                 })
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
-                  .add(this.slot(data => {
-                    return this.E().tag(self.selectionView, {
-                      data: data,
+                  .tag(self.selectionView, {
+                      data$: self.data$,
                       fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
-                    });
-                  }))
+                    })
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
@@ -598,13 +603,13 @@ foam.CLASS({
                 }))
               .end();
           } else {
-            this.dropdown_.remove();
             return self.E()
               .addClass(this.myClass())
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
-                    fullObject: self.fullObject_$,
+                    mode$: self.mode$,
+                    fullObject$: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
                 .end();
@@ -642,6 +647,9 @@ foam.CLASS({
     function fromProperty(property) {
       this.SUPER(property);
       this.prop = property;
+      if ( ! this.choosePlaceholder && prop.placeholder ) {
+        this.choosePlaceholder = prop.placeholder;
+      }
     }
   ],
 
@@ -736,12 +744,14 @@ foam.CLASS({
             'text-overflow': 'ellipsis'
           });
 
-          this.add(this.slot(async function(fullObject) {
+          this.add(this.slot(function(fullObject) {
+            let summary;
             if ( fullObject ) {
-              var summary = await this.fullObject.toSummary();
-              return summary;
+              summary = fullObject.toSummary();
+            } else {
+              summary = this.defaultSelectionPrompt;
             }
-            return this.defaultSelectionPrompt;
+            return summary;
           }));
         }
       ]

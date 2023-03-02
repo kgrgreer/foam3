@@ -19,7 +19,10 @@ foam.CLASS({
     'appConfig',
     'auth',
     'ctrl',
+    'emailVerificationService',
+    'loginSuccess',
     'loginView?',
+    'pushMenu',
     'stack',
     'subject',
     'theme',
@@ -47,6 +50,7 @@ foam.CLASS({
     { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak' },
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
+    { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing into your account' }
   ],
   
   sections: [
@@ -181,6 +185,27 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'emailVerifiedListener',
+      code: async function() {
+        try {
+          await this.auth.login(x, this.userName, this.desiredPassword);
+          this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
+          this.loginSuccess = true;
+          await this.ctrl.reloadClient();
+        } catch(err) {
+          this.ctrl.add(this.NotificationMessage.create({
+            err: err.data,
+            message: this.ERROR_MSG_LOGIN,
+            type: this.LogLevel.ERROR
+          }));
+          this.pushMenu('sign-in', true);
+        }
+      }
+    }
+  ],
+
   methods: [
     {
       name: 'nextStep',
@@ -197,13 +222,19 @@ foam.CLASS({
           this.window.history.replaceState(null, null, this.window.location.origin);
           location.reload();
         } else {
+          // login function in signup sets the subject to the signed up user without logging in
+          // here we save the new user info to be used later in emailverification
+          // and reset the subject to the anonymous subject before verification step
+          var user = this.subject.user;
+          this.subject = await this.auth.getCurrentSubject(null);
+          this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener)
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.nanos.auth.email.VerificationCodeView',
               data: {
                 class: 'foam.nanos.auth.email.EmailVerificationCode',
-                email: this.subject.user.email,
-                userName: this.subject.user.userName,
+                email: user.email,
+                userName: user.userName,
                 showAction: true,
                 signinOnSubmit: true
               }

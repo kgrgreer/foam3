@@ -273,7 +273,7 @@ foam.CLASS({
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.overlay_.parentEl = this;
+      this.overlay_.parentEl = this.el_();
       this.isMouseClick = !! evt.detail;
       var x = evt.clientX || this.getBoundingClientRect().x;
       var y = evt.clientY || this.getBoundingClientRect().y;

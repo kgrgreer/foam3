@@ -84,6 +84,29 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'markdownView',
+      value: `
+        # Heading 1
+        ## Heading 2
+        ### Heading 3
+        #### Heading 4
+        ##### Heading 5
+        ###### Heading 6
+        text # not a heading
+
+        [a link](https://github.com/kgrgreer/foam3)
+
+        normal _italics_ **bold** \`code\`
+        \`\`\`
+        a block of code
+        \`\`\`
+      `,
+      view: {
+        class: 'foam.u2.view.MarkdownView'
+      }
+    },
+    {
       class: 'Enum',
       of: 'foam.u2.layout.DisplayWidth',
       name: 'displayWidth',

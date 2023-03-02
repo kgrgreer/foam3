@@ -14,6 +14,8 @@
     Email verification service to verify user email by code.
   `,
 
+  topics: [ 'emailVerified' ],
+
   methods: [
     {
       name: 'verifyByCode',

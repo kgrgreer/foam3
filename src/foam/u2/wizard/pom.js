@@ -11,6 +11,7 @@ foam.POM({
     { name: "ContextPredicate",                        flags: "web" },
     { name: "WizardType",                              flags: "web" },
     { name: "crunch/CapabilityRefinement",             flags: "web" },
+    { name: "crunch/GroupRefinement",                  flags: "js|java" },
     { name: "agents/ConfigureFlowAgent",               flags: "web" },
     { name: "agents/DeveloperModeAgent",               flags: "web" },
     { name: "agents/RootCapabilityAgent",              flags: "web" },
@@ -59,7 +60,6 @@ foam.POM({
     { name: "WizardletAware",                          flags: "js|java" },
     { name: "WizardletView",                           flags: "web" },
     { name: "StepWizardConfig",                        flags: "js|java" },
-    { name: "StepWizardController",                    flags: "web" },
     { name: "StepWizardletStepsView",                  flags: "web" },
     { name: "IncrementalStepWizardView",               flags: "web" },
     { name: "WizardletSearchController",               flags: "web" },
@@ -136,6 +136,7 @@ foam.POM({
     { name: "wizardflow/Export",                       flags: "web" },
     { name: "wizardflow/WizardDSL",                    flags: "web" },
     { name: "wizardflow/SubDSL",                       flags: "web" },
+    { name: "wizardflow/AddWizardlet",                flags: "web" },
     { name: "wizardflow/EditWizardlet",                flags: "web" },
     { name: "wizardflow/Predicated",                   flags: "web" },
   ]
