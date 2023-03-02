@@ -42,7 +42,7 @@ foam.CLASS({
     function spec (spec) {
       this.sequence.tag(this.QuickAgent, {
         executeFn: x => {
-          const wizardlet = this.getWizardlet_();
+          const wizardlet = this.getWizardlet_(x);
           for ( const k in spec ) {
             wizardlet[k] = spec[k];
           }
@@ -61,12 +61,12 @@ foam.CLASS({
       newWizardlet.title = this.wizardletId;
       newWizardlet.sections = [
         this.WizardletSection.create({
-              title: newWizardlet.title,
-              isAvailable: true,
-              customView: {
-                class: 'foam.u2.Element'
-              }
-            }, x)
+          title: newWizardlet.title,
+          isAvailable: true,
+          customView: {
+            class: 'foam.u2.detail.FlexSectionedDetailView'
+          }
+        }, x)
       ];
 
       if ( this.before ) {
