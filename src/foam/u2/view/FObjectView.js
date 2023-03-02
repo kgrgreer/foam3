@@ -163,6 +163,10 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'detailView',
       value: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'Map',
+      name: 'defaultValues'
     }
   ],
 
@@ -222,7 +226,11 @@ foam.CLASS({
       var classToData = (c) => {
         if ( ! c ) return undefined;
         var m = c && this.__context__.maybeLookup(c);
-        return m.create(this.data ? this.copyOldData(this.data) : null, this);
+        const o = m.create(this.data ? this.copyOldData(this.data) : null, this);
+        if ( this.defaultValues.hasOwnProperty(m.id) ) {
+          o.copyFrom(this.defaultValues[m.id]);
+        }
+        return o;
       };
 
       this.dataWasProvided_ = !! this.data;
