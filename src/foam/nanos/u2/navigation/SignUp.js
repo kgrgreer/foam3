@@ -235,8 +235,7 @@ foam.CLASS({
                 class: 'foam.nanos.auth.email.EmailVerificationCode',
                 email: user.email,
                 userName: user.userName,
-                showAction: true,
-                signinOnSubmit: true
+                showAction: true
               }
             }
           }));
