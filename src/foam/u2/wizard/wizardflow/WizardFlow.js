@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.AlternateFlowAgent',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardType',
+    'foam.u2.wizard.agents.QuickAgent',
     'foam.u2.wizard.wizardflow.AddCapabilityHierarchy',
     'foam.u2.wizard.wizardflow.Export',
     'foam.u2.wizard.wizardflow.AddWizardlet',
@@ -33,6 +34,12 @@ foam.CLASS({
         if ( typeof this.sequence !== 'function' ) {
           throw new Error('abstract method WizardFlow.sequence() is required');
         }
+        this.tag(this.QuickAgent, {
+          executeFn: x => {
+            if ( x.wizardlets ) return x;
+            return x.createSubContext({ wizardlets: [] });
+          }
+        });
         await this.sequence();
         this.initialized_ = true;
       }
