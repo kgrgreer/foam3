@@ -58,6 +58,12 @@ foam.CLASS({
       this.wizardController.onClose = this.resolveAgent;
       view.onClose = this.resolveAgent;
 
+      this.onDetach(this.wizardController.status$.sub(() => {
+        const v = this.wizardController.status;
+        if ( v == this.WizardStatus.IN_PROGRESS ) return;
+        this.resolveAgent();
+      }));
+
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
         this.wizardController.autoPositionUpdates = false;
       }

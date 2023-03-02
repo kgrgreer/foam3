@@ -79,17 +79,7 @@ foam.CLASS({
     },
     {
       class: 'Function',
-      name: 'onClose',
-      adapt: function (o, n) {
-        if ( ! n ) return n;
-        return function (...a) {
-          console.log('onClose is being used', n);
-          return n.call(this, ...a);
-        }
-      },
-      postSet: function (o, n) {
-        console.log('onClose is being set', o, n);
-      }
+      name: 'onClose'
     },
     {
       class: 'foam.u2.ViewSpec',
