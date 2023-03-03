@@ -35,7 +35,7 @@ foam.CLASS({
             return true;
           }
 
-          seen.put(user.getId());
+          seen.put(user.getId(), true);
         }
 
         return false;
