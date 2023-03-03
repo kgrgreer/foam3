@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'ContextLoader',
   implements: ['foam.u2.wizard.data.Loader'],
 
+  imports: [
+    'wizardletOf'
+  ],
+
   properties: [
     {
       class: 'foam.u2.wizard.PathProperty',
@@ -23,7 +27,10 @@ foam.CLASS({
     },
     {
       name: 'of',
-      class: 'Class'
+      class: 'Class',
+      expression: function (wizardletOf) {
+        return wizardletOf;
+      }
     }
   ],
 
