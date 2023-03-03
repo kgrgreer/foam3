@@ -14,7 +14,7 @@
     {
       name: 'resetPasswordByCode',
       async: true,
-      args: 'Context x, String email, String userName',
+      args: 'Context x, String identifier, String userName',
       type: 'Void'
     },
     {

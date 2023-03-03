@@ -96,7 +96,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userName',
-      required: true,
       hidden: true
     },
     {
