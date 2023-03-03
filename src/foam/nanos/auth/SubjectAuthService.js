@@ -9,12 +9,14 @@ foam.CLASS({
   name: 'SubjectAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
-  documentation: 'A decorator to check auth against realUser if the check fails the first time',
+  documentation: 'A decorator to check auth against every user in subject user path',
 
   javaImports: [
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.util.Auth'
+    'foam.util.Auth',
+    'java.util.Map',
+    'java.util.HashMap'
   ],
 
   methods: [
@@ -23,14 +25,19 @@ foam.CLASS({
       javaCode: `
         if ( getDelegate().check(x, permission) ) return true;
 
-        User user = ((Subject) x.get("subject")).getUser();
-        User realUser = ((Subject) x.get("subject")).getRealUser();
+        Map<Long, Boolean> seen = new HashMap<>();
+        for ( User user : ((Subject) x.get("subject")).getUserPath() ) {
+          if ( ! seen.containsKey(user.getId()) ) continue;
 
-        if ( user.getId() == realUser.getId() ) return false;
+          X userX = Auth.sudo(x, user);
+          if ( getDelegate().check(userX, permission) ) {
+            return true;
+          }
 
-        x = Auth.sudo(x, realUser);
+          seen.add(user.getId());
+        }
 
-        return getDelegate().check(x, permission);
+        return false;
       `
     }
   ]
