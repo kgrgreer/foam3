@@ -166,7 +166,22 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'defaultValues'
+      name: 'defaultValues',
+      documentation: `
+        A map of classes to default values. Useful when using FObjectView with
+        a small number of classes with little overlap in their properties.
+        
+        Example:
+        {
+          'com.example.PaddleStrategy': {
+            distanceFromBoat: 1,
+            surfaceArea: 20
+          },
+          'com.example.MotorStrategy': {
+            rpm: 3400
+          }
+        }
+      `
     }
   ],
 
