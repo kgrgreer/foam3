@@ -26,7 +26,6 @@ foam.CLASS({
     'stack',
     'subject',
     'translationService',
-    'userDAO',
     'window'
   ],
 
@@ -162,8 +161,7 @@ foam.CLASS({
               class: 'foam.nanos.auth.email.EmailVerificationCode',
               email: email,
               userName: username,
-              showAction: true,
-              signinOnSubmit: true
+              showAction: true
             }
           }
         }, this));
@@ -250,11 +248,8 @@ foam.CLASS({
             }
             if ( this.UnverifiedEmailException.isInstance(e) ) {
               // find user
-              var pred = this.usernameRequired ? 
-                this.AND(this.EQ(foam.nanos.auth.User.EMAIL, this.email), this.EQ(foam.nanos.auth.User.USER_NAME, this.username)) :
-                this.OR(this.EQ(foam.nanos.auth.User.EMAIL, this.identifier), this.EQ(foam.nanos.auth.User.USER_NAME, this.identifier));
-              var user = await this.userDAO.find(pred);
-              this.verifyEmail(x, user.email, user.username);
+              var email = this.usernameRequired ? this.email : this.identifier;
+              this.verifyEmail(x, email, this.userName);
             }
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }

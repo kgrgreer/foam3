@@ -245,7 +245,7 @@ foam.CLASS({
               .add(this.slot(function (data$someFailures) {
                 return data$someFailures
                   ? this.E()
-                    .addClasses(['p', this.myClass('network-failure-banner')])
+                    .addClass('p', this.myClass('network-failure-banner'))
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))

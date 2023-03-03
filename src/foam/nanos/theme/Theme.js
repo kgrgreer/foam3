@@ -183,7 +183,6 @@ foam.CLASS({
       documentation: 'Menu user redirects to before login.',
       of: 'foam.nanos.menu.Menu',
       section: 'navigation',
-      value: 'sign-in',
       writePermissionRequired: true
     },
     {

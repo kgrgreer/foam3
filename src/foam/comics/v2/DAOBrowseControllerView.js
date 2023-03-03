@@ -260,7 +260,7 @@ foam.CLASS({
                 .tag(nav)
                 .start(self.Cols)
                   .start()
-                    .addClasses(['h100', self.myClass('browse-title')])
+                    .addClass('h100', self.myClass('browse-title'))
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .start(self.Cols)

@@ -96,7 +96,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userName',
-      required: true,
       hidden: true
     },
     {
@@ -137,8 +136,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
-    },
-    [ 'signinOnSubmit', false ]
+    }
   ],
 
   methods: [
@@ -199,7 +197,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
-          if ( this.signinOnSubmit ) this.emailVerificationService.pub('emailVerified');
+          this.emailVerificationService.pub('emailVerified');
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,
