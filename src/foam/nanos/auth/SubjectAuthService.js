@@ -27,7 +27,7 @@ foam.CLASS({
 
         Map<Long, Boolean> seen = new HashMap<>();
         for ( User user : ((Subject) x.get("subject")).getUserPath() ) {
-          if ( ! seen.containsKey(user.getId()) ) continue;
+          if ( seen.containsKey(user.getId()) ) continue;
 
           X userX = Auth.sudo(x, user);
           if ( getDelegate().check(userX, permission) ) {
