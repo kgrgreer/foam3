@@ -94,7 +94,7 @@
               of:   this.of,
               data: this.data
             })
-              .addClasses(['p', this.myClass('msg')])
+              .addClass('p', this.myClass('msg'))
             .end()
             .tag(this.OverlayActionListView, {
               data: [

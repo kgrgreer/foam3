@@ -112,7 +112,7 @@ foam.CLASS({
       this.checkNotificationAccess();
       this.addClass()
         .add(this.slot(function(showLogo) {
-          return showLogo ? self.E().addClasses([this.myClass('sticky-container'), this.myClass('top-container')])
+          return showLogo ? self.E().addClass(this.myClass('sticky-container'), this.myClass('top-container'))
           .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .addClass(self.myClass('logo'))
             .on('click', () => {
@@ -126,7 +126,7 @@ foam.CLASS({
           .enableClass(this.myClass('padding'), this.showLogo$.not())
         .end()
         .start()
-          .addClasses([this.myClass('sticky-container'), this.myClass('bottom-container')])
+          .addClass(this.myClass('sticky-container'), this.myClass('bottom-container'))
           // TODO: make this enableClass based on scroll pos
           .addClass(this.myClass('divider'))
           .enableClass(this.myClass('expand'), this.bottomRoot_$.map(v => !! v))

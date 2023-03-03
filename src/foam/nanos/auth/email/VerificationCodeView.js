@@ -42,7 +42,7 @@
   methods: [
     function render() {
       this
-        .addClasses([this.myClass(), this.myClass('flex')])
+        .addClass(this.myClass(), this.myClass('flex'))
         .start('h1').add(this.data.TITLE).end()
         .tag(this.SectionView, { data$: this.data$, sectionName: 'verificationCodeSection' })
         .startContext({ data: this.data })

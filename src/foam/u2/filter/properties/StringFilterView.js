@@ -226,7 +226,7 @@ foam.CLASS({
           })
           .end()
           .start()
-            .addClasses(['p-semibold', this.myClass('label-limit')])
+            .addClass('p-semibold', this.myClass('label-limit'))
             .show(this.isOverLimit$)
             .add(this.LABEL_LIMIT_REACHED)
           .end()
