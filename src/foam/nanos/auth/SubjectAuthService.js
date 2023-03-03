@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'A decorator to check auth against every user in subject user path',
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.Auth',
@@ -34,7 +35,7 @@ foam.CLASS({
             return true;
           }
 
-          seen.add(user.getId());
+          seen.put(user.getId());
         }
 
         return false;
