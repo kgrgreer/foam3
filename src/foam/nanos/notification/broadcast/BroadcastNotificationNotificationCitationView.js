@@ -17,7 +17,7 @@ foam.CLASS({
       .start().addClass(this.myClass('created'))
         .add(this.created$)
       .end()
-      .start(this.HTMLView, { data$: this.description$ }).addClasses(['p', this.myClass('description')])
+      .start(this.HTMLView, { data$: this.description$ }).addClass('p', this.myClass('description'))
       .end();
     }
   ]

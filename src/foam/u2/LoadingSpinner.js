@@ -87,7 +87,7 @@ foam.CLASS({
           .end()
         .end()
         .start()
-        .addClasses(['p','processing-notice'])
+        .addClass('p','processing-notice')
           .show(this.showText$)
           .add(this.text)
         .end();

@@ -87,14 +87,14 @@ foam.CLASS({
             // .end()
             .start().addClass(this.myClass('userSummaryDiv'))
               .callIf(this.userSummary, function() {
-                this.start().addClasses([this.myClass('userSummary'), 'p-label'])
+                this.start().addClass(this.myClass('userSummary'), 'p-label')
                   .add(this.userSummary$)
                 .end();
               })
-              .start().addClasses([this.myClass('created'), 'p-legal-light'])
+              .start().addClass(this.myClass('created'), 'p-legal-light')
                 .add(this.created$)
               .end()
-              .start().addClasses([this.myClass('classification'), 'p-legal-light'])
+              .start().addClass(this.myClass('classification'), 'p-legal-light')
                 .show(this.showClassification$).add(this.classification$)
               .end()
               .start().addClass(this.myClass('status'))
@@ -102,7 +102,7 @@ foam.CLASS({
                 .add(this.STATUS)
               .end()
             .end()
-            .start().addClasses(['p', this.myClass('description')])
+            .start().addClass('p', this.myClass('description'))
               .add(this.description$)
             .end()
             // TODO: Enable when memento support and ability to jump to detail view

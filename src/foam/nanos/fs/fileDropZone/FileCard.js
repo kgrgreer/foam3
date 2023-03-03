@@ -126,10 +126,10 @@ foam.CLASS({
         }, function() {
           this.start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end();
         })
-        .start().addClasses(['h600', this.myClass('name')])
+        .start().addClass('h600', this.myClass('name'))
           .add(this.data.filename)
         .end()
-        .start(this.FileSizeView, { data: this.data.filesize }).addClasses([this.myClass('size'), 'p-legal']).end();
+        .start(this.FileSizeView, { data: this.data.filesize }).addClass(this.myClass('size'), 'p-legal').end();
 
       this.addClass()
         .start(this.Cols)
