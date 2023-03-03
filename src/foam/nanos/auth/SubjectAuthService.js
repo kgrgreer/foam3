@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: 'A decorator to check auth against every user in subject user path',
 
   javaImports: [
-    'foam.core.X',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.Auth',
@@ -30,8 +29,7 @@ foam.CLASS({
         for ( User user : ((Subject) x.get("subject")).getUserPath() ) {
           if ( seen.containsKey(user.getId()) ) continue;
 
-          X userX = Auth.sudo(x, user);
-          if ( getDelegate().check(userX, permission) ) {
+          if ( getDelegate().checkUser(user, permission) ) {
             return true;
           }
 
