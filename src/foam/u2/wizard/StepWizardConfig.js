@@ -46,7 +46,10 @@ foam.CLASS({
     },
     {
       class: 'foam.util.FObjectSpec',
-      name: 'controller'
+      name: 'controller',
+      factory: function() {
+        return { class: 'foam.u2.wizard.controllers.IncrementalWizardController' };
+      }
     },
     {
       deprecated: true,
@@ -69,7 +72,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'popup',
       factory: function () {
-        return { class: 'foam.u2.dialog.Popup' };
+        return { class: 'foam.u2.dialog.ApplicationPopup' };
       }
     }
   ],
