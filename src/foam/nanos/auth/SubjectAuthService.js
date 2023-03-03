@@ -24,7 +24,7 @@ foam.CLASS({
         if ( getDelegate().check(x, permission) ) return true;
 
         User user = ((Subject) x.get("subject")).getUser();
-        User realUser = ((Subject) x.get("subject)).getRealUser();
+        User realUser = ((Subject) x.get("subject")).getRealUser();
 
         if ( user.getId() == realUser.getId() ) return false;
 
