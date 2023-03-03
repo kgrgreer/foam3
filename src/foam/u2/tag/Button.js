@@ -524,6 +524,7 @@ foam.CLASS({
       }
     }
   ],
+
   listeners: [
     function click(e) {
       // Implemented by subclasses
