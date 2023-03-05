@@ -197,8 +197,28 @@ public class ToSql {
 
     // select distinct job from emp
 
+
     // select ename,comm/sal, comm, sal from emp where job='SALESMAN'order by
     // comm/sal;
+    
+    propNames1    = new PropertyInfo[3];
+    propNames1[0] = foam.demos.toSql.Emp.ENAME;
+    propNames1[1] = foam.demos.toSql.Emp.JOB;
+    propNames1[2] = foam.demos.toSql.Emp.SAL;
+    
+    p2 = new Projection.Builder(x).setExprs(propNames1)
+      .build();
+    Sink s;
+    empDao
+      .orderBy(DESC(foam.demos.toSql.Emp.JOB))
+      .orderBy(DESC(foam.demos.toSql.Emp.SAL))
+      .select(p2);
+  
+    values = p2.getProjection();
+    printListArray(values, propNames1);
+    
+    
+    System.out.println("*************************************");
 
     // select ename,sal, comm from emp where comm <sal*0.25
 
