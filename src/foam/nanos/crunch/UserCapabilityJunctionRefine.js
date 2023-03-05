@@ -190,7 +190,11 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.capabilityDAO
           .find(value)
-          .then((capability) => this.add(capability.name || capability.id))
+          .then((capability) => {
+            this
+              .attrs({ title: capability.id })
+              .add(capability.name || capability.id)
+          })
           .catch((error) => {
             this.add(value);
           });
@@ -498,6 +502,13 @@ foam.CLASS({
       javaCode: `
       return "UCJ id: "+getId()+", source: "+getSourceId()+", target: "+getTargetId()+", status: "+getStatus().getName()+", data: "+(getData() != null ? getData().getClass().getName() : "null");
       `
+    },
+    {
+      name: 'toSummary',
+      code: async function () {
+        return (await this.targetId$find)?.name + ' for ' +
+          (await this.sourceId$find)?.legalName;
+      }
     }
   ]
 });

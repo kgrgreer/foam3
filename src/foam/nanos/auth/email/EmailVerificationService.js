@@ -21,13 +21,13 @@
       name: 'verifyByCode',
       type: 'Void',
       async: true,
-      args: 'Context x, String email, String userName, String emailTemplate'
+      args: 'Context x, String identifier, String userName, String emailTemplate'
     },
     {
       name: 'verifyUserEmail',
       type: 'Boolean',
       async: true,
-      args: 'Context x, String email, String userName, String verificationCode',
+      args: 'Context x, String identifier, String userName, String verificationCode',
       documentation: `
         Used for user emailverification
       `
@@ -36,7 +36,7 @@
       name: 'verifyCode',
       type: 'Boolean',
       async: true,
-      args: 'Context x, String email, String userName, String verificationCode',
+      args: 'Context x, String identifier, String userName, String verificationCode',
       documentation: `
         Used for generic verification by code, does not set user to emailVerified: true
       `
