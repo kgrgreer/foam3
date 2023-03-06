@@ -1,5 +1,8 @@
 package foam.util;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /**
  * A string splitting mechanism which doesn't not split if the
  * separator has been escaped.
@@ -117,5 +120,21 @@ public class StringUtil {
     if ( suffix.regionMatches(ignoreCase, 0, s, s.length() - suffix.length(), suffix.length()) )
       return s;
     return s + suffix;
+  }
+
+  public static String toQueryString(String... data) {
+    if ( data.length % 2 == 1 )
+      throw new RuntimeException("Invalid query string data");
+
+    var sb = new StringBuilder();
+    for ( var i = 0 ; i < data.length - 1 ; i += 2 ) {
+      if ( i > 0 )
+        sb.append('&');
+
+      sb.append(URLEncoder.encode(data[i], StandardCharsets.UTF_8))
+        .append('=')
+        .append(URLEncoder.encode(data[i+1], StandardCharsets.UTF_8));
+    }
+    return sb.toString();
   }
 }
