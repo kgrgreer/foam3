@@ -483,7 +483,7 @@ foam.CLASS({
         boolean reviewRequired = getReviewRequired();
         CapabilityJunctionStatus prereqStatus = prereq.getStatus();
 
-        switch ( (CapabilityJunctionStatus) prereqStatus ) {
+        switch ( prereqStatus ) {
           case AVAILABLE :
             status = CapabilityJunctionStatus.ACTION_REQUIRED;
             break;
@@ -513,11 +513,15 @@ foam.CLASS({
             // in this status
             status = CapabilityJunctionStatus.ACTION_REQUIRED;
             break;
+          case REJECTED :
+            // can occur if approval request is rejected
+            status = CapabilityJunctionStatus.ACTION_REQUIRED;
+            break;
           default :
             status = CapabilityJunctionStatus.GRANTED;
         }
-        return status;
 
+        return status;
       `
     },
     {
