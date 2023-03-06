@@ -10,6 +10,10 @@ foam.CLASS({
   implements: ['foam.core.ContextAgent'],
   flags: ['node'],
 
+  nodeRequires: [
+    'path as path_'
+  ],
+
   imports: [
     'args as parentArgs',
     'console'
@@ -28,7 +32,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'path',
-      required: true
+      required: true,
+      adapt: function (_, n) {
+        return this.path_.normalize(n)
+      }
     },
     {
       class: 'Boolean',
