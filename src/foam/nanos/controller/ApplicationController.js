@@ -852,7 +852,7 @@ foam.CLASS({
         source: group.wizardFlow || group.generalCapability
       });
       await wizardRunner.launch();
-      await this.doGeneralCapabilityPostCheck(ucjCheck);
+      return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },
 
     async function doGeneralCapabilityPostCheck (ucjCheck) {
@@ -875,6 +875,7 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        return true;
       }
     },
 

@@ -104,7 +104,7 @@ foam.CLASS({
       const root = await this.el();
       const options = {
         root,
-        rootMargin: '0px 0px 0px',
+        rootMargin: '-3px',
         threshold: [0.25, 0.5, 0.25]
       };
       
