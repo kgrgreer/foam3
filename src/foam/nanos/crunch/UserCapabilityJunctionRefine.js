@@ -359,7 +359,7 @@ foam.CLASS({
             }
 
             if ( objectToSave == null ) {
-                throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
+              throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
             }
 
             if ( objectToSave instanceof User ) {
