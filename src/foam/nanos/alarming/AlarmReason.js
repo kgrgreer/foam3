@@ -20,6 +20,7 @@ foam.ENUM({
     { name: 'UNSUPPORTED', label: 'Unsupported request' },
     { name: 'CONFIGURATION', label: 'Invalid Configuration' },
     { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' },
-    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' }
+    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' },
+    { name: 'UNDEFINED_BEHAVIOUR', label: 'System is left in an unknown state' }
   ]
 });

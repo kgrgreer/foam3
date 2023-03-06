@@ -6,6 +6,11 @@
 
 package foam.core;
 
+import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
+import foam.nanos.logger.Logger;
+
 public class ContextAgentRunnable
   implements Runnable
 {
@@ -32,6 +37,14 @@ public class ContextAgentRunnable
         Thread.currentThread().setName(description_);
       }
       agent_.execute(x_);
+    } catch (RuntimeException e) {
+      Logger logger = (Logger) x_.get("logger");
+      logger.error(e);
+      ((DAO) x_.get("alarmDAO")).put(new Alarm.Builder(x_)
+        .setName("Uncaught exception in rule action: " + description_)
+        .setReason(AlarmReason.UNDEFINED_BEHAVIOUR)
+        .setNote(e.getMessage())
+        .build());
     } finally {
       XLocator.set(oldX);
       Thread.currentThread().setName(savedThreadName);
