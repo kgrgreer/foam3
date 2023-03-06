@@ -56,19 +56,6 @@ foam.CLASS({
     'data'
   ],
 
-  constants: [
-    {
-      name: 'DESTINATION_USER',
-      type: 'String',
-      value: 'destinationUser'
-    },
-    {
-      name: 'DESTINATION_REAL_USER',
-      type: 'String',
-      value: 'destinationRealUser'
-    }
-  ],
-
   messages: [
     { name: 'VIEW_TITLE_USER', message: 'Users' },
     { name: 'VIEW_TITLE_CAP',  message: 'Capabilities' }
@@ -371,16 +358,13 @@ foam.CLASS({
               logger.debug(this.getClass().getSimpleName(), "this is just wrong", objectToSave);
             }
 
-            if ( objectToSave == null )
-              if ( SafetyUtil.equals(contextDAOFindKey, DESTINATION_USER) || SafetyUtil.equals(contextDAOFindKey, DESTINATION_REAL_USER) ) {
-                // TODO: Remove this when context issue for saving back to destination user / real user for following capabilities
-                //   crunch.onboarding.business-director-list
-                //   bussiness-type-corporation
-                //   crunch.onboarding.api.minmax.business-type
-                objectToSave = (FObject) dao.find(getSourceId());
-              } else {
+            if ( objectToSave == null ) {
                 throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
-              }
+            }
+
+            if ( objectToSave instanceof User ) {
+              objectToSave = dao.find(((User) objectToSave).getId());
+            }
           }
           // TODO - the try block above that finds objectToSave from dao - should be moved here
           //        however need to work on casting the (FObject)objectToSave to understand objectToSave.getId()
