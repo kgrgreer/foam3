@@ -32,9 +32,7 @@ foam.CLASS({
         if ( userPath.size() == 1 ) return false;
 
         if ( userPath.size() == 2 ) {
-          if ( userPath.get(0).getId() == userPath.get(1).getId() ) {
-            return false;
-          }
+          return getDelegate().checkUser(x, userPath.get(0), permission);
         }
 
         Map<Long, Boolean> seen = new HashMap<>();
