@@ -83,6 +83,7 @@ p({
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.CachingAuthService(auth);
+    auth = new foam.nanos.auth.SubjectAuthService(auth);
     auth = new foam.nanos.auth.PMAuthService.Builder(x)
       .setLabel("uncached")
       .setDelegate(auth)
