@@ -38,10 +38,8 @@ p({
 
 p({
     id: 'foam.foobar.tasks.BuildJava',
-    of: 'foam.foobar.Exec',
+    of: 'foam.foobar.ExecGradle',
     args: {
-        shell: null,
-        path: 'gradle',
         args: ['build']
     }
 })

@@ -2244,7 +2244,7 @@ foam.CLASS({
     function ensurePath(p) {
       var i     = 1 ;
       var parts = p.split(this.sep);
-      var path  = '/' + parts[0];
+      var path  = parts[0] === '' ? this.sep : parts[0];
 
       while ( i < parts.length ) {
         try {
