@@ -161,6 +161,12 @@ foam.CLASS({
         {
           pattern: /^ *[^\*_\`\n]*/,
           create: m => this.Text.create({ text: m[0] })
+        },
+        {
+          pattern: /[ \t\n]*/,
+          create: m => {
+            return this.Null.create();
+          }
         }
       ];
 
@@ -172,6 +178,7 @@ foam.CLASS({
         for ( rule of rules ) {
           const m = str.match(rule.pattern);
           if ( ! m ) continue;
+          if ( m[0].length < 1 ) continue;
           ruleMatched = true;
           pos += m[0].length;
 
@@ -190,9 +197,7 @@ foam.CLASS({
       let mindent;
       let checkIndent = line => {
         const match = line.match(/^(\s+)\S+/);
-        if ( ! match ) return;
-        const indent = match[1].length;
-        mindent = indent;
+        mindent = ! match ? 0 : match[1].length;
         checkIndent = line => {
           const match = line.match(/^(\s+)\S+/);
           if ( ! match ) return;
