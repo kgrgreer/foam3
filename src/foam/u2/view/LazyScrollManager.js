@@ -427,7 +427,7 @@
           }
         });
 
-        if ( ! self.bottomRow && self.displayedRowCount_ < 0 )
+        if ( ! self.bottomRow && self.displayedRowCount_ <= 0 )
           self.bottomRow = self.pageSize_ > entries.length ? entries.length : self.pageSize_;
       }
     }
