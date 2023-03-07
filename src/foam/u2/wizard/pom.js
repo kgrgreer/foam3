@@ -125,7 +125,6 @@ foam.POM({
     { name: "wizardlet/ReviewItem",                    flags: "web" },
     { name: "wizardlet/ReviewWizardlet",               flags: "web" },
     { name: "wizardlet/AlternateFlowWizardlet",        flags: "web" },
-    { name: "wizardlet/FallbackFlowWizardlet",         flags: "web" },
     { name: "wizardlet/SubmitWizardlet",               flags: "web" },
     { name: "wizardlet/FlowAgentWizardlet",            flags: "web" },
     { name: "wizardlet/DAOWizardlet",                  flags: "web" },
