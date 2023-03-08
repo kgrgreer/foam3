@@ -50,7 +50,7 @@ foam.CLASS({
           .start().addClass(this.myClass('created'))
             .add(this.created$)
           .end()
-          .start().addClasses(['p', this.myClass('description')])
+          .start().addClass('p', this.myClass('description'))
             .add(this.description$)
           .end()
         .end();

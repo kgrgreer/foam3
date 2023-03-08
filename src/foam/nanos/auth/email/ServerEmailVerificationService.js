@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.mlang.predicate.Predicate',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -41,13 +42,16 @@ foam.CLASS({
   methods: [
     {
       name: 'findUser',
-      args: 'Context x, String email, String userName',
+      args: 'Context x, String identifier, String userName',
       type: 'foam.nanos.auth.User',
       javaCode: `
         String spid = (String) foam.core.XLocator.get().get("spid");
+        Predicate identifierPredicate = SafetyUtil.isEmpty(userName) ? 
+          OR(EQ(User.EMAIL, identifier), EQ(User.USER_NAME, identifier)) :
+          AND(EQ(User.EMAIL, identifier), EQ(User.USER_NAME, userName));
         DAO userDAO = ((DAO) x.get("localUserDAO")).where(
           AND(
-            EQ(User.EMAIL, email),
+            identifierPredicate,
             EQ(User.LOGIN_ENABLED, true),
             OR(EQ(spid, null), EQ(User.SPID, spid)) // null check done for running in test mode as we don't always set up spid
           ))
@@ -58,7 +62,7 @@ foam.CLASS({
         }
 
         if ( list.size() > 1 ) {
-          ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "verifyByCode", "multiple valid users found for", email);
+          ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "verifyByCode", "multiple valid users found for", identifier);
 
           if ( SafetyUtil.isEmpty(userName) ) throw new DuplicateEmailException();
 
@@ -76,7 +80,7 @@ foam.CLASS({
     {
       name: 'verifyByCode',
       javaCode: `
-        User user = findUser(x, email, userName);
+        User user = findUser(x, identifier, userName);
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
         sendCode(x, user, emailTemplate);
       `
@@ -116,7 +120,7 @@ foam.CLASS({
     {
       name: 'verifyUserEmail',
       javaCode: `
-        User user = findUser(x, email, userName);
+        User user = findUser(x, identifier, userName);
 
         processCode(x, user, verificationCode);
 
@@ -129,7 +133,7 @@ foam.CLASS({
     {
       name: 'verifyCode',
       javaCode: `
-        User user = findUser(x, email, userName);
+        User user = findUser(x, identifier, userName);
         return verifyCode(x, user, verificationCode);
       `
     },

@@ -84,6 +84,34 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectProperty',
+      of: 'foam.flow.laminar.Document',
+      name: 'laminar',
+      value: {
+        class: 'foam.flow.laminar.Document',
+        doclets: [
+          {
+            class: 'foam.flow.laminar.MarkdownDoclet',
+            text: `
+              Lets learn about **foam.util.async.Sequence** and
+              **foam.flow.laminar.AutoDefinitionDoclet**
+            `
+          },
+          {
+            class: 'foam.flow.laminar.PrintDoclet',
+            key: 'definitionWords',
+            showMeta: true
+          },
+          {
+            class: 'foam.flow.laminar.AutoDefinitionDoclet'
+          }
+        ]
+      },
+      view: {
+        class: 'foam.flow.laminar.DocumentView'
+      }
+    },
+    {
       class: 'String',
       name: 'markdownView',
       value: `

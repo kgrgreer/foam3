@@ -153,6 +153,9 @@ foam.CLASS({
         if ( ! user.getEnabled() ) {
           throw new AccessDeniedException();
         }
+        if ( ! user.getEmailVerified() ) {
+          throw new UnverifiedEmailException();
+        }
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
           throw new AccessDeniedException();
@@ -414,20 +417,20 @@ foam.CLASS({
         // Second highest precedence: If one user is acting as another, return the
         // group on the junction between them.
         if ( user != null ) {
-          if ( agent != null && agent.getId() != user.getId() ) {
-            DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-            UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
-              AND(
-                EQ(UserUserJunction.SOURCE_ID, agent.getId()),
-                EQ(UserUserJunction.TARGET_ID, user.getId())
-              )
-            );
-            if ( junction == null ) {
-              ((foam.nanos.logger.Logger) x.get("logger")).warning("There was a user and an agent in the context, but a junction between them was not found.", "user", user.getId(), "agent", agent.getId());
-              throw new RuntimeException("There was a user and an agent in the context, but a junction between them was not found.");
-            }
-            return (Group) ((DAO) getLocalGroupDAO()).inX(x).find(junction.getGroup());
-          }
+          // if ( agent != null && agent.getId() != user.getId() ) {
+          //   DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+          //   UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
+          //     AND(
+          //       EQ(UserUserJunction.SOURCE_ID, agent.getId()),
+          //       EQ(UserUserJunction.TARGET_ID, user.getId())
+          //     )
+          //   );
+          //   if ( junction == null ) {
+          //     ((foam.nanos.logger.Logger) x.get("logger")).warning("There was a user and an agent in the context, but a junction between them was not found.", "user", user.getId(), "agent", agent.getId());
+          //     throw new RuntimeException("There was a user and an agent in the context, but a junction between them was not found.");
+          //   }
+          //   return (Group) ((DAO) getLocalGroupDAO()).inX(x).find(junction.getGroup());
+          // }
           // Third highest precedence: If a user is logged in but not acting as
           // another user, return their group.
           return (Group) ((DAO) getLocalGroupDAO()).inX(x).find(user.getGroup());

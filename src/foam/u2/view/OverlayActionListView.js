@@ -169,7 +169,7 @@ foam.CLASS({
             e.callIfElse(self.theme,
               function() {
                 this.start(self.HTMLView, { data: self.theme.glyphs.dropdown.expandSVG() })
-                  .addClasses([self.myClass('SVGIcon'), self.myClass('dropdown')])
+                  .addClass(self.myClass('SVGIcon'), self.myClass('dropdown'))
                 .end();
               },
               function() {

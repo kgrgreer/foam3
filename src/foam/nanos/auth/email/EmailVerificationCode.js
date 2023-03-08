@@ -105,7 +105,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userName',
-      required: true,
       hidden: true
     },
     {
@@ -146,8 +145,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
-    },
-    [ 'signinOnSubmit', false ]
+    }
   ],
 
   methods: [
@@ -167,7 +165,7 @@ foam.CLASS({
         }
 
         try {
-          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
+          var verified = await this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
           this.report('^verify-success', ['email-verification']);
           this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
@@ -208,7 +206,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
-          if ( this.signinOnSubmit ) this.pushMenu('sign-in', true);
+          this.emailVerificationService.pub('emailVerified');
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,

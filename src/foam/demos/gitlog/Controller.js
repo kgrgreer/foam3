@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- // git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
+// git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
@@ -333,9 +333,12 @@ foam.CLASS({
       'space',
       'Spacing.',
       'syntax error',
+      'Updating FOAM',
+      'Updating version numbers',
       'Update FOAM peg',
       'Update FOAM Peg',
-      'Updated.'
+      'Updated.',
+      'spacing',
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
@@ -373,6 +376,7 @@ foam.CLASS({
       'kristina': 'Kristina Smirnova',
       'Lenore Chen': 'Lenore Chen',
       'LenoreChen': 'Lenore Chen',
+      'Mahimaa': 'Mahimaa Jayaprakash',
       'Mayowa Olurin': 'Mayowa Olurin',
       'mayowa': 'Mayowa Olurin',
       'mcarcaso': 'Mike Carcasole',
@@ -426,15 +430,21 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
+//        name: 'Core',
+        name: 'NANOS',
+        keywords: [ 'fscript' ],
+        paths: [ ]
+      },
+      {
         name: 'Application',
         keywords: [ 'afex' ],
-        paths: [ 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit' ]
+        paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
       },
       {
 //        name: 'U2/U3',
 name: 'NANOS',
         keywords: [ 'initE' ],
-        paths: [ 'u2' ]
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev' /* ??? for 2022 only */ ]
       },
       {
         name: 'Hybrid-Blockchain',
@@ -468,13 +478,13 @@ name: 'NANOS',
       {
         name: 'NANOS',
         keywords: [ 'nanos' ],
-        paths: [ 'nanos', 'dashboard', 'parse', 'Email', '.jrl', 'java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
+        paths: [ 'nanos', 'dashboard', 'parse', 'Email', 'foam/java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
       },
       {
 //        name: 'U2/U3',
         name: 'NANOS',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
-        paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
+        paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
       }
     ]
   },
@@ -588,8 +598,7 @@ name: 'NANOS',
     {
       name: 'commits',
       expression: function(data) {
-        return data.
-          reverse().
+        var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
               if ( c.subject.indexOf(this.IGNORE_CONTAINS[i]) != -1 ) return false;
@@ -608,6 +617,7 @@ name: 'NANOS',
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
+              // if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
@@ -635,6 +645,10 @@ name: 'NANOS',
             */
             return c;
           });
+
+          d2.sort((a, b) => foam.Date.compare(a.date, b.date));
+
+          return d2;
       }
     },
     {
@@ -649,13 +663,16 @@ name: 'NANOS',
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      this.loadData('data2021.log');
-      this.loadData('np2021.log');
-      // this.loadData('data2022.log');
-      /*
-      this.loadData('foam2021.log');
-      this.loadData('np2021.log');
-      */
+      const year = 2022;
+
+      if ( year == 2021 ) {
+        this.loadData('data2021.log');
+        this.loadData('np2021.log');
+      } else if ( year == 2022 ) {
+        this.loadData('data2022.log');
+        this.loadData('np2022.log');
+      }
+
     },
     function loadData(f) {
       fetch(f)
