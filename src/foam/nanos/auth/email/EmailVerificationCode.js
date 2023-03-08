@@ -73,8 +73,9 @@ foam.CLASS({
         gap: 0.6rem;
     }
 
-
-
+    .foam-u2-PropertyBorder-errorText {
+        max-width: 29rem;
+    }
   `,
 
   properties: [
