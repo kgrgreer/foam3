@@ -55,11 +55,9 @@ foam.CLASS({
   css: `
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
       justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
     }
-    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
-      padding: 0;
-    }
-    
     .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
       text-align: center;
     }
@@ -67,7 +65,15 @@ foam.CLASS({
       width: fit-content;
       align-self: center
     }
+    .foam-u2-ActionView + .foam-u2-ActionView {
+      margin-left: 0px;
+    }
+    .foam-u2-PropertyBorder-errorText {
+        max-width: 29rem;
+        min-height: 3rem;
+    }
   `,
+
 
   properties: [
     {
@@ -86,6 +92,8 @@ foam.CLASS({
         if ( remainingAttempts > 0 ) return this.INVALID_CODE + remainingAttempts;
         return this.NO_ATTEMPTS_LEFT;
       }
+      // required: true,
+      // validationPredicate:
     },
     {
       class: 'String',
@@ -177,6 +185,7 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
+      buttonStyle: 'PRIMARY',
       section: 'verificationCodeSection',
       isAvailable: function(showAction) {
         return showAction;
