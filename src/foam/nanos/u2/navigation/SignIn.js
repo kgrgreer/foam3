@@ -40,7 +40,7 @@ foam.CLASS({
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -151,17 +151,20 @@ foam.CLASS({
             this.subject = await this.auth.getCurrentSubject(null);
             this.loginSuccess = false;
             this.stack.push(this.StackBlock.create({
-              view: {
-                class: 'foam.nanos.auth.email.VerificationCodeView',
-                data: {
-                  class: 'foam.nanos.auth.email.EmailVerificationCode',
-                  email: user.email,
-                  userName: user.userName,
-                  showAction: true,
-                  signinOnSubmit: true
+                view: {
+                  class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+                  children: [{
+                    class: 'foam.nanos.auth.email.VerificationCodeView',
+                    data: {
+                      class: 'foam.nanos.auth.email.EmailVerificationCode',
+                      email: user.email,
+                      userName: user.userName,
+                      showAction: true,
+                      signinOnSubmit: true
+                    }
+                  }]
                 }
-              }
-            }));
+               }));
           } else {
             this.loginSuccess = !! this.subject;
             // reload the client on loginsuccess in case login not called from controller

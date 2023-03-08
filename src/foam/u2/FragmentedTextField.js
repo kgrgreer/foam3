@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: `
     FormattedTextField should now be prefered over this view.
-    
+
     FragmentedTextField displays a text input made of multiple text fields
     separated by read-only strings. This can be used for formatted inputs.
   `,
@@ -24,31 +24,27 @@ foam.CLASS({
     ^ {
       display: flex;
       position: relative;
-    }
-    ^symbol {
-      display: flex;
-      align-items: center;
-      margin-left: -1px;
-      margin-right: -1px;
-      line-height: 100%;
-
-      /* TODO: get from theme when available */
-      padding-left: 8px;
-      padding-right: 8px;
-    }
-    ^ > *:not(:first-child):not(:last-child) {
-      border-radius: 0 !important;
-    }
-    ^ > *:first-child {
-      border-top-right-radius: 0 !important;
-      border-bottom-right-radius: 0 !important;
-    }
-    ^ > *:last-child {
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
+      gap: 0.5rem;
     }
     ^fragment {
       text-align: center;
+      border-radius: 2;
+      width: 4rem;
+      aspect-ratio: 1;
+
+    }
+    ^fragment.foam-u2-TextField {
+      min-width: 0px;
+    }
+    ^fragment.element.style {
+      width: 0px;
+    }
+
+    ^fragment:invalid {
+      background: $grey50;
+    }
+    ^fragment:valid {
+      background: $white;
     }
   `,
 
@@ -100,8 +96,9 @@ foam.CLASS({
           e = e.view;
         }
         var u2Elem = this.start(e)
-          .style({ width: this.delegates[i].maxLength * 10 })
+          .style({ width: (this.delegates[i].maxLength * 4) + 'rem' })
           .addClass(this.myClass('fragment'))
+          .attr('required', true)
         u2Elem.on('focus', () => {
           this.currentIndex = i;
         })

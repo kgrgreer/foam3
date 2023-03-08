@@ -48,7 +48,7 @@ foam.CLASS({
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -204,14 +204,17 @@ foam.CLASS({
           this.subject = await this.auth.getCurrentSubject(null);
           this.stack.push(this.StackBlock.create({
             view: {
-              class: 'foam.nanos.auth.email.VerificationCodeView',
-              data: {
-                class: 'foam.nanos.auth.email.EmailVerificationCode',
-                email: user.email,
-                userName: user.userName,
-                showAction: true,
-                signinOnSubmit: true
-              }
+              class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+              children: [{
+                class: 'foam.nanos.auth.email.VerificationCodeView',
+                data: {
+                  class: 'foam.nanos.auth.email.EmailVerificationCode',
+                  email: user.email,
+                  userName: user.userName,
+                  showAction: true,
+                  signinOnSubmit: true
+                }
+              }]
             }
           }));
         }
