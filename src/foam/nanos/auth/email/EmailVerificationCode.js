@@ -92,8 +92,6 @@ foam.CLASS({
         if ( remainingAttempts > 0 ) return this.INVALID_CODE + remainingAttempts;
         return this.NO_ATTEMPTS_LEFT;
       }
-      // required: true,
-      // validationPredicate:
     },
     {
       class: 'String',
