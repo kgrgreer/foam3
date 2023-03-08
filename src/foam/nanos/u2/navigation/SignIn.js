@@ -147,7 +147,7 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
-        }
+        } 
       }
     },
     {
@@ -156,13 +156,16 @@ foam.CLASS({
         this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener);
         this.stack.push(this.StackBlock.create({
           view: {
-            class: 'foam.nanos.auth.email.VerificationCodeView',
-            data: {
-              class: 'foam.nanos.auth.email.EmailVerificationCode',
-              email: email,
-              userName: username,
-              showAction: true
-            }
+            class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+            children: [{
+              class: 'foam.nanos.auth.email.VerificationCodeView',
+              data: {
+                class: 'foam.nanos.auth.email.EmailVerificationCode',
+                email: email,
+                userName: username,
+                showAction: true
+              }
+            }]
           }
         }, this));
       }
