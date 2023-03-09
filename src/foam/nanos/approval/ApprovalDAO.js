@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
+    'foam.util.Auth',
     'foam.util.SafetyUtil',
 
     'static foam.mlang.MLang.*'
@@ -96,23 +97,39 @@ foam.CLASS({
         FObject obj = dao.find(request.getObjId()).fclone();
 
         DAO userDAO = (DAO) x.get("localUserDAO");
+        User initiatingAgent = null;
         if ( ((ApprovalRequest) request).getCreatedForAgent() != 0 ) {
-          User initiatingAgent = (User) userDAO.find(((ApprovalRequest) request).getCreatedForAgent());
-          x = ((Subject) x.get("subject")).pushUser(x, initiatingAgent);
+          initiatingAgent = (User) userDAO.find(((ApprovalRequest) request).getCreatedForAgent());
         }
 
         User initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedBy());
         if ( ((ApprovalRequest) request).getCreatedFor() != 0 ) {
           initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedFor());
         }
-        x = ((Subject) x.get("subject")).pushUser(x, initiatingUser);
 
-        x = x.put(ApprovalRequest.class, request);
+        if ( initiatingAgent == null ) {
+          initiatingAgent = initiatingUser;
+        }
+
+        X initiatingUserX = Auth.sudo(x, initiatingAgent);
+        Subject initiatingUserSubject = (Subject) initiatingUserX.get("subject");
+        if ( initiatingAgent != initiatingUser ) {
+          initiatingUserSubject.setUser(initiatingUser);
+        }
+
+        User realUser = ((Subject) x.get("subject")).getRealUser();
+        User user = ((Subject) x.get("subject")).getUser();
+        initiatingUserSubject.getUserPath().add(realUser);
+        if ( realUser != user ) {
+          initiatingUserSubject.getUserPath().add(user);
+        }
+
+        initiatingUserX = initiatingUserX.put(ApprovalRequest.class, request);
 
         if ( ((ApprovalRequest) request).getOperation() == Operation.REMOVE ) {
-          dao.inX(x).remove(obj);
+          dao.inX(initiatingUserX).remove(obj);
         } else {
-          dao.inX(x).put(obj);
+          dao.inX(initiatingUserX).put(obj);
         }
       `
     },
