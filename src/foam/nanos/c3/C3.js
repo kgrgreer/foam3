@@ -7,8 +7,11 @@ foam.CLASS({
   package: 'foam.nanos.c3',
   name: 'ClockClient',
 
+  imports: [ 'c3' ],
+
   methods: [
     function init() {
+      this.c3.add(foam.demos.clock.Clock.create({}, this));
       console.log(new Date());
     }
   ]
@@ -58,7 +61,7 @@ foam.CLASS({
       var Client   = await cb.promise;
       this.client  = Client.create(null, this);
       globalThis.x = this.client.__subContext__;
-      this.add('Client Created').br();
+      this.br().add('Client Created').br();
 
 //      this.client.EAGER_CLIENTS_.forEach(s => this.startService(s));
       cb.nSpecDAO.where(this.EQ(this.NSpec.LAZY_CLIENT, false)).select(s => this.startService(s));
