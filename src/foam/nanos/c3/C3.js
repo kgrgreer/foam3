@@ -26,7 +26,9 @@ foam.CLASS({
 
   methods: [
     async function ainit() {
-      this.client = await this.ClientBuilder.create().promise;
+      var Client   = await this.ClientBuilder.create().promise;
+      this.client  = Client.create(null, this);
+      globalThis.x = this.client.__subContext__;
       this.add('Client Created').br();
     },
 
