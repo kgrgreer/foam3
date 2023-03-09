@@ -11,6 +11,17 @@ foam.CLASS({
 
   documentation: 'Component to combine Macro layouts',
 
+  cssTokens: [
+    {
+      name: 'boxShadowSize',
+      value: '0px',
+    },
+    {
+      name: 'borderSize',
+      value: '1px solid $grey300',
+    }
+  ],
+
   css: `
     :root {
       --sidebar-width: 240px;
@@ -59,6 +70,8 @@ foam.CLASS({
     ^sidebar^sideNav{
       transition: 0.2s ease;
       width: var(--sidebar-width);
+      box-shadow: $boxShadowSize;
+      border-right: $borderSize;
     }
 
     ^sidebarClosed^sideNav{
