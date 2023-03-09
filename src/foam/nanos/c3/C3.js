@@ -116,22 +116,18 @@ foam.CLASS({
       factory: function() { return [
         {
           name: 'applicationBorder',
-          lazyClient: false,
           client: `{ "class": "foam.nanos.c3.ApplicationBorder" }`
         },
         {
           name: 'header',
-          lazyClient: false,
           client: `{ "class": "foam.nanos.c3.Header" }`
         },
         {
           name: 'footer',
-          lazyClient: false,
           client: `{ "class": "foam.nanos.c3.Footer" }`
         },
         {
           name: 'clock',
-          lazyClient: false,
           client: `{ "class": "foam.nanos.c3.ClockClient" }`
         }
       ]; }
@@ -140,6 +136,8 @@ foam.CLASS({
 
   methods: [
     async function ainit() {
+      this.extraServices.forEach(s => s.lazyClient = false);
+
       var cb       = this.ClientBuilder.create({extraServices: this.extraServices});
       var Client   = await cb.promise;
       this.client  = Client.create(null, this);
