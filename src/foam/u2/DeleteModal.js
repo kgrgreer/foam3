@@ -66,6 +66,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'label'
+    },
+    {
+      class: 'String',
+      name: 'modelLabel',
+      documentation: `
+      Label to use instead of this.data.model_.label.
+      If this.label set, will not display.
+      `
     }
   ],
 
@@ -77,7 +85,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('main'))
           .start('h2')
-            .add(this.TITLE).add(this.label ? this.label : this.data.model_.label).add('?')
+            .add(this.TITLE).add(this.label ? this.label : this.modelLabel ? this.modelLabel : this.data.model_.label).add('?')
           .end()
           .start('p')
             .add(`${this.CONFIRM_DELETE_1} `).add(this.label ? this.label : `${this.data.toSummary()}`).add('?')
