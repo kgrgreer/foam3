@@ -116,7 +116,7 @@ foam.CLASS({
               currentFeedback = currentFeedback.next;
             }
           } else {
-            this.notify(this.data.model_.label + this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
+            this.notify( ( this.modelLabel ? this.modelLabel : this.data.model_.label )  + this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
           }
           this.onDelete();
         }).catch((err) => {
