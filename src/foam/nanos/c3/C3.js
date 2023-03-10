@@ -84,15 +84,37 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.nanos.c3',
   name: 'Menus',
+  extends: 'foam.u2.Controller',
 
   imports: [
     'applicationBorder',
     'menuDAO'
   ],
 
+  properties: [
+  ],
+
   methods: [
     function ainit() {
-      this.applicationBorder.leftPanel.add('Menus');
+      this.applicationBorder.leftPanel.add(this);
+    },
+
+    function render() {
+      var self = this;
+      this.select(this.menuDAO, function(m) {
+        if ( ! m.label ) return;
+        this.start('a').
+          on('click', () => self.loadMenu(m)).
+          add(m.label).
+        end().
+        br();
+      });
+    },
+
+    function loadMenu(m) {
+      console.log('**** loadMenu', m);
+      this.applicationBorder.content.removeAllChildren();
+      this.applicationBorder.content.add(m.label);
     }
   ]
 });
