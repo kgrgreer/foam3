@@ -18,6 +18,7 @@ foam.CLASS({
 
   properties: [
     'title',
+    'leftPanel',
     'footer'
   ],
 
@@ -30,8 +31,15 @@ foam.CLASS({
         start().
           addClass(this.myClass()).
           start('div', {}, this.title$).addClass(this.myClass('title')).end().
-          start('div', null, this.content$).
-            addClass(this.myClass('content')).
+          start().
+            style({display: 'flex', 'padding-top':'10px'}).
+            start('div', null, this.leftPanel$).
+              style({width: '25%', 'padding-right': '10px'}).
+              addClass(this.myClass('leftPanel')).
+            end().
+            start('div', null, this.content$).
+              addClass(this.myClass('content')).
+            end().
           end().
           tag('hr').
           start('div', {}, this.footer$)
@@ -68,6 +76,23 @@ foam.CLASS({
   methods: [
     function ainit() {
       this.applicationBorder.title.add('Application Header');
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.nanos.c3',
+  name: 'Menus',
+
+  imports: [
+    'applicationBorder',
+    'menuDAO'
+  ],
+
+  methods: [
+    function ainit() {
+      this.applicationBorder.leftPanel.add('Menus');
     }
   ]
 });
@@ -129,6 +154,10 @@ foam.CLASS({
         {
           name: 'clock',
           client: `{ "class": "foam.nanos.c3.ClockClient" }`
+        },
+        {
+          name: 'menus',
+          client: `{ "class": "foam.nanos.c3.Menus" }`
         }
       ]; }
     }
