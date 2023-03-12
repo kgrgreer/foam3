@@ -111,14 +111,11 @@ foam.CLASS({
           initiatingAgent = initiatingUser;
         }
 
-        X initiatingUserX = Auth.sudo(x, initiatingAgent);
-        Subject initiatingUserSubject = (Subject) initiatingUserX.get("subject");
-        if ( initiatingAgent != initiatingUser ) {
-          initiatingUserSubject.setUser(initiatingUser);
-        }
+        X initiatingUserX = Auth.sudo(x, initiatingUser, initiatingAgent);
 
         User realUser = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
+        Subject initiatingUserSubject = (Subject) initiatingUserX.get("subject");
         initiatingUserSubject.getUserPath().add(realUser);
         if ( realUser != user ) {
           initiatingUserSubject.getUserPath().add(user);
