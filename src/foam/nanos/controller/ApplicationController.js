@@ -444,13 +444,15 @@ foam.CLASS({
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
+        let ret = await self.initMenu();
+        if ( ret ) return;
+
+        await self.fetchSubject();
+
         if ( self.client != client ) {
           console.log('Stale Client in ApplicationController, waiting for update.');
           await self.client.promise;
         }
-
-        self.initMenu();
-        await self.fetchSubject();
 
         await self.fetchGroup();
 
@@ -508,6 +510,7 @@ foam.CLASS({
           this.pushMenu(menu.id);
           this.languageInstalled.resolve();
           this.subToNotifications();
+          return 1;
         }
       }
    },
@@ -724,7 +727,7 @@ foam.CLASS({
       realMenu = await dao.find(realMenu);
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
-          await this.requestLogin();
+          await this.fetchSubject();
           this.memento_.str = m;
           return;
         }
