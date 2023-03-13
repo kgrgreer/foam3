@@ -444,14 +444,13 @@ foam.CLASS({
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
-        await self.fetchSubject();
-
         if ( self.client != client ) {
           console.log('Stale Client in ApplicationController, waiting for update.');
           await self.client.promise;
         }
 
         self.initMenu();
+        await self.fetchSubject();
 
         await self.fetchGroup();
 
