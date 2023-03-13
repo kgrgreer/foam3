@@ -39,17 +39,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function spec (spec) {
-      this.sequence.tag(this.QuickAgent, {
-        executeFn: x => {
-          const wizardlet = this.getWizardlet_(x);
-          for ( const k in spec ) {
-            wizardlet[k] = spec[k];
-          }
-        }
-      });
-      return this;
-    },
     function getWizardlet_(x) {
       if ( this.wizardlet_ ) return this.wizardlet_;
 

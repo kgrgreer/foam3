@@ -22,6 +22,17 @@ foam.CLASS({
   ],
 
   methods: [
+    function spec (spec) {
+      this.sequence.tag(this.QuickAgent, {
+        executeFn: x => {
+          const wizardlet = this.getWizardlet_(x);
+          for ( const k in spec ) {
+            wizardlet[k] = spec[k];
+          }
+        }
+      });
+      return this;
+    },
     function addAlternateFlowAction (name, args) {
       this.sequence.tag(this.QuickAgent, {
         executeFn: x => {
