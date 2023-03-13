@@ -15,6 +15,10 @@
     'stack'
   ],
 
+  requires: [
+    'foam.u2.detail.SectionView'
+  ],
+
   css: `
     ^ {
       height: 100%;
@@ -27,19 +31,24 @@
     }
   `,
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.email.EmailVerificationCode',
+      name: 'data'
+    }
+  ],
+
   methods: [
     function render() {
       this
-        .addClasses([this.myClass(), this.myClass('flex')])
-        .start('h1').add(this.data.TITLE).end()
-        .start()
-          .add(this.data.VERIFICATION_CODE)
-        .end()
+        .addClass(this.myClass(), this.myClass('flex'))
+        .start('h1').addClass(this.myClass('title')).add(this.data.TITLE).end()
+        .start('p').addClass(this.myClass('subTitle')).add(this.data.INSTRUCTION).end()
+        .start(this.SectionView, { data$: this.data$, sectionName: 'verificationCodeSection', showTitle: false })
+        .addClass(this.myClass('sectionView')).end()
         .startContext({ data: this.data })
           .addClass(this.myClass('flex'))
-          .start()
-            .add(this.data.SUBMIT)
-          .end()
           .start()
             .add(this.BACK)
           .end()
