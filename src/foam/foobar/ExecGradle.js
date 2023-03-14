@@ -10,6 +10,10 @@ foam.CLASS({
       factory: function () {
         return process.platform === 'win32' ? 'gradle.bat' : 'gradle';
       }
+    },
+    {
+      name: 'shell',
+      value: ''
     }
   ]
 })
