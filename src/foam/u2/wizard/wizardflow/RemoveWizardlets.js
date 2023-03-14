@@ -21,6 +21,7 @@ foam.CLASS({
       x = x || this.__context__;
       for ( const wizardletId of this.wizardletIds ) {
         const i = x.wizardlets.findIndex(w => w.id === wizardletId);
+        if ( i == -1 ) continue;
         x.wizardlets.splice(i, 1);
       }
     }

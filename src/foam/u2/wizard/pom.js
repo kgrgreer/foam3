@@ -101,6 +101,7 @@ foam.POM({
     { name: "data/WizardletChainLoader",               flags: "web" },
     { name: "data/HideIfValidSaver",                   flags: "web" },
     { name: "data/PredicatedSaver",                    flags: "web" },
+    { name: "data/PredicatedAltSaver",                 flags: "web" },
     { name: "event/WizardEvent",                       flags: "web" },
     { name: "event/WizardEventType",                   flags: "web" },
     { name: "event/WizardErrorHint",                   flags: "web" },

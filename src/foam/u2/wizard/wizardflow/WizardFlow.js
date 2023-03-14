@@ -13,6 +13,7 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.wizard.AlternateFlow',
     'foam.u2.wizard.agents.AlternateFlowAgent',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardType',
