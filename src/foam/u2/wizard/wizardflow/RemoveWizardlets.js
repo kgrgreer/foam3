@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.wizardflow',
-  name: 'EditWizardlet',
+  name: 'RemoveWizardlets',
   implements: ['foam.core.ContextAgent'],
 
   properties: [
@@ -18,9 +18,10 @@ foam.CLASS({
 
   methods: [
     async function execute(x) {
+      x = x || this.__context__;
       for ( const wizardletId of this.wizardletIds ) {
-          const i = x.wizardlets.findIndex(w => w.id === wizardletId);
-          x.wizardlets.splice(i, 1);
+        const i = x.wizardlets.findIndex(w => w.id === wizardletId);
+        x.wizardlets.splice(i, 1);
       }
     }
   ]
