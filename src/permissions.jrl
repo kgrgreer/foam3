@@ -61,3 +61,4 @@ p({"class":"foam.nanos.auth.Permission","id":"exportdriverregistry.read.JSON/J"}
 p({"class":"foam.nanos.auth.Permission","id":"exportdriverregistry.read.PDFGoogleSheets"})
 p({"class":"foam.nanos.auth.Permission","id":"exportdriverregistry.read.XML"})
 p({"class":"foam.nanos.auth.Permission","id":"spid.default.allowDuplicateEmails","description":"Allows a user to have the same email address as another user."})
+p({class:"foam.nanos.auth.Permission",id:"emailmessage.create",description:"create permission for emailMessageDAO"})

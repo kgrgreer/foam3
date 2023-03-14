@@ -338,6 +338,7 @@ foam.POM({
     { name: "foam/nanos/u2/navigation/SignIn",                        flags: "js|java" },
     { name: "foam/dao/EasyDAO",                                       flags: "js|java" },
     { name: "foam/dao/NoSelectAllDAO",                                flags: "js" },
+    { name: "foam/dao/NoSelectDAO",                                   flags: "js|java" },
     { name: "foam/dao/NullDAO",                                       flags: "js|java" },
     { name: "foam/dao/TimingDAO",                                     flags: "js" },
     { name: "foam/dao/LoggingDAO",                                    flags: "js" },

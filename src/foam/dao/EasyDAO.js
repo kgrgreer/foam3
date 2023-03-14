@@ -359,6 +359,9 @@ foam.CLASS({
             ( getNSpec() != null && getNSpec().getServe() ) )
           delegate = new foam.nanos.auth.PermissionedPropertyDAO.Builder(getX()).setDelegate(delegate).build();
 
+        if ( getNoSelect() )
+          delegate = new foam.dao.NoSelectDAO(getX());
+
         if ( getReadOnly() )
           delegate = new foam.dao.ReadOnlyDAO.Builder(getX()).setDelegate(delegate).build();
 
@@ -807,6 +810,10 @@ model from which to test ServiceProvider ID (spid)`,
         For Capable objects, setting this to true disables CapabilityIntercepts
         and instead allows putting objects with ACTION_REQUIRED payloads.
       `
+    },
+    {
+      name: 'noSelect',
+      class: 'Boolean'
     },
     {
       name: 'fixedSize',

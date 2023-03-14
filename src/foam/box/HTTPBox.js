@@ -68,6 +68,13 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'FETCH_ERROR',
+      message: 'Error connecting to server. Please retry.',
+    }
+  ],
+
   properties: [
     {
       documentation: `Explicitly set session ID when calling from Java. Use imported sessionID from javascript.`,
@@ -189,6 +196,7 @@ foam.CLASS({
     {
       name: 'send',
       code: function(msg) {
+        var self = this;
         msg.attributes[this.SESSION_KEY] = this.jsSessionID;
 
         // TODO: We should probably clone here, but often the message
@@ -224,7 +232,23 @@ foam.CLASS({
         }).then((rmsg) => {
           rmsg && replyBox && replyBox.send(rmsg);
         }, function(r) {
-          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r, message: r?.message }) }));
+          var msg;
+          if ( r ) {
+            // catch situations in which the load fails for some reason
+            // and replace it with a nicely formatted message instead
+            // of the browser default.
+            // unfortunately, the way a browser signals 'load failed'
+            // varies between implementations.
+            // these catch the most common ones.
+            if (
+                r.message === 'Failed to fetch' || /* chrome */
+                r.message === 'NetworkError when attempting to fetch resource.' || /* ff */
+                r.message === 'Load failed' /* safari */
+            ) {
+              msg = self.FETCH_ERROR;
+            } else msg = r.message;
+          }
+          replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r, message: msg }) }));
         });
       },
       swiftCode: `
