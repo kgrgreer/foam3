@@ -54,6 +54,46 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
+        grammar.addSymbol("VALUE", new Alt(grammar.sym("OBJECT_VAL"), grammar.sym("SIMPLE_VAL")));
+
+//TODO
+grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
+      new Seq1(1, Literal.create("."), new Repeat(new foam.lib.parse.Not(Literal.create("len"),
+        grammar.sym("WORD")), Literal.create("."),1)))));
+    grammar.addAction("FIELD", (val, x) -> {
+      Object[] values = (Object[]) val;
+      var expr = (Expr) values[0];
+      if (values.length > 1 && values[1] != null) {
+        Object[] values2 = (Object[]) values[1];
+//        var parts = (String[]) values2[1];
+        for (var i = 0; i < values2.length; i++) {
+          expr = new Dot(expr, NamedProperty.create((String) values2[i]));
+        }
+      }
+      return expr;
+    });
+    //TODO
+        grammar.addSymbol("OBJECT_VAL", new Optional(
+          new Seq1(1, Literal.create("."), new Repeat(grammar.sym("WORD"), Literal.create("."),1))));
+        Action objectValAction = new Action() {
+          @Override
+          public Object execute(Object val, ParserContext x) {
+            Object[] val0    = (Object[]) val;
+            StringBuilder v = new StringBuilder();
+            for ( int i = 0 ; i < val0.length ; i++ ) {
+              if ( ! Character.isWhitespace((char) val0[i]) ) v.append(val0[i]);
+            }
+            String value = (String) ((Map) x.get("values")).get(v.toString());
+            if ( value == null ) {
+              value = "";
+              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
+            }
+            ((StringBuilder) x.get("sb")).append(value);
+            return value;
+          }
+        };
+        grammar.addAction("OBJECT_VAL", objectValAction);
+
         // simple value syntax: "qwerty {{ simple_value }} qwerty"
         grammar.addSymbol("SIMPLE_VAL", new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}") )));
         Action simpleValAction = new Action() {
