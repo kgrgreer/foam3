@@ -9,6 +9,54 @@ WizardFlow is also a [Sequence](../../../util/async/Sequence.js). Each call to
 When a wizard is launched using this WizardFlow, the WizardFlow is installed
 into the launch sequence and then this sequence is executed.
 
+### Adding CRUNCH Requirements
+
+We can add CRUNCH requirements to the wizard using the `AddCapabilityHierarchy`
+context agent.
+
+```javascript
+foam.CLASS({
+    package: 'com.example',
+    name: 'MyWizardFlow',
+    extends: 'foam.u2.wizard.wizardflow.WizardFlow',
+    methods: [
+        function sequence () {
+            this
+                .tag(this.EasyCrunchWizard, {})
+                .tag(this.AddCapabilityHierarchy, {
+                    capability: 'someCapability',
+                    type: this.WizardType.UCJ
+                })
+        }
+    ]
+});
+```
+
+`capability` specifies the ID of the parent capability. All capabilities in
+the tree (prerequisites of the parent) will be included as needed.
+Each capability will generate up to 2 wizardlets - one occurring after its
+prerequisites, and sometimes (ex: MinMaxCapability) one appearing before.
+
+### Editing a Wizardlet
+
+// TODO
+
+### Adding a new Wizardlet
+
+// TODO
+
+### Decorating Loaders and Savers
+
+// TODO
+
+### Adding AlternateFlow Actions
+
+// TODO
+
+### Complicated Situations
+
+// TODO
+
 ## Rationale Behind Launch Sequence
 
 Using FOAM u2/u3, it would already be possible to describe something that
@@ -84,51 +132,3 @@ foam.CLASS({
 
 Here we added `EasyCrunchWizard` to the sequence. This is the configuration object.
 Leaving it empty accepts the default configuration.
-
-### Adding CRUNCH Requirements
-
-We can add CRUNCH requirements to the wizard using the `AddCapabilityHierarchy`
-context agent.
-
-```javascript
-foam.CLASS({
-    package: 'com.example',
-    name: 'MyWizardFlow',
-    extends: 'foam.u2.wizard.wizardflow.WizardFlow',
-    methods: [
-        function sequence () {
-            this
-                .tag(this.EasyCrunchWizard, {})
-                .tag(this.AddCapabilityHierarchy, {
-                    capability: 'someCapability',
-                    type: this.WizardType.UCJ
-                })
-        }
-    ]
-});
-```
-
-`capability` specifies the ID of the parent capability. All capabilities in
-the tree (prerequisites of the parent) will be included as needed.
-Each capability will generate up to 2 wizardlets - one occurring after its
-prerequisites, and sometimes (ex: MinMaxCapability) one appearing before.
-
-### Editing a Wizardlet
-
-// TODO
-
-### Adding a new Wizardlet
-
-// TODO
-
-### Decorating Loaders and Savers
-
-// TODO
-
-### Adding AlternateFlow Actions
-
-// TODO
-
-### Complicated Situations
-
-// TODO
