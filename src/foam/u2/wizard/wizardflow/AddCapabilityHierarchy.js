@@ -22,7 +22,8 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.GraphWizardletsAgent',
     'foam.u2.crunch.wizardflow.PublishToWizardletsAgent',
-    'foam.util.async.Sequence'
+    'foam.util.async.Sequence',
+    'foam.dao.SilentReadOnlyDAO'
   ],
   properties: [
     {
@@ -49,13 +50,16 @@ foam.CLASS({
     async function execute (x) {
       x = x || this.__context__;
       const seq = this['createSequence_' + this.type.name](x);
+      x = x.createSubContext({userCapabilityJunctionDAO: this.SilentReadOnlyDAO.create({delegate: x.userCapabilityJunctionDAO})});
+//      x = x.createSubContext({userCapabilityJunctionDAO: null});
+
       subX = await seq.execute();
       this.wizardlets_ = [
         ...(this.previousWizardlets || []),
         ...subX.wizardlets
       ];
     },
-    
+
     function createSequence_TRANSIENT (x) {
       const capable = foam.nanos.crunch.lite.BaseCapable.create();
       x = x || this.__subContext__;

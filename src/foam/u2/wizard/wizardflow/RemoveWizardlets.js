@@ -11,7 +11,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+//      class: 'String',
       name: 'wizardletIds'
     }
   ],
