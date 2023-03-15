@@ -252,7 +252,7 @@ foam.CLASS({
             if ( this.UnverifiedEmailException.isInstance(e) ) {
               // find user
               var email = this.usernameRequired ? this.email : this.identifier;
-              this.verifyEmail(x, email, this.userName);
+              await this.verifyEmail(x, email, this.userName);
             }
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
