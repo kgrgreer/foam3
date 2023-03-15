@@ -115,6 +115,7 @@ foam.CLASS({
       console.log('**** loadMenu', m);
       this.applicationBorder.content.removeAllChildren();
       this.applicationBorder.content.add(m.label);
+//      this.applicationBorder.content.add(m.handler.createView(this, m));
     }
   ]
 });
@@ -124,11 +125,11 @@ foam.CLASS({
   package: 'foam.nanos.c3',
   name: 'Footer',
 
-  imports: [ 'applicationBorder' ],
+  imports: [ 'applicationBorder', 'sessionID' ],
 
   methods: [
     function ainit() {
-      this.applicationBorder.footer.add('Copyright Blah Blah Blah');
+      this.applicationBorder.footer.add('Copyright Blah Blah', this.sessionID);
     }
   ]
 });
@@ -148,11 +149,27 @@ foam.CLASS({
     'foam.nanos.boot.NSpec'
   ],
 
+  imports: [
+    'params'
+  ],
+
   exports: [
+    'sessionID',
     'as c3'
   ],
 
   properties: [
+    {
+      name: 'sessionID',
+      factory: function() {
+        /**
+          Note that the property name is 'sessionID' the the HTTP parameter is
+          'sessionId', probably due to a historical mistake.
+        **/
+        return this.params.sessionId || localStorage[this.sessionName] ||
+          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+      }
+    },
     {
       name: 'client'
     },
