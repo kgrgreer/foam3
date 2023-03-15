@@ -13,7 +13,7 @@ foam.CLASS({
     ^ { background: gray; padding: 10px; display: inline-block; }
     ^title { padding: 6px; align-content: center; background: aliceblue; }
     ^footer { padding: 6px; align-content: left; background:$white; }
-    ^content { padding: 6px; width: 300px; height: 300px; background:$white; }
+    ^content { padding: 6px; width: 800px; height: 600px; background:$white; }
   `,
 
   properties: [
@@ -60,8 +60,8 @@ foam.CLASS({
   methods: [
     function ainit() {
       // this.applicationBorder.content.add('Clock');
-      this.applicationBorder.content.add(foam.demos.clock.Clock.create({}, this));
-      console.log(new Date());
+//      this.applicationBorder.content.add(foam.demos.clock.Clock.create({}, this));
+      this.applicationBorder.content.add(foam.nanos.u2.navigation.SignIn.create({}, this));
     }
   ]
 });
@@ -145,8 +145,13 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.boot.NSpec',
     'foam.nanos.client.ClientBuilder',
-    'foam.nanos.boot.NSpec'
+    'foam.nanos.u2.navigation.SignIn',
+
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
   ],
 
   imports: [
@@ -155,13 +160,17 @@ foam.CLASS({
 
   exports: [
     'sessionID',
-    'as c3'
+    'as c3',
+
+    'subject',
+    'group'
   ],
 
   properties: [
     {
       name: 'sessionID',
       factory: function() {
+        // TODO: Why isn't this moved to ClientBuilder?
         /**
           Note that the property name is 'sessionID' the the HTTP parameter is
           'sessionId', probably due to a historical mistake.
@@ -199,7 +208,19 @@ foam.CLASS({
           client: `{ "class": "foam.nanos.c3.Menus" }`
         }
       ]; }
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.Group',
+      name: 'group',
+      menuKeys: ['admin.groups']
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.Subject',
+      name: 'subject',
+      factory: function() { return this.Subject.create(); }
+    },
   ],
 
   methods: [
