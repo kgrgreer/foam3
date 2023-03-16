@@ -194,6 +194,7 @@ foam.CLASS({
           this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
           this.loginSuccess = true;
           await this.ctrl.reloadClient();
+          await this.ctrl.onUserAgentAndGroupLoaded();
         } catch(err) {
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
