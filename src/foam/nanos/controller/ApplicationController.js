@@ -493,8 +493,8 @@ foam.CLASS({
       if ( this.route ) {
         menu = await this.__subContext__.menuDAO.find(this.route);
       }
-
-      if ( ! menu && this.theme.unauthenticatedDefaultMenu ) {
+      // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
+      if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
         menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
       }
 
@@ -839,7 +839,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu.id ) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');

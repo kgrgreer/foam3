@@ -230,6 +230,9 @@ foam.CLASS({
 
             this.loginSuccess = true;
             await this.ctrl.reloadClient();
+            // Temp fix to prevent breaking wizard sign in since that also calls this function
+            if ( ! this.pureLoginFunction )
+              await this.ctrl.onUserAgentAndGroupLoaded();
           } catch (err) {
             this.loginFailed = true;
             let e = err && err.data ? err.data.exception : err;
