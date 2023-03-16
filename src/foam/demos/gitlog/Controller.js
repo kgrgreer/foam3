@@ -558,8 +558,7 @@ name: 'NANOS',
         var files = { '/': this.commits.length };
         this.commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -636,13 +635,7 @@ name: 'NANOS',
                 }
               }
             });
-            /*
-            {
-              name: '',
-              keywords: [ ],
-              paths: [ ]
-            },
-            */
+
             return c;
           });
 
@@ -671,14 +664,19 @@ name: 'NANOS',
       } else if ( year == 2022 ) {
         this.loadData('data2022.log');
         this.loadData('np2022.log');
+
+        this.loadData('data2021.log');
+        this.loadData('np2021.log');
       }
 
     },
+
     function loadData(f) {
       fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
     },
+
     function parseLog(t) {
       var data = [];
       var state  = 0;
@@ -726,6 +724,7 @@ name: 'NANOS',
       this.data = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
+
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
 
@@ -736,14 +735,18 @@ name: 'NANOS',
         ( project === '-- All --' || commit.project === project )
         ;
     },
+
     function fileToPath(file) {
       var i = file.lastIndexOf('/');
       if ( i == -1 ) return '/';
       return file.substring(0, i);
     },
+
     function incr(map, key) {
+      /** Increment counter for key in map of keys->counts. **/
       map[key] = (map[key] || 0) + 1;
     },
+
     function render() {
       var self = this;
       this.commits$.sub(function() {
@@ -753,6 +756,7 @@ name: 'NANOS',
       });
       this.commits;
     },
+
     function render_() {
       var self = this;
 

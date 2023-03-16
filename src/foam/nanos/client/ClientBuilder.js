@@ -27,6 +27,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectArray',
+      of: 'foam.nanos.boot.NSpec',
+      name: 'extraServices'
+    },
+    {
       class: 'Boolean',
       name: 'authenticate',
       value: true
@@ -67,7 +72,7 @@ foam.CLASS({
             package:    'foam.nanos.client',
             name:       'Client',
             exports:    [],
-            constants: { eagerClients_: [] },
+            constants:  { eagerClients_: [] },
             properties: [
             ],
             methods: [
@@ -117,7 +122,7 @@ foam.CLASS({
           self.nSpecDAO.where(query).select(
             self.PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
             .then(p => {
-              foam.dao.ArrayDAO.create({array: p.array})
+              foam.dao.ArrayDAO.create({array: p.array.concat(self.extraServices)})
               .select({
                 put: function(spec) {
                   if ( spec.client ) {

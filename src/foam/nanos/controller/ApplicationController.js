@@ -108,7 +108,7 @@ foam.CLASS({
 
   topics: [
     'themeChange',
-    // Published by reloadClient(), can be subbed to by client side services 
+    // Published by reloadClient(), can be subbed to by client side services
     // that need to refresh or cleanup on client reload
     'clientReloading'
   ],
@@ -443,31 +443,16 @@ foam.CLASS({
         self.installLanguage();
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
-        let menu 
-        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.route ) {
-          menu = await self.__subContext__.menuDAO.find(self.route);
-        } 
-        if ( ! menu && self.theme.unauthenticatedDefaultMenu ) {
-          menu = await self.__subContext__.menuDAO.find(self.theme.unauthenticatedDefaultMenu)
-        }
-        // explicitly check that the menu is unauthenticated
-        // since if there is a user session on refresh, this would also
-        // find authenticated menus to try to push before fetching subject
-        if ( menu && menu.authenticate === false ) {
-          await self.fetchSubject(false);
-          if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
-            // only push the unauthenticated menu if there is no subject
-            // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-            // use the route instead of the menu so that the menu could be re-created under the updated context
-            self.pushMenu(menu.id);
-            self.languageInstalled.resolve();
-            self.subToNotifications();
-            return;
-          }
-        }
+
+        let ret = await self.initMenu();
+        if ( ret ) return;
 
         await self.fetchSubject();
+
+        if ( self.client != client ) {
+          console.log('Stale Client in ApplicationController, waiting for update.');
+          await self.client.promise;
+        }
 
         await self.fetchGroup();
 
@@ -500,6 +485,35 @@ foam.CLASS({
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
+
+    async function initMenu() {
+      var menu;
+
+      // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
+      if ( this.route ) {
+        menu = await this.__subContext__.menuDAO.find(this.route);
+      }
+      // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
+      if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
+        menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
+      }
+
+      // explicitly check that the menu is unauthenticated
+      // since if there is a user session on refresh, this would also
+      // find authenticated menus to try to push before fetching subject
+      if ( menu && menu.authenticate === false ) {
+        await this.fetchSubject(false);
+        if ( ! this.subject?.user || ( await this.__subContext__.auth.isAnonymous() ) ) {
+          // only push the unauthenticated menu if there is no subject
+          // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+          // use the route instead of the menu so that the menu could be re-created under the updated context
+          this.pushMenu(menu.id);
+          this.languageInstalled.resolve();
+          this.subToNotifications();
+          return 1;
+        }
+      }
+   },
 
     function render() {
       var self = this;
@@ -713,7 +727,7 @@ foam.CLASS({
       realMenu = await dao.find(realMenu);
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
-          await this.requestLogin();
+          await this.fetchSubject();
           this.memento_.str = m;
           return;
         }
@@ -825,7 +839,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu.id ) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
@@ -851,7 +865,9 @@ foam.CLASS({
         wizardType: this.WizardType.UCJ,
         source: group.wizardFlow || group.generalCapability
       });
-      await wizardRunner.launch();
+      // TODO: figure out why this cant be inlined
+      let retPromise = await wizardRunner.launch(null, {inline: false, returnCompletionPromise: true });
+      await retPromise;
       return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },
 

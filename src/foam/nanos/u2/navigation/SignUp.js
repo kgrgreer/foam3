@@ -227,16 +227,20 @@ foam.CLASS({
           // and reset the subject to the anonymous subject before verification step
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
-          this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener)
+          this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
           this.stack.push(this.StackBlock.create({
             view: {
-              class: 'foam.nanos.auth.email.VerificationCodeView',
-              data: {
-                class: 'foam.nanos.auth.email.EmailVerificationCode',
-                email: user.email,
-                userName: user.userName,
-                showAction: true
-              }
+              class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+              children: [{
+                class: 'foam.nanos.auth.email.VerificationCodeView',
+                data: {
+                  class: 'foam.nanos.auth.email.EmailVerificationCode',
+                  email: user.email,
+                  userName: user.userName,
+                  showAction: true,
+                  signinOnSubmit: true
+                }
+              }]
             }
           }));
         }

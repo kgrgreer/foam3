@@ -45,13 +45,13 @@ foam.CLASS({
       }
       /** @param {any} cls */
       var oldCreate = cls.create;
-      var newCreate = cls.create = function(args) {
+      var newCreate = cls.create = function() {
         // Only act as a Singleton for the installed class, not subclasses.
         if ( this !== cls )
           return oldCreate.apply(this, arguments);
 
         return this.private_.instance_ ||
-          ( this.private_.instance_ = oldCreate.call(this, args) );
+          ( this.private_.instance_ = oldCreate.apply(this, arguments) );
       };
     },
 

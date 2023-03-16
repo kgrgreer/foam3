@@ -35,7 +35,8 @@ foam.CLASS({
   messages: [
     { name: 'SUCCESS_MSG', message: 'Email verified.' },
     { name: 'ERROR_MSG', message: 'Email verification failed.' },
-    { name: 'TITLE', message: 'Please enter your email verification code' },
+    { name: 'TITLE', message: 'Let\'s verify your email address' },
+    { name: 'INSTRUCTION', message: 'We have sent a verification code to your email. Please enter the code below to confirm that this account belongs to you.' },
     { name: 'VERIFICATION_EMAIL_TITLE', message: 'Verification Email Sent'},
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     { name: 'VERIFICATION_EMAIL', message: 'Email sent to' },
@@ -55,11 +56,9 @@ foam.CLASS({
   css: `
     .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
       justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
     }
-    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
-      padding: 0;
-    }
-    
     .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
       text-align: center;
     }
@@ -67,7 +66,15 @@ foam.CLASS({
       width: fit-content;
       align-self: center
     }
+    .foam-u2-ActionView + .foam-u2-ActionView {
+      margin-left: 0px;
+    }
+    .foam-u2-PropertyBorder-errorText {
+        max-width: 29rem;
+        min-height: 3rem;
+    }
   `,
+
 
   properties: [
     {
@@ -177,6 +184,7 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
+      buttonStyle: 'PRIMARY',
       section: 'verificationCodeSection',
       isAvailable: function(showAction) {
         return showAction;

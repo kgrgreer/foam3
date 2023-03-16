@@ -27,9 +27,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-evenly;
+      justify-content: start;
+      gap: 3rem;
+      padding-top: 5rem;
     }
+    ^sectionView{
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    ^title {
+        text-align:center;
+    }
+    ^subTitle {
+      width: 75%;
+      padding: 0 15px;
+      text-align: center;
+    }
+   /* mobile */
+   @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
+    ^subTitle {
+      width: 50%;
+    }
+  }
+  @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
+    ^subTitle {
+      width: 25%;
+    }
+  }
   `,
+
 
   properties: [
     {
@@ -43,8 +70,10 @@
     function render() {
       this
         .addClass(this.myClass(), this.myClass('flex'))
-        .start('h1').add(this.data.TITLE).end()
-        .tag(this.SectionView, { data$: this.data$, sectionName: 'verificationCodeSection' })
+        .start('h1').addClass(this.myClass('title')).add(this.data.TITLE).end()
+        .start('p').addClass(this.myClass('subTitle')).add(this.data.INSTRUCTION).end()
+        .start(this.SectionView, { data$: this.data$, sectionName: 'verificationCodeSection', showTitle: false })
+        .addClass(this.myClass('sectionView')).end()
         .startContext({ data: this.data })
           .addClass(this.myClass('flex'))
           .start()

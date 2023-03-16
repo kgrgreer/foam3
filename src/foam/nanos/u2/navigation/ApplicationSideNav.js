@@ -33,13 +33,20 @@ foam.CLASS({
       name: 'bottomContainerColor',
       value: '$foam.nanos.menu.VerticalMenu.menuBackground',
       fallback: '#FFFFFF'
+    },
+    {
+      name: 'boxShadowSize',
+      value: '0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1)',
+    },
+    {
+      name: 'borderSize',
+      value: '2px solid $grey300',
     }
   ],
 
   css: `
     ^ {
       align-items: flex-start;
-      border-right: 1px solid $grey300;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -64,8 +71,8 @@ foam.CLASS({
       top: 0;
     }
     ^divider:not(^expand) {
-      border-top: 2px solid $grey300;
-      box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1);
+      border-top: $borderSize;
+      box-shadow: $boxShadowSize;
     }
     ^bottom-container > * + * {
       margin-top: 4px;
