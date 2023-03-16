@@ -29,27 +29,31 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function launch(x) {
+    async function launch(x, options) {
+      options = options || {};
       x = x || this.__context__;
 
       const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
 
       const parentWizard = this.getParentWizard_();
-      const isInline = !! parentWizard;
+      const isInline = (options.inline ?? true) && !! parentWizard$.get();
 
       const seq = this.getSequence_(x, isInline);
 
       let returnPromise = null;
+      let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
 
       if ( isInline ) {
-        returnPromise = new Promise(rslv => {
-          parentWizard.status$.sub(() => {
-            if ( parentWizard.status != IN_PROGRESS ) rslv();
-          })
-        })
+        if ( options.returnCompletionPromise ) {
+          returnPromise = new Promise(rslv => {
+            promise$.sub(v => {
+              if ( v ) rslv();
+            });
+          });
+        }
 
-        await this.crunchController.inlineWizardFromSequence(parentWizard, seq);
-        return returnPromise;
+        await this.crunchController.inlineWizardFromSequence(parentWizard, seq, ( returnPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {}));
+        return returnPromise ? returnPromise : null;
       }
 
       await seq.execute();
@@ -66,8 +70,8 @@ foam.CLASS({
       return lastWizard;
     },
     function getSequence_ (x, isInline) {
-      if ( ! this.WizardFlow.isInstance(this.source, isInline) ) {
-        return this.getSequenceFromCapability_(x);
+      if ( ! this.WizardFlow.isInstance(this.source) ) {
+        return this.getSequenceFromCapability_(x, isInline);
       }
 
       if ( isInline ) {
