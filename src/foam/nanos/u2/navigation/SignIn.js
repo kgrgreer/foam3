@@ -256,6 +256,8 @@ foam.CLASS({
               // find user
               var email = this.usernameRequired ? this.email : this.identifier;
               this.verifyEmail(x, email, this.userName);
+              // do not show error notification for unverified email
+              return;
             }
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
