@@ -69,7 +69,7 @@ foam.CLASS({
     .foam-u2-ActionView + .foam-u2-ActionView {
       margin-left: 0px;
     }
-    .foam-u2-PropertyBorder-errorText {
+    ^ .foam-u2-PropertyBorder-errorText {
         max-width: 29rem;
         min-height: 3rem;
     }
