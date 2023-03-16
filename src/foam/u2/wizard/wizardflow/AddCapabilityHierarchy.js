@@ -80,7 +80,7 @@ foam.CLASS({
         ;
     },
 
-    function createSequence_UCJ (x) {
+    function createSequence_UCJ (x, waoSetting) {
       const capable = foam.nanos.crunch.lite.BaseCapable.create();
       x = x || this.__subContext__;
       x = x.createSubContext({ capable });
@@ -93,11 +93,15 @@ foam.CLASS({
         .add(this.LoadCapabilitiesAgent)
         .add(this.LoadCapabilityGraphAgent)
         .add(this.WAOSettingAgent, {
-          waoSetting: this.WAOSettingAgent.WAOSetting.UCJ
+          waoSetting: waoSetting || this.WAOSettingAgent.WAOSetting.UCJ
         })
         .add(this.GraphWizardletsAgent)
         .add(this.PublishToWizardletsAgent, { event: 'onReady' })
         ;
+    },
+
+    function createSequence_UCJ_SIMPLE (x) {
+      return this.createSequence_UCJ(x, this.WAOSettingAgent.WAOSetting.UCJ_SIMPLE)
     }
   ]
 });
