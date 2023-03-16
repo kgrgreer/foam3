@@ -36,7 +36,7 @@ foam.CLASS({
       const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
 
       const parentWizard = this.getParentWizard_();
-      const isInline = (options.inline ?? true) && !! parentWizard$.get();
+      const isInline = (options.inline ?? true) && !! parentWizard;
 
       const seq = this.getSequence_(x, isInline);
 
