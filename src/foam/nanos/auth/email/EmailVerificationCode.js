@@ -54,19 +54,19 @@ foam.CLASS({
   ],
 
   css: `
-    .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+    ^ .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
       justify-content: center;
       flex-direction: column;
       gap: 0.5rem;
     }
-    .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
+    ^ .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
       text-align: center;
     }
-    .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
+    ^ .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
       width: fit-content;
       align-self: center
     }
-    .foam-u2-ActionView + .foam-u2-ActionView {
+    ^ .foam-u2-ActionView + .foam-u2-ActionView {
       margin-left: 0px;
     }
     ^ .foam-u2-PropertyBorder-errorText {
