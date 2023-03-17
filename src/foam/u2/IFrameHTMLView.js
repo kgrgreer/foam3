@@ -15,6 +15,7 @@ foam.CLASS({
       padding: 8px;
       max-width: 100%;
       box-sizing: border-box;
+      resize: both;
     }
   `,
 
