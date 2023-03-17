@@ -94,6 +94,7 @@ foam.POM({
     { name: "data/InlineTransientSaver",               flags: "web" },
     { name: "data/LoaderInjectorSaver",                flags: "web" },
     { name: "data/UserCapabilityJunctionSaver",        flags: "web" },
+    { name: "data/WizardletRelayUCJSaver",        flags: "web" },
     { name: "data/UserLoader",                         flags: "web" },
     { name: "data/UserCapabilityJunctionLoader",       flags: "web" },
     { name: "data/EasySaver",                          flags: "web" },

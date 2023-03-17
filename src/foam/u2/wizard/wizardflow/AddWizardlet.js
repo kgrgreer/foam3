@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.QuickAgent',
     'foam.u2.wizard.axiom.AlternateFlowAction',
     'foam.u2.wizard.wao.NullWAO',
+    'foam.u2.wizard.wao.SplitWAO',
     'foam.u2.wizard.wizardlet.BaseWizardlet',
     'foam.u2.wizard.wizardlet.WizardletSection'
   ],
@@ -43,7 +44,7 @@ foam.CLASS({
       if ( this.wizardlet_ ) return this.wizardlet_;
 
       const newWizardlet = this.BaseWizardlet.create({}, x);
-      newWizardlet.wao = this.NullWAO.create();
+      newWizardlet.wao = this.SplitWAO.create();
       newWizardlet.isAvailable = true;
       newWizardlet.isVisible = true;
       newWizardlet.id = this.wizardletId;

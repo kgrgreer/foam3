@@ -42,8 +42,8 @@
   ],
 
   methods: [
-    async function save() {
-      const returnValue = this.delegate.save.call(this, arguments);
+    async function save(...a) {
+      const returnValue = this.delegate.save(...a);
 
       const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
       if ( ucj.status !== this.CapabilityJunctionStatus.AVAILABLE ) {
