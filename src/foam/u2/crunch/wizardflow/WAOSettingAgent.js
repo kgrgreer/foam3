@@ -25,12 +25,15 @@
     'foam.nanos.crunch.ui.ApprovableUserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.UserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.CapableWAO',
+    'foam.u2.wizard.wao.SplitWAO',
+    'foam.u2.wizard.data.UserCapabilityJunctionLoader',
+    'foam.u2.wizard.data.UserCapabilityJunctionSaver'
   ],
 
   enums: [
     {
       name: 'WAOSetting',
-      values: ['UCJ', 'CAPABLE', 'APPROVAL']
+      values: ['UCJ', 'CAPABLE', 'APPROVAL', 'UCJ_SIMPLE']
     }
   ],
 
@@ -55,6 +58,11 @@
           return this.CapableWAO.create({}, this.__context__);
         case this.WAOSetting.APPROVAL:
           return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.wizardSubject });
+        case this.WAOSetting.UCJ_SIMPLE:
+          return this.SplitWAO.create({
+//            loader: this.UserCapabilityJunctionLoader.create(),
+            saver: this.UserCapabilityJunctionSaver.create()
+          });
         default:
           throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
       }
