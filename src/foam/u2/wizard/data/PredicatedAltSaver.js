@@ -46,7 +46,7 @@
       const returnValue = this.delegate.save.call(this, arguments);
 
       const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
-      if ( ucj.status === this.CapabilityJunctionStatus.GRANTED ) {
+      if ( ucj.status !== this.CapabilityJunctionStatus.AVAILABLE ) {
         await this.thenFlow.execute(this.__subContext__);
       } else {
         await this.elseFlow.execute(this.__subContext__);

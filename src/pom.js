@@ -301,7 +301,6 @@ foam.POM({
     { name: "foam/dao/GUIDDAO",                                       flags: "js|java" },
     { name: "foam/dao/KeyValueDAO",                                   flags: "js|java" },
     { name: "foam/dao/ReadOnlyDAO",                                   flags: "js|java" },
-    { name: "foam/dao/SilentReadOnlyDAO",                                   flags: "js" },
     { name: "foam/dao/MaterializedDAO",                               flags: "java" },
     { name: "foam/dao/StoreAndForwardDAO",                            flags: "js" },
     { name: "foam/dao/Journal",                                       flags: "js|java" },
