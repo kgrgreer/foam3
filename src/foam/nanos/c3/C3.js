@@ -13,11 +13,12 @@ foam.CLASS({
     ^ { background: gray; padding: 10px; display: inline-block; }
     ^title { padding: 6px; align-content: center; background: aliceblue; }
     ^footer { padding: 6px; align-content: left; background:$white; }
-    ^content { padding: 6px; width: 300px; height: 300px; background:$white; }
+    ^content { padding: 6px; width: 800px; height: 600px; background:$white; }
   `,
 
   properties: [
     'title',
+    'leftPanel',
     'footer'
   ],
 
@@ -30,8 +31,15 @@ foam.CLASS({
         start().
           addClass(this.myClass()).
           start('div', {}, this.title$).addClass(this.myClass('title')).end().
-          start('div', null, this.content$).
-            addClass(this.myClass('content')).
+          start().
+            style({display: 'flex', 'padding-top':'10px'}).
+            start('div', null, this.leftPanel$).
+              style({width: '25%', 'padding-right': '10px'}).
+              addClass(this.myClass('leftPanel')).
+            end().
+            start('div', null, this.content$).
+              addClass(this.myClass('content')).
+            end().
           end().
           tag('hr').
           start('div', {}, this.footer$)
@@ -52,8 +60,8 @@ foam.CLASS({
   methods: [
     function ainit() {
       // this.applicationBorder.content.add('Clock');
-      this.applicationBorder.content.add(foam.demos.clock.Clock.create({}, this));
-      console.log(new Date());
+//      this.applicationBorder.content.add(foam.demos.clock.Clock.create({}, this));
+      this.applicationBorder.content.add(foam.nanos.u2.navigation.SignIn.create({}, this));
     }
   ]
 });
@@ -75,13 +83,53 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.nanos.c3',
-  name: 'Footer',
+  name: 'Menus',
+  extends: 'foam.u2.Controller',
 
-  imports: [ 'applicationBorder' ],
+  imports: [
+    'applicationBorder',
+    'menuDAO'
+  ],
+
+  properties: [
+  ],
 
   methods: [
     function ainit() {
-      this.applicationBorder.footer.add('Copyright Blah Blah Blah');
+      this.applicationBorder.leftPanel.add(this);
+    },
+
+    function render() {
+      var self = this;
+      this.select(this.menuDAO, function(m) {
+        if ( ! m.label ) return;
+        this.start('a').
+          on('click', () => self.loadMenu(m)).
+          add(m.label).
+        end().
+        br();
+      });
+    },
+
+    function loadMenu(m) {
+      console.log('**** loadMenu', m);
+      this.applicationBorder.content.removeAllChildren();
+      this.applicationBorder.content.add(m.label);
+//      this.applicationBorder.content.add(m.handler.createView(this, m));
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.nanos.c3',
+  name: 'Footer',
+
+  imports: [ 'applicationBorder', 'sessionID' ],
+
+  methods: [
+    function ainit() {
+      this.applicationBorder.footer.add('Copyright Blah Blah', this.sessionID);
     }
   ]
 });
@@ -97,15 +145,40 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.boot.NSpec',
     'foam.nanos.client.ClientBuilder',
-    'foam.nanos.boot.NSpec'
+    'foam.nanos.u2.navigation.SignIn',
+
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
+  ],
+
+  imports: [
+    'params'
   ],
 
   exports: [
-    'as c3'
+    'sessionID',
+    'as c3',
+
+    'subject',
+    'group'
   ],
 
   properties: [
+    {
+      name: 'sessionID',
+      factory: function() {
+        // TODO: Why isn't this moved to ClientBuilder?
+        /**
+          Note that the property name is 'sessionID' the the HTTP parameter is
+          'sessionId', probably due to a historical mistake.
+        **/
+        return this.params.sessionId || localStorage[this.sessionName] ||
+          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+      }
+    },
     {
       name: 'client'
     },
@@ -129,9 +202,25 @@ foam.CLASS({
         {
           name: 'clock',
           client: `{ "class": "foam.nanos.c3.ClockClient" }`
+        },
+        {
+          name: 'menus',
+          client: `{ "class": "foam.nanos.c3.Menus" }`
         }
       ]; }
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.Group',
+      name: 'group',
+      menuKeys: ['admin.groups']
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.Subject',
+      name: 'subject',
+      factory: function() { return this.Subject.create(); }
+    },
   ],
 
   methods: [

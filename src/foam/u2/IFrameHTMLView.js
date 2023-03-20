@@ -16,7 +16,14 @@ foam.CLASS({
       max-width: 100%;
       box-sizing: border-box;
     }
+    ^resize {
+      resize: both;
+    }
   `,
+
+  properties: [
+    'resizable'
+  ],
 
   methods: [    
     function render() {
@@ -25,6 +32,7 @@ foam.CLASS({
 
       this.start('iframe')
         .attrs({ srcdoc: this.data })
+        .enableClass(this.myClass('resize'), this.resizable$)
         .on('load', evt => this.resizeIFrame(evt.target))
       .end();
     },
