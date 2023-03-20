@@ -1,5 +1,17 @@
 <title>Modular Wizard Documentation</title>
 
+<h1>THIS DOCUMENTATION IS OUT OF DATE</h1>
+
+I've decided to preserve this documentation because it provides potentially
+useful context about how the wizard was develeoped.
+
+When reading this documentation, be aware of the following:
+
+- StepWizardController logic was moved to IncrementalWizardController
+- all wizard controllers are meant to extend WizardController now
+- ScrollingStepWizardView has not been tested any time recently so far as I'm aware
+- IncrementalStepWizardView is sometimes called "the sidebar wizard" by other devs
+
 <h1>Wizardlet Models</h1>
 
 <h2>Wizardlet</h2>
