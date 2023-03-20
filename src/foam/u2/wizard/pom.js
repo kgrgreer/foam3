@@ -97,6 +97,7 @@ foam.POM({
     { name: "data/WizardletRelayUCJSaver",        flags: "web" },
     { name: "data/UserLoader",                         flags: "web" },
     { name: "data/UserCapabilityJunctionLoader",       flags: "web" },
+    { name: "data/WizardletRelayUCJLoader",       flags: "web" },
     { name: "data/EasySaver",                          flags: "web" },
     { name: "data/MapLoader",                          flags: "web" },
     { name: "data/WizardletChainLoader",               flags: "web" },
