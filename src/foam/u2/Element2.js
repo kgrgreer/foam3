@@ -103,6 +103,22 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
+  name: 'DocumentFragment',
+  extends: 'foam.u2.Element',
+
+  documentation: 'A document fragment without a top-level tag.',
+
+  properties: [
+    {
+      name: 'element_',
+      factory: function() { return this.document.createDocumentFragment(); }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
   name: 'SlotNode',
   extends: 'foam.u2.Node',
 
