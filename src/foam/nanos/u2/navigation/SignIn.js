@@ -151,7 +151,7 @@ foam.CLASS({
     {
       name: 'verifyEmail',
       code: async function(x, email, username) {
-        this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener);
+        this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
         this.stack.push(this.StackBlock.create({
           view: {
             class: 'foam.u2.borders.StatusPageBorder', showBack: false,
@@ -228,6 +228,9 @@ foam.CLASS({
 
             this.loginSuccess = true;
             await this.ctrl.reloadClient();
+            // Temp fix to prevent breaking wizard sign in since that also calls this function
+            if ( ! this.pureLoginFunction )
+              await this.ctrl.onUserAgentAndGroupLoaded();
           } catch (err) {
             this.loginFailed = true;
             let e = err && err.data ? err.data.exception : err;
@@ -251,6 +254,8 @@ foam.CLASS({
               // find user
               var email = this.usernameRequired ? this.email : this.identifier;
               this.verifyEmail(x, email, this.userName);
+              // do not show error notification for unverified email
+              return;
             }
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }

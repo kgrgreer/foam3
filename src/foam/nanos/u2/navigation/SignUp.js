@@ -194,6 +194,7 @@ foam.CLASS({
           this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
           this.loginSuccess = true;
           await this.ctrl.reloadClient();
+          await this.ctrl.onUserAgentAndGroupLoaded();
         } catch(err) {
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
@@ -227,7 +228,7 @@ foam.CLASS({
           // and reset the subject to the anonymous subject before verification step
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
-          this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener)
+          this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.u2.borders.StatusPageBorder', showBack: false,

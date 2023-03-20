@@ -104,7 +104,7 @@ foam.CLASS({
       const root = await this.el();
       const options = {
         root,
-        rootMargin: '-3px',
+        rootMargin: '0px 0px 0px',
         threshold: [0.25, 0.5, 0.25]
       };
       
@@ -125,8 +125,10 @@ foam.CLASS({
       isFramed: true,
       code: function (entries) {
         for ( const entry of entries ) {
-          const prop = entry.target.dataset.pos;
-          this[prop] = ! entry.isIntersecting;
+            if ((this.el_().scrollHeight - this.el_().clientHeight) > 7 || (this.el_().scrollHeight === this.el_().clientHeight)){
+            const prop = entry.target.dataset.pos;
+            this[prop] = ! entry.isIntersecting;
+          }
         }
       }
     }
