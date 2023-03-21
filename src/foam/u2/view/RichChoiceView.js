@@ -428,12 +428,6 @@ foam.CLASS({
       }
     },
     {
-      type: 'Boolean',
-      name: 'isExternalAction',
-      documentation: `Flag to check if newly added element is outside dropdown`,
-      value: false
-    },
-    {
       type: 'Action',
       name: 'action',
       documentation: `
@@ -634,10 +628,8 @@ foam.CLASS({
       if ( action && actionData ) {
         return this.E()
           .start(self.DefaultActionView, { action: action, data: actionData })
-          .callIf(self.isExternalAction == true, function () {
-            this.on('click', () => {
-              self.dropdown_.close();
-            });
+          .on('click', () => {
+            self.dropdown_.close();
           })
           .addClass(self.myClass('action'))
           .end();
@@ -645,11 +637,9 @@ foam.CLASS({
       if ( action ) {
         return this.E()
           .start(self.DefaultActionView, { action: action })
-          .callIf(self.isExternalAction == true, function () {
-            this.on('click', () => {
-              self.dropdown_.close();
-            });
-          })
+          .on('click', () => {
+                self.dropdown_.close();
+              })
           .addClass(self.myClass('action'))
           .end();
       }
