@@ -22,6 +22,7 @@ foam.CLASS({
     'emailVerificationService',
     'loginSuccess',
     'loginView?',
+    'notify?',
     'pushMenu',
     'stack',
     'subject',
@@ -297,6 +298,7 @@ foam.CLASS({
             type: this.LogLevel.ERROR
           }));
         }
+        // TODO: Add functionality to push to sign in if the user email already exists
       }
     },
     {

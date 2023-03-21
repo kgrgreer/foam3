@@ -262,6 +262,7 @@ foam.CLASS({
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
         } else {
+          // TODO: Add functionality to push to sign up if the user identifier doesnt exist
           this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
       }
