@@ -628,13 +628,19 @@ foam.CLASS({
       if ( action && actionData ) {
         return this.E()
           .start(self.DefaultActionView, { action: action, data: actionData })
-            .addClass(self.myClass('action'))
+          .on('click', () => {
+            self.dropdown_.close();
+          })
+          .addClass(self.myClass('action'))
           .end();
       }
       if ( action ) {
         return this.E()
           .start(self.DefaultActionView, { action: action })
-            .addClass(self.myClass('action'))
+          .on('click', () => {
+                self.dropdown_.close();
+              })
+          .addClass(self.myClass('action'))
           .end();
       }
     },
