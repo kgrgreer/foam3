@@ -113,6 +113,16 @@ foam.CLASS({
       name: 'element_',
       factory: function() { return this.document.createDocumentFragment(); }
     }
+  ],
+
+  methods: [
+    function remove() {
+      this.removeAllChildren();
+    },
+
+    function removeAllChildren() {
+      this.children.forEach(c => this.parentNode.element_.removeChild(c.element_));
+    }
   ]
 });
 
@@ -1222,7 +1232,10 @@ foam.CLASS({
         }
         */
       if ( this.isLiteral(c) ) {
-        this.appendChild_(this.document.createTextNode(c));
+        c = foam.u2.Text.create({text: c});
+        this.childNodes.push(c);
+        c.parentNode = parentNode;
+        this.appendChild_(c.element_);
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.element_ ) {
