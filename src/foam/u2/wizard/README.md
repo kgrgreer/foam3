@@ -144,7 +144,6 @@ except for those times that [it didn't](https://github.com/foam-framework/foam2/
 in [various ways](https://github.com/kgrgreer/foam3/pull/45/files).
 I'm very glad we're not using this anymore.
 
-- and [this one](https://github.com/kgrgreer/foam3/pull/1504)
 We had a very complicated use-case once where the user would update a property and
 the server might sanitize it in a way that alters the information as it was presented
 by the user. It was important for the user to see the information in its new state,
