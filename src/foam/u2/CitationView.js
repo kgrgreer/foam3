@@ -18,13 +18,13 @@ foam.CLASS({
       font-size: 1.2rem;
     }
 
-    ^row:not(:read-only) {
+    ^rw {
       background: $white;
       padding: 8px 16px;
       color: /*%BALCK%*/ #424242;
     }
 
-    ^row:hover:not(:read-only) {
+    ^rw:hover {
       background: $grey50;
       cursor: pointer;
     }
@@ -73,12 +73,8 @@ foam.CLASS({
       this.updateSummary();
       this
         .addClass(this.myClass('row'))
+        .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
         .add(this.summary$);
-    },
-
-    function updateMode_(mode) {
-      this.setAttribute('readonly', mode === foam.u2.DisplayMode.RO);
-      this.setAttribute('disabled', mode === foam.u2.DisplayMode.DISABLED);
     },
 
     function getSummary(data) {
