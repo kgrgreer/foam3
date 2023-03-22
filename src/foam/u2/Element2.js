@@ -103,32 +103,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'DocumentFragment',
-  extends: 'foam.u2.Element',
-
-  documentation: 'A document fragment without a top-level tag.',
-
-  properties: [
-    {
-      name: 'element_',
-      factory: function() { return this.document.createDocumentFragment(); }
-    }
-  ],
-
-  methods: [
-    function remove() {
-      this.removeAllChildren();
-    },
-
-    function removeAllChildren() {
-      this.children.forEach(c => this.parentNode.element_.removeChild(c.element_));
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'SlotNode',
   extends: 'foam.u2.Node',
 
@@ -208,17 +182,26 @@ foam.CLASS({
     'code',
     {
       name: 'args',
+      documentation: "An array of property Slots. Determined from 'code' arguments.",
       factory: function() { return foam.Function.argNames(this.code).map(a => this.self.slot(a)); }
+    },
+    {
+      name: 'element_',
+      factory: function() { return this.document.createDocumentFragment(); }
     }
   ],
 
   methods: [
+    function init() {
+      this.add(''); // needed to preserve proper location in DOM
+    },
+
     function load() {
       this.SUPER();
-
       var args = this.args;
       for ( var i = 0 ; i < args.length ; i++ ) {
-        this.self.onDetach(args[i].sub(this.update));
+        // this.self.onDetach(args[i].sub(this.update));
+        this.onDetach(args[i].sub(this.update));
       }
 
       this.update();
@@ -230,8 +213,21 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
-        this.removeAllChildren();
+        var nextSibling;
+        this.childNodes.forEach(n => {
+          nextSibling = n.element_.nextSibling;
+          n.element_.parentNode.removeChild(n.element_);
+        });
+        this.childNodes = [];
+        this.element_   = undefined;
         this.code.apply(this, this.args.map(a => a.get()));
+        // Add empty Text node to mark space in DOM in case no output was generated
+        if ( this.childNodes.length == 0 ) this.add('');
+        if ( nextSibling ) {
+          this.parentNode.element_.insertBefore(this.element_, nextSibling);
+        } else {
+          this.parentNode.element_.appendChild(this.element_);
+        }
       }
     }
   ]
@@ -1195,7 +1191,7 @@ foam.CLASS({
     },
 
     function recall(fn, opt_self) {
-      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this}, this));
+      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this, parentNode: this}, this), this);
       return this;
     },
 
@@ -1216,7 +1212,7 @@ foam.CLASS({
 
       if ( foam.Function.isInstance(c) ) {
         console.warn('Deprecated use of add(Function). Use recall() instead.');
-        c = foam.u2.FunctionNode.create({self: this, code: c});
+        c = foam.u2.FunctionNode.create({self: this, code: c, parentNode: this});
       } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
