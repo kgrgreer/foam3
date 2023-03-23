@@ -16,7 +16,7 @@ foam.CLASS({
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
+      padding: 2rem 0;
       height: 100%;
     }
     ^image {
