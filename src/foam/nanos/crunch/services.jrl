@@ -149,6 +149,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
+      .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionSanityDAO.Builder(x).build())
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.TARGET_ID })

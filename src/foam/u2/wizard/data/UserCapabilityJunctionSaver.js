@@ -33,12 +33,14 @@ foam.CLASS({
 
   methods: [
     async function save(data) {
-      const ucj = await this.subject ? this.crunchService.updateJunctionFor(
+    console.log('before---------- '+this.capabilityId);
+      const ucj = await ( this.subject ? this.crunchService.updateJunctionFor(
         null, this.capabilityId, data, null,
         this.subject.user, this.subject.realUser
       ) : this.crunchService.updateJunction(null,
         this.capabilityId, data, null
-      );
+      ));
+      console.log('after ---------- '+this.capabilityId);
       await this.delegate.save(data);
     }
   ]

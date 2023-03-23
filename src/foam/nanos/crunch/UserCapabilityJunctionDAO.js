@@ -116,13 +116,6 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         UserCapabilityJunction old = (UserCapabilityJunction) super.find_(x, ucj.getId());
 
-        if ( old == null ) {
-          old = (UserCapabilityJunction) getDelegate().find(AND(
-            EQ(UserCapabilityJunction.TARGET_ID, ucj.getTargetId()),
-            EQ(UserCapabilityJunction.SOURCE_ID, ucj.getSourceId())
-          ));
-          if ( old != null ) ucj.setId(old.getId());
-        }
 
         // do not allow updates to sourceId/targetId properties
         AuthService auth = (AuthService) x.get("auth");
