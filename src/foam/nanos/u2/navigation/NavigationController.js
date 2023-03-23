@@ -184,12 +184,10 @@ foam.CLASS({
     },
     // required as a seperate function because this listens to isMenuOpen, which can be toggled by user clicking on hamburger menu
     function setUserMenuPreference() {
-      if (this.displayWidth.ordinal > this.DisplayWidth.MD.ordinal && this.isMenuOpen) {
-        this.prefersMenuOpen = true
-      } else if (this.displayWidth.ordinal > this.DisplayWidth.MD.ordinal && !this.isMenuOpen) {
-        this.prefersMenuOpen = false
-      }  
-    },
+      if (this.displayWidth.ordinal > this.DisplayWidth.MD.ordinal) {
+              this.prefersMenuOpen = this.isMenuOpen;
+        }
+      },
     function maybeCloseNav() {
       if (this.displayWidth.ordinal <= this.DisplayWidth.MD.ordinal) {
         this.isMenuOpen = false
