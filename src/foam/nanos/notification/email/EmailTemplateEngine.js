@@ -16,10 +16,14 @@ foam.CLASS({
     'foam.lib.json.*',
     'foam.lib.parse.*',
     'foam.nanos.logger.Logger',
+    'foam.core.FObject',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.email.EmailTemplateSupport',
-    'java.util.Map'
+    'java.util.Map',
+    'foam.mlang.predicate.NamedProperty',
+    'foam.mlang.expr.Dot',
+    'foam.mlang.Expr'
   ],
 
   properties: [
@@ -34,7 +38,7 @@ foam.CLASS({
 
         // markup symbol defines the pattern for the whole string
         grammar.addSymbol("markup", new Repeat0(new Alt(grammar.sym("IF_ELSE"),
-          grammar.sym("IF"), grammar.sym("SIMPLE_VAL"), grammar.sym("ANY_CHAR"))));
+          grammar.sym("IF"), grammar.sym("VALUE"),grammar.sym("ANY_CHAR"))));
         Action markup = new Action() {
           @Override
           public Object execute(Object value, ParserContext x) {
@@ -54,66 +58,44 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
-        grammar.addSymbol("VALUE", new Alt(grammar.sym("OBJECT_VAL"), grammar.sym("SIMPLE_VAL")));
-
-//TODO
-grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
-      new Seq1(1, Literal.create("."), new Repeat(new foam.lib.parse.Not(Literal.create("len"),
-        grammar.sym("WORD")), Literal.create("."),1)))));
-    grammar.addAction("FIELD", (val, x) -> {
-      Object[] values = (Object[]) val;
-      var expr = (Expr) values[0];
-      if (values.length > 1 && values[1] != null) {
-        Object[] values2 = (Object[]) values[1];
-//        var parts = (String[]) values2[1];
-        for (var i = 0; i < values2.length; i++) {
-          expr = new Dot(expr, NamedProperty.create((String) values2[i]));
-        }
+grammar.addSymbol("VALUE", new Seq2(1,2,Literal.create("{{"), grammar.sym("WORD"), new Optional(
+      new Seq(Literal.create("."), new Repeat(new Not(Literal.create("}}"), grammar.sym("WORD")), Literal.create(".")))),
+      Literal.create("}}")));
+    grammar.addAction("VALUE", (val, x) -> {
+    Object[] vals = ((Object[])val);
+    String v = compactToString(vals[0]);
+    if ( vals.length > 1 && vals[1] == null ) {
+      String value = (String) ((Map) x.get("values")).get(v);
+      if ( value == null ) {
+        value = "";
+        foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
       }
-      return expr;
-    });
-    //TODO
-        grammar.addSymbol("OBJECT_VAL", new Optional(
-          new Seq1(1, Literal.create("."), new Repeat(grammar.sym("WORD"), Literal.create("."),1))));
-        Action objectValAction = new Action() {
-          @Override
-          public Object execute(Object val, ParserContext x) {
-            Object[] val0    = (Object[]) val;
-            StringBuilder v = new StringBuilder();
-            for ( int i = 0 ; i < val0.length ; i++ ) {
-              if ( ! Character.isWhitespace((char) val0[i]) ) v.append(val0[i]);
-            }
-            String value = (String) ((Map) x.get("values")).get(v.toString());
-            if ( value == null ) {
-              value = "";
-              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
-            }
-            ((StringBuilder) x.get("sb")).append(value);
-            return value;
-          }
-        };
-        grammar.addAction("OBJECT_VAL", objectValAction);
+      ((StringBuilder) x.get("sb")).append(value);
+      return value;
+    }
+     if ( ((Map) x.get("values")).get(v) == null ) throw new RuntimeException("Object is not provided " + v);
+       FObject obj =  (FObject) ((Map) x.get("values")).get(v);
 
-        // simple value syntax: "qwerty {{ simple_value }} qwerty"
-        grammar.addSymbol("SIMPLE_VAL", new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}") )));
-        Action simpleValAction = new Action() {
-          @Override
-          public Object execute(Object val, ParserContext x) {
-            Object[] val0    = (Object[]) val;
-            StringBuilder v = new StringBuilder();
-            for ( int i = 0 ; i < val0.length ; i++ ) {
-              if ( ! Character.isWhitespace((char) val0[i]) ) v.append(val0[i]);
-            }
-            String value = (String) ((Map) x.get("values")).get(v.toString());
-            if ( value == null ) {
-              value = "";
-              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
-            }
-            ((StringBuilder) x.get("sb")).append(value);
-            return value;
-          }
-        };
-        grammar.addAction("SIMPLE_VAL", simpleValAction);
+       Object[] values2 = (Object[]) vals[1];
+       Object[] objArr = (Object[]) values2[1];
+       Expr expr = NamedProperty.create(compactToString(objArr[0]));
+       for (var i = 1; i < objArr.length; i++) {
+         expr = new Dot(expr, NamedProperty.create(compactToString(objArr[i])));
+       }
+       ((StringBuilder) x.get("sb")).append(expr.f(obj));
+       return val;
+    });
+    grammar.addSymbol("WORD", new Repeat(
+          grammar.sym("CHAR"), 1
+        ));
+    grammar.addSymbol("CHAR", new Alt(
+      Range.create('a', 'z'),
+      Range.create('A', 'Z'),
+      Range.create('0', '9'),
+      Literal.create("-"),
+      Literal.create("^"),
+      Literal.create("_")
+    ));
 
         /* IF_ELSE syntax: "qwerty {% if var_name_provided_in_map %} qwer {{ possible_simple_value }} erty
         {% else %} qwerty {% endif %}" */
@@ -402,6 +384,19 @@ grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
       getContentGrammar().parse(ps, parserX, "");
 
       return sbContent;
+      `
+    },
+    {
+      name: 'compactToString',
+      args: [ { name: 'val', type: 'Object' } ],
+      type: 'String',
+      javaCode: `
+      Object[] values = (Object[]) val;
+          StringBuilder sb = new StringBuilder();
+          for ( Object num: values ) {
+            sb.append(num);
+          }
+          return sb.toString();
       `
     },
     {
