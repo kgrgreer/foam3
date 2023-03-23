@@ -22,6 +22,7 @@ foam.CLASS({
     'emailVerificationService',
     'loginSuccess',
     'loginView?',
+    'notify?',
     'pushMenu',
     'stack',
     'subject',
@@ -194,6 +195,7 @@ foam.CLASS({
           this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
           this.loginSuccess = true;
           await this.ctrl.reloadClient();
+          await this.ctrl.onUserAgentAndGroupLoaded();
         } catch(err) {
           this.ctrl.add(this.NotificationMessage.create({
             err: err.data,
@@ -210,11 +212,11 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function() {
-        await this.finalRedirectionCall();
+        await this.verifyEmail(this.__subContext__, this.email, this.userName);
       }
     },
     {
-      name: 'finalRedirectionCall',
+      name: 'verifyEmail',
       code: async function() {
         if ( this.subject.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
@@ -227,7 +229,7 @@ foam.CLASS({
           // and reset the subject to the anonymous subject before verification step
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
-          this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener)
+          this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.u2.borders.StatusPageBorder', showBack: false,
@@ -267,8 +269,7 @@ foam.CLASS({
         return ! errors_ && ! isLoading_;
       },
       isAvailable: function(showAction) { return showAction; },
-      code: function(x) {
-        this.isLoading_ = true;
+      code: async function(x) {
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
@@ -276,30 +277,28 @@ foam.CLASS({
           signUpToken: this.token_,
           language: this.defaultUserLanguage()
         });
-        this.dao_
-          .put(createdUser)
-          .then(async user => {
-            this.subject.realUser = user;
-            this.subject.user = user;
+        var user = await this.dao_.put(createdUser);
+        if ( user ) {
+          this.subject.realUser = user;
+          this.subject.user = user;
 
-            if ( ! this.pureLoginFunction ) await this.nextStep(x);
+          if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.SUCCESS_MSG_TITLE,
-              description: this.SUCCESS_MSG,
-              type: this.LogLevel.INFO,
-              transient: true
-            }));
-          }).catch(err => {
-            this.ctrl.add(this.NotificationMessage.create({
-              err: err.data,
-              message: this.ERROR_MSG,
-              type: this.LogLevel.ERROR
-            }));
-          })
-          .finally(() => {
-            this.isLoading_ = false;
-          });
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.SUCCESS_MSG_TITLE,
+            description: this.SUCCESS_MSG,
+            type: this.LogLevel.INFO,
+            transient: true
+          }));
+        } else {
+          this.loginFailed = true;
+          this.ctrl.add(this.NotificationMessage.create({
+            err: err.data,
+            message: this.ERROR_MSG,
+            type: this.LogLevel.ERROR
+          }));
+        }
+        // TODO: Add functionality to push to sign in if the user email already exists
       }
     },
     {
