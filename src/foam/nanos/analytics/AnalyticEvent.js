@@ -28,7 +28,8 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'timestamp'
+      name: 'timestamp',
+      writePermissionRequired: true
     },
     {
       class: 'Duration',

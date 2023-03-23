@@ -66,7 +66,6 @@ foam.CLASS({
         // create analytic event
         AnalyticEvent event = new AnalyticEvent();
         event.setName("test");
-        event.setTimestamp(new java.util.Date());
         event.setSessionId(sessionId);
 
         try {
