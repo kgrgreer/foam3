@@ -93,6 +93,7 @@ foam.CLASS({
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
+    'routeTo',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -995,6 +996,10 @@ foam.CLASS({
           this.replaceStyleTag(text, eid);
         }
       }
+    },
+    function routeTo(link) {
+      this.buildingStack = true;
+      this.memento_.str = link;
     }
   ]
 });
