@@ -113,12 +113,10 @@ public class AddressUtil {
     }
     
     String normalizedCountry = countryCode;
-    DAO countryDAO = (DAO) x.get("countryDAO");
-    Country country = (Country) countryDAO.find(countryCode);
-    if ( country != null )
-      return country.getCode();
 
-    country = (Country) countryDAO.find(OR(
+    DAO countryDAO = (DAO) x.get("countryDAO");
+    Country country = (Country) countryDAO.find(OR(
+      EQ(Country.CODE, countryCode),
       EQ(Country.ISO31661CODE, countryCode),
       STARTS_WITH_IC(Country.NAME, countryCode)
     ));
