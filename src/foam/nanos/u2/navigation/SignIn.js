@@ -16,7 +16,6 @@ foam.CLASS({
   imports: [
     'auth',
     'ctrl',
-    'currentMenu',
     'emailVerificationService',
     'loginSuccess',
     'loginView?',
@@ -25,7 +24,6 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'subject',
-    'translationService',
     'window'
   ],
 
@@ -38,13 +36,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Welcome!' },
+    { name: 'TITLE',      message: 'Welcome!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
-    { name: 'ERROR_MSG', message: 'There was an issue logging in' },
+    { name: 'ERROR_MSG',  message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -147,7 +145,7 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
-        } 
+        }
       }
     },
     {
@@ -262,6 +260,7 @@ foam.CLASS({
             this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
         } else {
+          // TODO: Add functionality to push to sign up if the user identifier doesnt exist
           this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
       }
