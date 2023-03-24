@@ -45,7 +45,7 @@ foam.CLASS({
       var obj = this.objectIDKey$get(this.__subContext__);
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
         // TODO: add subclass support
-        let analyticEvent = self.AnalyticEvent.create({...evt, traceId: trace, objectId: obj, sessionId: self.sessionID, timestamp: new Date()})
+        let analyticEvent = self.AnalyticEvent.create({...evt, traceId: trace, objectId: obj, sessionId: self.sessionID})
         self.analyticEventDAO.put(analyticEvent);
       });
 
