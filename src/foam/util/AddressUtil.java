@@ -112,28 +112,21 @@ public class AddressUtil {
       return countryCode;
     }
     
-    String[] normalizedCountry = { countryCode };
+    String normalizedCountry = countryCode;
     DAO countryDAO = (DAO) x.get("countryDAO");
-    Country found = (Country) countryDAO.find(countryCode);
-    if ( found != null )
-      return found.getCode();
+    Country country = (Country) countryDAO.find(countryCode);
+    if ( country != null )
+      return country.getCode();
 
-    countryDAO
-      .where(OR(
-        EQ(Country.ISO31661CODE, countryCode),
-        STARTS_WITH_IC(Country.NAME, countryCode)
-      ))
-      .select(new AbstractSink() {
-        public void put(Object o, Detachable d) {
-          Country country = (Country) o;
-          if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
-            normalizedCountry[0] = country.getCode();
-            d.detach();
-          }
-        }
-      });
+    country = (Country) countryDAO.find(OR(
+      EQ(Country.ISO31661CODE, countryCode),
+      STARTS_WITH_IC(Country.NAME, countryCode)
+    ));
+
+    if ( country != null ) {
+      normalizedCountry = country.getCode();
+    }
     
-    return normalizedCountry[0];
+    return normalizedCountry;
   }
-
 }
