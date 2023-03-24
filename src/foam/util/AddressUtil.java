@@ -116,8 +116,8 @@ public class AddressUtil {
 
     DAO countryDAO = (DAO) x.get("countryDAO");
     Country country = (Country) countryDAO.find(OR(
-      EQ(Country.CODE, countryCode),
-      EQ(Country.ISO31661CODE, countryCode)
+      EQ(Country.ISO31661CODE, countryCode),
+      EQ(Country.CODE, countryCode)
     ));
 
     if ( country != null ) {
