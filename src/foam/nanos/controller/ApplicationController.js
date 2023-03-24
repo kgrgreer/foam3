@@ -90,6 +90,7 @@ foam.CLASS({
     'loginView',
     'menuListener',
     'notify',
+    'prefersMenuOpen',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
@@ -299,12 +300,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isMenuOpen',
+    },
+    {
+      class: 'Boolean',
+      name: 'prefersMenuOpen',
+      documentation: 'Stores the menu preference of the user',
       factory: function() {
-        return localStorage['isMenuOpen'] === 'true'
-         || ( localStorage['isMenuOpen'] = false );
+        return localStorage['prefersMenuOpen'] ? localStorage['prefersMenuOpen'] == 'true' : ( localStorage['prefersMenuOpen'] = true);
       },
       postSet: function(_, n) {
-        localStorage['isMenuOpen'] = n;
+        localStorage['prefersMenuOpen'] = n;
       }
     },
     {
