@@ -129,7 +129,7 @@ foam.CLASS({
 
   methods: [
     function ainit() {
-      this.applicationBorder.footer.add('Copyright Blah Blah', this.sessionID);
+      this.applicationBorder.footer.add('Copyright Blah Blah - Session:', this.sessionID);
     }
   ]
 });
@@ -161,6 +161,8 @@ foam.CLASS({
   exports: [
     'sessionID',
     'as c3',
+    'as ctrl',
+    'pushMenu',
 
     'subject',
     'group'
@@ -248,6 +250,11 @@ foam.CLASS({
     function render() {
       this.add('C3').br();
       this.ainit();
+    },
+
+    function pushMenu(menu, opt_forceReload) {
+      console.log('pushMenu', menu);
+//      menu && menu.launch && menu.launch(this.__subContext__);
     }
   ]
 });
