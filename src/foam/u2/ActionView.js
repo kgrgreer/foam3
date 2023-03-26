@@ -214,7 +214,7 @@ foam.CLASS({
     {
       name: 'setConfirm',
       code: function(confirm) {
-        let newState = confirm ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM;
+        let newState    = confirm ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM;
         let stateChange = this.buttonState != newState;
         this.buttonState = newState;
         this.isDestructive = confirm;
