@@ -63,6 +63,7 @@ foam.CLASS({
       javaCode: `
       final Logger logger = Loggers.logger(x, this);
       ClusterConfig nu = (ClusterConfig) obj;
+synchronized ( this ) {
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Boolean hadQuorum = support.hasQuorum(x);
@@ -183,6 +184,7 @@ foam.CLASS({
       }
 
       return nu;
+}
       `
     },
     {
