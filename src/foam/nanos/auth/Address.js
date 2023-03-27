@@ -674,7 +674,7 @@ foam.CLASS({
         // Pakistan
         {
           args: ['postalCode', 'countryId'],
-          query: 'countryId!="PK"||postalCode~/^\\d{5}$/',
+          query: 'countryId!="PK"||postalCode~/^(\\s*|\\d{5})$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
