@@ -998,6 +998,9 @@ foam.CLASS({
       }
     },
     function routeTo(link) {
+      /**
+       * Replaces the url to redirect to the new menu without cleared tails
+       */
       this.buildingStack = true;
       this.memento_.str = link;
     }
