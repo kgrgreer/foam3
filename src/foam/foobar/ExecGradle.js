@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       name: 'shell',
-      value: ''
+      value: null
     }
   ]
 })
