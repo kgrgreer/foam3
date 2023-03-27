@@ -31,6 +31,12 @@ foam.CLASS({
       if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
         throw new java.lang.IllegalArgumentException("MedusaEntry missing hash: "+entry.getIndex());
       }
+      // on bootstrap, existing entries are not looded into delegate.
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( entry.getIndex() <= replaying.getMaxIndex() ) {
+        throw new UniqueConstraintException("MedusaEntry duplicate index: "+entry.getIndex());
+      }
+
       return getDelegate().put_(x, entry);
       `
     }
