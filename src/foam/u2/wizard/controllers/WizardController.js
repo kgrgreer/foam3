@@ -63,9 +63,16 @@ foam.CLASS({
       documentation: `
         An array containing all the wizardlets to use in this wizard. This may
         include wizardlets with isAvailable initially set to false.
-      `,
-      postSet: function (_, n) {
-        this.setupWizardletListeners(n);
+      `
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'defaultView',
+      expression: function(showTitle) {
+        return {
+          class: 'foam.u2.wizard.views.FocusWizardView',
+          showTitle: showTitle
+        }
       }
     },
     {
