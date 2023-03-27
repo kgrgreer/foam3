@@ -47,6 +47,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessages")
       .setSAF(true)
+      .setServiceProviderAware(false)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
         .setSize(100000)
@@ -66,6 +67,7 @@ p({
       .setInnerDAO((foam.dao.DAO) x.get("localEmailMessageDAO"))
       .setRuler(false)
       .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.email.EmailMessage.CREATED).build() })
       .build();
   """,
