@@ -670,6 +670,19 @@ foam.CLASS({
             }
             return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
           }
+        },
+        // Pakistan
+        {
+          args: ['postalCode', 'countryId'],
+          query: 'countryId!="PK"||postalCode~/^(\\s*|\\d{5})$/',
+          errorMessage: 'INVALID_POSTAL_CODE',
+          jsErr: function(X) {
+            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
+            if ( ! postalCodeError ) {
+              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
+            }
+            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
+          }
         }
       ],
       javaSetter: `
