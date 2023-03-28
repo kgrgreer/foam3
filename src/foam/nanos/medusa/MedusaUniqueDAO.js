@@ -33,7 +33,8 @@ foam.CLASS({
       }
       // on bootstrap, existing entries are not looded into delegate.
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-      if ( entry.getIndex() <= replaying.getMaxIndex() ) {
+      if ( replaying.getMaxIndex() > 0 &&
+           entry.getIndex() <= replaying.getMaxIndex() ) {
         throw new UniqueConstraintException("MedusaEntry duplicate index: "+entry.getIndex());
       }
 
