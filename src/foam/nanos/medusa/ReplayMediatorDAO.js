@@ -49,8 +49,8 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-      ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
       if ( obj instanceof ReplayDetailsCmd ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
 
         Min min = (Min) MIN(MedusaEntry.INDEX);
@@ -74,6 +74,7 @@ foam.CLASS({
       }
 
       if ( obj instanceof ReplayCmd ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         ReplayCmd cmd = (ReplayCmd) obj;
         getLogger().info("ReplayCmd", "requester", cmd.getDetails().getRequester(), "min", cmd.getDetails().getMinIndex());
 
