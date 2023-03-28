@@ -101,10 +101,6 @@ foam.CLASS({
   }
 
   /* ON ALL FOOTER TEXT */
-  ^ .bold-text-with-pad {
-    font-weight: bold;
-    margin-right: 0.2em;
-  }
   ^ .text-with-pad {
     margin-right: 0.2em;
   }
