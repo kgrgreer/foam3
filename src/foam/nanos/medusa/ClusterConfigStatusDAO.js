@@ -61,9 +61,16 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      final Logger logger = Loggers.logger(x, this);
-      ClusterConfig nu = (ClusterConfig) obj;
-synchronized ( this ) {
+    final Logger logger = Loggers.logger(x, this);
+    ClusterConfig nu = (ClusterConfig) obj;
+
+    // Synchronized to handle symultanious mediator ONLINE events.
+    // 1st event, mediator count 1, quorum false
+    // 2nd event, mediator count 2, quorum true
+    // when interleaved, 1st event can report last with quorum false
+    // which causes a ready/online mediator to go offline.
+    synchronized ( this ) {
+
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Boolean hadQuorum = support.hasQuorum(x);
@@ -184,7 +191,7 @@ synchronized ( this ) {
       }
 
       return nu;
-}
+    }
       `
     },
     {
