@@ -8,7 +8,8 @@ foam.POM({
   name: "nanos",
   version: 3,
   projects: [
-    { name: "medusa/pom"}
+    { name: "medusa/pom"},
+    { name: "sandbox/pom"}
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
