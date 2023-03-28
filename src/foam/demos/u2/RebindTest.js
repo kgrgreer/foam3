@@ -10,28 +10,28 @@ foam.CLASS({
       this.a = 'foo'; this.b = 'a,b,c,d,efg';
       this.add('A:', this.A, ' B: ', this.B).br().br();
 
-      this.recall(function(a, b) {
-        this.add('recall a:', a, ', b:', b).br();
+      this.react(function(a, b) {
+        this.add('react a:', a, ', b:', b).br();
       });
 
-      this.recall(function(a) {
-        this.add('recalla ', a).br();
+      this.react(function(a) {
+        this.add('reacta ', a).br();
       });
 
-      this.recall(function(a) {
+      this.react(function(a) {
         if ( a === 'kgr' ) this.add('kgr').br();
       });
 
-      this.recall(function(b) {
-        this.add('recallb ', b).br();
+      this.react(function(b) {
+        this.add('reactb ', b).br();
       });
 
       this.start('ol').
-        recall(function(b) {
+        react(function(b) {
           b.split(',').forEach(i => this.start('li').add(i).end());
         }, self).
       end().
-      
+
       add('END').br();
     }
   ]

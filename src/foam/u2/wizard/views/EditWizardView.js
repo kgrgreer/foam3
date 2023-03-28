@@ -24,7 +24,7 @@ foam.CLASS({
   methods: [
     function render () {
       this
-        .recall(function (data$wizardlets) {
+        .react(function (data$wizardlets) {
           this.forEach(data$wizardlets, function (wizardlet) {
             const border = this.getBorder_(wizardlet);
             this
@@ -36,10 +36,9 @@ foam.CLASS({
           });
         });
     },
+
     function getBorder_(wizardlet) {
-      if ( ! wizardlet.capability ) {
-        return this.Block;
-      }
+      if ( ! wizardlet.capability ) return this.Block;
       return this.Block;
     }
   ]

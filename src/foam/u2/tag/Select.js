@@ -84,7 +84,7 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.recall(function(choices, placeholder, header, data) {
+      this.react(function(choices, placeholder, header, data) {
         if ( header ) {
           this.start('optgroup').attrs({ label: header });
         }
