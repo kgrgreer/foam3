@@ -19,12 +19,29 @@ foam.CLASS({
       name: 'message'
     },
     {
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'confirmationNumberPath'
+    },
+    {
+      name: 'confirmationNumber',
+      expression: function(confirmationNumberPath, data) {
+        return confirmationNumberPath ? confirmationNumberPath.f(data) : '';
+      }
+    },
+    {
       class: 'String',
       name: 'actionLabel',
       factory: function() {
         return "Return to " + this.currentMenu.label;
       }
     },
+    {
+      name: 'children'
+    },
+//    {
+//      name: 'children2',
+//      value: { class: 'foam.u2.view.ValueView', prop: 'green' }
+//    },
     {
       name: 'sections',
       class: 'FObjectArray',
@@ -45,7 +62,10 @@ foam.CLASS({
             isAvailable: true,
             customView: {
               class: 'foam.u2.wizard.wizardlet.SuccessWizardletView',
-              message$: this.message$
+//              confirmationNumber$: this.confirmationNumber$,
+              message$: this.message$,
+              children2$: this.children$,
+//              children2: this.children2
             }
           })
         ];
