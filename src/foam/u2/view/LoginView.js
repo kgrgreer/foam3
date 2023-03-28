@@ -105,8 +105,14 @@ foam.CLASS({
     font-weight: bold;
     margin-right: 0.2em;
   }
+  ^ .text-with-pad {
+    margin-right: 0.2em;
+  }
   ^center-footer {
     text-align: center;
+  }
+  ^ .align-end {
+    text-align: end;
   }
 
   ^center-footer > ^signupLink {
@@ -303,6 +309,11 @@ foam.CLASS({
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()
+        .start()
+          .addClass('align-end')
+          .tag(this.data.SUB_FOOTER)
+        .end()
+        .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction) {
             return self.E().callIf(data$showAction, function() {
@@ -316,18 +327,11 @@ foam.CLASS({
                   .start()
                     .addClass(self.myClass('signupLink'))
                     .start('span')
-                      .addClass('bold-text-with-pad')
+                      .addClass('text-with-pad')
                       .add(self.data.FOOTER_TXT)
                     .end()
                     .start('span')
                       .add(self.data.FOOTER)
-                    .end()
-                  .end()
-                    // second footer
-                  .start()
-                    .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
-                    .start('span')
-                      .add(self.data.SUB_FOOTER)
                     .end()
                   .end()
                   .endContext()
