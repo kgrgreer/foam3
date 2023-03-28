@@ -64,19 +64,22 @@ foam.CLASS({
     final Logger logger = Loggers.logger(x, this);
     ClusterConfig nu = (ClusterConfig) obj;
 
-    // Synchronized to handle symultanious mediator ONLINE events.
-    // 1st event, mediator count 1, quorum false
-    // 2nd event, mediator count 2, quorum true
-    // when interleaved, 1st event can report last with quorum false
-    // which causes a ready/online mediator to go offline.
-    synchronized ( this ) {
 
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
-      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
+    // Synchronized to handle symultaneous mediator ONLINE events.
+    // 1st event, mediator count 1, quorum false
+    // 2nd event, mediator count 2, quorum true
+    // when interleaved, 1st event can report last with quorum false
+    // which causes a ready/online mediator to go offline.
+    // This is best effort, as don't want the above delegate.put
+    // under lock.
+    synchronized ( this ) {
+
+      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
 
