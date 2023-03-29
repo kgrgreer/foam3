@@ -116,32 +116,3 @@
     }
   ]
 });
-
-// sections: [
-//   {
-//   class: 'foam.u2.wizard.wizardlet.WizardletSection', 
-//   modelSectionName: 'verificationCodeSection',
-//   showTitle: false 
-//  }
-//  ],
-
-// sections: [
-//   {
-//     class: 'foam.u2.wizard.wizardlet.WizardletSection',
-//     customView: { 
-//       class: 'foam.nanos.auth.email.VerificationCodeView',
-//       showTitle: false 
-//     }
-//   }
-// ],
-
-// sections: [
-//   {
-//     class: "foam.u2.wizard.wizardlet.WizardletSection",
-//     customView: {
-//       "class": "foam.u2.detail.FlexSectionedDetailView",
-//       "useSections": ['verificationCodeSection'],
-//       "showTitles": false
-//     }
-//   }
-// ],
