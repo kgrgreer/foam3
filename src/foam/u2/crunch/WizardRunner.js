@@ -40,10 +40,18 @@ foam.CLASS({
 
       const seq = this.getSequence_(x, isInline);
 
-      let returnPromise = null;
-      let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
-
+      // wizardContext
+      // - Is returned to places a wizard is instantiated
+      // - Contains the instantiated wizardlets (note: just the instantiated - not parentWizard)
+      let wizardContext = undefined;
+      // If there is intention is to inject wizard and is there an open wizard...
       if ( isInline ) {
+        // returnPromise - waits for a resolve, prior to continuing through to a return
+        let returnPromise = Promise.resolve();
+        // promise$ -> acts as flag for resolving returnPromise after user finishes
+        // the last wizardlet (onLastWizardletSaved), and only if
+        // call to WizardRunner came with options.returnCompletionPromise = true
+        let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
         if ( options.returnCompletionPromise ) {
           returnPromise = new Promise(rslv => {
             promise$.sub(v => {
@@ -51,12 +59,17 @@ foam.CLASS({
             });
           });
         }
-
-        await this.crunchController.inlineWizardFromSequence(parentWizard, seq, ( returnPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {}));
-        return returnPromise ? returnPromise : null;
+        wizardContext = await this.crunchController.inlineWizardFromSequence(
+          parentWizard,
+          seq, 
+          (options.returnCompletionPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {})
+        );
+        await returnPromise;
+      } else {
+        wizardContext = await seq.execute();
       }
 
-      await seq.execute();
+      return wizardContext;
     },
     function launchNotInline_ () {
       const seq = this.sequenceFromWizardType_();
@@ -108,6 +121,18 @@ foam.CLASS({
           .remove('RequirementsPreviewAgent')
       }
 
+      if ( wizardType == this.WizardType.TRANSIENT ) {
+        return this.crunchController
+          .createTransientWizardSequence(this.__subContext__)
+          .addBefore('ConfigureFlowAgent', {
+            class: 'foam.u2.wizard.agents.RootCapabilityAgent',
+            rootCapability: this.source
+          })
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.CAPABLE
+          })
+          .remove('RequirementsPreviewAgent')
+      }
       console.error(
         '%cAre you configuring a new wizard?%c%s',
         'color:red;font-size:30px', '',
