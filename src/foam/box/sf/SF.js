@@ -31,6 +31,8 @@ foam.CLASS({
     'foam.lib.NetworkPropertyPredicate',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.StoragePropertyPredicate',
+    'foam.log.LogLevel',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Loggers',
     'java.nio.file.*',
     'java.nio.file.attribute.*',
@@ -342,9 +344,21 @@ foam.CLASS({
                                     .build();
 
             journalMap_.put(getSimpleFilename(filename), journal);
-            if ( journal.getFileOffset() == journal.getFileSize() ) continue;
+            if ( journal.getFileOffset() == journal.getFileSize() ) {
+              Alarm alarm = new Alarm("SAF file complete");
+              alarm.setSeverity(foam.log.LogLevel.INFO);
+              alarm.setClusterable(false);
+              alarm.setNote("SAF[id: " + getId() + "] skip file: " + getSimpleFilename(filename));
+              ((DAO) x.get("alarmDAO")).put(alarm);
+              continue;
+            }
             if ( journal.getFileOffset() > journal.getFileSize() ) {
               logger_.warning("Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize");
+              Alarm alarm = new Alarm("SAF file error");
+              alarm.setSeverity(foam.log.LogLevel.INFO);
+              alarm.setClusterable(false);
+              alarm.setNote("SAF[id: " + getId() + "] error file: " + getSimpleFilename(filename));
+              ((DAO) x.get("alarmDAO")).put(alarm);
               journal.setFileOffset(journal.getFileSize());
               continue;
             }
