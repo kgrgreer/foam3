@@ -94,6 +94,7 @@ foam.CLASS({
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
+    'routeTo',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -1000,6 +1001,13 @@ foam.CLASS({
           this.replaceStyleTag(text, eid);
         }
       }
+    },
+    function routeTo(link) {
+      /**
+       * Replaces the url to redirect to the new menu without cleared tails
+       */
+      this.buildingStack = true;
+      this.memento_.str = link;
     }
   ]
 });
