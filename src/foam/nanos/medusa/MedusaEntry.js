@@ -115,7 +115,7 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
 Initially this was storageTransient and thus not persisted on the nodes.
 With 'compaction' object id is used ensure we only process each ojbect once.
 But with this change from storageTransient, multipart ids are stored as classes which may not exists on the nodes, and thus fail replay.
-Using the UnknownFObjectParser allows the nodes to process the multipart ids as 'Strings'`,
+Using the MaybeFObjectParser allows the nodes to process the multipart ids as 'Strings'`,
       class: 'Object',
       name: 'objectId',
       visibility: 'RO',
@@ -126,7 +126,7 @@ Using the UnknownFObjectParser allows the nodes to process the multipart ids as 
       if ( o1 == null && o2 == null) return 0;
       return o1 == null ? -1 : 1;
       `,
-      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()'
+      javaJSONParser: 'new foam.lib.json.MaybeFObjectParser()'
     },
     {
       document: 'FObject on route to Primary',

@@ -118,7 +118,7 @@ foam.CLASS({
               }
 
               if ( replaying.getMaxIndex() > 0 ) {
-                replaying.setMaxIndex(Math.min(details.getMaxIndex(), replaying.getMaxIndex()));
+                replaying.setMaxIndex(Math.max(details.getMaxIndex(), replaying.getMaxIndex()));
               } else {
                 replaying.setMaxIndex(details.getMaxIndex());
               }
