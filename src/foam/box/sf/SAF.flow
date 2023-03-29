@@ -1,0 +1,13 @@
+<title>Store and Forward(SF/SAF)</title>
+
+<h1>Overview</h1>
+Store and forward is a data communication technique in which a message transmitted from a source node is stored at an intermediary device before being forwarded to the destination node.
+In Nanopay, we use SAF for thing that you want to retry until it succceeds.
+SAF is also using in Medusa system by default, in which message can broadcase from one mediator to other mediators.
+
+<h1>SAF in general</h1>
+
+<h2>How it works<h2/>
+When SFManager receives a request, it will record the request into journal/fileSystem first.
+And then, the request will 
+
