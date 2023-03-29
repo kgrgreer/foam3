@@ -15,11 +15,15 @@ foam.CLASS({
       });
 
       this.react(function(a) {
-        this.add('reacta ', a).br();
+        this.add('react:a ', a).br();
+      });
+
+      this.add(function(a) {
+        this.add('add:a ', a).br();
       });
 
       this.react(function(a) {
-        if ( a === 'kgr' ) this.add('kgr').br();
+        if ( a === 'show' ) this.add('show').br();
       });
 
       this.react(function(b) {
