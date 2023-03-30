@@ -30,3 +30,9 @@ SFManager: manage all SF requests and invoke SF process.
   <li>Registering it into storeAndForwards.jrl</li>
   <li>Using SFManager nspec service to get SF that you define in storeAndForwards.jrl[code: ((SFManager) x.get("sfManager")).getSfs().get("input SF id");]</li>
 </ol>
+
+<h3>Example<h3>
+SFSink.js: example for how to create a SF.
+constFourSecondHttpSinkDemoUsingAtime in storeAndForwards.jrl: example for how to register SF.
+
+<h1>SAF in Medusa</h1>
