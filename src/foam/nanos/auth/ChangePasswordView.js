@@ -4,6 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+//TODO: Maybe have this and emailVerificationView extend a common view/css
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'ChangePasswordView',
@@ -18,61 +19,61 @@ foam.CLASS({
     'user'
   ],
 
-  requires: [ 'foam.u2.stack.StackBlock' ],
+  requires: [
+    'foam.u2.stack.StackBlock',
+    'foam.u2.borders.StatusPageBorder',
+    'foam.u2.detail.SectionView'
+  ],
 
   css: `
     ^ {
-      margin-bottom: 24px
+      height: 100%;
     }
-    ^top-bar {
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    ^flex {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      gap: 3rem;
+      padding-top: 5rem;
+    }
+    ^sectionView{
       width: 100%;
-      height: 12vh;
-      border-bottom: solid 1px #e2e2e3;
+      display: flex;
+      justify-content: center;
     }
-    ^top-bar img {
-      height: 8vh;
-      padding-top: 2vh;
-      display: block;
-      margin: 0 auto;
+    ^title {
+      text-align:center;
     }
-    ^content {
-      padding-top: 4vh;
-      margin: 0 auto;
+    ^subTitle, ^sectionView > *{
+      width: 75%;
     }
-    ^content-horizontal {
-      width: 90%;
-    }
-    ^content-vertical {
-      width: 30vw;
-    }
-    ^section {
-      margin-bottom: 10%;
-    }
-    /* subtitle */
-    /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
-    ^ ^section .subtitle {
-      color: $grey500;
-    }
-    ^link {
-      color: $primary400;
-      cursor: pointer;
+    ^subTitle {
+      padding: 0 15px;
       text-align: center;
-      padding-top: 1.5vh;
     }
-    ^ .foam-u2-layout-Cols > .foam-u2-ActionView {
-      width: 100%;
+    ^ .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    /* mobile */
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
+      ^subTitle, ^sectionView > * {
+        width: 50%;
+      }
+      ^subTitle {
+        padding: 0;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
+      ^subTitle, ^sectionView > * {
+        width: 25%;
+      }
     }
   `,
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'showHeader',
-      documentation: `This property toggles the view from having a top bar displayed.`,
-      value: true,
-      hidden: true
-    },
     {
       class: 'Boolean',
       name: 'isHorizontal',
@@ -96,7 +97,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: this.modelOf,
-      name: 'model',
+      name: 'data',
       documentation: 'instance of password model used for this view',
       factory: function() {
         return foam.lookup(this.modelOf)
@@ -109,37 +110,36 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
-      const logo = this.theme.largeLogo || this.theme.logo;
 
       this.addClass()
-        // header
-        .callIf(this.showHeader, function() {
-          this.start().addClass(self.myClass('top-bar'))
-            .start('img').attr('src', logo).end()
-          .end();
-        })
-        // body
-        .start()
-          .addClass(this.myClass('content'))
-          .callIfElse(this.isHorizontal, function() {
-            this.addClass(self.myClass('content-horizontal'));
-          }, function() {
-            this.addClass(self.myClass('content-vertical'));
-          })
-          // section
-          .start('form').addClass(this.myClass('section'))
-            .start(this.MODEL).end()
+        .start(this.StatusPageBorder, { showBack: false })
+          .start()
+            .addClass(this.myClass('flex'))
+            .callIf(this.data.TITLE, function() {
+              this.start('h1').addClass(self.myClass('title')).add(self.data.TITLE).end();
+            })
+            .callIf(this.data.INSTRUCTION, function() {
+              this.start('p').addClass(self.myClass('subTitle')).add(self.data.INSTRUCTION).end();
+            })
+            .start(this.SectionView, { data$: this.data$, sectionName: 'resetPasswordSection', showTitle: false })
+              .addClass(this.myClass('sectionView'))
+            .end()
+            .start()
+              .add(this.BACK)
+            .end()
           .end()
-          // link
-          .callIf(this.model.hasBackLink, function() {
-            this.start().addClass(self.myClass('link'))
-              .add(self.model.REDIRECTION_TO)
-              .on('click', function() {
-                self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
-              })
-            .end();
-          })
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'back',
+      label: 'Back to Sign In',
+      buttonStyle: 'TEXT',
+      code: function(X) {
+        X.pushMenu('sign-in', true);
+      }
     }
   ]
 });
