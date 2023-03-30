@@ -36,3 +36,13 @@ SFSink.js: example for how to create a SF.
 constFourSecondHttpSinkDemoUsingAtime in storeAndForwards.jrl: example for how to register SF.
 
 <h1>SAF in Medusa</h1>
+The SAF system is built into the Medusa system by default.
+In the medusa, SAF is being use to broadcast data from one mediator to others.
+DAOs can be set to use SAF to directly broadcase data from mediator itself instead of going to Medusa node.
+Important: SAF do not guerantee consistency for the data. If you use SAF for a DAO, please make sure that the data is less important.
+
+<h2>How it works</h2>
+To use SAF in Medusa is easy, because it is already add into EasyDAO setup.
+There is a property in EasyDAO called "SAF", just need to set it to true.
+Important: SAF only in this case only takes care of forwarding message to other mediators.
+           If you want to presist the data, you also need to set up journal type in easyDAO setup.
