@@ -570,7 +570,7 @@ foam.CLASS({
       },
       code: function(x) {
         this.isLoading_ = true;
-        this.next().then((isFinished) => {
+        return this.next().then((isFinished) => {
           if ( isFinished ) {
             for ( let w of this.wizardlets ) {
               if ( w.submit ) w.submit();
