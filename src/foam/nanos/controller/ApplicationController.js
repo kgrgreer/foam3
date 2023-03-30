@@ -719,9 +719,9 @@ foam.CLASS({
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu, opt_forceReload);
+        return this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
-        await this.clientPromise.then(async () => {
+        return await this.clientPromise.then(async () => {
           await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
@@ -752,7 +752,7 @@ foam.CLASS({
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;
-      menu && menu.launch && menu.launch(this.__subContext__);
+      return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
     async function findDefaultMenu(dao) {
