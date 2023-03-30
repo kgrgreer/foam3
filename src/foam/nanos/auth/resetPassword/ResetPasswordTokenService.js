@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Email',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
@@ -81,6 +82,7 @@ foam.CLASS({
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
         token.setData(UUID.randomUUID().toString());
+        token.setParameters(parameters);
         token = (Token) tokenDAO.put(token);
 
         EmailMessage message = new EmailMessage();
@@ -88,10 +90,12 @@ foam.CLASS({
         message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
         args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-        args.put("link", url +"?token=" + token.getData() + "#reset");
+        args.put("link", url +"?token=" + token.getData() + getMenu(parameters));
         args.put("templateSource", this.getClass().getName());
-        args.put("template", "reset-password");
-        ((DAO) getX().get("emailMessageDAO")).put(message);
+        String templateName = getTemplateName(parameters);
+        args.put("template", templateName);
+
+        EmailsUtility.sendEmailFromTemplate(x, user, message, templateName, args);
         return true;
       `
     },
@@ -133,6 +137,8 @@ foam.CLASS({
           throw new RuntimeException("Token not found");
         }
 
+
+
         // find user from token
         Token tokenResult = (Token) data.get(0);
         User userResult = (User) userDAO.find(tokenResult.getUserId());
@@ -148,6 +154,16 @@ foam.CLASS({
         userResult = (User) userResult.fclone();
         userResult.setDesiredPassword(newPassword);
         user.setPasswordExpiry(null);
+
+        boolean enableLogin = false;
+        if ( tokenResult.getParameters() != null
+          && tokenResult.getParameters().get("enableLogin") != null ) {
+          enableLogin = Boolean.valueOf(tokenResult.getParameters().get("enableLogin").toString());
+        }
+
+        if ( ! userResult.getLoginEnabled() && enableLogin ) {
+          userResult.setLoginEnabled(true);
+        }
         userDAO.put(userResult);
 
         // set token processed to true
@@ -167,6 +183,30 @@ foam.CLASS({
         message.setTemplateArguments(args);
         ((DAO) x.get("emailMessageDAO")).put(message);
         return true;
+      `
+    },
+    {
+      name: 'getMenu',
+      type: 'String',
+      args: 'Map parameters',
+      javaCode: `
+        if ( parameters != null && parameters.get("menu") != null ) {
+          return parameters.get("menu").toString();
+        }
+
+        return "#reset";
+      `
+    },
+    {
+      name: 'getTemplateName',
+      type: 'String',
+      args: 'Map parameters',
+      javaCode: `
+        if ( parameters != null && parameters.get("templateName") != null ) {
+          return parameters.get("templateName").toString();
+        }
+
+        return "reset-password";
       `
     }
   ]
