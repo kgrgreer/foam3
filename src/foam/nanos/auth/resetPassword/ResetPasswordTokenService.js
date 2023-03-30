@@ -95,7 +95,8 @@ foam.CLASS({
         String templateName = getTemplateName(parameters);
         args.put("template", templateName);
 
-        EmailsUtility.sendEmailFromTemplate(x, user, message, templateName, args);
+        message.setTemplateArguments(args);
+        ((DAO) getX().get("emailMessageDAO")).put(message);
         return true;
       `
     },
@@ -154,16 +155,6 @@ foam.CLASS({
         userResult = (User) userResult.fclone();
         userResult.setDesiredPassword(newPassword);
         user.setPasswordExpiry(null);
-
-        boolean enableLogin = false;
-        if ( tokenResult.getParameters() != null
-          && tokenResult.getParameters().get("enableLogin") != null ) {
-          enableLogin = Boolean.valueOf(tokenResult.getParameters().get("enableLogin").toString());
-        }
-
-        if ( ! userResult.getLoginEnabled() && enableLogin ) {
-          userResult.setLoginEnabled(true);
-        }
         userDAO.put(userResult);
 
         // set token processed to true
