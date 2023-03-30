@@ -2,12 +2,31 @@
 
 <h1>Overview</h1>
 Store and forward is a data communication technique in which a message transmitted from a source node is stored at an intermediary device before being forwarded to the destination node.
-In Nanopay, we use SAF for thing that you want to retry until it succceeds.
+In Nanopay, we use SAF for thing that you want to retry until it processes successfully.
 SAF is also using in Medusa system by default, in which message can broadcase from one mediator to other mediators.
 
 <h1>SAF in general</h1>
 
-<h2>How it works<h2/>
-When SFManager receives a request, it will record the request into journal/fileSystem first.
-And then, the request will 
+<h2>How it works</h2>
+When SF receives a request, it will record the request into journal first(see: foam.box.sf.SF.storeAndForward method).
+And then, the request will be inserted into internal queue in SFManager by SF(see: foam.box.sf.SF.storeAndForward method).
+A thread in SFManager will constantly pull request from queue and process it(see: foam.box.sf.SFManager.initForwarder method).
+The way that the SAF system diagnoses a success request process, is to check if there will be an exception throwing out from foam.box.sf.SF.submit method.
+If no exception, then the request is done and SFManager will pick next request to process. Otherwise, SFManager will process it again after certain given time.
 
+<h2>Key Classes</h2>
+<ul>
+<li>foam.box.sf.SFEntry</li>
+<li>foam.box.sf.SF</li>
+<li>foam.box.sf.SFManager</li>
+</ul>
+SFEntry: use to store request/data/object that will be processed by SF.
+SF: key class in SAF system. use to define how to process a request. If you want to customize your own SF, you will need to create a sub-class of SF and override its submit method.
+SFManager: manage all SF requests and invoke SF process.
+
+<h2>How to create your own SAF</h2>
+<ol>
+  <li>Creating sub-class of foam.box.sf.SF, and override submit method for thing you want to implement.</li>
+  <li>Registering it into storeAndForwards.jrl</li>
+  <li>Using SFManager nspec service to get SF that you define in storeAndForwards.jrl[code: ((SFManager) x.get("sfManager")).getSfs().get("input SF id");]</li>
+</ol>
