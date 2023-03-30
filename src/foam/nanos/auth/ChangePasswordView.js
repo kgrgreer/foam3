@@ -121,7 +121,11 @@ foam.CLASS({
             .callIf(this.data.INSTRUCTION, function() {
               this.start('p').addClass(self.myClass('subTitle')).add(self.data.INSTRUCTION).end();
             })
-            .start(this.SectionView, { data$: this.data$, sectionName: 'resetPasswordSection', showTitle: false })
+            .start(this.SectionView, {
+              data$: this.data$,
+              sectionName: 'resetPasswordSection',
+              showTitle: false
+            })
               .addClass(this.myClass('sectionView'))
             .end()
             .start()
