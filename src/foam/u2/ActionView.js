@@ -123,7 +123,7 @@ foam.CLASS({
     },
     {
       name: 'mementoName',
-      factory: function(action) { return this.action.mementoName; }
+      factory: function() { return this.action.mementoName; }
     }
   ],
 
@@ -170,6 +170,9 @@ foam.CLASS({
           }
         } else if ( this.buttonState == this.ButtonState.NO_CONFIRM ) {
           this.action && this.action.maybeCall(this.__subContext__, this.data);
+          let running = this.action.getRunning$(this.data);
+          this.loading_ = running.get();
+          this.onDetach(running.sub(() => { this.loading_ = running.get(); }));
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {
           this.buttonState = this.ButtonState.DEBOUNCE;
           this.removeAllChildren();
