@@ -335,7 +335,7 @@ foam.CLASS({
   documentation: 'Property for Predicate values.',
 
   properties: [
-    ['type', 'foam.mlang.predicate.Predicate'],
+    [ 'type', 'foam.mlang.predicate.Predicate' ],
     {
       name: 'adapt',
       value: function(_, o, prop) {
