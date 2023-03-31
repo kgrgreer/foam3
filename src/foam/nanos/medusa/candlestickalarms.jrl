@@ -1,6 +1,0 @@
-p({
-  class:"foam.nanos.alarming.CandlestickAlarm",
-  id:"Medusa.index",
-  key:"Medusa.index",
-  propertyName:"total"
-})

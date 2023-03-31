@@ -1,9 +1,0 @@
-# Foo
---
-
-## DocumentFragment
---
-
-var df = foam.u2.DocumentFragment.create();
-df.add('pre').start('b').add('center').end().add('post');
-add(df);

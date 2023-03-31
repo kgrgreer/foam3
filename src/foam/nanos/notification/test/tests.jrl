@@ -1,4 +1,0 @@
-p({
-  class: "foam.nanos.notification.test.DAONotificationTest",
-  id: "DAONotificationTest"
-})

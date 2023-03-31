@@ -1,7 +1,0 @@
-p({
-  class:"foam.nanos.notification.Notification",
-  id: 39109516,
-  template: "foam-nanos-er-EventRecordNotificationTemplate",
-  emailName:"foam-nanos-er-EventRecordEmailTemplate",
-  groupId: "noc"
-})

@@ -1,5 +1,0 @@
-p({"class":"foam.nanos.auth.Permission","id":"service.medusaTestObjectDAO","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"medusaTestObject.create"})
-p({"class":"foam.nanos.auth.Permission","id":"medusaTestObject.read.*"})
-p({"class":"foam.nanos.auth.Permission","id":"medusaTestObject.update.*"})
-p({"class":"foam.nanos.auth.Permission","id":"medusaTestObject.remove.*"})

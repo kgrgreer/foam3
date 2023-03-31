@@ -1,8 +1,0 @@
-p({
-  "class":"foam.box.sf.SFSink",
-  "id":"constFourSecondHttpSinkDemoUsingAtime",
-  "fileName":"httpSFSinkDemoUsingAtime",
-  "timeWindow": 3600,
-  "fileCapacity": 1000,
-  "delegateNspecId": "demoHttpSinkUsingAtime"
-})

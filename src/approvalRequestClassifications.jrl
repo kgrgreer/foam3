@@ -1,4 +1,0 @@
-p({"class":"foam.nanos.approval.ApprovalRequestClassification", "id":"testing-approval-system", "name":"Testing Approval System"})
-p({"class":"foam.nanos.approval.ApprovalRequestClassification", "id":"capable-created-approval", "name":"Capable Created Approval"})
-p({"class":"foam.nanos.approval.ApprovalRequestClassification", "id":"approvable-request", "name":"Approvable Request"})
-p({"class":"foam.nanos.approval.ApprovalRequestClassification", "id":"update-on-active-ucj", "name":"Update on Active UCJ"})

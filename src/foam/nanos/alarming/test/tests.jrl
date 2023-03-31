@@ -1,4 +1,0 @@
-p({
-  class:"foam.nanos.alarming.test.CandlestickAlarmTest",
-  id:"CandlestickAlarmTest"
-})

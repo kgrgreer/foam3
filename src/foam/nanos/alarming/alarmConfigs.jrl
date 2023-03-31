@@ -1,7 +1,0 @@
-p({
-  "class":"foam.nanos.alarming.AlarmConfig",
-  "name":"Email template config",
-  "severity":1,
-  "monitorType":2,
-  "sendEmail":false
-})

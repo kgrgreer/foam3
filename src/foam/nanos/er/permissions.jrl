@@ -1,5 +1,0 @@
-p({class:"foam.nanos.auth.Permission", id:"service.eventRecordDAO", description:""})
-p({class:"foam.nanos.auth.Permission", id:"eventrecord.read.*", description:""})
-p({class:"foam.nanos.auth.Permission", id:"menu.read.er", description:""})
-p({class:"foam.nanos.auth.Permission", id:"service.eventRecordResponseDAO", description:""})
-p({class:"foam.nanos.auth.Permission", id:"eventrecordresponse.read.*", description:""})

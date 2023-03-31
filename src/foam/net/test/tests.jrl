@@ -1,4 +1,0 @@
-p({
-  class:"foam.net.test.CIDRTest",
-  id:"CIDRTest"
-})

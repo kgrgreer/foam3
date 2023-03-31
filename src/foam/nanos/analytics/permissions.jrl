@@ -1,3 +1,0 @@
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.analytics","description":"Analytics"})
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.analytics.*","description":"Analytics"})
-p({"class":"foam.nanos.auth.Permission","id":"menu.read.analyticevents","description":"Analytic Events"})
