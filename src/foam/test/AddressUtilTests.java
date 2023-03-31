@@ -15,12 +15,16 @@ public class AddressUtilTests extends Test {
     testAddressParse("1505 - 25 The Esplanade", "", "25", "The Esplanade");
     testAddressParse("1505-19 Western Battery Rd", "", "19", "Western Battery Rd");
 
+    testCountryNormalization(x, "CANADA", "CA");
+    testCountryNormalization(x, "Canada", "CA");
     testCountryNormalization(x, "CAN", "CA");
     testCountryNormalization(x, "CA", "CA");
     testCountryNormalization(x, "US", "US");
     testCountryNormalization(x, "USA", "US");
+    testCountryNormalization(x, "United States", "US");
     testCountryNormalization(x, "IN", "IN");
     testCountryNormalization(x, "IND", "IN");
+    testCountryNormalization(x, "India", "IN");
 
     testRegionNormalization(x, "CA", "ONTARIO", "CA-ON");
     testRegionNormalization(x, "CA", "Ontario", "CA-ON");
