@@ -20,9 +20,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.stack.StackBlock',
     'foam.u2.borders.StatusPageBorder',
-    'foam.u2.detail.SectionView'
+    'foam.u2.detail.SectionView',
+    'foam.u2.stack.StackBlock'
   ],
 
   css: `
