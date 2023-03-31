@@ -38,7 +38,7 @@ constFourSecondHttpSinkDemoUsingAtime in storeAndForwards.jrl: example for how t
 <h1>SAF in Medusa</h1>
 The SAF system is built into the Medusa system by default.
 In the medusa, SAF is being use to broadcast data from one mediator to others.
-DAOs can be set to use SAF to directly broadcase data from mediator itself instead of going to Medusa node.
+DAOs can be set to use SAF to directly broadcast data from mediator itself instead of going to Medusa node.
 Important: SAF do not guerantee consistency for the data. If you use SAF for a DAO, please make sure that the data is less important.
 
 <h2>Key Classes</h2>
