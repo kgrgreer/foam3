@@ -168,6 +168,7 @@ foam.CLASS({
     {
       name: 'resetPassword',
       label: 'Confirm',
+      buttonStyle: 'PRIMARY',
       section: 'resetPasswordSection',
       isEnabled: function (errors_) {
         return ! errors_;

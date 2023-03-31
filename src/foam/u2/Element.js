@@ -1501,7 +1501,7 @@ foam.CLASS({
 
     function toE() { return this; },
 
-    function recall(fn, opt_self) {
+    function react(fn, opt_self) {
       var slot = (opt_self || this).slot(fn);
       update = () => {
         this.removeAllChildren();

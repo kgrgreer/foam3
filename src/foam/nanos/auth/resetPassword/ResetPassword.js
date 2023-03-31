@@ -11,8 +11,8 @@ foam.CLASS({
   documentation: 'Reset Password Base Model',
 
   messages: [
-    { name: 'RESET_PASSWORD_TITLE', message: 'Reset your password' },
-    { name: 'RESET_PASSWORD_SUBTITLE', message: 'Create a new password for your account' },
+    { name: 'TITLE', message: 'Reset your password' },
+    { name: 'INSTRUCTION', message: 'Create a new password for your account' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
     { name: 'PASSWORD_NOT_MATCH', message: 'Passwords do not match' },
     { name: 'SUCCESS_MSG', message: 'Your password was successfully updated' },
@@ -22,13 +22,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'resetPasswordSection',
-      title: function() {
-        return this.RESET_PASSWORD_TITLE
-      },
-      subTitle: function() {
-        return this.RESET_PASSWORD_SUBTITLE
-      }
+      name: 'resetPasswordSection'
     }
   ],
 

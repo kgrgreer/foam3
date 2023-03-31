@@ -96,6 +96,7 @@ foam.CLASS({
     'initLayout',
     'isMenuOpen',
     'loginSuccess',
+    'prefersMenuOpen',
     'showNav',
     'stack'
   ],
@@ -135,6 +136,7 @@ foam.CLASS({
       // TODO: Add responsive View switching
       this.onDetach(this.headerSlot_$.sub(this.adjustTopBarHeight));
       this.onDetach(this.displayWidth$.sub(this.maybeCloseNav));
+      this.onDetach(this.isMenuOpen$.sub(this.setUserMenuPreference));
 
 
       // on initlayout reset context so that navigation views will be created
@@ -193,12 +195,18 @@ foam.CLASS({
       a.register(foam.u2.view.NavigationOverlayButton, 'foam.u2.view.OverlayActionListView');
       this.navCtx_ = a;
     },
+    // required as a seperate function because this listens to isMenuOpen, which can be toggled by user clicking on hamburger menu
+    function setUserMenuPreference() {
+      if (this.displayWidth.ordinal > this.DisplayWidth.MD.ordinal) {
+              this.prefersMenuOpen = this.isMenuOpen;
+        }
+      },
     function maybeCloseNav() {
-      if ( this.displayWidth.ordinal < this.DisplayWidth.MD.ordinal ) {
-        this.isMenuOpen = false;
-      } else {
-        this.isMenuOpen = true;
-      }
+      if (this.displayWidth.ordinal <= this.DisplayWidth.MD.ordinal) {
+        this.isMenuOpen = false
+      } else if ( this.displayWidth.ordinal >= this.DisplayWidth.MD.ordinal && this.prefersMenuOpen === true) {
+        this.isMenuOpen = true
+      } 
     },
     function adjustTopBarHeight() {
       if ( ! this.headerSlot_ ) return;
