@@ -345,11 +345,11 @@ foam.CLASS({
 
             journalMap_.put(getSimpleFilename(filename), journal);
             if ( journal.getFileOffset() == journal.getFileSize() ) {
-              ((DAO) x.get("eventRecordDAO")).put(new EventRecord(getX(), this, "SAF file complete", "Id: " + getId() + ", file: " + getSimpleFilename(filename), LogLevel.INFO, null));
+              ((DAO) x.get("eventRecordDAO")).put(new EventRecord(getX(), this, "SAF file complete", getId(), null, "file: " + getSimpleFilename(filename), LogLevel.INFO, null));
               continue;
             }
             if ( journal.getFileOffset() > journal.getFileSize() ) {
-              ((DAO) x.get("eventRecordDAO")).put(new EventRecord(getX(), this, "SAF file error", "Id: " + getId() + ", Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize", LogLevel.ERROR, null));
+              ((DAO) x.get("eventRecordDAO")).put(new EventRecord(getX(), this, "SAF file error", getId(), null, "Atime of file: " + getSimpleFilename(filename) + " is greater than its filesize", LogLevel.ERROR, null));
               journal.setFileOffset(journal.getFileSize());
               continue;
             }
