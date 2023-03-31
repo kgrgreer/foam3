@@ -73,16 +73,16 @@ void render() {
                           curl -X GET \\
   '${url_replace(/\/$/,'') + data}' \\
   -u '${user->email}' \\
-  -H 'accept: application/json1' \\
+  -H 'accept: application/con1' \\
   -H 'cache-control: no-cache' \\
-  -H 'content-type: application/json' \\
+  -H 'content-type: application/con' \\
                       `_trim()) : ( `
                           curl -X POST \\
   '${url_replace(/\/$/,'') + '/service/dig?dao=' + dao}' \\
   -u '${user->email}' \\
-  -H 'accept: application/json1' \\
+  -H 'accept: application/con1' \\
   -H 'cache-control: no-cache' \\
-  -H 'content-type: application/json' \\
+  -H 'content-type: application/con' \\
   -d '${inputData}'
                       `_trim());
                       }))->
@@ -105,8 +105,8 @@ void render() {
     path: '${data_split("&data=")[0]}',
     method: 'GET',
     headers: {
-      'accept': 'application/json',
-      'content-type': 'application/json',
+      'accept': 'application/con',
+      'content-type': 'application/con',
       'cache-control': 'no-cache',
       'authorization': "Basic " + new Buffer("${user->email}:" + PASSWORD)_toString("base64"),
     }
@@ -2237,7 +2237,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

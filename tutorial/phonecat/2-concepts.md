@@ -18,7 +18,7 @@ In Java, you write a class definition using special syntax. This creates a *clas
 
 FOAM's approach is similar in principle: you write a definition for the class and at runtime that creates a class which your code can instantiate.  
 
-FOAM's class definitions take the form of a JSON object passed to the `CLASS()` global function. 
+FOAM's class definitions take the form of a cON object passed to the `CLASS()` global function. 
 
 **JAVA Class Example:**  
 
@@ -40,7 +40,7 @@ FOAM's class definitions take the form of a JSON object passed to the `CLASS()` 
 
 **FOAM Class Example:**
 
-     {% highlight js %}
+     {% highlight c %}
      foam.CLASS({
        name: 'MyClass',
        extends: 'BaseClass',
@@ -77,7 +77,7 @@ Please visit the [Appendix](../4-appendix) in the menu below for more informatio
 
 Here is a simple FOAM class:
 
-     {% highlight js %}
+     {% highlight c %}
      foam.CLASS({
        name: 'Point',
        properties: ['x', 'y'],
@@ -92,16 +92,16 @@ Here is a simple FOAM class:
 
 and it can be instantiated and used like this:
 
-     {% highlight js %}
+     {% highlight c %}
      var p = Point.create({ x: 10, y: 20 });
      p.scale(2);
      p.x += p.y;
-     console.log(p.toJSON());
+     console.log(p.tocON());
      {% endhighlight %}
 
 which will output
 
-     {% highlight js %}
+     {% highlight c %}
      {
        "class": "Point",
        "x": 60,
@@ -118,7 +118,7 @@ Classes can extend other classes which means they will inherit all of the parent
 
 For example:
 
-     {% highlight js %}
+     {% highlight c %}
      CLASS({
        name: 'Point3D',
        extends: 'Point',
@@ -189,7 +189,7 @@ The various ways of hooking up reactive listeners are detailed in the [Appendix]
 
 ## **Missing Utilities**
 
-FOAM tries to provide many missing utilities from Javascript and web platform.  It has fast JSON and XML parsers, a parser combinator library, a `SyncManager` that can sync data for offline use, a powerful asynchronous function library, unit and regression testing. 
+FOAM tries to provide many missing utilities from Javascript and web platform.  It has fast cON and XML parsers, a parser combinator library, a `SyncManager` that can sync data for offline use, a powerful asynchronous function library, unit and regression testing. 
 
 [comment]: <> (## Overhead)
 

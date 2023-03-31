@@ -1,6 +1,6 @@
 typedef struct {
   multitype_union_t associatedEntity;
-  multitype_union_t cjStatus;
+  multitype_union_t cctatus;
   bool isRenewable;
   bool tooltipEnabled;
   multitype_union_t data;
@@ -36,7 +36,7 @@ void init() {
        this_SUPER();
        this_onDetach(this->crunchService_sub('updateJunctionTopic', this->daoUpdate));
        this_daoUpdate();
-       this_onDetach(this->cjStatus$_sub(this->statusUpdate));
+       this_onDetach(this->cctatus$_sub(this->statusUpdate));
     
 }
 void render() {
@@ -57,12 +57,12 @@ void render() {
           _style({
             'background-image': "url('" + self->data->icon + "')"
           })
-          _add(this_slot(function(cjStatus) {
-            if ( ! cjStatus ) return;
+          _add(this_slot(function(cctatus) {
+            if ( ! cctatus ) return;
             return this_E()
-              _start('', { tooltip: cjStatus->documentation })
+              _start('', { tooltip: cctatus->documentation })
                 _addClass(this_myClass('badge'))
-                _add(this->ReadOnlyEnumView_create({ data: cjStatus, showGlyph: true }))
+                _add(this->ReadOnlyEnumView_create({ data: cctatus, showGlyph: true }))
               _end();
           }))
           _add(this_slot(function(isRenewable) {
@@ -2171,7 +2171,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

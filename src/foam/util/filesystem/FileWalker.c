@@ -1,12 +1,12 @@
 typedef struct {
   multitype_union_t order;
-  multitype_union_t nodejs_;
+  multitype_union_t nodec_;
   multitype_union_t skipNext;
 } foam_util_filesystem_FileWalker_t;
 
 void init() {
 
-      this->nodejs_ = {};
+      this->nodec_ = {};
       this_require_('path');
       this_require_('fs');
       this->skip_sub(() => {
@@ -16,7 +16,7 @@ void init() {
 }
 void require_(multitype_union_t name, multitype_union_t asName) {
 
-      Object_defineProperty(this->nodejs_, asName || name, {
+      Object_defineProperty(this->nodec_, asName || name, {
         value: require(name),
         writable: false
       });
@@ -30,7 +30,7 @@ void walk(multitype_union_t path, multitype_union_t depth) {
 
       var self = this;
       return new Promise(function(resolve, reject) {
-        self->nodejs_->fs_readdir(path, function(err, files) {
+        self->nodec_->fs_readdir(path, function(err, files) {
           if ( err ) {
             reject(err);
             return;
@@ -44,9 +44,9 @@ void walk(multitype_union_t path, multitype_union_t depth) {
 
           let fileInfos = files
             _map((file) => {
-              let fullPath = self->nodejs_->path_join(path, file);
+              let fullPath = self->nodec_->path_join(path, file);
               try {
-                stats = self->nodejs_->fs_lstatSync(fullPath);
+                stats = self->nodec_->fs_lstatSync(fullPath);
                 return {
                   name: file,
                   fullPath: fullPath,
@@ -730,7 +730,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

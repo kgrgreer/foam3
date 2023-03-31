@@ -1,5 +1,5 @@
-language: node_js
-node_js:
+language: node_c
+node_c:
   - "9"
   - "8"
   - "7"

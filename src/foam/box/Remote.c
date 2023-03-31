@@ -7,7 +7,7 @@ void installInClass(multitype_union_t cls) {
       var clientClass = this->clientClass || cls_getAxiomsByClass(foam->core->Implements)[0]->path;
 
       cls_installAxiom(foam->core->Method_create({
-        name: 'outputJSON',
+        name: 'outputcON',
         code: function(outputter) {
           var cls = this->__context___maybeLookup(clientClass);
 
@@ -674,7 +674,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

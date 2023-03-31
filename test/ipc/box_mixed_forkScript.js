@@ -18,7 +18,7 @@
 var path = require('path');
 var process = require('process');
 
-require(path.resolve(`${__dirname}/../../src/foam.js`));
-require(path.resolve(`${__dirname}/box_mixed_shared.js`));
+require(path.resolve(`${__dirname}/../../src/foam.c`));
+require(path.resolve(`${__dirname}/box_mixed_shared.c`));
 
 foam.box.node.ForkBox.CONNECT_TO_PARENT(foam.box.Context.create());

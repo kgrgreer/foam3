@@ -7,7 +7,7 @@ typedef struct {
 
 void cancel(multitype_union_t wizardlet) {
 
-      const canceler = foam->json_parse(this->canceler, undefined, wizardlet->__subContext__);
+      const canceler = foam->con_parse(this->canceler, undefined, wizardlet->__subContext__);
       foam->u2->wizard->data_ensureTerminal(canceler, this->ProxyCanceler, this->NullCanceler);
       await canceler_cancel();
     
@@ -15,7 +15,7 @@ void cancel(multitype_union_t wizardlet) {
 void load(multitype_union_t wizardlet) {
 
       if ( wizardlet->loading ) return;
-      const loader = foam->json_parse(this->loader, undefined, wizardlet->__subContext__);
+      const loader = foam->con_parse(this->loader, undefined, wizardlet->__subContext__);
       foam->u2->wizard->data_ensureTerminal(loader, this->ProxyLoader, this->NullLoader);
       await this_SUPER(wizardlet);
       wizardlet->loading = true;
@@ -25,7 +25,7 @@ void load(multitype_union_t wizardlet) {
 }
 void save(multitype_union_t wizardlet) {
 
-      const saver = foam->json_parse(this->saver, undefined, wizardlet->__subContext__);
+      const saver = foam->con_parse(this->saver, undefined, wizardlet->__subContext__);
       foam->u2->wizard->data_ensureTerminal(saver, this->ProxySaver, this->NullSaver);
       // temp workaround until daosaver is implemented
       try {
@@ -684,7 +684,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

@@ -31,7 +31,7 @@ foam.dao.Sink select_(Context x, foam.dao.Sink sink, Long skip, Long limit, foam
         var put = sink->put_bind(sink);
         var newSink = { __proto__: sink };
         newSink->put = function(o) {
-          this_logger('read', foam->json_objectify(o));
+          this_logger('read', foam->con_objectify(o));
           return put_apply(null, arguments);
         }_bind(this);
         return this_SUPER(x, newSink, skip, limit, order, predicate)_then(function() {
@@ -270,7 +270,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -870,7 +870,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

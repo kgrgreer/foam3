@@ -21,7 +21,7 @@ given to each Enum Value.
 
 ## Example Usage:
 To define an enum we use the `foam.ENUM()` function.
-```js
+```c
 foam.ENUM({
   name: 'IssueStatus',
   // Enums share many features with regular classes, the properties
@@ -72,26 +72,26 @@ foam.ENUM({
 });
 ```
 
-```js
+```c
 console.log(IssueStatus.OPEN.name); // outputs "OPEN"
 console.log(IssueStatus.ASSIGNED.consideredOpen); // outputs "true"
 ```
 
 Enum value ordinals can be specified.
-```js
+```c
 console.log(IssueStatus.CLOSED.ordinal); // outputs 100
 // values without specified ordinals get auto assigned.
 console.log(IssueStatus.ASSIGNED.ordinal); // outputs 101
 ```
 
 Methods can be called on the enum values.
-```js
+```c
 // outputs "Fixed is not considered open."
 console.log(IssueStatus.FIXED.foo());
 ```
 
 To store enums on a class, it is recommended to use the Enum property type.
-```js
+```c
 foam.CLASS({
   name: 'Issue',
   properties: [
@@ -108,25 +108,25 @@ console.log(issue.status.label); // outputs "Unverified"
 ```
 
 Enum properties give you some convenient adapting. You can set the property to the ordinal or the name of an enum, and it will set the property to the correct Enum value.
-```js
+```c
 issue.status = 100;
 issue.status === IssueStatus.CLOSED; // is true
 ```
 
 Enum properties also allow you to assign them via the name of the enum.
-```js
+```c
 issue.status = "ASSIGNED"
 issue.status === IssueStatus.ASSIGNED; // is true
 ```
 
 The extent of all Enum values can be accessed from either the collection from any individual Enum value:
-```js
+```c
 console.log(IssueStatus.VALUES, IssueStatus.CLOSED.VALUES);
 ```
 
 Values can be specified as just Strings if you don't want to explicitly the label or ordinal. 
 
-```js
+```c
 foam.ENUM({
  name: 'DaysOfWeek',
  values: [

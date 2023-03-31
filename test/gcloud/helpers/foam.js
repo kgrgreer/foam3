@@ -16,4 +16,4 @@
  */
 
 globalThis.FOAM_FLAGS = { debug: true, gcloud: true };
-(typeof require !== "undefined") &&  require("../../../src/foam.js");
+(typeof require !== "undefined") &&  require("../../../src/foam.c");

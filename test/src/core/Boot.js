@@ -628,7 +628,7 @@ describe('FObject white box test', function() {
     var o = test.Person.create(undefined, foam.__context__);
     expect(o.name).toEqual('');
   });
-  it('inits from a POJSO', function() {
+  it('inits from a POcO', function() {
     var o = test.Person.create({ name: 'prop1' }, foam.__context__);
 
     expect(o.name).toEqual('prop1');

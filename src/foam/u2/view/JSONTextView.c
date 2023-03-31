@@ -29,7 +29,7 @@ typedef struct {
   multitype_union_t clickTarget_;
   multitype_union_t __subSubContext__;
   multitype_union_t keyMap_;
-} foam_u2_view_JSONTextView_t;
+} foam_u2_view_cONTextView_t;
 
 void render() {
 
@@ -2137,7 +2137,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

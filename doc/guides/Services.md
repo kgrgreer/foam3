@@ -3,12 +3,12 @@
 ### Server
 1. Create foam.Interface for Service
 
-Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/AuthService.js
+Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/AuthService.c
 
 If youf method returns a value to the client, make sure to include
 "async: true" so that the client gets the return value.
 
-2. In classes.js, include the Interface for which a skeleton will be generated
+2. In classes.c, include the Interface for which a skeleton will be generated
 Eg:
 ```
 var skeletons = [
@@ -35,7 +35,7 @@ the skeleton's responsibility to then marshal these return values or exceptions 
 
 ### CLIENT SIDE
 4. Create stub for Service on the client side
-Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/ClientAuthService.js
+Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/ClientAuthService.c
 
 A stub does the reverse job of the skeleton. It implements the provided interface, but when called, it marshals the method name and parameters into a network call which is then sent to the server to be received by the skeleton, and then subsequently, by the actual server implementation. The stub then parses the result created by the skeleton and converts them into method return values.
 

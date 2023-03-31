@@ -85,7 +85,7 @@ void sortBy(multitype_union_t column) {
 void updateColumns() {
 
       localStorage_removeItem(this->of->id);
-      localStorage_setItem(this->of->id, JSON_stringify(this->selectedColumnNames_map(c => foam->String_isInstance(c) ? c : c->name )));
+      localStorage_setItem(this->of->id, cON_stringify(this->selectedColumnNames_map(c => foam->String_isInstance(c) ? c : c->name )));
 
       if ( ! this->memento )
         return;
@@ -2483,7 +2483,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

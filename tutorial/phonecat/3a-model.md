@@ -8,7 +8,7 @@ tutorial: 3a
 In Part III of this tutorial, we will build a basic FOAM app while we further explore the core concepts described in the last chapter. After completing these lessons and exercise, the user will have a basic understanding of how to use FOAM to build basic apps.
 
 The app we're going to build here is shamelessly borrowed from the
-[AngularJS tutorial](https://docs.angularjs.org/tutorial). It is a simple catalog app that shows a collection of (amusingly outdated) smartphones. It has two views: one for the list of phones and the other for the details of one phone.
+[Angularc tutorial](https://docs.angularc.org/tutorial). It is a simple catalog app that shows a collection of (amusingly outdated) smartphones. It has two views: one for the list of phones and the other for the details of one phone.
 
 You can see the finished app running live [here](../../index.html).
 
@@ -20,9 +20,9 @@ For example, the model for an email client might consist of a handful of classes
 
 ## **Tutorial Application**
 
-**STEP 1:** Enter the following code in `$PROJECT/Phone.js`:
+**STEP 1:** Enter the following code in `$PROJECT/Phone.c`:
 
-     {% highlight js %}
+     {% highlight c %}
      foam.CLASS({
        name: 'Phone',
        properties: [

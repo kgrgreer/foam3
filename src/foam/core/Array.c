@@ -49,8 +49,8 @@ typedef struct {
   const char *shortName;
   multitype_union_t of;
   multitype_union_t source;
-  multitype_union_t fromJSON;
-  multitype_union_t toJSON;
+  multitype_union_t fro.cON;
+  multitype_union_t t.cON;
   bool xmlAttribute;
   bool xmlTextNode;
   multitype_union_t fromXML;
@@ -79,7 +79,7 @@ typedef struct {
   Integer tableWidth;
   bool projectionSafe;
   foam.core.FObject searchView;
-  multitype_union_t chartJsFormatter;
+  multitype_union_t char.cFormatter;
   multitype_union_t gridColumns;
   const char *section;
   bool columnHidden;
@@ -409,7 +409,7 @@ void validateClass(multitype_union_t cls) {
       }
     
 }
-void outputJSON(multitype_union_t o) {
+void outpu.cON(multitype_union_t o) {
 
       if ( o->passPropertiesByReference ) {
         o_output({ class: '__Property__', forClass_: this->forClass_, name: this->name });
@@ -1182,6 +1182,6 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam-.con->Pretty_stringify(this);
     
 }

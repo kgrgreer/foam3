@@ -1,18 +1,18 @@
 FOAM3_HOME ?= .
 
 foam3_SRC_DIR = src
-foam3_CLASSES = tools/classes.js
+foam3_CLASSES = tools/classes.c
 
 # Format for dependencies from maven is
 # <groupId>:<artifactId>:<version>
 foam3_MAVEN_DEPS = \
-	javax.json:javax.json-api:1.0 \
+	javax.con:javax.con-api:1.0 \
 	javax.mail:javax.mail-api:1.6.2 \
 	com.sun.mail:imap:1.6.3 \
 	javax.servlet:javax.servlet-api:3.1.0 \
 	javax.websocket:javax.websocket-api:1.1 \
 	javax.ws.rs:javax.ws.rs-api:2.0 \
-	jstl:jstl:1.2 \
+	ctl:ctl:1.2 \
 	org.apache.commons:commons-text:1.1 \
 	org.apache.commons:commons-dbcp2:2.0.1 \
 	org.apache.commons:commons-pool2:2.6.2 \

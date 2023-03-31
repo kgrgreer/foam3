@@ -1478,7 +1478,7 @@ describe('AND(*, CONTAINS_IC(ID, *)', function() {
       ]
     });
     var dao = foam.dao.MDAO.create({of: test.Person});
-    dao.put(test.Person.create({id: 'JSmith', f: 'James', l: 'Smith'}));
+    dao.put(test.Person.create({id: 'cmith', f: 'James', l: 'Smith'}));
     dao.put(test.Person.create({id: 'ACheeseman', f: 'Alice', l: 'Cheeseman'}));
     dao.put(test.Person.create({id: 'RJamison', f: 'Rebecca', l: 'Jamison'}));
     dao.put(test.Person.create({id: 'XMing', f: 'Xi', l: 'Ming'}));

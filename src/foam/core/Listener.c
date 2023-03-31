@@ -19,7 +19,7 @@ typedef struct {
 
 void installInProto(multitype_union_t proto, multitype_union_t superAxiom) {
 
-      // This can happen when there's no js implementation of a listener->
+      // This can happen when there's no c implementation of a listener->
       if ( ! this->code ) return;
 
       foam_assert(
@@ -821,7 +821,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

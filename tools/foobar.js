@@ -8,14 +8,14 @@ const path_ = require('path');
 const fs_ = require('fs');
 const path = require('path');
 
-require('../src/foam_node.js');
+require('../src/foam_node.c');
 
 const FOAM_POM = path_.join(__dirname, '../src/pom');
 const CORE_POM = path_.join(__dirname, '../src/foam/nanos/pom');
 const FOOBAR_POM = path_.join(__dirname, '../src/foam/foobar/pom');
 const TOOL_DIR = __dirname;
 
-var [argv, X, flags] = require('./processArgs.js')(
+var [argv, X, flags] = require('./processArgs.c')(
   '',
   {
     version: '', license: '', pom: 'pom',
@@ -56,7 +56,7 @@ const foobarPomCtx = {
 
 with ( foobarPomCtx ) {
   let pomPath = X.pom;
-  if ( ! pomPath.endsWith('.js') ) pomPath += '.js';
+  if ( ! pomPath.endsWith('.c') ) pomPath += '.c';
   const pomScript = fs_.readFileSync(path_.resolve(process.cwd(), pomPath)).toString();
   eval(pomScript);
 }

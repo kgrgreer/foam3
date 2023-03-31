@@ -15,19 +15,19 @@ void parseClassFromString(multitype_union_t str, multitype_union_t opt_cls) {
 
       var res = this->grammar_parseString(str, 'obj');
       if ( ! res ) return null;
-      return foam->json_parse(res, opt_cls, this->creationContext);
+      return foam->con_parse(res, opt_cls, this->creationContext);
     
 }
 void aparse(multitype_union_t str, multitype_union_t opt_ctx) {
 
       var x = this->__context__;
 
-      var json = JSON_parse(str);
+      var con = cON_parse(str);
 
-      var references = foam->json_references(x, json);;
+      var references = foam->con_references(x, con);;
 
       return Promise->all/*Settled*/(references)_then(() => {
-        return foam->json_parse(json, undefined, opt_ctx || this->creationContext);
+        return foam->con_parse(con, undefined, opt_ctx || this->creationContext);
       });
     
 }
@@ -664,7 +664,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

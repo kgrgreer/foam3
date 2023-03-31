@@ -9,11 +9,11 @@ repositories {
 //     implementation 'commons-net:commons-net:3.6'
 //     implementation "org.jtwig:jtwig-core:5.87.0.RELEASE"
 //     implementation "org.apache.commons:commons-collections4:4.3"
-//     implementation "javax.json:javax.json-api:1.0"
+//     implementation "javax.con:javax.con-api:1.0"
 //     implementation "javax.websocket:javax.websocket-api:1.1"
 //     implementation "javax.mail:javax.mail-api:1.6.2"
 //     implementation "javax.servlet:javax.servlet-api:3.1.0"
-//     implementation "jstl:jstl:1.2"
+//     implementation "ctl:ctl:1.2"
 //     implementation ("org.apache.commons:commons-dbcp2:2.0.1") {
 //         exclude group: 'xml-apis'
 //         exclude module: 'xml-apis'
@@ -56,11 +56,11 @@ dependencies {
     implementation "com.intuit.quickbooks-online:ipp-v3-java-data:5.0.4"
     implementation "com.intuit.quickbooks-online:ipp-v3-java-devkit:5.0.4"
     implementation "com.intuit.quickbooks-online:oauth2-platform-api:5.0.4"
-    implementation "javax.json:javax.json-api:1.0"
+    implementation "javax.con:javax.con-api:1.0"
     implementation "javax.websocket:javax.websocket-api:1.1"
     implementation "javax.mail:javax.mail-api:1.6.2"
     implementation "javax.servlet:javax.servlet-api:3.1.0"
-    implementation "jstl:jstl:1.2"
+    implementation "ctl:ctl:1.2"
     implementation ("org.apache.commons:commons-dbcp2:2.0.1") {
         exclude group: 'xml-apis'
         exclude module: 'xml-apis'
@@ -69,7 +69,7 @@ dependencies {
     }
     implementation "org.apache.commons:commons-text:1.1"
     implementation "commons-codec:commons-codec:1.11"
-    implementation "com.jcraft:jsch:0.1.54"
+    implementation "com.jcraft:cch:0.1.54"
     implementation "org.apache-extras.beanshell:bsh:2.0b6"
     implementation "com.google.api-client:google-api-client:1.22.0"
     implementation "com.google.apis:google-api-services-sheets:v4-rev567-1.22.0"

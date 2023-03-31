@@ -160,11 +160,11 @@ foam.async.repeat(FBE.length, function runExemplar(index) {
 
   // Create a download link with the full code
   var downloadableCode =
-    "// include 'src/foam.js' and this code in your test page:\n" +
+    "// include 'src/foam.c' and this code in your test page:\n" +
     "// <html>\n" +
     "//   <head>\n" +
-    "//     <script src='../../src/foam.js'></script> \n" +
-    "//     <script src='thisExample.js'></script> \n" +
+    "//     <script src='../../src/foam.c'></script> \n" +
+    "//     <script src='thisExample.c'></script> \n" +
     "//   </head>\n" +
     "//   ...\n" +
     "// </html>\n" +

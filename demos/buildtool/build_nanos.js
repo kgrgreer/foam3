@@ -2,12 +2,12 @@
 
 globalThis.FOAM_FLAGS = {
   web: true,
-  js: true,
+  c: true,
   debug: true,
 };
 
-require(__dirname + '/../../src/foam.js');
-require(__dirname + '/../../src/foam/nanos/nanos.js');
+require(__dirname + '/../../src/foam.c');
+require(__dirname + '/../../src/foam/nanos/nanos.c');
 
 var deps = [
   'foam.build.Builder',
@@ -15,7 +15,7 @@ var deps = [
 
 Promise.all(deps.map(d => foam.__context__.classloader.load(d))).then(function() {
   foam.build.Builder.create({
-    targetFile: __dirname + '/foam-bin.js',
-        enabledFeatures: ['web', 'js'],
+    targetFile: __dirname + '/foam-bin.c',
+        enabledFeatures: ['web', 'c'],
   }).execute()
 });

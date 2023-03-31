@@ -46,8 +46,8 @@ void dumpState(multitype_union_t spot) {
       // Uncomment for debugging
       /*
       console_log('--- ', spot);
-      console_log('stack: ', JSON_stringify(this->stack));
-      console_log('redo: ', JSON_stringify(this->redo));
+      console_log('stack: ', cON_stringify(this->stack));
+      console_log('redo: ', cON_stringify(this->redo));
       */
     
 }
@@ -679,7 +679,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

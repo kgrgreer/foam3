@@ -20,7 +20,7 @@ void load(multitype_union_t ...a) {
         foam_assert(false, errorMsg);
       }
 
-      const loader = foam->json_parse(
+      const loader = foam->con_parse(
         wizardlet->wao->loader, undefined, wizardlet->__subContext__);
       foam->u2->wizard->data_ensureTerminal(loader, this->ProxyLoader, this->NullLoader);
       return await loader_load({ ->->->a, old: wizardlet->data });
@@ -667,7 +667,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

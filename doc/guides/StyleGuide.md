@@ -1,6 +1,6 @@
 # FOAM3 Coding Style Guidelines
 
-Except where noted below, FOAM conforms to the [Google Javascript Style Guide](https://google.github.io/styleguide/jsguide.html).
+Except where noted below, FOAM conforms to the [Google Javascript Style Guide](https://google.github.io/styleguide/cguide.html).
 Java code should abide by the [Doug Lea Java Code Standard](http://gee.cs.oswego.edu/dl/html/javaCodingStd.html)
 
 ## Exceptions
@@ -24,7 +24,7 @@ for ( var i = 0 ; i < a.length ; i++ ) a[i] = '';
 ```
 * The rules about using Closure's `goog.provide`, `goog.require` and similar are
   omitted; use FOAM's `requires: []` support instead.
-* The rules about using JSDoc comments to inform the Closure compiler's
+* The rules about using cDoc comments to inform the Closure compiler's
   type-checking are omitted; use FOAM's type-checking instead.
 * Encourage the use of vertical alignment where it makes sense, since it makes code easier to read. Ex.:
 ```javascript
@@ -56,7 +56,7 @@ for ( var i = 0 ; i < a.length ; i++ ) a[i] = '';
 * Use `NAMES_LIKE_THIS` for constant and message names.
 
 ## Modelling
-Code should be modeled rather than created as conventional JS prototypes.
+Code should be modeled rather than created as conventional c prototypes.
 
 Provide property labels when the default labelization of the property name will not be helpful or attractive to users.
 

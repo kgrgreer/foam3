@@ -10,13 +10,13 @@ process.on('unhandledRejection', function(e) {
 });
 
 // enable FOAM java support.
-globalThis.FOAM_FLAGS = { 'java': true, 'debug': true, 'js': false };
+globalThis.FOAM_FLAGS = { 'java': true, 'debug': true, 'c': false };
 
-require('../src/foam.js');
-require('../src/foam/nanos/nanos.js');
+require('../src/foam.c');
+require('../src/foam/nanos/nanos.c');
 
 if ( process.argv.length != 4 ) {
-  console.log("USAGE: genjavaone.js model-id output-path");
+  console.log("USAGE: genjavaone.c model-id output-path");
   process.exit(1);
 }
 

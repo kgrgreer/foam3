@@ -14,7 +14,7 @@ void load(multitype_union_t ...a) {
         // If it's not an FObject, parse it
         if ( ! foam->core->FObject_isInstance(loader) ) {
           console_log('before parse of', loader)
-          loader = foam->json_parse(loader, undefined, this->__subContext__);
+          loader = foam->con_parse(loader, undefined, this->__subContext__);
           console_log('after parse');
         }
 
@@ -669,7 +669,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

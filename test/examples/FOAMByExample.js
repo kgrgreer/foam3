@@ -3104,7 +3104,7 @@ var examples = [
   },
   {
     name: 'Template basics',
-    description: 'Templates use a JSP syntax to insert properties and code',
+    description: 'Templates use a cP syntax to insert properties and code',
     dependencies: [  ],
     code: function() {
       //
@@ -3189,7 +3189,7 @@ var examples = [
   },
   {
     name: 'Template code',
-    description: 'Template can use raw JS code for loops and control structures',
+    description: 'Template can use raw c code for loops and control structures',
     dependencies: [  ],
     code: function() {
       foam.CLASS({
@@ -3198,7 +3198,7 @@ var examples = [
         templates: [
           {
             name: 'complexTemplate',
-            template: 'Use raw JS code for loops and control structures' +
+            template: 'Use raw c code for loops and control structures' +
               '<% for ( var i = 0 ; i < 10; i++ ) { %>\n' +
               'i is: "<%= i %>" <% if ( i % 2 == 0 ) { %> which is even!<% } '+
               '} %>' +
@@ -3214,7 +3214,7 @@ var examples = [
     postTestCode: function() {
 
       //toBeAssertedThat(TemplateTest.create({ name: 'Adam' }).complexTemplate()).toEqual(
-//         'Use raw JS code for loops and control structures\n' +
+//         'Use raw c code for loops and control structures\n' +
 //         'i is: "0"  which is even!\n' +
 //         'i is: "1" \n' +
 //         'i is: "2"  which is even!\n' +
@@ -3244,7 +3244,7 @@ var examples = [
           {
             name: 'complexTemplate',
             template: `
-Use raw JS code for loops and control structures
+Use raw c code for loops and control structures
 <% for ( var i = 0 ; i < 10; i++ ) { %>
 i is: "<%= i %>" <% if ( i % 2 == 0 ) { %> which is even!<% }
 } %>
@@ -3258,12 +3258,12 @@ For instance, my name is %%name
     },
   },
   {
-    name: 'Create JSON Class',
-    description: 'Conversion to and from JSON is supported',
+    name: 'Create cON Class',
+    description: 'Conversion to and from cON is supported',
     dependencies: [  ],
     code: function() {
       foam.CLASS({
-        name: 'JSONTest',
+        name: 'cONTest',
         properties: [
           { name: 'name', shortName: 'n' },
           { class: 'Int', name: 'age', shortName: 'a' },
@@ -3297,12 +3297,12 @@ For instance, my name is %%name
     },
   },
   {
-    name: 'JSON parse',
-    description: 'Use foam.json.parse(someJSONobject) to convert to an FObject',
-    dependencies: [ 'Create JSON Class' ],
+    name: 'cON parse',
+    description: 'Use foam.con.parse(somecONobject) to convert to an FObject',
+    dependencies: [ 'Create cON Class' ],
     code: function() {
-      var o = foam.json.parse({
-        class: 'JSONTest',
+      var o = foam.con.parse({
+        class: 'cONTest',
         name: 'John',
         age: 42,
         children: ['Peter', 'Paul']});
@@ -3310,11 +3310,11 @@ For instance, my name is %%name
     },
   },
   {
-    name: 'JSON output',
-    description: 'Use foam.json.stringify(fobject) to serialize an FObject to a JSON string',
-    dependencies: [ 'Create JSON Class' ],
+    name: 'cON output',
+    description: 'Use foam.con.stringify(fobject) to serialize an FObject to a cON string',
+    dependencies: [ 'Create cON Class' ],
     code: function() {
-      o = JSONTest.create({
+      o = cONTest.create({
         name: 'John',
         age: 42,
         children: ['Peter', 'Paul'],
@@ -3329,7 +3329,7 @@ For instance, my name is %%name
         falseBoolean: false,
         defaultBoolean: true,
         definedFunction: function plus(a, b) { return a + b; },
-        definedFObject: JSONTest.create({
+        definedFObject: cONTest.create({
           name: 'Janet',
           age: 32,
           children: [ 'Kim', 'Kathy' ]
@@ -3338,53 +3338,53 @@ For instance, my name is %%name
         networkTransient: 'network transient value',
         storageTransient: 'storage transient value'
       });
-      // Default JSON formatting
-      console.log(foam.json.stringify(o));
+      // Default cON formatting
+      console.log(foam.con.stringify(o));
 
     },
   },
   {
-    name: 'JSON output modes',
+    name: 'cON output modes',
     description: 'Different outputters support suppressing properties, transients, and other options',
-    dependencies: [ 'JSON output' ],
+    dependencies: [ 'cON output' ],
     code: function() {
       // Outputters have different defaults for formatting, which properties
       // to output, etc. You can clone one and change these settings on the
-      // outputter to customize your JSON output.
+      // outputter to customize your cON output.
 
-      console.log('\nConvert to a JSON object (instead of a String):');
-      console.log(foam.json.stringify(JSONTest.create(foam.json.objectify(o))));
+      console.log('\nConvert to a cON object (instead of a String):');
+      console.log(foam.con.stringify(cONTest.create(foam.con.objectify(o))));
 
       console.log('\nAs a method on Objects:');
       console.log(o.stringify());
 
       console.log('\nPretty-printed output:');
-      console.log(foam.json.Pretty.stringify(o));
+      console.log(foam.con.Pretty.stringify(o));
 
       console.log('\nDisable class name output by cloning your own outputter:');
-      console.log(foam.json.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
+      console.log(foam.con.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
 
       console.log('\nStrict output:');
-      console.log(foam.json.Strict.stringify(o));
+      console.log(foam.con.Strict.stringify(o));
 
       console.log('\nStrict-but-still-readable output:');
-      console.log(foam.json.PrettyStrict.stringify(o));
+      console.log(foam.con.PrettyStrict.stringify(o));
 
       console.log('\nCompact output:');
-      console.log(foam.json.Compact.stringify(o));
+      console.log(foam.con.Compact.stringify(o));
 
       console.log('\nShort-name (very compact) output:');
-      console.log(foam.json.Short.stringify(o));
+      console.log(foam.con.Short.stringify(o));
 
       console.log('\nNetwork (network-transient properties omitted) output:');
-      console.log(foam.json.Network.stringify(o));
+      console.log(foam.con.Network.stringify(o));
 
       console.log('\nStorage (storage-transient properties omitted) output:');
-      console.log(foam.json.Storage.stringify(o));
+      console.log(foam.con.Storage.stringify(o));
     },
     postTestCode: function() {
-      //toBeAssertedThat(foam.json.Network.stringify(o).indexOf('networkTransient').toEqual(-1);
-      //toBeAssertedThat(foam.json.Storage.stringify(o).indexOf('storageTransient').toEqual(-1);
+      //toBeAssertedThat(foam.con.Network.stringify(o).indexOf('networkTransient').toEqual(-1);
+      //toBeAssertedThat(foam.con.Storage.stringify(o).indexOf('storageTransient').toEqual(-1);
     }
   },
   {

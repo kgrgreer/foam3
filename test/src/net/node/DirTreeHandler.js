@@ -76,7 +76,7 @@ describe('DirTreeHandler', function() {
   it('should prohibit escape-by-relative-path', function(done) {
     serverPromise.then(function() {
       return foam.net.node.HTTPRequest.create({
-        url: `http://0.0.0.0:${PORT}${PREFIX}/../DirTreeHandler.js`
+        url: `http://0.0.0.0:${PORT}${PREFIX}/../DirTreeHandler.c`
       }).send();
     }).then(function(response) {
       expect(response.status).toBe(404);

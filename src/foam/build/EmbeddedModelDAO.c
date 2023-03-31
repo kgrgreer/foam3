@@ -1,5 +1,5 @@
 typedef struct {
-  Map json;
+  Map con;
   bool loaded;
   Map loading;
   multitype_union_t deserializer;
@@ -16,14 +16,14 @@ void load_(multitype_union_t id) {
 
         if ( this->loading[id] ) return this->loading[id];
 
-        if ( ! this->json[id] ) {
+        if ( ! this->con[id] ) {
           console_log("No value found for", id);
           return null;
         }
 
-        var json = this->json[id];
-        delete this->json[id];
-        this->loading[id] = this->deserializer_aparse(this->__context__, json)_then(function(obj) {
+        var con = this->con[id];
+        delete this->con[id];
+        this->loading[id] = this->deserializer_aparse(this->__context__, con)_then(function(obj) {
           return this->delegate_put(obj);
         }_bind(this))_then(function(obj) {
           delete this->loading[id];
@@ -40,7 +40,7 @@ foamtypes->FObject find_(Context x, Object id) {
 }
 foam.dao.Sink select_(Context x, foam.dao.Sink sink, Long skip, Long limit, foam.mlang.order.Comparator order, foam.mlang.predicate.Predicate predicate) {
 
-        var keys = Object_keys(this->json);
+        var keys = Object_keys(this->con);
 
         if ( strlen(keys) != 0 ) {
           return Promise_all(keys_map(function(key) {
@@ -288,7 +288,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -888,7 +888,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

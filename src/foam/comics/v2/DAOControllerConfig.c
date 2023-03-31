@@ -35,12 +35,12 @@ typedef struct {
   foam.core.FObject createController;
   foam.core.FObject detailView;
   foam.core.FObject menu;
-  foam.lib.json.UnknownFObject createControllerView;
+  foam.lib.con.UnknownFObject createControllerView;
   foam.core.Action browseActions[];
   multitype_union_t browseContext;
   foam.core.FObject createPopup;
   foam.core.Action DAOActions[];
-  Map selectedObjs;
+  Map selectedObc;
   foam.mlang.predicate.Predicate searchPredicate;
   Integer preSelectedCannedQuery;
   const char *redirectMenu;
@@ -873,7 +873,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

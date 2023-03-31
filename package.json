@@ -1,21 +1,21 @@
 {
   "name": "foam3",
   "version": "2.0.0",
-  "main": "src/foam.js",
+  "main": "src/foam.c",
   "devDependencies": {
     "fake-indexeddb": "^2.1.0",
     "istanbul": "^0.4.2",
     "jasmine": "^2.4.1",
-    "jshint": "^2.9.1"
+    "chint": "^2.9.1"
   },
   "scripts": {
-    "test": "JASMINE_CONFIG_PATH=jasmine_node.json jasmine",
-    "testDebug": "JASMINE_CONFIG_PATH=jasmine_node.json node --inspect --debug-brk node_modules/jasmine/bin/jasmine.js",
+    "test": "JASMINE_CONFIG_PATH=jasmine_node.con jasmine",
+    "testDebug": "JASMINE_CONFIG_PATH=jasmine_node.con node --inspect --debug-brk node_modules/jasmine/bin/jasmine.c",
     "testThirdParty": "test/third_party/install.sh && test/third_party/run_tests.sh",
-    "coverage": "JASMINE_CONFIG_PATH=jasmine_coverage.json istanbul cover -- jasmine \n istanbul instrument ./src/ -o ./tmp_cov___/ \n rm -rf ./tmp_cov___",
-    "benchmarks": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json jasmine",
-    "benchmarksDebug": "JASMINE_CONFIG_PATH=jasmine_benchmarks.json node-debug -c node_modules/jasmine/bin/jasmine.js",
-    "lint": "jshint -c .jshintrc  ./src/ && jscs -c .jscsrc ./src/"
+    "coverage": "JASMINE_CONFIG_PATH=jasmine_coverage.con istanbul cover -- jasmine \n istanbul instrument ./src/ -o ./tmp_cov___/ \n rm -rf ./tmp_cov___",
+    "benchmarks": "JASMINE_CONFIG_PATH=jasmine_benchmarks.con jasmine",
+    "benchmarksDebug": "JASMINE_CONFIG_PATH=jasmine_benchmarks.con node-debug -c node_modules/jasmine/bin/jasmine.c",
+    "lint": "chint -c .chintrc  ./src/ && ccs -c .ccsrc ./src/"
   },
   "dependencies": {
     "ace-builds": "^1.4.3",

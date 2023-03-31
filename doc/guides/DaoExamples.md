@@ -20,7 +20,7 @@ python -m SimpleHTTPServer
 git clone https://github.com/foam-framework/foam3.git
 cd foam3 && npm install
 node
-> require("./src/foam.js");
+> require("./src/foam.c");
 # > core boot time:  23
 # > foam.isServer
 # > true
@@ -28,7 +28,7 @@ node
 
 ### Examples
 
-```js
+```c
 // creates a simple foam class
 foam.CLASS({
   name: 'Guitar',
@@ -36,12 +36,12 @@ foam.CLASS({
 });
 ```
 
-```js
+```c
 // an array of Guitars
 var guitarArray = foam.dao.ArrayDAO.create();
 ```
 
-```js
+```c
 guitarArray.put(Guitar.create({
   id: 1,
   color: 'black',
@@ -51,7 +51,7 @@ guitarArray.put(Guitar.create({
 }));
 ```
 
-```js
+```c
 guitarArray.put(Guitar.create({
   id: 2,
   color: 'sunburst',
@@ -61,7 +61,7 @@ guitarArray.put(Guitar.create({
 }));
 ```
 
-```js
+```c
 guitarArray.put(Guitar.create({
   id: 3,
   color: 'white',
@@ -71,7 +71,7 @@ guitarArray.put(Guitar.create({
 }));
 ```
 
-```js
+```c
 guitarArray.put(Guitar.create({
   id: 4,
   color: 'appetite amber',
@@ -81,7 +81,7 @@ guitarArray.put(Guitar.create({
 }));
 ```
 
-```js
+```c
 guitarArray.put(Guitar.create({
   id: 5,
   color: 'red',
@@ -91,12 +91,12 @@ guitarArray.put(Guitar.create({
 }));
 ```
 
-```js
+```c
 // creates a memory persistence(MDAO) layer for the Guitars class.
 var guitarDAO = foam.dao.MDAO.create({ of: Guitar });
 ```
 
-```js
+```c
 // IndexedDB DAO
 // guitarDAO = foam.dao.IDBDAO.create({model: Guitar});
 
@@ -110,15 +110,15 @@ var guitarDAO = foam.dao.MDAO.create({ of: Guitar });
 guitarDAO.bulkLoad(guitarArray);
 ```
 
-```js
+```c
 // we declare mLang here, the foam "modelled language"
 // in simple terms, mlang is foam's own "SQL syntax"
 // it's used to filter and manipulate DAO operations.
-// https://github.com/foam-framework/foam3/blob/master/src/foam/mlang/mlang.js
+// https://github.com/foam-framework/foam3/blob/master/src/foam/mlang/mlang.c
 var expr = foam.mlang.Expressions.create();
 ```
 
-```js
+```c
 // returns all the guitars
 guitarDAO
 .select() 
@@ -130,7 +130,7 @@ guitarDAO
 });
 ```
 
-```js
+```c
 // counts the guitars 
 // short-circuits it and returns only the count number
 guitarDAO
@@ -140,7 +140,7 @@ guitarDAO
 });
 ```
 
-```js
+```c
 // give me all gibsons
 guitarDAO
 .where(expr.EQ(Guitar.BRAND, 'gibson'))
@@ -151,7 +151,7 @@ guitarDAO
 });
 ```
 
-```js
+```c
 // give me all gibsons or seizis using OR
 guitarDAO.where(expr.OR(expr.EQ(Guitar.BRAND, 'seizi'), expr.EQ(Guitar.BRAND, 'gibson')))
 .select()
@@ -160,7 +160,7 @@ guitarDAO.where(expr.OR(expr.EQ(Guitar.BRAND, 'seizi'), expr.EQ(Guitar.BRAND, 'g
 });
 ```
 
-```js
+```c
 // give me all gibsons or fenders using IN
 guitarDAO.where(expr.IN(Guitar.BRAND, ['gibson', 'fender']))
 .select()
@@ -169,7 +169,7 @@ guitarDAO.where(expr.IN(Guitar.BRAND, ['gibson', 'fender']))
 });
 ```
 
-```js
+```c
 // give me all fenders with a price below 2500
 guitarDAO
 .where(expr.AND(expr.LT(Guitar.PRICE, 2500), expr.EQ(Guitar.BRAND, 'fender')))
@@ -179,7 +179,7 @@ guitarDAO
 });
 ```
 
-```js
+```c
 // give me all guitars where brand starts with `g` or name starts with `s`
 guitarDAO.where(expr.OR(expr.STARTS_WITH(Guitar.BRAND, 'g'), expr.STARTS_WITH(Guitar.NAME, 's')))
 .select()
@@ -188,7 +188,7 @@ guitarDAO.where(expr.OR(expr.STARTS_WITH(Guitar.BRAND, 'g'), expr.STARTS_WITH(Gu
 });
 ```
 
-```js
+```c
 // using contains
 guitarDAO.where(expr.CONTAINS(Guitar.NAME, 'sh'))
 .select()
@@ -197,7 +197,7 @@ guitarDAO.where(expr.CONTAINS(Guitar.NAME, 'sh'))
 });
 ```
 
-```js
+```c
 // using contains_ic (ignoring case)
 guitarDAO.where(expr.CONTAINS_IC(Guitar.NAME, 'SH'))
 .select()
@@ -206,7 +206,7 @@ guitarDAO.where(expr.CONTAINS_IC(Guitar.NAME, 'SH'))
 });
 ```
 
-```js
+```c
 // give me all fenders and order by price
 
 // this is a custom sink function
@@ -219,7 +219,7 @@ guitarDAO.where(expr.EQ(Guitar.BRAND, 'fender'))
 .then();
 ```
 
-```js
+```c
 // give me only two guitars
 guitarDAO.limit(2)
 .select()
@@ -228,7 +228,7 @@ guitarDAO.limit(2)
 });
 ```
 
-```js
+```c
 // give me only two guitars
 // and sum their prices
 guitarDAO
@@ -239,7 +239,7 @@ guitarDAO
 });
 ```
 
-```js
+```c
 // sums all guitars prices
 guitarDAO.select(expr.SUM(Guitar.PRICE))
 .then(function(g) {
@@ -247,7 +247,7 @@ guitarDAO.select(expr.SUM(Guitar.PRICE))
 });
 ```
 
-```js
+```c
 // returns the most expensive guitar
 guitarDAO.select(expr.MAX(Guitar.PRICE))
 .then(function(g) {
@@ -255,7 +255,7 @@ guitarDAO.select(expr.MAX(Guitar.PRICE))
 });
 ```
 
-```js
+```c
 // returns the cheapest guitar
 guitarDAO.select(expr.MIN(Guitar.PRICE))
 .then(function(g) {
@@ -269,7 +269,7 @@ DAO decorators add more functionality to existing daos, examples below:
 
 #### TimingDAO
 
-```js
+```c
 
 // TimingDAO extends the ProxyDAO which require us to setup a delegated class.
 // it adds timing functionality to specific DAO operations.

@@ -39,8 +39,8 @@ void addContentHeaders() {
           case 'text':
           this->headers['Content-Type'] = 'text/plain';
           break;
-          case 'json':
-          this->headers['Content-Type'] = 'application/json';
+          case 'con':
+          this->headers['Content-Type'] = 'application/con';
           break;
           case 'url':
           this->headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -50,8 +50,8 @@ void addContentHeaders() {
       // Specify this->contentType when it can be deduced->
       if ( ! this->headers['Accept'] ) {
         switch ( this->contentType ) {
-          case 'json':
-          this->headers['Accept'] = 'application/json';
+          case 'con':
+          this->headers['Accept'] = 'application/con';
           break;
         }
       }
@@ -698,7 +698,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

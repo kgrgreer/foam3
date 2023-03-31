@@ -75,19 +75,19 @@ void beginBatchTransaction() {
           catch(this->onTransactionError);
     
 }
-void deserialize(multitype_union_t json) {
+void deserialize(multitype_union_t con) {
 
-      return foam->json_parse(json, this->of, this->__subContext__);
+      return foam->con_parse(con, this->of, this->__subContext__);
     
 }
 void serialize(multitype_union_t obj) {
 
-      return foam->json->Storage_objectify(obj);
+      return foam->con->Storage_objectify(obj);
     
 }
 void serializeId(multitype_union_t id) {
 
-      return this->of->ID_toJSON(id);
+      return this->of->ID_tocON(id);
     
 }
 void withStore(multitype_union_t mode, multitype_union_t fn) {
@@ -422,7 +422,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -1083,7 +1083,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

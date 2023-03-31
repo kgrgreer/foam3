@@ -28,7 +28,7 @@ void execute(Context x) {
           }
           this->analyticsAgent_pub('event', {
             name: 'CONSOLE_' + method_toUpperCase(),
-            extra: foam->json_stringify(a)
+            extra: foam->con_stringify(a)
           });
         };
       }
@@ -692,7 +692,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

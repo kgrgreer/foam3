@@ -5,15 +5,15 @@ var root = dir + '/../..';
 
 var classpaths = [
   dir + '/../../src',
-  dir + '/js',
+  dir + '/c',
   dir + '/../../src/com/google/foam/demos/tabata',
 ].join(',')
 
 var command = [
   'node',
 //  '--inspect-brk',
-  root + '/tools/genswift.js',
-  dir + '/classes.js',
+  root + '/tools/genswift.c',
+  dir + '/classes.c',
   dir + '/gen',
   classpaths,
 ].join(' ');

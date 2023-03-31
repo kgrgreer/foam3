@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-(typeof require !== "undefined") &&  require("../../src/foam.js");
+(typeof require !== "undefined") &&  require("../../src/foam.c");
 
 /**
   Outputs tests to run under the Jasmine unit test framework

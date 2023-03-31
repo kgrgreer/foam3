@@ -4,8 +4,8 @@ typedef struct {
   const char *method;
   const char *origin;
   foam.box.HTTPAuthorizationType authorizationType;
-  foam.json.Parser parser;
-  foam.json.Outputter outputter;
+  foam.con.Parser parser;
+  foam.con.Outputter outputter;
   Integer connectTimeout;
   Integer readTimeout;
 } foam_box_HTTPBox_t;
@@ -23,7 +23,7 @@ void prepareURL(multitype_union_t url) {
 void send(foam.box.Message msg) {
 
         var self = this;
-        msg->attributes[this->SESSION_KEY] = this->jsSessionID;
+        msg->attributes[this->SESSION_KEY] = this->cSessionID;
 
         // TODO: We should probably clone here, but often the message
         // contains RPC arguments that don't clone properly->  So
@@ -37,12 +37,12 @@ void send(foam.box.Message msg) {
         msg->attributes->replyBox = replyBox;
 
         var headers = {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': 'application/con; charset=utf-8',
           'Origin': this->origin
         };
 
         if ( this->authorizationType === foam->box->HTTPAuthorizationType->BEARER ) {
-          headers['Authorization'] = 'BEARER ' + this->jsSessionID;
+          headers['Authorization'] = 'BEARER ' + this->cSessionID;
         }
         var req = this->HTTPRequest_create({
           url:     this_prepareURL(this->url),
@@ -724,7 +724,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

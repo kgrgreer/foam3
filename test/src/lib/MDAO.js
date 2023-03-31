@@ -46,7 +46,7 @@ describe('MDAO with TreeIndex', function() {
         { class: 'Date', name: 'timestamp' },
         { name: 'albumId' },
         { class: 'Boolean', name: 'isCoverPhoto' },
-        { name: 'jspb', hidden: true }
+        { name: 'cpb', hidden: true }
       ]
     });
 
@@ -58,7 +58,7 @@ describe('MDAO with TreeIndex', function() {
         { class: 'Boolean', name: 'isLocal' },
         { class: 'Boolean', name: 'byAction' },
         { class: 'Date', name: 'timestamp' },
-        { name: 'jspb', hidden: true }
+        { name: 'cpb', hidden: true }
       ],
       relationships: [
         { model_: 'Relationship', relatedModel: 'Photo', relatedProperty: 'albumId' }
@@ -74,7 +74,7 @@ describe('MDAO with TreeIndex', function() {
           isLocal: !! ( i % 2 ),
           byAction: !! ( 1 - (i % 2) ),
           timestamp: new Date( ( NOW - MS_PER_DAY * 300 ) + (1 - i/NUM_ALBUMS) * MS_PER_DAY * 300),
-          jspb: [ 'nothing!' ],
+          cpb: [ 'nothing!' ],
         }, foam.__context__)
       );
     }
@@ -87,7 +87,7 @@ describe('MDAO with TreeIndex', function() {
           byAction: !! ( 1 - (i % 2) ),
           albumId: ""+(i % NUM_ALBUMS),
           isCoverPhoto: ( i % 3 ) > 0,
-          jspb: [ 'nothing!' ],
+          cpb: [ 'nothing!' ],
         }, foam.__context__)
       );
     }

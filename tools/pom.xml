@@ -26,8 +26,8 @@
             <version>${appengine.sdk.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
+            <groupId>javax.con</groupId>
+            <artifactId>javax.con-api</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
@@ -52,8 +52,8 @@
           <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>ctl</groupId>
+            <artifactId>ctl</artifactId>
             <version>1.2</version>
         </dependency>
         <dependency>

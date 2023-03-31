@@ -25,7 +25,7 @@ void createView(multitype_union_t opt_spec, multitype_union_t opt_ctx_extras) {
 
       ctx->analyticsAgent?_pub('event', {
         name: 'VIEW_LOAD_' + this->wizardlet->id,
-        extra: foam->json_stringify(this->customView)
+        extra: foam->con_stringify(this->customView)
       });
 
       if ( this->customView ) {
@@ -695,7 +695,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

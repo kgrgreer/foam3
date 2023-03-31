@@ -21,7 +21,7 @@ void save(multitype_union_t data) {
 
       let node = target->wao->loader;
 
-      const loader = foam->json_parse(this->loader, undefined, target->__subContext__);
+      const loader = foam->con_parse(this->loader, undefined, target->__subContext__);
       foam->u2->wizard->data_ensureTerminal(loader, this->ProxyLoader, this->NullLoader);
 
       target->wao->loader = loader;
@@ -690,7 +690,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

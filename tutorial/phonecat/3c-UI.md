@@ -27,7 +27,7 @@ Let’s define the `initE()` for each phone in the catalog.
 
 **STEP #1.** Expand `PhoneCitationView` so it looks like this:
 
-{% highlight js %}
+{% highlight c %}
 {% raw %}
 foam.CLASS({
   package: 'tutorial',
@@ -62,9 +62,9 @@ foam.CLASS({
 
 **STEP #3.** Add a second method for the top-level `ControllerView`.
 
-**STEP #4.** Add the followng code to `Controller.js`and expand your `ControllerView`:
+**STEP #4.** Add the followng code to `Controller.c`and expand your `ControllerView`:
 
-{% highlight js %}
+{% highlight c %}
 foam.CLASS({
   package: 'tutorial',
   name: 'Controller',

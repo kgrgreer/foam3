@@ -23,7 +23,7 @@ var dao = com.firebase.FirebaseDAO.create({
 dao.select().then(function(array) {
   array = array.array;
   for ( var i = 0 ; i < array.length ; i++ ) {
-    console.log("Object", array[i].toJSON());
+    console.log("Object", array[i].tocON());
   }
 }, function(e) {
   console.error("Error event", e);
@@ -279,7 +279,7 @@ foam.CLASS({
 test.TemplateBenchmark.create().benchmark(10000);
 */
 
-var worker = new Worker('/sandbox/worker.js');
+var worker = new Worker('/sandbox/worker.c');
 
 var registry = foam.box.RegistryBox.create({
   delegate: foam.box.LoggingBox.create({

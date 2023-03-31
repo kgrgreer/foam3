@@ -137,12 +137,12 @@ void groupRelatedObjects(multitype_union_t of, multitype_union_t arrayOfNestedPr
       var map = {};
       for ( var i = 0 ; i < strlen(arrayOfNestedPropertiesName) ; i++ ) {
         var key = this_getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
-        var objsClass = this_getClassForNestedPropertyObject(of, arrayOfNestedPropertiesName[i]_split('->'));
+        var obcClass = this_getClassForNestedPropertyObject(of, arrayOfNestedPropertiesName[i]_split('->'));
         if( ! map[key] ) {
-          map[key] = objsClass_create({}, this);
+          map[key] = obcClass_create({}, this);
         }
         if ( arrayOfValues[i] )
-          objsClass_getAxiomByName(this_getNameOfLastPropertyForNestedProperty(arrayOfNestedPropertiesName[i]))_set(map[key], arrayOfValues[i]);
+          obcClass_getAxiomByName(this_getNameOfLastPropertyForNestedProperty(arrayOfNestedPropertiesName[i]))_set(map[key], arrayOfValues[i]);
       }
       return map;
     
@@ -826,7 +826,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

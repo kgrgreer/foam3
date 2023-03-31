@@ -291,7 +291,7 @@ void init() {
               }
 
               self_log("Loading test data");
-              Promise_all(foam->json_parse(self->testData, self->of, self)_map(
+              Promise_all(foam->con_parse(self->testData, self->of, self)_map(
                 function(o) { return delegate_put(o); }
               ))_then(function() {
                 self_log("Loaded", strlen(self->testData), "records->");
@@ -738,7 +738,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -1325,7 +1325,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

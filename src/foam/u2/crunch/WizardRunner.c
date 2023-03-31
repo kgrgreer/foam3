@@ -96,7 +96,7 @@ void getSequenceFromCapability_(multitype_union_t x, multitype_union_t isInline)
         'color:red;font-size:30px', '',
         'you need to add explicit support for ' +
           (isInline ? 'inline-' : '')+wizardType->name +
-          ' wizards in WizardRunner->js; ' +
+          ' wizards in WizardRunner->c; ' +
           'or wait for Eric to finish refactoring sequences'
       );
       throw new Error('getSequence_ has no implementation for this', {
@@ -745,7 +745,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

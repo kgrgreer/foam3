@@ -1,6 +1,6 @@
 typedef struct {
   multitype_union_t delegate;
-  foam.json.Parser parser;
+  foam.con.Parser parser;
 } foam_net_web_WebSocketService_t;
 
 void addSocket(multitype_union_t socket) {
@@ -672,7 +672,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

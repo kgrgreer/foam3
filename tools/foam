@@ -2,13 +2,13 @@
 
 globalThis.FOAM_FLAGS = {
 node: true,
-js: true,
+c: true,
 debug: true,
 java: true,
 swift: true
 };
 
-require('../src/foam_node.js');
-require('../src/foam/nanos/nanos.js');
+require('../src/foam_node.c');
+require('../src/foam/nanos/nanos.c');
 
-foam.classloader.NodeJsModelExecutor.create().fromArgs(process.argv.slice(2)).execute();
+foam.classloader.Nod.cModelExecutor.create().fromArgs(process.argv.slice(2)).execute();

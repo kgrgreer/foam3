@@ -1,9 +1,9 @@
 typedef struct {
-} foam_parse_json_Parsers_t;
+} foam_parse_con_Parsers_t;
 
 void string() {
 
-      return foam->parse->json->String_create();
+      return foam->parse->con->String_create();
     
 }
 void seq() {
@@ -806,7 +806,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

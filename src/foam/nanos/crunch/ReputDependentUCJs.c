@@ -1,5 +1,5 @@
 typedef struct {
-} foam_nanos_crunch_ReputDependentUCJs_t;
+} foam_nanos_crunch_ReputDependentUCc_t;
 
 void init() {
 
@@ -642,7 +642,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

@@ -10,7 +10,7 @@ void send(foam.box.Message msg) {
         this[this->logLevel->consoleMethodName]_apply(this, [
           this->name,
           output instanceof Error ? output_toString() :
-            foam->json->Pretty_stringify(message)
+            foam->con->Pretty_stringify(message)
         ]);
         this->delegate && this->delegate_send(message);
       
@@ -656,7 +656,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

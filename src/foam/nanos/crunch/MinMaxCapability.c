@@ -2,8 +2,8 @@ typedef struct {
   Class of;
   Integer min;
   Integer max;
-  foam.lib.json.UnknownFObject beforeWizardlet;
-  foam.lib.json.UnknownFObject wizardlet;
+  foam.lib.con.UnknownFObject beforeWizardlet;
+  foam.lib.con.UnknownFObject wizardlet;
   const char *id;
   const char *name;
   const char *icon;
@@ -45,7 +45,7 @@ typedef struct {
   multitype_union_t lastModifiedBy;
   multitype_union_t lastModifiedByAgent;
   foam.dao.ManyToManyRelationship categories;
-  foam.lib.json.UnknownFObject wizardConfig;
+  foam.lib.con.UnknownFObject wizardConfig;
 } foam_nanos_crunch_MinMaxCapability_t;
 
 const char *toSummary() {
@@ -966,7 +966,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

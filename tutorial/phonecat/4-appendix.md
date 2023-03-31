@@ -54,7 +54,7 @@ Several of these "properties on properties" are very useful when writing your ow
   - See above about pseudoproperties.
 - `aliases: ['string', 'array']` defines other names for this property. They can be used as if they were real properties, but they access the same underlying value.
 
-There are some more having to do with tables, i18n, autocomplete and more. See `core/Property.js` for the complete definition of `Property`. `core/types.js` adds Int property and friends, and some of those have more properties specific to their type.
+There are some more having to do with tables, i18n, autocomplete and more. See `core/Property.c` for the complete definition of `Property`. `core/types.c` adds Int property and friends, and some of those have more properties specific to their type.
 
 ### **b. Property Binding**
 
@@ -64,7 +64,7 @@ In addition to things like `setter` and `postSet`, you can listen for updates to
 
 For every property `foo` on a FOAM object, there is a `foo$` which is a “Value” for the property. Setting two objects to share this Value, rather than the literal value, is like passing by reference instead of by value. To illustrate:
 
-    {% highlight js %}
+    {% highlight c %}
     var o1 = Foo.create({ bar: 'abc' });
     var o2 = Foo.create({ bar: o1.bar });
     console.log(o1.bar);        // prints 'abc'
@@ -75,7 +75,7 @@ For every property `foo` on a FOAM object, there is a `foo$` which is a “V
 
     In the above, the value of `o1.bar` is copied to `o2.bar`. In the below, `o1.bar` and `o2.bar` are the same underlying property:
 
-    {% highlight js %}
+    {% highlight c %}
     var o1 = Foo.create({ bar: 'abc' });
     var o2 = Foo.create({ bar$: o1.bar$ });
     console.log(o1.bar);        // prints 'abc'
@@ -86,13 +86,13 @@ For every property `foo` on a FOAM object, there is a `foo$` which is a “V
 
 To make an UI component update every time some property changes:
 
-    {% highlight js %}
+    {% highlight c %}
     this.add(obj.prop$)
     {% endhighlight %}
 
 To create a listener function on some properties:
 
-    {% highlight js %}
+    {% highlight c %}
     obj.slot(function[, slots])
     {% endhighlight %}
 
@@ -105,7 +105,7 @@ This makes it convenient to eg. bind a view to a property from a larger class.
 
 In addition to things like `setter` and `postSet`, you can listen for updates to any property, like so:
 
-    {% highlight js %}
+    {% highlight c %}
     foo.bar$.sub(function(sub, prop, topic, object) { ... });
     {% endhighlight %}
 
@@ -122,7 +122,7 @@ There are many more types of properties other than example `IntProperty` provide
     `Int`, `Float`, `Function`, `Array`,
     `Reference`, `StringArray`, `DAOProperty`.
 
-There are many more; most of these are defined in `core/types.js`.
+There are many more; most of these are defined in `core/types.c`.
 
 ## **2. Requires, Imports, Exports, and Contexts**
 
@@ -133,7 +133,7 @@ Most FOAM classes depend on others, often many of them. FOAM supports this in a 
 
 As shown in the main tutorial, FOAM models should `require` their dependencies. A class has a `requires` array containing the names of those classes it needs:
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       name: 'SomeClass',
       requires: [
@@ -153,7 +153,7 @@ Every instance in FOAM has a context. This is an object, spelled `this.__conte
 
 Instead, you can add an `imports` array to a class:
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       name: 'SomeClass',
       imports: ['foo']
@@ -166,7 +166,7 @@ Therefore inside `SomeClass`, you should refer to `this.foo`, not `this.__contex
 
 If you want to export one of your properties to descendant objects, you can use exports:
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       name: 'MyController',
       requires: [
@@ -198,7 +198,7 @@ All instances have a context, but it's rare to explicitly specify the context. T
 
 In `requires`, `imports` and `exports`, you can rename a value. Examples:
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       name: 'MyClass',
       requires: [
@@ -241,7 +241,7 @@ On classes themselves, statically, there are a handful of useful methods and pro
 
 Listeners are like methods, but `this` is always bound to the object, making them easier to pass as event handlers.
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       name: 'Mouse',
       properties: [ 'x', 'y' ],
@@ -276,7 +276,7 @@ The listener is attached to the object like a normal method, which can be called
 
 Actions are guarded, GUI-friendly methods. FOAM will run code you supply to determine whether the button for this action should be hidden, visible but disabled, or enabled.
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       // ...
       actions: [
@@ -308,14 +308,14 @@ FOAM includes several properties and methods on all objects:
 - `o.diff(x)` returns a diff of `o` against `x`, property by property.
 - `o.clone()` returns a shallow copy of `o`.
 - `o.deepClone()` is of course a deep copy.
-- `o.toJSON()` and `o.toXML()` return JSON or XML as a string. Parsers are included to read them in again.
+- `o.tocON()` and `o.toXML()` return cON or XML as a string. Parsers are included to read them in again.
 - `o.write(document)` writes the default view of the object into the document.
 
 ## **7. DAOs**
 
 The DAO interface looks like this, if you pretend Javascript supports interfaces:
 
-    {% highlight js %}
+    {% highlight c %}
     interface DAO extends Sink {
       Promise<Object>   put(obj);
       Promise           remove(id);
@@ -333,7 +333,7 @@ The DAO interface looks like this, if you pretend Javascript supports interfaces
 
 a `Sink` looks like this:
 
-    {% highlight js %}
+    {% highlight c %}
     interface Sink {
       void put(obj, [opt_flowControl]);
       void remove(obj, [opt_flowControl]);
@@ -344,7 +344,7 @@ a `Sink` looks like this:
 
 Here's an example of using the DAO interface to make a query:
 
-    {% highlight js %}
+    {% highlight c %}
     dao
       .skip(200)
       .limit(50)

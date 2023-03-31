@@ -28,7 +28,7 @@ void shouldOpenCapabilitiesArray(multitype_union_t array) {
       var shouldOpen = false;
       array_forEach(capa => {
         if ( foam->nanos->crunch->MinMaxCapability_isInstance(capa) ){
-          // TODO: need js implementation of MinMaxCapability->getPrereqsChainedStatus
+          // TODO: need c implementation of MinMaxCapability->getPrereqsChainedStatus
           // and check if that is implied GRANTED then grant the min max too no need for wizard
           shouldOpen = true;
         }
@@ -874,7 +874,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

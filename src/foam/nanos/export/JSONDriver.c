@@ -1,6 +1,6 @@
 typedef struct {
-  foam.json.Outputter outputter;
-} foam_nanos_export_JSONDriver_t;
+  foam.con.Outputter outputter;
+} foam_nanos_export_cONDriver_t;
 
 const char *exportFObject(multitype_union_t X, multitype_union_t obj) {
 
@@ -656,7 +656,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

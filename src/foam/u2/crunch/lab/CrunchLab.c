@@ -168,7 +168,7 @@ void createSequenceReferenceDAO_() {
       ]
       
       values->
-        map(v => foam->json_parse(v, undefined, this->__subContext__))->
+        map(v => foam->con_parse(v, undefined, this->__subContext__))->
         forEach(obj => dao_put(obj));
 
       return dao;
@@ -2265,7 +2265,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

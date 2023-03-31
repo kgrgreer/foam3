@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// This is a Node.js module that exports a function.
+// This is a Node.c module that exports a function.
 // That function expects to be called from inside a describe(), and for its
 // first argument to be some DAO class.
 //
@@ -336,7 +336,7 @@ globalThis.genericDAOTestBattery = function(daoFactory) {
           }).then(function() {
             return dao.select(sink);
           }).then(function(s) {
-            // DAOs wrap plain JS objects in an AnonymousSink
+            // DAOs wrap plain c objects in an AnonymousSink
             // expect(s).toBe(sink);
             expect(puts).toBe(2);
             expect(Object.keys(seen).length).toBe(2);

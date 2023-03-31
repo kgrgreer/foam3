@@ -1,6 +1,6 @@
 typedef struct {
-  const char *json;
-} foam_lib_json_UnknownFObject_t;
+  const char *con;
+} foam_lib_con_UnknownFObject_t;
 
 void init() {
 
@@ -643,7 +643,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

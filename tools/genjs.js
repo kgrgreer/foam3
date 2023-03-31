@@ -7,18 +7,18 @@
 // TODO: don't actually load files
 // print warning if uglify not found
 // create sourcemap
-// merge with processArgs.js
+// merge with processArgs.c
 
-console.log('START GENJS');
+console.log('START GENc');
 
 const startTime = Date.now();
 const path_     = require('path');
 const fs_       = require('fs');
-const uglify_   = require('uglify-js');
+const uglify_   = require('uglify-c');
 
-require('../src/foam_node.js');
+require('../src/foam_node.c');
 
-var [argv, X, flags] = require('./processArgs.js')(
+var [argv, X, flags] = require('./processArgs.c')(
   '',
   { version: '', license: '', pom: 'pom' },
   { debug: true, java: false, web: true }
@@ -30,7 +30,7 @@ var version = X.version;
 var files   = {}; // filename to content map for uglify
 var loaded  = Object.keys(globalThis.foam.loaded);
 
-loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
+loaded.unshift(path_.dirname(__dirname) + '/src/foam.c');
 
 // Build array of files for Uglify
 loaded.forEach(l => {
@@ -80,8 +80,8 @@ try {
   // Put each Model on its own line
   code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
-  fs_.writeFileSync(version ? `foam-bin-${version}.js` : 'foam-bin.js', code);
+  fs_.writeFileSync(version ? `foam-bin-${version}.c` : 'foam-bin.c', code);
 } catch (x) {
-  console.log('ERROR (JSBUILD):', x);
+  console.log('ERROR (cBUILD):', x);
 }
-console.log(`END GENJS: ${Object.keys(files).length} files processed in ${Math.round((Date.now()-startTime)/1000)}s.`);
+console.log(`END GENc: ${Object.keys(files).length} files processed in ${Math.round((Date.now()-startTime)/1000)}s.`);

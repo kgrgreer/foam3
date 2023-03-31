@@ -17,7 +17,7 @@ void put(multitype_union_t obj, foam.core.Detachable sub) {
           this->array_push(cls_create(o, this->__subContext__));
       
 }
-void outputJSON(multitype_union_t outputter) {
+void outputcON(multitype_union_t outputter) {
 
       outputter_start('{');
       var outputClassName = outputter->outputClassNames;
@@ -691,7 +691,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

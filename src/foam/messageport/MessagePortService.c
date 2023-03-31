@@ -1,7 +1,7 @@
 typedef struct {
   multitype_union_t source;
   multitype_union_t delegate;
-  foam.json.Parser parser;
+  foam.con.Parser parser;
 } foam_messageport_MessagePortService_t;
 
 void addPort(multitype_union_t p) {
@@ -650,7 +650,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

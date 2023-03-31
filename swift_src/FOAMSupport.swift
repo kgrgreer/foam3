@@ -49,11 +49,11 @@ public protocol PropertyInfo: Axiom, SlotGetterAxiom, SlotSetterAxiom, GetterAxi
   var networkTransient: Bool { get }
   var label: String { get }
   var visibility: foam_u2_Visibility { get }
-  var jsonParser: foam_swift_parse_parser_Parser? { get }
+  var conParser: foam_swift_parse_parser_Parser? { get }
   func viewFactory(x: Context) -> foam_core_FObject?
   func hasOwnProperty(_ o: foam_core_FObject?) -> Bool
   func clearProperty(_ o: foam_core_FObject?)
-  func toJSON(outputter: foam_swift_parse_json_output_Outputter?, out: foam_json2_Outputter?, value: Any?)
+  func tocON(outputter: foam_swift_parse_con_output_Outputter?, out: foam_con2_Outputter?, value: Any?)
 }
 extension PropertyInfo {
   public func f(_ obj: Any?) -> Any? {
@@ -79,8 +79,8 @@ extension PropertyInfo {
   }
 }
 
-public protocol JSONOutputter {
-  func toJSON(outputter: foam_swift_parse_json_output_Outputter?, out: foam_json2_Outputter?)
+public protocol cONOutputter {
+  func tocON(outputter: foam_swift_parse_con_output_Outputter?, out: foam_con2_Outputter?)
 }
 
 public class MethodArg {
@@ -219,7 +219,7 @@ public class Subscription: foam_core_Detachable {
   }
 }
 
-public protocol foam_core_FObject: foam_core_Detachable, Topic, JSONOutputter {
+public protocol foam_core_FObject: foam_core_Detachable, Topic, cONOutputter {
   func ownClassInfo() -> ClassInfo
   func set(key: String, value: Any?)
   func get(key: String) -> Any?
@@ -425,7 +425,7 @@ public class AbstractFObject: NSObject, foam_core_FObject, ContextAware {
   }
 
   public func toString() -> String {
-    return foam_swift_parse_json_output_Outputter.DEFAULT.swiftStringify(self)!
+    return foam_swift_parse_con_output_Outputter.DEFAULT.swiftStringify(self)!
   }
 
   public func copyFrom(_ o: foam_core_FObject) {
@@ -451,7 +451,7 @@ public class AbstractFObject: NSObject, foam_core_FObject, ContextAware {
     return super.isEqual(object)
   }
 
-  public func toJSON(outputter: foam_swift_parse_json_output_Outputter?, out: foam_json2_Outputter?) {
+  public func tocON(outputter: foam_swift_parse_con_output_Outputter?, out: foam_con2_Outputter?) {
     outputter?.outputFObject(out, self)
   }
 }
@@ -498,14 +498,14 @@ public class ModelParserFactory {
   private static func buildInstance(_ info: ClassInfo) -> foam_swift_parse_parser_Parser {
     var parsers = [foam_swift_parse_parser_Parser]()
     for p in info.axioms(byType: PropertyInfo.self) {
-      if p.jsonParser != nil {
-        parsers.append(foam_swift_parse_json_PropertyParser(["property": p]))
+      if p.conParser != nil {
+        parsers.append(foam_swift_parse_con_PropertyParser(["property": p]))
       }
     }
-    parsers.append(foam_swift_parse_json_UnknownPropertyParser())
+    parsers.append(foam_swift_parse_con_UnknownPropertyParser())
     return foam_swift_parse_parser_Repeat0([
       "delegate": foam_swift_parse_parser_Seq0(["parsers": [
-        foam_swift_parse_json_Whitespace(),
+        foam_swift_parse_con_Whitespace(),
         foam_swift_parse_parser_Alt(["parsers": parsers])
         ]]),
       "delim": foam_swift_parse_parser_Literal(["string": ","]),
@@ -518,7 +518,7 @@ public class FoamError: Error {
   init(_ obj: Any?) { self.obj = obj }
   public func toString() -> String {
     if let obj = self.obj as? foam_core_FObject {
-      return foam_swift_parse_json_output_Outputter.DEFAULT.swiftStringify(obj)!
+      return foam_swift_parse_con_output_Outputter.DEFAULT.swiftStringify(obj)!
     } else if let obj = self.obj as? FoamError {
       return "FoamError(" + obj.toString() + ")"
     }

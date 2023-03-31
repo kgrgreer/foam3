@@ -32,7 +32,7 @@ describe('BatchMutationDatastoreDAO', function() {
     });
   }
 
-  // From helpers/generic_dao.js.
+  // From helpers/generic_dao.c.
   globalThis.genericDAOTestBattery(daoFactory);
 
   it('should handle multiple batches', function(done) {

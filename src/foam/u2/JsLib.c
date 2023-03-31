@@ -2,7 +2,7 @@ typedef struct {
   const char *src;
   multitype_union_t name;
   multitype_union_t priority;
-} foam_u2_JsLib_t;
+} foam_u2_cLib_t;
 
 void installInProto(multitype_union_t proto) {
 
@@ -675,7 +675,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

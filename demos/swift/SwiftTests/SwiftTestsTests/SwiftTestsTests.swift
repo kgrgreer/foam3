@@ -61,20 +61,20 @@ class SwiftTestsTests: XCTestCase {
   }
 
   func testFObjectParse() {
-    let ps = foam_swift_parse_json_FObjectParser().parseString("{class:'somepackage.Test', prevFirstName: \"MY_PREV_NAME\",\"enumProp\":{class:\"foam.u2.Visibility\",ordinal:1}}")
+    let ps = foam_swift_parse_con_FObjectParser().parseString("{class:'somepackage.Test', prevFirstName: \"MY_PREV_NAME\",\"enumProp\":{class:\"foam.u2.Visibility\",ordinal:1}}")
     XCTAssertTrue(ps is somepackage_Test)
     XCTAssertEqual((ps as! somepackage_Test).prevFirstName, "MY_PREV_NAME")
     XCTAssertEqual((ps as! somepackage_Test).enumProp, foam_u2_Visibility.FINAL)
   }
 
-  func testToJSON() {
+  func testTocON() {
     let t = somepackage_Test()
     t.prevFirstName = "MY_PREV_NAME"
     t.boolProp = false
     t.intProp = 34
     t.enumProp = foam_u2_Visibility.FINAL // Outputs as just the ordinal
     t.anyProp = foam_u2_Visibility.FINAL // Outputs as the full fobject
-    XCTAssertEqual(foam_swift_parse_json_output_Outputter().swiftStringify(t),
+    XCTAssertEqual(foam_swift_parse_con_output_Outputter().swiftStringify(t),
     "{\"class\":\"somepackage.Test\",\"anyProp\":{\"class\":\"foam.u2.Visibility\",\"ordinal\":1},\"intProp\":34,\"boolProp\":false,\"prevFirstName\":\"MY_PREV_NAME\",\"enumProp\":1}")
   }
 
@@ -367,8 +367,8 @@ class SwiftTestsTests: XCTestCase {
     let boxContext = BoxContext()
     let X = boxContext.__subContext__
 
-    let outputter = X.create(foam_swift_parse_json_output_Outputter.self)!
-    let parser = X.create(foam_swift_parse_json_FObjectParser.self)!
+    let outputter = X.create(foam_swift_parse_con_output_Outputter.self)!
+    let parser = X.create(foam_swift_parse_con_FObjectParser.self)!
 
     class somepackage_TestBox: foam_box_Box {
       var o: Any?
@@ -384,12 +384,12 @@ class SwiftTestsTests: XCTestCase {
     boxContext.root = boxContext.registry
 
     class RegistryDelegate: foam_box_Box {
-      var outputter: foam_swift_parse_json_output_Outputter
-      var parser: foam_swift_parse_json_FObjectParser
+      var outputter: foam_swift_parse_con_output_Outputter
+      var parser: foam_swift_parse_con_FObjectParser
       var registry: foam_box_Box
       init(registry: foam_box_Box,
-           outputter: foam_swift_parse_json_output_Outputter,
-           parser: foam_swift_parse_json_FObjectParser) {
+           outputter: foam_swift_parse_con_output_Outputter,
+           parser: foam_swift_parse_con_FObjectParser) {
         self.registry = registry
         self.outputter = outputter
         self.parser = parser

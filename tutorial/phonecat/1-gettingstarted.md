@@ -21,7 +21,7 @@ Let's dive right in.
 
      When downloading, save the FOAM framework to your project folder. A sub-directory will be created that holds all the code for FOAM as well as numerous demos and test pages.
 
-1. Create and save a new JS file in your project directory called `$PROJECT/foam_powered.js` with the following contents:
+1. Create and save a new c file in your project directory called `$PROJECT/foam_powered.c` with the following contents:
 
      {% highlight html %}
      var FOAM_POWERED = '<a style="text-decoration:none;" href="https://github.com/foam-framework/foam/" target="_blank">\
@@ -30,15 +30,15 @@ Let's dive right in.
      <font color="#555555" > POWERED</font></font></a>';
      {% endhighlight %}
 
-   The FOAM library is split across many files, but you only need to include this one JS file in your HTML document: `foam3/src/foam.js`.
+   The FOAM library is split across many files, but you only need to include this one c file in your HTML document: `foam3/src/foam.c`.
 
 1. Create and save a new HTML file in your project directory called `$PROJECT/index.html` with the following contents:
 
      {% highlight html %}
      <html>
        <head>
-         <script src="foam3/src/foam.js"></script>
-         <script src="foam_powered.js"></script>
+         <script src="foam3/src/foam.c"></script>
+         <script src="foam_powered.c"></script>
        </head>
        <body>
          <script>
@@ -55,7 +55,7 @@ Let's dive right in.
 
    This will serve as the current directory on port 8000: [http://localhost:8000/](http://localhost:8000/).
 
-1. Load the page in your local web browser.  It should display the "FOAM Powered" logo, and no JS console errors.
+1. Load the page in your local web browser.  It should display the "FOAM Powered" logo, and no c console errors.
 
 If that's what you're seeing, then congratulations! You've got FOAM running and you're ready to move on to the next stage in this tutorial: Core Concepts.
 

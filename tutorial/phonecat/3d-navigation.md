@@ -12,7 +12,7 @@ custom UI components and other concepts.
 
 **STEP #1.** Expand the `Controller` to make to decide whether to show  a single phone's page or the list. Expand it to look like this:
 
-{% highlight js %}
+{% highlight c %}
 foam.CLASS({
   package: 'tutorial',
   name: 'Controller',
@@ -104,7 +104,7 @@ foam.CLASS({
 
 **STEP #2.** Now you need to define `PhoneDetailView`. As you did before, simply define it as an empty subclass of `DetailView`:
 
-{% highlight js %}
+{% highlight c %}
 foam.CLASS({
   package: 'tutorial',
   name: 'PhoneDetialView',

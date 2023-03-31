@@ -86,7 +86,7 @@ describe("MDAO benchmarks", function() {
         { class: 'Date', name: 'timestamp' },
         { name: 'albumId' },
         { class: 'Boolean', name: 'isCoverPhoto' },
-        { name: 'jspb', hidden: true }
+        { name: 'cpb', hidden: true }
       ]
     });
 
@@ -97,7 +97,7 @@ describe("MDAO benchmarks", function() {
         { class: 'Boolean', name: 'isLocal' },
         { class: 'Boolean', name: 'byAction' },
         { class: 'Date', name: 'timestamp' },
-        { name: 'jspb', hidden: true }
+        { name: 'cpb', hidden: true }
       ],
     });
 
@@ -140,7 +140,7 @@ describe("MDAO benchmarks", function() {
             isLocal: !! ( i % 2 ),
             byAction: !! ( 1 - (i % 2) ),
             timestamp: new Date( ( Date.now() - 1000*60*60*24 * 300 ) + Math.random() * 1000*60*60*24 * 300),
-            jspb: [ 'nothing!' ],
+            cpb: [ 'nothing!' ],
           })
         );
       })),
@@ -153,7 +153,7 @@ describe("MDAO benchmarks", function() {
             byAction: !! ( 1 - (i % 2) ),
             albumId: ""+(i % NUM_ALBUMS),
             isCoverPhoto: ( i % 3 ) > 0,
-            jspb: [ 'nothing!' ],
+            cpb: [ 'nothing!' ],
           })
         );
       })),
@@ -286,7 +286,7 @@ describe("MDAO benchmarks", function() {
       //         .orderBy(M.DESC(Photo.TIMESTAMP))
       //         .select(M.GROUP_BY(MONTH(Photo.TIMESTAMP)))(ret);
       //     }),
-      //    atest('2jSimpleAggregationQuery', new Promise( function() { PhotoDAO.select(M.GROUP_BY(Photo.ALBUM_ID))(ret); }),
+      //    atest('2cimpleAggregationQuery', new Promise( function() { PhotoDAO.select(M.GROUP_BY(Photo.ALBUM_ID))(ret); }),
 
 //           atest('3a CreateAndUpdate', atxn(foam.async.repeat(DEBUG ? 10 : 1000, (function ( i) { AlbumDAO.put(randomAlbum(i*2), ret); }))),
 //           atest('3b Setup', atxn(new Promise( function() {

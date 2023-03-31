@@ -15,35 +15,35 @@
  * limitations under the License.
  */
 
-describe('JSONFileDAO', function() {
+describe('cONFileDAO', function() {
   var path = require('path');
   var fs = require('fs');
-  var JSONFileDAO = foam.dao.node.JSONFileDAO;
+  var cONFileDAO = foam.dao.node.cONFileDAO;
   var tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'foam3_tests', ''));
-  var tmpFile = path.join(tmpDir, 'test.json');
+  var tmpFile = path.join(tmpDir, 'test.con');
   genericDAOTestBattery(function(model) {
     try { fs.unlinkSync(tmpFile); } catch(e) {}
-    return Promise.resolve(JSONFileDAO.create({ path: tmpFile, of: model }));
+    return Promise.resolve(cONFileDAO.create({ path: tmpFile, of: model }));
   });
 
   afterAll(function() {
     try { fs.unlinkSync(tmpFile); fs.rmdirSync(tmpDir); } catch(e) {}
   });
 
-  it('should actually persist to a JSON file', function(done) {
+  it('should actually persist to a cON file', function(done) {
     // Make sure the file is empty before we start.
     try { fs.unlinkSync(tmpFile); } catch(e) { }
 
     foam.CLASS({
-      package: 'test.dao.node.json_file',
+      package: 'test.dao.node.con_file',
       name: 'TestModel',
       properties: ['id', 'name'],
     });
 
-    var TestModel = test.dao.node.json_file.TestModel;
-    var dao = JSONFileDAO.create({
+    var TestModel = test.dao.node.con_file.TestModel;
+    var dao = cONFileDAO.create({
       path: tmpFile,
-      of: 'test.dao.node.json_file.TestModel',
+      of: 'test.dao.node.con_file.TestModel',
     });
 
     Promise.all([
@@ -54,9 +54,9 @@ describe('JSONFileDAO', function() {
       dao = null;
       expect(fs.statSync(tmpFile).isFile()).toBe(true);
 
-      var dao2 = JSONFileDAO.create({
+      var dao2 = cONFileDAO.create({
         path: tmpFile,
-        of: 'test.dao.node.json_file.TestModel',
+        of: 'test.dao.node.con_file.TestModel',
       });
 
       return dao2.select();

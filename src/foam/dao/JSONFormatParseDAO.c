@@ -2,7 +2,7 @@ typedef struct {
   foam.dao.DAO delegate;
   Class of;
   multitype_union_t primaryKey;
-} foam_dao_JSONFormatParseDAO_t;
+} foam_dao_cONFormatParseDAO_t;
 
 Detachable listen_(Context x, foam.dao.Sink sink, foam.mlang.predicate.Predicate predicate) {
 
@@ -241,7 +241,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -841,7 +841,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

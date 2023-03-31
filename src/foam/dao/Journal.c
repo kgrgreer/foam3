@@ -9,7 +9,7 @@ typedef struct {
 void put_(multitype_union_t x, multitype_union_t old, multitype_union_t nu) {
 
         return this_write_(Buffer_from(
-            "put(foam->json_parse(" + foam->json->Storage_stringify(nu, this->of) +
+            "put(foam->con_parse(" + foam->con->Storage_stringify(nu, this->of) +
               "));\n"));
       
 }
@@ -22,8 +22,8 @@ foamtypes->FObject put(Context x, const char *prefix, DAO dao, foam.core.FObject
 foamtypes->FObject remove(Context x, const char *prefix, DAO dao, foam.core.FObject obj) {
 
         return this_write_(Buffer_from(
-            "remove(foam->json_parse(" +
-              foam->json->Storage_stringify(obj, this->of) +
+            "remove(foam->con_parse(" +
+              foam->con->Storage_stringify(obj, this->of) +
               "));\n"));
       
 }
@@ -60,9 +60,9 @@ void replay(Context x, foam.dao.DAO dao) {
               put: function(o) { return dao_put(o); },
               remove: function(o) { return dao_remove(o); },
               foam: {
-                json: {
+                con: {
                   parse: function(obj) {
-                    return foam->json_parse(obj, self->of, dao->__context__);
+                    return foam->con_parse(obj, self->of, dao->__context__);
                   }
                 }
               }
@@ -716,7 +716,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

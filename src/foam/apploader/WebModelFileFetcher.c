@@ -6,7 +6,7 @@ void getFile(multitype_union_t id) {
 
       return this->HTTPRequest_create({
         method: 'GET',
-        url: this->root + '/' + id_replace(/\->/g, '/') + '->js'
+        url: this->root + '/' + id_replace(/\->/g, '/') + '->c'
       })_send()_then(function(payload) {
         return payload->resp_text();
       })
@@ -653,7 +653,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

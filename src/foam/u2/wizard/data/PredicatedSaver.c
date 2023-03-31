@@ -6,7 +6,7 @@ typedef struct {
 
 void save(multitype_union_t ...a) {
 
-      const loader = foam->json_parse(
+      const loader = foam->con_parse(
         this->loader, undefined, this->__subContext__);
       const obj = await loader_load({});
       if ( ! this->predicate_f(obj) ) return;
@@ -654,7 +654,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

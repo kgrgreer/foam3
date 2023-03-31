@@ -3,7 +3,7 @@ Major Changes.
 Introduction of CPS library:
 
 - CPS provides a way to write synchronous and asynchronous in a single
-  consistent style.  See src/foam/core/cps.js for a detailed
+  consistent style.  See src/foam/core/cps.c for a detailed
   introduction and examples.
 
 Modelling Changes:
@@ -34,7 +34,7 @@ Type System:
   Users.
 
   Finally type should only be set when it's a type that FOAM knows
-  about.  Either a primitive type defined in Type.js or the id of a
+  about.  Either a primitive type defined in Type.c or the id of a
   modeled class/enum.  If the type of a axiom is something native to a
   specific platform such as "java.io.File", then you can set the aptly
   named "javaType" property (or "swiftType") for Swift specific types.
@@ -116,7 +116,7 @@ Refinements:
   not needed for the first screen.
 
 - Refinements can also be flagged for specific environments.  Rather
-  than having to flag an entire file in files.js, we can instead just
+  than having to flag an entire file in files.c, we can instead just
   flag the specific refinement and it will only get built if the
   running flags match.
 
@@ -130,8 +130,8 @@ foam.CLASS({
 });
 
   This will only add someJavaProperty to Model if we are running with
-  the java flag.  See src/foam/core/Window.js for an example of how we
-  use this to update the Window class when running on nodejs only.
+  the java flag.  See src/foam/core/Window.c for an example of how we
+  use this to update the Window class when running on nodec only.
 
 Relationships:
 
@@ -147,14 +147,14 @@ Scripts:
   only run if the flags match.
 
 foam.SCRIPT({
-  name: 'NodeJsSpecialness',
+  name: 'NodecSpecialness',
   flags: [ 'node' ],
   code: function() {
-    console.log("Running in nodejs!");
+    console.log("Running in nodec!");
   }
 });
 
-  If running foam in nodejs this script will execute, otherwise it
+  If running foam in nodec this script will execute, otherwise it
   will not.
 
 Constants:

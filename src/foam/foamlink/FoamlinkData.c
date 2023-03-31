@@ -7,7 +7,7 @@ void add(multitype_union_t fileName, multitype_union_t idsPresent) {
 
       this->filesToClasses[fileName] = idsPresent;
       // idsPresent could be an array if it was set using the MANUAL function
-      // in a foamlink->js file; it's usually a map with model ids as keys
+      // in a foamlink->c file; it's usually a map with model ids as keys
       if ( ! Array_isArray(idsPresent) ) {
         idsPresent = Object_keys(idsPresent);
       }
@@ -18,7 +18,7 @@ void add(multitype_union_t fileName, multitype_union_t idsPresent) {
 }
 void saveToDisk(multitype_union_t filepath) {
 
-      require('fs')_writeFileSync(filepath, JSON_stringify({
+      require('fs')_writeFileSync(filepath, cON_stringify({
         // TODO: Better way to get the natural object for a model's properties?
         filesToClasses: this->filesToClasses,
         classesToFiles: this->classesToFiles
@@ -666,7 +666,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

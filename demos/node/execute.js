@@ -3,17 +3,17 @@
 var dir = __dirname;
 var root = dir + '/../..';
 
-require(root + '/src/foam.js');
-require(root + '/src/foam/classloader/OrDAO.js');
-require(root + '/src/foam/classloader/NodeModelFileDAO.js');
-require(root + '/src/foam/classloader/NodeJsModelExecutor.js');
+require(root + '/src/foam.c');
+require(root + '/src/foam/classloader/OrDAO.c');
+require(root + '/src/foam/classloader/NodeModelFileDAO.c');
+require(root + '/src/foam/classloader/NodecModelExecutor.c');
 
 foam.locale = 'fr';
 
-var executor = foam.classloader.NodeJsModelExecutor.create({
+var executor = foam.classloader.NodecModelExecutor.create({
   classpaths: [
     dir + '/../../src',
-    dir + '/js'
+    dir + '/c'
   ],
   modelId: 'nodetooldemo.Test',
   modelArgs: {

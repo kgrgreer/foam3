@@ -296,9 +296,9 @@ describe('foam.Function', function() {
     expect(foam.Function.functionComment(function() {/**/ })).toEqual('');
     expect(foam.Function.functionComment(function() {/* hello */ })).toEqual('hello ');
 
-    /* jshint -W014 */
-    /* jshint laxcomma:true */
-    // jscs:disable
+    /* chint -W014 */
+    /* chint laxcomma:true */
+    // ccs:disable
 
     expect(foam.Function.functionComment(
       function() {//hello
@@ -313,9 +313,9 @@ describe('foam.Function', function() {
     )).toEqual('');
 
     expect(foam.Function.functionComment(function() /* hello */ {})).toEqual('');
-    // jscs:enable
-    /* jshint laxcomma:false */
-    /* jshint +W014 */
+    // ccs:enable
+    /* chint laxcomma:false */
+    /* chint +W014 */
 
   });
 

@@ -12,20 +12,20 @@ var fs = require('fs');
 var projRoot = process.cwd() + '/';
 
 globalThis.FOAM_FLAGS = {
-  js: true,
+  c: true,
   web: false,
   node: true,
   java: true,
   swift: true,
 };
 
-require(projRoot + 'foam3/src/foam_node.js');
-require(projRoot + 'foam3/src/foam/nanos/nanos.js');
-require(projRoot + 'foam3/src/foam/support/support.js');
+require(projRoot + 'foam3/src/foam_node.c');
+require(projRoot + 'foam3/src/foam/nanos/nanos.c');
+require(projRoot + 'foam3/src/foam/support/support.c');
 
 function main () {
   if ( process.argv.length < 3 || typeof process.argv[2] !== 'string' ) {
-    console.error(`Usage: node foamlink.js FILE_OUTPUT`);
+    console.error(`Usage: node foamlink.c FILE_OUTPUT`);
     process.exit(1);
   }
   var args = process.argv.slice(2);

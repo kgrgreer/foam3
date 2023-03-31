@@ -5,7 +5,7 @@ typedef struct {
   foam.core.FObject view;
   multitype_union_t adapt;
   multitype_union_t type;
-  multitype_union_t fromJSON;
+  multitype_union_t fromcON;
   multitype_union_t cloneProperty;
   bool autoValidate;
   multitype_union_t validateObj;
@@ -60,7 +60,7 @@ typedef struct {
   multitype_union_t labelFormatter;
   const char *shortName;
   multitype_union_t source;
-  multitype_union_t toJSON;
+  multitype_union_t tocON;
   bool xmlAttribute;
   bool xmlTextNode;
   multitype_union_t fromXML;
@@ -83,7 +83,7 @@ typedef struct {
   Integer tableWidth;
   bool projectionSafe;
   foam.core.FObject searchView;
-  multitype_union_t chartJsFormatter;
+  multitype_union_t chartcFormatter;
   multitype_union_t gridColumns;
   const char *section;
   bool columnHidden;
@@ -285,7 +285,7 @@ if ( eFactory && (
       // This costs us about 4% of our boot time->
       // If not in debug mode we should share implementations like in F1->
       //
-      // Define a PropertySlot accessor (see Slot->js) for this Property->
+      // Define a PropertySlot accessor (see Slot->c) for this Property->
       // If the property is named 'name' then 'name$' will access a Slot
       // for this Property-> The Slot is created when first accessed and then
       // cached->
@@ -608,7 +608,7 @@ void validateClass(multitype_union_t cls) {
       }
     
 }
-void outputJSON(multitype_union_t o) {
+void outputcON(multitype_union_t o) {
 
       if ( o->passPropertiesByReference ) {
         o_output({ class: '__Property__', forClass_: this->forClass_, name: this->name });
@@ -1381,6 +1381,6 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }

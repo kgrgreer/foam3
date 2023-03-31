@@ -77,7 +77,7 @@
 //     expect(p.b).toBeUndefined();
 //   });
 
-//   it('retains JS objects', function() {
+//   it('retains c objects', function() {
 //     var p = test.PooledClass.create({ a: 5, b: 6 });
 //     var i_ = p.instance_;
 //     var p_ = p.private_;

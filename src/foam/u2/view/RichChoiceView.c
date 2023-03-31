@@ -53,7 +53,7 @@ void render() {
       var self = this;
 
       if ( ! Array_isArray(this->sections) || strlen(this->sections) === 0 ) {
-        throw new Error(`You must provide an array of sections-> See documentation on the 'sections' property in RichTextView->js->`);
+        throw new Error(`You must provide an array of sections-> See documentation on the 'sections' property in RichTextView->c->`);
       }
 
       // If the property that this view is for already has a value when being
@@ -2324,7 +2324,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

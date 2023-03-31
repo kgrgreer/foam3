@@ -28,8 +28,8 @@ describe('RestDAO', function() {
 
       requires: [
         'foam.dao.ArraySink',
-        'foam.json.Outputter',
-        'foam.json.Parser',
+        'foam.con.Outputter',
+        'foam.con.Parser',
         'foam.net.HTTPResponse'
       ],
 
@@ -41,7 +41,7 @@ describe('RestDAO', function() {
         },
         {
           class: 'FObjectProperty',
-          of: 'foam.json.Outputter',
+          of: 'foam.con.Outputter',
           name: 'outputter',
           factory: function() {
             return this.Outputter.create({
@@ -55,7 +55,7 @@ describe('RestDAO', function() {
         },
         {
           class: 'FObjectProperty',
-          of: 'foam.json.Parser',
+          of: 'foam.con.Parser',
           name: 'parser',
           factory: function() {
             return this.Parser.create({
@@ -68,7 +68,7 @@ describe('RestDAO', function() {
 
       methods: [
         function send() {
-          var jsonify = this.jsonify;
+          var conify = this.conify;
           var createResponse = this.createResponse;
 
           if ( this.method === 'PUT' && this.url === this.baseURL ) {
@@ -82,7 +82,7 @@ describe('RestDAO', function() {
             var predicate;
             try {
               obj = this.parser.parseString(this.payload);
-              payload = jsonify(obj);
+              payload = conify(obj);
             } catch (err) {
               return Promise.resolve(this.createResponse({ status: 500 }));
             }
@@ -96,7 +96,7 @@ describe('RestDAO', function() {
             id = this.parser.parseString(decodeURIComponent(this.url.substr(
               this.baseURL.length + 1)));
             return dao.find(id).then(function(o) {
-              payload = jsonify(o);
+              payload = conify(o);
               return dao.remove(o);
             }).then(function() {
               return createResponse({ status: 200, payload: payload });
@@ -108,7 +108,7 @@ describe('RestDAO', function() {
             id = this.parser.parseString(decodeURIComponent(this.url.substr(
               this.baseURL.length + 1)));
             return dao.find(id).then(function(o) {
-              return createResponse({ status: 200, payload: jsonify(o) });
+              return createResponse({ status: 200, payload: conify(o) });
             });
           } else if ( this.method === 'POST' &&
                       this.url.indexOf(this.baseURL) === 0 &&
@@ -129,7 +129,7 @@ describe('RestDAO', function() {
             predicate = data.predicate;
             return dao.select_(dao.__context__, sink, skip, limit, order, predicate)
               .then(function(sink) {
-                var payload = jsonify(sink);
+                var payload = conify(sink);
                 return createResponse({ status: 200, payload: payload });
               });
           } else if ( this.method === 'POST' &&
@@ -157,14 +157,14 @@ describe('RestDAO', function() {
       ],
 
       listeners: [
-        function jsonify(o) {
+        function conify(o) {
           return this.outputter.stringify(o);
         },
         function createResponse(o) {
           return this.HTTPResponse.create(Object.assign(
-              { responseType: 'json' },
+              { responseType: 'con' },
               o,
-              { payload: Promise.resolve(JSON.parse(o.payload || '{}')) }));
+              { payload: Promise.resolve(cON.parse(o.payload || '{}')) }));
         }
       ]
     });

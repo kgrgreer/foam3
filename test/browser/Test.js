@@ -234,9 +234,9 @@ foam.CLASS({
 var t = JTest.create();
 var t2 = JTest.create({b: true, c: 42, d: 4.5, e: 'foobar', f: []});
 var t3 = JTest.create({b: true, c: 42, d: 4.5, e: 'foobar', f: [1,2,3]});
-console.log(foam.json.Storage.stringify(t));
-console.log(foam.json.Storage.stringify(t2));
-console.log(foam.json.Storage.stringify(t3));
+console.log(foam.con.Storage.stringify(t));
+console.log(foam.con.Storage.stringify(t2));
+console.log(foam.con.Storage.stringify(t3));
 */
 
 function foo(/* Int */ i, /* String */ s, /* FObject */ o) {

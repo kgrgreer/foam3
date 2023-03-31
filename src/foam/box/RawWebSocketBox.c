@@ -5,7 +5,7 @@ typedef struct {
 void send(foam.box.Message msg) {
 
         var replyBox = msg->attributes->replyBox;
-        var payload = this->JSONOutputter_create()_copyFrom(foam->json->Network)_stringify(msg);
+        var payload = this->cONOutputter_create()_copyFrom(foam->con->Network)_stringify(msg);
 
         try {
           this->socket_send(payload);
@@ -655,7 +655,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

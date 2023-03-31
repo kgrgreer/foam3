@@ -47,9 +47,9 @@ typedef struct {
   multitype_union_t lastModifiedBy;
   multitype_union_t lastModifiedByAgent;
   foam.dao.ManyToManyRelationship categories;
-  foam.lib.json.UnknownFObject wizardlet;
-  foam.lib.json.UnknownFObject beforeWizardlet;
-  foam.lib.json.UnknownFObject wizardConfig;
+  foam.lib.con.UnknownFObject wizardlet;
+  foam.lib.con.UnknownFObject beforeWizardlet;
+  foam.lib.con.UnknownFObject wizardConfig;
 } foam_nanos_auth_ServiceProvider_t;
 
 foam.dao.DAO getLineItemTypes(Context x) {
@@ -1000,7 +1000,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

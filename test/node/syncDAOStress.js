@@ -20,7 +20,7 @@
  * test operation, jump to comment "Test configuration".
  */
 
-require('../../src/foam.js');
+require('../../src/foam.c');
 
 var AdapterDAO;
 var BaseDAO;

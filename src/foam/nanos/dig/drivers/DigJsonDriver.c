@@ -1,7 +1,7 @@
 typedef struct {
   multitype_union_t format;
   foam.nanos.logger.Logger logger;
-} foam_nanos_dig_drivers_DigJsonDriver_t;
+} foam_nanos_dig_drivers_DigconDriver_t;
 
 void init() {
 
@@ -644,7 +644,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

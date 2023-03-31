@@ -25,8 +25,8 @@ FOAM's data storage library contains many implementations of the common DAO inte
 - `IndexedDB`
 - Plain Javascript arrays
 - REST services
-- XML and JSON files
-- MongoDB (in Node.js)
+- XML and cON files
+- MongoDB (in Node.c)
 
 There are also many DAO "decorators" which add extra functionality on top of other DAOs. This spares each DAO's author from having to reimplement caching, autoincrement, logging and timing.
 
@@ -47,11 +47,11 @@ For this simple app, you will have a small controller with very few parts:
 
 1. A `TextField` for the search box.
 2. A `ChoiceView` for the sort order drop-down.
-3. A `DAOList` for the list of phones (from the `phones.js` file).
+3. A `DAOList` for the list of phones (from the `phones.c` file).
 
-**STEP #1.** Enter the following code into a new js file called `$PROJECT/Controller.js`:
+**STEP #1.** Enter the following code into a new c file called `$PROJECT/Controller.c`:
 
-      {% highlight js %}
+      {% highlight c %}
       foam.CLASS({
         package: 'tutorial',
         name: 'Controller',
@@ -113,7 +113,7 @@ For this simple app, you will have a small controller with very few parts:
 
 5. `dao` is the master DAO containing all the phones.
 
-    * `phones.js` creates a global array called `phones`. You set the default `value` of your `dao` property to this global value.
+    * `phones.c` creates a global array called `phones`. You set the default `value` of your `dao` property to this global value.
 
 6. `filteredDAO` is the interesting DAO. This is the one that actually drives the main view on the page which gets filtered by the search and ordered by the sort order.
 
@@ -127,9 +127,9 @@ For this simple app, you will have a small controller with very few parts:
 The `rowView` in the `DAOList` above is called `PhoneCitationView`. The above code defined this view to specify how to display a summary of a phone for the catalog page. Now, load your app using the default `DetailView` templates.
 
 
-**STEP #2.** Add the following dummy code to `Controller.js`.  After this step the catalog page will be functional:
+**STEP #2.** Add the following dummy code to `Controller.c`.  After this step the catalog page will be functional:
 
-    {% highlight js %}
+    {% highlight c %}
     foam.CLASS({
       package: 'tutorial',
       name: 'PhoneCitationView',
@@ -142,10 +142,10 @@ The `rowView` in the `DAOList` above is called `PhoneCitationView`. The above co
     {% highlight html %}
     <html>
       <head>
-        <script language="javascript" src="foam3/src/foam.js"></script>
-        <script src="Phone.js"></script>
-        <script src="phones.js"></script>
-        <script src="Controller.js"></script>
+        <script language="javascript" src="foam3/src/foam.c"></script>
+        <script src="Phone.c"></script>
+        <script src="phones.c"></script>
+        <script src="Controller.c"></script>
       </head>
       <body>
         <foam class="tutorial.Controller"></foam>

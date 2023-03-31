@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// TODO(markdittmer): Get rid of special-casing of 'js' and 'nanos' flags.
+// TODO(markdittmer): Get rid of special-casing of 'c' and 'nanos' flags.
 
 var flags = {};
 var otherLanguages = [ 'java', 'swift' ];
@@ -26,14 +26,14 @@ if ( process.argv.length > 2 ) {
   });
 
   // Default to language = javascript.
-  if ( ! flags.js ) {
-    flags.js = ! otherLanguages.some(function(lang) {
+  if ( ! flags.c ) {
+    flags.c = ! otherLanguages.some(function(lang) {
       return flags[lang];
     });
   }
 }
 
-var outfile = __dirname + '/../foam-bin.js';
+var outfile = __dirname + '/../foam-bin.c';
 if ( process.argv.length > 3 ) {
   outfile = process.argv[3];
 }
@@ -46,21 +46,21 @@ var env = {
     }).map(function(f) {
       return f.name;
     }).forEach(function(f) {
-      var data = require('fs').readFileSync(__dirname + '/../src/' + f + '.js').toString();
+      var data = require('fs').readFileSync(__dirname + '/../src/' + f + '.c').toString();
       payload += data;
     });
   }
 };
 
-var data = [ require('fs').readFileSync(__dirname + '/../src/files.js') ];
+var data = [ require('fs').readFileSync(__dirname + '/../src/files.c') ];
 if ( flags.nanos ) {
   data.push(
-      require('fs').readFileSync(__dirname + '/../src/foam/nanos/nanos.js'));
+      require('fs').readFileSync(__dirname + '/../src/foam/nanos/nanos.c'));
 }
 
 if ( flags.support ) {
   data.push(
-    require('fs').readFileSync(__dirname + '/../src/foam/support/support.js'));
+    require('fs').readFileSync(__dirname + '/../src/foam/support/support.c'));
 }
 
 for ( var i = 0; i < data.length; i++ ) {

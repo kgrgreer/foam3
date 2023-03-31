@@ -1,7 +1,7 @@
 A simple demo for using and consuming the foam.tools.Build tool. To use, start
 by running:
 
-  node demos/buildtool/build.js
+  node demos/buildtool/build.c
 
 Then start a simple http server:
 

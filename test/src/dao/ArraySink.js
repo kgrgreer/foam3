@@ -21,11 +21,11 @@ describe('ArraySink', function() {
     var stringifier;
     var parser;
     beforeEach(function() {
-      objectifier = foam.json.Outputter.create({
+      objectifier = foam.con.Outputter.create({
         outputDefaultValues: false
       });
-      stringifier = foam.json.Strict;
-      parser = foam.json.Parser.create({ strict: true });
+      stringifier = foam.con.Strict;
+      parser = foam.con.Parser.create({ strict: true });
 
       foam.CLASS({
         package: 'test',

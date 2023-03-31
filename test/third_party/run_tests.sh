@@ -77,7 +77,7 @@ ${JAVA:="java"} -cp "$CDS_EMULATOR_JAR" \
 export CDS_EMULATOR_PID=$!
 
 
-export JASMINE_CONFIG_PATH="$BASE_DIR/../../jasmine_gcloud.json"
+export JASMINE_CONFIG_PATH="$BASE_DIR/../../jasmine_gcloud.con"
 
 # Run tests
 sleep 5

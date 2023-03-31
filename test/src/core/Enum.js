@@ -71,7 +71,7 @@ describe('Enum tests', function() {
 
     todo.status = TodoStatus.CLOSED;
     expect(todo.status).toBe(TodoStatus.CLOSED);
-    expect(foam.json.objectify(todo).status).toBe(TodoStatus.CLOSED.ordinal);
+    expect(foam.con.objectify(todo).status).toBe(TodoStatus.CLOSED.ordinal);
 
     expect(function() {
       todo.status = 'invalid enum value';
@@ -82,9 +82,9 @@ describe('Enum tests', function() {
     }).toThrow();
 
     expect(
-      foam.json.parse(
-        foam.json.parseString(
-          foam.json.stringify(TodoStatus.CLOSED)))).toBe(
+      foam.con.parse(
+        foam.con.parseString(
+          foam.con.stringify(TodoStatus.CLOSED)))).toBe(
             TodoStatus.CLOSED);
 
     todo.status = 101;
@@ -149,8 +149,8 @@ describe('Enum tests', function() {
       values: [ 'PING', 'PONG' ]
     });
 
-    var outputter = foam.json.Outputter.create({ outputDefaultValues: false });
-    var parser = foam.json.Parser.create({ creationContext: foam.__context__ });
+    var outputter = foam.con.Outputter.create({ outputDefaultValues: false });
+    var parser = foam.con.Parser.create({ creationContext: foam.__context__ });
     function runSerialization(value) {
       return parser.parseString(outputter.stringify(value));
     }

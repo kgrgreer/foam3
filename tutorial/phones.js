@@ -1350,4 +1350,4 @@ var rawPhones = [
   }
 ];
 
-var phones = foam.dao.ArrayDAO.create({array: foam.json.parse(rawPhones)});
+var phones = foam.dao.ArrayDAO.create({array: foam.con.parse(rawPhones)});

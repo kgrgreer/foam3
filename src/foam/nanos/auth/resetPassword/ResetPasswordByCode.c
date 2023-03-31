@@ -32,7 +32,7 @@ void assert(multitype_union_t predicate, multitype_union_t ...args) {
 
       if ( ! predicate ) {
         this_report('^_ASSERTION_FAILED', ['assert'], {
-          extra: foam->json_stringify(args)
+          extra: foam->con_stringify(args)
         });
       }
     
@@ -58,7 +58,7 @@ void error(multitype_union_t name, multitype_union_t opt_e, multitype_union_t op
         ->->->(opt_e ? ['exception'] : [])
       ];
       this_report(name, tags, {
-        extra: foam->json_stringify({ exceptionMessage })
+        extra: foam->con_stringify({ exceptionMessage })
       });
     
 }
@@ -711,7 +711,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

@@ -34,7 +34,7 @@ describe('NoDisjunction(Datastore) DAO', function() {
     });
   }
 
-  // From helpers/generic_dao.js.
+  // From helpers/generic_dao.c.
   globalThis.genericDAOTestBattery(daoFactory);
 
   describe('disjunctive queries', function() {

@@ -11,7 +11,7 @@ var path_ = require('path');
 
 // Enable FOAM swift support.
 globalThis.FOAM_FLAGS = {
-  'js': false,
+  'c': false,
   'java': false,
   'node': false,
   'swift': true,
@@ -21,12 +21,12 @@ globalThis.FOAM_FLAGS = {
 var dir = __dirname;
 var root = dir + '/..';
 
-require(root + '/src/foam.js');
-require('../src/foam/nanos/nanos.js'); // TODO this shouldnt always be loaded.
-require('../src/foam/support/support.js'); // TODO this shouldnt always be loaded.
+require(root + '/src/foam.c');
+require('../src/foam/nanos/nanos.c'); // TODO this shouldnt always be loaded.
+require('../src/foam/support/support.c'); // TODO this shouldnt always be loaded.
 
 if ( ! (process.argv.length >= 4 && process.argv.length <= 5) ) {
-  console.log("USAGE: genswift.js input-path output-path classpaths(optional)");
+  console.log("USAGE: genswift.c input-path output-path classpaths(optional)");
   process.exit(1);
 }
 
@@ -47,7 +47,7 @@ var outdir = process.argv[3];
 outdir = path_.resolve(path_.normalize(outdir));
 execSync('rm -rf ' + outdir);
 
-var executor = foam.classloader.NodeJsModelExecutor.create({
+var executor = foam.classloader.NodecModelExecutor.create({
   classpaths: srcPaths,
   modelId: 'foam.swift.GenSwift',
   modelArgs: {

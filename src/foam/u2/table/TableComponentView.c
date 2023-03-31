@@ -71,7 +71,7 @@ void filterUnpermitted(multitype_union_t arr) {
       return arr_filter((_v, index) => results[index]);
     
 }
-void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_t nestedPropertiesObjsMap) {
+void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_t nestedPropertiesObcMap) {
 
       var objForCurrentProperty = obj;
       var propName = this->columnHandler_propertyNamesForColumnArray(prop);
@@ -79,7 +79,7 @@ void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_
       //check if current column is a nested property
       //if so get object for it
       if ( prop && prop->fullPropertyName_includes('->') ) {
-        objForCurrentProperty = nestedPropertiesObjsMap[this->columnHandler_getNestedPropertyNameExcludingLastProperty(prop->fullPropertyName)];
+        objForCurrentProperty = nestedPropertiesObcMap[this->columnHandler_getNestedPropertyNameExcludingLastProperty(prop->fullPropertyName)];
       }
       return [
         (objForCurrentProperty ?
@@ -2198,7 +2198,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

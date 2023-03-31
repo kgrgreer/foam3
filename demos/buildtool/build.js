@@ -2,11 +2,11 @@
 
 globalThis.FOAM_FLAGS = {
   web: true,
-  js: true,
+  c: true,
   debug: true,
 };
 
-require(__dirname + '/../../src/foam.js');
+require(__dirname + '/../../src/foam.c');
 
 foam.__context__.classloader.addClassPath(__dirname + '/src');
 
@@ -15,7 +15,7 @@ Promise.all([
   foam.__context__.classloader.load('demo.build.ModelToBuild'),
 ]).then(function(cls) {
   foam.build.Builder.create({
-    targetFile: __dirname + '/foam-bin.js',
-    enabledFeatures: ['web', 'js'],
+    targetFile: __dirname + '/foam-bin.c',
+    enabledFeatures: ['web', 'c'],
   }).execute()
 });

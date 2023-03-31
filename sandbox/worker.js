@@ -1,7 +1,7 @@
 FOAM_BOOT_PATH="/src/core/";
 
-importScripts('/src/foam.js');
-importScripts('testlib.js');
+importScripts('/src/foam.c');
+importScripts('testlib.c');
 
 
 var registry = foam.box.RegistryBox.create();

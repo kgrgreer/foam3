@@ -33,23 +33,23 @@ describe("Index benchmarks", function() {
     if ( ! rawData ) {
       var xhr = ((foam.net.node && foam.net.node.HTTPRequest) ||
           foam.net.web.HTTPRequest).create({
-        responseType: 'json',
+        responseType: 'con',
         method: 'GET'
       });
       //if ( foam.net.node ) // local option for medal data file
-      //  xhr.fromUrl('http://0.0.0.0:8888/MedalData.json');
+      //  xhr.fromUrl('http://0.0.0.0:8888/MedalData.con');
       //else
         xhr.fromUrl('https://raw.githubusercontent.com/foam-framework/foam/' +
-                 'master/js/foam/demos/olympics/MedalData.json');
+                 'master/c/foam/demos/olympics/MedalData.con');
       var self = this;
       return xhr.send().then(function(res) {
         console.log("XHR started");
         return res.payload;
-      }).then(function(json) {
+      }).then(function(con) {
         console.log("XHR complete, parsing...");
-        rawData = json;
-        if ( ! Array.isArray(json) ) {
-          rawData = foam.json.parseString(json);
+        rawData = con;
+        if ( ! Array.isArray(con) ) {
+          rawData = foam.con.parseString(con);
         }
 
         var p = [];

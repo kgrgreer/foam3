@@ -1,10 +1,10 @@
 {
   "spec_dir": "test",
   "spec_files": [
-    "FOAMByExample.js",
-    "src/**/*.js"
+    "FOAMByExample.c",
+    "src/**/*.c"
   ],
   "helpers": [
-    "helpers/**/*.js"
+    "helpers/**/*.c"
   ]
 }

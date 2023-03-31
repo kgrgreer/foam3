@@ -35,7 +35,7 @@ void render() {
             add("Object with value 10 added");
         },
         remove: function(obj) {
-          self_add("Object with value 10 removed->", foam->json_stringify(obj));
+          self_add("Object with value 10 removed->", foam->con_stringify(obj));
         },
         reset: function() {
           self_add("reset event->");
@@ -2136,7 +2136,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

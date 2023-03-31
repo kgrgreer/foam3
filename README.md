@@ -48,10 +48,10 @@ FOAM has no runtime dependencies, but uses a number of third party tools for
 unit tests, code coverage, and linting.  You can install all required
 tools by doing the following.
 
-* Install nodejs.
+* Install nodec.
 
 * Run 'npm install' in the root of the FOAM repository, where
-  package.json is found.
+  package.con is found.
 
 ## Running Application Controller
 
@@ -119,6 +119,6 @@ to run the unit tests.
 ## Design Patterns
 The following course is not directly about FOAM, but covers material essential for fully understanding FOAM's design:
 
-[Introduction to Design Patterns](https://docs.google.com/presentation/d/1kcohKD0WJHJWoJshOUpVdk-Pa3oeJMt9DTl63gWt-bo/edit)
+[Introduction to Design Patterns](https://docs.google.com/presentation/d/1kcohKD0WJHJWochOUpVdk-Pa3oeJMt9DTl63gWt-bo/edit)
 
 Videos: [Part 1](https://www.youtube.com/watch?v=uslGu0kezeg), [Part2](https://www.youtube.com/watch?v=jzWjp_B7wE4), [Part 3](https://www.youtube.com/watch?v=yIfPa7yzYpQ)

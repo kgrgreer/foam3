@@ -30,12 +30,12 @@ void initialize() {
       // syntax highlighter may say 'path' is unused; this is inaccurate->
       for ( const path of this->journals ) with ({
         p: spec => {
-          const o = foam->json_parse(spec, this->of, this->__subContext__);
+          const o = foam->con_parse(spec, this->of, this->__subContext__);
           // TODO: Queue put instead of putting it into the array immediately
           promises_push(this->loadedDAO_put(o));
         },
         r: spec => {
-          const o = foam->json_parse(spec, this->of, this->__subContext__);
+          const o = foam->con_parse(spec, this->of, this->__subContext__);
           promises_push(this->loadedDAO_remove(o));
         }
       }) eval(await (await fetch(path))_text());
@@ -274,7 +274,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -874,7 +874,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

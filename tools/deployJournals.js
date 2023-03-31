@@ -8,9 +8,9 @@ const path_     = require('path');
 const fs_       = require('fs');
 const path = path_.posix;
 
-require('../src/foam_node.js');
+require('../src/foam_node.c');
 
-var [argv, X, flags] = require('./processArgs.js') (
+var [argv, X, flags] = require('./processArgs.c') (
   '',
   { version: '', license: '', pom: 'pom' },
   { debug: true, java: false, web: true }

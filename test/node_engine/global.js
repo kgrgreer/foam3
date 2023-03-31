@@ -19,7 +19,7 @@
 // environment.
 var fs = require('fs');
 var vm = require('vm');
-//var jsdom = require('jsdom');
+//var cdom = require('cdom');
 
 // Unique value for whitelisted keys in a property name map.
 var WHITELISTED = {};
@@ -120,15 +120,15 @@ function isContextReportClean(contextReport) {
 //   it('FOAM core does not pollute the global context', function(done) {
 //     // Load global whitelist, list of core files, and core files.
 //     var globalWhitelist =
-//         JSON.parse(fs.readFileSync('test/node/globalWhitelist.json'));
-//     var scriptFileNames = JSON.parse(fs.readFileSync('src/core.json'));
+//         cON.parse(fs.readFileSync('test/node/globalWhitelist.con'));
+//     var scriptFileNames = cON.parse(fs.readFileSync('src/core.con'));
 //     var coreScriptContents = '';
 //     for (var i = 0; i < scriptFileNames.length; i++) {
 //       coreScriptContents += fs.readFileSync('src/' + scriptFileNames[i]);
 //     }
 //     // Run in a browser-like environment, and evaluate changes to the global
 //     // context.
-//     jsdom.env(
+//     cdom.env(
 //         '<html><head><title>Global Scope Pollution Test</title></head><body>' +
 //             '</body></html>',
 //         [],
@@ -147,7 +147,7 @@ function isContextReportClean(contextReport) {
 //           if (!isContextReportClean(report)) {
 //             console.log(report);
 //             fail('Core should not pollute the global context; context report:\n' +
-//                 JSON.stringify(report, null, 2));
+//                 cON.stringify(report, null, 2));
 //           }
 //           expect(isContextReportClean(report)).toBe(true);
 //           done();

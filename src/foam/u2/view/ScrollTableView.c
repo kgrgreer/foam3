@@ -161,12 +161,12 @@ void render() {
           } else {
             id = this->data->of->ID->of_create();
             mementoHead = '{' + this->table_->memento->tail->tail->head_replaceAll('=', ':') + '}';
-            var idFromJSON = foam->json_parseString(mementoHead);
-            for ( var key in idFromJSON ) {
+            var idFromcON = foam->con_parseString(mementoHead);
+            for ( var key in idFromcON ) {
               var axiom = this->data->of_getAxiomByName(key);
 
               if ( axiom )
-                axiom_set(id, idFromJSON[key]);
+                axiom_set(id, idFromcON[key]);
             }
           }
           this->config->dao_inX(ctrl->__subContext__)_find(id)_then(v => {
@@ -2273,7 +2273,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

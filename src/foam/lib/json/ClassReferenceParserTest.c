@@ -22,7 +22,7 @@ typedef struct {
   multitype_union_t lastModifiedByAgent;
   DateTime lastModified;
   foam.dao.DAO events;
-} foam_lib_json_ClassReferenceParserTest_t;
+} foam_lib_con_ClassReferenceParserTest_t;
 
 void runTest(Context x) {
 
@@ -780,7 +780,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

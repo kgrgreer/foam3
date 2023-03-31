@@ -73,7 +73,7 @@ describe('LocalStorageDAO', function() {
     localStorage.clear();
   });
 
-  // TODO: test nested objects when foam.json supports them
+  // TODO: test nested objects when foam.con supports them
 });
 
 
@@ -960,21 +960,21 @@ describe('EasyDAO-permutations', function() {
 
 
 // Property             name           foam.core.Property
-// debug.js:264 Boolean              seqNo          false
-// debug.js:264 Boolean              guid           false
-// debug.js:264 Property             seqProperty    undefined
-// debug.js:264 Boolean              cache          false
-// debug.js:264 Boolean              dedup          false
-// debug.js:264 Property             journal        false
-// debug.js:264 Boolean              contextualize  false
-// debug.js:264 Property             daoType        foam.dao.IDBDAO
-// debug.js:264 Boolean              autoIndex      false
-// debug.js:264 Boolean              syncWithServer false
-// debug.js:264 Boolean              syncPolling    true
-// debug.js:264 String               serverUri      http://0.0.0.0:8000/api
-// debug.js:264 Boolean              isServer       false
-// debug.js:264 Property             syncProperty   undefined
-// debug.js:264 Class2               of             PropertyClass
+// debug.c:264 Boolean              seqNo          false
+// debug.c:264 Boolean              guid           false
+// debug.c:264 Property             seqProperty    undefined
+// debug.c:264 Boolean              cache          false
+// debug.c:264 Boolean              dedup          false
+// debug.c:264 Property             journal        false
+// debug.c:264 Boolean              contextualize  false
+// debug.c:264 Property             daoType        foam.dao.IDBDAO
+// debug.c:264 Boolean              autoIndex      false
+// debug.c:264 Boolean              syncWithServer false
+// debug.c:264 Boolean              syncPolling    true
+// debug.c:264 String               serverUri      http://0.0.0.0:8000/api
+// debug.c:264 Boolean              isServer       false
+// debug.c:264 Property             syncProperty   undefined
+// debug.c:264 Class2               of             PropertyClass
   ].forEach(function(cfg) {
     genericDAOTestBattery(function(model) {
       cfg.of = model;

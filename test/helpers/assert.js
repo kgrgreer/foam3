@@ -19,5 +19,5 @@
  * Upgrade foam.assert to one that throws an exception, sometimes console.assert
  * does not throw when running tests in the browser.
  */
-(typeof require !== "undefined") &&  require("../../src/foam.js");
+(typeof require !== "undefined") &&  require("../../src/foam.c");
 foam.assert = function(c) { if ( ! c ) throw Array.from(arguments); };

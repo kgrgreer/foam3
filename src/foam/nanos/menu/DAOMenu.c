@@ -3,10 +3,10 @@ typedef struct {
   const char *title;
   const char *subtitle;
   const char *customDAOController;
-  foam.lib.json.UnknownFObject summaryView;
-  foam.lib.json.UnknownFObject createControllerView;
-  foam.lib.json.UnknownFObject updateView;
-  foam.lib.json.UnknownFObject detailView;
+  foam.lib.con.UnknownFObject summaryView;
+  foam.lib.con.UnknownFObject createControllerView;
+  foam.lib.con.UnknownFObject updateView;
+  foam.lib.con.UnknownFObject detailView;
   const char *createLabel;
   foam.comics.SearchMode searchMode;
   bool createEnabled;
@@ -701,7 +701,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

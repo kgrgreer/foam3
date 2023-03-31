@@ -168,13 +168,13 @@ class ParserTests: XCTestCase {
   }
 
   func testAnyKeyParser() {
-    let parser = X.create(foam_swift_parse_json_AnyKeyParser.self)!
+    let parser = X.create(foam_swift_parse_con_AnyKeyParser.self)!
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "KEY"]), x)!.value()! as! String, "KEY")
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "\"KEY\": "]), x)!.value()! as! String, "KEY")
   }
 
   func testFloatParser() {
-    let parser = foam_swift_parse_json_FloatParser()
+    let parser = foam_swift_parse_con_FloatParser()
     XCTAssertNil(parser.parse(foam_swift_parse_StringPStream(["str": "KEY"]), x))
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "52.5"]), x)!.value()! as! Float, 52.5)
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "0.1"]), x)!.value()! as! Float, 0.1)
@@ -184,7 +184,7 @@ class ParserTests: XCTestCase {
   }
 
   func testIntParser() {
-    let parser = foam_swift_parse_json_IntParser()
+    let parser = foam_swift_parse_con_IntParser()
     XCTAssertNil(parser.parse(foam_swift_parse_StringPStream(["str": "KEY"]), x))
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "0.1"]), x)!.value()! as! Int, 0)
     XCTAssertEqual(parser.parse(foam_swift_parse_StringPStream(["str": "1."]), x)!.value()! as! Int, 1)
@@ -200,9 +200,9 @@ class ParserTests: XCTestCase {
         ])!
       ]
     ])!
-    let json = foam_swift_parse_json_output_Outputter.PRETTY.swiftStringify(obj1)
-    let parser = X.create(foam_swift_parse_json_FObjectParser.self)!
-    let obj2 = parser.parseString(json)!
+    let con = foam_swift_parse_con_output_Outputter.PRETTY.swiftStringify(obj1)
+    let parser = X.create(foam_swift_parse_con_FObjectParser.self)!
+    let obj2 = parser.parseString(con)!
     XCTAssertTrue(obj1.isEqual(obj2))
   }
 }

@@ -3,7 +3,7 @@ typedef struct {
   foam.box.Box messengerBox;
 } foam_box_ExportBox_t;
 
-void outputJSON(multitype_union_t outputter) {
+void outputcON(multitype_union_t outputter) {
 
         // This is purely an optimization-> The localBox is marked as
         // network transient, so we could serialize the ReplyBox as a
@@ -661,7 +661,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

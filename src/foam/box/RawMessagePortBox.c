@@ -1,6 +1,6 @@
 typedef struct {
   multitype_union_t port;
-  foam.json.Outputter outputter;
+  foam.con.Outputter outputter;
 } foam_box_RawMessagePortBox_t;
 
 void send(foam.box.Message msg) {
@@ -673,7 +673,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

@@ -118,7 +118,7 @@ void render() {
           }
 
           if ( summaryView->selectedObjects )
-            self->config->selectedObjs$ = summaryView->selectedObjects$;
+            self->config->selectedObc$ = summaryView->selectedObjects$;
 
           var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
 
@@ -2283,7 +2283,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

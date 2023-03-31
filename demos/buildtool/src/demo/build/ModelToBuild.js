@@ -3,18 +3,18 @@ foam.CLASS({
   name: 'ModelToBuild',
   requires: [
     {
-      path: 'foam.swift.parse.json.output.Outputter',
+      path: 'foam.swift.parse.con.output.Outputter',
       flags: ['swift'],
     },
     {
       path: 'foam.dao.EasyDAO',
-      flags: ['js'],
+      flags: ['c'],
     },
   ],
   properties: [
     {
-      name: 'jsProp',
-      flags: ['js'],
+      name: 'cProp',
+      flags: ['c'],
     },
     {
       name: 'swiftProp',

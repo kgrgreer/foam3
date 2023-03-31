@@ -22,14 +22,14 @@ describe('Serialization', function() {
       name: 'Cls'
     });
 
-    var out = foam.json.Outputter.create();
+    var out = foam.con.Outputter.create();
     expect(out.objectify(test.Cls.create())).
         toEqual({ class: 'test.Cls' });
     expect(out.objectify(test.Cls.create(), test.Cls)).
         toEqual({});
-    expect(foam.json.Strict.stringify(test.Cls.create())).
+    expect(foam.con.Strict.stringify(test.Cls.create())).
         toBe('{"class":"test.Cls"}');
-    expect(foam.json.Strict.stringify(test.Cls.create(), test.Cls)).
+    expect(foam.con.Strict.stringify(test.Cls.create(), test.Cls)).
         toBe('{}');
   });
 
@@ -43,10 +43,10 @@ describe('Serialization', function() {
       name: 'Cls2'
     });
 
-    expect(foam.json.Outputter.create().
+    expect(foam.con.Outputter.create().
            objectify(test.Cls2.create(), test.Cls)).
       toEqual({ class: 'test.Cls2' });
-    expect(foam.json.Strict.stringify(test.Cls2.create(), test.Cls)).
+    expect(foam.con.Strict.stringify(test.Cls2.create(), test.Cls)).
       toBe('{"class":"test.Cls2"}');
   });
 
@@ -68,12 +68,12 @@ describe('Serialization', function() {
       ]
     });
 
-    expect(foam.json.Outputter.create().
+    expect(foam.con.Outputter.create().
            objectify(test.Bob.create({
              alice: test.Alice.create()
            }), test.Bob)).
       toEqual({ alice: {} });
-    expect(foam.json.Strict.stringify(test.Bob.create({
+    expect(foam.con.Strict.stringify(test.Bob.create({
       alice: test.Alice.create()
     }), test.Bob)).toBe('{"alice":{}}');
   });
@@ -101,12 +101,12 @@ describe('Serialization', function() {
       ]
     });
 
-    expect(foam.json.Outputter.create().
+    expect(foam.con.Outputter.create().
            objectify(test.Beth.create({
              andy: test.Andy2.create()
            }), test.Beth)).
       toEqual({ andy: { class: 'test.Andy2' } });
-    expect(foam.json.Strict.stringify(test.Beth.create({
+    expect(foam.con.Strict.stringify(test.Beth.create({
       andy: test.Andy2.create()
     }), test.Beth)).toBe('{"andy":{"class":"test.Andy2"}}');
   });
@@ -122,10 +122,10 @@ describe('Serialization', function() {
       extends: 'test.Animal'
     });
 
-    expect(foam.json.Outputter.create().objectify(
+    expect(foam.con.Outputter.create().objectify(
             [ test.Animal.create(), test.Mammal.create() ], test.Animal)).
         toEqual([ {}, { class: 'test.Mammal' } ]);
-    expect(foam.json.Strict.stringify([
+    expect(foam.con.Strict.stringify([
       test.Animal.create(),
       test.Mammal.create()
     ], test.Animal)).toBe('[{},{"class":"test.Mammal"}]');
@@ -143,24 +143,24 @@ describe('Serialization', function() {
     });
     foam.CLASS({
       package: 'test',
-      name: 'Js',
+      name: 'c',
 
       properties: [
         {
           class: 'FObjectArray',
           of: 'test.Jane',
-          name: 'js'
+          name: 'c'
         }
       ]
     });
 
-    var js = test.Js.create({
-      js: [ test.Jane.create(), test.James.create() ]
+    var c = test.c.create({
+      c: [ test.Jane.create(), test.James.create() ]
     });
-    expect(foam.json.Outputter.create().objectify(js, test.Js)).
-        toEqual({ js: [ {}, { class: 'test.James' } ] });
-    expect(foam.json.Strict.stringify(js, test.Js)).
-        toBe('{"js":[{},{"class":"test.James"}]}');
+    expect(foam.con.Outputter.create().objectify(c, test.c)).
+        toEqual({ c: [ {}, { class: 'test.James' } ] });
+    expect(foam.con.Strict.stringify(c, test.c)).
+        toBe('{"c":[{},{"class":"test.James"}]}');
   });
 
   it('should handle complex nesting of properties', function() {
@@ -232,7 +232,7 @@ describe('Serialization', function() {
       extends: 'test.Delta'
     });
 
-    var objectifier = foam.json.Outputter.create({
+    var objectifier = foam.con.Outputter.create({
       outputDefaultValues: false
     });
     expect(objectifier.objectify(test.Alpha.create(), test.Alpha)).toEqual({});
@@ -252,7 +252,7 @@ describe('Serialization', function() {
       }
     });
 
-    var stringifier = foam.json.Strict;
+    var stringifier = foam.con.Strict;
     expect(stringifier.stringify(test.Alpha.create(), test.Alpha)).toBe('{}');
     expect(stringifier.stringify(test.Alpha.create({
       beta: test.Beta.create()

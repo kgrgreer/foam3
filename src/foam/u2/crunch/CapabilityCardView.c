@@ -1,6 +1,6 @@
 typedef struct {
   multitype_union_t associatedEntity;
-  multitype_union_t cjStatus;
+  multitype_union_t cctatus;
   bool isRenewable;
   bool tooltipEnabled;
   multitype_union_t data;
@@ -68,16 +68,16 @@ void render() {
           _end()
         _end()
         _start()
-          _add(this_slot(function(cjStatus) {
+          _add(this_slot(function(cctatus) {
             return this_E()_addClass(style_myClass('tooltip'))
               _start()
                 _addClass(this_myClass('badge'))
-                _add(self->ReadOnlyEnumView_create({ data: cjStatus }))
+                _add(self->ReadOnlyEnumView_create({ data: cctatus }))
               _end()
               _start('span')
                 _addClass(style_myClass('tooltiptext'))
                 _enableClass(style_myClass('tooltipDisabled'), self->tooltipEnabled, true)
-                _add(cjStatus->documentation)
+                _add(cctatus->documentation)
               _end();
           }))
           _add(this_slot(function(isRenewable) {
@@ -2185,7 +2185,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

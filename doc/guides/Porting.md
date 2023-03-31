@@ -2,7 +2,7 @@
 
 Replace CLASS() with foam.CLASS().
 
-Replace model_: with class: in JSON.
+Replace model_: with class: in cON.
 
 Replace lazyFactory: with factory:. FOAM1 supported both eager and lazy factories, but in FOAM2 all factories are lazy (ie. value is generated only when first accessed).
 
@@ -12,7 +12,7 @@ Replace defaultValue: with just value:
 
 FOAM2 only supports the U2 library, not U1 (ie. foam.ui.*).
 
-FOAM2 does not extend built-in prototypes, instead use foam.* static functions. See stdlib.js.
+FOAM2 does not extend built-in prototypes, instead use foam.* static functions. See stdlib.c.
 
 Replace traits: with implements:.
 

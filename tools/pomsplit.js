@@ -1,9 +1,9 @@
-require('../src/foam_node.js');
+require('../src/foam_node.c');
 
 const path_ = require('path');
 const fs_ = require('fs').promises;
 
-var [argv, X, flags] = require('./processArgs.js')(
+var [argv, X, flags] = require('./processArgs.c')(
   '',
   { pom: 'pom' },
   { debug: true, java: false, web: true }
@@ -85,12 +85,12 @@ foam.CLASS({
                         continue;
                     }
 
-                    // We will parse this line as FOAM JSON
+                    // We will parse this line as FOAM cON
                     let obj = line;
                     if ( line.match(/,\s*$/) ) {
                         obj = line.slice(0, line.lastIndexOf(','));
                     }
-                    obj = foam.json.parseString(obj);
+                    obj = foam.con.parseString(obj);
 
                     if ( obj.name.startsWith(this.packagePrefix) ) {
                         const lineNoPrefix = line.replace(this.packagePrefix + '/', '');
@@ -133,14 +133,14 @@ const PROPS = foam.tools.PomSplit.getAxiomsByClass(foam.core.Property);
 
 const prop = str => `\x1B[36;1m<${foam.String.labelize(str)}>\x1B[0m`;
 const DOC_ARGS = PROPS.map(p => '<' + foam.String.labelize(p.name) + '>').join(' ');
-const DOCUMENTATION = `pom.js file splitter
+const DOCUMENTATION = `pom.c file splitter
 
-\x1B[31;1musage: node pomsplit.js ${DOC_ARGS}\x1B[0m
+\x1B[31;1musage: node pomsplit.c ${DOC_ARGS}\x1B[0m
 
 This tool will move entries from ${prop('sourcePom')} that begin with
 ${prop('packagePrefix')} into a new file called ${prop('targetPom')}.
 
-Note: this tool uses a line-by-line analysis instead of JSON parsing or
+Note: this tool uses a line-by-line analysis instead of cON parsing or
 javascript execution so that the format of the original file may be
 preserved.`
 

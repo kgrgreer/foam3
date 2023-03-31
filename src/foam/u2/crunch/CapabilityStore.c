@@ -243,7 +243,7 @@ void renderPredicatedSection(multitype_union_t capPredicate, multitype_union_t u
             addedFirstItem = true;
             sectionElement
               _addClass(this_myClass('category'))
-              // TODO: uncomment when UCJs are editable again
+              // TODO: uncomment when UCc are editable again
               // _start('h3')_add(this->EDITABLE)_end()
           }
           grid = grid
@@ -280,8 +280,8 @@ void daoUpdate() {
               this->CapabilityCategoryCapabilityJunction->SOURCE_ID,
               categories))_select();
         })
-        _then(cccjSink => Object_keys(
-          cccjSink->array_map(cccj => cccj->targetId)
+        _then(ccccink => Object_keys(
+          ccccink->array_map(cccj => cccj->targetId)
           _reduce((set, capabilityId) => ({ ->->->set, [capabilityId]: true }), {})))
         // Get visible capabilities within visible categories
         _then(visibleList => this->visibleCapabilityDAO
@@ -2419,7 +2419,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

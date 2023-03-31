@@ -13,7 +13,7 @@ void save(multitype_union_t data) {
           : data;
         
         // Apply saver decorators
-        const saver = foam->json_parse(facadeSpec->saver, undefined, this->__subContext__);
+        const saver = foam->con_parse(facadeSpec->saver, undefined, this->__subContext__);
         const result = foam->u2->wizard->data_ensureTerminal(saver, this->ProxySaver, this->NullSaver);
         saver_save(dataToSave);
         dataToSave = result->data;
@@ -686,7 +686,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

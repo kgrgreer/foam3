@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-(typeof require !== "undefined") &&  require("../../src/foam.js");
+(typeof require !== "undefined") &&  require("../../src/foam.c");
 
 /**
   Serves to generate executable examples and unit test cases.

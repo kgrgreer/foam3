@@ -43,7 +43,7 @@ void render() {
               display: false,
             },
             tooltips: {
-              // see: https://github->com/chartjs/Chart->js/issues/3953
+              // see: https://github->com/chartc/Chart->c/issues/3953
               callbacks: {
                 label: function(tooltipItem, data) {
                   var dataset = data->datasets[tooltipItem->datasetIndex];
@@ -2236,7 +2236,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

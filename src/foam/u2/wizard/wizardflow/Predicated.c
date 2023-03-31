@@ -19,7 +19,7 @@ void execute(Context x) {
 }
 void end() {
 
-      const args = foam->json_objectify(this);
+      const args = foam->con_objectify(this);
       delete args->class;
       this->parent_tag(this->cls_, args);
       return this->parent;
@@ -68,7 +68,7 @@ void tag(multitype_union_t spec, multitype_union_t args) {
       if ( ! spec ) {
         throw new Error(
           'Undefined argument in call to ->tag: ' +
-          foam->json_stringify({
+          foam->con_stringify({
             flow: this->cls_->name,
             after: strlen(this->contextAgentSpecs) > 0
               ? this->contextAgentSpecs[strlen(this->contextAgentSpecs) - 1]
@@ -1072,7 +1072,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

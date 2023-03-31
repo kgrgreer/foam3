@@ -11,7 +11,7 @@ typedef struct {
   bool isBold;
   const char *extraClasses[];
   foam.core.FObject glyph;
-} foam_lib_json_OutputterMode_t;
+} foam_lib_con_OutputterMode_t;
 
 void outputFObject(multitype_union_t o) {
 
@@ -672,7 +672,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

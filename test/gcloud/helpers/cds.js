@@ -23,7 +23,7 @@
 var env = require('process').env;
 var http = require('http');
 
-require('./foam.js');
+require('./foam.c');
 
 foam.LIB({
   name: 'com.google.cloud.datastore',
@@ -50,8 +50,8 @@ foam.LIB({
             method: 'POST',
             path: '/v1/projects/' + env.CDS_PROJECT_ID + ':commit',
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
+              Accept: 'application/con',
+              'Content-Type': 'application/con'
             }
           });
 
@@ -64,18 +64,18 @@ foam.LIB({
               return;
             }
 
-            var jsonText = '';
-            message.on('data', function(data) { jsonText += data.toString(); });
+            var conText = '';
+            message.on('data', function(data) { conText += data.toString(); });
             message.on('end', function() {
-              var json;
+              var con;
               try {
-                json = JSON.parse(jsonText);
+                con = cON.parse(conText);
               } catch (err) {
                 reject(err);
                 return;
               }
 
-              var mutationResults = json.mutationResults;
+              var mutationResults = con.mutationResults;
               for ( var i = 0; i < mutationResults.length; i++ ) {
                 if ( mutationResults[i].conflictDetected ) {
                   reject(new Error('Conflict-on-delete'));
@@ -87,7 +87,7 @@ foam.LIB({
             });
           });
 
-          req.write(JSON.stringify({
+          req.write(cON.stringify({
             mode: 'NON_TRANSACTIONAL',
             mutations: results.map(function(result) {
               return {delete: result.entity.key};
@@ -106,8 +106,8 @@ foam.LIB({
             method: 'POST',
             path: '/v1/projects/' + env.CDS_PROJECT_ID + ':runQuery',
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
+              Accept: 'application/con',
+              'Content-Type': 'application/con'
             }
           });
 
@@ -120,12 +120,12 @@ foam.LIB({
               return;
             }
 
-            var jsonText = '';
-            message.on('data', function(data) { jsonText += data.toString(); });
+            var conText = '';
+            message.on('data', function(data) { conText += data.toString(); });
             message.on('end', function() {
-              var json;
+              var con;
               try {
-                json = JSON.parse(jsonText);
+                con = cON.parse(conText);
               } catch (err) {
                 reject(err);
                 return;
@@ -135,11 +135,11 @@ foam.LIB({
                   // TODO(markdittmer): entityResults check should be
                   // unnecessary. Is MORE_RESULTS when no more results exist a
                   // Cloud Datastore bug?
-                  json.batch.entityResults && json.batch.entityResults.length > 0 &&
-                  json.batch.moreResults.indexOf('MORE_RESULTS') === 0;
-              nextCursor = moreResults ? json.batch.endCursor : null;
+                  con.batch.entityResults && con.batch.entityResults.length > 0 &&
+                  con.batch.moreResults.indexOf('MORE_RESULTS') === 0;
+              nextCursor = moreResults ? con.batch.endCursor : null;
 
-              results = results.concat(json.batch.entityResults || []);
+              results = results.concat(con.batch.entityResults || []);
 
               if ( moreResults ) getMoreResults();
               else if ( results.length > 0 ) deleteResults();
@@ -147,7 +147,7 @@ foam.LIB({
             });
           });
 
-          req.write(JSON.stringify(resultsReqData));
+          req.write(cON.stringify(resultsReqData));
           req.end();
         }
 

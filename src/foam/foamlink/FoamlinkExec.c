@@ -8,14 +8,14 @@ typedef struct {
 
 void init() {
 
-      this->nodejs_ = {};
+      this->nodec_ = {};
       this_require_('path');
       this_require_('fs');
     
 }
 void require_(multitype_union_t name, multitype_union_t asName) {
 
-      Object_defineProperty(this->nodejs_, asName || name, {
+      Object_defineProperty(this->nodec_, asName || name, {
         value: require(name),
         writable: false
       });
@@ -69,7 +69,7 @@ void handleDirectory(multitype_union_t repoPath, multitype_union_t info) {
           return;
       }
 
-      var relPath = this->nodejs_->path_relative(repoPath, info->directory);
+      var relPath = this->nodec_->path_relative(repoPath, info->directory);
 
       // Compute expected package name for warnings
       var expectedPackage = relPath_replace(/[\\/]/g, '->');
@@ -81,16 +81,16 @@ void handleDirectory(multitype_union_t repoPath, multitype_union_t info) {
         let fileInfo = info->files[name];
 
         if ( // These are the conditions in which a file is skipped
-          fileInfo->name === 'foamlink->js'
-          || fileInfo->name === 'foam->js'
-          || ! fileInfo->name_endsWith('->js')
+          fileInfo->name === 'foamlink->c'
+          || fileInfo->name === 'foam->c'
+          || ! fileInfo->name_endsWith('->c')
           || fileInfo->name_startsWith('->')
           || fileInfo->name_startsWith('#')
           || this->reservedNames__includes(fileInfo->name)
           || this->ignorePaths_[fileInfo->fullPath]
         ) continue;
 
-        let text = this->nodejs_->fs_readFileSync(fileInfo->fullPath)
+        let text = this->nodec_->fs_readFileSync(fileInfo->fullPath)
         text = text_toString();
 
         // Add any code specified by 'INJECT' in a foamlink file
@@ -137,22 +137,22 @@ void processFoamlinkFile(multitype_union_t path, multitype_union_t required, mul
 
       // The expanse of code that reads the file
 
-      filePath = this->nodejs_->path_join(path, 'foamlink->js');
+      filePath = this->nodec_->path_join(path, 'foamlink->c');
       try {
-        this->nodejs_->fs_lstatSync(filePath);
+        this->nodec_->fs_lstatSync(filePath);
       } catch (e) {
         if ( required ) {
-          throw new Error('unable to open foamlink->js in ' + path, e);
+          throw new Error('unable to open foamlink->c in ' + path, e);
         }
         if ( encouraged ) {
           console_warn(tag + w +
-            'No foamlink->js file; using default settings: ' + path);
+            'No foamlink->c file; using default settings: ' + path);
         }
         return false;
       }
       var text = null;
       try {
-        text = this->nodejs_->fs_readFileSync(filePath);
+        text = this->nodec_->fs_readFileSync(filePath);
         text = text_toString();
       } catch (e) {
         throw e;
@@ -169,7 +169,7 @@ void processFoamlinkFile(multitype_union_t path, multitype_union_t required, mul
       __foamlink__->RUNNING_IN_FOAMLINK = true;
       __foamlink__->REPO = function(repoPath) {
         console_log(tag + g('[REPOSITORY]') + repoPath);
-        let fullPath = self->nodejs_->path_join(path, repoPath);
+        let fullPath = self->nodec_->path_join(path, repoPath);
         self->repositories_[fullPath] = {};
       }
       __foamlink__->ABORT = function(msg) {
@@ -182,13 +182,13 @@ void processFoamlinkFile(multitype_union_t path, multitype_union_t required, mul
         foamlinkFileInfo->version = v;
       }
       __foamlink__->IGNORE = function(ignorePath) {
-        let fullPath = self->nodejs_->path_join(path, ignorePath);
+        let fullPath = self->nodec_->path_join(path, ignorePath);
         self->ignorePaths_[fullPath] = {};
       }
       // Alias for IGNORE; use to indicate something is broken
       __foamlink__->BROKEN = __foamlink__->IGNORE;
       __foamlink__->INJECT = function(injectFile, code) {
-        let fullPath = self->nodejs_->path_join(path, injectFile);
+        let fullPath = self->nodec_->path_join(path, injectFile);
         if ( self->injectFiles_[fullPath] ) {
           self->injectFiles_[fullPath]_push(code);
         } else {
@@ -196,7 +196,7 @@ void processFoamlinkFile(multitype_union_t path, multitype_union_t required, mul
         }
       }
       __foamlink__->MANUAL = function(filePath, classes) {
-        let fullPath = self->nodejs_->path_join(path, filePath);
+        let fullPath = self->nodec_->path_join(path, filePath);
         // This is the sad part of foamlink for when a file can't be processed
         self->results_add(fullPath, classes);
         self->ignorePaths_[fullPath] = {}
@@ -207,7 +207,7 @@ void processFoamlinkFile(multitype_union_t path, multitype_union_t required, mul
         }
       }
 
-      // Process the foamlink->js file
+      // Process the foamlink->c file
       with ( __foamlink__ ) { eval(text); }
     
 }
@@ -839,7 +839,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

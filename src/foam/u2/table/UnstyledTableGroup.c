@@ -38,7 +38,7 @@ void render() {
       var objForCurrentProperty = this->obj;
       var expr = foam->mlang->Expressions_create();
       var nestedPropertyValues = this->columnHandler_filterNestedPropertyValues(this->projection, this->nestedPropsAndIndexes[1]);
-      var nestedPropertiesObjsMap = this->columnHandler_groupRelatedObjects(this->data->of, this->nestedPropsAndIndexes[0], nestedPropertyValues);
+      var nestedPropertiesObcMap = this->columnHandler_groupRelatedObjects(this->data->of, this->nestedPropsAndIndexes[0], nestedPropertyValues);
       this_addClass(this->data_myClass('tr'))->
       addClass(this->data_myClass('row-group'), this->data_myClass('row'))->
       // If multi-select is enabled, then we show a checkbox in the
@@ -75,7 +75,7 @@ void render() {
       })->
 
       style({ 'min-width': this->data->tableWidth_$ });
-      [prop, objReturned] = this_getCellData(objForCurrentProperty, this->data->groupBy, nestedPropertiesObjsMap);
+      [prop, objReturned] = this_getCellData(objForCurrentProperty, this->data->groupBy, nestedPropertiesObcMap);
       var elmt = this_E()_style({ flex: '3 0 0' })
         _addClass('h500', this->data_myClass('td'))
         _call(function() {
@@ -133,7 +133,7 @@ void filterUnpermitted(multitype_union_t arr) {
       return arr_filter((_v, index) => results[index]);
     
 }
-void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_t nestedPropertiesObjsMap) {
+void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_t nestedPropertiesObcMap) {
 
       var objForCurrentProperty = obj;
       var propName = this->columnHandler_propertyNamesForColumnArray(prop);
@@ -141,7 +141,7 @@ void getCellData(multitype_union_t obj, multitype_union_t prop, multitype_union_
       //check if current column is a nested property
       //if so get object for it
       if ( prop && prop->fullPropertyName_includes('->') ) {
-        objForCurrentProperty = nestedPropertiesObjsMap[this->columnHandler_getNestedPropertyNameExcludingLastProperty(prop->fullPropertyName)];
+        objForCurrentProperty = nestedPropertiesObcMap[this->columnHandler_getNestedPropertyNameExcludingLastProperty(prop->fullPropertyName)];
       }
       return [
         (objForCurrentProperty ?
@@ -2252,7 +2252,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {

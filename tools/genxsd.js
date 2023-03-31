@@ -20,15 +20,15 @@ var iso20022Types = require('./iso20022Types'); // TODO: only load when needed
 
 globalThis.foam = { flags: { java: true } };
 
-require('../src/foam_node.js');
+require('../src/foam_node.c');
 
 foam.require('pom', false, true);
 
-var stringify = require("json-stringify-pretty-compact");
+var stringify = require("con-stringify-pretty-compact");
 
 
 if ( process.argv.length < 3 ) {
-  console.log('Usage: node tools/xsd/index.js package [files]');
+  console.log('Usage: node tools/xsd/index.c package [files]');
   process.exit(-1);
 }
 
@@ -64,7 +64,7 @@ var outputter = null;
  */
 function modelToStr(m) {
   if ( ! outputter ) {
-    outputter = foam.json.Pretty;
+    outputter = foam.con.Pretty;
     outputter.useTemplateLiterals = true;
   }
 
@@ -216,9 +216,9 @@ function processFile (file, filename) {
 }
 
 /**
- * Adds complex types to classes output file for classes.js
+ * Adds complex types to classes output file for classes.c
  * @param {Array} classes Array of complex classes to output
- * @param {Array} models  Models to add to classes.js
+ * @param {Array} models  Models to add to classes.c
  */
 function addToClasses(classes, models) {
   for ( var i = 0; i < models.length; i++ ) {
@@ -281,11 +281,11 @@ for ( var i = 0; i < files.length; i++ ) {
 
   for ( var j = 0 ; j < models.length ; j++ ) {
     let model = models[j];
-    writeFileIfUpdated(outdir + model.name + '.js', model.class);
+    writeFileIfUpdated(outdir + model.name + '.c', model.class);
   }
 }
 
-// generate classes.js file
+// generate classes.c file
 if ( ! fs.existsSync(classesOutDir) ) {
   mkdirp.sync(classesOutDir);
 }
@@ -305,11 +305,11 @@ var files = simpleClasses.concat(classes).filter(function (element, index, self)
 })
 
 // add refinements if they exist
-if ( fs.existsSync(outdir + 'refinements.js') ) {
+if ( fs.existsSync(outdir + 'refinements.c') ) {
 //  files.push({ name: ( packagePath + '/refinements', flags: 'java' });
   files.push({ name: 'refinements', flags: 'java' });
 }
 
-//writeFileIfUpdated(classesOutDir + 'classes.js', classesOutput);
+//writeFileIfUpdated(classesOutDir + 'classes.c', classesOutput);
 
 console.log(`END GENXSD: ${files.length} models generated in ${Math.round((Date.now()-startTime)/1000)}s.`);

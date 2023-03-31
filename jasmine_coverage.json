@@ -1,9 +1,9 @@
 {
   "spec_dir": "test",
   "spec_files": [
-    "src/**/*.js"
+    "src/**/*.c"
   ],
   "helpers": [
-    "helpers/**/*.js"
+    "helpers/**/*.c"
   ]
 }

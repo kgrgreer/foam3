@@ -32,7 +32,7 @@ describe('DatastoreDAO', function() {
     });
   }
 
-  // From helpers/generic_dao.js.
+  // From helpers/generic_dao.c.
   globalThis.genericDAOTestBattery(daoFactory);
 
   describe('construction', function() {
@@ -172,7 +172,7 @@ describe('DatastoreDAO', function() {
 
     beforeEach(function() {
       // Classes for tracking selectNextBatch_() and items to put() to DAO.
-      // Note: A JasmineJS spy on selectNextBatch_() doesn't work becuase
+      // Note: A Jasminec spy on selectNextBatch_() doesn't work becuase
       // FObjects do not have methods as own properties.
       foam.CLASS({
         package: 'test.dao.batch',
@@ -254,7 +254,7 @@ describe('DatastoreDAO', function() {
 
       methods: [
         function getRequest(op, payload) {
-          var data = JSON.parse(payload);
+          var data = cON.parse(payload);
 
           // Skip non-select() requests.
           if ( ! data.query ) return this.SUPER.apply(this, arguments);

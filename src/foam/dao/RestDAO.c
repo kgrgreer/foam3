@@ -1,6 +1,6 @@
 typedef struct {
   const char *baseURL;
-  foam.json.Outputter outputter;
+  foam.con.Outputter outputter;
   Class of;
   multitype_union_t primaryKey;
 } foam_dao_RestDAO_t;
@@ -9,7 +9,7 @@ foamtypes->FObject put_(Context x, foamtypes->FObject obj) {
 
       /**
        * PUT baseURL
-       * <network-foam-jsonified FOAM object>
+       * <network-foam-conified FOAM object>
        */
       return this_createRequest_({
         method: 'PUT',
@@ -22,7 +22,7 @@ foamtypes->FObject put_(Context x, foamtypes->FObject obj) {
 foamtypes->FObject remove_(Context x, foamtypes->FObject obj) {
 
       /**
-       * DELETE baseURL/<network-foam-jsonified FOAM object id>
+       * DELETE baseURL/<network-foam-conified FOAM object id>
        */
       return this_createRequest_({
         method: 'DELETE',
@@ -35,7 +35,7 @@ foamtypes->FObject remove_(Context x, foamtypes->FObject obj) {
 foamtypes->FObject find_(Context x, Object id) {
 
       /**
-       * GET baseURL/<network-foam-jsonified FOAM object id>
+       * GET baseURL/<network-foam-conified FOAM object id>
        */
       var id = this->of_isInstance(key) ? key->id : key;
       return this_createRequest_({
@@ -52,7 +52,7 @@ foam.dao.Sink select_(Context x, foam.dao.Sink sink, Long skip, Long limit, foam
        * GET baseURL
        * { skip, limit, order, predicate }
        *
-       * Each key's value is network-foam-jsonified->
+       * Each key's value is network-foam-conified->
        */
       var payload = {};
 
@@ -84,7 +84,7 @@ void removeAll_(Context x, Long skip, Long limit, foam.mlang.order.Comparator or
        * POST baseURL/removeAll
        * { skip, limit, order, predicate }
        *
-       * Each key's value is network-foam-jsonified->
+       * Each key's value is network-foam-conified->
        */
       var payload = {};
       if ( typeof skip  !== 'undefined' ) payload->skip = skip;
@@ -104,8 +104,8 @@ void createRequest_(multitype_union_t o) {
 
       // Demand that required properties are set before using DAO->
       this_validate();
-      // Each request should default to a json responseType->
-      return this->HTTPRequest_create(Object_assign({responseType: 'json'}, o));
+      // Each request should default to a con responseType->
+      return this->HTTPRequest_create(Object_assign({responseType: 'con'}, o));
     
 }
 foam.dao.DAO inX(Context x) {
@@ -273,7 +273,7 @@ void prepareSink_(multitype_union_t sink) {
         };
       else if ( sink == console || sink == console->log )
         sink = {
-          put: function(o) { console_log(o, foam->json->Pretty_stringify(o)); },
+          put: function(o) { console_log(o, foam->con->Pretty_stringify(o)); },
           eof: function() {}
         };
       else if ( sink == globalThis->document )
@@ -934,7 +934,7 @@ void describeListeners() {
 }
 void stringify() {
 
-      return foam->json->Pretty_stringify(this);
+      return foam->con->Pretty_stringify(this);
     
 }
 void toXML() {
