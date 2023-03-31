@@ -49,7 +49,7 @@ Important: SAF do not guerantee consistency for the data. If you use SAF for a D
 </ul>
 
 <h2>How it works</h2>
-To use SAF in Medusa is easy, because it is already add into EasyDAO setup.
+To use SAF in Medusa is easy, because it is already added into EasyDAO setup.
 There is a property in EasyDAO called "SAF", just need to set it to true.
 Important: SAF only in this case only takes care of forwarding message to other mediators.
            If you want to presist the data, you also need to set up journal type in easyDAO setup.
