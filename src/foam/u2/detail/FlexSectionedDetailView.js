@@ -40,7 +40,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showTitles'
+      name: 'showTitle'
     }
   ],
 
@@ -62,7 +62,7 @@ foam.CLASS({
                 return self.border.create()
                   .tag(self.SectionView, {
                     data$: self.data$,
-                    showTitle: self.showTitles,
+                    showTitle: self.showTitle,
                     section
                   });
               }));
