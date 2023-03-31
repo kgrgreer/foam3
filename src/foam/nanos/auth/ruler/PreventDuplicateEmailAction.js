@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.Email',
@@ -73,6 +74,7 @@ foam.CLASS({
         Count count = new Count();
         count = (Count) userDAO
             .where(AND(
+              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE),
               EQ(User.TYPE, user.getType()),
               EQ(User.EMAIL, user.getEmail()),
               EQ(User.SPID, spid),
