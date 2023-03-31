@@ -31,7 +31,7 @@ SFManager: manage all SF requests and invoke SF process.
   <li>Using SFManager nspec service to get SF that you define in storeAndForwards.jrl[code: ((SFManager) x.get("sfManager")).getSfs().get("input SF id");]</li>
 </ol>
 
-<h3>Example<h3>
+<h3>Example: </h3>
 SFSink.js: example for how to create a SF.
 constFourSecondHttpSinkDemoUsingAtime in storeAndForwards.jrl: example for how to register SF.
 
@@ -41,8 +41,38 @@ In the medusa, SAF is being use to broadcast data from one mediator to others.
 DAOs can be set to use SAF to directly broadcase data from mediator itself instead of going to Medusa node.
 Important: SAF do not guerantee consistency for the data. If you use SAF for a DAO, please make sure that the data is less important.
 
+<h2>Key Classes</h2>
+<ul>
+<li>foam.nanos.medusa.sf.MedusaSFManager</li>
+<li>foam.nanos.medusa.sf.SFBroadcastDAO</li>
+<li>foam.nanos.medusa.sf.SFBroadcastReceiverDAO</li>
+</ul>
+
 <h2>How it works</h2>
 To use SAF in Medusa is easy, because it is already add into EasyDAO setup.
 There is a property in EasyDAO called "SAF", just need to set it to true.
 Important: SAF only in this case only takes care of forwarding message to other mediators.
            If you want to presist the data, you also need to set up journal type in easyDAO setup.
+
+<h3>Example: </h3>
+in service.jrl
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localEmailMessageDAO",
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
+      .setAuthorize(false)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)                 //Set journalType for persistence
+      .setJournalName("emailMessages")
+      .setSAF(true)                                                        //Turn on SAF in medusa
+      .setServiceProviderAware(false)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.email.EmailMessage.CREATED) )
+        .setSize(100000)
+        .build())
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.email.EmailMessage.CREATED});
+  """
+})
