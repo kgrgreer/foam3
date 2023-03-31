@@ -39,6 +39,7 @@
     {
       name: 'resetPassword',
       label: 'Confirm',
+      buttonStyle: 'PRIMARY',
       section: 'resetPasswordSection',
       isEnabled: function(errors_) {
         return ! errors_;
@@ -46,7 +47,7 @@
       isAvailable: function(showSubmitAction) {
         return showSubmitAction
       },
-      code: function() {
+      code: function(X) {
         const user = this.User.create({
           desiredPassword: this.newPassword
         });

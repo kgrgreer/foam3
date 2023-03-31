@@ -169,23 +169,28 @@ foam.CLASS({
                old.getStatus() == Status.ONLINE &&
                nu.getStatus() == Status.OFFLINE ) {
 
-            // Have all nodes in bucket purge storageTransient cache.
-            List<Set> buckets = support.getNodeBuckets();
-            final Set<String> bucket = buckets.get(nu.getBucket());
-
             Agency agency = (Agency) x.get(support.getThreadPoolName());
-            for ( String id : bucket ) {
-              agency.submit(x, new ContextAgent() {
-                public void execute(X x) {
-                  logger.info("ClusterConfigStatusDAO", "node", id, "purge");
-                  try {
-                    DAO dao = support.getBroadcastClientDAO(x, "medusaNodeDAO", myConfig, support.getConfig(x, id));
-                    dao.cmd_(x, DAO.PURGE_CMD);
-                  } catch ( Throwable t ) {
-                    logger.error("ClusterConfigStatusDAO", "node", id, "purge", t);
+            // Have all nodes in bucket purge storageTransient cache.
+            // when buckets are automatically assigned, the config
+            // has a bucket value of 0 (zero).
+            // Options: walk and find the bucket the node is in,
+            // or purge all nodes. Purging all nodes for now
+            List<Set> buckets = support.getNodeBuckets();
+            for ( Set<String> bucket : buckets ) {
+              for ( String bid : bucket ) {
+                final String id = bid;
+                agency.submit(x, new ContextAgent() {
+                  public void execute(X x) {
+                    logger.info("ClusterConfigStatusDAO", "node", id, "purge");
+                    try {
+                      DAO dao = support.getBroadcastClientDAO(x, "medusaNodeDAO", myConfig, support.getConfig(x, id));
+                      dao.cmd_(x, DAO.PURGE_CMD);
+                    } catch ( Throwable t ) {
+                      logger.error("ClusterConfigStatusDAO", "node", id, "purge", t);
+                    }
                   }
-                }
-              }, "ClusterConfigStatusDAO-node-purge");
+                }, "ClusterConfigStatusDAO-node-purge");
+              }
             }
           }
 
