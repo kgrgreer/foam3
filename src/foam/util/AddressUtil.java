@@ -97,7 +97,7 @@ public class AddressUtil {
         if ( region.getIsoCode().equals(regionCode) 
           || region.getName().equalsIgnoreCase(regionCode) 
           || Arrays.stream(region.getAlternativeNames()).anyMatch(n -> n.equals(regionCode))
-           ) {
+        ) {
           normalizedRegion[0] = region.getCode();
           d.detach();
         }
@@ -112,18 +112,28 @@ public class AddressUtil {
       return countryCode;
     }
     
-    String normalizedCountry = countryCode;
+    String[] normalizedCountry = { countryCode };
 
     DAO countryDAO = (DAO) x.get("countryDAO");
-    Country country = (Country) countryDAO.find(OR(
-      EQ(Country.ISO31661CODE, countryCode),
-      EQ(Country.CODE, countryCode)
-    ));
-
-    if ( country != null ) {
-      normalizedCountry = country.getCode();
-    }
+    countryDAO
+      .where(OR(
+        EQ(Country.ISO31661CODE, countryCode),
+        EQ(Country.CODE, countryCode),
+        STARTS_WITH_IC(Country.NAME, countryCode)
+      ))
+      .select(new AbstractSink() {
+        public void put(Object o, Detachable d) {
+          Country country = (Country) o;
+          if (
+            country.getIso31661Code().equals(countryCode) ||
+            country.getCode().equals(countryCode) ||
+            country.getName().equalsIgnoreCase(countryCode) ) {
+              normalizedCountry[0] = country.getCode();
+              d.detach();
+          }
+        }
+      });
     
-    return normalizedCountry;
+    return normalizedCountry[0];
   }
 }
