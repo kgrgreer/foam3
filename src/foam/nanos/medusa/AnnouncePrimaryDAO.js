@@ -99,6 +99,7 @@ foam.CLASS({
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> counts = new ConcurrentHashMap();
       final Set<String> replies = new HashSet();
+      final Set<String> errors = new HashSet();
       List<ClusterConfig> nodes = support.getReplayNodes();
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
@@ -114,6 +115,7 @@ foam.CLASS({
               replies.add(cfg.getId());
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
+              errors.add("cfg.getId() "+e.getMessage());
             }
             logger.info(cfg.getId(), "max", m);
             synchronized ( this ) {
@@ -142,6 +144,9 @@ foam.CLASS({
           break;
         }
         if ( replies.size() >= nodes.size() -1 ) {
+          break;
+        }
+        if ( errors.size() >= nodes.size() -1 ) {
           break;
         }
       }
