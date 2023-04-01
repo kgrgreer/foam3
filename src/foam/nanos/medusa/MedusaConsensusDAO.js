@@ -120,7 +120,9 @@ This is the heart of Medusa.`,
             getLogger().info("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
           }
         }
-        // getLogger().debug("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        // if ( entry.getIndex() < 10 ) {
+        //   getLogger().debug("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+        // }
 
         existing = (MedusaEntry) getDelegate().find_(x, entry.getId());
         if ( existing != null &&
@@ -443,9 +445,12 @@ This is the heart of Medusa.`,
           FObject nu = null;
           String data = entry.getData();
           if ( ! SafetyUtil.isEmpty(data) ) {
+            PM pmParser = PM.create(x, "MedusaConsensusDAO", "parse");
             try {
               nu = parser_.get().parseString(entry.getData());
+              pmParser.log(x);
             } catch ( RuntimeException e ) {
+              pmParser.error(x);
               Throwable cause = e;
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
@@ -459,6 +464,7 @@ This is the heart of Medusa.`,
               ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
               throw new MedusaException("Failed to parse.", cause);
             }
+
             if ( nu == null ) {
               getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData());
               Alarm alarm = new Alarm("Medusa Failed to parse");
@@ -475,9 +481,12 @@ This is the heart of Medusa.`,
               if ( ! old.getClassInfo().isInstance(nu) ) {
                 getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
               } else {
+                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
                 try {
                   nu = old.fclone().overlay(nu);
+                  pmOverlay.log(x);
                 } catch ( ClassCastException e ) {
+                  pmOverlay.error(x);
                   getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
                   ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, old, "Class change, old discarded"));
                 }
@@ -486,9 +495,12 @@ This is the heart of Medusa.`,
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
             FObject tran = null;
+            PM pmParser = PM.create(x, "MedusaConsensusDAO", "parse", "transient");
             try {
               tran = parser_.get().parseString(entry.getTransientData());
+              pmParser.log(x);
             } catch ( RuntimeException e ) {
+              pmParser.error(x);
               Throwable cause = e;
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
@@ -517,15 +529,20 @@ This is the heart of Medusa.`,
                   if ( ! old.getClassInfo().isInstance(nu) ) {
                     getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
                   } else {
-                    try {
+                     PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
+                     try {
                       nu = old.fclone().overlay(nu);
+                      pmOverlay.log(x);
                     } catch ( ClassCastException e ) {
+                      pmOverlay.error(x);
                       getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
                     }
                   }
                 }
               } else {
+                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,nu,transient");
                 nu = nu.overlay(tran);
+                pmOverlay.log(x);
               }
             }
           }
