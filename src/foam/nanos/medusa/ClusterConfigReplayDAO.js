@@ -74,12 +74,6 @@ foam.CLASS({
             serviceName = "medusaEntryDAO";
           }
           DAO clientDAO = support.getClientDAO(x, serviceName, myConfig, config);
-          // clientDAO = new RetryClientSinkDAO.Builder(x)
-          //   .setName(serviceName)
-          //   .setDelegate(clientDAO)
-          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
-          //   .setMaxRetryDelay(support.getMaxRetryDelay())
-          //   .build();
 
           // NOTE: using internalMedusaDAO else we'll block on ReplayingDAO.
           DAO dao = (DAO) x.get("internalMedusaDAO");
@@ -98,20 +92,22 @@ foam.CLASS({
           details = (ReplayDetailsCmd) clientDAO.cmd_(x, details);
           logger.info("ReplayDetailsCmd", "response", details);
 
-          synchronized ( this ) {
-            DaggerService dagger = (DaggerService) x.get("daggerService");
-            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            if ( replaying.getReplaying() ) {
-              replaying.getReplayDetails().put(config.getId(), details);
 
-              if ( replaying.getStartTime() == null ) {
-                replaying.setStartTime(new java.util.Date());
-                replaying.updateIndex(x, dagger.getGlobalIndex(x));
-                ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
-              }
-              if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
-                dagger.setGlobalIndex(x, details.getMaxIndex());
-              }
+          DaggerService dagger = (DaggerService) x.get("daggerService");
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          if ( replaying.getReplaying() ) {
+            replaying.getReplayDetails().put(config.getId(), details);
+
+            if ( replaying.getStartTime() == null ) {
+              replaying.setStartTime(new java.util.Date());
+              replaying.updateIndex(x, dagger.getGlobalIndex(x));
+              ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
+            }
+            if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
+              dagger.setGlobalIndex(x, details.getMaxIndex());
+            }
+
+            synchronized ( this ) {
 
               if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
                 replaying.setReplayIndex(details.getMaxIndex());
@@ -135,27 +131,27 @@ foam.CLASS({
                 replayed += detail.getCount();
               }
               replaying.setCount(replayed);
+            }
 
-              // Detect baseline - no data.
-              // Have to check almost all nodes.
-              int online = 0;
-              List<ClusterConfig> nodes = support.getReplayNodes();
-              for ( ClusterConfig cfg : nodes ) {
-                if ( cfg.getStatus() == Status.ONLINE ) online++;
-              }
-              logger.debug("test for baseline", "online", online, "nodes", ( nodes.size() - ( support.getNodeQuorum() - 1 ) ), "index", replaying.getIndex(), "replayingIndex", replaying.getReplayIndex());
-              if ( online >= ( nodes.size() - ( support.getNodeQuorum() - 1 ) ) ) {
-                // found enough online nodes, now test if all reporting zero index.
-                if ( replaying.getIndex() >= replaying.getReplayIndex() &&
-                   ( myConfig.getType() == MedusaType.MEDIATOR &&
-                     support.getHasNodeQuorum() ) ||
-                   ( myConfig.getType() == MedusaType.NERF &&
-                     support.getHasMediatorQuorum() ) ) {
-                  logger.info("baseline dectected");
-                  replaying.updateIndex(x, dagger.getGlobalIndex(x));
-                  replaying.setReplayIndex(replaying.getIndex());
-                  ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
-                }
+            // Detect baseline - no data.
+            // Have to check almost all nodes.
+            int online = 0;
+            List<ClusterConfig> nodes = support.getReplayNodes();
+            for ( ClusterConfig cfg : nodes ) {
+              if ( cfg.getStatus() == Status.ONLINE ) online++;
+            }
+            logger.debug("test for baseline", "online", online, "nodes", ( nodes.size() - ( support.getNodeQuorum() - 1 ) ), "index", replaying.getIndex(), "replayingIndex", replaying.getReplayIndex());
+            if ( online >= ( nodes.size() - ( support.getNodeQuorum() - 1 ) ) ) {
+              // found enough online nodes, now test if all reporting zero index.
+              if ( replaying.getIndex() >= replaying.getReplayIndex() &&
+                 ( myConfig.getType() == MedusaType.MEDIATOR &&
+                   support.getHasNodeQuorum() ) ||
+                 ( myConfig.getType() == MedusaType.NERF &&
+                   support.getHasMediatorQuorum() ) ) {
+                logger.info("baseline dectected");
+                replaying.updateIndex(x, dagger.getGlobalIndex(x));
+                replaying.setReplayIndex(replaying.getIndex());
+                ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
               }
             }
           }
