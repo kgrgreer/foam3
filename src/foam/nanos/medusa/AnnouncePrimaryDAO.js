@@ -103,7 +103,7 @@ foam.CLASS({
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
-            DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
+            DAO client = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
             Long m = 0L;
             ReplayDetailsCmd details = new ReplayDetailsCmd();
             details.setRequester(myConfig.getId());
@@ -135,7 +135,7 @@ foam.CLASS({
       long sleep = 10000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
-          logger.info("waiting on index verification");
+          logger.info("waiting on index verification", replies.size(), "of", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
@@ -167,11 +167,14 @@ foam.CLASS({
           logger.debug("max", max, "count", count, "quorum", quorum);
           message = "Index verification failed; max index does not have quorum.";
         }
-
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, message, LogLevel.ERROR, null));
+        EventRecord er = new EventRecord(x, this, EVENT_NAME, message, LogLevel.ERROR, null);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         // Halt the system.
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null));
+        er = new EventRecord(x, this, "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
         ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
         cfg.setStatus(Status.OFFLINE);
         cfg.setErrorMessage("Index verification failed");
