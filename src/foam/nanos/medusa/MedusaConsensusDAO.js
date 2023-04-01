@@ -599,19 +599,15 @@ This is the heart of Medusa.`,
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
                   // test for parents
-                  // NOTE: use internalMedusaDAO, else we'll block on ReplayingDAO.
-                  DAO dao = (DAO) x.get("internalMedusaDAO");
-                  MedusaEntry parent1 = (MedusaEntry) dao.find(e.getIndex1());
-                  MedusaEntry parent2 = (MedusaEntry) dao.find(e.getIndex2());
+                  MedusaEntry parent1 = (MedusaEntry) getDelegate().find(e.getIndex1());
+                  MedusaEntry parent2 = (MedusaEntry) getDelegate().find(e.getIndex2());
                   if ( parent1 != null &&
                        parent2 != null ) {
                     entry = e;
                     break;
                   } else {
-                    // Previously we would return this entry without
-                    // parent check and it could fail dagger verification
-                    // if parents had not yet been received.
-                    getLogger().warning("getConsensusEntry", e, "entry found but missing parent(s)", e.toSummary());
+                    // will fail dagger verification if parents not yet received.
+                    getLogger().warning("getConsensusEntry", e, "entry found but missing parent(s)", e.toSummary(), "parent1", parent1==null?"null":parent1.toSummary(), "parent2", parent2==null?"null":parent2.toSummary());
                   }
                 }
               } else {
