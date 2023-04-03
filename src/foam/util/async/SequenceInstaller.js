@@ -22,6 +22,10 @@ foam.CLASS({
 
   methods: [
     async function install (targetSequence, targetPosition) {
+      console.log('SequenceInstaller', this);
+      if ( ! window.sequenceAlready ) {
+        window.sequenceAlready = true;
+      } else debugger;
       let x = this.__subContext__;
 
       const targetPosition$ = foam.core.SimpleSlot.create({
@@ -35,6 +39,7 @@ foam.CLASS({
 
       for ( let i = 0 ; i < this.contextAgentSpecs.length; i++ ) {
         if ( this.MetaContextAgent.isSubClass(this.contextAgentSpecs[i].spec) ) {
+          console.log('metacontextagentspec is running', i, this)
           const spec = this.contextAgentSpecs[i].spec;
           const args = this.contextAgentSpecs[i].args;
 

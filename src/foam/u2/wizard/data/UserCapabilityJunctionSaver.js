@@ -17,10 +17,18 @@ foam.CLASS({
     'crunchService',
     'subject',
     'wizardletId as importedWizardletId',
-    'wizardlets'
+    'wizardlets',
+    'wizardSubject?'
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'capabilityId',
+//      expression: function(importedWizardletId) {
+//        return importedWizardletId;
+//      }
+    },
     {
       class: 'String',
       name: 'capabilityId',
@@ -32,15 +40,23 @@ foam.CLASS({
 
 
   methods: [
+  function init() {
+  if (window[this.capabilityId]) debugger;
+  window[this.capabilityId]=true;
+    console.log('//// init delegate: ' + foam.json.stringify(this.delegate));
+  },
+
     async function save(data) {
-    console.log('before---------- '+this.capabilityId);
-      const ucj = await ( this.subject ? this.crunchService.updateJunctionFor(
+//    if (window[this.capabilityId]) debugger;
+//    window[this.capabilityId]=true;
+    console.log('before---------- '+this.capabilityId, x.subject.user.id);
+      const ucj = await ( this.wizardSubject ? this.crunchService.updateJunctionFor(
         null, this.capabilityId, data, null,
-        this.subject.user, this.subject.realUser
+        this.wizardSubject.user, this.wizardSubject.realUser
       ) : this.crunchService.updateJunction(null,
         this.capabilityId, data, null
       ));
-      console.log('after ---------- '+this.capabilityId);
+      console.log('after ---------- '+this.capabilityId, x.subject.user.id);
       await this.delegate.save(data);
     }
   ]

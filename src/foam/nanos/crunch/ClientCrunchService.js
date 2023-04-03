@@ -36,6 +36,7 @@ foam.CLASS({
     {
       name: 'updateJunction',
       code: async function(x, capabilityId, data, status) {
+        console.log('ucj updated: '+ capabilityId+' - ',data);
         let ucj = await this.crunchService.getJunction(x, capabilityId);
 
         if ( ucj.status == this.CapabilityJunctionStatus.AVAILABLE && status == null ) {
@@ -48,7 +49,7 @@ foam.CLASS({
         if ( status != null ) {
           ucj.status = status;
         }
-        
+
         ucj.lastUpdatedRealUser = this.subject.realUser.id;
         return await this.userCapabilityJunctionDAO.put(ucj);
       }
