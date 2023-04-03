@@ -12,8 +12,10 @@ foam.CLASS({
   documentation: `Response to ReplayCmd on Node`,
 
   javaImports: [
+    'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.Journal',
     'foam.dao.ProxyDAO',
@@ -33,6 +35,8 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
+    'foam.nanos.pm.PM',
     'java.time.Duration',
     'java.util.HashMap',
     'java.util.Map'
@@ -58,6 +62,25 @@ foam.CLASS({
 
   methods: [
     {
+      documentation: 'listen and clear client and queue caches on cluster changes',
+      name: 'init_',
+      javaCode: `
+      DAO dao = (DAO) getX().get("clusterConfigDAO");
+      dao.listen( new AbstractSink() {
+        @Override
+        public void put(Object obj, Detachable sub) {
+          ClusterConfig config = (ClusterConfig) obj;
+          if ( config.getType() == MedusaType.MEDIATOR ) {
+            synchronized ( this ) {
+              ((Logger) getX().get("logger")).info("ReplayNodeDAO,listener,purge");
+              ReplayNodeDAO.CLIENTS.clear(this);
+            }
+          }
+        }
+      }, null);
+      `
+    },
+    {
       name: 'cmd_',
       javaCode: `
       Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
@@ -77,7 +100,9 @@ foam.CLASS({
       }
 
       if ( obj instanceof ReplayCmd ) {
-        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
+        ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
+        PM pm = PM.create(x, this.getClass().getSimpleName(), "ReplayCmd");
+
         ReplayCmd cmd = (ReplayCmd) obj;
         ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
@@ -89,21 +114,23 @@ foam.CLASS({
         ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
         ClusterConfig toConfig = support.getConfig(x, details.getRequester());
         if ( details.getMinIndex() <= info.getIndex() ) {
+          ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName(), details.getRequester());
 
           DAO clientDAO = (DAO) getClients().get(details.getRequester());
-          if ( clientDAO != null ) {
-            logger.info("cancel previous from", details.getRequester());
-            // REVIEW: have replay write to null dao. How to cancel replay?
-            // TODO: need the same support cache. For now expect cache to be small.
-            clientDAO.cmd_(x, RetryClientSinkDAO.CANCEL_RETRY_CMD);
-            ((ProxyDAO)clientDAO).setDelegate(new NullDAO(x, MedusaEntry.getOwnClassInfo()));
-          }
+          // if ( clientDAO != null ) {
+          //   logger.info("cancel previous from", details.getRequester());
+          //   // REVIEW: have replay write to null dao. How to cancel replay?
+          //   // TODO: need the same support cache. For now expect cache to be small.
+          //   clientDAO.cmd_(x, RetryClientSinkDAO.CANCEL_RETRY_CMD);
+          //   ((ProxyDAO)clientDAO).setDelegate(new NullDAO(x, MedusaEntry.getOwnClassInfo()));
+          // }
           // NOTE: must use a retry client with a retry > 1.
           // Presently the first response appears to be rejected by the
           // caller.
-          clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
-          getClients().put(details.getRequester(), clientDAO);
-
+          if ( clientDAO == null ) {
+            clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
+            getClients().put(details.getRequester(), clientDAO);
+          }
           Predicate p = null;
           if ( details.getMinIndex() > info.getMinIndex() ) {
             p = GTE(MedusaEntry.INDEX, details.getMinIndex());
@@ -142,6 +169,7 @@ foam.CLASS({
         } else {
           logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getIndex());
         }
+        pm.log(x);
         return cmd;
       }
 
