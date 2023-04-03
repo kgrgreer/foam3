@@ -237,7 +237,7 @@ p({
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Country.NAME})
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ISO31661CODE })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { ffoam.nanos.auth.Country.ALTERNATIVE_NAMES });
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ALTERNATIVE_NAMES });
   """
 })
 
