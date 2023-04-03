@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
     'foam.u2.HTMLView',
+    'foam.u2.LoadingSpinner',
     'foam.u2.tag.CircleIndicator'
   ],
 
@@ -61,6 +62,7 @@ foam.CLASS({
       justify-content: center;
       margin: 0;
       outline: none;
+      position: relative;
       text-align: center;
     }
 
@@ -392,6 +394,30 @@ foam.CLASS({
       width: 1em;
       height: 1em;
     }
+    /* Loading indicator css */
+    ^[data-loading] > :not(^loading) {
+      opacity: 0;
+    }
+    ^loading {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ^primary ^loading svg, ^primary:disabled > ^loading svg {
+      fill: $buttonPrimaryColor$foreground;
+    }
+    ^secondary ^loading svg, ^tertiary ^loading svg,  ^link ^loading svg,
+    ^secondary:disabled ^loading svg, ^tertiary:disabled ^loading svg,  ^link:disabled ^loading svg {
+      fill: $buttonSecondaryColor$foreground;
+    }
+    ^text > ^loading svg, ^text:disabled > ^loading svg {
+      fill: $buttonPrimaryColor;
+    }
   `,
 
   properties: [
@@ -458,7 +484,8 @@ foam.CLASS({
         var s = buttonStyle.name.toLowerCase();
         return isDestructive ? s + '-destructive' : s;
       }
-    }
+    },
+    [ 'loading_', false]
   ],
 
   methods: [
@@ -522,6 +549,11 @@ foam.CLASS({
           this.add(this.label$);
         }
       }
+
+      this.attrs({ 'data-loading': this.loading_$ })
+      this.add(this.slot(function(loading_) {
+        return loading_ ? this.E().tag(self.LoadingSpinner, {size: '100%'}).addClass(self.myClass('loading')) : this.E().hide();
+      }));
     }
   ],
 

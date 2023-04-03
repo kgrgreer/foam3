@@ -574,6 +574,9 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getSocketClientBox");
       try {
+        if ( receiveClusterConfig.getId() == getConfigId() ) {
+          throw new RuntimeException("SocketClientBox to self");
+        }
         String address = receiveClusterConfig.getId();
         DAO hostDAO = (DAO) x.get("hostDAO");
         Host host = (Host) hostDAO.find(address);

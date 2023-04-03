@@ -33,7 +33,11 @@ foam.CLASS({
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.menu.launch_(this.__subContext__, this);
+      let ret = this.menu.launch_(this.__subContext__, this);
+      if ( ret && ret.then ) {
+        this.loading_ = true;
+        ret.then(() => { this.loading_ = false; })
+      }
       if ( this.parentMenuDropdown ) this.parentMenuDropdown.close();
       return;
     }

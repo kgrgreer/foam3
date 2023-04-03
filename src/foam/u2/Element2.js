@@ -1190,7 +1190,7 @@ foam.CLASS({
       return this.add(opt_default);
     },
 
-    function recall(fn, opt_self) {
+    function react(fn, opt_self) {
       this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this, parentNode: this}, this), this);
       return this;
     },
@@ -1211,7 +1211,7 @@ foam.CLASS({
       }
 
       if ( foam.Function.isInstance(c) ) {
-        console.warn('Deprecated use of add(Function). Use recall() instead.');
+        console.warn('Deprecated use of add(Function). Use react() instead.');
         c = foam.u2.FunctionNode.create({self: this, code: c, parentNode: this});
       } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);

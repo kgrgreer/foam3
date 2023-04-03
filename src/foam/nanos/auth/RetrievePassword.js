@@ -28,6 +28,8 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'TITLE', message: 'Forgot Password?' },
+    { name: 'INSTRUCTION', message: 'Enter the email you used to create your account in order to reset your password.' },
     { name: 'TOKEN_INSTRUC_TITLE',      message: 'Password Reset Instructions Sent' },
     { name: 'TOKEN_INSTRUC',            message: 'Please check your inbox to continue' },
     { name: 'CODE_INSTRUC_TITLE',       message: 'Verification code sent' },
@@ -40,9 +42,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'emailPasswordSection',
-      title: 'Forgot your password?',
-      subTitle: 'Enter the email you signed up with and we\'ll send you a link to reset your password.',
+      name: 'resetPasswordSection',
       help: 'Enter your account email and we will send you an email with a link to create a new one.'
     }
   ],
@@ -51,7 +51,7 @@ foam.CLASS({
     {
       class: 'EMail',
       name: 'email',
-      section: 'emailPasswordSection',
+      section: 'resetPasswordSection',
       required: true,
       createVisibility: function(usernameRequired, readOnlyIdentifier) {
        return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
@@ -72,7 +72,7 @@ foam.CLASS({
       validateObj: function(usernameRequired, username) {
         return usernameRequired && ! username ? 'Username is required.' : '';
       },
-      section: 'emailPasswordSection'
+      section: 'resetPasswordSection'
     },
     {
       class: 'Boolean',
@@ -104,7 +104,7 @@ foam.CLASS({
       name: 'sendEmail',
       label: 'Submit',
       buttonStyle: 'PRIMARY',
-      section: 'emailPasswordSection',
+      section: 'resetPasswordSection',
       isAvailable: function(showSubmitAction) {
         return showSubmitAction
       },

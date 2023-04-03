@@ -62,6 +62,7 @@ foam.CLASS({
       javaCode: `
       Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
       if ( obj instanceof ReplayDetailsCmd ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
         logger.info("request", details);
 
@@ -76,6 +77,7 @@ foam.CLASS({
       }
 
       if ( obj instanceof ReplayCmd ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         ReplayCmd cmd = (ReplayCmd) obj;
         ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
