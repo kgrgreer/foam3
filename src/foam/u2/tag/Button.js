@@ -30,7 +30,9 @@ foam.CLASS({
     {
       class: 'foam.u2.ColorToken',
       name: 'buttonPrimaryColor',
-      value: '$primary400'
+      value: '$primary400',
+      disabledModifier: 90,
+      onLight: '$grey50'
     },
     {
       class: 'foam.u2.ColorToken',
@@ -80,6 +82,10 @@ foam.CLASS({
 
     ^:hover:not(:disabled) {
       cursor: pointer;
+    }
+
+    ^:hover^:disabled {
+      cursor: not-allowed;
     }
 
     ^unavailable {
