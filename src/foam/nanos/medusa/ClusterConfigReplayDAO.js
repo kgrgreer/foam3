@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'java.util.List'
   ],
 
@@ -176,11 +177,12 @@ foam.CLASS({
       javaCode: `
       final Logger logger = Loggers.logger(x, this, "cmd");
       if ( obj instanceof ReplayRequestCmd ) {
+        ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         final ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
 
-        logger.info("ReplayRequestCmd", cmd.getDetails());
+        // logger.info("ReplayRequestCmd", cmd.getDetails());
 
         final List<ClusterConfig> nodes = support.getReplayNodes();
 
@@ -196,10 +198,10 @@ foam.CLASS({
           c.setDetails(details);
           c.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
-          DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-          logger.info("ReplayRequestCmd", "request", c.getDetails());
+          DAO clientDAO = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
+          logger.info("ReplayRequestCmd", "request", c);
           c = (ReplayCmd) clientDAO.cmd_(x, c);
-          logger.info("ReplayRequestCmd", "response", c.getDetails());
+          logger.info("ReplayRequestCmd", "response", c);
               }
             }, this.getClass().getSimpleName()
           );
