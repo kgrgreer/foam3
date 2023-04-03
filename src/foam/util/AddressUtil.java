@@ -77,7 +77,7 @@ public class AddressUtil {
     String normalizedRegion = country + "-" + regionCode;
 
     DAO regionDAO = (DAO) x.get("regionDAO");
-    Region region = regionDAO.find(AND(
+    Region region = (Region) regionDAO.find(AND(
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
