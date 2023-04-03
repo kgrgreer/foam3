@@ -140,7 +140,12 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.render();
+      let ret = this.render();
+      Promise.resolve(ret).then(v => {
+        if ( v != undefined ) {
+          console.error('render() should not return a value, this may cause issues with slotted elements', this.cls_.id);
+        }
+      });
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
