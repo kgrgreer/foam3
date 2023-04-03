@@ -235,7 +235,9 @@ p({
       .setJournalName("countries")
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Country.NAME})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ISO31661CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { ffoam.nanos.auth.Country.ALTERNATIVE_NAMES });
   """
 })
 
@@ -305,6 +307,7 @@ p({
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Region.NAME})
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.COUNTRY_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ISO_CODE })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ALTERNATIVE_NAMES });
   """,
