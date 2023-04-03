@@ -137,7 +137,7 @@ foam.CLASS({
       long sleep = 10000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
-          logger.info("waiting on index verification", replies.size(), "of", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
+          logger.info("waiting on index verification, replies", replies.size(), "errors", errors.size(), "nodes", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
@@ -148,6 +148,14 @@ foam.CLASS({
         }
         if ( errors.size() >= nodes.size() -1 ) {
           break;
+        }
+        if ( support.getPrimary(x).getId() != myConfig.getId() ) {
+          // Another vote occurred, another mediator is primary
+          // Abandon announce.
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          replaying.setReplaying(false);
+          ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification abandoned", LogLevel.WARN, null));
+          return;
         }
       }
       logger.debug("line.shutdown", "continue");
@@ -189,8 +197,6 @@ foam.CLASS({
         logger.debug("max", max, "index", replaying.getIndex());
         replaying.updateIndex(x, max);
         replaying.setReplaying(false);
-        logger.info("Index verification", "complete");
-
         ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification complete"));
       }
       `
