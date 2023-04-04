@@ -42,8 +42,10 @@ foam.CLASS({
             // won't be able to restore the result. 
             dao.put_(x, ndiff.getInitialFObject()); 
         
-            var newNdiff = (NDiff) this.find(new NDiffId(ndiff.getNSpecName(),
-                                             ndiff.getObjectId()));
+            var newNdiff = (NDiff) this.find_(x,
+                                               new NDiffId(ndiff.getNSpecName(),
+                                                           ndiff.getObjectId())
+                                              );
             
             ndiff = newNdiff != null ? (NDiff)newNdiff.fclone() : ndiff;
 
