@@ -36,6 +36,12 @@ foam.CLASS({
 
   properties: [
     {
+      documentation: 'Create a Box per nspec service rather than one socket for all services to a particular host:port',
+      class: 'Boolean',
+      name: 'boxPerService',
+      value: true
+    },
+    {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',
       class: 'Int',
       name: 'soTimeout',
@@ -45,7 +51,7 @@ foam.CLASS({
       documentation: 'Time to wait on initial creation for connection to be established',
       class: 'Int',
       name: 'connectTimeout',
-      value: 60000
+      value: 10000
     },
     {
       class: 'Map',
@@ -79,7 +85,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      getBoxes().put(makeKey(box.getHost(), box.getPort()), box);
+      getBoxes().put(box.getKey(), box);
       `
     },
     {
@@ -123,10 +129,22 @@ foam.CLASS({
         {
           name: 'port',
           type: 'int'
+        },
+        {
+          name: 'serviceName',
+          type: 'String'
         }
       ],
       javaCode: `
-        return host + ":" + port;
+        StringBuilder sb = new StringBuilder();
+        sb.append(host);
+        sb.append(":");
+        sb.append(port);
+        if ( getBoxPerService() ) {
+          sb.append(":");
+          sb.append(serviceName);
+        }
+        return sb.toString();
       `
     },
     {
@@ -145,10 +163,14 @@ foam.CLASS({
         {
           name: 'port',
           type: 'int'
+        },
+        {
+          name: 'serviceName',
+          type: 'String'
         }
       ],
       javaCode: `
-        String key = makeKey(host, port);
+        String key = makeKey(host, port, serviceName);
         SocketConnectionBox box = (SocketConnectionBox) getBoxes().get(key);
         if ( box != null ) {
           return box;
