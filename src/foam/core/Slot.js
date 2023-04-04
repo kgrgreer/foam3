@@ -582,6 +582,72 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core',
+  name: 'DynamicFunction',
+  extends: 'foam.core.ExpressionSlot',
+
+  documentation: 'self is this when code is called, but obj is source of expression arguments',
+
+  properties: [
+    {
+      name: 'self',
+      factory: function() { return this.obj; }
+    },
+    {
+      class: 'Int',
+      name: 'seqNo'
+    },
+    {
+      name: 'pre',
+      value: function() {}
+    },
+    {
+      name: 'post',
+      value: function() {}
+    },
+    {
+      name: 'value',
+      factory: function() {
+        var self = this.self || this.obj || this;
+        this.pre.call(self);
+        this.code.apply(self, this.args.map(a => a && a.get()));
+        this.post.call(self);
+        return this.seqNo++;
+      }
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.SUPER();
+      window.requestAnimationFrame(() => this.value);
+    },
+    function subToArgs_(args) {
+      const subs = args.map(a => a && a.sub(this.invalidate));
+
+      if ( ! this.cleanup_ ) {
+        this.cleanup_ = {
+          detach: function() {
+            for ( var i = 0 ; i < subs.length ; i++ ) {
+              if ( subs[i] ) subs[i].detach();
+            }
+          }
+        };
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'invalidate',
+      isFramed: true,
+      code: function invalidate() { this.clearProperty('value'); this.value; }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core',
   name: 'PromiseSlot',
   extends: 'foam.core.SimpleSlot',
 
