@@ -171,7 +171,7 @@ foam.CLASS({
   ]
 });
 
-
+/*
 foam.CLASS({
   package: 'foam.u2',
   name: 'FunctionNode',
@@ -229,6 +229,53 @@ foam.CLASS({
           this.parentNode.element_.appendChild(this.element_);
         }
       }
+    }
+  ]
+});
+*/
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'FunctionNode',
+  extends: 'foam.u2.Element',
+
+  properties: [
+    'fn',
+    {
+      name: 'element_',
+      factory: function() { return this.document.createDocumentFragment(); }
+    }
+  ],
+
+  methods: [
+    function init() {
+      this.add(''); // needed to preserve proper location in DOM
+
+      this.fn.self = this;
+
+      var nextSibling;
+
+      this.fn.pre = () => {
+        console.log('********************* PRE');
+        nextSibling = undefined;
+        this.childNodes.forEach(n => {
+          nextSibling = n.element_.nextSibling;
+          n.element_.parentNode.removeChild(n.element_);
+        });
+        this.childNodes = [];
+        this.element_   = undefined;
+      };
+
+      this.fn.post = () => {
+        console.log('********************* POST');
+        // Add empty Text node to mark space in DOM in case no output was generated
+        if ( this.childNodes.length == 0 ) this.add('');
+        if ( nextSibling ) {
+          this.parentNode.element_.insertBefore(this.element_, nextSibling);
+        } else {
+          this.parentNode.element_.appendChild(this.element_);
+        }
+      };
     }
   ]
 });
@@ -1190,11 +1237,6 @@ foam.CLASS({
       return this.add(opt_default);
     },
 
-    function react(fn, opt_self) {
-      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this, parentNode: this}, this), this);
-      return this;
-    },
-
     function add() {
       if ( this.content ) {
         this.content.add(arguments, this);
@@ -1210,10 +1252,15 @@ foam.CLASS({
         c = c.toE(null, this.__subSubContext__);
       }
 
+      if ( foam.core.DynamicFunction.isInstance(c) ) {
+        this.addChild_(foam.u2.FunctionNode.create({fn: c, parentNode: this}, this), this);
+        return
+      }
       if ( foam.Function.isInstance(c) ) {
-        console.warn('Deprecated use of add(Function). Use react() instead.');
-        c = foam.u2.FunctionNode.create({self: this, code: c, parentNode: this});
-      } else if ( foam.core.Slot.isInstance(c) ) {
+        this.add((this.data || this).dynamic(c));
+        return;
+      }
+      if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
         /*
