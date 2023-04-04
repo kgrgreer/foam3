@@ -257,6 +257,7 @@ foam.POM({
     { name: "menu/TabsMenu",                                                              flags: "js" },
     { name: "menu/VerticalMenu",                                                          flags: "js" },
     { name: "menu/ViewMenu",                                                              flags: "js" },
+    { name: "menu/WizardMenu",                                                            flags: "js" },
     { name: "menu/ScriptMenu",                                                            flags: "js|java" },
     { name: "menu/TreeAltView",                                                           flags: "web" },
     { name: "menu/TreeGraphAltView",                                                      flags: "js" },

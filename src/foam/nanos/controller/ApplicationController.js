@@ -869,10 +869,11 @@ foam.CLASS({
 
       const wizardRunner = this.WizardRunner.create({
         wizardType: this.WizardType.UCJ,
-        source: group.wizardFlow || group.generalCapability
+        source: group.wizardFlow || group.generalCapability,
+        options: {inline: false, returnCompletionPromise: true}
       });
       // TODO: figure out why this cant be inlined
-      let retPromise = await wizardRunner.launch(null, {inline: false, returnCompletionPromise: true });
+      let retPromise = await wizardRunner.launch();
       await retPromise;
       return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },

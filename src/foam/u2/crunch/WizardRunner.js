@@ -26,25 +26,43 @@ foam.CLASS({
       documentation: `
         Either a capability, string, or WizardFlow
       `
-    }
+    },
+    {
+      name:'options',
+      class: 'Map',
+    },
+    {
+      name:'sequence',
+      factory: function() {
+        const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
+        const seq = this.getSequence_(this.__context__, this.isInline);
+        return seq
+      } 
+    },
+    {
+      name: 'parentWizard',
+      factory: function() {
+        return this.getParentWizard_();
+      }
+    },
+    {
+      name: 'isInLine',
+      expression: function(parentWizard, options) {
+        return (options.inline ?? true) && !! parentWizard;
+      }
+    },
   ],
   methods: [
-    async function launch(x, options) {
-      options = options || {};
-      x = x || this.__context__;
+    async function launch() {
+      x = this.__context__;
 
-      const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
-
-      const parentWizard = this.getParentWizard_();
-      const isInline = (options.inline ?? true) && !! parentWizard;
-
-      const seq = this.getSequence_(x, isInline);
+      const seq = this.sequence 
 
       let returnPromise = null;
       let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
 
-      if ( isInline ) {
-        if ( options.returnCompletionPromise ) {
+      if ( this.isInline ) {
+        if ( this.options.returnCompletionPromise ) {
           returnPromise = new Promise(rslv => {
             promise$.sub(v => {
               if ( v ) rslv();
