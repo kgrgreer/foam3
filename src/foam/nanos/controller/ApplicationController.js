@@ -812,7 +812,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 0 }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 0 }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },

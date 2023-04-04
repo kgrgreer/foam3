@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.view',
+  package: 'foam.nanos.auth.login',
   name: 'LoginView',
   extends: 'foam.u2.View',
 
@@ -139,7 +139,7 @@ foam.CLASS({
   }
   
   @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
+    .foam-nanos-auth-login-LoginView .foam-u2-borders-SplitScreenGridBorder {
       padding: 0 4vw;
     }
   }
@@ -150,7 +150,7 @@ foam.CLASS({
       height: 6vh;
       background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
     }
-    .foam-u2-view-LoginView-image-one {
+    .foam-nanos-auth-login-LoginView-image-one {
       width: 28vw;
     }
   }
@@ -400,7 +400,7 @@ foam.CLASS({
       buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(foam.u2.stack.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 0, topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.stack.push(foam.u2.stack.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 0, topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
     {
@@ -409,7 +409,7 @@ foam.CLASS({
       buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(foam.u2.stack.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 1, topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.stack.push(foam.u2.stack.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 1, topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
     {

@@ -199,7 +199,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'loginView',
-      value: 'foam.u2.view.LoginView'
+      value: 'foam.nanos.auth.login.LoginView'
     },
     {
       class: 'Image',
