@@ -66,20 +66,20 @@ foam.CLASS({
            config.getEnabled() &&
            config.getStatus() == Status.OFFLINE ) {
         Loggers.logger(x, this).info("execute", config.getId());
-        // // Wait for own replay to complete,
-        // // then set node ONLINE.
+        // Wait for own replay to complete,
+        // then set node ONLINE.
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getStartTime() == null ) {
           replaying.setStartTime(new java.util.Date());
         }
-        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.bootstrap.bootstrap.replay.start");
 
         DAO dao = ((DAO) x.get("medusaNodeDAO"));
         if ( replaying.getEndTime() == null ) {
           replaying.setEndTime(new java.util.Date());
           Max max = (Max) dao.select(MAX(MedusaEntry.INDEX));
           replaying.setReplaying(false);
-        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.bootstrap.replay.end");
           if ( max != null &&
                max.getValue() != null ) {
             replaying.updateIndex(x, (Long)max.getValue());
