@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   css: `
-  ^.foam-u2-ActionView {
+  ^ .foam-u2-ActionView {
     width: 100%;
   }
 
@@ -297,11 +297,17 @@ foam.CLASS({
             .callIf(self.mode_ == self.SIGN_IN, function() { this.tag(self.RESET_PASSWORD) })
           .endContext()
         .end()
-        .startContext({ data: self }).tag(this.LOGIN).endContext() // TODO
         .add(
           this.slot(function(showAction) {
             return self.E().callIf(showAction, function() {
               this
+                .startContext({ data: self })
+                  .callIfElse(
+                    self.mode_ == self.SIGN_IN,
+                    function() { this.tag(self.SIGN_IN_ACTION) },
+                    function() { this.tag(self.SIGN_UP_ACTION) }
+                  )
+                .endContext()
                 .br()
                 .br()
                 .start()
@@ -388,15 +394,24 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'login',
-      code: async function(X) {
-        if ( this.mode_ == this.SIGN_IN ) this.loginService.signin(X, this.data);
-        if ( this.mode_ == this.SIGN_UP ) this.loginService.signup(X, this.data);
+      name: 'signInAction',
+      label: 'Sign in',
+      buttonStyle: 'PRIMARY',
+      code: function(X) {
+        this.loginService.signin(X, this.data);
+      }
+    },
+    {
+      name: 'signUpAction',
+      label: 'Get started',
+      buttonStyle: 'PRIMARY',
+      code: function(X) {
+        this.loginService.signup(X, this.data);
       }
     },
     {
       name: 'switchToSignIn',
-      label: 'Create an account',
+      label: 'Sign in',
       buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
@@ -405,7 +420,7 @@ foam.CLASS({
     },
     {
       name: 'switchToSignUp',
-      label: 'Sign in',
+      label: 'Create an account',
       buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
