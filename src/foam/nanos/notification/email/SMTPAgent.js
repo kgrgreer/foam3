@@ -263,7 +263,7 @@ foam.CLASS({
               count = 1;
               endTime = System.currentTimeMillis() + second;
             }
-            EmailServiceConfig config = findId(getX());
+            config = findId(getX());
             if ( ! config.getEnabled() ) break;
           }
         }
