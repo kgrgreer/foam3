@@ -154,7 +154,7 @@ foam.CLASS({
     flex-wrap: nowrap;
     align-items: center;
     background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
-    border-radius: 9px;
+    border-radius: 8px;
   }
   ^image-one {
     width: 48vw;
