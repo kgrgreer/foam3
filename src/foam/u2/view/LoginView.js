@@ -153,23 +153,19 @@ foam.CLASS({
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
+    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    border-radius: 9px;
   }
   ^image-one {
     width: 48vw;
-    padding-top: 25px;
+    padding-bottom: 8rem;
   }
   
-  @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
-      padding: 0 4vw;
-    }
-  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
       justify-content: center;
       height: 6vh;
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
