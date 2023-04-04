@@ -89,9 +89,9 @@ foam.CLASS({
         message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
         args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-        args.put("link", url +"?token=" + token.getData() + getMenu(parameters));
+        args.put("link", url +"?token=" + token.getData() + getParameter(parameters, "menu", "#reset"));
         args.put("templateSource", this.getClass().getName());
-        String templateName = getTemplateName(parameters);
+        String templateName = getParameter(parameters, "templateName", "reset-password");
         args.put("template", templateName);
 
         message.setTemplateArguments(args);
@@ -176,27 +176,15 @@ foam.CLASS({
       `
     },
     {
-      name: 'getMenu',
+      name: 'getParameter',
       type: 'String',
-      args: 'Map parameters',
+      args: 'Map parameters, String key, String defaultValue',
       javaCode: `
-        if ( parameters != null && parameters.get("menu") != null ) {
-          return parameters.get("menu").toString();
+        if ( parameters != null && parameters.get(key) != null ) {
+          return parameters.get(key).toString();
         }
 
-        return "#reset";
-      `
-    },
-    {
-      name: 'getTemplateName',
-      type: 'String',
-      args: 'Map parameters',
-      javaCode: `
-        if ( parameters != null && parameters.get("templateName") != null ) {
-          return parameters.get("templateName").toString();
-        }
-
-        return "reset-password";
+        return defaultValue;
       `
     }
   ]
