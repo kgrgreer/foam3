@@ -209,16 +209,17 @@ This is the heart of Medusa.`,
       ],
       type: 'foam.nanos.medusa.MedusaEntry',
       javaCode: `
-        // NOTE: implementation expects caller to lock on entry index
-        ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-        DaggerService dagger = (DaggerService) x.get("daggerService");
-
+      // NOTE: implementation expects caller to lock on entry index
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      DaggerService dagger = (DaggerService) x.get("daggerService");
+      PM pm = null;
+      synchronized ( entry.getId().toString().intern() ) {
         ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote");
         entry = (MedusaEntry) getDelegate().find_(x, entry.getId());
         if ( entry.getPromoted() ) {
           return entry;
         }
-        PM pm = PM.create(x, this.getClass().getSimpleName(), "promote:verify");
+        pm = PM.create(x, this.getClass().getSimpleName(), "promote:verify");
         if ( entry.isFrozen() ) {
           entry = (MedusaEntry) entry.fclone();
           ((OMLogger) x.get("OMLogger")).log("medusa.consensus.promote.fclone");
@@ -250,22 +251,23 @@ This is the heart of Medusa.`,
 
         entry.setPromoted(true);
         entry = (MedusaEntry) getDelegate().put_(x, entry);
+      }
 
-        pm = PM.create(x, this.getClass().getSimpleName(), "promote:notify");
+      pm = PM.create(x, this.getClass().getSimpleName(), "promote:notify");
 
-        // Notify any blocked Primary puts
-        MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
-        registry.notify(x, entry);
+      // Notify any blocked Primary puts
+      MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
+      registry.notify(x, entry);
 
-        replaying.updateIndex(x, entry.getIndex());
-        pm.log(x);
+      replaying.updateIndex(x, entry.getIndex());
+      pm.log(x);
 
-        if ( replaying.getReplaying() &&
-             replaying.getIndex() >= replaying.getReplayIndex() ) {
-          getLogger().info("promote", "replayComplete", replaying.getIndex());
-          ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
-        }
-        return entry;
+      if ( replaying.getReplaying() &&
+           replaying.getIndex() >= replaying.getReplayIndex() ) {
+        getLogger().info("promote", "replayComplete", replaying.getIndex());
+        ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
+      }
+      return entry;
       `
     },
     {
