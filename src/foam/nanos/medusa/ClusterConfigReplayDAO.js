@@ -182,29 +182,25 @@ foam.CLASS({
         final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
         final ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
 
-        // logger.info("ReplayRequestCmd", cmd.getDetails());
-
         final List<ClusterConfig> nodes = support.getReplayNodes();
 
         Agency agency = (Agency) x.get(support.getThreadPoolName());
         for ( ClusterConfig cfg : nodes ) {
-          agency.submit(x,
-            new ContextAgent() {
-              public void execute(X x) {
-          ReplayCmd c = new ReplayCmd();
-          ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
-          details.setRequester(myConfig.getId());
-          details.setResponder(cfg.getId());
-          c.setDetails(details);
-          c.setServiceName("medusaMediatorDAO"); // TODO: configuration
+          agency.submit(x, new ContextAgent() {
+            public void execute(X x) {
+              ReplayCmd c = new ReplayCmd();
+              ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
+              details.setRequester(myConfig.getId());
+              details.setResponder(cfg.getId());
+              c.setDetails(details);
+              c.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
-          DAO clientDAO = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
-          logger.info("ReplayRequestCmd", "request", c);
-          c = (ReplayCmd) clientDAO.cmd_(x, c);
-          logger.info("ReplayRequestCmd", "response", c);
-              }
-            }, this.getClass().getSimpleName()
-          );
+              DAO clientDAO = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
+              logger.info("ReplayRequestCmd", "request", c);
+              c = (ReplayCmd) clientDAO.cmd_(x, c);
+              logger.info("ReplayRequestCmd", "response", c);
+            }
+          }, this.getClass().getSimpleName());
         }
         return obj;
       }
