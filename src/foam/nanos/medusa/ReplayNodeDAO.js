@@ -12,6 +12,8 @@ foam.CLASS({
   documentation: `Response to ReplayCmd on Node`,
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
@@ -21,6 +23,7 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.dao.NullDAO',
     'foam.dao.Sink',
+    'foam.mlang.MLang',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.GT',
     'static foam.mlang.MLang.GTE',
@@ -52,38 +55,14 @@ foam.CLASS({
       name: 'journal',
       class: 'FObjectProperty',
       of: 'foam.dao.Journal'
-    },
-    {
-      name: 'clients',
-      class: 'Map',
-      javaFactory: 'return new HashMap();'
     }
   ],
 
   methods: [
     {
-      documentation: 'listen and clear client and queue caches on cluster changes',
-      name: 'init_',
-      javaCode: `
-      DAO dao = (DAO) getX().get("clusterConfigDAO");
-      dao.listen( new AbstractSink() {
-        @Override
-        public void put(Object obj, Detachable sub) {
-          ClusterConfig config = (ClusterConfig) obj;
-          if ( config.getType() == MedusaType.MEDIATOR ) {
-            synchronized ( this ) {
-              ((Logger) getX().get("logger")).info("ReplayNodeDAO,listener,purge");
-              ReplayNodeDAO.CLIENTS.clear(this);
-            }
-          }
-        }
-      }, null);
-      `
-    },
-    {
       name: 'cmd_',
       javaCode: `
-      Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
+      final Logger logger = Loggers.logger(x, this, "cmd", obj.getClass().getSimpleName());
       if ( obj instanceof ReplayDetailsCmd ) {
         ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
         ReplayDetailsCmd details = (ReplayDetailsCmd) obj;
@@ -100,76 +79,59 @@ foam.CLASS({
       }
 
       if ( obj instanceof ReplayCmd ) {
+        final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
         ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
-        PM pm = PM.create(x, this.getClass().getSimpleName(), "ReplayCmd");
-
-        ReplayCmd cmd = (ReplayCmd) obj;
-        ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
-        ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
-        long indexAtStart = info.getIndex();
+        final ReplayCmd cmd = (ReplayCmd) obj;
+        final ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails();
+        final ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
 
         logger.info("request", details.getRequester(), "min", details.getMinIndex(), "max", details.getMaxIndex());
 
-        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-        ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
-        ClusterConfig toConfig = support.getConfig(x, details.getRequester());
+        final ClusterConfig fromConfig = support.getConfig(x, support.getConfigId());
+        final ClusterConfig toConfig = support.getConfig(x, details.getRequester());
         if ( details.getMinIndex() <= info.getIndex() ) {
-          ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName(), details.getRequester());
+         Agency agency = (Agency) x.get(support.getThreadPoolName());
+          agency.submit(x, new ContextAgent() {
+            public void execute(X x) {
+              ((OMLogger) x.get("OMLogger")).log("ReplayCmd", details.getRequester());
+              PM pm = PM.create(x, "ReplayNodeDAO", "ReplayCmd");
 
-          DAO clientDAO = (DAO) getClients().get(details.getRequester());
-          // if ( clientDAO != null ) {
-          //   logger.info("cancel previous from", details.getRequester());
-          //   // REVIEW: have replay write to null dao. How to cancel replay?
-          //   // TODO: need the same support cache. For now expect cache to be small.
-          //   clientDAO.cmd_(x, RetryClientSinkDAO.CANCEL_RETRY_CMD);
-          //   ((ProxyDAO)clientDAO).setDelegate(new NullDAO(x, MedusaEntry.getOwnClassInfo()));
-          // }
-          // NOTE: must use a retry client with a retry > 1.
-          // Presently the first response appears to be rejected by the
-          // caller.
-          if ( clientDAO == null ) {
-            clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
-            getClients().put(details.getRequester(), clientDAO);
-          }
-          Predicate p = null;
-          if ( details.getMinIndex() > info.getMinIndex() ) {
-            p = GTE(MedusaEntry.INDEX, details.getMinIndex());
-          }
-          if ( details.getMaxIndex() > 0 &&
-               details.getMaxIndex() < info.getIndex() ) {
-            if ( p == null ) {
-              p = LTE(MedusaEntry.INDEX, details.getMaxIndex());
-            } else {
-              p = AND(
-                   p,
-                   LTE(MedusaEntry.INDEX, details.getMaxIndex())
-                );
+              Predicate p = null;
+              if ( details.getMinIndex() > info.getMinIndex() ) {
+                p = GTE(MedusaEntry.INDEX, details.getMinIndex());
+              }
+              if ( details.getMaxIndex() > 0 &&
+                   details.getMaxIndex() < info.getIndex() ) {
+                if ( p == null ) {
+                  p = LTE(MedusaEntry.INDEX, details.getMaxIndex());
+                } else {
+                  p = AND(
+                       p,
+                       LTE(MedusaEntry.INDEX, details.getMaxIndex())
+                    );
+                }
+              }
+              if ( p == null ) {
+                p = TRUE;
+              }
+
+              DAO clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
+              logger.debug("journal,select,start", details.getRequester(), p);
+              long startTime = System.currentTimeMillis();
+              getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
+              logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+
+              // cache of last x received, including storage transient
+              logger.debug("cache,select,start", details.getRequester(), p);
+              startTime = System.currentTimeMillis();
+              ((DAO) x.get("medusaNodeDAO")).where(p).select(new SetNodeSink(x, (Sink) clientDAO));
+              logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+              pm.log(x);
             }
-          }
-          if ( p == null ) {
-            p = TRUE;
-          }
-
-          logger.debug("cache,select,start", details.getRequester(), p);
-          long startTime = System.currentTimeMillis();
-          // cache - mdao (cache, fixed size, last x received)
-          // this includes storageTransient entries
-          DAO cache = (DAO) x.get("medusaNodeDAO");
-          cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
-
-          logger.debug("journal,select,start", details.getRequester(), p);
-          startTime = System.currentTimeMillis();
-          getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
-          logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
-
-          // send from cache again to capture anything received during journal replay
-          cache.where(p).select(new SetNodeSink(x, new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig))));
-          getClients().remove(details.getRequester());
+          }, "ReplayNodeDAO-replay");
         } else {
           logger.info("requester", cmd.getDetails().getRequester(), "requested min", cmd.getDetails().getMinIndex(), "greater than local max", info.getIndex());
         }
-        pm.log(x);
         return cmd;
       }
 
