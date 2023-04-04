@@ -112,7 +112,14 @@ foam.CLASS({
             try {
               details = (ReplayDetailsCmd) client.cmd_(x, details);
               m = details.getMaxIndex();
-              replies.add(cfg.getId());
+              if ( m == 0 ) {
+                // connection errors are not thrown back when using a retry client
+                // TODO: new clients could be an issue with zero data.
+                logger.error(cfg.getId(), "no reply");
+                errors.add(cfg.getId());
+              } else {
+                replies.add(cfg.getId());
+              }
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
               errors.add("cfg.getId() "+e.getMessage());
