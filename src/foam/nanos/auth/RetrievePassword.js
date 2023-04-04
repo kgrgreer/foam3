@@ -131,7 +131,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
+          this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 0 }, this);
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {

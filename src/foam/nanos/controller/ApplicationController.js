@@ -78,6 +78,7 @@ foam.CLASS({
     'buildingStack',
     'crunchController',
     'currentMenu',
+    'defaultUserLanguage',
     'displayWidth',
     'group',
     'initLayout',
@@ -85,6 +86,7 @@ foam.CLASS({
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
+    'loginService',
     'loginSuccess',
     'loginVariables',
     'loginView',
@@ -422,6 +424,25 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.login.ClientLoginService',
+      name: 'loginService',
+      factory: function() {
+        return foam.nanos.auth.login.ClientLoginService.create({}, this.__subContext__);
+      }
+    },
+    {
+      name: 'defaultUserLanguage',
+      factory: function() {
+        let l = foam.locale.split('-');
+        let code = l[0];
+        let variant = l[1];
+        let language = foam.nanos.auth.Language.create({ code: code });
+        if ( variant ) language.variant = variant;
+        return language;
+      }
     }
   ],
 
@@ -791,7 +812,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 0 }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
