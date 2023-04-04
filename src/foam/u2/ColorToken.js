@@ -30,12 +30,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'onLight',
-      value: '$Black'
+      value: '$black'
     },
     {
       class: 'String',
       name: 'onDark',
-      value: '$White'
+      value: '$white'
     }
   ],
   methods: [
