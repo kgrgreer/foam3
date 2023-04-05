@@ -110,6 +110,9 @@ foam.CLASS({
   ^ .align-end {
     text-align: end;
   }
+  ^ .margin-top {
+    margin-top: 16px;
+  }
 
   ^center-footer > ^signupLink {
     margin-bottom: 2rem;
@@ -301,10 +304,14 @@ foam.CLASS({
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()
-        .start()
-          .addClass('align-end')
-          .tag(this.data.SUB_FOOTER)
-        .end()
+        .callIfElse(this.data.subFooter, function() {
+          this.start()
+            .addClass('align-end')
+            .tag(self.data.SUB_FOOTER)
+          .end();
+        }, function() {
+          this.start().addClass('margin-top').end();
+        })
         .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction) {
