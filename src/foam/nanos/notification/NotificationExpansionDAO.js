@@ -49,17 +49,24 @@ foam.CLASS({
           Notification.GROUP_ID.clear(notification);
           Notification.TEMPLATE.clear(notification);
           notification.setBroadcasted(false);
-          userDAO.select(new AbstractSink() {
+          userDAO.where(
+            AND(
+              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+          )).select(new AbstractSink() {
             @Override
             public void put(Object o, Detachable d) {
               User user = (User) o;
               user.doNotify(x, notification);
             }
           });
-        } else if ( ! SafetyUtil.isEmpty(notif.getGroupId()) ) {
+        } else if ( Notification.GROUP_ID.isSet(notif) ) {
           Group group = (Group) ((DAO) x.get("groupDAO")).find(notif.getGroupId());
+          if ( group == null ) {
+            logger.debug("Notification group not found", notif.getGroupId(), notif);
+            return obj;
+          }
           if ( ! group.getEnabled() ) {
-            logger.debug("Notification group disabled", notif);
+            logger.debug("Notification group disabled", notif.getGroupId(), notif);
             return obj;
           }
           Notification notification = (Notification) notif.fclone();
