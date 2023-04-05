@@ -94,9 +94,7 @@ foam.CLASS({
 
   /* ON DATA */
   ^content-form {
-    align-self: center;
     width: 75%;
-    padding: 2vw;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -163,7 +161,9 @@ foam.CLASS({
     width: 48vw;
     padding-bottom: 8rem;
   }
-  
+  ^ .foam-u2-borders-SplitScreenGridBorder-grid {
+    grid-gap: 0;
+  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
@@ -172,6 +172,9 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
+    }
+    ^content-form {
+      align-self: center;
     }
   }
   `,
@@ -340,7 +343,17 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
-        var split = this.SplitScreenGridBorder.create();
+        var split = this.SplitScreenGridBorder.create({ columnsConfigLeft: 
+          { class: 'foam.u2.layout.GridColumns',
+          columns: 6,
+          lgColumns: 4,
+          xlColumns: 4
+        }, columnsConfigRight: 
+          { class: 'foam.u2.layout.GridColumns',
+          columns: 6,
+          lgColumns: 8,
+          xlColumns: 8
+        }});
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
