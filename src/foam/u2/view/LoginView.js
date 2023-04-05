@@ -344,13 +344,13 @@ foam.CLASS({
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
         var split = this.SplitScreenGridBorder.create({
-          columnsConfigLeft: 
+          columnsConfigRight: 
             { class: 'foam.u2.layout.GridColumns',
             columns: 6,
             lgColumns: 4,
             xlColumns: 4
             }, 
-          columnsConfigRight: 
+          columnsConfigLeft: 
             { class: 'foam.u2.layout.GridColumns',
             columns: 6,
             lgColumns: 8,

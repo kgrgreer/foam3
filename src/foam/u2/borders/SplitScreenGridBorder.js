@@ -57,9 +57,9 @@ foam.CLASS({
       flags: ['web'],
       value: {
         class: 'foam.u2.layout.GridColumns',
-        columns: 6,
-        lgColumns: 3,
-        xlColumns: 3
+        columns: 12,
+        lgColumns: 6,
+        xlColumns: 6
       }
     },
     'rightPanel',
@@ -69,9 +69,9 @@ foam.CLASS({
       flags: ['web'],
       value: {
         class: 'foam.u2.layout.GridColumns',
-        columns: 6,
-        lgColumns: 3,
-        xlColumns: 3
+        columns: 12,
+        lgColumns: 6,
+        xlColumns: 6
       }
     },
   ],
@@ -79,10 +79,10 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var right = this.GUnit.create({ columns: this.columnsConfigLeft })
+      var right = this.GUnit.create({ columns: this.columnsConfigRight })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.rightPanel$);
-        var left = this.GUnit.create({ columns: this.columnsConfigRight })
+        var left = this.GUnit.create({ columns: this.columnsConfigLeft })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.leftPanel$);
 
