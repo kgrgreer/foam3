@@ -49,7 +49,9 @@ foam.CLASS({
         if ( ! emailMessage.isPropertySet("to") ||
              emailMessage.getTo().length == 0 ||
              foam.util.SafetyUtil.isEmpty(emailMessage.getTo()[0]) ) {
-          Loggers.logger(x, this).warning("Property not set", "to", formatter_.get(emailMessage));
+          FObjectFormatter formatter = formatter_.get();
+          formatter.output(emailMessage);
+          Loggers.logger(x, this).warning("Property not set", "to", formatter.builder().toString());
           throw new InvalidParameterException("To property is not set");
         }
 
