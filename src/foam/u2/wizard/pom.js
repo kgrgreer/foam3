@@ -48,6 +48,8 @@ foam.POM({
     { name: "views/TipActionView",                     flags: "web" },
     { name: "views/EditWizardView",                    flags: "web" },
     { name: "views/ReferenceWizardletView",            flags: "web" },
+    { name: "views/PermissiveEditWizardletBorder",     flags: "web" },
+    { name: "views/NullEditWizardletBorder",           flags: "web" },
     { name: "SkipMeView",                              flags: "web" },
     { name: "PathProperty",                            flags: "web" },
     { name: "debug/WizardInspector",                   flags: "web" },

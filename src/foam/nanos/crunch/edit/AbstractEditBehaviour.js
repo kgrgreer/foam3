@@ -8,5 +8,16 @@ foam.CLASS({
   package: 'foam.nanos.crunch.edit',
   name: 'AbstractEditBehaviour',
   implements: ['foam.nanos.crunch.edit.EditBehaviour'],
-  abstract: true
+  abstract: true,
+
+  properties: [
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'wizardletBorder',
+      flags: ['web'],
+      factory: function(){
+        return 'foam.u2.wizard.views.NullEditWizardletBorder'
+      }
+    }
+  ]
 });
