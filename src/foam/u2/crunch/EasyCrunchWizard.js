@@ -146,7 +146,7 @@ foam.CLASS({
     async function execute (x) {
       x = x ?? this.__context__;
       await this.applyTo(x.sequence);
-      return x
+      return x;
     }
   ]
 });

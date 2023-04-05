@@ -39,7 +39,7 @@ foam.CLASS({
   ],
   
   methods: [
-    async function launch(x, menu) {
+    function launch(x, menu) {
       const runner = this.WizardRunner.create({
         source: this.source
       }, x)

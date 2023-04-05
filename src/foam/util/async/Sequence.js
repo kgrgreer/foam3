@@ -221,7 +221,7 @@ foam.CLASS({
         try {
           this.insertPosition_ = i;
           newX = await contextAgent.execute(argumentX);
-          if (! (newX || contextAgent.__subContext__).sequence) {
+          if ( ! (newX || contextAgent.__subContext__).sequence ) {
             console.error('sequence is missing from export context', contextAgent)
           }
         } catch (e) {
@@ -233,7 +233,7 @@ foam.CLASS({
             }));
           }
         }
-        if (argumentX && !newX) {
+        if ( argumentX && ! newX ) {
           console.error(
             '%cA ContextAgent in a Sequence is misbehaving%c\n%s',
             'color:red;font-size:20px', '',

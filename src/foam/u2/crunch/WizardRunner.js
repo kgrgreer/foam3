@@ -29,7 +29,7 @@ foam.CLASS({
     },
     {
       name:'options',
-      class: 'Map',
+      class: 'Map'
     },
     {
       name:'sequence',
