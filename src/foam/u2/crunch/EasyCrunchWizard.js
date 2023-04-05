@@ -95,7 +95,7 @@ foam.CLASS({
       factory: function() {
         return {
           class: 'foam.u2.dialog.ApplicationPopup',
-          fullscreen: true,
+          fullscreen: true
         }
       }
     },

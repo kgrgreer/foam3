@@ -222,8 +222,7 @@ foam.CLASS({
           this.insertPosition_ = i;
           newX = await contextAgent.execute(argumentX);
           if (! (newX || contextAgent.__subContext__).sequence) {
-            debugger
-            console.error('export context is missing sequence')
+            console.error('sequence is missing from export context', contextAgent)
           }
         } catch (e) {
           console.error(`sequence:`, seqspec, e);

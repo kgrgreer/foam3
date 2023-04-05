@@ -47,11 +47,7 @@ foam.CLASS({
     {
       name: 'popupMode',
       class: 'Boolean',
-      value: true,
-      postSet: function( o, n ) {
-        debugger
-        console.log( o , n )
-      }
+      value: true
     },
     {
       name: 'ensureHash',

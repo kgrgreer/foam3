@@ -19,13 +19,9 @@ foam.CLASS({
   
     methods: [
       function execute(x) {
-
         x = x || this.__context__;
-
        let index = x.wizardlets.findIndex( w => w.id == this.wizardletId);
-
        x.wizardlets.splice(index, 1);
-
        return x
       }
     ]
