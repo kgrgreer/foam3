@@ -173,6 +173,8 @@ foam.CLASS({
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
     }
+  }
+  @media (min-width: /*%DISPLAYWIDTH.SM%*/ 576px ) {
     ^content-form {
       align-self: center;
     }
