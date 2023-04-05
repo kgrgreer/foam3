@@ -878,16 +878,9 @@ foam.CLASS({
     },
 
     async function doGeneralCapabilityPostCheck (ucjCheck) {
-    console.log("++++++");
       this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
       this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
-      console.log('getting ucj ++++++++ '+ this.__subContext__.userCapabilityJunctionDAO);
-      let postCheck = await this.__subContext__.userCapabilityJunctionDAO.find(
-        this.AND(
-          this.EQ(this.UserCapabilityJunction.TARGET_ID,'net-nanopay-request-money')
-        )
-      );
-      this.__subContext__.userCapabilityJunctionDAO.select().then(function(o){console.log(o)});
+      let postCheck = await ucjCheck();
       if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
         this.add(foam.u2.dialog.ConfirmationModal.create({
           title: this.GC_ERROR_TITLE,

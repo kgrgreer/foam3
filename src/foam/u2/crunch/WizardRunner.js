@@ -71,7 +71,6 @@ foam.CLASS({
     },
     function getSequence_ (x, isInline) {
       if ( ! this.WizardFlow.isInstance(this.source) ) {
-      console.log('IMPOSSIBLE TO REACH');
         return this.getSequenceFromCapability_(x, isInline);
       }
 

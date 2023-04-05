@@ -142,11 +142,6 @@ foam.CLASS({
         });
       },
       preSet: function(o, n) {
-        if ( n?.wizardletIndex != o?.wizardletIndex && this.wizardlets.length <= n.wizardletIndex ) {
-          console.log('INVALID WIZARD POSITION', new Error(), this, n.wizardletIndex);
-          debugger;
-
-        }
         if ( n?.wizardletIndex != o?.wizardletIndex )
           this.wizardlets[n.wizardletIndex].load({});
         return n;
@@ -339,7 +334,7 @@ foam.CLASS({
           nextWizardlet,
           nextPosition
         });
-        
+
         // Not much to do between sections of the same wizardlet, just
         // land on one if it's available
         if ( ! atWizardletBoundary ) {
