@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * Copyright 2023 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -18,8 +18,8 @@ foam.CLASS({
   properties: [
     {
       name: 'source',
-      adapt: function(o,n) {
-        if (!foam.Object.isInstance(n)) return n
+      adapt: function(o, n) {
+        if ( ! foam.Object.isInstance(n) ) return n
         return foam.json.parse(n)
       }
     },
@@ -34,8 +34,8 @@ foam.CLASS({
         return {
           class: 'foam.u2.crunch.EasyCrunchWizard'
         } 
-      },
-    },
+      }
+    }
   ],
   
   methods: [
