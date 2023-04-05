@@ -1,0 +1,15 @@
+<h1>Notification System</h1>
+
+<h2>Documentation TODO</h2>
+<ul>
+  <li>Notifications and NotificationTemplates</li>
+  <li>NotificationTemplates and EmailTemplates</li>
+  <li>NotificationSettings</li>
+  <li>NotificationSettingDefaultss</li>
+  <li>Notification and EventRecords</li>
+  <li>NotificationDAO vs Notifiable.doNotify</li>
+</ul>
+
+<h1>Notification Overview</h1>
+A <b>Notification</b> is a message sent to a user or group of users
+over a number of different mediums, such as email or sms.
