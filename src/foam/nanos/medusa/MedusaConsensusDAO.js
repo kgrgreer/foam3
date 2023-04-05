@@ -770,8 +770,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
               }
             }
-            // TODO: do not put, causing deadlock
-            // ((DAO) x.get("alarmDAO")).put(alarm);
+            ((DAO) x.get("alarmDAO")).put(alarm);
           }
         }
         return skipped;
