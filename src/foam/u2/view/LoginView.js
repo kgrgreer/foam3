@@ -343,17 +343,19 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
-        var split = this.SplitScreenGridBorder.create({ columnsConfigLeft: 
-          { class: 'foam.u2.layout.GridColumns',
-          columns: 6,
-          lgColumns: 4,
-          xlColumns: 4
-        }, columnsConfigRight: 
-          { class: 'foam.u2.layout.GridColumns',
-          columns: 6,
-          lgColumns: 8,
-          xlColumns: 8
-        }});
+        var split = this.SplitScreenGridBorder.create({
+          columnsConfigLeft: 
+            { class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 4,
+            xlColumns: 4
+            }, 
+          columnsConfigRight: 
+            { class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 8,
+            xlColumns: 8
+          }});
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
