@@ -45,9 +45,7 @@ foam.CLASS({
       }, x)
 
       runner.sequence.addBefore('ConfigureFlowAgent', this.config)
-
       runner.launch()
-
     }
   ]
 });
