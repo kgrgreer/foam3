@@ -100,7 +100,7 @@ foam.CLASS({
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 32px;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -303,10 +303,12 @@ foam.CLASS({
         .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .startContext({ data: this }).tag(this.DATA).endContext()
         .start()
-          .addClass('align-end')
-          .tag(this.data.SUB_FOOTER)
+          .startContext({ data: this }).tag(this.DATA).endContext()
+          .start()
+            .addClass('align-end')
+            .tag(this.data.SUB_FOOTER)
+          .end()
         .end()
         .tag(this.data.LOGIN)
         .add(
