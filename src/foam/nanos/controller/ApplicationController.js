@@ -422,6 +422,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
+    },
+    //TODO: temporary fix, remove when client signin service is fixed/added
+    {
+      name: 'groupLoadingHandled',
+      class: 'Boolean'
     }
   ],
 
@@ -485,7 +490,7 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        await self.onUserAgentAndGroupLoaded();
+        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
 
       // Reload styling on theme change
