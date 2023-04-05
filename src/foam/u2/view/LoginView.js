@@ -98,6 +98,9 @@ foam.CLASS({
     width: 75%;
     padding: 2vw;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -109,9 +112,6 @@ foam.CLASS({
   }
   ^ .align-end {
     text-align: end;
-  }
-  ^ .margin-top {
-    margin-top: 16px;
   }
 
   ^center-footer > ^signupLink {
@@ -304,14 +304,10 @@ foam.CLASS({
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .startContext({ data: this }).tag(this.DATA).endContext()
-        .callIfElse(this.data.subFooter, function() {
-          this.start()
-            .addClass('align-end')
-            .tag(self.data.SUB_FOOTER)
-          .end();
-        }, function() {
-          this.start().addClass('margin-top').end();
-        })
+        .start()
+          .addClass('align-end')
+          .tag(this.data.SUB_FOOTER)
+        .end()
         .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction) {

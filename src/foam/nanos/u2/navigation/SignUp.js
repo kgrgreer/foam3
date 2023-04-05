@@ -313,5 +313,11 @@ foam.CLASS({
         X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
       }
     },
+    {
+      name: 'subFooter',
+      section: 'footerSection',
+      isAvailable: () => false,
+      code: () => {}
+    }
   ]
 });
