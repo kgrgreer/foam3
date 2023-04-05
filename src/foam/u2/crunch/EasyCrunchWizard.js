@@ -91,7 +91,13 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'popup'
+      name: 'popup',
+      factory: function() {
+        return {
+          class: 'foam.u2.dialog.ApplicationPopup',
+          fullscreen: true
+        }
+      }
     },
     {
       class: 'FObjectArray',
@@ -113,14 +119,15 @@ foam.CLASS({
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})
       });
-
       if ( this.popup ) {
         sequence.reconfigure('ConfigureFlowAgent', { popupMode: true });
         config.popup = {
           class: 'foam.u2.dialog.Popup',
           ...this.popup,
         };
-      }
+      } else {
+        sequence.reconfigure('ConfigureFlowAgent', { popupMode: false });
+      };
 
       sequence.reconfigure('CreateControllerAgent', { config: config });
       if ( this.skipMode )
@@ -138,8 +145,8 @@ foam.CLASS({
     },
     async function execute (x) {
       x = x ?? this.__context__;
-
       await this.applyTo(x.sequence);
+      return x;
     }
   ]
 });
