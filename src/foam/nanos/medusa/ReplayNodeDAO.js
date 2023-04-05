@@ -115,17 +115,31 @@ foam.CLASS({
                 p = TRUE;
               }
 
+              long startTime = 0L;
               DAO clientDAO = new RetryClientSinkDAO(x, getMaxRetryAttempts(), support.getBroadcastClientDAO(x, cmd.getServiceName(), fromConfig, toConfig));
-              logger.debug("journal,select,start", details.getRequester(), p);
-              long startTime = System.currentTimeMillis();
-              getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
-              logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+              DAO cacheDAO = (DAO) x.get("medusaNodeDAO");
+              // use cache if it has min max range.
+              if ( ! TRUE.equals(p) &&
+                   details.getMinIndex() > 0 &&
+                   details.getMaxIndex() > 0 &&
+                   cacheDAO.find(details.getMinIndex()) != null &&
+                   cacheDAO.find(details.getMaxIndex()) != null ) {
+                logger.debug("cache,select,start", details.getRequester(), p);
+                startTime = System.currentTimeMillis();
+                cacheDAO.where(p).select(new SetNodeSink(x, (Sink) clientDAO));
+                logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+              } else {
+                logger.debug("journal,select,start", details.getRequester(), p);
+                startTime = System.currentTimeMillis();
+                getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
+                logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
 
-              // cache of last x received, including storage transient
-              logger.debug("cache,select,start", details.getRequester(), p);
-              startTime = System.currentTimeMillis();
-              ((DAO) x.get("medusaNodeDAO")).where(p).select(new SetNodeSink(x, (Sink) clientDAO));
-              logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+                // cache of last x received, including storage transient
+                logger.debug("cache,select,start", details.getRequester());
+                startTime = System.currentTimeMillis();
+                cacheDAO.select(new SetNodeSink(x, (Sink) clientDAO));
+                logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+              }
               pm.log(x);
             }
           }, "ReplayNodeDAO-replay");
