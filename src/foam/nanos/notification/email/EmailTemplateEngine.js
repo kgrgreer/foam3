@@ -58,9 +58,9 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
-grammar.addSymbol("VALUE", new Seq2(1,2,Literal.create("{{"), grammar.sym("WORD"), new Optional(
+grammar.addSymbol("VALUE", new Seq2(2,3,Literal.create("{{"), Whitespace.instance(), grammar.sym("WORD"), new Optional(
       new Seq(Literal.create("."), new Repeat(new Not(Literal.create("}}"), grammar.sym("WORD")), Literal.create(".")))),
-      Literal.create("}}")));
+      Whitespace.instance(), Literal.create("}}")));
     grammar.addAction("VALUE", (val, x) -> {
     Object[] vals = ((Object[])val);
     String v = compactToString(vals[0]);
