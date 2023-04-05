@@ -88,7 +88,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.recall(function(data) {
+      this.react(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
@@ -616,7 +616,7 @@ name: 'NANOS',
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
-              // if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
+              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
@@ -678,9 +678,9 @@ name: 'NANOS',
     },
 
     function parseLog(t) {
-      var data = [];
-      var state  = 0;
-      var lines  = t.split('\n');
+      var data  = [];
+      var state = 0;
+      var lines = t.split('\n');
       var commit;
       t = null;
       for ( var i = 0 ; i < lines.length ; i++ ) {
@@ -721,7 +721,7 @@ name: 'NANOS',
           }
         }
       }
-      this.data = this.data.concat(data);
+      this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
 

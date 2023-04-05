@@ -79,7 +79,7 @@ foam.CLASS({
     {
       name: 'id',
       class: 'String',
-      javaFactory: `return getHost()+":"+getPort();`
+      javaFactory: 'return getKey();'
     },
     {
       documentation: 'Set to false when send exits, triggering execute to exit',
@@ -107,8 +107,7 @@ foam.CLASS({
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
-          getHost(),
-          getPort()
+          getKey()
         }, (Logger) getX().get("logger"));
       `
     }

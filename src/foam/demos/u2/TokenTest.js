@@ -39,6 +39,10 @@ foam.CLASS({
       class: 'Boolean',
     },
     {
+      name: 'loading',
+      class: 'Boolean',
+    },
+    {
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'style'
@@ -82,13 +86,14 @@ foam.CLASS({
       .tag(this.COLOR.__, { config: { label: 'Color for buttonPrimaryColor token' } })
       .tag(this.COLOR2.__, { config: { label: 'Color for buttonSecondaryColor token' } })
       .add(this.DISABLED.__)
+      .add(this.LOADING.__)
       .add(this.STYLE.__)
       .tag(this.SAVE)
       .br().br()
       .start()
       .add('Interact with this action to see auto generated hover and clicked states')
       .br()
-      .start(this.TEST_ACTION, { buttonStyle$: this.style$ }).addClass(this.myClass('myButton')).end()
+      .start(this.TEST_ACTION, { buttonStyle$: this.style$, loading_$: this.loading$ }).addClass(this.myClass('myButton')).end()
       .end()
       .endContext();
     }
@@ -96,14 +101,17 @@ foam.CLASS({
   actions: [
     {
       name: 'testAction',
+      toolTip: 'This action will load for 10 seconds on click',
       isEnabled: function(disabled) { return ! disabled; },
-      code: () => {}
+      code: function() {
+        return new Promise(res => setTimeout(res, 10000));
+      }
     },
     {
       name: 'save',
       code: function(X) {
         X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'buttonPrimaryColor', target: this.color }, this));
-        X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'buttonSecondaryColor', target: this.color2 }, this));
+        return X.cssTokenOverrideDAO.put(foam.nanos.theme.customisation.CSSTokenOverride.create({ theme: '', source: 'buttonSecondaryColor', target: this.color2 }, this));
       }
     }
   ]

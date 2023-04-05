@@ -31,6 +31,7 @@ foam.CLASS({
       if ( foam.util.SafetyUtil.isEmpty(entry.getHash()) ) {
         throw new java.lang.IllegalArgumentException("MedusaEntry missing hash: "+entry.getIndex());
       }
+
       return getDelegate().put_(x, entry);
       `
     }

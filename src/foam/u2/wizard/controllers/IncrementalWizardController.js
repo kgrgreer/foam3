@@ -27,6 +27,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'wizardlets',
+      postSet: function (_, n) {
+        this.setupWizardletListeners(n);
+      }
+    },
+    {
       name: 'activePosition',
       documentation: `
         Active position represents the wizardlet currently acting, which may
@@ -569,7 +575,7 @@ foam.CLASS({
       },
       code: function(x) {
         this.isLoading_ = true;
-        this.next().then((isFinished) => {
+        return this.next().then((isFinished) => {
           if ( isFinished ) {
             for ( let w of this.wizardlets ) {
               if ( w.submit ) w.submit();

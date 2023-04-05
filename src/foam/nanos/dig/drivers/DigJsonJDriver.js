@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.dig.drivers',
   name: 'DigJsonJDriver',
   extends: 'foam.nanos.dig.drivers.DigJsonDriver',
-  flags: ['java'],
+  flags: [ 'java' ],
 
   javaImports: [
     'foam.core.*',
@@ -38,8 +38,9 @@ foam.CLASS({
     {
       name: 'parseFObjects',
       javaCode: `
-      String dataJson = "[";
+      String dataJson    = "[";
       String dataJsonJ[] = data.split("\\r?\\n");
+
       for (String i:dataJsonJ){
         i = i.trim();
         if (i.startsWith("p(")) {
@@ -54,10 +55,9 @@ foam.CLASS({
     {
       name: 'outputFObjects',
       javaCode: `
-      PrintWriter out = x.get(PrintWriter.class);
-      ClassInfo cInfo = dao.getOf();
-      String output = null;
-      
+      PrintWriter out    = x.get(PrintWriter.class);
+      String      output = null;
+
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
         return;
@@ -65,24 +65,22 @@ foam.CLASS({
 
       foam.lib.json.Outputter outputterJsonJ = new foam.lib.json.Outputter(x)
         .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x, 
+          new foam.lib.AndPropertyPredicate(x,
             new foam.lib.PropertyPredicate[] {
               new foam.lib.ExternalPropertyPredicate(),
               new foam.lib.NetworkPropertyPredicate(),
               new foam.lib.PermissionedPropertyPredicate()}));
 
       HttpParameters p = x.get(HttpParameters.class);
-      if ( p != null &&
-          "false".equals(p.getParameter("multiline")) ) {
+      if ( p != null && "false".equals(p.getParameter("multiline")) ) {
         outputterJsonJ.setMultiLine(false);
       } else {
         outputterJsonJ.setMultiLine(true);
       }
 
-      if ( fobjects.size() == 1 )
+      if ( fobjects.size() == 1 ) {
         outputterJsonJ.outputJSONJFObject((FObject) fobjects.get(0));
-      else
-      {
+      } else {
         for (Object obj : fobjects) {
           FObject fobj = (FObject) obj;
           outputterJsonJ.outputJSONJFObject(fobj);

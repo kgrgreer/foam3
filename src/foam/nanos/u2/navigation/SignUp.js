@@ -265,6 +265,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Get started',
+      section: 'footerSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
@@ -306,7 +307,7 @@ foam.CLASS({
       name: 'footer',
       section: 'footerSection',
       label: 'Sign in',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
         X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));

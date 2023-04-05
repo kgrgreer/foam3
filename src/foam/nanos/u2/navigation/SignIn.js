@@ -36,7 +36,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE',      message: 'Welcome!' },
+    { name: 'TITLE',      message: 'Welcome back!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
     { name: 'ERROR_MSG',  message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
@@ -193,6 +193,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Sign in',
+      section: 'footerSection',
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
@@ -269,7 +270,7 @@ foam.CLASS({
       name: 'footer',
       label: 'Create an account',
       section: 'footerSection',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);

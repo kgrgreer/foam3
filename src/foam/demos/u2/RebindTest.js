@@ -6,33 +6,42 @@ foam.CLASS({
 
   methods: [
     function render() {
-      var self = this;
+      this.dynamic({
+        pre:  function()     { console.log('pre-react'); },
+        code: function(a, b) { console.log('React: ', a, b); },
+        post: function()     { console.log('post-react'); }
+      });
+
       this.a = 'foo'; this.b = 'a,b,c,d,efg';
       this.add('A:', this.A, ' B: ', this.B).br().br();
 
-      this.recall(function(a, b) {
-        this.add('recall a:', a, ', b:', b).br();
+      this.add(this.dynamic(function(a, b) {
+        this.add('Test A+B a:', a, ', b:', b).br();
+      }));
+
+      this.add(function(a) {
+        this.add('TEST A: ', a).br();
       });
 
-      this.recall(function(a) {
-        this.add('recalla ', a).br();
+      this.add(function(a) {
+        if ( a === 'show' ) this.add('SHOW').br();
       });
 
-      this.recall(function(a) {
-        if ( a === 'kgr' ) this.add('kgr').br();
+      this.add(function(b) {
+        this.add('TEST B: ', b).br();
       });
 
-      this.recall(function(b) {
-        this.add('recallb ', b).br();
-      });
-
-      this.start('ol').
-        recall(function(b) {
+      this.add('OL:').start('ol').
+        add(this.dynamic(function(b) {
           b.split(',').forEach(i => this.start('li').add(i).end());
-        }, self).
+        })).
       end().
-      
+
       add('END').br();
     }
+  ],
+
+  listeners: [
+    function invalidate() { this.clearProperty('value'); this.value; }
   ]
 });
