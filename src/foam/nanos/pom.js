@@ -588,7 +588,6 @@ foam.POM({
     { name: "crunch/connection/GrantPathNode",                                            flags: "js|java" },
     { name: "crunch/document/Document",                                                   flags: "js|java" },
     { name: "crunch/UserCapabilityJunctionDAO",                                           flags: "js|java" },
-    { name: "crunch/UserCapabilityJunctionSanityDAO",                                           flags: "js|java" },
     { name: "crunch/connection/CapabilityPayloadDAO",                                     flags: "js|java" },
     { name: "crunch/PredicatedPrerequisiteCapabilityJunctionDAO",                         flags: "js|java" },
     { name: "crunch/SendNotificationOnTopLevelCapabilityStatusUpdate",                    flags: "js|java" },
