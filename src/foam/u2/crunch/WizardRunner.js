@@ -11,6 +11,9 @@ foam.CLASS({
   issues: [
     'when source is a capability it should create a WizardFlow'
   ],
+  documentation: `
+    Wizard Runner is a configuration that is used to run (and potentially modify) a wizard  
+  `,
   requires: [
     'foam.u2.wizard.WizardType',
     'foam.u2.wizard.wizardflow.WizardFlow'
@@ -29,7 +32,11 @@ foam.CLASS({
     },
     {
       name:'options',
-      class: 'Map'
+      class: 'Map',
+      documentation: `
+        These options are used when building the sequence or running the Wizard.
+        These should be set before calling launch, and before any access of the sequence property.
+      `
     },
     {
       name:'sequence',
