@@ -66,7 +66,7 @@ the notification will be handled. `,
             .getArray();
 
           if ( templates.size() > 1 ) {
-            logger.info("ERROR, Multiple templates found", notification.getTemplate());
+            logger.info("ERROR,Multiple templates found", notification.getTemplate());
             return notification;
           } else if ( templates.size() == 1 ) {
             template = (Notification) ((FObject)templates.get(0)).fclone();
@@ -112,8 +112,8 @@ the notification will be handled. `,
             }
           } else {
             // NOTE: do not generate an error or warning log as this
-            // intern generates an alarm which in tern generates a notification
-            logger.info("ERROR: Template not found", notification.getTemplate());
+            // generates an alarm which in turn generates a notification
+            logger.info("ERROR,Template not found", notification.getTemplate());
           }
         }
 

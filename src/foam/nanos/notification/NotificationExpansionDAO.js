@@ -62,7 +62,7 @@ foam.CLASS({
         } else if ( Notification.GROUP_ID.isSet(notif) ) {
           Group group = (Group) ((DAO) x.get("groupDAO")).find(notif.getGroupId());
           if ( group == null ) {
-            logger.debug("Notification group not found", notif.getGroupId(), notif);
+            logger.info("WARN,Notification group not found", notif.getGroupId(), notif);
             return obj;
           }
           if ( ! group.getEnabled() ) {
@@ -93,7 +93,7 @@ foam.CLASS({
               EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
           )).select(seq);
           if ( count.getValue() == 0 ) {
-            logger.info("WARN, Notification group empty", notif);
+            logger.info("WARN,Notification group empty", notif);
           }
         } else if ( notif.getUserId() > 0 ) {
           if ( ! Notification.SPID.isSet(notif) ) {
@@ -103,10 +103,10 @@ foam.CLASS({
           try {
             return getDelegate().put_(x, notif);
           } catch ( Throwable t ) {
-            logger.info("ERROR, Notification failure", t);
+            logger.info("ERROR,Notification failure", t);
           }
         } else {
-          logger.info("WARN, Notification not saved", notif);
+          logger.info("WARN,Notification not saved", notif);
         }
 
         return obj;

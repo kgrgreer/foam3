@@ -119,11 +119,7 @@ foam.CLASS({
         }
 
         try {
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-          notification = (Notification) notificationDAO.put(notification);
-          if ( Notification.ID.isDefaultValue(notification) ) {
-            Loggers.logger(x, this).error("Notification Id not set", notification);
-          }
+          ((DAO) x.get("localNotificationDAO")).put(notification);
         } catch (Throwable t) {
           Loggers.logger(x, this).error("Failed to send notification", t.getMessage(), t);
         }
