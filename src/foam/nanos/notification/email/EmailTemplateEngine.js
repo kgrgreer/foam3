@@ -58,44 +58,44 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
-    grammar.addSymbol("VALUE", new Seq2(2,3,Literal.create("{{"), Whitespace.instance(), grammar.sym("WORD"), new Optional(
-      new Seq(Literal.create("."), new Repeat(new Not(Literal.create("}}"), grammar.sym("WORD")), Literal.create(".")))),
-      Whitespace.instance(), Literal.create("}}")));
-    grammar.addAction("VALUE", (val, x) -> {
-    Object[] vals = ((Object[])val);
-    String v = compactToString(vals[0]);
-    if ( vals.length > 1 && vals[1] == null ) {
-      String value = (String) ((Map) x.get("values")).get(v);
-      if ( value == null ) {
-        value = "";
-        foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
-      }
-      ((StringBuilder) x.get("sb")).append(value);
-      return value;
-    }
-     if ( ((Map) x.get("values")).get(v) == null ) throw new RuntimeException("Object is not provided " + v);
-       FObject obj =  (FObject) ((Map) x.get("values")).get(v);
+        grammar.addSymbol("VALUE", new Seq2(2,3,Literal.create("{{"), Whitespace.instance(), grammar.sym("WORD"), new Optional(
+          new Seq(Literal.create("."), new Repeat(new Not(Literal.create("}}"), grammar.sym("WORD")), Literal.create(".")))),
+          Whitespace.instance(), Literal.create("}}")));
+        grammar.addAction("VALUE", (val, x) -> {
+        Object[] vals = ((Object[])val);
+        String v = compactToString(vals[0]);
+        if ( vals.length > 1 && vals[1] == null ) {
+          String value = (String) ((Map) x.get("values")).get(v);
+          if ( value == null ) {
+            value = "";
+            foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
+          }
+          ((StringBuilder) x.get("sb")).append(value);
+          return value;
+        }
+         if ( ((Map) x.get("values")).get(v) == null ) throw new RuntimeException("Object is not provided " + v);
+           FObject obj =  (FObject) ((Map) x.get("values")).get(v);
 
-       Object[] values2 = (Object[]) vals[1];
-       Object[] objArr = (Object[]) values2[1];
-       Expr expr = NamedProperty.create(compactToString(objArr[0]));
-       for (var i = 1; i < objArr.length; i++) {
-         expr = new Dot(expr, NamedProperty.create(compactToString(objArr[i])));
-       }
-       ((StringBuilder) x.get("sb")).append(expr.f(obj));
-       return val;
-    });
-    grammar.addSymbol("WORD", new Repeat(
-          grammar.sym("CHAR"), 1
+           Object[] values2 = (Object[]) vals[1];
+           Object[] objArr = (Object[]) values2[1];
+           Expr expr = NamedProperty.create(compactToString(objArr[0]));
+           for (var i = 1; i < objArr.length; i++) {
+             expr = new Dot(expr, NamedProperty.create(compactToString(objArr[i])));
+           }
+           ((StringBuilder) x.get("sb")).append(expr.f(obj));
+           return val;
+        });
+        grammar.addSymbol("WORD", new Repeat(
+              grammar.sym("CHAR"), 1
+            ));
+        grammar.addSymbol("CHAR", new Alt(
+          Range.create('a', 'z'),
+          Range.create('A', 'Z'),
+          Range.create('0', '9'),
+          Literal.create("-"),
+          Literal.create("^"),
+          Literal.create("_")
         ));
-    grammar.addSymbol("CHAR", new Alt(
-      Range.create('a', 'z'),
-      Range.create('A', 'Z'),
-      Range.create('0', '9'),
-      Literal.create("-"),
-      Literal.create("^"),
-      Literal.create("_")
-    ));
 
         /* IF_ELSE syntax: "qwerty {% if var_name_provided_in_map %} qwer {{ possible_simple_value }} erty
         {% else %} qwerty {% endif %}" */
