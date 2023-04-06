@@ -55,7 +55,7 @@ p({"class":"foam.nanos.auth.Region", "code":"BR-TO", "isoCode":"TO", "name": "To
 
 // Canada
 p({"class":"foam.nanos.auth.Region", "code":"CA-ON", "isoCode":"ON", "name":"Ontario", "countryId":"CA", "alternativeNames":["ONTARIO"]})
-p({"class":"foam.nanos.auth.Region", "code":"CA-QC", "isoCode":"QC", "name":"Quebec", "countryId":"CA", "alternativeNames":["QUEBEC"]})
+p({"class":"foam.nanos.auth.Region", "code":"CA-QC", "isoCode":"QC", "name":"Quebec", "countryId":"CA", "alternativeNames":["QUEBEC", "QUÉBEC"]})
 p({"class":"foam.nanos.auth.Region", "code":"CA-AB", "isoCode":"AB", "name":"Alberta", "countryId":"CA", "alternativeNames":["ALBERTA"]})
 p({"class":"foam.nanos.auth.Region", "code":"CA-BC", "isoCode":"BC", "name":"British Columbia", "countryId":"CA", "alternativeNames":["BRITISH COLUMBIA"]})
 p({"class":"foam.nanos.auth.Region", "code":"CA-MB", "isoCode":"MB", "name":"Manitoba", "countryId":"CA", "alternativeNames":["MANITOBA"]})
