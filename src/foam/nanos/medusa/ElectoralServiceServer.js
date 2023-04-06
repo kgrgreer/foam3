@@ -359,7 +359,7 @@ foam.CLASS({
           if ( time == getWinnerTime() ) {
             getLogger().info("vote", id, time, getState(), "ignore", getWinnerTime());
           } else {
-            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING);
+            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", getWinnerTime());
             setState(ElectoralServiceState.VOTING);
             setElectionTime(0L);
             setCurrentSeq(0L);
@@ -461,7 +461,7 @@ foam.CLASS({
       name: 'report',
       synchronized: true,
       javaCode: `
-      getLogger().debug("report", getState());
+      getLogger().debug("report", getState(), time);
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(getX(), support.getConfigId());
       DAO dao = (DAO) getX().get("localClusterConfigDAO");
@@ -477,7 +477,7 @@ foam.CLASS({
         return;
       }
 
-      getLogger().info("report", getState(), "primary", "winner", winnerId);
+      getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;
@@ -490,14 +490,14 @@ foam.CLASS({
       if ( primary != null &&
            primary.getId() != winner.getId() ) {
         getLogger().info("report", getState(), "primary", "old", primary.getId());
-        getLogger().info("report", getState(), "primary", "new", winner.getId());
+        getLogger().info("report", getState(), "primary", "new", winner.getId(), time);
         primary = (ClusterConfig) primary.fclone();
         primary.setIsPrimary(false);
         primary = (ClusterConfig) dao.put(primary);
       } else if ( primary == null ) {
-        getLogger().info("report", getState(), "primary", "new", winner.getId());
+        getLogger().info("report", getState(), "primary", "new", winner.getId(), time);
       } else {
-        getLogger().info("report", getState(), "primary", "no-change", winner.getId());
+        getLogger().info("report", getState(), "primary", "no-change", winner.getId(), time);
       }
 
       if ( ! winner.getIsPrimary() ) {
@@ -506,8 +506,8 @@ foam.CLASS({
         winner = (ClusterConfig) dao.put(winner);
       }
 
-      setState(ElectoralServiceState.IN_SESSION);
       setWinnerTime(time);
+      setState(ElectoralServiceState.IN_SESSION);
       setElectionTime(0L);
       setCurrentSeq(0L);
      `
