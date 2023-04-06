@@ -26,21 +26,56 @@ foam.CLASS({
   
   documentation: 'Border for wizardlets that the user is allowed to edit',
   
+  properties:[
+    {
+      name: "editing",
+      class: "Boolean"
+    }
+  ],
+
   methods: [
     function init() {
       this
         .addClass()
-        // a border that renders actions (pass the actions that we want to see)
-          // edit
-          // save
-          // cancel
-          // each button will show based on whether is available
+          .startContext({data: this})
+            .add(this.EDIT, ' ', this.SAVE, ' ', this.CANCEL)
+          .endContext()
         .tag('div', null, this.content$);
     }
   ],
 
   actions: [
-
+    {
+      name: 'Edit',
+      label: 'Edit',
+      buttonStyle: 'PRIMARY',
+      isAvailable: function(editing) {
+        return ! editing;
+      },
+      code: function() {
+        this.editing = true;
+      }
+    },
+    {
+      name: 'Save',
+      label: 'Save',
+      buttonStyle: 'PRIMARY',
+      isAvailable: function(editing) {
+        return editing;
+      },
+      // code: save user edits
+    },
+    {
+      name: 'Cancel',
+      label: 'Cancel',
+      buttonStyle: 'PRIMARY',
+      isAvailable: function(editing) {
+        return editing;
+      },
+      code: function() {
+        this.editing = false;
+      }
+    }
   ]
   });
   
