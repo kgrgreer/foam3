@@ -57,6 +57,7 @@ foam.CLASS({
             .find(AND(
               EQ("email".equals(targetProperty) ? User.EMAIL : User.USER_NAME, value),
               EQ(User.TYPE, "User"),
+              AND(NEQ(User.PASSWORD, ""), NEQ(User.PASSWORD, null)),
               EQ(User.SPID, spid)))
           ) == null;
       `
