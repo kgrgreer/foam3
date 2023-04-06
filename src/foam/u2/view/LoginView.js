@@ -87,8 +87,7 @@ foam.CLASS({
 
   /* TITLE TXT ON DATA */
   ^ .title-top {
-    font-size: 2.5em;
-    padding-top: 2vh;
+    font-size: 2.5em;    
     font-weight: bold;
   }
 
@@ -98,7 +97,7 @@ foam.CLASS({
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 2rem;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -320,8 +319,6 @@ foam.CLASS({
           this.slot(function(data$showAction) {
             return self.E().callIf(data$showAction, function() {
               this
-                .br()
-                .br()
                 .start()
                   .startContext({ data: self.data })
                   .addClass(self.myClass('center-footer'))
