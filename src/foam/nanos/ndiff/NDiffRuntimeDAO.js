@@ -42,7 +42,7 @@ foam.CLASS({
             // won't be able to restore the result. 
             dao.put_(x, ndiff.getInitialFObject()); 
         
-            var newNdiff = (NDiff) this.find(new NDiffId(ndiff.getNSpecName(),
+            var newNdiff = (NDiff) this.find_(x, new NDiffId(ndiff.getNSpecName(),
                                              ndiff.getObjectId()));
             
             ndiff = newNdiff != null ? (NDiff)newNdiff.fclone() : ndiff;
@@ -85,7 +85,7 @@ foam.CLASS({
                   // ndiffs are considered changed if
                   // - record deleted from the runtime dao, or
                   // - the record does not match the initial one
-                  FObject runtimeFObject = dao.find(id);
+                  FObject runtimeFObject = dao.find_(x, id);
                   return ( runtimeFObject == null || ! initialFObject.equals(runtimeFObject) );
                 }
               }
@@ -119,7 +119,7 @@ foam.CLASS({
             String nSpecName = ndiff.getNSpecName();
             DAO dao = (DAO)x.get(nSpecName);
             Object id = initialFObject.getProperty("id");    
-            FObject runtimeFObject = dao.find(id);
+            FObject runtimeFObject = dao.find_(x, id);
 
             var deletedAtRuntime = runtimeFObject == null;
             ndiff.setDeletedAtRuntime(deletedAtRuntime);
