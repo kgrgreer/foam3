@@ -83,6 +83,11 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'winnerTime',
+      class: 'Long',
+      visibility: 'RO'
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -163,6 +168,7 @@ foam.CLASS({
       name: 'dissolve',
       synchronized: true,
       javaCode: `
+      long startNano = System.nanoTime();
       getLogger().debug("dissolve", getState());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
@@ -191,7 +197,7 @@ foam.CLASS({
       // run a new campaigne
       // re: random - when nodes are all restarted, the mediators can
       // complete replay at the same time.
-      setElectionTime(ThreadLocalRandom.current().nextInt(10000));
+      setElectionTime((System.currentTimeMillis() * 1000) + (System.nanoTime() - startNano));
 
       setState(ElectoralServiceState.ELECTION);
       getLogger().debug("dissolve", getState(), "execute");
@@ -301,7 +307,7 @@ foam.CLASS({
                  .build();
               try {
                 getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
-                result = electoralService.vote(clientConfig.getId(), getElectionTime());
+                result = electoralService.vote(config.getId(), getElectionTime());
                 getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
                 recordResult(x, result, clientConfig);
                 callReport(x);
@@ -341,12 +347,23 @@ foam.CLASS({
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
           setCurrentSeq(0L);
-        } else if ( getState() == ElectoralServiceState.IN_SESSION ||
-                    getState() == ElectoralServiceState.DISMISSED ) {
+        } else if ( getState() == ElectoralServiceState.DISMISSED ) {
           getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
           setCurrentSeq(0L);
+        } else if ( getState() == ElectoralServiceState.IN_SESSION ) {
+          // TODO: an out-of-order vote request can arrive just after an
+          // election has been declared.  The mediator may end up waiting
+          // in state VOTING.
+          if ( time == getWinnerTime() ) {
+            getLogger().info("vote", id, time, getState(), "ignore", getWinnerTime());
+          } else {
+            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING);
+            setState(ElectoralServiceState.VOTING);
+            setElectionTime(0L);
+            setCurrentSeq(0L);
+          }
         }
         if ( getState() == ElectoralServiceState.VOTING ) {
           v = generateVote(getX());
@@ -407,7 +424,7 @@ foam.CLASS({
           return;
         }
 
-        report(getWinner());
+        report(getWinner(), getElectionTime());
         Agency agency = (Agency) x.get(support.getThreadPoolName());
 
         for (int j = 0; j < voters.size(); j++) {
@@ -427,7 +444,7 @@ foam.CLASS({
 
               getLogger().debug("callReport", getState(), "call", clientConfig2.getId(), "report", getWinner());
               try {
-                electoralService2.report(getWinner());
+                electoralService2.report(getWinner(), getElectionTime());
               } catch (Throwable e) {
                 getLogger().debug(clientConfig2.getId(), "report", e.getMessage());
               }
@@ -440,6 +457,7 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Called by the party running the election to declare a winner.',
       name: 'report',
       synchronized: true,
       javaCode: `
@@ -489,6 +507,7 @@ foam.CLASS({
       }
 
       setState(ElectoralServiceState.IN_SESSION);
+      setWinnerTime(time);
       setElectionTime(0L);
       setCurrentSeq(0L);
      `
