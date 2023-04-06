@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.borders',
   name: 'SplitScreenGridBorder',
   extends: 'foam.u2.Element',
@@ -51,9 +51,20 @@
 
   properties: [
     'leftPanel',
+    {
+      name: 'columnsConfigLeft',
+      documentation: 'Can be provided to customize how the columns respond to resize',
+      flags: ['web'],
+      value: {
+        class: 'foam.u2.layout.GridColumns',
+        columns: 12,
+        lgColumns: 6,
+        xlColumns: 6
+      }
+    },
     'rightPanel',
     {
-      name: 'columnsConfig',
+      name: 'columnsConfigRight',
       documentation: 'Can be provided to customize how the columns respond to resize',
       flags: ['web'],
       value: {
@@ -68,11 +79,10 @@
   methods: [
     function init() {
       this.SUPER();
-
-      var right = this.GUnit.create({ columns: this.columnsConfig })
+      var right = this.GUnit.create({ columns: this.columnsConfigRight })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.rightPanel$);
-        var left = this.GUnit.create({ columns: this.columnsConfig })
+        var left = this.GUnit.create({ columns: this.columnsConfigLeft })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.leftPanel$);
 
@@ -88,4 +98,5 @@
     }
   ]
 });
+
 
