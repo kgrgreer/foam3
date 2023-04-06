@@ -87,20 +87,17 @@ foam.CLASS({
 
   /* TITLE TXT ON DATA */
   ^ .title-top {
-    font-size: 2.5em;
-    padding-top: 2vh;
+    font-size: 2.5em;    
     font-weight: bold;
   }
 
   /* ON DATA */
   ^content-form {
-    align-self: center;
     width: 75%;
-    padding: 2vw;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 2rem;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -163,7 +160,9 @@ foam.CLASS({
     width: 48vw;
     padding-bottom: 8rem;
   }
-  
+  ^ .foam-u2-borders-SplitScreenGridBorder-grid {
+    grid-gap: 0;
+  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
@@ -172,6 +171,11 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
+    }
+  }
+  @media (min-width: /*%DISPLAYWIDTH.SM%*/ 576px ) {
+    ^content-form {
+      align-self: center;
     }
   }
   `,
@@ -315,8 +319,6 @@ foam.CLASS({
           this.slot(function(data$showAction) {
             return self.E().callIf(data$showAction, function() {
               this
-                .br()
-                .br()
                 .start()
                   .startContext({ data: self.data })
                   .addClass(self.myClass('center-footer'))
@@ -340,7 +342,19 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
-        var split = this.SplitScreenGridBorder.create();
+        var split = this.SplitScreenGridBorder.create({
+          columnsConfigRight: {
+            class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 4,
+            xlColumns: 4
+          }, 
+          columnsConfigLeft: { 
+            class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 8,
+            xlColumns: 8
+          }});
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
