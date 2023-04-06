@@ -53,7 +53,7 @@ foam.CLASS({
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
     { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing into your account' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -230,6 +230,7 @@ foam.CLASS({
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
           this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
+          this.ctrl.groupLoadingHandled = true;
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.u2.borders.StatusPageBorder', showBack: false,
@@ -264,6 +265,7 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Get started',
+      section: 'footerSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
@@ -305,7 +307,7 @@ foam.CLASS({
       name: 'footer',
       section: 'footerSection',
       label: 'Sign in',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
         X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));

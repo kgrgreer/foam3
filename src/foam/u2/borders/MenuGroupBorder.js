@@ -28,6 +28,7 @@ foam.CLASS({
     }
     ^body {
       flex: 1;
+      height: 100%;
     }
   `,
   properties: [

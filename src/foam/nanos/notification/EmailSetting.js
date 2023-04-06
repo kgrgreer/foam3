@@ -112,7 +112,7 @@ foam.CLASS({
             logger.warning("EmailTemplate not found", notification.getEmailName());
           }
         } catch(Throwable t) {
-          logger.error("Error sending notification email message: " + message + ". Error: " + t);
+          logger.error("Error sending notification email message", message, t.getMessage(), t);
         }
       `
     }

@@ -98,15 +98,20 @@ foam.CLASS({
     width: 75%;
     padding: 2vw;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
 
   /* ON ALL FOOTER TEXT */
-  ^ .bold-text-with-pad {
-    font-weight: bold;
+  ^ .text-with-pad {
     margin-right: 0.2em;
   }
   ^center-footer {
     text-align: center;
+  }
+  ^ .align-end {
+    text-align: end;
   }
 
   ^center-footer > ^signupLink {
@@ -151,23 +156,19 @@ foam.CLASS({
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
+    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    border-radius: 8px;
   }
   ^image-one {
     width: 48vw;
-    padding-top: 25px;
+    padding-bottom: 8rem;
   }
   
-  @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
-      padding: 0 4vw;
-    }
-  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
       justify-content: center;
       height: 6vh;
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
@@ -302,7 +303,14 @@ foam.CLASS({
         .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .startContext({ data: this }).tag(this.DATA).endContext()
+        .start()
+          .startContext({ data: this }).tag(this.DATA).endContext()
+          .start()
+            .addClass('align-end')
+            .tag(this.data.SUB_FOOTER)
+          .end()
+        .end()
+        .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction) {
             return self.E().callIf(data$showAction, function() {
@@ -316,18 +324,11 @@ foam.CLASS({
                   .start()
                     .addClass(self.myClass('signupLink'))
                     .start('span')
-                      .addClass('bold-text-with-pad')
+                      .addClass('text-with-pad')
                       .add(self.data.FOOTER_TXT)
                     .end()
                     .start('span')
                       .add(self.data.FOOTER)
-                    .end()
-                  .end()
-                    // second footer
-                  .start()
-                    .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
-                    .start('span')
-                      .add(self.data.SUB_FOOTER)
                     .end()
                   .end()
                   .endContext()

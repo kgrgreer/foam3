@@ -24,8 +24,10 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
+    'foam.util.Auth',
     'java.util.HashSet'
   ],
 
@@ -86,7 +88,7 @@ foam.CLASS({
         X userX = x;
         Subject subject = (Subject) x.get("subject");
         if ( subject.getRealUser().getId() != user.getId() ) {
-          userX = new foam.nanos.session.Session.Builder(x).setUserId(user.getId()).build().applyTo(x);
+          userX = Auth.sudo(x, user);
         }
         // Proxy to sendNotification method
         sendNotification(userX, user, notification);
@@ -101,10 +103,10 @@ foam.CLASS({
       ],
       javaCode: `
         notification = (Notification) notification.fclone();
-        notification.setId(0L);
+        notification.clearId();
         notification.setUserId(user.getId());
+        notification.clearGroupId();
         notification.setBroadcasted(false);
-        notification.setGroupId(null);
 
         // We cannot permanently disable in-app notifications, so mark them read automatically
         if ( ! getEnabled() ) {
@@ -117,11 +119,9 @@ foam.CLASS({
         }
 
         try {
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-          notificationDAO.put_(x, notification);
+          ((DAO) x.get("localNotificationDAO")).put(notification);
         } catch (Throwable t) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error("Failed to send notification: " + t, t);
+          Loggers.logger(x, this).error("Failed to send notification", t.getMessage(), t);
         }
       `
     },

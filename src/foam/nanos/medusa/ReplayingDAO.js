@@ -19,8 +19,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.AgencyTimerTask',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'foam.mlang.sink.Count',
     'foam.nanos.pm.PM',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.time.Duration',
@@ -76,11 +78,12 @@ foam.CLASS({
             replaying.setCount(replayed);
             long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
             Duration duration = Duration.ofMillis(time);
-            logger.info("replayComplete", "replayed", replayed, "promoted", count.getValue(), "duration", time, "s", replayed/time, "/s", duration);
-
             ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
             ClusterConfig config = support.getConfig(x, support.getConfigId());
+            StringBuilder sb = new StringBuilder();
+            sb.append("replayed,").append(replayed).append(",promoted,").append(count.getValue()).append(",duration,").append(time).append(",s,").append(replayed/time).append(",/s,").append(duration);
+            ((DAO) x.get("eventRecordDAO")).put_(x, new EventRecord(x, this, "replayComplete", config.getId(), null, sb.toString(), LogLevel.INFO, null));
             config.setStatus(Status.ONLINE);
             ((DAO) x.get("localClusterConfigDAO")).put(config);
           }

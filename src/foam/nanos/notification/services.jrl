@@ -29,7 +29,8 @@ p({
         }))
         .setSize(100000)
         .build())
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.Notification.TEMPLATE});
   """
 })
 

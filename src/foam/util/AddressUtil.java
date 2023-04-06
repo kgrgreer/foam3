@@ -70,41 +70,27 @@ public class AddressUtil {
   }
 
   public static String normalizeRegion(X x, String country, String regionCode) {
-    if ( SafetyUtil.isEmpty(regionCode) ) {
+    if ( SafetyUtil.isEmpty(regionCode) || SafetyUtil.isEmpty(country) ) {
       return regionCode;
     }
     
-    String[] normalizedRegion = { country + "-" + regionCode };
+    String normalizedRegion = country + "-" + regionCode;
+
     DAO regionDAO = (DAO) x.get("regionDAO");
-    Region found = (Region) regionDAO.find(regionCode);
-    if ( found != null )
-      return found.getCode();
-
-    if ( SafetyUtil.isEmpty(country) ) {
-      return regionCode;
-    }
-
-    regionDAO.where(AND(
+    Region region = (Region) regionDAO.find(AND(
       EQ(Region.COUNTRY_ID, country),
       OR(
         EQ(Region.ISO_CODE, regionCode),
-        STARTS_WITH_IC(Region.NAME, regionCode),
-        IN(regionCode, Region.ALTERNATIVE_NAMES)
+        EQ(Region.CODE, regionCode),
+        IN(regionCode.toUpperCase(), Region.ALTERNATIVE_NAMES)
       )
-    )).select(new AbstractSink() {
-      public void put(Object o, Detachable d) {
-        Region region = (Region) o;
-        if ( region.getIsoCode().equals(regionCode) 
-          || region.getName().equalsIgnoreCase(regionCode) 
-          || Arrays.stream(region.getAlternativeNames()).anyMatch(n -> n.equals(regionCode))
-           ) {
-          normalizedRegion[0] = region.getCode();
-          d.detach();
-        }
-      }
-    });
+    ));
+
+    if ( region != null ) {
+      normalizedRegion = region.getCode();
+    }
     
-    return normalizedRegion[0];
+    return normalizedRegion;
   }
 
   public static String normalizeCountry(X x, String countryCode) {
@@ -112,28 +98,19 @@ public class AddressUtil {
       return countryCode;
     }
     
-    String[] normalizedCountry = { countryCode };
+    String normalizedCountry = countryCode;
+
     DAO countryDAO = (DAO) x.get("countryDAO");
-    Country found = (Country) countryDAO.find(countryCode);
-    if ( found != null )
-      return found.getCode();
+    Country country = (Country) countryDAO.find(OR(
+      EQ(Country.ISO31661CODE, countryCode),
+      EQ(Country.CODE, countryCode),
+      IN(countryCode.toUpperCase(), Country.ALTERNATIVE_NAMES)
+    ));
 
-    countryDAO
-      .where(OR(
-        EQ(Country.ISO31661CODE, countryCode),
-        STARTS_WITH_IC(Country.NAME, countryCode)
-      ))
-      .select(new AbstractSink() {
-        public void put(Object o, Detachable d) {
-          Country country = (Country) o;
-          if ( country.getIso31661Code().equals(countryCode) || country.getName().equalsIgnoreCase(countryCode) ) {
-            normalizedCountry[0] = country.getCode();
-            d.detach();
-          }
-        }
-      });
-    
-    return normalizedCountry[0];
+    if ( country != null ) {
+      normalizedCountry = country.getCode();
+    }
+
+    return normalizedCountry;
   }
-
 }

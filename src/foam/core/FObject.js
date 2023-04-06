@@ -739,6 +739,20 @@ foam.CLASS({
       this.pub('propertyChange', prop.name, slot);
     },
 
+    function dynamic(m /* either a map or a function */) {
+      return this.onDetach(foam.core.DynamicFunction.create(
+        foam.Function.isInstance(m) ?
+          { code: m, obj: this } :
+          {
+            code: m.code,
+            obj:  this,
+            self: m.self || this,
+            pre:  m.pre  || function() {},
+            post: m.post || function() {}
+          }
+        ));
+    },
+
     function slot(obj /*, argList if obj is a function */) {
       /**
        * Creates a Slot for an Axiom.

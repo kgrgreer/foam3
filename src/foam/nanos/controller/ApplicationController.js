@@ -90,9 +90,11 @@ foam.CLASS({
     'loginView',
     'menuListener',
     'notify',
+    'prefersMenuOpen',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
+    'routeTo',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -299,12 +301,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isMenuOpen',
+    },
+    {
+      class: 'Boolean',
+      name: 'prefersMenuOpen',
+      documentation: 'Stores the menu preference of the user',
       factory: function() {
-        return localStorage['isMenuOpen'] === 'true'
-         || ( localStorage['isMenuOpen'] = false );
+        return localStorage['prefersMenuOpen'] ? localStorage['prefersMenuOpen'] == 'true' : ( localStorage['prefersMenuOpen'] = true);
       },
       postSet: function(_, n) {
-        localStorage['isMenuOpen'] = n;
+        localStorage['prefersMenuOpen'] = n;
       }
     },
     {
@@ -416,6 +422,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
+    },
+    //TODO: temporary fix, remove when client signin service is fixed/added
+    {
+      name: 'groupLoadingHandled',
+      class: 'Boolean'
     }
   ],
 
@@ -479,7 +490,7 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        await self.onUserAgentAndGroupLoaded();
+        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
 
       // Reload styling on theme change
@@ -713,9 +724,9 @@ foam.CLASS({
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu, opt_forceReload);
+        return this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
-        await this.clientPromise.then(async () => {
+        return await this.clientPromise.then(async () => {
           await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
@@ -746,7 +757,7 @@ foam.CLASS({
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;
-      menu && menu.launch && menu.launch(this.__subContext__);
+      return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
     async function findDefaultMenu(dao) {
@@ -839,7 +850,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu.id ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
@@ -863,10 +874,11 @@ foam.CLASS({
 
       const wizardRunner = this.WizardRunner.create({
         wizardType: this.WizardType.UCJ,
-        source: group.wizardFlow || group.generalCapability
+        source: group.wizardFlow || group.generalCapability,
+        options: {inline: false, returnCompletionPromise: true}
       });
       // TODO: figure out why this cant be inlined
-      let retPromise = await wizardRunner.launch(null, {inline: false, returnCompletionPromise: true });
+      let retPromise = await wizardRunner.launch();
       await retPromise;
       return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },
@@ -995,6 +1007,13 @@ foam.CLASS({
           this.replaceStyleTag(text, eid);
         }
       }
+    },
+    function routeTo(link) {
+      /**
+       * Replaces the url to redirect to the new menu without cleared tails
+       */
+      this.buildingStack = true;
+      this.memento_.str = link;
     }
   ]
 });

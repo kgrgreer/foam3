@@ -22,7 +22,9 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.dao.Sink',
     'foam.mlang.sink.Count',
+    'foam.mlang.sink.Sequence',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
@@ -37,61 +39,74 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        DAO          userDAO = (DAO) x.get("localUserDAO");
-        Notification notif   = (Notification) obj;
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        Notification notif = (Notification) obj;
+        Logger logger = Loggers.logger(x, this);
 
         if ( notif.getBroadcasted() ) {
-          userDAO.select(new AbstractSink() {
+          Notification notification = (Notification) notif.fclone();
+          Notification.ID.clear(notification);
+          Notification.GROUP_ID.clear(notification);
+          Notification.TEMPLATE.clear(notification);
+          notification.setBroadcasted(false);
+          userDAO.where(
+            AND(
+              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+          )).select(new AbstractSink() {
             @Override
             public void put(Object o, Detachable d) {
               User user = (User) o;
-              user.doNotify(x, notif);
+              user.doNotify(x, notification);
             }
           });
-        } else if ( ! SafetyUtil.isEmpty(notif.getGroupId()) ) {
+        } else if ( Notification.GROUP_ID.isSet(notif) ) {
           Group group = (Group) ((DAO) x.get("groupDAO")).find(notif.getGroupId());
-          if ( ! group.getEnabled() ) {
-            Loggers.logger(x, this).debug(notif.getTemplate(), "group", "disabled");
+          if ( group == null ) {
+            logger.info("WARN,Notification group not found", notif.getGroupId(), notif);
             return obj;
           }
-          DAO receivers = userDAO.where(
+          if ( ! group.getEnabled() ) {
+            logger.debug("Notification group disabled", notif.getGroupId(), notif);
+            return obj;
+          }
+          Notification notification = (Notification) notif.fclone();
+          Notification.ID.clear(notification);
+          Notification.GROUP_ID.clear(notification);
+          Notification.TEMPLATE.clear(notification);
+          notification.setBroadcasted(false);
+          Count count = new Count();
+          Sequence seq = new Sequence.Builder(x)
+            .setArgs(new Sink[] {
+              count,
+              new AbstractSink() {
+                @Override
+                public void put(Object o, Detachable d) {
+                  User user = (User) o;
+                  user.doNotify(x, notification);
+                }
+              }
+            })
+            .build();
+          userDAO.where(
             AND(
               EQ(User.GROUP, notif.getGroupId()),
               EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
-          ));
-          Count  count  = (Count) receivers.select(new Count());
-          Logger logger = foam.nanos.logger.Loggers.logger(x, this);
+          )).select(seq);
           if ( count.getValue() == 0 ) {
-            logger.warning("Notification " + notif.getNotificationType() +
-              " will not be saved to notificationDAO because no users exist in the group " + notif.getGroupId());
+            logger.info("WARN,Notification group empty", notif);
           }
-          receivers.select(new AbstractSink() {
-            @Override
-            public void put(Object o, Detachable d) {
-              User user = (User) o;
-              user.doNotify(x, notif);
-            }
-          });
-        }
-
-        // Only put objects sent to a specific user
-        if ( SafetyUtil.isEmpty(notif.getGroupId()) &&
-             ! notif.getBroadcasted() &&
-             notif.getUserId() > 0 ) {
-          Logger logger   = foam.nanos.logger.Loggers.logger(x, this);
-          Subject subject = (Subject) x.get("subject");
-          if ( subject != null ) {
-            User user = subject.getUser();
+        } else if ( notif.getUserId() > 0 ) {
+          if ( ! Notification.SPID.isSet(notif) ) {
+            User user = notif.findUserId(x);
             notif.setSpid(user.getSpid());
-            if ( ! foam.util.SafetyUtil.isEmpty(notif.getSpid()) ) {
-              try {
-                return getDelegate().put_(x, notif);
-              } catch ( Throwable t ) {
-                logger.error(t);
-              }
-            }
           }
-          logger.warning(notif.getNotificationType(), "Spid not found", "Notification not saved");
+          try {
+            return getDelegate().put_(x, notif);
+          } catch ( Throwable t ) {
+            logger.info("ERROR,Notification failure", t);
+          }
+        } else {
+          logger.info("WARN,Notification not saved", notif);
         }
 
         return obj;

@@ -81,6 +81,7 @@ foam.CLASS({
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
         token.setData(UUID.randomUUID().toString());
+        token.setParameters(parameters);
         token = (Token) tokenDAO.put(token);
 
         EmailMessage message = new EmailMessage();
@@ -88,9 +89,11 @@ foam.CLASS({
         message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
         args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
-        args.put("link", url +"?token=" + token.getData() + "#reset");
+        args.put("link", url +"?token=" + token.getData() + getParameter(parameters, "menu", "#reset"));
         args.put("templateSource", this.getClass().getName());
-        args.put("template", "reset-password");
+        String templateName = getParameter(parameters, "templateName", "reset-password");
+        args.put("template", templateName);
+        message.setTemplateArguments(args);
         ((DAO) getX().get("emailMessageDAO")).put(message);
         return true;
       `
@@ -167,6 +170,18 @@ foam.CLASS({
         message.setTemplateArguments(args);
         ((DAO) x.get("emailMessageDAO")).put(message);
         return true;
+      `
+    },
+    {
+      name: 'getParameter',
+      type: 'String',
+      args: 'Map parameters, String key, String defaultValue',
+      javaCode: `
+        if ( parameters != null && parameters.get(key) != null ) {
+          return parameters.get(key).toString();
+        }
+
+        return defaultValue;
       `
     }
   ]

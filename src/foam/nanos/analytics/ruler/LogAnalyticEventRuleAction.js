@@ -46,7 +46,6 @@ foam.CLASS({
           public void execute(X x) {
             var event = new AnalyticEvent();
             event.setName(getEventName());
-            event.setTimestamp(new Date());
             event.setTraceId(getTraceId(obj));
 
             var session = x.get(Session.class);

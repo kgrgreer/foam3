@@ -95,6 +95,7 @@ TODO: handle node roll failure - or timeout
       name: 'cmd_',
       javaCode: `
       if ( COMPACTION_CMD.equals(obj) ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ) {
           Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");

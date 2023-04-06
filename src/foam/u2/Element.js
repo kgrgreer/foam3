@@ -140,7 +140,12 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.render();
+      let ret = this.render();
+      Promise.resolve(ret).then(v => {
+        if ( v != undefined ) {
+          console.error('render() should not return a value, this may cause issues with slotted elements', this.cls_.id);
+        }
+      });
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -1501,7 +1506,7 @@ foam.CLASS({
 
     function toE() { return this; },
 
-    function recall(fn, opt_self) {
+    function react(fn, opt_self) {
       var slot = (opt_self || this).slot(fn);
       update = () => {
         this.removeAllChildren();

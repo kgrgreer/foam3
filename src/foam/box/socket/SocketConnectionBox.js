@@ -64,14 +64,6 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'host',
-      class: 'String'
-    },
-    {
-      name: 'port',
-      class: 'Int'
-    },
-    {
       name: 'socket',
       class: 'Object',
       visibility: 'HIDDEN'
@@ -79,7 +71,7 @@ foam.CLASS({
     {
       name: 'id',
       class: 'String',
-      javaFactory: `return getHost()+":"+getPort();`
+      javaFactory: 'return getKey();'
     },
     {
       documentation: 'Set to false when send exits, triggering execute to exit',
@@ -107,21 +99,18 @@ foam.CLASS({
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
-          getHost(),
-          getPort()
+          getKey()
         }, (Logger) getX().get("logger"));
       `
     }
   ],
 
   javaCode: `
-    public SocketConnectionBox(X x, String key, Socket socket, String host, int port)
+    public SocketConnectionBox(X x, String key, Socket socket)
       throws IOException
     {
       setX(x);
       setKey(key);
-      setHost(host);
-      setPort(port);
       setSocket(socket);
 
       out_ = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
@@ -222,7 +211,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
       } catch ( Throwable t ) {
         pm.error(getX(), t);
-        // TODO: perhaps report last exception on host port via manager.
+        // TODO: perhaps report last exception on key via manager.
         getLogger().error("Error sending message", message, t);
         getValid().getAndSet(false);
         if ( replyBox != null ) {
