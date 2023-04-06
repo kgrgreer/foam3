@@ -141,8 +141,7 @@ foam.CLASS({
       }
 
       ctx.analyticsAgent?.pub('event', {
-        name: 'VIEW_LOAD_' + this.wizardlet.id,
-        extra: foam.json.stringify(this.customView)
+        name: 'VIEW_LOAD_' + this.wizardlet.id
       });
 
       if ( this.customView ) {
