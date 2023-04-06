@@ -471,7 +471,7 @@ foam.CLASS({
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
             Notification notification = new TicketNotification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION+this.getId())
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
               .setTicket(this.getId())
@@ -483,7 +483,7 @@ foam.CLASS({
             }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
             Notification notification = new TicketNotification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+              .setBody(this.COMMENT_NOTIFICATION+this.getId())
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
               .setTicket(this.getId())
@@ -492,7 +492,7 @@ foam.CLASS({
           }
         } else if ( getCreatedFor() != 0 ){
           Notification notification = new TicketNotification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+            .setBody(this.COMMENT_NOTIFICATION+this.getId())
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
             .setTicket(this.getId())
@@ -609,7 +609,7 @@ foam.CLASS({
       availablePermissions: [
         "ticket.assign.*"
       ],
-      code: function(X) {        
+      code: function(X) {
         X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
@@ -637,7 +637,7 @@ foam.CLASS({
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();
@@ -654,7 +654,7 @@ foam.CLASS({
       isAvailable: function(subject, assignedTo, status){
         return (subject.user.id === assignedTo) && (status === 'OPEN');
       },
-      code: function(X) {        
+      code: function(X) {
         var unassignedTicket = this.clone();
         unassignedTicket.assignedTo = 0;
 
@@ -664,7 +664,7 @@ foam.CLASS({
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();
@@ -708,7 +708,7 @@ foam.CLASS({
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
 
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();
