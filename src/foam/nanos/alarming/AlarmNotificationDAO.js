@@ -143,7 +143,7 @@ foam.CLASS({
         .setAlarm(alarm)
         .build();
 
-     ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);
+     ((DAO) x.get("notificationDAO")).put_(getX(), notification);
       return alarm;
       `
     }

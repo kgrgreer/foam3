@@ -119,7 +119,7 @@ foam.CLASS({
       notification.setSpid(rule.getSpid());
       notification.setTemplate(getNotificationTemplate());
       notification.setEmailName(getEmailTemplate());
-      ((DAO) ruler.getX().get("localNotificationDAO")).put_(ruler.getX(), notification);
+      ((DAO) ruler.getX().get("notificationDAO")).put_(ruler.getX(), notification);
       `
     }
   ]

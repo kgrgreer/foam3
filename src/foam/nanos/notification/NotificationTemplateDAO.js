@@ -71,13 +71,11 @@ the notification will be handled. `,
           } else if ( templates.size() == 1 ) {
             template = (Notification) ((FObject)templates.get(0)).fclone();
 
+            Notification.ID.clear(template);
             Notification.TEMPLATE.clear(template);
 
             // Can't use copyFrom which tests isSet, as we don't
             // want all properties copied.
-            if ( Notification.ID.isSet(notification) ) {
-              template.setId(notification.getId());
-            }
             if ( Notification.BODY.isSet(notification) ) {
               template.setBody(notification.getBody());
             }
