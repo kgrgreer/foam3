@@ -78,6 +78,7 @@ foam.CLASS({
 
         Logger logger = Loggers.logger(x, this);
         EmailMessage message = new EmailMessage();
+        message.setUser(user.getId());
         message.setSpid(user.getSpid());
         message.setTo(new String[] { user.getEmail() });
         message.setClusterable(notification.getClusterable());
@@ -103,7 +104,6 @@ foam.CLASS({
 
         try {
           if ( ! SafetyUtil.isEmpty(notification.getEmailName()) ) {
-            message.setUser(user.getId());
             Map args = notification.getEmailArgs();
             args.put("template", notification.getEmailName());
             message.setTemplateArguments(args);

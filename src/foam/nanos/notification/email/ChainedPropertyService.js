@@ -40,7 +40,11 @@ foam.CLASS({
       `
       User user = (User) emailMessage.findUser(getX());
       X userX = foam.util.Auth.sudo(getX(), user);
-      group = ((Group) userX.get("group")).getId();
+      group = user.getGroup();
+      if ( userX.get("group") != null ) {
+        // null on notification broadcast
+        group = ((Group) userX.get("group")).getId();
+      }
 
       Map args = templateArgs;
       if ( args == null ||

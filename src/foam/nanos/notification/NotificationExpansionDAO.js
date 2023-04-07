@@ -51,7 +51,8 @@ foam.CLASS({
           notification.setBroadcasted(false);
           userDAO.where(
             AND(
-              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+              HAS(User.GROUP)
           )).select(new AbstractSink() {
             @Override
             public void put(Object o, Detachable d) {
