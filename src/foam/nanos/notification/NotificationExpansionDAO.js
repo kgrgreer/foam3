@@ -39,9 +39,9 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+        Logger logger = Loggers.logger(x, this);
         DAO userDAO = (DAO) x.get("localUserDAO");
         Notification notif = (Notification) obj;
-        Logger logger = Loggers.logger(x, this);
 
         if ( notif.getBroadcasted() ) {
           Notification notification = (Notification) notif.fclone();
@@ -96,20 +96,19 @@ foam.CLASS({
             logger.info("WARN,Notification group empty", notif);
           }
         } else if ( notif.getUserId() > 0 ) {
+          User user = notif.findUserId(x);
           if ( ! Notification.SPID.isSet(notif) ) {
-            User user = notif.findUserId(x);
             notif.setSpid(user.getSpid());
           }
-          try {
-            return getDelegate().put_(x, notif);
-          } catch ( Throwable t ) {
-            logger.info("ERROR,Notification failure", t);
+          if ( user.getLifecycleState() == LifecycleState.ACTIVE ) {
+            user.doNotify(x, notif);
+          } else {
+            logger.info("WARN,Notification user not active", notif);
           }
         } else {
           logger.info("WARN,Notification not saved", notif);
         }
-
-        return obj;
+        return notif;
       `
     }
   ]

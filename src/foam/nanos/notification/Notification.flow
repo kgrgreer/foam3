@@ -31,3 +31,6 @@ A notification template can indicate an email template to be used
 when the user has appropriate Email settings allowing notification
 via email.  The notification and/or notification template carries
 key-value arguments which are used to populate the email template.
+
+<h1>services localNotifcationDAO vs notificationDAO</h1>
+All DAO operations shall be against the notificationDAO. The localNotificationDAO is only meant to be used by the Notification system itself.
