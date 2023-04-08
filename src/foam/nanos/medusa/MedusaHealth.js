@@ -24,7 +24,8 @@ foam.CLASS({
     'index',
     'upTime',
     'nextHeartbeatIn',
-    'alarms'
+    'alarms',
+    'bootTime'
   ],
 
   properties: [

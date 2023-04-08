@@ -29,7 +29,8 @@ foam.CLASS({
     'status',
     'uptime',
     'nextHeartbeatIn',
-    'alarms'
+    'alarms',
+    'bootTime'
   ],
 
   properties: [
@@ -77,10 +78,14 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      // NOTE: bootTime must be present in tableColumns for upTime to reported correctly in tableView
       name: 'bootTime',
       shortName: 'bt',
       class: 'Long',
       visibility: 'RO',
+      tableCellFormatter: function(value) {
+        this.add(new Date(value).toISOString());
+      }
     },
     {
       name: 'upTime',
