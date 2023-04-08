@@ -190,7 +190,7 @@ foam.CLASS({
           socket.setSoTimeout(getSoTimeout());
           SocketAddress address = new InetSocketAddress(host, port);
           socket.connect(address, getConnectTimeout());
-          box = new SocketConnectionBox(x, key, socket, host, port);
+          box = new SocketConnectionBox(x, key, socket);
           add(box);
           Agency agency = (Agency) x.get("threadPool");
           agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
@@ -198,11 +198,11 @@ foam.CLASS({
         } catch ( java.net.ConnectException |
                    java.net.NoRouteToHostException e ) {
           remove(box);
-          getLogger().warning(host, port, e.getClass().getSimpleName(), e.getMessage());
+          getLogger().warning(key, e.getClass().getSimpleName(), e.getMessage());
           throw new RuntimeException(e);
         } catch ( Throwable t ) { // All other IOExceptions
           remove(box);
-          getLogger().error(host, port, t.getClass().getSimpleName(), t.getMessage());
+          getLogger().error(key, t.getClass().getSimpleName(), t.getMessage());
           throw new RuntimeException(t);
         }
       `

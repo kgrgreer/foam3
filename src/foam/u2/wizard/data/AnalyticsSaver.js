@@ -15,8 +15,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'logDataId'
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'logDataPath'
     },
     {
       class: 'String',
@@ -31,8 +31,8 @@ foam.CLASS({
   methods: [
     async function save(data) {
       const extra = {};
-      if ( this.logDataId ) {
-        extra.id = data.id;
+      if ( this.logDataPath ) {
+        extra[this.logDataPath.name] = this.logDataPath.f(data);
       }
       this.report(this.analyticsName, this.tags,
         { extra: foam.json.stringify(extra) });

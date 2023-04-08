@@ -95,7 +95,10 @@ foam.CLASS({
               electoralService.dissolve(x);
             } else if ( ! hadQuorum && hasQuorum ) {
               logger.warning("mediator quorum acquired");
-              electoralService.dissolve(x);
+              if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
+                // This event can arrive after election has completed.
+                electoralService.dissolve(x);
+              }
             } else if ( hasQuorum ) {
               try {
                 support.getPrimary(x);

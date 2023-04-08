@@ -104,6 +104,7 @@ foam.CLASS({
           return;
 
         HttpParameters p = x.get(HttpParameters.class);
+        String daoName = p.getParameter("dao");
         String data = p.getParameter("data");
 
         // Check if the data is empty
@@ -125,7 +126,7 @@ foam.CLASS({
         PrintWriter out = x.get(PrintWriter.class);
         out.println();
         out.flush();
-        getLogger().debug("put.success");
+        getLogger().debug("put.success", daoName);
 
         HttpServletResponse resp = x.get(HttpServletResponse.class);
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -180,7 +181,7 @@ foam.CLASS({
       if ( ! SafetyUtil.isEmpty(limit) ) {
         AuthService auth = (AuthService) x.get("auth");
         long l = Long.valueOf(limit);
-        
+
         if ( l == 0 ) {
           if ( auth.check(x, "service.dig.read-all-records") ) {
             // page size of 0 allows for maximum record count
@@ -200,7 +201,7 @@ foam.CLASS({
       PrintWriter out = x.get(PrintWriter.class);
       out.println();
       out.flush();
-      getLogger().debug("select.success");
+      getLogger().debug("select.success", daoName, id);
 
       resp.setStatus(HttpServletResponse.SC_OK);
       `
@@ -210,6 +211,7 @@ foam.CLASS({
       args: [ { name: 'x', type: 'X' } ],
       javaCode: `
       HttpParameters p = x.get(HttpParameters.class);
+      String daoName = p.getParameter("dao");
       String id = p.getParameter("id");
 
       DAO dao = getDAO(x);
@@ -234,7 +236,7 @@ foam.CLASS({
       dao.remove(targetFobj);
       DigUtil.outputException(x, new DigSuccessMessage("Success"), getFormat());
 
-      getLogger().debug("remove.success");
+      getLogger().debug("remove.success", daoName, id);
       `
     },
     {

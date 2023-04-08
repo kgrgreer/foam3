@@ -88,7 +88,7 @@ foam.CLASS({
         message.setTo(new String[] { user.getEmail() });
         message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
-        args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
+        args.put("name", user.getLegalName());
         args.put("link", url +"?token=" + token.getData() + getParameter(parameters, "menu", "#reset"));
         args.put("templateSource", this.getClass().getName());
         String templateName = getParameter(parameters, "templateName", "reset-password");

@@ -22,6 +22,14 @@ foam.CLASS({
 
   documentation: 'Checkbox View.',
 
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'checkboxColor',
+      value: '$primary400'
+    }
+  ],
+
   css: `
     ^ {
       -webkit-appearance: none;
@@ -39,13 +47,13 @@ foam.CLASS({
       background-color: $grey50;
     }
     ^:checked {
-      background-color: $primary400;
-      border-color: $primary400;
+      background-color: $checkboxColor;
+      border-color: $checkboxColor;
       fill: white;
     }
     ^:checked:disabled {
-      border-color: $primary200;
-      background-color: $primary200;
+      border-color: $checkboxColor$disabled;
+      background-color: $checkboxColor$disabled;
       fill: white;
     }
     ^:checked:after{
@@ -55,7 +63,7 @@ foam.CLASS({
     }
     ^ input:focus + label::before {
       content: ''
-      box-shadow: 0 0 0 3px $primary600;
+      box-shadow: 0 0 0 3px $checkboxColor$active;
     }
     ^:hover {
       cursor: pointer

@@ -52,12 +52,12 @@ foam.CLASS({
            ( ( old == null ||
                old.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) &&
                alarm.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) ) {
-        getDelegate().put_(x, obj);
+        return getDelegate().put_(x, obj);
       }
 
       if ( "localhost".equals(System.getProperty("hostname", "localhost")) &&
            ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
-        getDelegate().put_(x, obj);
+        return getDelegate().put_(x, obj);
       }
 
       if ( old == null ||
@@ -143,7 +143,7 @@ foam.CLASS({
         .setAlarm(alarm)
         .build();
 
-     ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);
+     ((DAO) x.get("notificationDAO")).put_(getX(), notification);
       return alarm;
       `
     }
