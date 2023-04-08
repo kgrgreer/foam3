@@ -306,11 +306,13 @@ foam.CLASS({
                    .build())
                  .build();
               try {
-                getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
-                result = electoralService.vote(config.getId(), getElectionTime());
-                getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
-                recordResult(x, result, clientConfig);
-                callReport(x);
+                if ( getState() == ElectoralServiceState.ELECTION ) {
+                  getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
+                  result = electoralService.vote(config.getId(), getElectionTime());
+                  getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
+                  recordResult(x, result, clientConfig);
+                  callReport(x);
+                }
               } catch (Throwable e) {
                 getLogger().debug("callVote", "executeJob", "voter", clientConfig.getId(), clientConfig.getName(), e.getMessage());
               }
@@ -325,7 +327,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Called by the party runing the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started earlier then we abandon our election.',
+      documentation: 'Called by the party runing the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started later then we abandon our election.',
       name: 'vote',
       synchronized: true,
       javaCode: `
@@ -341,9 +343,9 @@ foam.CLASS({
       try {
         if ( getState() == ElectoralServiceState.ELECTION &&
             time > 0L &&
-            time <= getElectionTime() ) {
+            time >= getElectionTime() ) {
           // abandon our election.
-          getLogger().info("vote", id, time, "abandon own election", getState(), "->", ElectoralServiceState.VOTING);
+          getLogger().info("vote", id, time, getElectionTime(), "abandon own election", getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
           setCurrentSeq(0L);
@@ -356,8 +358,8 @@ foam.CLASS({
           // TODO: an out-of-order vote request can arrive just after an
           // election has been declared.  The mediator may end up waiting
           // in state VOTING.
-          if ( time == getWinnerTime() ) {
-            getLogger().info("vote", id, time, getState(), "ignore", getWinnerTime());
+          if ( time <= getWinnerTime() ) {
+            getLogger().info("vote", id, time, getState(), "ignore", "wtime", getWinnerTime());
           } else {
             getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", getWinnerTime());
             setState(ElectoralServiceState.VOTING);
