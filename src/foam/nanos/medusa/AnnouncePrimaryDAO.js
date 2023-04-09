@@ -94,7 +94,9 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification starting", LogLevel.WARN, null));
+      EventRecord er = new EventRecord(x, this, EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
+      er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+      er.clearId();
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> counts = new ConcurrentHashMap();
@@ -161,7 +163,9 @@ foam.CLASS({
           // Abandon announce.
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
           replaying.setReplaying(false);
-          ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification abandoned", LogLevel.WARN, null));
+          er.setMessage("Index verification abandoned");
+          er.setSeverity(LogLevel.INFO);
+          ((DAO) x.get("eventRecordDAO")).put(er);
           return;
         }
       }
@@ -187,7 +191,8 @@ foam.CLASS({
           logger.debug("max", max, "count", count, "quorum", quorum);
           message = "Index verification failed; max index does not have quorum.";
         }
-        EventRecord er = new EventRecord(x, this, EVENT_NAME, message, LogLevel.ERROR, null);
+        er.setMessage(message);
+        er.setSeverity(LogLevel.ERROR);
         er.setClusterable(false);
         ((DAO) x.get("eventRecordDAO")).put(er);
 
@@ -204,7 +209,9 @@ foam.CLASS({
         logger.debug("max", max, "index", replaying.getIndex());
         replaying.updateIndex(x, max);
         replaying.setReplaying(false);
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification complete"));
+        er.setMessage("Index verification complete");
+        er.setSeverity(LogLevel.INFO);
+        ((DAO) x.get("eventRecordDAO")).put(er);
       }
       `
     }
