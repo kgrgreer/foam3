@@ -62,7 +62,7 @@ foam.CLASS({
           break;
         }
 
-        ((OMLogger) x.get("OMLogger")).log(summary);
+        ((OMLogger) x.get("OMLogger")).log(er.alarmSummary());
 
         return er;
       `

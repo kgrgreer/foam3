@@ -42,6 +42,7 @@ This is the heart of Medusa.`,
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.nanos.alarming.Alarm',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.om.OMLogger',
@@ -293,6 +294,7 @@ This is the heart of Medusa.`,
       Long nextIndexSince = System.currentTimeMillis();
       Alarm alarm = new Alarm.Builder(x)
         .setName("Medusa Consensus")
+        .setIsActive(false)
         .setClusterable(false)
         .build();
 
@@ -438,31 +440,30 @@ This is the heart of Medusa.`,
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData(), cause.getMessage());
-              Alarm alarm = new Alarm("Medusa Failed to parse");
-              alarm.setSeverity(foam.log.LogLevel.ERROR);
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
-              throw new MedusaException("Failed to parse.", cause);
+              EventRecord er = new EventRecord(x, this, "Failed to parse", entry.toSummary(), LogLevel.ERROR, cause);
+              er.setRequestMessage(data);;
+              er.setResponseMessage(cause.getMessage());
+              er.setClusterable(false);
+              ((DAO) x.get("eventRecordDAO")).put(er);
+              throw new MedusaException("Failed to parse", cause);
             }
 
             if ( nu == null ) {
-              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), entry.getData());
-              Alarm alarm = new Alarm("Medusa Failed to parse");
-              alarm.setSeverity(foam.log.LogLevel.ERROR);
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
+              EventRecord er = new EventRecord(x, this, "Failed to parse", entry.toSummary(), LogLevel.ERROR, null);
+              er.setRequestMessage(data);
+              er.setClusterable(false);
+              ((DAO) x.get("eventRecordDAO")).put(er);
               throw new MedusaException("Failed to parse");
             }
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
               if ( ! old.getClassInfo().isInstance(nu) ) {
-                getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+                EventRecord er = new EventRecord(x, this, "Not instanceof", entry.toSummary(), LogLevel.WARN, null);
+                er.setRequestMessage(data);
+                er.setResponseMessage("Not instanceof\\n"+old.getClass().getName()+"\\n"+nu.getClass().getName());
+                er.setClusterable(false);
+                ((DAO) x.get("eventRecordDAO")).put(er);
               } else {
                 PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
                 try {
@@ -470,8 +471,11 @@ This is the heart of Medusa.`,
                   pmOverlay.log(x);
                 } catch ( ClassCastException e ) {
                   pmOverlay.error(x);
-                  getLogger().warning("mdao", "overlay", "data", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
-                  ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, old, "Class change, old discarded"));
+                  EventRecord er = new EventRecord(x, this, "ClassCastException", entry.toSummary(), LogLevel.WARN, null);
+                  er.setRequestMessage(data);
+                  er.setResponseMessage("ClassCastException\\n"+old.getClass().getName()+"\\n"+nu.getClass().getName());
+                  er.setClusterable(false);
+                  ((DAO) x.get("eventRecordDAO")).put(er);
                 }
               }
             }
@@ -488,29 +492,29 @@ This is the heart of Medusa.`,
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData(), cause.getMessage());
-              Alarm alarm = new Alarm("Medusa Failed to parse");
-              alarm.setSeverity(foam.log.LogLevel.ERROR);
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse. "+cause.getMessage()));
+              EventRecord er = new EventRecord(x, this, "Failed to parse (transient)", entry.toSummary(), LogLevel.ERROR, cause);
+              er.setRequestMessage(entry.getTransientData());
+              er.setResponseMessage(cause.getMessage());
+              er.setClusterable(false);
+              ((DAO) x.get("eventRecordDAO")).put(er);
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( tran == null ) {
-              getLogger().error("mdao", "Failed to parse (transient)", entry.getIndex(), entry.getNSpecName(), entry.getTransientData());
-              Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
-              alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-              ((DAO) x.get("medusaReplayIssueDAO")).put(new MedusaReplayIssue(entry, "Failed to parse"));
+              EventRecord er = new EventRecord(x, this, "Failed to parse (transient)", entry.toSummary(), LogLevel.WARN, null);
+              er.setRequestMessage(entry.getTransientData());
+              er.setClusterable(false);
+              ((DAO) x.get("eventRecordDAO")).put(er);
             } else {
               if ( nu == null ) {
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
                   if ( ! old.getClassInfo().isInstance(nu) ) {
-                    getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "Class changed", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, no overlay attempted");
+                    EventRecord er = new EventRecord(x, this, "Not instanceof (transient)", entry.toSummary(), LogLevel.WARN, null);
+                    er.setRequestMessage(entry.getTransientData());
+                    er.setResponseMessage("Not instanceof\\n"+old.getClass().getName()+"\\n"+nu.getClass().getName());
+                    er.setClusterable(false);
+                    ((DAO) x.get("eventRecordDAO")).put(er);
                   } else {
                      PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
                      try {
@@ -518,7 +522,11 @@ This is the heart of Medusa.`,
                       pmOverlay.log(x);
                     } catch ( ClassCastException e ) {
                       pmOverlay.error(x);
-                      getLogger().warning("mdao", "overlay", "tran", entry.getNSpecName(), "ClassCastException", "from", old.getClass().getName(), "to", nu.getClass().getName(), "old discarded, overlay attempt failed", e.getMessage());
+                      EventRecord er = new EventRecord(x, this, "ClassCastException (transient)", entry.toSummary(), LogLevel.WARN, null);
+                      er.setRequestMessage(entry.getTransientData());
+                      er.setResponseMessage("ClassCastException\\n"+old.getClass().getName()+"\\n"+nu.getClass().getName());
+                      er.setClusterable(false);
+                      ((DAO) x.get("eventRecordDAO")).put(er);
                     }
                   }
                 }
@@ -560,9 +568,10 @@ This is the heart of Medusa.`,
         return entry;
       } catch (IllegalArgumentException e) {
         pm.error(x, e);
-        Alarm alarm = new Alarm("Medusa MDAO not found", entry.getNSpecName(), LogLevel.ERROR);
-        alarm.setClusterable(false);
-        ((DAO) x.get("alarmDAO")).put(alarm);
+        EventRecord er = new EventRecord(x, this, "MDAO not found", entry.toSummary(), LogLevel.ERROR, null);
+        er.setRequestMessage(entry.getData());
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
         throw e;
       } catch (Throwable t) {
         pm.error(x, t);
@@ -658,6 +667,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
 // REVIEW: 'gap' detection can 'skip' over yet to be seen non-transient indexes.  No solution yet - Joel
 
       boolean skipped = false;
+      String alarmName = "Medusa Gap";
 
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
       if ( index != replaying.getIndex() + 1 ||
@@ -713,7 +723,6 @@ During replay gaps are treated differently; If the index after the gap is ready 
             }
 
             getLogger().warning("gap", "found", index);
-            String alarmName = "Medusa Gap";
             Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(new Alarm(alarmName));
             if ( alarm == null ) {
               alarm = new Alarm(alarmName);
@@ -779,6 +788,16 @@ During replay gaps are treated differently; If the index after the gap is ready 
         getLogger().error(t);
         throw t;
       } finally {
+        if ( skipped ) {
+          // clear alarm
+          Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(EQ(Alarm.NAME, alarmName));
+          if ( alarm != null &&
+               alarm.getIsActive() ) {
+            alarm = (Alarm) alarm.fclone();
+            alarm.setIsActive(false);
+            ((DAO) x.get("alarmDAO")).put(alarm);
+          }
+        }
         pm.log(x);
       }
       `

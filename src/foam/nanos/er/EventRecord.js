@@ -252,6 +252,7 @@ foam.CLASS({
 
   methods: [
     {
+      documentation: 'Summary used for Alarm name, so the components of the summary should not change between an event which raises an alarm and one that clears.',
       name: 'toSummary',
       type: 'String',
       code: function() {
@@ -271,6 +272,10 @@ foam.CLASS({
         if ( this.code ) {
           if ( str.length > 0 ) str += '-';
           str += this.code;
+        }
+        if ( this.message ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.message;
         }
         return str;
       },
@@ -305,6 +310,49 @@ foam.CLASS({
           sb.append(",");
         }
         sb.append(getMessage());
+      }
+      return sb.toString();
+      `
+    },
+    {
+      documentation: 'Summary used for Alarm name, so the components of the summary should not change between an event which raises an alarm and one that clears.',
+      name: 'alarmSummary',
+      type: 'String',
+      code: function() {
+        var str = '';
+        if ( this.source ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.source;
+        }
+        if ( this.event ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.event;
+        }
+        if ( this.partner ) {
+          if ( str.length > 0 ) str += '-';
+          str += this.partner;
+        }
+        return str;
+      },
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      if ( getSource() != null ) {
+        if ( sb.length() > 0 ) {
+          sb.append("-");
+        }
+        sb.append(getSource().toString());
+      }
+      if ( ! SafetyUtil.isEmpty(getEvent()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append("-");
+        }
+        sb.append(getEvent());
+      }
+      if ( ! SafetyUtil.isEmpty(getPartner()) ) {
+        if ( sb.length() > 0 ) {
+          sb.append("-");
+        }
+        sb.append(getPartner());
       }
       return sb.toString();
       `
