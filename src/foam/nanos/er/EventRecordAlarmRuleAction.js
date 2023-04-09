@@ -45,6 +45,7 @@ foam.CLASS({
         StringBuilder note = new StringBuilder();
         note.append(er.getMessage());
         if ( er.getException() != null &&
+             er.getMessage() != null &&
              ! er.getMessage().equals(((Exception)er.getException()).getMessage()) ) {
           note.append("\\n");
           note.append(((Exception)er.getException()).getMessage());
