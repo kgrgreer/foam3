@@ -179,26 +179,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "medusaReplayIssueDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.medusa.MedusaReplayIssue.getOwnClassInfo())
-      .setFuid(true)
-      .setCluster(false)
-      .setRuler(false)
-      .setEnableInterfaceDecorators(false)
-      .build();
-  """,
-  "client":"""
-  {
-    "of":"foam.nanos.medusa.MedusaReplayIssue"
-  }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "clusterTopologyDAO",
   "serve": true,
   "serviceScript": """
