@@ -481,6 +481,9 @@ foam.CLASS({
 
       getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
+      // NOTE: set winner time early to hopefully discard late arriving vote requests.
+      setWinnerTime(time);
+
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;
       try {
@@ -508,7 +511,6 @@ foam.CLASS({
         winner = (ClusterConfig) dao.put(winner);
       }
 
-      setWinnerTime(time);
       setState(ElectoralServiceState.IN_SESSION);
       setElectionTime(0L);
       setCurrentSeq(0L);
