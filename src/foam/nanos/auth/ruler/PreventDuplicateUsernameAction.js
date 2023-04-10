@@ -44,15 +44,6 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
-        checkExistingUsers(x, user, spid);
-      `
-    },
-    {
-      name: 'checkExistingUsers',
-      args: 'Context x, User user, String spid',
-      type: 'Void',
-      javaCode: `
-        DAO userDAO = (DAO) x.get("localUserDAO");
         Count count = new Count();
         count = (Count) userDAO
             .where(AND(
