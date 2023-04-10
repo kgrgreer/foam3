@@ -279,7 +279,19 @@ foam.CLASS({
           signUpToken: this.token_,
           language: this.defaultUserLanguage()
         });
-        var user = await this.dao_.put(createdUser);
+        var user;
+        try {
+          user = await this.dao_.put(createdUser);
+        } catch (err) {
+          this.ctrl.add(this.NotificationMessage.create({
+            err: err.data,
+            message: err.message,
+            type: this.LogLevel.ERROR,
+            transient: true
+          }));
+          return;
+        }
+
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
