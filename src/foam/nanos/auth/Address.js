@@ -40,7 +40,6 @@ foam.CLASS({
     { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
-    { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
     { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
   ],
 
@@ -206,13 +205,7 @@ foam.CLASS({
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
-      validationPredicates: [
-        {
-          args: ['structured', 'streetName'],
-          query: 'structured==false||streetName~/^\s*.+\s*$/',
-          errorMessage: 'STREET_NAME_REQUIRED'
-        }
-      ]
+      required: true
     },
     {
       class: 'String',
