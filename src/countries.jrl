@@ -73,7 +73,7 @@ p({"class":"foam.nanos.auth.Country", "code":"FM", "iso31661Code":"FSM","name":"
 p({"class":"foam.nanos.auth.Country", "code":"FO", "iso31661Code":"FRO","name":"Faroe Islands"})
 p({"class":"foam.nanos.auth.Country", "code":"FR", "iso31661Code":"FRA","name":"France"})
 p({"class":"foam.nanos.auth.Country", "code":"GA", "iso31661Code":"GAB","name":"Gabon"})
-p({"class":"foam.nanos.auth.Country", "code":"GB", "iso31661Code":"GBR","name":"United Kingdom", "alternativeNames":["GREAT BRITAIN"]})
+p({"class":"foam.nanos.auth.Country", "code":"GB", "iso31661Code":"GBR","name":"United Kingdom", "alternativeNames":["GREAT BRITAIN", "UNITED KINGDOM"]})
 p({"class":"foam.nanos.auth.Country", "code":"GD", "iso31661Code":"GRD","name":"Grenada"})
 p({"class":"foam.nanos.auth.Country", "code":"GE", "iso31661Code":"GEO","name":"Georgia"})
 p({"class":"foam.nanos.auth.Country", "code":"GF", "iso31661Code":"GUF","name":"French Guiana"})
