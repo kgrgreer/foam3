@@ -443,6 +443,11 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
+    },
+    //TODO: temporary fix, remove when client signin service is fixed/added
+    {
+      name: 'groupLoadingHandled',
+      class: 'Boolean'
     }
   ],
 
@@ -506,7 +511,7 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        await self.onUserAgentAndGroupLoaded();
+        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
 
       // Reload styling on theme change
@@ -866,7 +871,7 @@ foam.CLASS({
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu.id ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
@@ -890,10 +895,11 @@ foam.CLASS({
 
       const wizardRunner = this.WizardRunner.create({
         wizardType: this.WizardType.UCJ,
-        source: group.wizardFlow || group.generalCapability
+        source: group.wizardFlow || group.generalCapability,
+        options: {inline: false, returnCompletionPromise: true}
       });
       // TODO: figure out why this cant be inlined
-      let retPromise = await wizardRunner.launch(null, {inline: false, returnCompletionPromise: true });
+      let retPromise = await wizardRunner.launch();
       await retPromise;
       return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },

@@ -9,17 +9,14 @@ p({
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.notification.Notification.BROADCASTED,foam.nanos.notification.Notification.READ });
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.notification.Notification.USER_ID,foam.nanos.notification.Notification.READ });
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.notification.Notification.EXPIRY_DATE });
+    mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.notification.Notification.CREATED });
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.Notification.getOwnClassInfo())
       .setMdao(mdao)
       .setAuthorize(false)
       .setPm(true)
-      .setSeqNo(true)
-      .setDecorator(
-        new foam.nanos.notification.NotificationTemplateDAO.Builder(x)
-          .setDelegate(new foam.nanos.notification.NotificationExpansionDAO.Builder(x).build())
-          .build())
+      .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("notifications")
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
@@ -43,9 +40,18 @@ p({
       .setOf(foam.nanos.notification.Notification.getOwnClassInfo())
       .setAuthorize(true)
       .setInnerDAO((foam.dao.DAO) x.get("localNotificationDAO"))
+      .setDecorator(
+        new foam.nanos.notification.NotificationTemplateDAO.Builder(x)
+          .setDelegate(new foam.nanos.notification.NotificationExpansionDAO.Builder(x)
+            .setDelegate(new foam.dao.NullDAO(x, foam.nanos.notification.Notification.getOwnClassInfo()))
+            .build())
+          .build())
       .setEnableInterfaceDecorators(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.notification.Notification.CREATED).build()
+      })
       .build();
-  """,
+""",
   "client": "{\"of\":\"foam.nanos.notification.Notification\"}"
 })
 
@@ -100,7 +106,8 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("notificationTemplates")
       .setOf(foam.nanos.notification.Notification.getOwnClassInfo())
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {foam.nanos.notification.Notification.TEMPLATE});
     """,
     "client":"{\"of\":\"foam.nanos.notification.Notification\"}"
 })

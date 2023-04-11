@@ -83,7 +83,7 @@ foam.CLASS({
   refines: 'foam.core.Property',
 
   messages: [
-    { name: 'REQUIRED', message: 'required' }
+    { name: 'REQUIRED', message: 'Required' }
   ],
 
   properties: [
@@ -126,7 +126,7 @@ foam.CLASS({
       return ! required ? null : [[name],
         function() {
           const axiom = this.cls_.getAxiomByName(name);
-          return axiom.isDefaultValue(this[name]) && (`${label} ${self_.REQUIRED} `);
+          return axiom.isDefaultValue(this[name]) && self_.REQUIRED;
           // TODO: normalise all reqired-esque predicates to use the same message, currently split between "<prop> required" and "Please enter <prop>"
         }];
       }

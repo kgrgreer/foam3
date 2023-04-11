@@ -30,7 +30,8 @@ the notification will be handled. `,
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
-    'java.util.List'
+    'java.util.List',
+    'java.util.Map'
   ],
 
   methods: [
@@ -65,35 +66,52 @@ the notification will be handled. `,
             .getArray();
 
           if ( templates.size() > 1 ) {
-            logger.error("Multiple templates found", notification.getTemplate());
+            logger.info("ERROR,Multiple templates found", notification.getTemplate());
             return notification;
           } else if ( templates.size() == 1 ) {
             template = (Notification) ((FObject)templates.get(0)).fclone();
-            template.setId(notification.getId());
-            template.setBody(notification.getBody());
-            template.setClusterable(notification.getClusterable());
-            template.setRead(notification.getRead());
-            if ( SafetyUtil.isEmpty(template.getSpid()) ) {
+
+            Notification.ID.clear(template);
+            Notification.TEMPLATE.clear(template);
+
+            // Can't use copyFrom which tests isSet, as we don't
+            // want all properties copied.
+            if ( Notification.BODY.isSet(notification) ) {
+              template.setBody(notification.getBody());
+            }
+            if ( Notification.CLUSTERABLE.isSet(notification) ) {
+              template.setClusterable(notification.getClusterable());
+            }
+            if ( Notification.READ.isSet(notification) ) {
+              template.setRead(notification.getRead());
+            }
+            if ( Notification.SPID.isSet(notification) ) {
               template.setSpid(notification.getSpid());
             }
-            template.setTemplate(notification.getToastMessage());
-            if ( template.getEmailArgs() == null ||
-                 template.getEmailArgs().size() == 0 ) {
-              template.setEmailArgs(notification.getEmailArgs());
+            if ( Notification.TOAST_MESSAGE.isSet(notification) ) {
+              template.setTemplate(notification.getToastMessage());
             }
-            template.setAlarm(notification.getAlarm());
-
-            // Notify a user directly
-            DAO userDAO = (DAO) x.get("localUserDAO");
-            User user = (User) userDAO.find(template.getUserId());
-            if ( user != null ) {
-              user.doNotify(x, template);
-              return notification;
+            if ( Notification.EMAIL_ARGS.isSet(notification) &&
+                 Notification.EMAIL_ARGS.isSet(template) ) {
+              Map args = template.getEmailArgs();
+              notification.getEmailArgs().forEach((k, v) -> {
+                if ( ! args.containsKey(k) ) {
+                  args.put(k, v);
+                }
+              });
+              template.setEmailArgs(args);
+            }
+            if ( Notification.ALARM.isSet(notification) ) {
+              template.setAlarm(notification.getAlarm());
+            }
+            if ( Notification.USER_ID.isSet(notification) &&
+                 ! Notification.USER_ID.isSet(template) ) {
+              template.setUserId(notification.getUserId());
             }
           } else {
-            // NOTE: do not generate an error or warning log as this in tern generates an alarm which in tern generates a notification
-            logger.warning("Template not found", notification.getTemplate());
-            return notification;
+            // NOTE: do not generate an error or warning log as this
+            // generates an alarm which in turn generates a notification
+            logger.info("ERROR,Template not found", notification.getTemplate());
           }
         }
 

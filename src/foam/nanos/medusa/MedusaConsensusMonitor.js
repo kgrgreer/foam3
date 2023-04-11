@@ -217,19 +217,12 @@ foam.CLASS({
              getLastReplay() == 0L ||
              System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
           logger.info("request replay");
-          final ReplayRequestCmd cmd = new ReplayRequestCmd();
+          ReplayRequestCmd cmd = new ReplayRequestCmd();
           // request parents as well to handle 'parent not found' scenario
           long min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
           cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(min).build());
-          Agency agency = (Agency) x.get(support.getThreadPoolName());
-          agency.submit(x,
-            new ContextAgent() {
-              public void execute(X x) {
-                ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
-              }
-            }, this.getClass().getSimpleName()
-          );
           setLastReplay(System.currentTimeMillis());
+          ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
         }
       } catch (Throwable t) {
         logger.warning(t.getMessage(), t);
