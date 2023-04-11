@@ -34,7 +34,6 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -197,11 +196,7 @@ foam.CLASS({
           await this.ctrl.reloadClient();
           await this.ctrl.onUserAgentAndGroupLoaded();
         } catch(err) {
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.ERROR_MSG_LOGIN,
-            type: this.LogLevel.ERROR
-          }));
+          this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
         }
       }
@@ -283,12 +278,7 @@ foam.CLASS({
         try {
           user = await this.dao_.put(createdUser);
         } catch (err) {
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: err.message,
-            type: this.LogLevel.ERROR,
-            transient: true
-          }));
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -298,19 +288,10 @@ foam.CLASS({
 
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.SUCCESS_MSG_TITLE,
-            description: this.SUCCESS_MSG,
-            type: this.LogLevel.INFO,
-            transient: true
-          }));
+          this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {
           this.loginFailed = true;
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.ERROR_MSG,
-            type: this.LogLevel.ERROR
-          }));
+          this.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
         }
         // TODO: Add functionality to push to sign in if the user email already exists
       }
