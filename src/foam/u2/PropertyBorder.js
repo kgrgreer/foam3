@@ -27,7 +27,12 @@
     'foam.u2.tag.CircleIndicator'
   ],
 
-  imports: [ 'theme?' ],
+  imports: [
+    'theme?',
+    'data'
+  ],
+
+  exports: [ 'data as objData' ],
 
   messages: [
     { name: 'HELP',       message: 'Help' },
@@ -138,7 +143,7 @@
           this.ConstantSlot.create({ value: null });
 
       var modeSlot = this.prop.createVisibilityFor(
-        this.__context__.data$,
+        this.data$,
         this.controllerMode$);
 
       // Boolean version of modeSlot for use with show()
@@ -163,9 +168,7 @@
               return this.E().add(prop.toE({
                 ...self.viewArgs,
                 mode$: modeSlot
-              }, this.__context__.createSubContext({
-                objData: this.__context__.data 
-              })))
+              }, this.__subContext__ ))
                 .style({ 'flex-grow': 1,'max-width': '100%' })
                 .enableClass('error', errorSlot.and(colorSlot));
             })).
