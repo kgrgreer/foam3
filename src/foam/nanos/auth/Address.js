@@ -41,7 +41,7 @@ foam.CLASS({
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
     { name: 'STREET_NAME_REQUIRED', message: 'Street name required' },
-    { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
+    { name: 'STREET_NUMBER_REQUIRED', message: 'Street Number required' }
   ],
 
   properties: [
