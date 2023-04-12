@@ -58,10 +58,11 @@ foam.CLASS({
           await this.ctrl.reloadClient();
           this.ctrl.subject = this.subject;
 
-          // this is used in wizard flow
-          data.loginFailed = false;
+          if ( ! wizardFlow ) {
+            await ctrl.checkGeneralCapability();
+            await ctrl.onUserAgentAndGroupLoaded();
+          }
         } catch (err) {
-          data.loginFailed = true;
           let e = err && err.data ? err.data.exception : err;
           if ( this.DuplicateEmailException.isInstance(e) ) {
             data.email = data.identifier;
@@ -87,7 +88,7 @@ foam.CLASS({
               // retry signin
               await this.signin(x, data, true);
             }
-            else await this.verifyEmail(x, email, data.username);
+            else await this.verifyEmail(x, email, data.username, data.password);
             return;
           }
           this.notifyUser(err.data, this.SIGNIN_ERR, this.LogLevel.ERROR);
@@ -109,7 +110,6 @@ foam.CLASS({
 
           var signinModel = this.SignIn.create({ identifier: data.email, username: data.username, email: data.email, password: data.desiredPassword });
           await this.signin(x, signinModel, wizardFlow)
-          if ( wizardFlow ) data.loginFailed = false;
         } else {
           this.notifyUser_(err.data, this.SIGNUP_ERR, this.LogLevel.ERROR);
         }

@@ -48,12 +48,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'usernameRequired_',
       hidden: true
-    },
-    {
-      class: 'Boolean',
-      name: 'loginFailed',
-      value: true,
-      hidden: true
     }
   ]
 });
