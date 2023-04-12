@@ -39,6 +39,7 @@ foam.CLASS({
     'java.util.concurrent.ThreadPoolExecutor',
     'java.util.concurrent.TimeUnit',
     'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicLong',
     'java.util.Date',
     'java.util.List',
     'java.util.Map',
@@ -49,6 +50,7 @@ foam.CLASS({
     private Object electionLock_ = new Object();
     private Object voteLock_ = new Object();
     protected ThreadPoolExecutor pool_ = null;
+    private AtomicLong winnerTime_ = new AtomicLong();
   `,
 
   properties: [
@@ -80,11 +82,6 @@ foam.CLASS({
     {
       name: 'winner',
       class: 'String',
-      visibility: 'RO'
-    },
-    {
-      name: 'winnerTime',
-      class: 'Long',
       visibility: 'RO'
     },
     {
@@ -348,20 +345,22 @@ foam.CLASS({
           getLogger().info("vote", id, time, getElectionTime(), "abandon own election", getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
+          winnerTime_.set(0L);
           setCurrentSeq(0L);
         } else if ( getState() == ElectoralServiceState.DISMISSED ) {
           getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
+          winnerTime_.set(0L);
           setCurrentSeq(0L);
         } else if ( getState() == ElectoralServiceState.IN_SESSION ) {
           // TODO: an out-of-order vote request can arrive just after an
           // election has been declared.  The mediator may end up waiting
           // in state VOTING.
-          if ( time <= getWinnerTime() ) {
-            getLogger().info("vote", id, time, getState(), "ignore", "wtime", getWinnerTime());
+          if ( time <= winnerTime_.get() ) {
+            getLogger().info("vote", id, time, getState(), "ignore", "wtime", winnerTime_.get());
           } else {
-            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", getWinnerTime());
+            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", winnerTime_.get());
             setState(ElectoralServiceState.VOTING);
             setElectionTime(0L);
             setCurrentSeq(0L);
@@ -482,7 +481,7 @@ foam.CLASS({
       getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
       // NOTE: set winner time early to hopefully discard late arriving vote requests.
-      setWinnerTime(time);
+      winnerTime_.set(time);
 
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;

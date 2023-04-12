@@ -367,17 +367,15 @@ This is the heart of Medusa.`,
               replaying.updateIndex(x, dagger.getGlobalIndex(x));
               continue;
             }
-            if ( next == null ||
-                 entry != null &&
-                 ! entry.getPromoted() ) {
-              if (gap(x, nextIndex, nextIndexSince)) {
-                continue; // don't sleep
-              }
+            if ( next == null &&
+                 gap(x, nextIndex, nextIndexSince)) {
+              continue; // don't sleep
             }
           } finally {
             pm.log(x);
           }
-          if ( entry == null ) {
+          if ( entry == null &&
+               ! replaying.getReplaying() ) {
             try {
               synchronized ( promoterLock_ ) {
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
@@ -677,7 +675,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
       }
 
       PM pm = PM.create(x, this.getClass().getSimpleName(), "gap");
-      ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap");
+      // ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap");
 
       // speed things up a tiny bit
       DAO dao = (DAO) x.get("internalMedusaDAO");
@@ -713,7 +711,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 // the promoter will look for the entry after the global index.
                 getLogger().debug("gap", "skip", index, (minIndex > 0 ? minIndex-1 : ""));
                 replaying.updateIndex(x, minIndex > 0 ? minIndex - 1 : index);
-                ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap.skip");
+                // ((OMLogger) x.get("OMLogger")).log("medusa.consensus.gap.skip");
                 skipped = true;
               }
               return skipped;
@@ -723,7 +721,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
             }
 
             getLogger().warning("gap", "found", index);
-            Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(new Alarm(alarmName));
+            Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(EQ(Alarm.NAME, alarmName));
             if ( alarm == null ) {
               alarm = new Alarm(alarmName);
             } else {
