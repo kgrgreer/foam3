@@ -118,8 +118,16 @@ and waits on a response.`,
           if ( id != null ) {
             old = getDelegate().find_(x, id);
           }
-          String data = entrySupport.data(x, nu, old, dop);
-          String transientData = entrySupport.transientData(x, nu, old, dop);
+          String data = null;
+          String transientData = null;
+          try {
+            data = entrySupport.data(x, nu, old, dop);
+            transientData = entrySupport.transientData(x, nu, old, dop);
+          } catch (RuntimeException e) {
+            // Generally ClassCastExceptions2
+            Loggers.logger(x, this).error("update", dop, e.getMessage(), "creating data", "new", obj.getClass().getName(), "id", id, "old", (old == null) ? "null" : old.getClass().getName());
+            throw e;
+          }
           if ( SafetyUtil.isEmpty(data) &&
                SafetyUtil.isEmpty(transientData) ) {
             // No delta.
