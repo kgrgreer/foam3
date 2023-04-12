@@ -47,6 +47,12 @@ foam.CLASS({
       value: true
     },
     {
+      documentation: 'LifecycleAware objects which are deleted/removed are set to state DELETED, an r() journal entry is not created.  This option allows to compact DELETED entries.',
+      name: 'compactLifecycleDeleted',
+      class: 'Boolean',
+      value: false
+    },
+    {
       documentation: 'Entry data can be clear after compaction',
       name: 'clearable',
       class: 'Boolean',
