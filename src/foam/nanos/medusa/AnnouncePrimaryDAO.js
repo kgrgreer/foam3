@@ -94,7 +94,7 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      EventRecord er = new EventRecord(x, this, EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
+      EventRecord er = new EventRecord(x, "Medusa", EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
       er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
       er.clearId();
 
@@ -197,7 +197,7 @@ foam.CLASS({
         ((DAO) x.get("eventRecordDAO")).put(er);
 
         // Halt the system.
-        er = new EventRecord(x, this, "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null);
+        er = new EventRecord(x, "Medusa", "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null);
         er.setClusterable(false);
         ((DAO) x.get("eventRecordDAO")).put(er);
         ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
