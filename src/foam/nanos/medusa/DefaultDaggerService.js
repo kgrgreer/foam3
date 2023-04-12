@@ -287,7 +287,7 @@ foam.CLASS({
           return hashes[index];
         } catch (ArrayIndexOutOfBoundsException e) {
           getLogger().warning("Keystore error", alias, "expected", index, "found", hashes.length);
-          ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "bootstrap", "hash exhaustion", LogLevel.ERROR, null));
+          ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, "Medusa DaggerService", "bootstrap", "hash exhaustion", LogLevel.ERROR, null));
         }
       } catch (java.security.GeneralSecurityException | java.io.IOException e) {
         getLogger().warning("Keystore error", alias, e.getMessage());
