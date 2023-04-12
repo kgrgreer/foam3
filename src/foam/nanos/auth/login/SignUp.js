@@ -69,6 +69,12 @@ foam.CLASS({
       name: 'dao_',
       hidden: true,
       transient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'loginFailed',
+      value: true,
+      hidden: true
     }
   ]
 });

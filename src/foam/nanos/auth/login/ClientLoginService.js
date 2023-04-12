@@ -12,9 +12,14 @@ foam.CLASS({
     'auth',
     'ctrl',
     'defaultUserLanguage',
+    'emailVerificationService',
     'loginSuccess',
+    'notifyUser',
     'stack',
-    'subject'
+    'subject',
+    'wizardController',
+    'wizardletId',
+    'wizardlets'
   ],
 
   requires: [
@@ -37,7 +42,7 @@ foam.CLASS({
   methods: [
     {
       name: 'signin',
-      code: async function(x, data) {
+      code: async function(x, data, wizardFlow) {
         try {
           var loginId = data.usernameRequired_ ? data.username : data.identifier;
           let logedInUser = await this.auth.login(x, loginId, data.password);
@@ -51,7 +56,12 @@ foam.CLASS({
 
           this.loginSuccess = true;
           await this.ctrl.reloadClient();
+          this.ctrl.subject = this.subject;
+
+          // this is used in wizard flow
+          data.loginFailed = false;
         } catch (err) {
+          data.loginFailed = true;
           let e = err && err.data ? err.data.exception : err;
           if ( this.DuplicateEmailException.isInstance(e) ) {
             data.email = data.identifier;
@@ -69,7 +79,15 @@ foam.CLASS({
           }
           if ( this.UnverifiedEmailException.isInstance(e) ) {
             var email = this.usernameRequired ? data.email : data.identifier;
-            await this.verifyEmail(x, email, data.username);
+            if ( wizardFlow ) {
+              this.wizardVerifyEmail(x, email, data.username, data.password);
+              var latch = foam.core.Latch.create();
+              this.onDetach(this.emailVerificationService.sub('emailVerified', () => latch.resolve()));
+              await latch;
+              // retry signin
+              await this.signin(x, data, true);
+            }
+            else await this.verifyEmail(x, email, data.username);
             return;
           }
           this.notifyUser(err.data, this.SIGNIN_ERR, this.LogLevel.ERROR);
@@ -78,7 +96,7 @@ foam.CLASS({
     },
     {
       name: 'signup',
-      code: async function(x, data) {
+      code: async function(x, data, wizardFlow) {
         let createdUser = this.User.create({
           userName: data.username,
           email: data.email,
@@ -89,19 +107,21 @@ foam.CLASS({
         if ( user ) {
           this.notifyUser_(this.SIGNUP_SUCCESS_TITLE, this.SIGNUP_SUCCESS_MSG, this.LogLevel.INFO);
 
-          var signinModel = this.SignIn.create({ identifier: data.username, password: data.desiredPassword });
-          await this.signin(x, signinModel)
+          var signinModel = this.SignIn.create({ identifier: data.email, username: data.username, email: data.email, password: data.desiredPassword });
+          await this.signin(x, signinModel, wizardFlow)
+          if ( wizardFlow ) data.loginFailed = false;
         } else {
           this.notifyUser_(err.data, this.SIGNUP_ERR, this.LogLevel.ERROR);
         }
-        // TODO: Add functionality to push to sign in if the user email already exists
       }
     },
     {
       name: 'verifyEmail',
       code: async function(x, email, username, password) {
-        var signinModel = this.SignIn.create({ identifier: username, email: email, username: username, password: password });
-        this.onDetach(this.emailVerificationService.sub('emailVerified', () => { this.emailVerifiedListener(x, signinModel) }));
+        var signinModel = this.SignIn.create({ identifier: email, email: email, username: username, password: password });
+        this.onDetach(this.emailVerificationService.sub('emailVerified', async () => {
+          await this.emailVerifiedListener(x, signinModel) 
+        }));
         this.stack.push(this.StackBlock.create({
           view: {
             class: 'foam.u2.borders.StatusPageBorder',
@@ -117,6 +137,18 @@ foam.CLASS({
             }]
           }
         }, this));
+      }
+    },
+    {
+      name: 'wizardVerifyEmail',
+      code: async function(x, email, username, password) {
+        var ctx = this.__subContext__.createSubContext({ email: email, username: username })
+        const wizardRunner = foam.u2.crunch.WizardRunner.create({
+          wizardType: foam.u2.wizard.WizardType.UCJ,
+          source: 'net.nanopay.auth.VerifyEmailByCode'
+        }, ctx);
+
+        await wizardRunner.launch(undefined, { inline: false });
       }
     },
     {
@@ -146,14 +178,31 @@ foam.CLASS({
           transient: true
         }));
       }
+    },
+    {
+      name: 'wizardEmailVerified',
+      code: async function(x, data) {
+        try {
+          await this.signin(x, data, true);
+          this.subject = await this.auth.getCurrentSubject(null);
+          this.loginSuccess = true;
+        } catch (err) {
+          this.error('^login-failed-post-verify', err);
+          console.error(err);
+        }
+      }
     }
   ],
 
   listeners: [
     {
       name: 'emailVerifiedListener',
-      code: function(x, data) {
-        this.signin(x, data);
+      code: async function(x, data, wizardFlow) {
+        if (wizardFlow) {
+          await this.wizardEmailVerified(x, data);
+        } else {
+          await this.signin(x, data, wizardFlow);
+        }
       }
     }
   ]
