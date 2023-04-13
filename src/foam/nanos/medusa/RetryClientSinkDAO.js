@@ -172,7 +172,7 @@ foam.CLASS({
               Loggers.logger(x, this).warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
               if ( er == null ||
                    er.getSeverity() != LogLevel.WARN ) {
-                er = new EventRecord(x, this, alarmId, "Timeout", LogLevel.WARN, null);
+                er = new EventRecord(x, "Medusa Client", alarmId, "Timeout", LogLevel.WARN, null);
                 er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put_(x, er).fclone();
                 er.clearId();
               }

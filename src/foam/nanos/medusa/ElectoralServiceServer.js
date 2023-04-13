@@ -39,6 +39,7 @@ foam.CLASS({
     'java.util.concurrent.ThreadPoolExecutor',
     'java.util.concurrent.TimeUnit',
     'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicLong',
     'java.util.Date',
     'java.util.List',
     'java.util.Map',
@@ -49,6 +50,7 @@ foam.CLASS({
     private Object electionLock_ = new Object();
     private Object voteLock_ = new Object();
     protected ThreadPoolExecutor pool_ = null;
+    private AtomicLong winnerTime_ = new AtomicLong();
   `,
 
   properties: [
@@ -80,11 +82,6 @@ foam.CLASS({
     {
       name: 'winner',
       class: 'String',
-      visibility: 'RO'
-    },
-    {
-      name: 'winnerTime',
-      class: 'Long',
       visibility: 'RO'
     },
     {
@@ -306,11 +303,13 @@ foam.CLASS({
                    .build())
                  .build();
               try {
-                getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
-                result = electoralService.vote(config.getId(), getElectionTime());
-                getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
-                recordResult(x, result, clientConfig);
-                callReport(x);
+                if ( getState() == ElectoralServiceState.ELECTION ) {
+                  getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
+                  result = electoralService.vote(config.getId(), getElectionTime());
+                  getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
+                  recordResult(x, result, clientConfig);
+                  callReport(x);
+                }
               } catch (Throwable e) {
                 getLogger().debug("callVote", "executeJob", "voter", clientConfig.getId(), clientConfig.getName(), e.getMessage());
               }
@@ -325,7 +324,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Called by the party runing the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started earlier then we abandon our election.',
+      documentation: 'Called by the party runing the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started later then we abandon our election.',
       name: 'vote',
       synchronized: true,
       javaCode: `
@@ -341,25 +340,27 @@ foam.CLASS({
       try {
         if ( getState() == ElectoralServiceState.ELECTION &&
             time > 0L &&
-            time <= getElectionTime() ) {
+            time >= getElectionTime() ) {
           // abandon our election.
-          getLogger().info("vote", id, time, "abandon own election", getState(), "->", ElectoralServiceState.VOTING);
+          getLogger().info("vote", id, time, getElectionTime(), "abandon own election", getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
+          winnerTime_.set(0L);
           setCurrentSeq(0L);
         } else if ( getState() == ElectoralServiceState.DISMISSED ) {
           getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING);
           setState(ElectoralServiceState.VOTING);
           setElectionTime(0L);
+          winnerTime_.set(0L);
           setCurrentSeq(0L);
         } else if ( getState() == ElectoralServiceState.IN_SESSION ) {
           // TODO: an out-of-order vote request can arrive just after an
           // election has been declared.  The mediator may end up waiting
           // in state VOTING.
-          if ( time == getWinnerTime() ) {
-            getLogger().info("vote", id, time, getState(), "ignore", getWinnerTime());
+          if ( time <= winnerTime_.get() ) {
+            getLogger().info("vote", id, time, getState(), "ignore", "wtime", winnerTime_.get());
           } else {
-            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", getWinnerTime());
+            getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", winnerTime_.get());
             setState(ElectoralServiceState.VOTING);
             setElectionTime(0L);
             setCurrentSeq(0L);
@@ -479,6 +480,9 @@ foam.CLASS({
 
       getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
+      // NOTE: set winner time early to hopefully discard late arriving vote requests.
+      winnerTime_.set(time);
+
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;
       try {
@@ -506,7 +510,6 @@ foam.CLASS({
         winner = (ClusterConfig) dao.put(winner);
       }
 
-      setWinnerTime(time);
       setState(ElectoralServiceState.IN_SESSION);
       setElectionTime(0L);
       setCurrentSeq(0L);

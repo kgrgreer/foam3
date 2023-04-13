@@ -36,7 +36,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE',      message: 'Welcome back!' },
+    { name: 'TITLE',      message: 'Welcome Back' },
     { name: 'FOOTER_TXT', message: 'Not a User Yet?' },
     { name: 'ERROR_MSG',  message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
