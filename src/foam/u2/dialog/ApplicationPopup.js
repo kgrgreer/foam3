@@ -140,10 +140,6 @@ foam.CLASS({
       justify-content: center;
     }
 
-    ^  .foam-u2-layout-Grid {
-      grid-gap: 0;
-    }
-
     ^footer-center a:link,
     ^footer-center a:visited,
     ^footer-center a:active {
