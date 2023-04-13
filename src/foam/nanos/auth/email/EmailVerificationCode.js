@@ -35,13 +35,13 @@ foam.CLASS({
   messages: [
     { name: 'SUCCESS_MSG', message: 'Email verified.' },
     { name: 'ERROR_MSG', message: 'Email verification failed.' },
-    { name: 'TITLE', message: 'Let\'s verify your email address' },
+    { name: 'TITLE', message: 'Let\'s Verify Your Email Address' },
     { name: 'INSTRUCTION', message: 'We have sent a verification code to your email. Please enter the code below to confirm that this account belongs to you.' },
     { name: 'VERIFICATION_EMAIL_TITLE', message: 'Verification Email Sent'},
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     { name: 'VERIFICATION_EMAIL', message: 'Email sent to' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
-    { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
+    { name: 'INVALID_CODE',     message: 'Invalid code. Remaining attempts: ' },
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 

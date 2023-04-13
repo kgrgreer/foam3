@@ -34,7 +34,6 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -53,7 +52,7 @@ foam.CLASS({
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
     { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing into your account' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -197,11 +196,7 @@ foam.CLASS({
           await this.ctrl.reloadClient();
           await this.ctrl.onUserAgentAndGroupLoaded();
         } catch(err) {
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.ERROR_MSG_LOGIN,
-            type: this.LogLevel.ERROR
-          }));
+          this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
         }
       }
@@ -230,6 +225,7 @@ foam.CLASS({
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
           this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
+          this.ctrl.groupLoadingHandled = true;
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.u2.borders.StatusPageBorder', showBack: false,
@@ -278,26 +274,24 @@ foam.CLASS({
           signUpToken: this.token_,
           language: this.defaultUserLanguage()
         });
-        var user = await this.dao_.put(createdUser);
+        var user;
+        try {
+          user = await this.dao_.put(createdUser);
+        } catch (err) {
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
+          return;
+        }
+
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
 
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
 
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.SUCCESS_MSG_TITLE,
-            description: this.SUCCESS_MSG,
-            type: this.LogLevel.INFO,
-            transient: true
-          }));
+          this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {
           this.loginFailed = true;
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.ERROR_MSG,
-            type: this.LogLevel.ERROR
-          }));
+          this.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
         }
         // TODO: Add functionality to push to sign in if the user email already exists
       }

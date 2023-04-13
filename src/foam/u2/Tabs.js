@@ -71,6 +71,24 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Tabs',
   extends: 'foam.u2.UnstyledTabs',
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabActiveColor',
+      value: '$primary700'
+    },
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabInactiveColor',
+      value: '$primary700'
+    },
+    {
+      name: 'tabActiveBackground',
+      value: '$primary50'
+    }
+  ],
+
   css: `
     ^tabRow {
       background-color: $white;
@@ -86,18 +104,18 @@ foam.CLASS({
       align-items: center;
       background: none;
       border-radius: 4px;
-      color: $grey700;
+      color: $tabInactiveColor;
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
     ^tab:hover {
-      background: $primary50;
+      background: $tabActiveBackground;
       cursor: pointer;
     }
     ^tab.selected {
-      background: $primary50;
-      color: $primary700;
+      background: $tabActiveBackground;
+      color: $tabActiveColor;
       font-weight: 600;
     }
   `

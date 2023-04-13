@@ -35,6 +35,8 @@ foam.CLASS({
       String s = "EventRecordTest";
 
       EventRecord er = new EventRecord();
+      er.setX(x);
+      er.setSource(this);
       er.setEvent(s);
       er.setCode(s);
       er.setMessage(s);
@@ -45,11 +47,13 @@ foam.CLASS({
       Thread.sleep(3000);
 
       // test for alarm
-      Alarm alarm = (Alarm) ((DAO) x.get("localAlarmDAO")).find(EQ(Alarm.NAME, er.toSummary()));
+      Alarm alarm = (Alarm) ((DAO) x.get("localAlarmDAO")).find(EQ(Alarm.NAME, er.alarmSummary()));
       test( alarm != null, "alarm exists");
       test ( alarm.getIsActive(), "Alarm active");
 
       er = new EventRecord();
+      er.setX(x);
+      er.setSource(this);
       er.setEvent(s);
       er.setCode(s);
       er.setMessage(s);
@@ -59,7 +63,7 @@ foam.CLASS({
 
       Thread.sleep(1000);
 
-      alarm = (Alarm) ((DAO) x.get("localAlarmDAO")).find(EQ(Alarm.NAME, er.toSummary()));
+      alarm = (Alarm) ((DAO) x.get("localAlarmDAO")).find(EQ(Alarm.NAME, er.alarmSummary()));
       test( alarm != null, "alarm exists");
       test ( ! alarm.getIsActive(), "Alarm cleared");
 

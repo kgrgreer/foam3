@@ -11,6 +11,9 @@ foam.CLASS({
   issues: [
     'when source is a capability it should create a WizardFlow'
   ],
+  documentation: `
+    Wizard Runner is a configuration that is used to run (and potentially modify) a wizard  
+  `,
   requires: [
     'foam.u2.wizard.WizardType',
     'foam.u2.wizard.wizardflow.WizardFlow'
@@ -26,33 +29,50 @@ foam.CLASS({
       documentation: `
         Either a capability, string, or WizardFlow
       `
-    }
+    },
+    {
+      name:'options',
+      class: 'Map',
+      documentation: `
+        These options are used when building the sequence or running the Wizard.
+        These should be set before calling launch, and before any access of the sequence property.
+      `
+    },
+    {
+      name:'sequence',
+      factory: function() {
+        const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
+        const seq = this.getSequence_(this.__context__, this.isInline);
+        return seq
+      } 
+    },
+    {
+      name: 'parentWizard',
+      factory: function() {
+        return this.getParentWizard_();
+      }
+    },
+    {
+      name: 'isInLine',
+      expression: function(parentWizard, options) {
+        return (options.inline ?? true) && !! parentWizard;
+      }
+    },
   ],
   methods: [
-    async function launch(x, options) {
-      options = options || {};
-      x = x || this.__context__;
+    async function launch() {
+      x = this.__context__;
 
-      const IN_PROGRESS = this.crunchController.WizardStatus.IN_PROGRESS;
-
-      const parentWizard = this.getParentWizard_();
-      const isInline = (options.inline ?? true) && !! parentWizard;
-
-      const seq = this.getSequence_(x, isInline);
-
+      const seq = this.sequence 
       // wizardContext
       // - Is returned to places a wizard is instantiated
       // - Contains the instantiated wizardlets (note: just the instantiated - not parentWizard)
       let wizardContext = undefined;
-      // If there is intention is to inject wizard and is there an open wizard...
-      if ( isInline ) {
-        // returnPromise - waits for a resolve, prior to continuing through to a return
-        let returnPromise = Promise.resolve();
-        // promise$ -> acts as flag for resolving returnPromise after user finishes
-        // the last wizardlet (onLastWizardletSaved), and only if
-        // call to WizardRunner came with options.returnCompletionPromise = true
-        let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
-        if ( options.returnCompletionPromise ) {
+      let returnPromise = null;
+      let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
+
+      if ( this.isInline ) {
+        if ( this.options.returnCompletionPromise ) {
           returnPromise = new Promise(rslv => {
             promise$.sub(v => {
               if ( v ) rslv();

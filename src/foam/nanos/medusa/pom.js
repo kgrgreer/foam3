@@ -57,7 +57,6 @@ foam.POM({
     { name: "MedusaNodeBootstrapAgent",                                                   flags: "js|java" },
     { name: "MedusaRegistry",                                                             flags: "js|java" },
     { name: "MedusaRegistryService",                                                      flags: "js|java" },
-    { name: "MedusaReplayIssue",                                                          flags: "js|java" },
     { name: "MedusaNOPRegistryService",                                                   flags: "js|java" },
     { name: "MedusaSigningDAO",                                                           flags: "js|java" },
     { name: "MedusaSetNodeDAO",                                                           flags: "js|java" },

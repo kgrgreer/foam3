@@ -39,12 +39,14 @@ foam.CLASS({
 
       // NOTE: use localAlarmDAO, as alarmDAO will generate notification.
       DAO alarmDAO = (DAO) ruler.getX().get("localAlarmDAO");
-      String name = er.toSummary();
+      String name = er.alarmSummary();
       Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
       if ( er.getSeverity().getOrdinal() >= LogLevel.WARN.getOrdinal() ) {
         StringBuilder note = new StringBuilder();
         note.append(er.getMessage());
-        if ( er.getException() != null ) {
+        if ( er.getException() != null &&
+             er.getMessage() != null &&
+             ! er.getMessage().equals(((Exception)er.getException()).getMessage()) ) {
           note.append("\\n");
           note.append(((Exception)er.getException()).getMessage());
         }
@@ -63,6 +65,13 @@ foam.CLASS({
         }
         if ( er.getSeverity().getOrdinal() > alarm.getSeverity().getOrdinal() ) {
           alarm.setSeverity(er.getSeverity());
+          alarm.setNote(note.toString());
+        } else if ( ! note.equals(alarm.getNote()) ) {
+          String n = note.toString();
+          note.setLength(0);
+          note.append(alarm.getNote());
+          note.append("\\n");
+          note.append(n);
           alarm.setNote(note.toString());
         }
         alarm = (Alarm) alarmDAO.put(alarm);

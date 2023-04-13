@@ -19,8 +19,11 @@ foam.CLASS({
   javaImports: [
     'foam.core.AgencyTimerTask',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'foam.mlang.sink.Count',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.pm.PM',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.time.Duration',
@@ -58,9 +61,14 @@ foam.CLASS({
            obj instanceof ReplayCompleteCmd ) {
         synchronized (this) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+
           if ( replaying.getReplaying() ) {
             Logger logger = Loggers.logger(x, this);
-            logger.info("replay complete");
+            ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+
+            ClusterConfig config = support.getConfig(x, support.getConfigId());
+            AppConfig appConfig = (AppConfig) x.get("appConfig");
+
             replaying.setReplaying(false);
             replaying.setEndTime(new java.util.Date());
             ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.end");
@@ -76,11 +84,42 @@ foam.CLASS({
             replaying.setCount(replayed);
             long time = Math.max(1, (replaying.getEndTime().getTime() - replaying.getStartTime().getTime())/1000);
             Duration duration = Duration.ofMillis(time);
-            logger.info("replayComplete", "replayed", replayed, "promoted", count.getValue(), "duration", time, "s", replayed/time, "/s", duration);
+            double minutes = time / 60.0;
+            double replayedS = replayed / (double) time;
+            double promotedS = ((Long) count.getValue()) / (double) time;
+            double min100K = minutes / ( (Long) count.getValue() / 100000.0 );
 
-            ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+            StringBuilder report = new StringBuilder();
+            report.append("instance,replayed,promoted,duration s,replayed/s,promoted/s,minutes,min/100K,app,java,date");
+            report.append("\\n");
+            report.append(System.getProperty("hostname", "loalhost"));
+            report.append(",");
+            report.append(replayed);
+            report.append(",");
+            report.append(count.getValue());
+            report.append(",");
+            report.append(time);
+            report.append(",");
+            report.append(String.format("%.2f", replayedS));
+            report.append(",");
+            report.append(String.format("%.2f", promotedS));
+            report.append(",");
+            report.append(String.format("%.2f", minutes));
+            report.append(",");
+            report.append(String.format("%.2f", min100K));
+            report.append(",");
+            report.append(appConfig.getVersion());
+            report.append(",");
+            report.append(String.valueOf(Runtime.version().version().get(0)));
+            report.append(",");
+            report.append(new java.util.Date(replaying.getStartTime().getTime()));
 
-            ClusterConfig config = support.getConfig(x, support.getConfigId());
+            logger.info("replayComplete", "report", "\\n"+report.toString());
+
+            EventRecord er = new EventRecord(x, "Medusa", "replay", "complete");
+            er.setResponseMessage(report.toString());
+            ((DAO) x.get("eventRecordDAO")).put(er);
+
             config.setStatus(Status.ONLINE);
             ((DAO) x.get("localClusterConfigDAO")).put(config);
           }

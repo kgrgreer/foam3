@@ -178,13 +178,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    'self',
-    'code',
-    {
-      name: 'args',
-      documentation: "An array of property Slots. Determined from 'code' arguments.",
-      factory: function() { return foam.Function.argNames(this.code).map(a => this.self.slot(a)); }
-    },
+    'fn',
     {
       name: 'element_',
       factory: function() { return this.document.createDocumentFragment(); }
@@ -194,33 +188,22 @@ foam.CLASS({
   methods: [
     function init() {
       this.add(''); // needed to preserve proper location in DOM
-    },
 
-    function load() {
-      this.SUPER();
-      var args = this.args;
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        // this.self.onDetach(args[i].sub(this.update));
-        this.onDetach(args[i].sub(this.update));
-      }
+      this.fn.self = this;
 
-      this.update();
-    }
-  ],
+      var nextSibling;
 
-  listeners: [
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        var nextSibling;
+      this.fn.pre = () => {
+        nextSibling = undefined;
         this.childNodes.forEach(n => {
           nextSibling = n.element_.nextSibling;
           n.element_.parentNode.removeChild(n.element_);
         });
         this.childNodes = [];
         this.element_   = undefined;
-        this.code.apply(this, this.args.map(a => a.get()));
+      };
+
+      this.fn.post = () => {
         // Add empty Text node to mark space in DOM in case no output was generated
         if ( this.childNodes.length == 0 ) this.add('');
         if ( nextSibling ) {
@@ -228,7 +211,7 @@ foam.CLASS({
         } else {
           this.parentNode.element_.appendChild(this.element_);
         }
-      }
+      };
     }
   ]
 });
@@ -1186,13 +1169,8 @@ foam.CLASS({
         return this.add(translation);
       }
 //      console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+//      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
-    },
-
-    function react(fn, opt_self) {
-      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this, parentNode: this}, this), this);
-      return this;
     },
 
     function add() {
@@ -1210,10 +1188,15 @@ foam.CLASS({
         c = c.toE(null, this.__subSubContext__);
       }
 
+      if ( foam.core.DynamicFunction.isInstance(c) ) {
+        this.addChild_(foam.u2.FunctionNode.create({fn: c, parentNode: this}, this), this);
+        return
+      }
       if ( foam.Function.isInstance(c) ) {
-        console.warn('Deprecated use of add(Function). Use react() instead.');
-        c = foam.u2.FunctionNode.create({self: this, code: c, parentNode: this});
-      } else if ( foam.core.Slot.isInstance(c) ) {
+        this.add((this.__context__.data || this).dynamic(c));
+        return;
+      }
+      if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
         /*

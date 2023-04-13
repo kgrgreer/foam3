@@ -36,8 +36,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE',      message: 'Welcome back!' },
-    { name: 'FOOTER_TXT', message: 'Not a user yet?' },
+    { name: 'TITLE',      message: 'Welcome Back' },
+    { name: 'FOOTER_TXT', message: 'Not a User Yet?' },
     { name: 'ERROR_MSG',  message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
@@ -151,6 +151,7 @@ foam.CLASS({
     {
       name: 'verifyEmail',
       code: async function(x, email, username) {
+      this.ctrl.groupLoadingHandled = true;
         this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
         this.stack.push(this.StackBlock.create({
           view: {
@@ -192,7 +193,7 @@ foam.CLASS({
   actions: [
     {
       name: 'login',
-      label: 'Sign in',
+      label: 'Sign In',
       section: 'footerSection',
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
@@ -268,7 +269,7 @@ foam.CLASS({
     },
     {
       name: 'footer',
-      label: 'Create an account',
+      label: 'Create an Account',
       section: 'footerSection',
       buttonStyle: 'TEXT',
       isAvailable: function(showAction) { return showAction; },
@@ -279,7 +280,7 @@ foam.CLASS({
     },
     {
       name: 'subFooter',
-      label: 'Forgot password?',
+      label: 'Forgot Password?',
       section: 'footerSection',
       buttonStyle: 'LINK',
       isAvailable: function(showAction) { return showAction; },

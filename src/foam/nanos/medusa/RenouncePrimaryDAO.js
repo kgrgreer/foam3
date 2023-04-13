@@ -87,8 +87,8 @@ foam.CLASS({
            old.getStatus() == Status.ONLINE &&
            old.getIsPrimary() &&
            electoralService.getState() == ElectoralServiceState.IN_SESSION ) {
-
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, ALARM_NAME, null, LogLevel.WARN, null));
+        EventRecord er = new EventRecord(x, "Medusa", ALARM_NAME, null, LogLevel.WARN, null);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         // block - see ReplayingDAO - will block on OFFLINE and Primary
         // replaying.setIsReplaying(true);
@@ -130,8 +130,9 @@ foam.CLASS({
 
         // unblock - ReplayingDAO will unblock when OFFLINE and not primary
         // replaying.setIsReplaying(false);
-
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, ALARM_NAME));
+        er = new EventRecord(x, "Medusa", ALARM_NAME);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         if ( support.getShutdown() ) {
           Agency agency = (Agency) x.get(support.getThreadPoolName());
