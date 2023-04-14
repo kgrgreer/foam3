@@ -110,18 +110,11 @@ foam.CLASS({
       }
 
       HashMap args = new HashMap();
-      args.put("alarm.name", alarm.getName());
-      args.put("alarm.status", alarm.getIsActive() ? "Active" : "Cleared");
-      args.put("alarm.severity", alarm.getSeverity().getLabel().toUpperCase());
-      args.put("alarm.reason", alarm.getReason().getLabel());
-      args.put("alarm.host", alarm.getHostname());
-      args.put("alarm.started", alarm.getCreated().toString());
+      args.put("alarm", alarm);
+      args.put("alarm_status", alarm.getIsActive() ? "Active" : "Cleared");
+      args.put("alarm_severity", alarm.getSeverity().getLabel().toUpperCase());
       if ( ! alarm.getIsActive() ) {
-        args.put("alarm.cleared", alarm.getLastModified().toString());
-      }
-      args.put("alarm.note", alarm.getNote());
-      if ( ! SafetyUtil.isEmpty(alarm.getEventRecord()) ) {
-        args.put("alarm.eventRecord", alarm.getEventRecord());
+        args.put("alarm_cleared", alarm.getLastModified().toString());
       }
 
       // Notifications are ServiceProviderAware

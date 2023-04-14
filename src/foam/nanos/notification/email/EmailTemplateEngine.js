@@ -16,10 +16,14 @@ foam.CLASS({
     'foam.lib.json.*',
     'foam.lib.parse.*',
     'foam.nanos.logger.Logger',
+    'foam.core.FObject',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.email.EmailTemplateSupport',
-    'java.util.Map'
+    'java.util.Map',
+    'foam.mlang.predicate.NamedProperty',
+    'foam.mlang.expr.Dot',
+    'foam.mlang.Expr'
   ],
 
   properties: [
@@ -34,7 +38,7 @@ foam.CLASS({
 
         // markup symbol defines the pattern for the whole string
         grammar.addSymbol("markup", new Repeat0(new Alt(grammar.sym("IF_ELSE"),
-          grammar.sym("IF"), grammar.sym("SIMPLE_VAL"), grammar.sym("ANY_CHAR"))));
+          grammar.sym("IF"), grammar.sym("VALUE"),grammar.sym("ANY_CHAR"))));
         Action markup = new Action() {
           @Override
           public Object execute(Object value, ParserContext x) {
@@ -54,26 +58,44 @@ foam.CLASS({
         };
         grammar.addAction("ANY_CHAR", anyCharAction);
 
-        // simple value syntax: "qwerty {{ simple_value }} qwerty"
-        grammar.addSymbol("SIMPLE_VAL", new Seq1(1, Literal.create("{{"), new Until(Literal.create("}}") )));
-        Action simpleValAction = new Action() {
-          @Override
-          public Object execute(Object val, ParserContext x) {
-            Object[] val0    = (Object[]) val;
-            StringBuilder v = new StringBuilder();
-            for ( int i = 0 ; i < val0.length ; i++ ) {
-              if ( ! Character.isWhitespace((char) val0[i]) ) v.append(val0[i]);
-            }
-            String value = (String) ((Map) x.get("values")).get(v.toString());
-            if ( value == null ) {
-              value = "";
-              foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
-            }
-            ((StringBuilder) x.get("sb")).append(value);
-            return value;
+        grammar.addSymbol("VALUE", new Seq2(2,3,Literal.create("{{"), Whitespace.instance(), grammar.sym("WORD"), new Optional(
+          new Seq(Literal.create("."), new Repeat(new Not(Literal.create("}}"), grammar.sym("WORD")), Literal.create(".")))),
+          Whitespace.instance(), Literal.create("}}")));
+        grammar.addAction("VALUE", (val, x) -> {
+        Object[] vals = ((Object[])val);
+        String v = compactToString(vals[0]);
+        if ( vals.length > 1 && vals[1] == null ) {
+          String value = (String) ((Map) x.get("values")).get(v);
+          if ( value == null ) {
+            value = "";
+            foam.nanos.logger.StdoutLogger.instance().warning("No value provided for variable",v);
           }
-        };
-        grammar.addAction("SIMPLE_VAL", simpleValAction);
+          ((StringBuilder) x.get("sb")).append(value);
+          return value;
+        }
+         if ( ((Map) x.get("values")).get(v) == null ) throw new RuntimeException("Object is not provided " + v);
+           FObject obj =  (FObject) ((Map) x.get("values")).get(v);
+
+           Object[] values2 = (Object[]) vals[1];
+           Object[] objArr = (Object[]) values2[1];
+           Expr expr = NamedProperty.create(compactToString(objArr[0]));
+           for (var i = 1; i < objArr.length; i++) {
+             expr = new Dot(expr, NamedProperty.create(compactToString(objArr[i])));
+           }
+           ((StringBuilder) x.get("sb")).append(expr.f(obj));
+           return val;
+        });
+        grammar.addSymbol("WORD", new Repeat(
+              grammar.sym("CHAR"), 1
+            ));
+        grammar.addSymbol("CHAR", new Alt(
+          Range.create('a', 'z'),
+          Range.create('A', 'Z'),
+          Range.create('0', '9'),
+          Literal.create("-"),
+          Literal.create("^"),
+          Literal.create("_")
+        ));
 
         /* IF_ELSE syntax: "qwerty {% if var_name_provided_in_map %} qwer {{ possible_simple_value }} erty
         {% else %} qwerty {% endif %}" */
@@ -362,6 +384,19 @@ foam.CLASS({
       getContentGrammar().parse(ps, parserX, "");
 
       return sbContent;
+      `
+    },
+    {
+      name: 'compactToString',
+      args: [ { name: 'val', type: 'Object' } ],
+      type: 'String',
+      javaCode: `
+      Object[] values = (Object[]) val;
+          StringBuilder sb = new StringBuilder();
+          for ( Object num: values ) {
+            sb.append(num);
+          }
+          return sb.toString();
       `
     },
     {
