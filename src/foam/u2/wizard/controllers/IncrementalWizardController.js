@@ -334,7 +334,7 @@ foam.CLASS({
           nextWizardlet,
           nextPosition
         });
-        
+
         // Not much to do between sections of the same wizardlet, just
         // land on one if it's available
         if ( ! atWizardletBoundary ) {

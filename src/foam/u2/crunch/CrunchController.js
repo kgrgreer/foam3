@@ -114,6 +114,12 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'openWizardInspector',
+      code: function() {
+        this.lastActiveWizard.OPEN_WIZARD_INSPECTOR.code.call(this.lastActiveWizard);
+      }
+    },
+    {
       name: 'createWizardSequence',
       documentation: `
         Create the default wizard sequence for the specified capability in
@@ -457,7 +463,7 @@ foam.CLASS({
       });
       wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
         foam.events.oneTime(() => {
-          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length) 
+          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length)
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
