@@ -294,7 +294,7 @@ foam.CLASS({
         .start()
           .addClass('align-end')
           .startContext({ data: self })
-            .callIf(self.mode_ == self.SIGN_IN, function() { this.tag(self.RESET_PASSWORD) })
+            .callIf(self.mode_ == self.SIGN_IN && self.showAction, function() { this.tag(self.RESET_PASSWORD) })
           .endContext()
         .end()
         .add(
