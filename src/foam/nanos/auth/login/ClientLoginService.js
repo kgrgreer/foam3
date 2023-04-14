@@ -145,10 +145,11 @@ foam.CLASS({
         var ctx = this.__subContext__.createSubContext({ email: email, username: username })
         const wizardRunner = foam.u2.crunch.WizardRunner.create({
           wizardType: foam.u2.wizard.WizardType.UCJ,
-          source: 'net.nanopay.auth.VerifyEmailByCode'
+          source: 'net.nanopay.auth.VerifyEmailByCode',
+          options: { inline: false }
         }, ctx);
 
-        await wizardRunner.launch(undefined, { inline: false });
+        await wizardRunner.launch();
       }
     },
     {
