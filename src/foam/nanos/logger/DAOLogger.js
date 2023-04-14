@@ -120,7 +120,7 @@ foam.CLASS({
     {
       name: 'toString',
       type: 'String',
-      javaCode: 'return this.getClass().getSimpleName();'
+      javaCode: 'return getClass().getSimpleName();'
     }
   ]
 });

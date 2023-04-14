@@ -906,7 +906,7 @@ foam.CLASS({
 
     async function doGeneralCapabilityPostCheck (ucjCheck) {
       this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
       let postCheck = await ucjCheck();
       if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
         this.add(foam.u2.dialog.ConfirmationModal.create({

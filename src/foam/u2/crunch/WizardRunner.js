@@ -53,7 +53,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'isInLine',
+      name: 'isInline',
       expression: function(parentWizard, options) {
         return (options.inline ?? true) && !! parentWizard;
       }
@@ -63,7 +63,7 @@ foam.CLASS({
     async function launch() {
       x = this.__context__;
 
-      const seq = this.sequence 
+      const seq = this.sequence;
 
       let returnPromise = null;
       let promise$ = foam.core.SimpleSlot.create({ value: false }, this);

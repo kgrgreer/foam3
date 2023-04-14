@@ -51,7 +51,7 @@ foam.CLASS({
              foam.util.SafetyUtil.isEmpty(emailMessage.getTo()[0]) ) {
           FObjectFormatter formatter = formatter_.get();
           formatter.output(emailMessage);
-          Loggers.logger(x, this).warning("Property not set", "to", formatter.builder().toString());
+          Loggers.logger(x, this).info("WARN,Property not set", "to", formatter.builder().toString());
           throw new InvalidParameterException("To property is not set");
         }
 
@@ -61,9 +61,9 @@ foam.CLASS({
           formatter.output(emailMessage);
           String subject = (String) emailMessage.getTemplateArguments().get("subject");
           if ( ! foam.util.SafetyUtil.isEmpty(subject) ) {
-            Loggers.logger(x, this).warning("Property not used", "subject", subject, formatter.builder().toString());
+            Loggers.logger(x, this).info("WARN,Property not used", "subject", subject, formatter.builder().toString());
           } else {
-            Loggers.logger(x, this).warning("Property not set", "subject", formatter.builder().toString());
+            Loggers.logger(x, this).info("WARN,Property not set", "subject", formatter.builder().toString());
           }
           throw new InvalidParameterException("Subject property is not set");
         }
@@ -72,7 +72,7 @@ foam.CLASS({
         if ( ! emailMessage.isPropertySet("body") ) {
           FObjectFormatter formatter = formatter_.get();
           formatter.output(emailMessage);
-          Loggers.logger(x, this).warning("Property not set", "body", formatter.builder().toString());
+          Loggers.logger(x, this).info("WARN,Property not set", "body", formatter.builder().toString());
           throw new InvalidParameterException("Body property is not set");
         }
 
