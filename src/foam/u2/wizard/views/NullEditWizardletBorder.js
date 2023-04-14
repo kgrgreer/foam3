@@ -8,6 +8,10 @@ foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'NullEditWizardletBorder',
   extends: 'foam.u2.Element',
+
+  requires: [
+    'foam.u2.ControllerMode'
+  ],
   
   css: `
     ^ {
@@ -29,7 +33,12 @@ foam.CLASS({
     function init() {
       this
         .addClass()
-        .tag('div', null, this.content$);
+        .startContext({controllerMode: this.ControllerMode.VIEW})
+        // .tag('div', null, this.content$);
+          .call(function() { content = this.content; })
+        .endContext();
+        this.content = content
+
     }
   ]
   });
