@@ -245,7 +245,9 @@ foam.CLASS({
         return seq
           .remove('LoadCapabilitiesAgent')
           .remove('LoadTopConfig')
-          .remove('CreateWizardletsAgent')
+          // Doesnt remove CreateWizardletsAgent since removing it would push a parent wizard's wizardlets into 
+          // the context creating duplicates
+          // .remove('CreateWizardletsAgent')
           .remove('RequirementsPreviewAgent')
           ;
       }

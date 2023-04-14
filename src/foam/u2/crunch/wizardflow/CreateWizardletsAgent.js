@@ -43,6 +43,7 @@ foam.CLASS({
 
   methods: [
     async function execute() {
+      if ( ! this.capabilities ) return;
       this.wizardlets = await this.parseArrayToWizardlets(this.capabilities);
     },
     async function parseArrayToWizardlets(array, parent) {
