@@ -11,6 +11,7 @@ foam.ENUM({
   values: [
     'TRANSIENT',
     'CAPABLE',
-    'UCJ'
+    'UCJ',
+    'UCJ_SIMPLE'
   ]
 });
