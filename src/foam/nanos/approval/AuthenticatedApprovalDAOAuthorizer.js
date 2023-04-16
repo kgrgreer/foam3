@@ -10,12 +10,11 @@ foam.CLASS({
   implements: ['foam.nanos.auth.Authorizer'],
 
   javaImports: [
+    'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
-
+    'foam.nanos.auth.User'
   ],
 
   methods: [
@@ -31,8 +30,11 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
+        var approvalRequest = (ApprovalRequest) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null || ! SafetyUtil.equals(user.getId(), ((ApprovalRequest)obj).getApprover()) ) {
+        if ( user == null ||
+             ( ! canApprove(approvalRequest, user)
+              && approvalRequest.getStatus() == ApprovalStatus.REQUESTED ) ) {
           throw new AuthorizationException();
         }
       `
@@ -43,7 +45,7 @@ foam.CLASS({
         ApprovalRequest approvalRequest = (ApprovalRequest) oldObj;
         User user = ((Subject) x.get("subject")).getUser();
         AuthService authService = (AuthService) x.get("auth");
-        if ( user == null || ! SafetyUtil.equals(approvalRequest.getApprover(), user.getId()) && ! ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system"))) {
+        if ( user == null || ! canApprove(approvalRequest, user) && ! isSystemOrAdminUser(user) ) {
           throw new AuthorizationException();
         }
       `
@@ -52,7 +54,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null  || ! ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system")) ) {
+        if ( user == null || ! isSystemOrAdminUser(user) ) {
           throw new AuthorizationException("Approval can only be deleted by system");
         }
       `
@@ -69,6 +71,25 @@ foam.CLASS({
       javaCode: `
         AuthService authService = (AuthService) x.get("auth");
         return authService.check(x, "approval.remove.*");
+      `
+    },
+    {
+      name: 'canApprove',
+      type: 'Boolean',
+      args: 'ApprovalRequest approvalRequest, User user',
+      javaCode: `
+        return approvalRequest.getApprover() == 0 ||
+               approvalRequest.getApprover() == user.getId();
+      `
+    },
+    {
+      name: 'isSystemOrAdminUser',
+      type: 'Boolean',
+      args: 'User user',
+      javaCode: `
+        return user.getId() == User.SYSTEM_USER_ID ||
+               "system".equals(user.getGroup()) ||
+               "admin".equals(user.getGroup());
       `
     }
   ]
