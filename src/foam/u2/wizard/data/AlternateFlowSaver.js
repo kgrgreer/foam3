@@ -32,7 +32,6 @@
 
   methods: [
     async function save() {
-      debugger
       // TODO: investigate when this happens
       if ( ! this.wizardController.goNext ) {
         this.alternateFlow.execute(this.__subContext__);
