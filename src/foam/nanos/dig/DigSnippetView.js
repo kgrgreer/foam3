@@ -107,6 +107,7 @@ foam.CLASS({
 
                 start(self.Tab, {label: 'URL'}).
                  add(self.slot(function(data) {
+                   var u = data;
                     return this.E().
                       start('pre').
                         addClass('code').
