@@ -1613,6 +1613,12 @@ foam.CLASS({
       name: '__',
       transient: true,
       factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
+    },
+    {
+      class: 'Boolean',
+      name: 'reserveLabelSpace',
+      value: true,
+      documentation: 'Property to indicate if PropertyBorders need to reserve label space when label is empty'
     }
   ],
 

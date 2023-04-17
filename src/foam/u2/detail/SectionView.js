@@ -174,8 +174,7 @@ foam.CLASS({
                     .add(shown$.map(shown => {
                       return shown ? self.PropertyBorder.create({
                         prop: p,
-                        data$: self.data$,
-                        reserveLabelSpace: p.reserveLabelSpace ?? true
+                        data$: self.data$
                       }) :
                       self.E();
                     }))
