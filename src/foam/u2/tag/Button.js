@@ -362,6 +362,8 @@ foam.CLASS({
     }
 
     ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
       object-fit: contain;
     }
     ^svgIcon svg {
