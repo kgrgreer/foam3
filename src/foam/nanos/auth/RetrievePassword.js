@@ -131,7 +131,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ ...(this.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 0 }, this);
+          if ( ! this.resetByCode ) this.stack.push({ ...(this.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 0 }, this);
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
