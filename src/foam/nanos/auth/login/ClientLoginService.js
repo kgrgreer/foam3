@@ -43,11 +43,16 @@ foam.CLASS({
     {
       name: 'signin',
       code: async function(x, data, wizardFlow) {
+        var analyticable = foam.nanos.analytics.Analyticable.isInstance(data);
         try {
           var loginId = data.usernameRequired_ ? data.username : data.identifier;
           let logedInUser = await this.auth.login(x, loginId, data.password);
           
-          if ( ! logedInUser ) return;
+          if ( ! logedInUser ) {
+            if ( analyticable ) data.report('^fail-missing-subject', ['auth', 'error']);
+            return;
+          }
+
           data.email = logedInUser.email;
           data.username = logedInUser.userName;
 
@@ -57,6 +62,8 @@ foam.CLASS({
           this.loginSuccess = true;
           await this.ctrl.reloadClient();
           this.ctrl.subject = this.subject;
+
+          if ( analyticable ) data.report('^success', ['auth']);
 
           if ( ! wizardFlow ) {
             await ctrl.checkGeneralCapability();
