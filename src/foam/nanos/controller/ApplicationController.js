@@ -86,7 +86,6 @@ foam.CLASS({
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
-    'loginService',
     'loginSuccess',
     'loginVariables',
     'loginView',
@@ -424,14 +423,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.login.ClientLoginService',
-      name: 'loginService',
-      factory: function() {
-        return foam.nanos.auth.login.ClientLoginService.create({}, this.__subContext__);
-      }
     },
     {
       name: 'defaultUserLanguage',

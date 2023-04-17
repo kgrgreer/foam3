@@ -895,3 +895,12 @@ p({
     }
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"loginService",
+  "serve":true,
+  "lazyClient": false,
+  "authenticate":false,
+  "client":"{ \"class\": \"foam.nanos.auth.login.ClientLoginService\" }"
+})
