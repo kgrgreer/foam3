@@ -34,9 +34,9 @@ foam.CLASS({
 
   messages: [
     { name: 'SIGNIN_ERR', message: 'There was an issue logging in' },
-    { name: 'SIGNUP_ERR',  message: '' },
-    { name: 'SIGNUP_SUCCESS_TITLE', message: '' },
-    { name: 'SIGNUP_SUCCESS_MSG', message: '' }
+    { name: 'SIGNUP_ERR', message: 'There was a problem creating your account' },
+    { name: 'SIGNUP_SUCCESS_MSG', message: 'Account successfully created' },
+    { name: 'SIGNUP_SUCCESS_TITLE', message: 'Success' },
   ],
 
   methods: [

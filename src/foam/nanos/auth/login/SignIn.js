@@ -8,12 +8,6 @@ foam.CLASS({
   package: 'foam.nanos.auth.login',
   name: 'SignIn',
 
-  messages: [
-    { name: 'EMAIL_ERR', message: 'Valid email required' },
-    { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters' },
-    { name: 'USERNAME_ERR', message: 'Username required' }
-  ],
-
   properties: [
     {
       class: 'String',
