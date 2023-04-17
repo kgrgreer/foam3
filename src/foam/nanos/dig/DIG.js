@@ -193,8 +193,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       visibility: function(cmd) {
         return ( cmd == 'SELECT' || cmd == 'REMOVE' ) ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
-  },
-  {
+    },
+    {
       class: 'String',
       name: 'q',
       label: 'Select Query',
