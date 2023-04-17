@@ -132,7 +132,7 @@ foam.CLASS({
                 var prop = propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
                 if ( prop ) acc.push(prop);
                 return acc;
-              }, []).sort((a, b) => a.order - b.order);
+              }, []).sort((a, b) => b.order - a.order);
               return s;
             })
             .filter(s => {
