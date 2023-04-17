@@ -38,7 +38,11 @@
         return;
       }
 
-      var action = this.AlternateFlowAction.create({ alternateFlow: this.alternateFlow });
+      var action = this.AlternateFlowAction.create({
+        alternateFlow: this.alternateFlow,
+        isEnabled: function () { return true; },
+        isAvailable: function () { return true; }
+      });
       var x = this.__subContext__.createSubContext({ data: this.wizardController });
       action.maybeCall(x, this.wizardController);
       return this.delegate.save.call(this, arguments);
