@@ -434,7 +434,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
-        var url = window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.postURL + "&sessionId=" + localStorage.defaultSession;
         var req = this.HTTPRequest.create({
           url: url,
           method: 'POST',
