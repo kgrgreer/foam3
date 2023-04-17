@@ -43,10 +43,10 @@ foam.CLASS({
       var self = this;
       var trace = this.traceIDKey$get(this.__subContext__);
       var obj = this.objectIDKey$get(this.__subContext__);
-      this.analyticsAgent.sub('event', function(_, __, ___, evt) {
+      this.analyticsAgent.sub('event', async function(_, __, ___, evt) {
         // TODO: add subclass support
         let analyticEvent = self.AnalyticEvent.create({...evt, traceId: trace, objectId: obj, sessionId: self.sessionID})
-        self.analyticEventDAO.put(analyticEvent);
+        await self.analyticEventDAO.put(analyticEvent);
       });
 
       // TODO: Temp fix for 3.20 iframe logging
