@@ -58,16 +58,16 @@ foam.CLASS({
         return (options.inline ?? true) && !! parentWizard;
       }
     },
+    {
+      name: 'controller'
+    }
   ],
   methods: [
     async function launch() {
       x = this.__context__;
 
-      const seq = this.sequence 
-      // wizardContext
-      // - Is returned to places a wizard is instantiated
-      // - Contains the instantiated wizardlets (note: just the instantiated - not parentWizard)
-      let wizardContext = undefined;
+      const seq = this.sequence;
+
       let returnPromise = null;
       let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
 
@@ -79,17 +79,12 @@ foam.CLASS({
             });
           });
         }
-        wizardContext = await this.crunchController.inlineWizardFromSequence(
-          parentWizard,
-          seq, 
-          (options.returnCompletionPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {})
-        );
-        await returnPromise;
-      } else {
-        wizardContext = await seq.execute();
+
+        this.controller = await this.crunchController.inlineWizardFromSequence(this.parentWizard, seq, ( returnPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {}));
+        return returnPromise ? returnPromise : null;
       }
 
-      return wizardContext;
+      this.controller = await seq.execute();
     },
     function launchNotInline_ () {
       const seq = this.sequenceFromWizardType_();
