@@ -56,7 +56,8 @@ foam.CLASS({
       const loader = foam.json.parse(
         wizardlet.wao.loader, undefined, wizardlet.__subContext__);
       foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
-      return await loader.load({ ...a, old: wizardlet.data });
+      // Clone is necessary here as otherwise the two wizardlet's data gets linked together
+      return (await loader.load({ ...a, old: wizardlet.data })).clone();
     }
   ]
 });
