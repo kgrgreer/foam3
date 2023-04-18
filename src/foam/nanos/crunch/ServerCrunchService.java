@@ -425,7 +425,7 @@ public class ServerCrunchService
 
     ucj.setLastUpdatedRealUser(subject.getRealUser().getId());
 
-    DAO bareUserCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+    DAO bareUserCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     return (UserCapabilityJunction) bareUserCapabilityJunctionDAO.inX(x).put(ucj);
   }
 

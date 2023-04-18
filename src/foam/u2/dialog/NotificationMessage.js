@@ -111,7 +111,7 @@ foam.CLASS({
       right: 0.5em;
       top: 0.5em;
     }
-    ^close-icon > *{
+    ^close-icon > ^iconButton{
       width: 2rem;
       height: 2rem;
       padding: 0;
@@ -233,7 +233,9 @@ foam.CLASS({
           .startContext({ data: this })
             .start()
                 .addClass(this.myClass('close-icon'))
-                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .addClass(self.myClass('iconButton'))
+                .end()
             .end()
           .endContext()
         .end();

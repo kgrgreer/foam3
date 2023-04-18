@@ -1008,8 +1008,8 @@ foam.CLASS({
   documentation: 'A CView for drawing a polygon.',
 
   properties: [
-    { class: 'Array', of: 'Float', name: 'xCoordinates' },
-    { class: 'Array', of: 'Float', name: 'yCoordinates' },
+    { class: 'Array', of: 'Float', name: 'xCoordinates' }, // 'of' not used
+    { class: 'Array', of: 'Float', name: 'yCoordinates' }, // 'of' not used
     { class: 'foam.core.Color', name: 'color', value: '#000' },
     { class: 'Float', name: 'lineWidth', value: 1 }
   ],

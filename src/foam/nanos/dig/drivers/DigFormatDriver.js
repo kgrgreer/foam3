@@ -72,29 +72,21 @@ foam.CLASS({
       javaThrows: [
         'java.lang.Exception'
       ],
-      args: [
-        { name: 'x', type: 'X' },
-        { name: 'dao', type: 'DAO' },
-        { name: 'data', type: 'String' }
-      ],
+      args: 'X x, DAO dao, String data',
       javaCode: `
         throw new RuntimeException("Unimplemented parse method");
       `
     },
     {
       name: 'outputFObjects',
-      args: [
-        { name: 'x', type: 'X' },
-        { name: 'dao', type: 'DAO' },
-        { name: 'fobjects', type: 'List' }
-      ],
+      args: 'X x, DAO dao, List fobjects',
       javaCode: `
         throw new RuntimeException("Unimplemented output method");
       `
     },
     {
       name: 'put',
-      args: [ { name: 'x', type: 'X' } ],
+      args: 'X x',
       javaThrows: [
         'java.lang.Exception'
       ],
@@ -134,7 +126,7 @@ foam.CLASS({
     },
     {
       name: 'select',
-      args: [ { name: 'x', type: 'X' } ],
+      args: 'X x',
       javaCode: `
       HttpParameters p = x.get(HttpParameters.class);
       HttpServletResponse resp = x.get(HttpServletResponse.class);
@@ -208,7 +200,7 @@ foam.CLASS({
     },
     {
       name: 'remove',
-      args: [ { name: 'x', type: 'X' } ],
+      args: 'X x',
       javaCode: `
       HttpParameters p = x.get(HttpParameters.class);
       String daoName = p.getParameter("dao");
@@ -242,7 +234,7 @@ foam.CLASS({
     {
       name: 'getDAO',
       type: 'DAO',
-      args: [ { name: 'x', type: 'X' } ],
+      args: 'X x',
       javaCode: `
       HttpParameters p = x.get(HttpParameters.class);
       String daoName = p.getParameter("dao");
@@ -279,7 +271,7 @@ foam.CLASS({
     {
       name: 'daoPut',
       type: 'FObject',
-      args: [ { name: 'x', type: 'Context'}, { name: 'dao', type: 'DAO' }, { name: 'obj', type: 'FObject' } ],
+      args: 'Context x, DAO dao, FObject obj',
       synchronized: true,
       javaCode: `
       FObject nu = obj;

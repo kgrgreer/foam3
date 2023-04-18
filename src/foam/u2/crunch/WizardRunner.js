@@ -53,7 +53,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'isInLine',
+      name: 'isInline',
       expression: function(parentWizard, options) {
         return (options.inline ?? true) && !! parentWizard;
       }
