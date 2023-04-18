@@ -42,7 +42,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function execute() {
+    function execute() {
       var self = this;
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
         self.logAnalyticsEvent(evt);
