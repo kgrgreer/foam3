@@ -78,6 +78,7 @@ foam.CLASS({
     'buildingStack',
     'crunchController',
     'currentMenu',
+    'defaultUserLanguage',
     'displayWidth',
     'group',
     'initLayout',
@@ -422,6 +423,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
+    },
+    {
+      name: 'defaultUserLanguage',
+      factory: function() {
+        let l = foam.locale.split('-');
+        let code = l[0];
+        let variant = l[1];
+        let language = foam.nanos.auth.Language.create({ code: code });
+        if ( variant ) language.variant = variant;
+        return language;
+      }
     },
     //TODO: temporary fix, remove when client signin service is fixed/added
     {
@@ -796,7 +808,7 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.nanos.auth.login.LoginView' }), mode_: 0 }, parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
