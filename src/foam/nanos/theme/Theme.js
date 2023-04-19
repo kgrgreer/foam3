@@ -29,10 +29,6 @@ foam.CLASS({
     // 'foam.nanos.auth.ServiceProviderAware'
   ],
 
-  imports: [
-    'isDesktop'
-  ],
-
   requires: [
     'foam.nanos.auth.PasswordPolicy',
     'foam.nanos.theme.ThemeGlyphs',
@@ -285,8 +281,8 @@ foam.CLASS({
       class: 'Image',
       name: 'topNavLogo',
       displayWidth: 60,
-      expression: function(largeLogoEnabled, isDesktop) {
-        return largeLogoEnabled && isDesktop ? this.largeLogo : this.logo;
+      factory: function() {
+        return this.largeLogoEnabled ? this.largeLogo : this.logo;
       },
       view: {
         class: 'foam.u2.MultiView',
