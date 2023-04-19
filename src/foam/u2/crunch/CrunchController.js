@@ -114,6 +114,12 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'openWizardInspector',
+      code: function() {
+        this.lastActiveWizard.OPEN_WIZARD_INSPECTOR.code.call(this.lastActiveWizard);
+      }
+    },
+    {
       name: 'createWizardSequence',
       documentation: `
         Create the default wizard sequence for the specified capability in
@@ -245,7 +251,9 @@ foam.CLASS({
         return seq
           .remove('LoadCapabilitiesAgent')
           .remove('LoadTopConfig')
-          .remove('CreateWizardletsAgent')
+          // Doesnt remove CreateWizardletsAgent since removing it would push a parent wizard's wizardlets into 
+          // the context creating duplicates
+          // .remove('CreateWizardletsAgent')
           .remove('RequirementsPreviewAgent')
           ;
       }
@@ -455,10 +463,11 @@ foam.CLASS({
       });
       wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
         foam.events.oneTime(() => {
-          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length) 
+          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length)
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
+      return x;
     },
 
     function maybeLaunchInterceptView(intercept) {

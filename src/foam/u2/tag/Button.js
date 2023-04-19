@@ -549,7 +549,7 @@ foam.CLASS({
           } else {
             this.start().addClass('h600').add(this.label$).end();
           }
-        } else if ( this.label.render ) {
+        } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
           this.tag(this.label);
         } else {
           this.add(this.label$);

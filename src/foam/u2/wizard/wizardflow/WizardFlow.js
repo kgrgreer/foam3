@@ -13,6 +13,7 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.wizard.AlternateFlow',
     'foam.u2.wizard.agents.AlternateFlowAgent',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardType',
@@ -21,6 +22,7 @@ foam.CLASS({
     'foam.u2.wizard.wizardflow.Export',
     'foam.u2.wizard.wizardflow.AddWizardlet',
     'foam.u2.wizard.wizardflow.EditWizardlet',
+    'foam.u2.wizard.wizardflow.RemoveWizardlets',
     'foam.u2.wizard.wizardflow.Predicated',
     'foam.util.async.AdvanceToAgent'
   ],

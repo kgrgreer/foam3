@@ -53,17 +53,23 @@ foam.CLASS({
       }
     },
     {
-      name: 'isInLine',
+      name: 'isInline',
       expression: function(parentWizard, options) {
         return (options.inline ?? true) && !! parentWizard;
       }
     },
+    {
+      name: 'controller',
+      documentation: `The launched wizard context.
+        Ultimately the return of the sequence.
+        Populated in launch()`
+    }
   ],
   methods: [
     async function launch() {
       x = this.__context__;
 
-      const seq = this.sequence 
+      const seq = this.sequence;
 
       let returnPromise = null;
       let promise$ = foam.core.SimpleSlot.create({ value: false }, this);
@@ -77,11 +83,11 @@ foam.CLASS({
           });
         }
 
-        await this.crunchController.inlineWizardFromSequence(parentWizard, seq, ( returnPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {}));
+        this.controller = await this.crunchController.inlineWizardFromSequence(this.parentWizard, seq, ( returnPromise ? { onLastWizardletSaved: () => promise$.set(true) } : {}));
         return returnPromise ? returnPromise : null;
       }
 
-      await seq.execute();
+      this.controller = await seq.execute();
     },
     function launchNotInline_ () {
       const seq = this.sequenceFromWizardType_();
@@ -133,6 +139,18 @@ foam.CLASS({
           .remove('RequirementsPreviewAgent')
       }
 
+      if ( wizardType == this.WizardType.TRANSIENT ) {
+        return this.crunchController
+          .createTransientWizardSequence(this.__subContext__)
+          .addBefore('ConfigureFlowAgent', {
+            class: 'foam.u2.wizard.agents.RootCapabilityAgent',
+            rootCapability: this.source
+          })
+          .reconfigure('WAOSettingAgent', {
+            waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.CAPABLE
+          })
+          .remove('RequirementsPreviewAgent')
+      }
       console.error(
         '%cAre you configuring a new wizard?%c%s',
         'color:red;font-size:30px', '',

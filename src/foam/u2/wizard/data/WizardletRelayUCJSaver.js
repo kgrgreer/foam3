@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.wizard.data',
-  name: 'UserCapabilityJunctionSaver',
+  name: 'WizardletRelayUCJSaver',
   extends: 'foam.u2.wizard.data.ProxySaver',
 
   documentation: `
@@ -17,27 +17,31 @@ foam.CLASS({
     'crunchService',
     'subject',
     'wizardletId as importedWizardletId',
-    'wizardlets',
-    'wizardSubject?'
+    'wizardlets'
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'capabilityId'
+      name: 'wizardletId'
     }
   ],
 
 
   methods: [
     async function save(data) {
-      const ucj = await ( this.wizardSubject ? this.crunchService.updateJunctionFor(
-        null, this.capabilityId, data, null,
-        this.wizardSubject.user, this.wizardSubject.realUser
+      let useId = this.wizardletId || this.importedWizardletId;
+      const wizardlet = await this.wizardlets.find(w => w.id === useId);
+      let useData = this.wizardletId ? wizardlet.data : data;
+      let p = this.subject ? this.crunchService.updateJunctionFor(
+        null, useId, useData, null,
+        this.subject.user, this.subject.realUser
       ) : this.crunchService.updateJunction(null,
-        this.capabilityId, data, null
-      ));
-      console.log('after ---------- '+this.capabilityId, x.subject.user.id);
+        useId, useData, null
+      );
+      await p.then(ucj => {
+        wizardlet.status = ucj.status;
+      }).catch(e => console.debug(e) );
       await this.delegate.save(data);
     }
   ]

@@ -58,7 +58,8 @@ NOTE: when using the java client, the first call to a newly started instance may
   ],
 
   imports: [
-    'AuthenticatedNSpecDAO'
+    'AuthenticatedNSpecDAO',
+    'window'
   ],
 
   tableColumns: [
@@ -192,8 +193,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       visibility: function(cmd) {
         return ( cmd == 'SELECT' || cmd == 'REMOVE' ) ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
-  },
-  {
+    },
+    {
       class: 'String',
       name: 'q',
       label: 'Select Query',
@@ -253,11 +254,10 @@ NOTE: when using the java client, the first call to a newly started instance may
       class: 'String',
       name: 'postURL',
       hidden: true,
-      // Why is the javaFactory needed?
-      javaFactory: 'return "http://"+System.getProperty("hostname", "localhost")+":8080";',
+      transient: true,
       expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
         var query = false;
-        var url   = "/service/dig";
+        var url   = this.window.location.origin + "/service/dig";
 
         if ( daoKey ) {
           url += "?";
@@ -434,7 +434,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
-        var url = window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.postURL + "&sessionId=" + localStorage.defaultSession;
         var req = this.HTTPRequest.create({
           url: url,
           method: 'POST',

@@ -116,6 +116,7 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         UserCapabilityJunction old = (UserCapabilityJunction) super.find_(x, ucj.getId());
 
+
         // do not allow updates to sourceId/targetId properties
         AuthService auth = (AuthService) x.get("auth");
         if ( old != null && ucj.getSourceId() != old.getSourceId() && ! auth.check(x, SOURCE_CAPABILITY_ID_CHANGE) ) throw new RuntimeException(this.ERROR_TWO);

@@ -41,7 +41,7 @@ foam.CLASS({
       // STEP 1) Find EmailTemplate
       EmailTemplate emailTemplate = EmailTemplateSupport.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
       if ( emailTemplate == null ) {
-        logger.warning("EmailTemplate not found", templateName, group);
+        logger.info("WARN,EmailTemplate not found", templateName, group);
         return emailMessage;
       }
 
@@ -49,8 +49,8 @@ foam.CLASS({
       try {
         if ( emailTemplate.getEnabled() )
           emailMessage = emailTemplate.apply(x, group, emailMessage, templateArgs);
-      } catch (Exception e) {
-        logger.error("EmailTemplate apply failed", templateName, "group", group, e.getMessage(), e);
+      } catch (RuntimeException e) {
+        logger.info("ERROR,EmailTemplate apply failed", templateName, "group", group, e.getMessage(), e);
       }
       return emailMessage;
       `
