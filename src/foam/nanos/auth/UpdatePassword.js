@@ -33,7 +33,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'updatePasswordSection',
+      name: 'resetPasswordSection',
       title: function() {
         return this.UPDATE_PASSWORD_TITLE
       },
@@ -47,7 +47,7 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'originalPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
         passwordIcon: true
@@ -69,7 +69,7 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'newPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.PasswordView',
@@ -95,7 +95,7 @@ foam.CLASS({
       class: 'Password',
       name: 'confirmationPassword',
       label: 'Confirm Password',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
         passwordIcon: true
@@ -144,7 +144,7 @@ foam.CLASS({
   actions: [
     {
       name: 'updatePassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_) {
         return ! errors_;
