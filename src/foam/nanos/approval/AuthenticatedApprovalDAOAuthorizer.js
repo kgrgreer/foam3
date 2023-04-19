@@ -32,11 +32,17 @@ foam.CLASS({
       javaCode: `
         var approvalRequest = (ApprovalRequest) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null ||
-             ( ! canApprove(approvalRequest, user)
-              && approvalRequest.getStatus() == ApprovalStatus.REQUESTED ) ) {
+        if ( user == null )
           throw new AuthorizationException();
-        }
+
+        // The approval request is settled, anyone can see it
+        if ( approvalRequest.getAssignedTo() == 0
+          && approvalRequest.getStatus() != ApprovalStatus.REQUESTED
+        ) return;
+
+        // The approval request is in pending, only the approver can see it
+        if ( ! canApprove(approvalRequest, user) )
+          throw new AuthorizationException();
       `
     },
     {
