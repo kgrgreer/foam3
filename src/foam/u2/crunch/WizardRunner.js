@@ -59,7 +59,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'controller'
+      name: 'controller',
+      documentation: `The launched wizard context.
+        Ultimately the return of the sequence.
+        Populated in launch()`
     }
   ],
   methods: [
