@@ -95,9 +95,12 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Assigned',
       predicateFactory: function(e) {
-        return e.EQ(
-          foam.nanos.approval.ApprovalRequest.ASSIGNED_TO,
-          foam.nanos.approval.ApprovalRequest.APPROVER
+        return e.AND(
+          e.NEQ(foam.nanos.approval.ApprovalRequest.ASSIGNED_TO, 0),
+          e.EQ(
+            foam.nanos.approval.ApprovalRequest.ASSIGNED_TO,
+            foam.nanos.approval.ApprovalRequest.APPROVER
+          )
         );
       }
     },
