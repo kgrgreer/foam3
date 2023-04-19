@@ -61,7 +61,7 @@ foam.CLASS({
     function ainit() {
       // this.applicationBorder.content.add('Clock');
 //      this.applicationBorder.content.add(foam.demos.clock.Clock.create({}, this));
-      this.applicationBorder.content.add(foam.nanos.u2.navigation.SignIn.create({}, this));
+      this.applicationBorder.content.add(foam.nanos.auth.login.SignIn.create({}, this));
     }
   ]
 });
@@ -147,7 +147,7 @@ foam.CLASS({
   requires: [
     'foam.nanos.boot.NSpec',
     'foam.nanos.client.ClientBuilder',
-    'foam.nanos.u2.navigation.SignIn',
+    'foam.nanos.auth.login.SignIn',
 
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',

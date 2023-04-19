@@ -16,8 +16,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.u2.navigation.SignIn',
-    'foam.nanos.u2.navigation.SignUp'
+    'foam.nanos.auth.login.SignIn.',
+    'foam.nanos.auth.login.SignUp'
   ],
 
   css: `
@@ -41,19 +41,6 @@ foam.CLASS({
       font-size: larger;
       font-weight: bold;
       padding-bottom: 2rem;
-    }
-
-    ^ .foam-u2-ActionView-login {
-      margin: auto;
-      padding: 2rem;
-      font-size: 2.5rem;
-      position: relative;
-      bottom: -2rem;
-      width: 90%;
-      border-radius: 50px;
-      background-image: linear-gradient(#604aff, #2e2379);
-      background-color: unset;
-      box-shadow: 0 0px 5px 4px #2e2379;
     }
 
     ^ .foam-u2-detail-SectionedDetailPropertyView m3 {
