@@ -116,3 +116,12 @@ var cols = E().
     start(Tab, {label: 'Tab 3'}).add('Even more contents in tab 3').end().
   end();
 cols.write();
+
+
+E('br').write();
+E('br').write();
+
+var ctxBorder = E(). 
+  tag(ContextSwitchBorderTest, { test: 123 });
+
+ctxBorder.write();
