@@ -241,6 +241,11 @@ foam.CLASS({
       writePermissionRequired: true
     },
     {
+      class: 'Boolean',
+      name: 'shouldResizeLogo',
+      documentation: 'Enables switching between largeLogo and logo'
+    },
+    {
       class: 'Image',
       name: 'loginImage',
       displayWidth: 60,
