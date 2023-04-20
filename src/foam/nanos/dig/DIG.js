@@ -204,6 +204,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       }
     },
     {
+      class: 'StringArray',
+      name: 'columns',
+      section: 'details',
+      view: 'foam.u2.view.StringView',
+      help: 'Specify column names as a comma-separated list. Leave empty to receive all columns.',
+      visibility: function(cmd) {
+        return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+    },
+    {
       class: 'Long',
       name: 'limit',
       section: 'details',
@@ -255,7 +265,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'postURL',
       hidden: true,
       transient: true,
-      expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
+      expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, columns, limit, skip) {
         var query = false;
         var url   = this.window.location.origin + "/service/dig";
 
@@ -293,6 +303,11 @@ NOTE: when using the java client, the first call to a newly started instance may
           url += query ? "&" : "?";
           query = true;
           url += "q=" + encodeURIComponent(q);
+        }
+        if ( columns ) {
+          url += query ? "&" : "?";
+          query = true;
+          url += "columns=" + encodeURIComponent(columns);
         }
         if ( limit > 0 && limit != Number.MAX_SAFE_INTEGER && limit != 1000 ) {
           url += query ? "&" : "?";
