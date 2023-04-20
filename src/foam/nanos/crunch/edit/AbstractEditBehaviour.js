@@ -18,6 +18,11 @@ foam.CLASS({
       factory: function(){
         return 'foam.u2.wizard.views.NullEditWizardletBorder'
       }
+    },
+    {
+      name: 'title',
+      class: 'String',
+      documentation: 'wizardlet title used by edit wizards'
     }
   ]
 });
