@@ -121,7 +121,7 @@ foam.CLASS({
     {
       name: 'maybeInit',
       javaType: 'void',
-      synchronized: true,
+      // synchronized: true,
       javaCode: `
         if ( ! getInitialized() ) {
           setInitialized(true);
