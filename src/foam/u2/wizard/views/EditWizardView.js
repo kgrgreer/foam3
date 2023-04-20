@@ -28,28 +28,28 @@ foam.CLASS({
       this
         .react(function (data$wizardlets) {
           this.forEach(data$wizardlets, function (wizardlet) {
-            const border = this.getBorder_(wizardlet);
-            self.wrapBorder_(this, wizardlet, function() {
+            wizardlet.load()
+            const x = this.__subContext__.createSubContext({wizardlet})
+            self.wrapBorder_(x, this, wizardlet, function() {
               this
                 .forEach(wizardlet.sections, function (section) {
-                  this.add(section.createView() ?? this.E());
+                  this.tag(section.createView( {}, { controllerMode: this.__subSubContext__.controllerMode$ } ) ?? this.E());
                 })
             })
           });
         });
     },
 
-    function getBorder_(wizardlet) {
+    function getBorder_(x, wizardlet) {
       if ( ! wizardlet.capability ) return this.Block;
       return wizardlet.capability.editBehaviour.wizardletBorder
-      // eventually return the specific border based on edit behaviour
     },
 
-    function wrapBorder_(el, wizardlet, callback) {
+    function wrapBorder_(x, el, wizardlet, callback) {
       el
       .start(this.CardBorder)
         .startContext({ wizardlet })
-          .start(this.getBorder_(wizardlet))
+          .start(this.getBorder_(x, wizardlet))
             .call(callback)
           .end()
         .endContext()
