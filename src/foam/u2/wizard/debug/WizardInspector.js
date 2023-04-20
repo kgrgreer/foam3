@@ -83,7 +83,7 @@ foam.CLASS({
                       : self.myClass('not-current')))
                   .addClass(self.myClass('wizardlet-row'))
                   .startContext({ data: wizardlet })
-                    .add(wizardlet.TITLE)
+                    .add(wizardlet.title || wizardlet.id)
                     .start()
                       .addClass(self.myClass('wizardlet-actions'))
                       .tag(wizardlet.IS_AVAILABLE)

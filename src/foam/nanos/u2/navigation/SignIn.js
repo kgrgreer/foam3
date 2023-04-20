@@ -139,6 +139,7 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function() {
+      this.ctrl.groupLoadingHandled = true;
         if ( this.subject.realUser.twoFactorEnabled ) {
           this.loginSuccess = false;
           this.window.history.replaceState({}, document.title, '/');
@@ -151,7 +152,7 @@ foam.CLASS({
     {
       name: 'verifyEmail',
       code: async function(x, email, username) {
-      this.ctrl.groupLoadingHandled = true;
+//      this.ctrl.groupLoadingHandled = true;
         this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
         this.stack.push(this.StackBlock.create({
           view: {

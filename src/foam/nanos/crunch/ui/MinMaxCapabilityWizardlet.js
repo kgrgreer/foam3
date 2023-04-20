@@ -97,7 +97,7 @@ foam.CLASS({
         available if at least one section is available. If false, wizardlet
         does not display even if some sections are available.
       `,
-      postSet: function(_,n){ 
+      postSet: function(_,n){
         if ( !n ){
           this.data.selectedData = [];
 
@@ -178,7 +178,6 @@ foam.CLASS({
             choiceWizardlets$: this.choiceWizardlets$,
             isLoaded: true,
             customView: {
-              ...this.choiceSelectionView,
               choices$: this.slot(function(choices) { return choices.sort(); }),
               showValidNumberOfChoicesHelper: false,
               data$: this.data.selectedData$,
@@ -188,7 +187,8 @@ foam.CLASS({
                 ...this.choiceView,
                 of: 'foam.nanos.crunch.Capability',
                 largeCard: true
-             }
+             },
+             ...this.choiceSelectionView
             }
           })
         ];
@@ -231,10 +231,19 @@ foam.CLASS({
     {
       name: 'showDefaultSections',
       class: 'Boolean'
+    },
+    {
+      class: 'Boolean',
+      name: 'autoNextOnValid'
     }
   ],
 
   methods: [
+    function init() {
+      this.isValid$.sub(()=>{
+        if ( this.isValid && this.autoNextOnValid ) this.wizardController.next();
+      });
+    },
     function addPrerequisite(wizardlet, opt_meta) {
       const meta = {
         lifted: false,
@@ -280,7 +289,7 @@ foam.CLASS({
       );
 
       slot.set(this.isPrereqSelected(prereqWizardlet));
-      
+
       return slot;
     },
 

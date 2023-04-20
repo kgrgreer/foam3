@@ -12,6 +12,9 @@ foam.CLASS({
   requires: [
     'foam.u2.borders.CardBorder'
   ],
+  exports: [
+    'data'
+  ],
 
   axioms: [
     foam.pattern.Faceted.create({
@@ -89,11 +92,12 @@ foam.CLASS({
         if ( n ) this.selectionDisabled.pub();
       }
     },
-    'largeCard'
+    'largeCard', 'citationView'
   ],
 
   methods: [
     function render() {
+    var self = this;
       this
       .addClass(this.myClass())
       .addClass(this.myClass('innerFlexer'))
@@ -106,7 +110,9 @@ foam.CLASS({
           return isSelected  && isDisabled;
         }))
         .on('click', this.onClick)
-        .add(this.label)
+        .startContext({data: this})
+          .tag(self.citationView)
+        .endContext()
       .end();
     }
   ],

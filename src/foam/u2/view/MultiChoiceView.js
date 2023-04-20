@@ -297,7 +297,10 @@ foam.CLASS({
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
                           if ( indexDataToAdd === -1 ){
-                            if ( self.data.length >= self.maxSelected ){
+                            if ( self.data.length >= self.maxSelected ) {
+                              if ( self.maxSelected === 1 ) {
+                                self.data = [valueSimpSlot.get()];
+                              }
                               return;
                             }
 

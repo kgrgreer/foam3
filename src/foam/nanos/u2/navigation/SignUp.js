@@ -207,6 +207,7 @@ foam.CLASS({
     {
       name: 'nextStep',
       code: async function() {
+        this.ctrl.groupLoadingHandled = true;
         await this.verifyEmail(this.__subContext__, this.email, this.userName);
       }
     },

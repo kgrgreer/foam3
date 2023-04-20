@@ -642,6 +642,7 @@ foam.POM({
     { name: "foam/u2/view/MultiChoiceView",                           flags: "web" },
     { name: "foam/u2/view/CardSelectionView",                         flags: "web" },
     { name: "foam/u2/view/CardSelectView",                            flags: "web" },
+    { name: "foam/u2/view/SelectCitationView",                            flags: "web" },
     { name: "foam/u2/view/CardSelectWithRadioView",                   flags: "web" },
     { name: "foam/u2/view/NoBackStack",                               flags: "web" },
     { name: "foam/u2/view/ReadOnlyEnumView",                          flags: "web" },
