@@ -111,12 +111,6 @@
           INVALID: config$: someLabelSlot$.map(v => { return {label: v} }) --> Will not update prop label
       `
     },
-    {
-      class: 'Boolean',
-      name: 'reserveLabelSpace',
-      value: true,
-      documentation: `When set to true space for label is reserved even if label is empty, useful for grid based detailViews`
-    },
     ['helpEnabled', false]
   ],
 
@@ -154,11 +148,11 @@
       this.
         addClass().
         show(visibilitySlot).
-        add(this.slot(function(reserveLabelSpace, prop$label){
+        add(this.slot(function(prop$reserveLabelSpace, prop$label){
           let el = this.E().addClass(this.myClass('label'), 'p-semiBold');
           return prop$label ?
             el.call(prop.labelFormatter, [data, prop]) :
-            ( reserveLabelSpace ? el : undefined )
+            ( prop$reserveLabelSpace ? el : undefined )
         })).
         start().
           addClass(this.myClass('propHolder')).

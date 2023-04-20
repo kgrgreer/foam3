@@ -32,11 +32,18 @@ foam.CLASS({
       javaCode: `
         var approvalRequest = (ApprovalRequest) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null ||
-             ( ! canApprove(approvalRequest, user)
-              && approvalRequest.getStatus() == ApprovalStatus.REQUESTED ) ) {
+        if ( user == null )
           throw new AuthorizationException();
-        }
+
+        // The approval request is settled, anyone in the approval groups can see it
+        if ( approvalRequest.getAssignedTo() == 0
+          && approvalRequest.getStatus() != ApprovalStatus.REQUESTED
+          && isInApprovalGroup(approvalRequest, user)
+        ) return;
+
+        // The approval request is in pending, only the approver can see it
+        if ( ! canApprove(approvalRequest, user) )
+          throw new AuthorizationException();
       `
     },
     {
@@ -90,6 +97,22 @@ foam.CLASS({
         return user.getId() == User.SYSTEM_USER_ID ||
                "system".equals(user.getGroup()) ||
                "admin".equals(user.getGroup());
+      `
+    },
+    {
+      name: 'isInApprovalGroup',
+      type: 'Boolean',
+      args: 'ApprovalRequest approvalRequest, User user',
+      javaCode: `
+        if ( user.getGroup().equals(approvalRequest.getGroup()) )
+          return true;
+
+        if ( approvalRequest.getAdditionalGroups() != null )
+          for ( var group : approvalRequest.getAdditionalGroups() )
+            if ( user.getGroup().equals(group) )
+              return true;
+
+        return false;
       `
     }
   ]
