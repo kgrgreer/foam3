@@ -350,7 +350,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()));
+        ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()));
         try {
           if ( getPredicate() instanceof MQLExpr || getPredicate() instanceof FScriptPredicate ) {
             RulerData data = new RulerData();
