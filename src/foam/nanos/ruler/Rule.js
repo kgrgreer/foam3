@@ -40,11 +40,13 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
+    'java.util.Collection',
+    'java.util.Date',
     'foam.util.retry.RetryStrategy',
     'foam.util.retry.SimpleRetryStrategy',
-    'java.util.Collection',
-    'java.util.Date'
+    'foam.util.SafetyUtil'
   ],
 
   tableColumns: [
@@ -348,8 +350,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! getEnabled() ) return false;
-
+        ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()));
         try {
           if ( getPredicate() instanceof MQLExpr || getPredicate() instanceof FScriptPredicate ) {
             RulerData data = new RulerData();
@@ -405,6 +406,7 @@ foam.CLASS({
       javaCode: `
         PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
         try {
+          ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()), " Action");
           getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
         } finally {
           pm.log(x);
@@ -440,6 +442,7 @@ foam.CLASS({
       ],
       javaCode: `
         try {
+          ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()), " AsyncAction");
           apply(x, obj, oldObj, ruler, rule, new DirectAgency());
         } catch ( Exception e ) {
           var strategy = getMaxRetry() > 0 ?
@@ -447,6 +450,7 @@ foam.CLASS({
             (RetryStrategy) x.get("ruleRetryStrategy");
 
           new RetryManager(strategy, rule.getName()).submit(x, userX -> {
+            ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()), " AsyncActionRetry");
             apply(x, obj, oldObj, ruler, rule, new DirectAgency());
           });
         }
