@@ -66,6 +66,9 @@ foam.CLASS({
         flex: 1;
         gap: 8px;
       }
+      ^right {
+        justify-content: flex-end;
+      }
       ^logo {
         flex: unset;
         justify-content: flex-start;
@@ -112,7 +115,7 @@ foam.CLASS({
         .end()
         .add(this.slot(function(displayWidth) {
           if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
-            return this.E().addClass(this.myClass('components-container'))
+            return this.E().addClass(this.myClass('components-container'), this.myClass('right'))
             .add(self.slot(function(notifications) {
               if ( ! notifications ) return;
               return this.E().start(notifications, {
