@@ -406,7 +406,7 @@ foam.CLASS({
       javaCode: `
         PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
         try {
-          ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()), " Action");
+          ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()), "Action");
           getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
         } finally {
           pm.log(x);
