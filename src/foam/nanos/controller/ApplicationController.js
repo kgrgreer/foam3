@@ -81,7 +81,6 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
-    'isDesktop',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
@@ -224,13 +223,6 @@ foam.CLASS({
       of: 'foam.u2.layout.DisplayWidth',
       name: 'displayWidth',
       value: foam.u2.layout.DisplayWidth.XL
-    },
-    {
-      class: 'Boolean',
-      name: 'isDesktop',
-      expression: function(displayWidth) {
-        return displayWidth.ordinal >= foam.u2.layout.DisplayWidth.SM.ordinal;
-      }
     },
     {
       name: 'clientPromise',
