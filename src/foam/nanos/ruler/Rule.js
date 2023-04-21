@@ -450,7 +450,7 @@ foam.CLASS({
             (RetryStrategy) x.get("ruleRetryStrategy");
 
           new RetryManager(strategy, rule.getName()).submit(x, userX -> {
-            ((OMLogger) x.get("OMLogger")).log("Rule: " + (SafetyUtil.isEmpty(getName()) ? getId() : getName()), " AsyncActionRetry");
+            ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()), "AsyncActionRetry");
             apply(x, obj, oldObj, ruler, rule, new DirectAgency());
           });
         }
