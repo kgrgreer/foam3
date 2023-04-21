@@ -33,7 +33,7 @@ foam.CLASS({
       generateJava: false,
       name: 'isEnabled',
       label: 'Enabled',
-      help: 'Function to determine if button is enabled.',
+      documentation: 'Function to determine if button is enabled.',
       value: null
     },
   ],
