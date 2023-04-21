@@ -121,7 +121,9 @@
       var prop = this.prop;
 
       this.SUPER();
-
+      // Use context's controllermode$ to handle visibility when available
+      // Needed to allow use of propertyBorders outside of controllers
+      var controllerMode$ = this.__context__.controllerMode$ || this.controllerMode$;
       var data = this.__context__.data;
 
       // TODO: Add simplified "required: true" UI
