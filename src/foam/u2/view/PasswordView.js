@@ -86,6 +86,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isAvailable',
       value: true
+    },
+    {
+      class: 'String',
+      name: 'autocomplete'
     }
   ],
 
@@ -100,6 +104,7 @@ foam.CLASS({
           type$: this.type$,
           data$: this.data$,
           onKey: true,
+          autocomplete: this.autocomplete
         })
           .addClass('full-width-input-password')
           .on('keyup', () => {

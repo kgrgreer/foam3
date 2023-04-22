@@ -162,7 +162,7 @@ foam.CLASS({
             .end();
         }))
         .add(this.slot( (subject$realUser, subject$user) => {
-          if ( ! this.subject.realUser || foam.util.equals(this.subject.user, this.subject.realUser) ) return;
+          if ( ! this.subject.realUser || this.subject.user.id == this.subject.realUser.id ) return;
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
                 .addClass(this.myClass('agentName'))
