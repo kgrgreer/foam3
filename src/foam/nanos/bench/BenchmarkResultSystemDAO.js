@@ -27,7 +27,7 @@ foam.CLASS({
 
       // br.setJavaVersion(System.getProperty("java.version"));
       // br.setJavaCompiler(System.getProperty("java.compiler"));
-      br.setJavaFullversion(System.getProperty("java.fullversion"));
+      br.setJavaFullversion(String.valueOf(Runtime.version().version().get(0)));
       // br.setJavaRuntimeVersion(System.getProperty("java.runtime.version"));
       br.setOsArch(System.getProperty("os.arch"));
       br.setOsName(System.getProperty("os.name"));
