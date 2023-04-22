@@ -78,7 +78,6 @@ foam.CLASS({
                   while ( true ) {
                     Socket client = serverSocket.accept();
                     client.setSoTimeout(getSoTimeout());
-                    logger.info("accept", client.getRemoteSocketAddress().toString());
                     agency.submit(
                       x,
                       new SocketServerProcessor(getX(), client),
