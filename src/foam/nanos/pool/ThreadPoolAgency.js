@@ -280,9 +280,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-//      if ( getQueued() > 0 ) {
-        Loggers.logger(x, this).info(getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
-//      }
+      Loggers.logger(x, this).info(getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
       scheduleReporting();
       `
     }
