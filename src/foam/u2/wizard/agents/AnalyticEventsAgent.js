@@ -59,6 +59,10 @@ foam.CLASS({
             // This warnings happen too frequently to be useful
             return;
           }
+
+          if ( a.length == 1 && a[0] === '' )
+            a[0] = new Error("Empty console error log").stack;
+
           this.analyticsAgent.pub('event', {
             name: 'CONSOLE_' + method.toUpperCase(),
             extra: foam.json.stringify(a)
