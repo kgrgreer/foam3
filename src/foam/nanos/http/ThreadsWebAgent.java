@@ -7,6 +7,7 @@
 package foam.nanos.http;
 
 import foam.core.*;
+import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import java.io.PrintWriter;
 import java.lang.StackTraceElement;
@@ -27,6 +28,7 @@ public class ThreadsWebAgent
     PrintWriter        out         = x.get(PrintWriter.class);
     HttpServletRequest req         = x.get(HttpServletRequest.class);
     Set<Thread>        threadSet   = Thread.getAllStackTraces().keySet();
+    Session            session      = x.get(Session.class);
     Thread[]           threadArray = threadSet.toArray(new Thread[threadSet.size()]);
 
     out.println("<HTML>");
@@ -40,6 +42,7 @@ public class ThreadsWebAgent
     out.println("<table style=\"width: 100%\">");
     out.println("<tr>");
     out.println("<th style=\"text-align: left\">Thread Name</th>");
+    out.println("<th style=\"text-align: left\">State</th>");
     out.println("<th>Last Method Call</th>");
     out.println("</tr>");
 
@@ -68,7 +71,10 @@ public class ThreadsWebAgent
 
       out.println("<tr>");
       out.println("<td>");
-      out.println("<a href=\"threads?id="+ thread.getId() + "\">" + thread.toString() + "</a>");
+      out.println("<a href=\"threads?id="+ thread.getId() + "&sessionId="+session.getId() + "\">" + thread.toString() +"</a>");
+      out.println("</td>");
+      out.println("<td>");
+      out.println(thread.getState());
       out.println("</td>");
       out.println("<td>");
       out.println(methodName);

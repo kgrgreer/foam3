@@ -18,9 +18,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.ContextAgentTimerTask',
     'foam.core.X',
     'foam.core.XLocator',
     'foam.core.ProxyX',
+    'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'java.util.concurrent.LinkedBlockingQueue',
@@ -30,7 +32,8 @@ foam.CLASS({
     'java.util.concurrent.ThreadFactory',
     'java.util.concurrent.ThreadPoolExecutor',
     'java.util.concurrent.TimeUnit',
-    'java.util.concurrent.atomic.AtomicInteger'
+    'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.Timer'
   ],
 
   javaCode: `
@@ -80,26 +83,23 @@ foam.CLASS({
     {
       documentation: 'report stats when true',
       name: 'reportingEnabled',
-      class: 'Boolean',
-      javaSetter: `
-      boolean old = getReportingEnabled();
-      reportingEnabled_ = val;
-      reportingEnabledIsSet_ = true;
-
-      if ( ! old && val && pool_ != null ) {
-        scheduleReporting();
-      }
-      `
+      class: 'Boolean'
     },
     {
       name: 'reportInterval',
       class: 'Long',
-      value: 60000
+      value: 30000
     },
     {
       name: 'stackDepth',
       class: 'Int',
       value: 10
+    },
+    {
+      name: 'timer',
+      class: 'Object',
+      hidden: true,
+      transient: true
     }
   ],
 
@@ -107,6 +107,7 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+    Loggers.logger(getX(), this).info(getPrefix(), "start");
     threadGroup_ = new ThreadGroup(Thread.currentThread().getThreadGroup(), getPrefix());
     pool_ = new ThreadPoolExecutor(
       getNumberOfThreads(),
@@ -136,11 +137,25 @@ foam.CLASS({
     `
     },
     {
+      name: 'reload',
+      javaCode: `
+      Loggers.logger(getX(), this).info(getPrefix(), "reload");
+      scheduleReporting();
+      `
+    },
+    {
       name: 'scheduleReporting',
       javaCode: `
     if ( getReportingEnabled() ) {
-      java.util.Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
-      timer.schedule(new foam.core.ContextAgentTimerTask(getX(), this), getReportInterval());
+      Timer timer = new java.util.Timer(this.getClass().getSimpleName(), true);
+      setTimer(timer);
+      timer.schedule(new ContextAgentTimerTask(getX(), this), getReportInterval());
+    } else {
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        timer.cancel();
+        setTimer(null);
+      }
     }
     `
     },
@@ -209,6 +224,7 @@ foam.CLASS({
      `
     },
     {
+      documentation: 'Best effort at reporting what threads are waiting on. Only reports stack frames with foam in the class path.',
       name: 'getWaiting',
       type: 'Long',
       javaCode: `
@@ -218,28 +234,35 @@ foam.CLASS({
       try {
         Thread[] threads = new Thread[threadGroup_.activeCount()];
         int count = threadGroup_.enumerate(threads);
+        Logger logger = Loggers.logger(getX(), this);
         for ( int i = 0; i < count; i++ ) {
           Thread thread = threads[i];
           if ( thread.getState() == Thread.State.WAITING ) {
             waiting++;
             int depth = 0;
-            foam.nanos.logger.Loggers.logger(getX(), this).info("pool", getPrefix(), "thread", thread.getName(), "stack");
+            logger.info(getPrefix(), "thread", thread.getId(), thread.getName(), "WAITING", "stack");
             StackTraceElement[] stackTraceElement = thread.getStackTrace();
+            StackTraceElement element = null;
             for ( int j = 0; j < stackTraceElement.length; j++ ) {
-              StackTraceElement element = stackTraceElement[j];
+              element = stackTraceElement[j];
               if ( element.getClassName().contains("foam") ) {
-                if ( depth == 0 ) {
+                if ( depth == 0 &&
+                     j > 0 ) {
                   // last java library entry for context
                   System.out.println(stackTraceElement[j-1]);
                 }
                 System.out.println(element);
                 depth++;
               }
+
               if ( depth > getStackDepth() ) {
                 break;
               }
             }
-            System.out.println();
+            // foam not in the stack frames, report last java frame
+            if ( depth == 0 ) {
+              System.out.println(element);
+            }
           }
         }
       } catch ( Throwable t ) {
@@ -257,9 +280,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      if ( getQueued() > 0 ) {
-        foam.nanos.logger.Loggers.logger(x, this).info("pool", getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
-      }
+      Loggers.logger(x, this).info(getPrefix(), "available", getNumberOfThreads(), "queued", getQueued(), "waiting", getWaiting(), "executing", getExecuting(), "executed", getExecuted());
       scheduleReporting();
       `
     }

@@ -87,7 +87,7 @@ public class JSONFObjectFormatter
   // TODO: should be combined with outputClassNames_?
   protected boolean outputDefaultClassNames_         = true;
 
-  protected boolean calculateDeltaForNestedFObjects_     = true;
+  protected boolean calculateDeltaForNestedFObjects_ = true;
 
   public JSONFObjectFormatter(X x) {
     super(x);
@@ -115,6 +115,7 @@ public class JSONFObjectFormatter
     }
   }
 
+  // TODO: use builder() directly
   public void escapeAppend(String s) {
     if ( s == null ) return;
     StringBuilder sb = new StringBuilder();
@@ -140,13 +141,9 @@ public class JSONFObjectFormatter
   public void output(boolean val) { append(val); }
 
 
-  protected void outputNumber(Number value) {
-    append(value);
-  }
+  protected void outputNumber(Number value) { append(value); }
 
-  public void output(String[] arr) {
-    output((Object[]) arr);
-  }
+  public void output(String[] arr) { output((Object[]) arr); }
 
   public void output(Object[] array) {
     append('[');
@@ -172,7 +169,7 @@ public class JSONFObjectFormatter
 
   public void output(Map map) {
     append('{');
-    java.util.Iterator keys = map.keySet().iterator();
+    Iterator keys = map.keySet().iterator();
     while ( keys.hasNext() ) {
       Object key   = keys.next();
       Object value = map.get(key);
@@ -186,7 +183,7 @@ public class JSONFObjectFormatter
 
   public void output(List list) {
     append('[');
-    java.util.Iterator iter = list.iterator();
+    Iterator iter = list.iterator();
     while ( iter.hasNext() ) {
       output(iter.next());
       if ( iter.hasNext() ) append(',');
@@ -212,7 +209,7 @@ public class JSONFObjectFormatter
     ) {
       String before = builder().toString();
       reset();
-      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
+      if ( maybeOutputDelta(((FObject) prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
         String after = builder().toString();
         reset();
         append(before);
@@ -422,8 +419,7 @@ public class JSONFObjectFormatter
       append(before);
       append('{');
       addInnerNewline();
-      if ( outputClassNames_ ||
-           ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
+      if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
         outputKey("class");
         append(':');
         output(newInfo.getId());

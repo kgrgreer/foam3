@@ -34,6 +34,7 @@ foam.CLASS({
 
   imports: [
     'appConfig',
+    'ctrl',
     'loginVariables',
     'memento',
     'stack',
@@ -217,7 +218,10 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'leftView',
-      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath',
+      factory: function() {
+        return this.ctrl?.loginView?.leftView;
+      }
     },
     {
       class: 'String',
