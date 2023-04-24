@@ -24,7 +24,6 @@ foam.CLASS({
     }
     ^slides {
       display: flex;
-      gap: 2.4rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       
