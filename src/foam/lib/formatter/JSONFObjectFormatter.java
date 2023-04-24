@@ -198,6 +198,16 @@ public class JSONFObjectFormatter
     p.formatJSON(this, o);
   }
 
+
+  protected void outputFObjectPropertyHeader(PropertyInfo prop) {
+    if ( prop == null ) return;
+    append(',');
+    addInnerNewline();
+    outputKey(getPropertyName(prop));
+    append(':');
+  }
+
+
   protected boolean maybeOutputFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
     if ( newFObject instanceof foam.lib.json.OutputJSON ) {
       if ( newFObject.equals(oldFObject) ) return false;
@@ -208,22 +218,9 @@ public class JSONFObjectFormatter
     if ( prop instanceof AbstractFObjectPropertyInfo && oldFObject != null &&
       prop.get(oldFObject) != null && prop.get(newFObject) != null
     ) {
-      String before = builder().toString();
-      reset();
-      if ( maybeOutputDelta(((FObject) prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
-        String after = builder().toString();
-        reset();
-        append(before);
-        append(',');
-        addInnerNewline();
-        outputKey(getPropertyName(prop));
-        append(':');
-        append(after);
-        return true;
-      }
-      append(before);
-      return false;
+      return maybeOutputDelta(((FObject) prop.get(oldFObject)), ((FObject) prop.get(newFObject)), prop, null);
     }
+
     append(',');
     addInnerNewline();
     outputProperty(newFObject, prop);
@@ -361,33 +358,38 @@ public class JSONFObjectFormatter
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass) {
     if ( newFObject instanceof foam.lib.json.OutputJSON ) {
       if ( newFObject.equals(oldFObject) ) return false;
+
+      outputFObjectPropertyHeader(parentProp);
       ((foam.lib.json.OutputJSON) newFObject).formatJSON(this);
       return true;
     }
 
-    ClassInfo newInfo   = newFObject.getClassInfo();
-    String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
-    List      axioms    = getProperties(parentProp, newInfo);
-    int       size      = axioms.size();
-    int       ids       = 0;
-    int       delta     = 0;
-    int       optional  = 0;
+    ClassInfo newInfo  = newFObject.getClassInfo();
+    String    of       = newInfo.getObjClass().getSimpleName().toLowerCase();
+    List      axioms   = getProperties(parentProp, newInfo);
+    int       size     = axioms.size();
+    int       ids      = 0;
+    int       delta    = 0;
+    int       optional = 0;
+    int       len      = builder().length(); // Safe pos in case we want to undo
 
-    String before = builder().toString();
-    reset();
+    outputFObjectPropertyHeader(parentProp);
+
+    append('{');
+    addInnerNewline();
+    if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
+      outputKey("class");
+      append(':');
+      output(newInfo.getId());
+    }
 
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
-      if ( prop.includeInID() ||
-           compare(prop, oldFObject, newFObject) != 0 ) {
-        if ( parentProp == null &&
-          prop.includeInID() ) {
+      if ( prop.includeInID() || compare(prop, oldFObject, newFObject) != 0 ) {
+        if ( parentProp == null && prop.includeInID() ) {
           // IDs only relevant on root objects
-          if ( ids > 0 ||
-               delta > 0 ) {
-            append(',');
-            addInnerNewline();
-          }
+          append(',');
+          addInnerNewline();
           outputProperty(newFObject, prop);
           ids += 1;
         } else {
@@ -413,22 +415,7 @@ public class JSONFObjectFormatter
       }
     }
 
-    String after = builder().toString();
-    reset();
-
     if ( delta > optional ) {
-      append(before);
-      append('{');
-      addInnerNewline();
-      if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
-        outputKey("class");
-        append(':');
-        output(newInfo.getId());
-        if ( ! after.startsWith(",") ) {
-          append(',');
-        }
-      }
-      append(after);
       addInnerNewline();
       append('}');
 
@@ -437,6 +424,7 @@ public class JSONFObjectFormatter
 
     // Return false when either no delta or the delta are from ids and storage
     // optional properties
+    builder().setLength(len);
     return false;
   }
 
@@ -522,8 +510,7 @@ public class JSONFObjectFormatter
   }
 
   public void outputJson(String str) {
-    if ( ! quoteKeys_ )
-      str = str.replaceAll("\"class\"", "class");
+    if ( ! quoteKeys_ ) str = str.replaceAll("\"class\"", "class");
     outputFormattedString(str);
   }
 
