@@ -141,7 +141,7 @@ foam.CLASS({
   refines: 'foam.core.String',
 
   messages: [
-    { name: 'REQUIRED',        message: 'required' },
+    { name: 'REQUIRED',        message: 'Required' },
     { name: 'SHOULD_BE_LEAST', message: 'should be at least' },
     { name: 'SHOULD_BE_MOST',  message: 'should be at most' },
     { name: 'CHARACTER',       message: 'character' }
