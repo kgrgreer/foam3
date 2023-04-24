@@ -1,0 +1,11 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "boxThreadPool",
+  "lazy": false,
+  "serve": false,
+  "serviceScript": `
+    return new foam.nanos.pool.ThreadPoolAgency.Builder(x)
+      .setPrefix("box")
+      .build();
+  `
+})
