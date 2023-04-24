@@ -13,18 +13,22 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/* To Make faster:
+/*
+
+A faster alternative to the older foam.lib.json.Outputter.
+
+Better performance is achieved with:
 
 1. faster escaping
-2. don't escape class names and property names
-3. don't quote property keys
-4. use short names
-5. smaller format for enums and dates
-6. have PropertyInfo output directly from primitive
-7. support outputting directly to another Visitor,
+2. not escaping class names and property names
+3. not quoting property keys
+4. using short names
+5. using a smaller format for enums and dates
+6. having PropertyInfos output directly from primitive
+7. supporting outputting directly to another Visitor,
    StringBuilder, OutputStream, etc. without converting
    to String.
-8. Use Fast TimeStamper or similar
+8. Using a Fast TimeStamper
 
 */
 
@@ -115,7 +119,6 @@ public class JSONFObjectFormatter
     }
   }
 
-  // TODO: use builder() directly
   public void escapeAppend(String s) {
     if ( s == null ) return;
     foam.lib.json.Util.escape(s, builder());
