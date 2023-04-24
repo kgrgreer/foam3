@@ -98,7 +98,7 @@ foam.CLASS({
       javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
+          "SocketConnectionBox",
           getKey()
         }, (Logger) getX().get("logger"));
       `
@@ -168,13 +168,13 @@ NOTE: duplicated in SocketConnectionReplyBox
 `,
       name: 'send',
       javaCode: `
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send");
+      PM pm = PM.create(getX(), "SocketConnectionBox", getId(), "send");
       long pending = pending_.incrementAndGet();
       Box replyBox = (Box) msg.getAttributes().get("replyBox");
       String replyBoxId = null;
       if ( replyBox != null ) {
         replyBoxId = java.util.UUID.randomUUID().toString();
-        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getClass().getSimpleName(), getId()+":roundtrip")));
+        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), "SocketConnectionBox", getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
@@ -186,16 +186,20 @@ NOTE: duplicated in SocketConnectionReplyBox
       String message = null;
       try {
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
+        PM pmFormat = PM.create(getX(), "SocketConnectionBox", getId(), "send:format");
         foam.lib.formatter.FObjectFormatter formatter = formatter_.get();
         formatter.setX(getX());
         formatter.output(msg);
         message = formatter.builder().toString();
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        pmFormat.log(getX());
+
         Socket socket = (Socket) getSocket();
         if ( socket.isClosed() ||
              ! socket.isConnected() ) {
           throw new SocketException("Socket not connected.");
         }
+        PM pmOut = PM.create(getX(), "SocketConnectionBox", getId(), "send:out");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
           // getLogger().debug("send", "replyBoxId", replyBoxId, "pre-formating", msg);
@@ -203,6 +207,7 @@ NOTE: duplicated in SocketConnectionReplyBox
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
         }
+        pmOut.log(getX());
         // If no other send operations immediately pending, then flush
         if ( pending_.decrementAndGet() == 0 ) {
           omLogger.log("SocketConnectionBox", getId(), "send:flush");
@@ -249,8 +254,8 @@ NOTE: duplicated in SocketConnectionReplyBox
         while ( getValid().get() ) {
           PM pm = null;
           try {
-            omLogger.log(this.getClass().getSimpleName(), getId(), "receive");
-            pm = PM.create(x, this.getClass().getSimpleName(), getId(), "receive");
+            omLogger.log("SocketConnectionBox", getId(), "receive");
+            pm = PM.create(x, "SocketConnectionBox", getId(), "receive");
 
             int length = in_.readInt();
             byte[] bytes = readBytes(in_, length);
