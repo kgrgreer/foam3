@@ -116,7 +116,7 @@ configuration for contacting the primary node.`,
     {
       name: 'threadPoolName',
       class: 'String',
-      value: 'medusaThreadPool'
+      value: 'threadPool'
     },
     {
       name: 'mdaos',
