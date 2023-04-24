@@ -83,7 +83,7 @@ foam.CLASS({
 
         User anonymousUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getAnonymousUser());
         if ( anonymousUser == null ) {
-          throw new AuthorizationException("Unable to find anonymous user.");
+          throw new AuthorizationException("Unable to find anonymous user: '" + serviceProvider.getAnonymousUser() + "'");
         }
 
         if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
