@@ -13,18 +13,22 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/* To Make faster:
+/*
+
+A faster alternative to the older foam.lib.json.Outputter.
+
+Better performance is achieved with:
 
 1. faster escaping
-2. don't escape class names and property names
-3. don't quote property keys
-4. use short names
-5. smaller format for enums and dates
-6. have PropertyInfo output directly from primitive
-7. support outputting directly to another Visitor,
+2. not escaping class names and property names
+3. not quoting property keys
+4. using short names
+5. using a smaller format for enums and dates
+6. having PropertyInfos output directly from primitive
+7. supporting outputting directly to another Visitor,
    StringBuilder, OutputStream, etc. without converting
    to String.
-8. Use Fast TimeStamper or similar
+8. Using a Fast TimeStamper
 
 */
 
@@ -87,7 +91,7 @@ public class JSONFObjectFormatter
   // TODO: should be combined with outputClassNames_?
   protected boolean outputDefaultClassNames_         = true;
 
-  protected boolean calculateDeltaForNestedFObjects_     = true;
+  protected boolean calculateDeltaForNestedFObjects_ = true;
 
   public JSONFObjectFormatter(X x) {
     super(x);
@@ -117,9 +121,7 @@ public class JSONFObjectFormatter
 
   public void escapeAppend(String s) {
     if ( s == null ) return;
-    StringBuilder sb = new StringBuilder();
-    foam.lib.json.Util.escape(s, sb);
-    append(sb.toString());
+    foam.lib.json.Util.escape(s, builder());
   }
 
   public void output(short val) { append(val); }
@@ -140,13 +142,9 @@ public class JSONFObjectFormatter
   public void output(boolean val) { append(val); }
 
 
-  protected void outputNumber(Number value) {
-    append(value);
-  }
+  protected void outputNumber(Number value) { append(value); }
 
-  public void output(String[] arr) {
-    output((Object[]) arr);
-  }
+  public void output(String[] arr) { output((Object[]) arr); }
 
   public void output(Object[] array) {
     append('[');
@@ -172,7 +170,7 @@ public class JSONFObjectFormatter
 
   public void output(Map map) {
     append('{');
-    java.util.Iterator keys = map.keySet().iterator();
+    Iterator keys = map.keySet().iterator();
     while ( keys.hasNext() ) {
       Object key   = keys.next();
       Object value = map.get(key);
@@ -186,7 +184,7 @@ public class JSONFObjectFormatter
 
   public void output(List list) {
     append('[');
-    java.util.Iterator iter = list.iterator();
+    Iterator iter = list.iterator();
     while ( iter.hasNext() ) {
       output(iter.next());
       if ( iter.hasNext() ) append(',');
@@ -200,6 +198,16 @@ public class JSONFObjectFormatter
     p.formatJSON(this, o);
   }
 
+
+  protected void outputFObjectPropertyHeader(PropertyInfo prop) {
+    if ( prop == null ) return;
+    append(',');
+    addInnerNewline();
+    outputKey(getPropertyName(prop));
+    append(':');
+  }
+
+
   protected boolean maybeOutputFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
     if ( newFObject instanceof foam.lib.json.OutputJSON ) {
       if ( newFObject.equals(oldFObject) ) return false;
@@ -210,22 +218,9 @@ public class JSONFObjectFormatter
     if ( prop instanceof AbstractFObjectPropertyInfo && oldFObject != null &&
       prop.get(oldFObject) != null && prop.get(newFObject) != null
     ) {
-      String before = builder().toString();
-      reset();
-      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
-        String after = builder().toString();
-        reset();
-        append(before);
-        append(',');
-        addInnerNewline();
-        outputKey(getPropertyName(prop));
-        append(':');
-        append(after);
-        return true;
-      }
-      append(before);
-      return false;
+      return maybeOutputDelta(((FObject) prop.get(oldFObject)), ((FObject) prop.get(newFObject)), prop, null);
     }
+
     append(',');
     addInnerNewline();
     outputProperty(newFObject, prop);
@@ -363,33 +358,38 @@ public class JSONFObjectFormatter
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass) {
     if ( newFObject instanceof foam.lib.json.OutputJSON ) {
       if ( newFObject.equals(oldFObject) ) return false;
+
+      outputFObjectPropertyHeader(parentProp);
       ((foam.lib.json.OutputJSON) newFObject).formatJSON(this);
       return true;
     }
 
-    ClassInfo newInfo   = newFObject.getClassInfo();
-    String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
-    List      axioms    = getProperties(parentProp, newInfo);
-    int       size      = axioms.size();
-    int       ids       = 0;
-    int       delta     = 0;
-    int       optional  = 0;
+    ClassInfo newInfo  = newFObject.getClassInfo();
+    String    of       = newInfo.getObjClass().getSimpleName().toLowerCase();
+    List      axioms   = getProperties(parentProp, newInfo);
+    int       size     = axioms.size();
+    int       ids      = 0;
+    int       delta    = 0;
+    int       optional = 0;
+    int       len      = builder().length(); // Safe pos in case we want to undo
 
-    String before = builder().toString();
-    reset();
+    outputFObjectPropertyHeader(parentProp);
+
+    append('{');
+    addInnerNewline();
+    if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
+      outputKey("class");
+      append(':');
+      output(newInfo.getId());
+    }
 
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
-      if ( prop.includeInID() ||
-           compare(prop, oldFObject, newFObject) != 0 ) {
-        if ( parentProp == null &&
-          prop.includeInID() ) {
+      if ( prop.includeInID() || compare(prop, oldFObject, newFObject) != 0 ) {
+        if ( parentProp == null && prop.includeInID() ) {
           // IDs only relevant on root objects
-          if ( ids > 0 ||
-               delta > 0 ) {
-            append(',');
-            addInnerNewline();
-          }
+          append(',');
+          addInnerNewline();
           outputProperty(newFObject, prop);
           ids += 1;
         } else {
@@ -415,23 +415,7 @@ public class JSONFObjectFormatter
       }
     }
 
-    String after = builder().toString();
-    reset();
-
     if ( delta > optional ) {
-      append(before);
-      append('{');
-      addInnerNewline();
-      if ( outputClassNames_ ||
-           ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
-        outputKey("class");
-        append(':');
-        output(newInfo.getId());
-        if ( ! after.startsWith(",") ) {
-          append(',');
-        }
-      }
-      append(after);
       addInnerNewline();
       append('}');
 
@@ -440,6 +424,7 @@ public class JSONFObjectFormatter
 
     // Return false when either no delta or the delta are from ids and storage
     // optional properties
+    builder().setLength(len);
     return false;
   }
 
@@ -525,8 +510,7 @@ public class JSONFObjectFormatter
   }
 
   public void outputJson(String str) {
-    if ( ! quoteKeys_ )
-      str = str.replaceAll("\"class\"", "class");
+    if ( ! quoteKeys_ ) str = str.replaceAll("\"class\"", "class");
     outputFormattedString(str);
   }
 

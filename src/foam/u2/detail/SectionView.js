@@ -168,14 +168,13 @@ foam.CLASS({
                       }
                     }
                   }
-                  var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN);
+                  var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode != self.DisplayMode.HIDDEN);
                   this.start(self.GUnit, { columns: p.gridColumns })
                     .show(shown$)
                     .add(shown$.map(shown => {
                       return shown ? self.PropertyBorder.create({
                         prop: p,
-                        data$: self.data$,
-                        reserveLabelSpace: p.reserveLabelSpace ?? true
+                        data$: self.data$
                       }) :
                       self.E();
                     }))

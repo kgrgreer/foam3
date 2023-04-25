@@ -251,8 +251,7 @@ foam.CLASS({
       javaCode: `
       var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
-      recordCapabilityPayload(x, obj.fclone());
-
+      var payload = (CapabilityPayload) obj.fclone();
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
@@ -262,12 +261,15 @@ foam.CLASS({
         List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
         processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
-        var ret =  find_(x, receivingCapPayload.getId());
+        var ret = (CapabilityPayload) find_(x, receivingCapPayload.getId());
+        // Update payload validation errors after processing the capability payload data
+        payload.setCapabilityValidationErrors(ret.getCapabilityValidationErrors());
         return ret;
       } catch(Throwable t) {
         pm.error(x, t.getMessage());
         throw t;
       } finally {
+        recordCapabilityPayload(x, payload);
         pm.log(x);
       }
       `

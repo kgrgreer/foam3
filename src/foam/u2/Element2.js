@@ -197,19 +197,21 @@ foam.CLASS({
         nextSibling = undefined;
         this.childNodes.forEach(n => {
           nextSibling = n.element_.nextSibling;
-          n.element_.parentNode.removeChild(n.element_);
+          n.element_.remove();
+//          n.element_.parentNode.removeChild(n.element_);
         });
         this.childNodes = [];
         this.element_   = undefined;
       };
 
       this.fn.post = () => {
-        // Add empty Text node to mark space in DOM in case no output was generated
-        if ( this.childNodes.length == 0 ) this.add('');
         if ( nextSibling ) {
           this.parentNode.element_.insertBefore(this.element_, nextSibling);
-        } else {
+        } else if ( this.childNodes.length ) {
           this.parentNode.element_.appendChild(this.element_);
+        } else {
+          // Add empty Text node to mark space in DOM in case no output was generated
+          this.add('');
         }
       };
     }
@@ -1613,6 +1615,11 @@ foam.CLASS({
       name: '__',
       transient: true,
       factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
+    },
+    {
+      class: 'Boolean',
+      name: 'reserveLabelSpace',
+      documentation: 'Property to indicate if PropertyBorders need to reserve label space when label is empty'
     }
   ],
 

@@ -190,6 +190,6 @@ foam.CLASS({
     this.getValues_().put(name, value);
   }
 `
-    },
+    }
   ]
 });

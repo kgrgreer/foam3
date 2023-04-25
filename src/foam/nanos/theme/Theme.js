@@ -243,7 +243,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldResizeLogo',
-      documentation: 'Enables switching between largeLogo and logo'
+      documentation: 'Enables switching between largeLogo and logo in ApplicationLogoView'
     },
     {
       class: 'Image',

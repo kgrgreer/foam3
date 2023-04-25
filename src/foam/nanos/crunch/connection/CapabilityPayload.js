@@ -84,6 +84,7 @@ foam.CLASS({
             o.copyFrom(n);
             this.capabilityDataObjects[key] = o;
           }
+          this.capabilityValidationErrors = obj.capabilityValidationErrors;
           return this;
         }
       }

@@ -294,7 +294,7 @@ foam.CLASS({
           agency.submit(x, new ContextAgent() {
             long result = -1L;
             public void execute(X x) {
-              getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
+              // getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
               ClientElectoralService electoralService =
                 new ClientElectoralService.Builder(x)
                  .setDelegate(new SessionClientBox.Builder(x)
@@ -306,12 +306,12 @@ foam.CLASS({
                 if ( getState() == ElectoralServiceState.ELECTION ) {
                   getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
                   result = electoralService.vote(config.getId(), getElectionTime());
-                  getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
+                  getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "response", result);
                   recordResult(x, result, clientConfig);
                   callReport(x);
                 }
               } catch (Throwable e) {
-                getLogger().debug("callVote", "executeJob", "voter", clientConfig.getId(), clientConfig.getName(), e.getMessage());
+                getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), e.getMessage());
               }
             }
           }, this.getClass().getSimpleName()+":callVote");
@@ -370,7 +370,7 @@ foam.CLASS({
           v = generateVote(getX());
         }
       } catch (Throwable t) {
-        getLogger().error("vote", id, time, "response", v, t);
+        getLogger().error("vote", getState(), id, time, "response", v, t);
       }
       getLogger().debug("vote", getState(), id, time, "response", v);
       return v;

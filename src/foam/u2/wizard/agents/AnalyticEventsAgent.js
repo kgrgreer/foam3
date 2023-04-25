@@ -17,7 +17,10 @@ foam.CLASS({
     'window'
   ],
 
-  exports: ['analyticsAgent'],
+  exports: [
+    'analyticsAgent',
+    'logAnalyticsEvent'
+  ],
 
   topics: ['analyticsAgent'],
 
@@ -39,14 +42,10 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function execute() {
+    function execute() {
       var self = this;
-      var trace = this.traceIDKey$get(this.__subContext__);
-      var obj = this.objectIDKey$get(this.__subContext__);
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
-        // TODO: add subclass support
-        let analyticEvent = self.AnalyticEvent.create({...evt, traceId: trace, objectId: obj, sessionId: self.sessionID})
-        self.analyticEventDAO.put(analyticEvent);
+        self.logAnalyticsEvent(evt);
       });
 
       // TODO: Temp fix for 3.20 iframe logging
@@ -60,6 +59,10 @@ foam.CLASS({
             // This warnings happen too frequently to be useful
             return;
           }
+
+          if ( a.length == 1 && a[0] === '' )
+            a[0] = new Error("Empty console error log").stack;
+
           this.analyticsAgent.pub('event', {
             name: 'CONSOLE_' + method.toUpperCase(),
             extra: foam.json.stringify(a)
@@ -83,6 +86,16 @@ foam.CLASS({
           extra: `${this.window.innerWidth}x${this.window.innerHeight}`
         });
       }
+    },
+
+    async function logAnalyticsEvent(evt) {
+      var traceId = this.traceIDKey$get(this.__subContext__);
+      var objectId = this.objectIDKey$get(this.__subContext__);
+      var sessionId = this.sessionID;
+
+      // TODO: add subclass support
+      var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId, sessionId});
+      await this.analyticEventDAO.put(analyticEvent);
     }
   ]
 });

@@ -384,7 +384,7 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and data or just centered data
-        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+        .callIfElse( this.imgPath && this.leftView && split, () => {
           if ( ! this.leftView ) {
             split.leftPanel
               .addClass('cover-img-block1')
