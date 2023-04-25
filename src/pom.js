@@ -728,6 +728,7 @@ foam.POM({
     { name: "foam/u2/crunch/wizardflow/CapabilityStoreAgent",         flags: "web" },
     { name: "foam/u2/crunch/wizardflow/DebugAgent",                   flags: "debug&web" },
     { name: "foam/u2/crunch/wizardflow/lite/CapableDefaultConfigAgent",flags: "web" },
+    { name: "foam/u2/crunch/wizardflow/StatusPageAgent",              flags: "web" },
     { name: "foam/u2/crunch/CapabilityRequirementView",               flags: "web" },
     { name: "foam/u2/crunch/CapabilityCardView",                      flags: "web" },
     { name: "foam/u2/crunch/CapabilityFeatureView",                   flags: "web" },
