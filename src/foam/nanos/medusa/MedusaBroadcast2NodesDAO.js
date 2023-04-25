@@ -54,6 +54,12 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Maximum retries of a retry client. Set to -1 for infinite retry',
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      value: -1
+    },
+    {
       name: 'clients',
       class: 'Map',
       javaFactory: 'return new HashMap();'
@@ -99,25 +105,28 @@ foam.CLASS({
       int index = (int) (entry.getIndex() % buckets.size());
       Set<String> bucket = buckets.get(index);
       for ( String id : bucket ) {
-        // om.log("medusa.broadcast.nodes", "request");
         AssemblyLine queue = (AssemblyLine) getQueues().get(id);
         if ( queue == null ) {
-          synchronized ( this ) {
+          synchronized ( id.intern() ) {
             queue = (AssemblyLine) getQueues().get(id);
             if ( queue == null ) {
-              // Create one AssemblyLine per node and perform dao put under lock
-              // to force node writes to be sequential, but more importantly,
-              // there will only be one retry, rather than every thread retrying.
+              // Create one AssemblyLine per node
               // To be replaced by SAF (Store and Forward)
-              queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+
+              // REVIEW: Using Sync rather than Async, as Async has the ability
+              // to consume the threadpool with a Retry client.
+              // Throughput testing does not show a difference between
+              // Sync and Async.
+              // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+              queue = new SyncAssemblyLine(x);
               getQueues().put(id, queue);
 
               ClusterConfig config = support.getConfig(x, id);
-              DAO dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
               // TODO: implment java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
-              dao = new RetryClientSinkDAO.Builder(x)
-                       .setDelegate(dao)
-                       .setMaxRetryAttempts(-1) // forever
+              DAO dao = new RetryClientSinkDAO.Builder(x)
+                       .setName(config.getId())
+                       .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+                       .setMaxRetryAttempts(getMaxRetryAttempts())
                        .setMaxRetryDelay(support.getMaxRetryDelay())
                        .build();
               getClients().put(id, dao);
@@ -126,16 +135,14 @@ foam.CLASS({
         }
         inFlight_.getAndIncrement();
         queue.enqueue(new AbstractAssembly() {
-          // TODO: review use of executeUnderLock
-          public void executeUnderLock() {
-            // logger.debug("AssemblyLine", "executeUnderLock", id);
+          public void executeJob() {
             try {
               ((DAO) getClients().get(id)).put_(x, entry);
             } catch ( Throwable t ) {
-              logger.error("assembly", "executeUnderLock", id, t);
+              logger.error("assembly", id, t);
             } finally {
               inFlight_.getAndDecrement();
-              ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.mediator-node");
+              ((OMLogger) x.get("OMLogger")).log("medusa:broadcast:mediator-node");
             }
           }
         });
