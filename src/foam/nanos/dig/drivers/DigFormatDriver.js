@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.dig.drivers',
   name: 'DigFormatDriver',
   abstract: true,
+
   flags: ['java'],
 
   javaImports: [
@@ -79,7 +80,7 @@ foam.CLASS({
     },
     {
       name: 'outputFObjects',
-      args: 'X x, DAO dao, List fobjects',
+      args: 'X x, DAO dao, List fobjects, String[] cols',
       javaCode: `
         throw new RuntimeException("Unimplemented output method");
       `
@@ -92,12 +93,11 @@ foam.CLASS({
       ],
       javaCode: `
         DAO dao = getDAO(x);
-        if ( dao == null )
-          return;
+        if ( dao == null ) return;
 
-        HttpParameters p = x.get(HttpParameters.class);
-        String daoName = p.getParameter("dao");
-        String data = p.getParameter("data");
+        HttpParameters p      = x.get(HttpParameters.class);
+        String        daoName = p.getParameter("dao");
+        String        data    = p.getParameter("data");
 
         // Check if the data is empty
         if ( SafetyUtil.isEmpty(data) ) {
@@ -106,14 +106,13 @@ foam.CLASS({
         }
 
         List fobjects = parseFObjects(x, dao, data);
-        if ( fobjects == null )
-          return;
+        if ( fobjects == null ) return;
 
         for ( int i = 0 ; i < fobjects.size() ; i++ ) {
           fobjects.set(i, daoPut(x, dao, (FObject) fobjects.get(i)));
         }
 
-        outputFObjects(x, dao, fobjects);
+        outputFObjects(x, dao, fobjects, null);
 
         PrintWriter out = x.get(PrintWriter.class);
         out.println();
@@ -130,12 +129,14 @@ foam.CLASS({
       javaCode: `
       HttpParameters p = x.get(HttpParameters.class);
       HttpServletResponse resp = x.get(HttpServletResponse.class);
-      Command command = (Command) p.get(Command.class);
-      String id = p.getParameter("id");
-      String q = p.getParameter("q");
-      String limit = p.getParameter("limit");
-      String skip = p.getParameter("skip");
-      String daoName = p.getParameter("dao");
+      Command   command   = (Command) p.get(Command.class);
+      String   id         = p.getParameter("id");
+      String   q          = p.getParameter("q");
+      String   cols       = p.getParameter("columns");
+      String   limit      = p.getParameter("limit");
+      String   skip       = p.getParameter("skip");
+      String   daoName    = p.getParameter("dao");
+      String[] outputCols = null;
 
       if ( SafetyUtil.isEmpty(daoName) ) {
         return;
@@ -154,10 +155,25 @@ foam.CLASS({
         getLogger().error("Failed to get class info", className);
         cInfo = dao.getOf();
       }
+      final ClassInfo cInfoFinal = cInfo;
 
       Predicate pred = new WebAgentQueryParser(cInfo).parse(x, q);
       getLogger().debug(pred.toString());
       dao = dao.where(pred);
+
+      if ( ! foam.util.SafetyUtil.isEmpty(cols) ) {
+        String[] cs = cols.split(",");
+        if ( cs.length > 0 ) {
+          outputCols = Arrays.asList(cs).stream().filter(pn -> {
+            try {
+              PropertyInfo pi = (PropertyInfo) cInfoFinal.getAxiomByName(pn);
+              return ! pi.getNetworkTransient();
+            } catch (Throwable t) {
+              return false;
+            }
+          }).toArray(String[]::new);
+        }
+      }
 
       PropertyInfo idProp = (PropertyInfo) cInfo.getAxiomByName("id");
       dao = ! SafetyUtil.isEmpty(id) ? dao.where(MLang.EQ(idProp, id)) : dao;
@@ -188,7 +204,7 @@ foam.CLASS({
       List fobjects = ((ArraySink) dao.select(new ArraySink())).getArray();
       getLogger().debug("Number of FObjects selected: " + fobjects.size());
 
-      outputFObjects(x, dao, fobjects);
+      outputFObjects(x, dao, fobjects, outputCols);
 
       PrintWriter out = x.get(PrintWriter.class);
       out.println();

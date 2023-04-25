@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.dig.drivers',
   name: 'DigJsonDriver',
   extends: 'foam.nanos.dig.drivers.DigFormatDriver',
+
   flags: [ 'java' ],
 
   javaImports: [
