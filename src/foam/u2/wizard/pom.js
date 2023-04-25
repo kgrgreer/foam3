@@ -124,8 +124,6 @@ foam.POM({
     { name: "wizardlet/BaseWizardlet",                 flags: "js|java" },
     { name: "wizardlet/ValidationFeedbackWizardlet",   flags: "js|java" },
     { name: "wizardlet/WizardletSection",              flags: "web" },
-    { name: "wizardlet/SuccessTransferWizardlet",      flags: "web" },
-    { name: "wizardlet/SuccessTransferWizardletView",  flags: "web" },
     { name: "wizardlet/SuccessWizardlet",              flags: "web" },
     { name: "wizardlet/SuccessWizardletView",          flags: "web" },
     { name: "wizardlet/ReviewWizardletView",           flags: "web" },
