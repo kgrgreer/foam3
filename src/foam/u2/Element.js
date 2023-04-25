@@ -2926,10 +2926,6 @@ foam.CLASS({
 
   documentation: 'View for safely displaying HTML content.',
 
-  css: `
-    ^ { padding: 6px 0; }
-  `,
-
   properties: [
     {
       name: 'data',
