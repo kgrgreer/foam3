@@ -8,7 +8,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailTemplateDAO",
-  "lazy":false,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailTemplate.getOwnClassInfo())
@@ -24,7 +23,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"emailTemplateDAO",
-  "lazy":false,
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
@@ -174,7 +172,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"emailConfigDAO",
-  "lazy":false,
   "serve":true,
   "authorize":true,
   "serviceScript":"""

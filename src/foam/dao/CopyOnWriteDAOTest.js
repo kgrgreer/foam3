@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'CopyOnWriteDAOJsTest',
   extends: 'foam.nanos.test.Test',
-  flags: ['js'],
 
   properties: [
     {

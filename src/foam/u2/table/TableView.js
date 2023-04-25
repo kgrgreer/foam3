@@ -41,6 +41,25 @@
       scroll-behavior: smooth;
     }
 
+    @keyframes slide {
+      from {
+       top: 32px;
+       opacity: 0;
+      }
+      80% {
+        opacity: 0.3;
+      }
+      to {
+        top: 0;
+        opacity: 1;
+      }
+    }
+    ^row {
+      position: relative;
+      animation-duration: 0.3s;
+      animation-timing-function: ease;
+      animation-name: slide;
+    }
     ^tr {
       background: $white;
       display: flex;

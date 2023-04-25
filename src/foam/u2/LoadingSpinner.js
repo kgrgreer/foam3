@@ -43,7 +43,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isHidden',
-      value: false
+      value: false,
+      postSet: function (_, n) {
+        if ( n === false )
+          this.tick();
+      }
     },
     {
       class: 'Boolean',
@@ -88,7 +92,7 @@ foam.CLASS({
         .start()
         .addClass('p','processing-notice')
           .show(this.showText$)
-          .add(this.text)
+          .add(this.text$)
         .end();
 
       this.tick();
@@ -96,7 +100,6 @@ foam.CLASS({
 
     function show() {
       this.isHidden = false;
-      this.tick();
     },
 
     function hide() {

@@ -34,6 +34,7 @@ foam.CLASS({
 
   imports: [
     'appConfig',
+    'ctrl',
     'loginVariables',
     'memento',
     'stack',
@@ -217,7 +218,10 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'leftView',
-      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath',
+      factory: function() {
+        return this.ctrl?.loginView?.leftView;
+      }
     },
     {
       class: 'String',
@@ -380,7 +384,7 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and data or just centered data
-        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+        .callIfElse( this.imgPath && this.leftView && split, () => {
           if ( ! this.leftView ) {
             split.leftPanel
               .addClass('cover-img-block1')

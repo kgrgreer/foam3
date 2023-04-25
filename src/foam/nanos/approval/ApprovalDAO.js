@@ -116,9 +116,17 @@ foam.CLASS({
         User realUser = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
         Subject initiatingUserSubject = (Subject) initiatingUserX.get("subject");
-        initiatingUserSubject.getUserPath().add(realUser);
-        if ( realUser != user ) {
-          initiatingUserSubject.getUserPath().add(user);
+        // NOTE: subject is not setup if sudo user is system/admin
+        if ( initiatingUserSubject.getRealUser() == null ) {
+          initiatingUserSubject.setUser(realUser);
+          if ( realUser != user ) {
+            initiatingUserSubject.setUser(user);
+          }
+        } else {
+          initiatingUserSubject.getUserPath().add(realUser);
+          if ( realUser != user ) {
+            initiatingUserSubject.getUserPath().add(user);
+          }
         }
 
         initiatingUserX = initiatingUserX.put(ApprovalRequest.class, request);

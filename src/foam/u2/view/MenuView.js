@@ -27,6 +27,26 @@ foam.CLASS({
     {
       name: 'themeIcon',
       expression: function(menu) { return menu.themeIcon || ''; }
+    },
+    {
+      class: 'Function',
+      generateJava: false,
+      name: 'isEnabled',
+      documentation: 'Function to determine if button is enabled.',
+      value: null
+    },
+  ],
+
+  methods: [
+    function render() {
+      this.attrs({ disabled: this.createIsEnabled$(this.__context__, this).map((e) => e ? false : 'disabled') });
+      this.SUPER();
+
+    },
+    function createIsEnabled$(x, data) {
+      return this.isEnabled ?
+      data.slot(this.isEnabled ) :
+      foam.core.ConstantSlot.create({ value: true });      
     }
   ],
 

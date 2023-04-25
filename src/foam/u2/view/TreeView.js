@@ -53,31 +53,83 @@ foam.CLASS({
       justify-content: flex-start;
     }
 
-    ^select-level {
-      display: flex;
-      justify-content: space-between;
-      overflow: hidden;
-      padding-right: 8px;
-      text-align: left;
-      width: 100%;
-    }
-
-    ^select-level > * {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    ^toggle-icon {
-      align-self: center;
-      transition: 0.2s linear;
-    }
-
-    ^toggle-icon svg{
-      width: 0.75em;
-      height: 0.75em;
-    }
   `,
+
+  classes: [
+    {
+      name: 'LabelView',
+      extends: 'foam.u2.View',
+      requires: [
+        'foam.u2.tag.Image'
+      ],
+    
+      css: `
+        ^select-level {
+          display: flex;
+          justify-content: space-between;
+          overflow: hidden;
+          padding-right: 8px;
+          text-align: left;
+          width: 100%;
+        }
+    
+        ^select-level > * {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+    
+        ^toggle-icon {
+          align-self: center;
+          transition: 0.2s linear;
+        }
+    
+        ^toggle-icon svg{
+          width: 0.75em;
+          height: 0.75em;
+        }
+      `,
+      
+      properties: [
+        {
+          name: 'row'
+        }
+      ],
+      methods: [
+        function render() {
+          let row = this.row;
+          let self = this;
+          var selectedSlot = row.slot(function(selected_) {
+            return selected_ ? 'p-semiBold' : 'p';
+          });
+          this.
+          addClass(this.myClass('select-level')).
+          callIfElse(row.rowConfig?.[row.data.id],
+            function() {
+              this.tag(row.rowConfig?.[row.data.id])
+            },
+            function() {
+              this.start()
+                .addClass(selectedSlot)
+                .addClass(this.myClass('label')).
+                call(row.formatter, [row.data]).
+              end();
+            }
+          ).
+          add(row.hasChildren$.map(hasChildren => {
+            if ( ! hasChildren ) return self.E();
+            return self.E().
+              addClass(self.myClass('toggle-icon')).
+              style({
+                'transform': row.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
+              }).
+              on('click', this.toggleExpanded).
+              tag(self.Image, { glyph: 'next' });
+          }));
+        }
+      ]
+    }
+  ],
 
   properties: [
     {
@@ -171,33 +223,6 @@ foam.CLASS({
       if ( this.translationService ) {
         labelString = self.translationService.getTranslation(foam.locale, self.data.label, self.data.label);
       }
-      var selectedSlot = this.slot(function(selected_) {
-        return selected_ ? 'p-semiBold' : 'p';
-      });
-      var mainLabel = this.E().
-        addClass(self.myClass('select-level')).
-        callIfElse(self.rowConfig?.[self.data.id],
-          function() {
-            this.tag(self.rowConfig?.[self.data.id])
-          },
-          function() {
-            this.start()
-              .addClass(selectedSlot)
-              .addClass(self.myClass('label')).
-              call(self.formatter, [self.data]).
-            end();
-          }
-        ).
-        add(this.hasChildren$.map(hasChildren => {
-          if ( ! hasChildren ) return self.E();
-          return self.E().
-            addClass(self.myClass('toggle-icon')).
-            style({
-              'transform': self.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
-            }).
-            on('click', this.toggleExpanded).
-            tag(this.Image, { glyph: 'next' });
-        }));
 
       this.
         addClass(this.myClass()).
@@ -247,7 +272,7 @@ foam.CLASS({
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
               buttonStyle: 'UNSTYLED',
-              label: mainLabel,
+              label: { class: 'foam.u2.view.TreeViewRow.LabelView', row: self },
               ariaLabel: labelString,
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',

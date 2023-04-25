@@ -85,8 +85,9 @@ foam.CLASS({
     {
       name: 'makeHorizontal',
       code: function() {
-        this.NEW_PASSWORD.gridColumns = 6;
-        this.CONFIRMATION_PASSWORD.gridColumns = 6;
+        let columns = { columns: 12, mdColumns: 6, lgColumns: 6, xlColumns: 6 };
+        this.NEW_PASSWORD.gridColumns = columns;
+        this.CONFIRMATION_PASSWORD.gridColumns = columns;
       }
     },
     {

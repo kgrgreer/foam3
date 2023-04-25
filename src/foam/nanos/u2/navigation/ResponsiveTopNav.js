@@ -46,7 +46,7 @@ foam.CLASS({
     ^components-container {
       flex: 1;
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: auto 1fr;
       align-items: center;
     }
     ^components-container^logo-adjust {
@@ -62,7 +62,12 @@ foam.CLASS({
 
     @media (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
       ^components-container {
-        flex: unset;
+        display: flex;
+        flex: 1;
+        gap: 8px;
+      }
+      ^right {
+        justify-content: flex-end;
       }
       ^logo {
         flex: unset;
@@ -107,12 +112,10 @@ foam.CLASS({
               this.pushMenu('', true);
             })
           .end()
-          .start().addClass(this.myClass('header-button-placeholder'))
-          .end()
         .end()
         .add(this.slot(function(displayWidth) {
           if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
-            return this.E().addClass(this.myClass('components-container'))
+            return this.E().addClass(this.myClass('components-container'), this.myClass('right'))
             .add(self.slot(function(notifications) {
               if ( ! notifications ) return;
               return this.E().start(notifications, {
