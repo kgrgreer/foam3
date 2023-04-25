@@ -61,6 +61,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
+    'foam.u2.crunch.wizardflow.StatusPageAgent',
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
@@ -114,6 +115,12 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'openWizardInspector',
+      code: function() {
+        this.lastActiveWizard.OPEN_WIZARD_INSPECTOR.code.call(this.lastActiveWizard);
+      }
+    },
+    {
       name: 'createWizardSequence',
       documentation: `
         Create the default wizard sequence for the specified capability in
@@ -156,6 +163,7 @@ foam.CLASS({
           .add(this.SubmitAgent)
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
+          .add(this.StatusPageAgent)
           // .add(this.TestAgent)
           ;
       }
@@ -230,12 +238,24 @@ foam.CLASS({
         This is intended for use with WizardFlow (Fluent/DSL for wizards).
       `,
       code: function createWizardFlowSequence(x) {
-        const seq = this.createTransientWizardSequence(x);
+        return this.toWizardFlowSequence(
+          this.createTransientWizardSequence(x)
+        );
+      }
+    },
+    {
+      name: 'toWizardFlowSequence',
+      documentation: `
+        This wizard sequence does not load a capability graph or any wizardlets.
+        This is intended for use with WizardFlow (Fluent/DSL for wizards).
+      `,
+      code: function toWizardFlowSequence(seq) {
         return seq
           .remove('LoadCapabilitiesAgent')
           .remove('LoadTopConfig')
-          .remove('CreateWizardletsAgent')
-          .remove('RequirementsPreviewAgent')
+          // Doesnt remove CreateWizardletsAgent since removing it would push a parent wizard's wizardlets into 
+          // the context creating duplicates
+          // .remove('CreateWizardletsAgent')
           .remove('RequirementsPreviewAgent')
           ;
       }
@@ -445,10 +465,11 @@ foam.CLASS({
       });
       wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
         foam.events.oneTime(() => {
-          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length) 
+          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length)
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
+      return x;
     },
 
     function maybeLaunchInterceptView(intercept) {

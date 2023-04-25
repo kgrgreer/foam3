@@ -68,6 +68,8 @@ foam.CLASS({
           arg2: true
         })).select()).array;
 
+      if ( this.supportedLanguages.length <= 1 ) return;
+
       var actionArray = this.supportedLanguages.map( c => {
         var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
         return self.Action.create({

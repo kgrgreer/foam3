@@ -19,7 +19,11 @@ foam.CLASS({
     'appConfig',
     'auth',
     'ctrl',
+    'emailVerificationService',
+    'loginSuccess',
     'loginView?',
+    'notify?',
+    'pushMenu',
     'stack',
     'subject',
     'theme',
@@ -30,7 +34,6 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock'
   ],
 
@@ -47,8 +50,9 @@ foam.CLASS({
     { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak' },
     { name: 'SUCCESS_MSG', message: 'Account successfully created' },
     { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
+    { name: 'ERROR_MSG_LOGIN', message: 'There was a problem signing into your account' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -181,15 +185,33 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'emailVerifiedListener',
+      code: async function() {
+        try {
+          await this.auth.login(x, this.userName, this.desiredPassword);
+          this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
+          this.loginSuccess = true;
+          await this.ctrl.reloadClient();
+          await this.ctrl.onUserAgentAndGroupLoaded();
+        } catch(err) {
+          this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
+          this.pushMenu('sign-in', true);
+        }
+      }
+    }
+  ],
+
   methods: [
     {
       name: 'nextStep',
       code: async function() {
-        await this.finalRedirectionCall();
+        await this.verifyEmail(this.__subContext__, this.email, this.userName);
       }
     },
     {
-      name: 'finalRedirectionCall',
+      name: 'verifyEmail',
       code: async function() {
         if ( this.subject.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
@@ -202,16 +224,21 @@ foam.CLASS({
           // and reset the subject to the anonymous subject before verification step
           var user = this.subject.user;
           this.subject = await this.auth.getCurrentSubject(null);
+          this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
+          this.ctrl.groupLoadingHandled = true;
           this.stack.push(this.StackBlock.create({
             view: {
-              class: 'foam.nanos.auth.email.VerificationCodeView',
-              data: {
-                class: 'foam.nanos.auth.email.EmailVerificationCode',
-                email: user.email,
-                userName: user.userName,
-                showAction: true,
-                signinOnSubmit: true
-              }
+              class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+              children: [{
+                class: 'foam.nanos.auth.email.VerificationCodeView',
+                data: {
+                  class: 'foam.nanos.auth.email.EmailVerificationCode',
+                  email: user.email,
+                  userName: user.userName,
+                  showAction: true,
+                  signinOnSubmit: true
+                }
+              }]
             }
           }));
         }
@@ -233,13 +260,13 @@ foam.CLASS({
     {
       name: 'login',
       label: 'Get started',
+      section: 'footerSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_, isLoading_) {
         return ! errors_ && ! isLoading_;
       },
       isAvailable: function(showAction) { return showAction; },
-      code: function(x) {
-        this.isLoading_ = true;
+      code: async function(x) {
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
@@ -247,37 +274,33 @@ foam.CLASS({
           signUpToken: this.token_,
           language: this.defaultUserLanguage()
         });
-        this.dao_
-          .put(createdUser)
-          .then(async user => {
-            this.subject.realUser = user;
-            this.subject.user = user;
+        var user;
+        try {
+          user = await this.dao_.put(createdUser);
+        } catch (err) {
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
+          return;
+        }
 
-            if ( ! this.pureLoginFunction ) await this.nextStep(x);
+        if ( user ) {
+          this.subject.realUser = user;
+          this.subject.user = user;
 
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.SUCCESS_MSG_TITLE,
-              description: this.SUCCESS_MSG,
-              type: this.LogLevel.INFO,
-              transient: true
-            }));
-          }).catch(err => {
-            this.ctrl.add(this.NotificationMessage.create({
-              err: err.data,
-              message: this.ERROR_MSG,
-              type: this.LogLevel.ERROR
-            }));
-          })
-          .finally(() => {
-            this.isLoading_ = false;
-          });
+          if ( ! this.pureLoginFunction ) await this.nextStep(x);
+
+          this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
+        } else {
+          this.loginFailed = true;
+          this.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
+        }
+        // TODO: Add functionality to push to sign in if the user email already exists
       }
     },
     {
       name: 'footer',
       section: 'footerSection',
       label: 'Sign in',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
         X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));

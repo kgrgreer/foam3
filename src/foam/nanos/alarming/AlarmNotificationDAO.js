@@ -52,12 +52,12 @@ foam.CLASS({
            ( ( old == null ||
                old.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) &&
                alarm.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) ) {
-        getDelegate().put_(x, obj);
+        return getDelegate().put_(x, obj);
       }
 
       if ( "localhost".equals(System.getProperty("hostname", "localhost")) &&
            ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST ) {
-        getDelegate().put_(x, obj);
+        return getDelegate().put_(x, obj);
       }
 
       if ( old == null ||
@@ -110,18 +110,11 @@ foam.CLASS({
       }
 
       HashMap args = new HashMap();
-      args.put("alarm.name", alarm.getName());
-      args.put("alarm.status", alarm.getIsActive() ? "Active" : "Cleared");
-      args.put("alarm.severity", alarm.getSeverity().getLabel().toUpperCase());
-      args.put("alarm.reason", alarm.getReason().getLabel());
-      args.put("alarm.host", alarm.getHostname());
-      args.put("alarm.started", alarm.getCreated().toString());
+      args.put("alarm", alarm);
+      args.put("alarm_status", alarm.getIsActive() ? "Active" : "Cleared");
+      args.put("alarm_severity", alarm.getSeverity().getLabel().toUpperCase());
       if ( ! alarm.getIsActive() ) {
-        args.put("alarm.cleared", alarm.getLastModified().toString());
-      }
-      args.put("alarm.note", alarm.getNote());
-      if ( ! SafetyUtil.isEmpty(alarm.getEventRecord()) ) {
-        args.put("alarm.eventRecord", alarm.getEventRecord());
+        args.put("alarm_cleared", alarm.getLastModified().toString());
       }
 
       // Notifications are ServiceProviderAware
@@ -143,7 +136,7 @@ foam.CLASS({
         .setAlarm(alarm)
         .build();
 
-     ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);
+     ((DAO) x.get("notificationDAO")).put_(getX(), notification);
       return alarm;
       `
     }

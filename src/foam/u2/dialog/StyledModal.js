@@ -148,7 +148,7 @@ foam.CLASS({
                 .addClass(this.myClass('X'))
               .end()
             .endContext()
-            .start().addClasses(['h400', this.myClass('title')]).add(this.title).end()
+            .start().addClass('h400', this.myClass('title')).add(this.title).end()
             .start()
               .addClass(this.myClass('modal-body'))
               .add(this.addBody())

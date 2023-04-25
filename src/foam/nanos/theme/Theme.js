@@ -183,7 +183,6 @@ foam.CLASS({
       documentation: 'Menu user redirects to before login.',
       of: 'foam.nanos.menu.Menu',
       section: 'navigation',
-      value: 'sign-in',
       writePermissionRequired: true
     },
     {
@@ -240,6 +239,11 @@ foam.CLASS({
       },
       section: 'images',
       writePermissionRequired: true
+    },
+    {
+      class: 'Boolean',
+      name: 'shouldResizeLogo',
+      documentation: 'Enables switching between largeLogo and logo in ApplicationLogoView'
     },
     {
       class: 'Image',

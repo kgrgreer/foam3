@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- // git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
+// git log --since="2021-01-01" --until="2022-01-01" --no-merges -p > src/foam/demos/gitlog/data2021.log
 
 foam.CLASS({
   package: 'foam.demos.gitlog',
@@ -88,7 +88,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.recall(function(data) {
+      this.react(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
@@ -298,6 +298,14 @@ foam.CLASS({
       'v2.',
     ],
     IGNORE_EQUALS: [
+      'foam',
+      'Merged dev',
+      'faom',
+      'foam again',
+      'foam2',
+      'formatting',
+      'master foam',
+      'update version',
       'Add comment.',
       'Add space',
       'added space',
@@ -325,9 +333,12 @@ foam.CLASS({
       'space',
       'Spacing.',
       'syntax error',
+      'Updating FOAM',
+      'Updating version numbers',
       'Update FOAM peg',
       'Update FOAM Peg',
-      'Updated.'
+      'Updated.',
+      'spacing',
     ],
     AUTHOR_MAP: {
       'Adam Fox': 'Adam Fox',
@@ -365,6 +376,7 @@ foam.CLASS({
       'kristina': 'Kristina Smirnova',
       'Lenore Chen': 'Lenore Chen',
       'LenoreChen': 'Lenore Chen',
+      'Mahimaa': 'Mahimaa Jayaprakash',
       'Mayowa Olurin': 'Mayowa Olurin',
       'mayowa': 'Mayowa Olurin',
       'mcarcaso': 'Mike Carcasole',
@@ -418,39 +430,61 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
-        name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util' ]
+//        name: 'Core',
+        name: 'NANOS',
+        keywords: [ 'fscript' ],
+        paths: [ ]
       },
       {
-        name: 'Core',
+        name: 'Application',
+        keywords: [ 'afex' ],
+        paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
+      },
+      {
+//        name: 'U2/U3',
+name: 'NANOS',
+        keywords: [ 'initE' ],
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev' /* ??? for 2022 only */ ]
+      },
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF' ]
+      },
+      {
+//        name: 'Core',
+        name: 'NANOS',
         keywords: [ ],
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Approval',
+        name: 'Application',
+//         name: 'Approval',
         keywords: [ 'approval' ],
         paths: [ ]
       },
       {
-        name: 'Performance ',
+//        name: 'Performance ',
+        name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
       },
       {
-        name: 'CRUNCH',
+//        name: 'CRUNCH',
+        name: 'NANOS',
         keywords: [ 'crunch', 'capab' ],
         paths: [ 'crunch' ]
       },
       {
         name: 'NANOS',
         keywords: [ 'nanos' ],
-        paths: [ 'nanos', 'dashboard', 'parse', 'Email', '.jrl', 'java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
+        paths: [ 'nanos', 'dashboard', 'parse', 'Email', 'foam/java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
       },
       {
-        name: 'U2/U3',
+//        name: 'U2/U3',
+        name: 'NANOS',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
-        paths: [ 'u2', 'demo', 'layout', 'comics', 'google/flow', 'phonecat' ]
+        paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
       }
     ]
   },
@@ -524,8 +558,7 @@ foam.CLASS({
         var files = { '/': this.commits.length };
         this.commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
-      },
-      view: 'foam.u2.view.ChoiceView',
+      }
     },
     {
       class: 'String',
@@ -564,8 +597,7 @@ foam.CLASS({
     {
       name: 'commits',
       expression: function(data) {
-        return data.
-          reverse().
+        var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
               if ( c.subject.indexOf(this.IGNORE_CONTAINS[i]) != -1 ) return false;
@@ -584,6 +616,7 @@ foam.CLASS({
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
+              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
@@ -602,15 +635,13 @@ foam.CLASS({
                 }
               }
             });
-            /*
-            {
-              name: '',
-              keywords: [ ],
-              paths: [ ]
-            },
-            */
+
             return c;
           });
+
+          d2.sort((a, b) => foam.Date.compare(a.date, b.date));
+
+          return d2;
       }
     },
     {
@@ -625,23 +656,31 @@ foam.CLASS({
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      this.loadData('data2021.log');
-     // this.loadData('np2021.log');
-      // this.loadData('data2022.log');
-      /*
-      this.loadData('foam2021.log');
-      this.loadData('np2021.log');
-      */
+      const year = 2022;
+
+      if ( year == 2021 ) {
+        this.loadData('data2021.log');
+        this.loadData('np2021.log');
+      } else if ( year == 2022 ) {
+        this.loadData('data2022.log');
+        this.loadData('np2022.log');
+
+        this.loadData('data2021.log');
+        this.loadData('np2021.log');
+      }
+
     },
+
     function loadData(f) {
       fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
     },
+
     function parseLog(t) {
-      var data = [];
-      var state  = 0;
-      var lines  = t.split('\n');
+      var data  = [];
+      var state = 0;
+      var lines = t.split('\n');
       var commit;
       t = null;
       for ( var i = 0 ; i < lines.length ; i++ ) {
@@ -682,9 +721,10 @@ foam.CLASS({
           }
         }
       }
-      this.data = this.data.concat(data);
+      this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
+
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
 
@@ -695,14 +735,18 @@ foam.CLASS({
         ( project === '-- All --' || commit.project === project )
         ;
     },
+
     function fileToPath(file) {
       var i = file.lastIndexOf('/');
       if ( i == -1 ) return '/';
       return file.substring(0, i);
     },
+
     function incr(map, key) {
+      /** Increment counter for key in map of keys->counts. **/
       map[key] = (map[key] || 0) + 1;
     },
+
     function render() {
       var self = this;
       this.commits$.sub(function() {
@@ -712,6 +756,7 @@ foam.CLASS({
       });
       this.commits;
     },
+
     function render_() {
       var self = this;
 
@@ -739,12 +784,12 @@ foam.CLASS({
         start().
           style({display: 'flex'}).
           start().
-            style({width: self.embedFiles$.map(e => e ? '100%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
+            style({width: self.embedFiles$.map(e => e ? '80%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
             call(function() { self.commitTable.call(this, self); }).
           end().
           start().
-            hide(self.embedFiles$).
-            style({width: self.embedFiles$.map(e => e ? '0%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
+//            hide(self.embedFiles$).
+            style({width: self.embedFiles$.map(e => e ? '20%' :'50%'), height: '100vh', padding: '10px', 'overflow-y': 'scroll'}).
             start(this.SELECTION).end().
           end().
         end();

@@ -17,31 +17,27 @@ foam.CLASS({
     'crunchService',
     'subject',
     'wizardletId as importedWizardletId',
-    'wizardlets'
+    'wizardlets',
+    'wizardSubject?'
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'wizardletId'
+      name: 'capabilityId'
     }
   ],
 
 
   methods: [
     async function save(data) {
-      let useId = this.wizardletId || this.importedWizardletId;
-      const wizardlet = await this.wizardlets.find(w => w.id === useId);
-      let useData = this.wizardletId ? wizardlet.data : data;
-      let p = this.subject ? this.crunchService.updateJunctionFor(
-        null, useId, useData, null,
-        this.subject.user, this.subject.realUser
+      const ucj = await ( this.wizardSubject ? this.crunchService.updateJunctionFor(
+        null, this.capabilityId, data, null,
+        this.wizardSubject.user, this.wizardSubject.realUser
       ) : this.crunchService.updateJunction(null,
-        useId, useData, null
-      );
-      await p.then(ucj => {
-        wizardlet.status = ucj.status;
-      }).catch(e => console.debug(e) );
+        this.capabilityId, data, null
+      ));
+      console.log('after ---------- '+this.capabilityId, x.subject.user.id);
       await this.delegate.save(data);
     }
   ]

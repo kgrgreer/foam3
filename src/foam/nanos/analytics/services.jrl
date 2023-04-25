@@ -16,7 +16,10 @@ p({
       .setSAF(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("analyticEvents")
-      .setDecorator(new foam.nanos.analytics.AnalyticEventOMDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())).build())
+      .setDecorator(
+        new foam.nanos.analytics.AnalyticEventOMDAO.Builder(x).setDelegate(
+        new foam.nanos.analytics.AnalyticEventTimestampDAO.Builder(x).setDelegate(
+        new foam.dao.NullDAO(x, foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())).build()).build())
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.NAME })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.analytics.AnalyticEvent.SESSION_ID })

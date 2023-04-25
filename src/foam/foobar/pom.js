@@ -16,6 +16,7 @@ foam.POM({
     { name: 'FoobarController' },
     { name: 'Delete' },
     { name: 'Exec' },
+    { name: 'ExecGradle' },
     { name: 'CreateDir' }
   ],
   journals: [

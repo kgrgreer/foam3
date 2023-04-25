@@ -200,7 +200,7 @@ foam.CLASS({
       border: 1px solid $grey400;
       color: $black;
       background-color: $white;
-      min-width: 94px;
+      min-width: 120px;
 
       width: 100%;
       border-radius: 4px;
@@ -588,13 +588,11 @@ foam.CLASS({
                 })
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
-                  .add(this.slot(data => {
-                    return this.E().tag(self.selectionView, {
-                      data: data,
+                  .tag(self.selectionView, {
+                      data$: self.data$,
                       fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
-                    });
-                  }))
+                    })
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
@@ -610,6 +608,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
                   .tag(self.selectionView, {
+                    mode$: self.mode$,
                     fullObject$: self.fullObject_$,
                     defaultSelectionPrompt$: self.choosePlaceholder$
                   })
@@ -629,13 +628,19 @@ foam.CLASS({
       if ( action && actionData ) {
         return this.E()
           .start(self.DefaultActionView, { action: action, data: actionData })
-            .addClass(self.myClass('action'))
+          .on('click', () => {
+            self.dropdown_.close();
+          })
+          .addClass(self.myClass('action'))
           .end();
       }
       if ( action ) {
         return this.E()
           .start(self.DefaultActionView, { action: action })
-            .addClass(self.myClass('action'))
+          .on('click', () => {
+                self.dropdown_.close();
+              })
+          .addClass(self.myClass('action'))
           .end();
       }
     },

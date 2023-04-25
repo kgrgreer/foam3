@@ -35,12 +35,13 @@ foam.CLASS({
   messages: [
     { name: 'SUCCESS_MSG', message: 'Email verified.' },
     { name: 'ERROR_MSG', message: 'Email verification failed.' },
-    { name: 'TITLE', message: 'Please enter your email verification code' },
+    { name: 'TITLE', message: 'Let\'s Verify Your Email Address' },
+    { name: 'INSTRUCTION', message: 'We have sent a verification code to your email. Please enter the code below to confirm that this account belongs to you.' },
     { name: 'VERIFICATION_EMAIL_TITLE', message: 'Verification Email Sent'},
     { name: 'RESEND_ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     { name: 'VERIFICATION_EMAIL', message: 'Email sent to' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
-    { name: 'INVALID_CODE',     message: 'There was a problem resetting your password. Remaining attempts: ' },
+    { name: 'INVALID_CODE',     message: 'Invalid code. Remaining attempts: ' },
     { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
   ],
 
@@ -51,23 +52,6 @@ foam.CLASS({
     },
     { name: 'verificationCodeSection' }
   ],
-
-  css: `
-    .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
-      justify-content: center;
-    }
-    .foam-u2-detail-SectionView .foam-u2-ActionView-resendCode {
-      padding: 0;
-    }
-    
-    .foam-u2-dialog-ApplicationPopup-bodyWrapper .subTitle {
-      text-align: center;
-    }
-    .foam-u2-dialog-ApplicationPopup-bodyWrapper .foam-u2-detail-SectionView-verificationCodeSection {
-      width: fit-content;
-      align-self: center
-    }
-  `,
 
   properties: [
     {
@@ -96,7 +80,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userName',
-      required: true,
       hidden: true
     },
     {
@@ -137,8 +120,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
-    },
-    [ 'signinOnSubmit', false ]
+    }
   ],
 
   methods: [
@@ -158,7 +140,7 @@ foam.CLASS({
         }
 
         try {
-          var verified = await  this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
+          var verified = await this.emailVerificationService.verifyCode(x, this.email, this.userName, this.verificationCode);
           this.report('^verify-success', ['email-verification']);
           this.assert(verified, 'verified should be true when no exception was thrown')
           this.codeVerified = verified;
@@ -179,6 +161,7 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
+      buttonStyle: 'PRIMARY',
       section: 'verificationCodeSection',
       isAvailable: function(showAction) {
         return showAction;
@@ -199,7 +182,7 @@ foam.CLASS({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO
           }));
-          if ( this.signinOnSubmit ) this.pushMenu('sign-in', true);
+          this.emailVerificationService.pub('emailVerified');
         } else {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.ERROR_MSG,

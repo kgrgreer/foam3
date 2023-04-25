@@ -192,8 +192,10 @@ foam.CLASS({
         let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
+        var argumentX = undefined;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
         if ( this.ContextAgent.isInstance(spec) ) {
+          argumentX = x;
           contextAgent = spec.copyFrom(args);
         } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
@@ -218,7 +220,10 @@ foam.CLASS({
         let newX;
         try {
           this.insertPosition_ = i;
-          newX = await contextAgent.execute();
+          newX = await contextAgent.execute(argumentX);
+          if ( ! (newX || contextAgent.__subContext__).sequence ) {
+            console.error('sequence is missing from export context', contextAgent)
+          }
         } catch (e) {
           console.error(`sequence:`, seqspec, e);
           this.paused_ = true;
@@ -227,6 +232,14 @@ foam.CLASS({
               exception: e
             }));
           }
+        }
+        if ( argumentX && ! newX ) {
+          console.error(
+            '%cA ContextAgent in a Sequence is misbehaving%c\n%s',
+            'color:red;font-size:20px', '',
+            'A ContextAgent was already instantiated when passed to the sequence, so it was passed an explicit context. However, it did not return a context even though its export context is not valid for this scenario',
+            contextAgent
+          );
         }
         clearTimeout(stepResolvedTimeout);
         return await nextStep(newX || contextAgent.__subContext__);

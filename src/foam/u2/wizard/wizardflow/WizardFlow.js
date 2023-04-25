@@ -13,11 +13,16 @@ foam.CLASS({
   ],
   requires: [
     'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.wizard.AlternateFlow',
+    'foam.u2.wizard.agents.AlternateFlowAgent',
     'foam.u2.wizard.WizardPosition',
     'foam.u2.wizard.WizardType',
+    'foam.u2.wizard.agents.QuickAgent',
     'foam.u2.wizard.wizardflow.AddCapabilityHierarchy',
     'foam.u2.wizard.wizardflow.Export',
+    'foam.u2.wizard.wizardflow.AddWizardlet',
     'foam.u2.wizard.wizardflow.EditWizardlet',
+    'foam.u2.wizard.wizardflow.RemoveWizardlets',
     'foam.u2.wizard.wizardflow.Predicated',
     'foam.util.async.AdvanceToAgent'
   ],
@@ -31,6 +36,12 @@ foam.CLASS({
         if ( typeof this.sequence !== 'function' ) {
           throw new Error('abstract method WizardFlow.sequence() is required');
         }
+        this.tag(this.QuickAgent, {
+          executeFn: x => {
+            if ( x.wizardlets ) return x;
+            return x.createSubContext({ wizardlets: [] });
+          }
+        });
         await this.sequence();
         this.initialized_ = true;
       }

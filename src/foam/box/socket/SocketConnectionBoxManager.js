@@ -36,6 +36,11 @@ foam.CLASS({
 
   properties: [
     {
+      documentation: 'Create a Box per nspec service rather than one socket for all services to a particular host:port',
+      class: 'Boolean',
+      name: 'boxPerService'
+    },
+    {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',
       class: 'Int',
       name: 'soTimeout',
@@ -45,7 +50,12 @@ foam.CLASS({
       documentation: 'Time to wait on initial creation for connection to be established',
       class: 'Int',
       name: 'connectTimeout',
-      value: 60000
+      value: 10000
+    },
+    {
+      class: 'String',
+      name: 'threadPoolName',
+      value: 'boxThreadPool'
     },
     {
       class: 'Map',
@@ -79,7 +89,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      getBoxes().put(makeKey(box.getHost(), box.getPort()), box);
+      getBoxes().put(box.getKey(), box);
       `
     },
     {
@@ -123,10 +133,22 @@ foam.CLASS({
         {
           name: 'port',
           type: 'int'
+        },
+        {
+          name: 'serviceName',
+          type: 'String'
         }
       ],
       javaCode: `
-        return host + ":" + port;
+        StringBuilder sb = new StringBuilder();
+        sb.append(host);
+        sb.append(":");
+        sb.append(port);
+        if ( getBoxPerService() ) {
+          sb.append(":");
+          sb.append(serviceName);
+        }
+        return sb.toString();
       `
     },
     {
@@ -145,10 +167,14 @@ foam.CLASS({
         {
           name: 'port',
           type: 'int'
+        },
+        {
+          name: 'serviceName',
+          type: 'String'
         }
       ],
       javaCode: `
-        String key = makeKey(host, port);
+        String key = makeKey(host, port, serviceName);
         SocketConnectionBox box = (SocketConnectionBox) getBoxes().get(key);
         if ( box != null ) {
           return box;
@@ -168,19 +194,20 @@ foam.CLASS({
           socket.setSoTimeout(getSoTimeout());
           SocketAddress address = new InetSocketAddress(host, port);
           socket.connect(address, getConnectTimeout());
-          box = new SocketConnectionBox(x, key, socket, host, port);
+          box = new SocketConnectionBox(x, key, socket);
           add(box);
-          Agency agency = (Agency) x.get("threadPool");
+          Agency agency = (Agency) x.get(getThreadPoolName());
           agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
           return box;
         } catch ( java.net.ConnectException |
-                   java.net.NoRouteToHostException e ) {
+                   java.net.NoRouteToHostException |
+                   java.net.UnknownHostException e ) {
           remove(box);
-          getLogger().warning(host, port, e.getClass().getSimpleName(), e.getMessage());
+          getLogger().warning(key, e.getClass().getSimpleName(), e.getMessage());
           throw new RuntimeException(e);
         } catch ( Throwable t ) { // All other IOExceptions
           remove(box);
-          getLogger().error(host, port, t.getClass().getSimpleName(), t.getMessage());
+          getLogger().error(key, t.getClass().getSimpleName(), t.getMessage(), t);
           throw new RuntimeException(t);
         }
       `

@@ -34,6 +34,7 @@ foam.CLASS({
 
   imports: [
     'appConfig',
+    'ctrl',
     'loginVariables',
     'memento',
     'stack',
@@ -87,26 +88,28 @@ foam.CLASS({
 
   /* TITLE TXT ON DATA */
   ^ .title-top {
-    font-size: 2.5em;
-    padding-top: 2vh;
+    font-size: 2.5em;    
     font-weight: bold;
   }
 
   /* ON DATA */
   ^content-form {
-    align-self: center;
     width: 75%;
-    padding: 2vw;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   /* ON ALL FOOTER TEXT */
-  ^ .bold-text-with-pad {
-    font-weight: bold;
+  ^ .text-with-pad {
     margin-right: 0.2em;
   }
   ^center-footer {
     text-align: center;
+  }
+  ^ .align-end {
+    text-align: end;
   }
 
   ^center-footer > ^signupLink {
@@ -151,26 +154,29 @@ foam.CLASS({
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
+    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    border-radius: 8px;
   }
   ^image-one {
     width: 48vw;
-    padding-top: 25px;
+    padding-bottom: 8rem;
   }
-  
-  @media (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
-    .foam-u2-view-LoginView .foam-u2-borders-SplitScreenGridBorder {
-      padding: 0 4vw;
-    }
+  ^ .foam-u2-borders-SplitScreenGridBorder-grid {
+    grid-gap: 0;
   }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
       justify-content: center;
       height: 6vh;
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
+    }
+  }
+  @media (min-width: /*%DISPLAYWIDTH.SM%*/ 576px ) {
+    ^content-form {
+      align-self: center;
     }
   }
   `,
@@ -212,7 +218,10 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'leftView',
-      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath'
+      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath',
+      factory: function() {
+        return this.ctrl?.loginView?.leftView;
+      }
     },
     {
       class: 'String',
@@ -302,13 +311,18 @@ foam.CLASS({
         .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .startContext({ data: this }).tag(this.DATA).endContext()
+        .start()
+          .startContext({ data: this }).tag(this.DATA).endContext()
+          .start()
+            .addClass('align-end')
+            .tag(this.data.SUB_FOOTER)
+          .end()
+        .end()
+        .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction) {
             return self.E().callIf(data$showAction, function() {
               this
-                .br()
-                .br()
                 .start()
                   .startContext({ data: self.data })
                   .addClass(self.myClass('center-footer'))
@@ -316,18 +330,11 @@ foam.CLASS({
                   .start()
                     .addClass(self.myClass('signupLink'))
                     .start('span')
-                      .addClass('bold-text-with-pad')
+                      .addClass('text-with-pad')
                       .add(self.data.FOOTER_TXT)
                     .end()
                     .start('span')
                       .add(self.data.FOOTER)
-                    .end()
-                  .end()
-                    // second footer
-                  .start()
-                    .start('span').addClass('bold-text-with-pad').add(self.data.SUB_FOOTER_TXT).end()
-                    .start('span')
-                      .add(self.data.SUB_FOOTER)
                     .end()
                   .end()
                   .endContext()
@@ -339,7 +346,19 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
-        var split = this.SplitScreenGridBorder.create();
+        var split = this.SplitScreenGridBorder.create({
+          columnsConfigRight: {
+            class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 4,
+            xlColumns: 4
+          }, 
+          columnsConfigLeft: { 
+            class: 'foam.u2.layout.GridColumns',
+            columns: 6,
+            lgColumns: 8,
+            xlColumns: 8
+          }});
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
@@ -365,7 +384,7 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and data or just centered data
-        .callIfElse( !! (this.imgPath || this.leftView) && !! split, () => {
+        .callIfElse( this.imgPath && this.leftView && split, () => {
           if ( ! this.leftView ) {
             split.leftPanel
               .addClass('cover-img-block1')

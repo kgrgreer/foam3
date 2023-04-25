@@ -466,7 +466,7 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
-        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+        DAO notificationDAO = (DAO) x.get("notificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
@@ -512,7 +512,7 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
-        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+        DAO notificationDAO = (DAO) x.get("notificationDAO");
         if ( getAssignedTo() != 0 ) {
           Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)

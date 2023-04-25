@@ -52,6 +52,8 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityIntercept',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
+    'foam.u2.crunch.WizardRunner',
+    'foam.u2.wizard.WizardType',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
@@ -88,9 +90,11 @@ foam.CLASS({
     'loginView',
     'menuListener',
     'notify',
+    'prefersMenuOpen',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
+    'routeTo',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -106,7 +110,7 @@ foam.CLASS({
 
   topics: [
     'themeChange',
-    // Published by reloadClient(), can be subbed to by client side services 
+    // Published by reloadClient(), can be subbed to by client side services
     // that need to refresh or cleanup on client reload
     'clientReloading'
   ],
@@ -297,12 +301,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isMenuOpen',
+    },
+    {
+      class: 'Boolean',
+      name: 'prefersMenuOpen',
+      documentation: 'Stores the menu preference of the user',
       factory: function() {
-        return localStorage['isMenuOpen'] === 'true'
-         || ( localStorage['isMenuOpen'] = false );
+        return localStorage['prefersMenuOpen'] ? localStorage['prefersMenuOpen'] == 'true' : ( localStorage['prefersMenuOpen'] = true);
       },
       postSet: function(_, n) {
-        localStorage['isMenuOpen'] = n;
+        localStorage['prefersMenuOpen'] = n;
       }
     },
     {
@@ -414,6 +422,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'initSubject'
+    },
+    //TODO: temporary fix, remove when client signin service is fixed/added
+    {
+      name: 'groupLoadingHandled',
+      class: 'Boolean'
     }
   ],
 
@@ -441,27 +454,16 @@ foam.CLASS({
         self.installLanguage();
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
-        // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
-        if ( self.route ) {
-          var menu = await self.__subContext__.menuDAO.find(self.route);
-          // explicitly check that the menu is unauthenticated
-          // since if there is a user session on refresh, this would also
-          // find authenticated menus to try to push before fetching subject
-          if ( menu && menu.authenticate === false ) {
-            await self.fetchSubject(false);
-            if ( ! self.subject?.user || ( await self.__subContext__.auth.isAnonymous() ) ) {
-              // only push the unauthenticated menu if there is no subject
-              // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-              // use the route instead of the menu so that the menu could be re-created under the updated context
-              self.pushMenu(self.route);
-              self.languageInstalled.resolve();
-              self.subToNotifications();
-              return;
-            }
-          }
-        }
+
+        let ret = await self.initMenu();
+        if ( ret ) return;
 
         await self.fetchSubject();
+
+        if ( self.client != client ) {
+          console.log('Stale Client in ApplicationController, waiting for update.');
+          await self.client.promise;
+        }
 
         await self.fetchGroup();
 
@@ -488,12 +490,41 @@ foam.CLASS({
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
         await self.fetchTheme();
-        await self.onUserAgentAndGroupLoaded();
+        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
 
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
+
+    async function initMenu() {
+      var menu;
+
+      // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
+      if ( this.route ) {
+        menu = await this.__subContext__.menuDAO.find(this.route);
+      }
+      // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
+      if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
+        menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
+      }
+
+      // explicitly check that the menu is unauthenticated
+      // since if there is a user session on refresh, this would also
+      // find authenticated menus to try to push before fetching subject
+      if ( menu && menu.authenticate === false ) {
+        await this.fetchSubject(false);
+        if ( ! this.subject?.user || ( await this.__subContext__.auth.isAnonymous() ) ) {
+          // only push the unauthenticated menu if there is no subject
+          // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+          // use the route instead of the menu so that the menu could be re-created under the updated context
+          this.pushMenu(menu.id);
+          this.languageInstalled.resolve();
+          this.subToNotifications();
+          return 1;
+        }
+      }
+   },
 
     function render() {
       var self = this;
@@ -693,9 +724,9 @@ foam.CLASS({
       /** Used to checking validity of menu push and launching default on fail **/
       var dao;
       if ( this.client ) {
-        this.pushMenu_(realMenu, menu, opt_forceReload);
+        return this.pushMenu_(realMenu, menu, opt_forceReload);
       } else {
-        await this.clientPromise.then(async () => {
+        return await this.clientPromise.then(async () => {
           await this.pushMenu_(realMenu, menu, opt_forceReload);
         });
       }
@@ -707,7 +738,7 @@ foam.CLASS({
       realMenu = await dao.find(realMenu);
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
-          await this.requestLogin();
+          await this.fetchSubject();
           this.memento_.str = m;
           return;
         }
@@ -726,7 +757,7 @@ foam.CLASS({
       if ( typeof menu == 'string' && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;
-      menu && menu.launch && menu.launch(this.__subContext__);
+      return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
     async function findDefaultMenu(dao) {
@@ -815,11 +846,11 @@ foam.CLASS({
       let check = await this.checkGeneralCapability();
       if ( ! check ) return;
 
-      this.fetchTheme();
+      await this.fetchTheme();
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
         this.pushMenu('');
@@ -832,49 +863,29 @@ foam.CLASS({
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
       var group = await groupDAO.find(this.subject.user.group);
-      if ( group && group.generalCapability != '' ) {
-        const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
-        var ucj = await ucjCheck();
 
-        if ( ucj == null || ucj.status != this.CapabilityJunctionStatus.GRANTED ) {
+      if ( ! group || ! group.generalCapability ) return true;
 
-          const lastWizard = this.crunchController.lastActiveWizard;
-          if ( lastWizard &&
-            lastWizard.status === this.crunchController.WizardStatus.IN_PROGRESS
-          ) {
-            let x = this.__subContext__.createSubContext({
-              wizardController: lastWizard
-            });
-            const seq = await this.crunchController.createUCJInlineWizardSequence(x)
-              .addBefore('CapabilityAdaptAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
-              ;
-
-            lastWizard.status$.sub(async () => {
-              if ( lastWizard.status !== this.crunchController.WizardStatus.IN_PROGRESS ) {
-                await this.doGeneralCapabilityPostCheck(ucjCheck);
-              }
-            })
-
-            await this.crunchController.inlineWizardFromSequence(lastWizard, seq);
-
-          } else {
-            await this.crunchController.createTransientWizardSequence(this.__subContext__)
-              .addBefore('ConfigureFlowAgent', { class: 'foam.u2.wizard.agents.RootCapabilityAgent', rootCapability: group.generalCapability})
-              .reconfigure('WAOSettingAgent', { waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ })
-              .remove('RequirementsPreviewAgent')
-              .execute();
-            
-            await this.doGeneralCapabilityPostCheck(ucjCheck);
-          }
-
-        }
+      const ucjCheck = async () => await this.__subContext__.crunchService.getJunction(null, group.generalCapability);
+      var ucj = await ucjCheck();
+      if ( ucj != null && ucj.status == this.CapabilityJunctionStatus.GRANTED ) {
+        return true;
       }
-      return true;
+
+      const wizardRunner = this.WizardRunner.create({
+        wizardType: this.WizardType.UCJ,
+        source: group.wizardFlow || group.generalCapability,
+        options: {inline: false, returnCompletionPromise: true}
+      });
+      // TODO: figure out why this cant be inlined
+      let retPromise = await wizardRunner.launch();
+      await retPromise;
+      return await this.doGeneralCapabilityPostCheck(ucjCheck);
     },
 
     async function doGeneralCapabilityPostCheck (ucjCheck) {
       this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
-      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
+      this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
       let postCheck = await ucjCheck();
       if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
         this.add(foam.u2.dialog.ConfirmationModal.create({
@@ -892,6 +903,7 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        return true;
       }
     },
 
@@ -995,6 +1007,13 @@ foam.CLASS({
           this.replaceStyleTag(text, eid);
         }
       }
+    },
+    function routeTo(link) {
+      /**
+       * Replaces the url to redirect to the new menu without cleared tails
+       */
+      this.buildingStack = true;
+      this.memento_.str = link;
     }
   ]
 });

@@ -1052,7 +1052,14 @@ foam.CLASS({
           code += 'return ';
         }
 
-        code += 'get' + foam.String.capitalize(this.property) + '()';
+        var isContextOriented = this.args.length && this.args[0].name === 'x' && this.args[0].type === 'Context';
+
+        code += 'get' + foam.String.capitalize(this.property);
+        if ( isContextOriented ) {
+          code += '(x)';
+        } else {
+          code += '()';
+        }
         code += '.' + this.name + '(';
 
         for ( var i = 0 ; this.args && i < this.args.length ; i++ ) {
@@ -2031,6 +2038,19 @@ foam.CLASS({
     },
     ['javaInfoType', 'foam.core.AbstractFObjectPropertyInfo'],
     ['javaJSONParser', 'foam.lib.json.FObjectParser.instance()']
+  ],
+
+  methods: [
+    function buildJavaClass(cls) {
+      this.SUPER(cls);
+      cls.method({
+        name: `get${foam.String.capitalize(this.name)}`,
+        visibility: 'public',
+        type: this.javaType,
+        args: [ { name: 'x', type: 'foam.core.X' } ],
+        body: `return get${foam.String.capitalize(this.name)}();`
+      });
+    }
   ]
 });
 
@@ -2244,7 +2264,7 @@ foam.CLASS({
     function ensurePath(p) {
       var i     = 1 ;
       var parts = p.split(this.sep);
-      var path  = '/' + parts[0];
+      var path  = parts[0] === '' ? this.sep : parts[0];
 
       while ( i < parts.length ) {
         try {

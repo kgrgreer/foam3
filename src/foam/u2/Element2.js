@@ -178,35 +178,42 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    'self',
-    'code',
+    'fn',
     {
-      name: 'args',
-      factory: function() { return foam.Function.argNames(this.code).map(a => this.self.slot(a)); }
+      name: 'element_',
+      factory: function() { return this.document.createDocumentFragment(); }
     }
   ],
 
   methods: [
-    function load() {
-      this.SUPER();
+    function init() {
+      this.add(''); // needed to preserve proper location in DOM
 
-      var args = this.args;
-      for ( var i = 0 ; i < args.length ; i++ ) {
-        this.self.onDetach(args[i].sub(this.update));
-      }
+      this.fn.self = this;
 
-      this.update();
-    }
-  ],
+      var nextSibling;
 
-  listeners: [
-    {
-      name: 'update',
-      isFramed: true,
-      code: function() {
-        this.removeAllChildren();
-        this.code.apply(this, this.args.map(a => a.get()));
-      }
+      this.fn.pre = () => {
+        nextSibling = undefined;
+        this.childNodes.forEach(n => {
+          nextSibling = n.element_.nextSibling;
+          n.element_.remove();
+//          n.element_.parentNode.removeChild(n.element_);
+        });
+        this.childNodes = [];
+        this.element_   = undefined;
+      };
+
+      this.fn.post = () => {
+        if ( nextSibling ) {
+          this.parentNode.element_.insertBefore(this.element_, nextSibling);
+        } else if ( this.childNodes.length ) {
+          this.parentNode.element_.appendChild(this.element_);
+        } else {
+          // Add empty Text node to mark space in DOM in case no output was generated
+          this.add('');
+        }
+      };
     }
   ]
 });
@@ -1164,13 +1171,8 @@ foam.CLASS({
         return this.add(translation);
       }
 //      console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+//      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
       return this.add(opt_default);
-    },
-
-    function recall(fn, opt_self) {
-      this.addChild_(foam.u2.FunctionNode.create({code: fn, self: opt_self || this}, this));
-      return this;
     },
 
     function add() {
@@ -1188,10 +1190,15 @@ foam.CLASS({
         c = c.toE(null, this.__subSubContext__);
       }
 
+      if ( foam.core.DynamicFunction.isInstance(c) ) {
+        this.addChild_(foam.u2.FunctionNode.create({fn: c, parentNode: this}, this), this);
+        return
+      }
       if ( foam.Function.isInstance(c) ) {
-        console.warn('Deprecated use of add(Function). Use recall() instead.');
-        c = foam.u2.FunctionNode.create({self: this, code: c});
-      } else if ( foam.core.Slot.isInstance(c) ) {
+        this.add((this.__context__.data || this).dynamic(c));
+        return;
+      }
+      if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
         /*
@@ -1206,7 +1213,10 @@ foam.CLASS({
         }
         */
       if ( this.isLiteral(c) ) {
-        this.appendChild_(this.document.createTextNode(c));
+        c = foam.u2.Text.create({text: c});
+        this.childNodes.push(c);
+        c.parentNode = parentNode;
+        this.appendChild_(c.element_);
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.element_ ) {
@@ -1605,6 +1615,11 @@ foam.CLASS({
       name: '__',
       transient: true,
       factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
+    },
+    {
+      class: 'Boolean',
+      name: 'reserveLabelSpace',
+      documentation: 'Property to indicate if PropertyBorders need to reserve label space when label is empty'
     }
   ],
 

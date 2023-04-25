@@ -83,6 +83,9 @@ p({
       .setDelegate(auth)
       .build();
     auth = new foam.nanos.auth.CachingAuthService(auth);
+    auth = new foam.nanos.auth.SubjectAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.PMAuthService.Builder(x)
       .setLabel("uncached")
       .setDelegate(auth)
@@ -232,7 +235,9 @@ p({
       .setJournalName("countries")
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Country.NAME})
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ISO31661CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ALTERNATIVE_NAMES });
   """
 })
 
@@ -302,6 +307,7 @@ p({
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Region.NAME})
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.NAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.COUNTRY_ID })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ISO_CODE })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ALTERNATIVE_NAMES });
   """,
@@ -547,7 +553,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"supportEmailDAO",
-  "lazy":true,
   "serve":true,
   "serviceScript":
   """
@@ -773,7 +778,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"reportTemplateDAO",
-  "lazy":false,
   "serve":true,
   "authenticate": true,
   "serviceScript":"""
@@ -879,7 +883,6 @@ p({
 p({
   class: "foam.nanos.boot.NSpec",
   name: "ruleRetryStrategy",
-  lazy: true,
   service: {
     class: "foam.util.retry.RetryStrategyFactory",
     prototype: {

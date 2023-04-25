@@ -11,10 +11,12 @@ foam.CLASS({
   documentation: `User Signin model to be used with LoginView.
   `,
 
+  implements: [ 'foam.mlang.Expressions' ],
+
   imports: [
     'auth',
     'ctrl',
-    'currentMenu',
+    'emailVerificationService',
     'loginSuccess',
     'loginView?',
     'memento_',
@@ -22,7 +24,6 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'subject',
-    'translationService',
     'window'
   ],
 
@@ -30,17 +31,18 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock',
-    'foam.nanos.auth.DuplicateEmailException'
+    'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.UnverifiedEmailException'
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Welcome!' },
-    { name: 'FOOTER_TXT', message: 'Not a user yet?' },
-    { name: 'ERROR_MSG', message: 'There was an issue logging in' },
+    { name: 'TITLE',      message: 'Welcome Back' },
+    { name: 'FOOTER_TXT', message: 'Not a User Yet?' },
+    { name: 'ERROR_MSG',  message: 'There was an issue logging in' },
     { name: 'ERROR_MSG2', message: 'Please enter email or username' },
     { name: 'ERROR_MSG3', message: 'Please enter password' }
   ],
-  
+
   sections: [
     {
       name: '_defaultSection',
@@ -143,31 +145,28 @@ foam.CLASS({
           this.stack.push(this.StackBlock.create({
             view: { class: 'foam.nanos.auth.twofactor.TwoFactorSignInView' }
           }));
-        } else {
-          var user = this.subject.realUser;
-          if ( ! this.subject.realUser.emailVerified ) {
-            await this.auth.logout();
-            await this.auth.authorizeAnonymous(null);
-            this.subject = await this.auth.getCurrentSubject(null);
-            this.loginSuccess = false;
-            this.stack.push(this.StackBlock.create({
-              view: {
-                class: 'foam.nanos.auth.email.VerificationCodeView',
-                data: {
-                  class: 'foam.nanos.auth.email.EmailVerificationCode',
-                  email: user.email,
-                  userName: user.userName,
-                  showAction: true,
-                  signinOnSubmit: true
-                }
-              }
-            }));
-          } else {
-            this.loginSuccess = !! this.subject;
-            // reload the client on loginsuccess in case login not called from controller
-            if ( this.loginSuccess ) await this.ctrl.reloadClient();
-          }
         }
+      }
+    },
+    {
+      name: 'verifyEmail',
+      code: async function(x, email, username) {
+      this.ctrl.groupLoadingHandled = true;
+        this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: 'foam.u2.borders.StatusPageBorder', showBack: false,
+            children: [{
+              class: 'foam.nanos.auth.email.VerificationCodeView',
+              data: {
+                class: 'foam.nanos.auth.email.EmailVerificationCode',
+                email: email,
+                userName: username,
+                showAction: true
+              }
+            }]
+          }
+        }, this));
       }
     },
     {
@@ -182,10 +181,20 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'emailVerifiedListener',
+      code: function() {
+        this.login();
+      }
+    }
+  ],
+
   actions: [
     {
       name: 'login',
-      label: 'Sign in',
+      label: 'Sign In',
+      section: 'footerSection',
       buttonStyle: 'PRIMARY',
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
@@ -218,37 +227,51 @@ foam.CLASS({
               this.subject.realUser = logedInUser;
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
+
+            this.loginSuccess = true;
+            await this.ctrl.reloadClient();
+            // Temp fix to prevent breaking wizard sign in since that also calls this function
+            if ( ! this.pureLoginFunction )
+              await this.ctrl.onUserAgentAndGroupLoaded();
           } catch (err) {
-              this.loginFailed = true;
-              let e = err && err.data ? err.data.exception : err;
-              if ( this.DuplicateEmailException.isInstance(e) ) {
-                this.email = this.identifier;
-                if ( this.username ) {
-                  try {
-                    logedInUser = await this.auth.login(x, this.username, this.password);
-                    this.loginFailed = false;
-                    this.subject.user = logedInUser;
-                    this.subject.realUser = logedInUser;
-                    if ( ! this.pureLoginFunction ) await this.nextStep();
-                    return;
-                  } catch ( err ) {
-                    username = '';
-                  }
+            this.loginFailed = true;
+            let e = err && err.data ? err.data.exception : err;
+            if ( this.DuplicateEmailException.isInstance(e) ) {
+              this.email = this.identifier;
+              if ( this.username ) {
+                try {
+                  logedInUser = await this.auth.login(x, this.username, this.password);
+                  this.loginFailed = false;
+                  this.subject.user = logedInUser;
+                  this.subject.realUser = logedInUser;
+                  if ( ! this.pureLoginFunction ) await this.nextStep();
+                  return;
+                } catch ( err ) {
+                  this.username = '';
                 }
-                this.usernameRequired = true;
               }
-              this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
+              this.usernameRequired = true;
+            }
+            if ( this.UnverifiedEmailException.isInstance(e) ) {
+              // find user
+              var email = this.usernameRequired ? this.email : this.identifier;
+              this.verifyEmail(x, email, this.userName);
+              // do not show error notification for unverified email
+              return;
+            }
+            this.notifyUser(err.data, this.ERROR_MSG, this.LogLevel.ERROR);
           }
         } else {
+          // TODO: Add functionality to push to sign up if the user identifier doesnt exist
           this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
       }
     },
     {
       name: 'footer',
-      label: 'Create an account',
+      label: 'Create an Account',
       section: 'footerSection',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TEXT',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
         X.window.history.replaceState(null, null, X.window.location.origin);
@@ -257,7 +280,7 @@ foam.CLASS({
     },
     {
       name: 'subFooter',
-      label: 'Forgot password?',
+      label: 'Forgot Password?',
       section: 'footerSection',
       buttonStyle: 'LINK',
       isAvailable: function(showAction) { return showAction; },

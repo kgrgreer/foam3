@@ -140,10 +140,6 @@ foam.CLASS({
       justify-content: center;
     }
 
-    ^  .foam-u2-layout-Grid {
-      grid-gap: 0;
-    }
-
     ^footer-center a:link,
     ^footer-center a:visited,
     ^footer-center a:active {
@@ -333,12 +329,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('header-center'))
-              .start(this.Image, {
-                data$: this.slot(function(theme$topNavLogo) {
-                  return theme$topNavLogo;
-                }),
-                embedSVG: true
-              })
+              .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
                 .addClass(this.myClass('logo'))
               .end()
             .end()
@@ -410,7 +401,7 @@ foam.CLASS({
           .end()
           .callIf((this.footerHTML || this.includeSupport ), function() {
             this.start()
-              .addClasses([self.myClass('footer'), 'p-legal-light'])
+              .addClass(self.myClass('footer'), 'p-legal-light')
               // empty space
               .start().addClass(self.myClass('footer-left'))
               .end()
@@ -427,13 +418,13 @@ foam.CLASS({
                         .addClass('')
                         .add(self.SUPPORT_TITLE)
                         .start('a')
-                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
                           .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
                           .add(self.theme.supportConfig.supportEmail)
                         .end()
                         .add(' | ')
                         .start('a')
-                          .addClasses([self.myClass('info-text'), self.myClass('footer-link')])
+                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
                           .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
                           .add(self.theme.supportConfig.supportPhone)
                         .end()

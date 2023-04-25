@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
     'foam.u2.HTMLView',
+    'foam.u2.LoadingSpinner',
     'foam.u2.tag.CircleIndicator'
   ],
 
@@ -29,7 +30,9 @@ foam.CLASS({
     {
       class: 'foam.u2.ColorToken',
       name: 'buttonPrimaryColor',
-      value: '$primary400'
+      value: '$primary400',
+      disabledModifier: 90,
+      onLight: '$grey50'
     },
     {
       class: 'foam.u2.ColorToken',
@@ -61,6 +64,7 @@ foam.CLASS({
       justify-content: center;
       margin: 0;
       outline: none;
+      position: relative;
       text-align: center;
     }
 
@@ -78,6 +82,10 @@ foam.CLASS({
 
     ^:hover:not(:disabled) {
       cursor: pointer;
+    }
+
+    ^:hover^:disabled {
+      cursor: not-allowed;
     }
 
     ^unavailable {
@@ -392,6 +400,30 @@ foam.CLASS({
       width: 1em;
       height: 1em;
     }
+    /* Loading indicator css */
+    ^[data-loading] > :not(^loading) {
+      opacity: 0;
+    }
+    ^loading {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ^primary ^loading svg, ^primary:disabled > ^loading svg {
+      fill: $buttonPrimaryColor$foreground;
+    }
+    ^secondary ^loading svg, ^tertiary ^loading svg,  ^link ^loading svg,
+    ^secondary:disabled ^loading svg, ^tertiary:disabled ^loading svg,  ^link:disabled ^loading svg {
+      fill: $buttonSecondaryColor$foreground;
+    }
+    ^text > ^loading svg, ^text:disabled > ^loading svg {
+      fill: $buttonPrimaryColor;
+    }
   `,
 
   properties: [
@@ -458,7 +490,8 @@ foam.CLASS({
         var s = buttonStyle.name.toLowerCase();
         return isDestructive ? s + '-destructive' : s;
       }
-    }
+    },
+    [ 'loading_', false]
   ],
 
   methods: [
@@ -498,7 +531,7 @@ foam.CLASS({
       } else if ( this.icon ) {
         this
           .start({ class: 'foam.u2.tag.Image', data: this.icon, role: 'presentation', embedSVG: true })
-            .addClasses([this.myClass('SVGIcon'), this.myClass('imgSVGIcon')])
+            .addClass(this.myClass('SVGIcon'), this.myClass('imgSVGIcon'))
           .end();
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
@@ -516,14 +549,20 @@ foam.CLASS({
           } else {
             this.start().addClass('h600').add(this.label$).end();
           }
-        } else if ( this.label.render ) {
+        } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
           this.tag(this.label);
         } else {
           this.add(this.label$);
         }
       }
+
+      this.attrs({ 'data-loading': this.loading_$ })
+      this.add(this.slot(function(loading_) {
+        return loading_ ? this.E().tag(self.LoadingSpinner, {size: '100%'}).addClass(self.myClass('loading')) : this.E().hide();
+      }));
     }
   ],
+
   listeners: [
     function click(e) {
       // Implemented by subclasses

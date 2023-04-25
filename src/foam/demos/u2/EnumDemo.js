@@ -19,7 +19,7 @@ foam.ENUM({
 
 
 foam.CLASS({
-  name: 'SampleData',
+  name: 'EnumSampleData',
 
   tableColumns: [ 'id', 'priority', 'description' ],
 
@@ -57,7 +57,7 @@ foam.CLASS({
       view: 'foam.u2.view.TableView',
       factory: function() {
         return this.EasyDAO.create({
-          of: SampleData,
+          of: EnumSampleData,
           daoType: 'MDAO',
           testData: [
             { id: 1, priority: 'UNKNOWN', description: 'The unknown.' },

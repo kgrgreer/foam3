@@ -76,18 +76,18 @@ foam.CLASS({
     function render() {
       const self = this;
       this.addClass()
-        .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$)
+        .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$.or(this.popup?.forceFullscreen$))
         .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
           return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
-              .addClasses(['h300', self.myClass('wizardletTitle')])
+              .addClass('h300', self.myClass('wizardletTitle'))
               .add(data$currentWizardlet.title)
             .end() : null
         }))
         .add(this.slot(function (data$currentWizardlet) {
           return data$currentWizardlet.subTitle ?
             this.E().start()
-              .addClasses([self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub')])
+              .addClass(self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub'))
               .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: data$currentWizardlet.subTitle }))
             .end() : null
         }))

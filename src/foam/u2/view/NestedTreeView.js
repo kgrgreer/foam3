@@ -9,12 +9,44 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'TreeViewHeading',
   extends: 'foam.u2.view.TreeViewRow',
-  css: `
-    ^select-level {
-      justify-content: flex-start;
-      gap: 8px;
+
+  classes: [
+    {
+      name: 'LabelView',
+      extends: 'foam.u2.view.TreeViewRow.LabelView',
+      css: `
+        ^select-level {
+          justify-content: flex-start;
+          gap: 8px;
+        }
+      `,
+
+      methods: [
+        function render() {
+          let row = this.row;
+          let self = this;
+          this.
+          addClass(self.myClass('select-level')).
+          start(self.Image, { glyph: 'next' }).
+          addClass(self.myClass('toggle-icon')).
+          style({ 'transform': 'rotate(180deg)' }).
+          end().
+          callIfElse(row.rowConfig?.[row.data.id],
+            function() {
+              this.tag(row.rowConfig[row.data.id]);
+            },
+            function() {
+              this.start().
+                addClass('p-semiBold').
+                addClass(self.myClass('label')).
+                call(row.formatter, [row.data]).
+              end();
+            }
+          );
+        }
+      ]
     }
-  `,
+  ],
   methods: [
     function render() {
       var self = this;
@@ -22,24 +54,7 @@ foam.CLASS({
       if ( this.translationService ) {
         labelString = self.translationService.getTranslation(foam.locale, self.data.label, self.data.label);
       }
-      var mainLabel = this.E().
-        addClass(self.myClass('select-level')).
-        start(this.Image, { glyph: 'next' }).
-        addClass(self.myClass('toggle-icon')).
-        style({ 'transform': 'rotate(180deg)' }).
-        end().
-        callIfElse(self.rowConfig?.[this.data.id],
-          function() {
-            this.tag(self.rowConfig[self.data.id]);
-          },
-          function() {
-            this.start().
-              addClass('p-semiBold').
-              addClass(self.myClass('label')).
-              call(self.formatter, [self.data]).
-            end();
-          }
-        );
+        
       this.
         addClass(this.myClass()).
         enableClass(this.myClass('selected'), this.selected_$).
@@ -59,7 +74,7 @@ foam.CLASS({
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
               buttonStyle: 'UNSTYLED',
-              label: mainLabel,
+              label: { class: 'foam.u2.view.TreeViewHeading.LabelView', row: self },
               ariaLabel: labelString,
               size: 'SMALL'
             }).

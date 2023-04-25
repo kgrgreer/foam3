@@ -47,7 +47,7 @@ foam.CLASS({
                 }
               }
               
-              DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+              DAO notificationDAO = (DAO) x.get("notificationDAO");
               if ( getNotification() != null && notificationDAO != null ) {
                 try {
                   notificationDAO.put(getNotification());

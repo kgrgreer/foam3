@@ -139,7 +139,7 @@ foam.CLASS({
             ((DAO) getX().get("eventRecordDAO")).put(er);
           }
         } catch ( Exception e ) {
-          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e)));
+          setEr((EventRecord)((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", getId(), null, e.getMessage(), LogLevel.ERROR, e)));
           clearSession_();
           disable();
           throw new foam.core.FOAMException(e);
@@ -153,14 +153,11 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-      String partner = getId();
       EmailServiceConfig config = findId(getX());
       if ( config == null ) {
         config = new EmailServiceConfig(); // use default timer values
-      } else {
-        partner = config.getHost();
       }
-      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "start", partner, null, null, LogLevel.INFO, null));
+      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "start", getId(), null, null, LogLevel.INFO, null));
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       setTimer(timer);
       timer.schedule(new ContextAgentTimerTask(getX(), this),
@@ -177,6 +174,7 @@ foam.CLASS({
         Loggers.logger(getX(), this).info("stop");
         timer.cancel();
         clearTimer();
+        ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "stop", getId(), null, null, LogLevel.INFO, null));
       }
       `
     },
@@ -205,7 +203,7 @@ foam.CLASS({
       if ( lastConfig != null &&
            ((Map) config.diff(lastConfig)).size() > 0 ) {
 
-        ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "reload", config.getHost(), null, null, LogLevel.INFO, null));
+        ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "reload", getId(), null, null, LogLevel.INFO, null));
         clearTransport_();
         clearSession_();
         setLastConfig(config);
@@ -218,7 +216,7 @@ foam.CLASS({
       EmailServiceConfig config = (EmailServiceConfig) findId(getX()).fclone();
       config.setEnabled(false);
       ((DAO) getX().get("emailServiceConfigDAO")).put(config);
-      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", config.getHost(), null, "disable on error", LogLevel.WARN, null));
+      ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "connect", getId(), null, "disable on error", LogLevel.WARN, null));
       `
     },
     {
@@ -226,46 +224,52 @@ foam.CLASS({
       javaCode: `
       foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
       if ( support != null &&
-           ! support.cronEnabled(x, false) ) {
+           ! support.cronEnabled(x, true) ) {
         // Loggers.logger(x, this).debug("execution disabled");
         return;
       }
+      try {
+        while ( true ) {
+          reload();
+          EmailServiceConfig config = findId(getX());
+          if ( ! config.getEnabled() ) break;
 
-      while ( true ) {
-        reload();
-        EmailServiceConfig config = findId(getX());
-        if ( ! config.getEnabled() ) break;
+          DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
+          List<EmailMessage> emailMessages = (List) ((ArraySink)
+            emailMessageDAO
+              .where(config.getPredicate())
+              .orderBy(foam.nanos.notification.email.EmailMessage.CREATED)
+              .select(new ArraySink()))
+              .getArray();
 
-        DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
-        List<EmailMessage> emailMessages = (List) ((ArraySink)
-          emailMessageDAO
-            .where(config.getPredicate())
-            .orderBy(foam.nanos.notification.email.EmailMessage.CREATED)
-            .select(new ArraySink()))
-            .getArray();
+          if ( emailMessages.size() == 0 ) break;
 
-        if ( emailMessages.size() == 0 ) break;
+          long second = 1000L;
+          long limit = config.getRateLimit();
 
-        long second = 1000L;
-        long limit = config.getRateLimit();
-
-        long endTime = System.currentTimeMillis() + second;
-        long count = 1;
-        for ( EmailMessage emailMessage : emailMessages ) {
-          emailMessageDAO.put(send(x, emailMessage));
-          count++;
-          if ( limit > 0 &&
-               count > limit ) {
-            // super simple rate limiting.
-            long remaining = endTime - System.currentTimeMillis();
-            if ( remaining > 0 ) {
-              sleep(remaining);
-              return;
+          long endTime = System.currentTimeMillis() + second;
+          long count = 1;
+          for ( EmailMessage emailMessage : emailMessages ) {
+            emailMessageDAO.put(send(x, emailMessage));
+            count++;
+            if ( limit > 0 &&
+                 count > limit ) {
+              // super simple rate limiting.
+              long remaining = endTime - System.currentTimeMillis();
+              if ( remaining > 0 ) {
+                sleep(remaining);
+                return;
+              }
+              count = 1;
+              endTime = System.currentTimeMillis() + second;
             }
-            count = 1;
-            endTime = System.currentTimeMillis() + second;
+            config = findId(getX());
+            if ( ! config.getEnabled() ) break;
           }
         }
+      } catch (Throwable t) {
+        disable();
+        ((DAO) getX().get("eventRecordDAO")).put(new EventRecord(getX(), this, "execute", getId(), null, "disable on error", LogLevel.ERROR, t));
       }
       `
     },
@@ -373,10 +377,10 @@ foam.CLASS({
           }
 
           message.setSentDate(new Date());
-          logger.info("MimeMessage created");
+          logger.debug("MimeMessage created");
           return message;
         } catch (Throwable t) {
-          logger.error("MimeMessage creation failed", t);
+          logger.error("MimeMessage creation failed", "to", emailMessage.getTo()[0], "subject", emailMessage.getSubject(), t);
           return null;
         }
       `
@@ -388,6 +392,7 @@ foam.CLASS({
       javaCode: `
         Logger logger = Loggers.logger(getX(), this);
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
+        emailMessage = (EmailMessage) emailMessage.fclone();
 
         if ( emailMessage.getStatus() == Status.FAILED ) {
           // ignore
@@ -397,10 +402,10 @@ foam.CLASS({
 
         MimeMessage message = createMimeMessage(emailMessage);
         if ( message == null ) {
+          emailMessage.setStatus(Status.FAILED);
           return emailMessage;
         }
 
-        emailMessage = (EmailMessage) emailMessage.fclone();
         try {
           getTransport_().send(message);
           emailMessage.setStatus(Status.SENT);
@@ -417,7 +422,7 @@ foam.CLASS({
         } catch ( SendFailedException | ParseException e ) {
           EmailServiceConfig config = getLastConfig();
           if ( e.getMessage().contains("Too many login attempts") ) {
-             EventRecord er = new EventRecord(getX(), this, "send", config.getHost(), null, e.getMessage(), LogLevel.ERROR, e);
+             EventRecord er = new EventRecord(getX(), this, "send", getId(), null, e.getMessage(), LogLevel.ERROR, e);
             ((DAO) getX().get("eventRecordDAO")).put(er);
             setEr(er);
             clearSession_();
@@ -434,7 +439,7 @@ foam.CLASS({
           clearTransport_();
           clearSession_();
           EmailServiceConfig config = getLastConfig();
-          EventRecord er = new EventRecord(getX(), this, "send", config.getHost(), null, e.getMessage(), LogLevel.WARN, null);
+          EventRecord er = new EventRecord(getX(), this, "send", getId(), null, e.getMessage(), LogLevel.WARN, null);
           ((DAO) getX().get("eventRecordDAO")).put(er);
           setEr(er);
         } catch ( RuntimeException e ) {

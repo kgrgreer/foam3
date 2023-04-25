@@ -111,7 +111,7 @@ foam.CLASS({
       right: 0.5em;
       top: 0.5em;
     }
-    ^close-icon > *{
+    ^close-icon > ^iconButton{
       width: 2rem;
       height: 2rem;
       padding: 0;
@@ -210,7 +210,7 @@ foam.CLASS({
               .tag(this.CircleIndicator, indicator)
             .end()
             .start().addClass(this.myClass('content'))
-              .start().addClasses(['h600', this.myClass('title')])
+              .start().addClass('h600', this.myClass('title'))
                 .callIfElse(foam.String.isInstance(this.message), function() {
                   this.add(self.message);
                   console.log(self.message);
@@ -219,7 +219,7 @@ foam.CLASS({
                   console.log(self.message);
                 })
               .end()
-              .start().addClasses(['p', this.myClass('description')])
+              .start().addClass('p', this.myClass('description'))
                 .callIfElse(foam.String.isInstance(this.description), function() {
                   this.add(self.description);
                   console.log(self.description);
@@ -233,7 +233,9 @@ foam.CLASS({
           .startContext({ data: this })
             .start()
                 .addClass(this.myClass('close-icon'))
-                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .addClass(self.myClass('iconButton'))
+                .end()
             .end()
           .endContext()
         .end();

@@ -22,8 +22,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPDATE_PASSWORD_TITLE', message: 'Update your password' },
-    { name: 'UPDATE_PASSWORD_SUBTITLE', message: 'Create a new password for your account' },
+    { name: 'TITLE', message: 'Update your password' },
+    { name: 'INSTRUCTION', message: 'Create a new password for your account' },
     { name: 'SUCCESS_MSG', message: 'Your password was successfully updated' },
     { name: 'ORIGINAL_PASSWORD_MISSING', message: 'Please enter the original password' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
@@ -33,13 +33,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'updatePasswordSection',
-      title: function() {
-        return this.UPDATE_PASSWORD_TITLE
-      },
-      subTitle: function() {
-        return this.UPDATE_PASSWORD_SUBTITLE
-      }
+      name: 'resetPasswordSection',
     }
   ],
 
@@ -47,10 +41,11 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'originalPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'current-password'
       },
       validationPredicates: [
         {
@@ -69,12 +64,13 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'newPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
-          passwordIcon: true
+          passwordIcon: true,
+          autocomplete: 'new-password'
         }
       },
       minLength: 10,
@@ -95,10 +91,11 @@ foam.CLASS({
       class: 'Password',
       name: 'confirmationPassword',
       label: 'Confirm Password',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       validationPredicates: [
         {
@@ -126,9 +123,10 @@ foam.CLASS({
     {
       name: 'makeHorizontal',
       code: function() {
-        this.ORIGINAL_PASSWORD.gridColumns = 4;
-        this.NEW_PASSWORD.gridColumns = 4;
-        this.CONFIRMATION_PASSWORD.gridColumns = 4;
+        let columns = { columns: 12, mdColumns: 4, lgColumns: 4, xlColumns: 4 };
+        this.ORIGINAL_PASSWORD.gridColumns = columns;
+        this.NEW_PASSWORD.gridColumns = columns;
+        this.CONFIRMATION_PASSWORD.gridColumns = columns;
       }
     },
     {
@@ -144,7 +142,7 @@ foam.CLASS({
   actions: [
     {
       name: 'updatePassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_) {
         return ! errors_;

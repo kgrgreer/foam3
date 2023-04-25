@@ -51,13 +51,15 @@ NOTE: when using the java client, the first call to a newly started instance may
     'java.net.URI',
     'java.net.URLEncoder',
     'java.time.Duration',
+    'java.util.Arrays',
     'java.util.Base64',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
   ],
 
   imports: [
-    'AuthenticatedNSpecDAO'
+    'AuthenticatedNSpecDAO',
+    'window'
   ],
 
   tableColumns: [
@@ -191,8 +193,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       visibility: function(cmd) {
         return ( cmd == 'SELECT' || cmd == 'REMOVE' ) ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
-  },
-  {
+    },
+    {
       class: 'String',
       name: 'q',
       label: 'Select Query',
@@ -200,6 +202,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       visibility: function(cmd) {
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
+    },
+    {
+      class: 'StringArray',
+      name: 'columns',
+      section: 'details',
+      view: 'foam.u2.view.StringView',
+      help: 'Specify column names as a comma-separated list. Leave empty to receive all columns.',
+      visibility: function(cmd) {
+        return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
     },
     {
       class: 'Long',
@@ -252,11 +264,10 @@ NOTE: when using the java client, the first call to a newly started instance may
       class: 'String',
       name: 'postURL',
       hidden: true,
-      // Why is the javaFactory needed?
-      javaFactory: 'return "http://"+System.getProperty("hostname", "localhost")+":8080";',
-      expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, limit, skip) {
+      transient: true,
+      expression: function(key, fieldNameMapping, fieldDefaultValue, daoKey, cmd, format, q, columns, limit, skip) {
         var query = false;
-        var url   = "/service/dig";
+        var url   = this.window.location.origin + "/service/dig";
 
         if ( daoKey ) {
           url += "?";
@@ -292,6 +303,11 @@ NOTE: when using the java client, the first call to a newly started instance may
           url += query ? "&" : "?";
           query = true;
           url += "q=" + encodeURIComponent(q);
+        }
+        if ( columns ) {
+          url += query ? "&" : "?";
+          query = true;
+          url += "columns=" + encodeURIComponent(columns);
         }
         if ( limit > 0 && limit != Number.MAX_SAFE_INTEGER && limit != 1000 ) {
           url += query ? "&" : "?";
@@ -433,7 +449,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
-        var url = window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.postURL + "&sessionId=" + localStorage.defaultSession;
         var req = this.HTTPRequest.create({
           url: url,
           method: 'POST',
@@ -721,10 +738,23 @@ NOTE: when using the java client, the first call to a newly started instance may
       javaCode: `
       PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getDaoKey(), dop);
       try {
-        Object result = parser_.get().parseString(data.toString(), getOf().getObjClass());
+        Object result = null;
+        String text = data.toString();
+        if ( ! foam.util.SafetyUtil.isEmpty(text) ) {
+          if ( text.startsWith("[") ) {
+            result = parser_.get().parseStringForArray(text, getOf().getObjClass());
+            // convert Object[] to FObject[]
+            if ( result != null &&
+                 result instanceof Object[] ) {
+              result = Arrays.copyOf((Object[]) result, ((Object[]) result).length, FObject[].class);
+            }
+          } else if ( text.startsWith("{") ) {
+            result = parser_.get().parseString(text, getOf().getObjClass());
+          }
+        }
         if ( result == null ) {
           // ClassReferenceParser returns null when data is not a modelled class
-          return data.toString();
+          return text;
         }
         if ( result instanceof FOAMException ) {
           throw (FOAMException) result;

@@ -14,6 +14,12 @@ foam.CLASS({
     'foam.u2.layout.Rows'
   ],
 
+  css:`
+    ^centered {
+      align-self: center;
+    }
+  `,
+
   properties: [
     {
       name: 'config'
@@ -25,6 +31,10 @@ foam.CLASS({
       name: 'showTitle',
       value: true
     },
+    {
+      class: 'Boolean',
+      name: 'centered',
+    }
   ],
 
   methods: [
@@ -40,7 +50,7 @@ foam.CLASS({
               .forEach(sections, function(s) {
                 var slot = s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$).map(function(isAvailable) {
                   if ( ! isAvailable ) return self.E().style({ display: 'none' });
-                  return self.E().start(self.SectionView, {
+                  return self.E().enableClass(self.myClass('centered'), self.centered$).start(self.SectionView, {
                     data$: self.data$,
                     section: s,
                     config: self.config,

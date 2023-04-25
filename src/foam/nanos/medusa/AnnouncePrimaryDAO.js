@@ -94,16 +94,19 @@ foam.CLASS({
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification starting", LogLevel.WARN, null));
+      EventRecord er = new EventRecord(x, "Medusa", EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
+      er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+      er.clearId();
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> counts = new ConcurrentHashMap();
       final Set<String> replies = new HashSet();
+      final Set<String> errors = new HashSet();
       List<ClusterConfig> nodes = support.getReplayNodes();
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
-            DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
+            DAO client = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
             Long m = 0L;
             ReplayDetailsCmd details = new ReplayDetailsCmd();
             details.setRequester(myConfig.getId());
@@ -114,6 +117,7 @@ foam.CLASS({
               replies.add(cfg.getId());
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
+              errors.add("cfg.getId() "+e.getMessage());
             }
             logger.info(cfg.getId(), "max", m);
             synchronized ( this ) {
@@ -135,7 +139,7 @@ foam.CLASS({
       long sleep = 10000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
-          logger.info("waiting on index verification");
+          logger.info("waiting on index verification, replies", replies.size(), "errors", errors.size(), "nodes", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
@@ -143,6 +147,19 @@ foam.CLASS({
         }
         if ( replies.size() >= nodes.size() -1 ) {
           break;
+        }
+        if ( errors.size() >= nodes.size() -1 ) {
+          break;
+        }
+        if ( support.getPrimary(x).getId() != myConfig.getId() ) {
+          // Another vote occurred, another mediator is primary
+          // Abandon announce.
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          replaying.setReplaying(false);
+          er.setMessage("Index verification abandoned");
+          er.setSeverity(LogLevel.INFO);
+          ((DAO) x.get("eventRecordDAO")).put(er);
+          return;
         }
       }
       logger.debug("line.shutdown", "continue");
@@ -167,11 +184,15 @@ foam.CLASS({
           logger.debug("max", max, "count", count, "quorum", quorum);
           message = "Index verification failed; max index does not have quorum.";
         }
-
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, message, LogLevel.ERROR, null));
+        er.setMessage(message);
+        er.setSeverity(LogLevel.ERROR);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         // Halt the system.
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null));
+        er = new EventRecord(x, "Medusa", "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
         ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
         cfg.setStatus(Status.OFFLINE);
         cfg.setErrorMessage("Index verification failed");
@@ -181,9 +202,9 @@ foam.CLASS({
         logger.debug("max", max, "index", replaying.getIndex());
         replaying.updateIndex(x, max);
         replaying.setReplaying(false);
-        logger.info("Index verification", "complete");
-
-        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, EVENT_NAME, "Index verification complete"));
+        er.setMessage("Index verification complete");
+        er.setSeverity(LogLevel.INFO);
+        ((DAO) x.get("eventRecordDAO")).put(er);
       }
       `
     }

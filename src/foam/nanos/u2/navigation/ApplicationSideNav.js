@@ -33,13 +33,20 @@ foam.CLASS({
       name: 'bottomContainerColor',
       value: '$foam.nanos.menu.VerticalMenu.menuBackground',
       fallback: '#FFFFFF'
+    },
+    {
+      name: 'boxShadowSize',
+      value: '0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1)',
+    },
+    {
+      name: 'borderSize',
+      value: '2px solid $grey300',
     }
   ],
 
   css: `
     ^ {
       align-items: flex-start;
-      border-right: 1px solid $grey300;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -64,8 +71,8 @@ foam.CLASS({
       top: 0;
     }
     ^divider:not(^expand) {
-      border-top: 2px solid $grey300;
-      box-shadow: 0px -1px 2px rgba(0, 0, 0, 0.06), 0px -1px 3px rgba(0, 0, 0, 0.1);
+      border-top: $borderSize;
+      box-shadow: $boxShadowSize;
     }
     ^bottom-container > * + * {
       margin-top: 4px;
@@ -112,7 +119,7 @@ foam.CLASS({
       this.checkNotificationAccess();
       this.addClass()
         .add(this.slot(function(showLogo) {
-          return showLogo ? self.E().addClasses([this.myClass('sticky-container'), this.myClass('top-container')])
+          return showLogo ? self.E().addClass(this.myClass('sticky-container'), this.myClass('top-container'))
           .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .addClass(self.myClass('logo'))
             .on('click', () => {
@@ -126,7 +133,7 @@ foam.CLASS({
           .enableClass(this.myClass('padding'), this.showLogo$.not())
         .end()
         .start()
-          .addClasses([this.myClass('sticky-container'), this.myClass('bottom-container')])
+          .addClass(this.myClass('sticky-container'), this.myClass('bottom-container'))
           // TODO: make this enableClass based on scroll pos
           .addClass(this.myClass('divider'))
           .enableClass(this.myClass('expand'), this.bottomRoot_$.map(v => !! v))

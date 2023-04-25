@@ -78,6 +78,7 @@ foam.CLASS({
 
         Logger logger = Loggers.logger(x, this);
         EmailMessage message = new EmailMessage();
+        message.setUser(user.getId());
         message.setSpid(user.getSpid());
         message.setTo(new String[] { user.getEmail() });
         message.setClusterable(notification.getClusterable());
@@ -91,7 +92,7 @@ foam.CLASS({
         if ( "notification".equals(notification.getEmailName()) ) {
           notification.getEmailArgs().put("type", notification.getNotificationType());
 
-          AppConfig config = user.findGroup(x).getAppConfig(x);
+          AppConfig config = (AppConfig) x.get("appConfig");
           if ( config != null ) {
             notification.getEmailArgs().put("link", config.getUrl());
           }
@@ -103,7 +104,6 @@ foam.CLASS({
 
         try {
           if ( ! SafetyUtil.isEmpty(notification.getEmailName()) ) {
-            message.setUser(user.getId());
             Map args = notification.getEmailArgs();
             args.put("template", notification.getEmailName());
             message.setTemplateArguments(args);
@@ -112,7 +112,7 @@ foam.CLASS({
             logger.warning("EmailTemplate not found", notification.getEmailName());
           }
         } catch(Throwable t) {
-          logger.error("Error sending notification email message: " + message + ". Error: " + t);
+          logger.error("Error sending notification email message", message, t.getMessage(), t);
         }
       `
     }

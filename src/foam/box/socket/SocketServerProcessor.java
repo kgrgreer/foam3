@@ -97,8 +97,8 @@ public class SocketServerProcessor
       while ( true ) {
         PM pm = null;
         try {
-          omLogger.log(pmKey, pmName, "execute");
-          pm = PM.create(x, pmKey, pmName, "execute");
+          omLogger.log(pmKey, pmName, "execute:parse");
+          pm = PM.create(x, pmKey, pmName, "execute:parse");
 
           int length = in_.readInt();
           byte[] bytes = readBytes(in_, length);

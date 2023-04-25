@@ -46,7 +46,10 @@ foam.CLASS({
     },
     {
       class: 'foam.util.FObjectSpec',
-      name: 'controller'
+      name: 'controller',
+      factory: function() {
+        return { class: 'foam.u2.wizard.controllers.IncrementalWizardController' };
+      }
     },
     {
       deprecated: true,
@@ -54,9 +57,7 @@ foam.CLASS({
       name: 'wizardView',
       flags: ['web'], // Temporary
       documentation: `
-        Specify a view to use with this controller. This property isn't used by
-        StepWizardController, but it can be used where a wizard is launched so
-        that only providing this configuration object is necessary.
+        Specify a view to use with this controller.
       `,
       // value: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
       expression: function (controller) {
@@ -71,7 +72,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'popup',
       factory: function () {
-        return { class: 'foam.u2.dialog.Popup' };
+        return { class: 'foam.u2.dialog.ApplicationPopup' };
       }
     }
   ],

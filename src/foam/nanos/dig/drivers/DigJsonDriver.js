@@ -8,7 +8,8 @@ foam.CLASS({
   package: 'foam.nanos.dig.drivers',
   name: 'DigJsonDriver',
   extends: 'foam.nanos.dig.drivers.DigFormatDriver',
-  flags: ['java'],
+
+  flags: [ 'java' ],
 
   javaImports: [
     'foam.core.*',
@@ -97,9 +98,8 @@ foam.CLASS({
     {
       name: 'outputFObjects',
       javaCode: `
-      PrintWriter out = x.get(PrintWriter.class);
-      ClassInfo cInfo = dao.getOf();
-      String output = null;
+      PrintWriter out    = x.get(PrintWriter.class);
+      String      output = null;
 
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
@@ -118,8 +118,7 @@ foam.CLASS({
       outputterJson.setOutputClassNames(true);
 
       HttpParameters p = x.get(HttpParameters.class);
-      if ( p != null &&
-          "false".equals(p.getParameter("multiline")) ) {
+      if ( p != null && "false".equals(p.getParameter("multiline")) ) {
         outputterJson.setMultiLine(false);
       } else {
         outputterJson.setMultiLine(true);
@@ -136,9 +135,7 @@ foam.CLASS({
     },
     {
       name: 'parseMap',
-      args: [
-        { type: 'String', name: 'data' }
-      ],
+      args: 'String data',
       type: 'PStream',
       javaCode: `
       StringPStream mapStr = new StringPStream();

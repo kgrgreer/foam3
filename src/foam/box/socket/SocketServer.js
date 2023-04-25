@@ -38,7 +38,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'threadPoolName',
-      value: 'threadPool'
+      value: 'boxThreadPool'
     },
     {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',

@@ -88,10 +88,12 @@ foam.CLASS({
       if ( obj != null ) {
         if ( UNBLOCK_CMD.equals(obj) ) {
            /* obj.equals(getUnblockCmd()) ||*/
+          ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
           Loggers.logger(x, this).info("cmd", "unblock", "received", "blocked", blocked_.get());
           unblock(x);
         }
         if ( BLOCKED_CMD.equals(obj) ) {
+          ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
           return blocked_.get();
         }
       }

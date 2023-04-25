@@ -22,7 +22,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.GraphWizardletsAgent',
     'foam.u2.crunch.wizardflow.PublishToWizardletsAgent',
-    'foam.util.async.Sequence'
+    'foam.util.async.Sequence',
   ],
   properties: [
     {
@@ -49,13 +49,14 @@ foam.CLASS({
     async function execute (x) {
       x = x || this.__context__;
       const seq = this['createSequence_' + this.type.name](x);
+
       subX = await seq.execute();
       this.wizardlets_ = [
         ...(this.previousWizardlets || []),
         ...subX.wizardlets
       ];
     },
-    
+
     function createSequence_TRANSIENT (x) {
       const capable = foam.nanos.crunch.lite.BaseCapable.create();
       x = x || this.__subContext__;
@@ -76,7 +77,7 @@ foam.CLASS({
         ;
     },
 
-    function createSequence_UCJ (x) {
+    function createSequence_UCJ (x, waoSetting) {
       const capable = foam.nanos.crunch.lite.BaseCapable.create();
       x = x || this.__subContext__;
       x = x.createSubContext({ capable });
@@ -89,11 +90,15 @@ foam.CLASS({
         .add(this.LoadCapabilitiesAgent)
         .add(this.LoadCapabilityGraphAgent)
         .add(this.WAOSettingAgent, {
-          waoSetting: this.WAOSettingAgent.WAOSetting.UCJ
+          waoSetting: waoSetting || this.WAOSettingAgent.WAOSetting.UCJ
         })
         .add(this.GraphWizardletsAgent)
         .add(this.PublishToWizardletsAgent, { event: 'onReady' })
         ;
+    },
+
+    function createSequence_UCJ_SIMPLE (x) {
+      return this.createSequence_UCJ(x, this.WAOSettingAgent.WAOSetting.UCJ_SIMPLE)
     }
   ]
 });

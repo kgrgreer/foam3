@@ -23,7 +23,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.addClasses(this.cssClasses).tag('', {}, this.contents$);
+      this.addClass(...this.cssClasses).tag('', {}, this.content$);
     }
   ]
 });

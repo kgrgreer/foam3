@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'Address',
 
   documentation: 'The base model for the postal address.',
+  
+  axioms: [ foam.pattern.Faceted.create({ ofProperty: 'countryId' }) ],
 
   implements: [
     {
@@ -38,7 +40,7 @@ foam.CLASS({
     { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
-    { name: 'STREET_NAME_REQUIRED', message: 'Street name required' },
+    { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
     { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
   ],
 
@@ -185,7 +187,7 @@ foam.CLASS({
       // and not baked into the model.
       class: 'String',
       name: 'streetNumber',
-      label: 'Street number',
+      label: 'Street #',
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
       gridColumns: 3,
@@ -200,7 +202,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetName',
-      label: 'Street name',
+      label: 'Street Name',
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
@@ -660,6 +662,19 @@ foam.CLASS({
         {
           args: ['postalCode', 'countryId'],
           query: 'countryId!="ZA"||postalCode~/^\\d{4}$/',
+          errorMessage: 'INVALID_POSTAL_CODE',
+          jsErr: function(X) {
+            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
+            if ( ! postalCodeError ) {
+              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
+            }
+            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
+          }
+        },
+        // Pakistan
+        {
+          args: ['postalCode', 'countryId'],
+          query: 'countryId!="PK"||postalCode~/^(\\s*|\\d{5})$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);

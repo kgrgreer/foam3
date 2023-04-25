@@ -36,11 +36,15 @@ TODO: handle node roll failure - or timeout
     'foam.dao.ArraySink',
     'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.log.LogLevel',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Sequence',
     'foam.nanos.NanoService',
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.pm.PM',
     'foam.util.concurrent.AbstractAssembly',
     'foam.util.concurrent.AssemblyLine',
@@ -87,6 +91,17 @@ TODO: handle node roll failure - or timeout
       name: 'blocking',
       class: 'Boolean',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'eventRecord',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.er.EventRecord'
+    },
+    {
+      documentation: 'Map of maps of not found objects. Used to distinguish between not found and truely deleted.',
+      name: 'notFound',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
     }
   ],
 
@@ -95,6 +110,7 @@ TODO: handle node roll failure - or timeout
       name: 'cmd_',
       javaCode: `
       if ( COMPACTION_CMD.equals(obj) ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ) {
           Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");
@@ -127,6 +143,10 @@ TODO: handle node roll failure - or timeout
       Logger logger = Loggers.logger(x, this, "execute");
       long startTime = System.currentTimeMillis();
       logger.info("start");
+      EventRecord er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, "Medusa", "compaction", "start")).fclone();
+      er.clearId();
+      setEventRecord(er);
+
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
       try {
@@ -176,9 +196,20 @@ TODO: handle node roll failure - or timeout
         logger.info("startServices");
         startServices(x);
 
+        // report
+        logger.info("report");
+        report(x);
+
         logger.info("end");
-      } catch (Throwable t) {
-        logger.error(t);
+        er = getEventRecord();
+        er.setMessage("complete");
+        ((DAO) x.get("eventRecordDAO")).put(er);
+
+       } catch (Throwable t) {
+        er = getEventRecord();
+        er.setMessage(t.getMessage());
+        er.setSeverity(LogLevel.ERROR);
+        ((DAO) x.get("eventRecordDAO")).put(er);
         throw t;
       } finally {
         logger.info("end", "duration", Duration.ofMillis(System.currentTimeMillis() - startTime));
@@ -462,7 +493,7 @@ TODO: handle node roll failure - or timeout
       final CompactibleSink compactibleSink = new CompactibleSink(x,
                     new CompactionSink(x,
                     new UniqueSink(x,
-                    new NSpecSink(x,
+                    new NSpecSink(x, this,
                     new Sequence.Builder(x)
                       .setArgs(new Sink[] {
                         compacted,
@@ -500,7 +531,32 @@ TODO: handle node roll failure - or timeout
       double ratio = ((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue();
       double compressed = ((((Long) processed.getValue()) - ((Long) compacted.getValue())) / ((Long) processed.getValue()).doubleValue()) * 100.0;
       long compactionTime = System.currentTimeMillis() - startTime;
-      logger.info("compactionComplete", "duration", Duration.ofMillis(compactionTime), "processed", processed.getValue(), "compacted", compacted.getValue(), "ratio", String.format("%.2f", ratio), "compressed", String.format("%.2f%%", compressed));
+      double seconds = compactionTime / 1000.0;
+      double minutes = compactionTime / 60;
+      double replayedS = ((Long) processed.getValue()) / seconds;
+      double promotedS = ((Long) compacted.getValue()) / seconds;
+      double min100K = minutes / ( (Long) compacted.getValue() / 100000.0 );
+      StringBuilder report = new StringBuilder();
+      report.append("instance,processed,compacted,duration s,ratio,compressed,date");
+      report.append("\\n");
+      report.append(System.getProperty("hostname", "loalhost"));
+      report.append(",");
+      report.append(processed.getValue());
+      report.append(",");
+      report.append(compacted.getValue());
+      report.append(",");
+      report.append(Math.round(seconds));
+      report.append(",");
+      report.append(String.format("%.2f", ratio));
+      report.append(",");
+      report.append(String.format("%.2f%%", compressed));
+      report.append(",");
+      report.append(new java.util.Date(startTime));
+
+      logger.info("compactionComplete", "report", "\\n"+report.toString());
+
+      EventRecord er = getEventRecord();
+      er.setResponseMessage(report.toString());
       return compactionTime;
       `
     },
@@ -569,6 +625,25 @@ TODO: handle node roll failure - or timeout
         throw new CompactionException("purge");
       }
       `
+    },
+    {
+      documentation: 'Report on not found objects, and cleanup',
+      name: 'report',
+      args: 'X x',
+      javaCode: `
+      Logger logger = Loggers.logger(x, this, "report");
+      Map<String, Map<Object, MedusaEntry>> notFound = (Map<String, Map<Object, MedusaEntry>>) getNotFound();
+      notFound.forEach((nspec, map) -> {
+        if ( map.size() > 0 ) {
+          logger.info("Not found", nspec, map.size());
+          map.forEach((id, entry) -> {
+            logger.info("Not found", nspec, id, entry.toSummary());
+          });
+        }
+        map.clear();
+      });
+      notFound.clear();
+      `
     }
   ],
 
@@ -628,10 +703,19 @@ TODO: handle node roll failure - or timeout
       documentation: 'Creates new MedusaEntry for current Object',
 
       javaCode: `
-        public NSpecSink(X x, ProxySink delegate) {
+        public NSpecSink(X x, CompactionDAO self, ProxySink delegate) {
           super(x, delegate);
+          setSelf(self);
         }
       `,
+
+      properties: [
+        {
+          name: 'self',
+          class: 'foam.dao.DAOProperty',
+          of: 'foam.nanos.medusa.CompactionDAO'
+        }
+      ],
 
       methods: [
         {
@@ -661,29 +745,49 @@ TODO: handle node roll failure - or timeout
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK
+              Map map = (Map) getSelf().getNotFound().get(entry.getNSpecName());
+              if ( map != null ) {
+                map.remove(entry.getObjectId());
+              }
               logger.info("Object removed", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             } else {
-              logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.toSummary());
+              Map map = (Map) getSelf().getNotFound().get(entry.getNSpecName());
+              if ( map == null ) {
+                map = new HashMap();
+                getSelf().getNotFound().put(entry.getNSpecName(), map);
+              }
+              if ( ! map.containsKey(entry.getObjectId()) ) {
+                map.put(entry.getObjectId(), entry);
+              }
+              // delay reporting not found, see 'report'
+              // logger.error("Object not found", entry.getNSpecName(), entry.getDop(), entry.toSummary());
             }
           } else {
-            MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
-            String data = entry.getData();
-
             Compaction compaction = (Compaction) ((DAO) x.get("compactionDAO")).find(entry.getNSpecName());
-            if ( compaction == null ||
-                 compaction.getReducible() ) {
-              data = entrySupport.data(x, found, null, entry.getDop());
+            if ( found instanceof LifecycleAware &&
+                 ((LifecycleAware) found).getLifecycleState() == LifecycleState.DELETED &&
+                 compaction != null &&
+                 compaction.getCompactLifecycleDeleted() ) {
+              logger.info("Object removed, LifecycleState.DELETED", entry.getNSpecName(), entry.getDop(), entry.toSummary());
+            } else {
+              MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+              String data = entry.getData();
+
+              if ( compaction == null ||
+                   compaction.getReducible() ) {
+                data = entrySupport.data(x, found, null, entry.getDop());
+              }
+              MedusaEntry me = (MedusaEntry) entry.fclone();
+              MedusaEntry.ID.clear(me);
+              MedusaEntry.DATA.clear(me);
+              MedusaEntry.TRANSIENT_DATA.clear(me);
+              MedusaEntry.OBJECT.clear(me);
+              MedusaEntry.HASH.clear(me);
+              me.setData(data);
+              DaggerService dagger = (DaggerService) x.get("daggerService");
+              me = dagger.link(x, me);
+              getDelegate().put(me, sub);
             }
-            MedusaEntry me = (MedusaEntry) entry.fclone();
-            MedusaEntry.ID.clear(me);
-            MedusaEntry.DATA.clear(me);
-            MedusaEntry.TRANSIENT_DATA.clear(me);
-            MedusaEntry.OBJECT.clear(me);
-            MedusaEntry.HASH.clear(me);
-            me.setData(data);
-            DaggerService dagger = (DaggerService) x.get("daggerService");
-            me = dagger.link(x, me);
-            getDelegate().put(me, sub);
           }
           `
         }

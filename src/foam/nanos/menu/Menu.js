@@ -153,7 +153,7 @@
 
       this.lastMenuLaunchedListener && this.lastMenuLaunchedListener(X.currentMenu);
       this.menuListener && this.menuListener(this);
-      this.handler && this.handler.launch(subX, this, e);
+      return this.handler && this.handler.launch(subX, this, e);
     },
     function toE(args, X) {
       // Pass on the menu object in context to avoid breaking UI with infinite loops
@@ -225,7 +225,7 @@
     {
       name: 'launch',
       code: function(X, e) {
-        this.launch_(X, e);
+        return this.launch_(X, e);
       }
     }
   ]

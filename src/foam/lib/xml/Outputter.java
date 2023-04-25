@@ -131,6 +131,10 @@ public class Outputter
     writer_.append(value.name());
   }
 
+  public void outputProperties(FObject obj) {
+    outputProperties_(obj);
+  }
+
   protected void outputProperties_(FObject obj) {
     // output properties
     ClassInfo info = obj.getClassInfo();
@@ -172,7 +176,11 @@ public class Outputter
     if ( value instanceof Object[] ) {
       outputArrayProperty((Object[]) value, prop);
     } else if ( value instanceof FObject ) {
-      outputFObjectProperty((FObject) value, prop);
+      if ( value instanceof OutputXML ) {
+        ((OutputXML) value).outputXML(this);
+      } else {
+        outputFObjectProperty((FObject) value, prop);
+      }
     } else {
       outputPrimitiveProperty(value, prop);
     }

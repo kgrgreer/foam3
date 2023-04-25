@@ -177,7 +177,11 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.capabilityDAO
           .find(value)
-          .then((capability) => this.add(capability.name || capability.id))
+          .then((capability) => {
+            this
+              .attrs({ title: capability.id })
+              .add(capability.name || capability.id)
+          })
           .catch((error) => {
             this.add(value);
           });
@@ -288,14 +292,6 @@ foam.CLASS({
         If the data on an UserCapabilityJunction should be stored in some DAO, the daoKey should be provided on its corresponding Capability object.
       `,
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
-        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - subject", x.get("subject"));
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - data", getData());
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - daoKey", capability.getDaoKey());
-        }
         if ( getData() == null )
           throw new RuntimeException("UserCapabilityJunction data not submitted for capability: " + getTargetId());
 
@@ -303,83 +299,76 @@ foam.CLASS({
         if ( daoKey == null ) return null;
 
         DAO dao = (DAO) x.get(daoKey);
-        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - is dao null", dao == null);
-        }
         if ( dao == null ) return null;
 
-        FObject objectToSave;                                                  // Identify or create data to go into dao.
+        // Identify or create data to go into dao.
+        FObject objectToSave;
         String contextDAOFindKey = (String) capability.getContextDAOFindKey();
-        if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-          logger.debug(this.getClass().getSimpleName(), "ucjRefine.saveDataToDAO(x, f-1a5, " + putObject + "). - contextdaofindkey", contextDAOFindKey);
-        }
 
         if ( contextDAOFindKey != null && ! contextDAOFindKey.isEmpty() ) {
-          if ( contextDAOFindKey.toLowerCase().contains("subject") ) {         // 1- Case if subject lookup
+          if ( contextDAOFindKey.toLowerCase().contains("subject") ) {
+            // 1- Case if subject lookup
             String[] words = foam.util.StringUtil.split(contextDAOFindKey, '.');
             objectToSave = getSubject(x);
-            if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-              logger.debug(this.getClass().getSimpleName(), "getSubject(x). - objectToSave", objectToSave);
-            }
 
             if ( objectToSave == null || words.length < 2 )
               throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
 
             if ( words[1].toLowerCase().equals("user") ) {
               objectToSave = ((Subject) objectToSave).getUser();
-              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-                logger.debug(this.getClass().getSimpleName(), "contextdaofindkey == subject.user - objectToSave", objectToSave);
-              }
             } else if ( words[1].toLowerCase().equals("realuser") ) {
-
-              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-                logger.debug(this.getClass().getSimpleName(), "contextdaofindkey == subject.realUser - objectToSave", objectToSave);
-              }
               objectToSave = ((Subject) objectToSave).getRealUser();
             }
             try {
               objectToSave = dao.find(((User)objectToSave).getId());
-              if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-                logger.debug(this.getClass().getSimpleName(), "dao.find(objectToSave) - objectToSave", objectToSave);
-              }
             } catch(Exception e) {
               throw e;
             }
-          } else {                                                              // 2- Case if anything other then subject specified
+          } else {
+            // 2- Case if anything other then subject specified
             objectToSave = (FObject) x.get(contextDAOFindKey);
-            if ( capability.getId().equals("crunch.onboarding.signing-officer-information") ) {
-              logger.debug(this.getClass().getSimpleName(), "this is just wrong", objectToSave);
+
+            if ( objectToSave == null ) {
+              throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
             }
 
-            if ( objectToSave == null )
-              throw new RuntimeException("@UserCapabilityJunction capability.contextDAOFindKey not found in context. Please check capability: " + getTargetId() + " and its contextDAOFindKey: " + contextDAOFindKey);
+            if ( objectToSave instanceof User ) {
+              objectToSave = dao.find(((User) objectToSave).getId());
+            }
           }
           // TODO - the try block above that finds objectToSave from dao - should be moved here
           //        however need to work on casting the (FObject)objectToSave to understand objectToSave.getId()
         } else {
-          try {                                                                 // 3- Case where contextDAOFindKey not specified:
+          // 3- Case where contextDAOFindKey not specified:
+          try {
             // Create new object of DAO type to copy over properties
             objectToSave = (FObject) dao.getOf().newInstance();
-          } catch (Exception e) {                                               // 4- default case, try using ucj data directly.
+          } catch (Exception e) {
+            // 4- default case, try using ucj data directly.
             objectToSave = (FObject) getData();
           }
         }
-        if ( dao.getOf().getObjClass().isAssignableFrom(getData().getClass()) ) { // skip copy if data is the same class as dao.of or is a super class of dao.of
+        if ( dao.getOf().getObjClass().isAssignableFrom(getData().getClass()) ) {
+          // skip copy if data is the same class as dao.of or is a super class of dao.of
           objectToSave = (FObject) getData();
         }
         else {
+          // finally copy user inputed data into objectToSave <- typed to the safest possibility from above cases
           try {
-            objectToSave = objectToSave.fclone().copyFrom(getData());           // finally copy user inputed data into objectToSave <- typed to the safest possibility from above cases
+            objectToSave = objectToSave.fclone().copyFrom(getData());
           } catch (RuntimeException e) {
+            Logger logger = (Logger) x.get("logger");
             logger.debug(this.getClass().getSimpleName(), "exception copying data to objectToSave - objectToSave ", objectToSave);
             logger.debug(this.getClass().getSimpleName(), "exception copying data to objectToSave - data ", getData());
             logger.debug(this.getClass().getSimpleName(), "exception copying data to objectToSave - exception ", e);
           }
         }
 
-        try {                                                                   // save data to dao
+        // save data to dao
+        try {
           if ( putObject ) dao.inX(x).put(objectToSave);
         } catch (Exception e) {
+          Logger logger = (Logger) x.get("logger");
           logger.warning("Data cannot be added to " + capability.getDaoKey() + " for UserCapabilityJunction object : " + getId() );
           logger.debug(this.getClass().getSimpleName(), "dao.inx.put exception - ", e);
         }
@@ -469,6 +458,13 @@ foam.CLASS({
       javaCode: `
       return "UCJ id: "+getId()+", source: "+getSourceId()+", target: "+getTargetId()+", status: "+getStatus().getName()+", data: "+(getData() != null ? getData().getClass().getName() : "null");
       `
+    },
+    {
+      name: 'toSummary',
+      code: async function () {
+        return (await this.targetId$find)?.name + ' for ' +
+          (await this.sourceId$find)?.legalName;
+      }
     }
   ]
 });
