@@ -21,7 +21,7 @@ foam.CLASS({
     ^rw {
       background: $white;
       padding: 8px 16px;
-      color: /*%BLACK%*/ #424242;
+      color: $black;
     }
 
     ^rw:hover {
