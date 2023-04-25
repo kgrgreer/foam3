@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'NullEditWizardletBorder',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
 
   requires: [
     'foam.u2.ControllerMode'
@@ -42,7 +42,6 @@ foam.CLASS({
       name: 'title',
       class: 'String',
       expression: function(wizardlet) {
-        // console.log(wizardlet?.editBehaviour.title,wizardlet?.title )
         return wizardlet?.capability.editBehaviour.title ||  wizardlet?.title
       }
     },
@@ -54,6 +53,12 @@ foam.CLASS({
   
   methods: [
     function init() {
+
+      // set in init as factories are lazy
+      this.wizardlet.loadEvent.sub(() => {
+        this.oldData = this.wizardlet.data.clone()
+      })
+
       this
         .addClass()
           .start().addClass('h500').add(this.title).end()

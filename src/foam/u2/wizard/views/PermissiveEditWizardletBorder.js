@@ -8,7 +8,23 @@ foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'PermissiveEditWizardletBorder',
   extends: 'foam.u2.wizard.views.NullEditWizardletBorder',
-  imports: ['wizardlet'],
+  documentation: 'Border for wizardlets that the user is allowed to edit',
+
+  import: ['ctrl'],
+  
+  properties: [
+    {
+      class: 'FObjectProperty',
+      name: 'oldData'
+    }
+  ],
+
+  messages: [
+    {
+      name: 'SAVE_FAILED',
+      message: 'Your information was not saved. Please try again.'
+    }
+  ],
 
   css: `
     ^ {
@@ -24,25 +40,12 @@ foam.CLASS({
     }
   `,
   
-  documentation: 'Border for wizardlets that the user is allowed to edit',
-  
-  properties:[
-    {
-      name: "editing",
-      class: "Boolean"
-    },
-    // {
-    //   name: 'title',
-    //   class: 'String',
-    //   expression: function(wizardlet) {
-    //     return wizardlet?.capability.editBehaviour.title
-    //   }
-    // }
-  ],
-
   methods: [
     function init() {
-      this.__subContext__.controllerMode$.sub(() => { console.log(this.__subContext__.controllerMode, 'PermissiveEditWizardletBorder')});
+      // set in init as factories are lazy
+      this.wizardlet.loadEvent.sub(() => {
+        this.oldData = this.wizardlet.data.clone()
+      })
 
       this
         .addClass()
@@ -70,20 +73,16 @@ foam.CLASS({
       name: 'Save',
       label: 'Save',
       buttonStyle: 'PRIMARY',
-      isAvailable: function(editing) {
-        return editing;
+      isAvailable: function(controllerMode) {
+        return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
-      code: async function () {
+      code: async function () {      
        try {
         await this.wizardlet.save()
-        this.editing = false;
+        this.ctrl.reloadClient()
         this.controllerMode = foam.u2.ControllerMode.VIEW
-        // will be changed to changing controller mode - "editing" will be changed to controlloer 
-          // editing false = View
-          // editing true = Edit 
-        console.log("you saved your data")
        } catch (e) {
-        console.log("Your edits could not be saved")
+        alert(this.SAVE_FAILED)
        }
       }
     },
@@ -91,12 +90,12 @@ foam.CLASS({
       name: 'Cancel',
       label: 'Cancel',
       buttonStyle: 'PRIMARY',
-      isAvailable: function(editing) {
-        return editing;
+      isAvailable: function(controllerMode) {
+        return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
       code: function() {
-        
-        this.editing = false;
+        debugger
+        this.wizardlet.data = this.oldData
         this.controllerMode = foam.u2.ControllerMode.VIEW
       }
     }
