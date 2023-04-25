@@ -32,14 +32,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CITY_REQUIRED', message: 'City required' },
+    { name: 'CITY_REQUIRED', message: 'Required' },
     { name: 'COUNTRY_REQUIRED', message: 'Country required' },
     { name: 'INVALID_COUNTRY', message: 'Invalid country' },
-    { name: 'REGION_REQUIRED', message: 'Region required' },
+    { name: 'REGION_REQUIRED', message: 'Required' },
     { name: 'INVALID_REGION', message: 'Invalid region. Please provide valid ISO-3166-2 region.' },
-    { name: 'INVALID_ADDRESS_1_REQUIRED', message: 'address line 1 required' },
+    { name: 'INVALID_ADDRESS_1_REQUIRED', message: 'Required' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
-    { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
+    { name: 'POSTAL_CODE_REQUIRE', message: 'Required' },
     { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
     { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
   ],
