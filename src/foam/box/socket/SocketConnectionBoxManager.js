@@ -39,7 +39,7 @@ foam.CLASS({
       documentation: 'Create a Box per nspec service rather than one socket for all services to a particular host:port',
       class: 'Boolean',
       name: 'boxPerService',
-      value: true
+      value: false
     },
     {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',
