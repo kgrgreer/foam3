@@ -14,7 +14,7 @@ foam.CLASS({
     'add support for notification banner'
   ],
 
-  topics: ['saveEvent'],
+  topics: ['saveEvent', 'loadEvent'],
 
   implements: [
     'foam.u2.wizard.wizardlet.Wizardlet',
@@ -384,6 +384,7 @@ foam.CLASS({
     },
     async function load() {
       await this.wao.load(this);
+      this.loadEvent.pub(this);
       return this;
     },
     async function handleException(event, exception) {
