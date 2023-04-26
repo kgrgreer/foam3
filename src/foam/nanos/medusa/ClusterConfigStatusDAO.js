@@ -28,6 +28,9 @@ foam.CLASS({
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.HashMap',
@@ -109,12 +112,22 @@ foam.CLASS({
               } catch (PrimaryNotFoundException e) {
                 if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
                   logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
-                  ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
-                  myCfg.setStatus(Status.OFFLINE);
-                  DAO dao = (DAO) x.get("localClusterConfigDAO");
-                  myCfg = (ClusterConfig) dao.put(myCfg).fclone();
-                  myCfg.setStatus(Status.ONLINE);
-                  dao.put(myCfg);
+                  final DAO dao = (DAO) x.get("localClusterConfigDAO");
+                  AssemblyLine line = new SyncAssemblyLine(x);
+                  line.enqueue(new AbstractAssembly() {
+                    public void executeJob() {
+                      ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
+                      myCfg.setStatus(Status.OFFLINE);
+                      dao.put(myCfg);
+                    }
+                  });
+                  line.enqueue(new AbstractAssembly() {
+                    public void executeJob() {
+                      ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
+                      myCfg.setStatus(Status.ONLINE);
+                      dao.put(myCfg).fclone();
+                    }
+                  });
                 } else {
                   logger.warning("No Primary detected", "dissolving");
                   electoralService.dissolve(x);

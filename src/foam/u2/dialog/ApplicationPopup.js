@@ -329,12 +329,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('header-center'))
-              .start(this.Image, {
-                data$: this.slot(function(theme$topNavLogo) {
-                  return theme$topNavLogo;
-                }),
-                embedSVG: true
-              })
+              .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
                 .addClass(this.myClass('logo'))
               .end()
             .end()

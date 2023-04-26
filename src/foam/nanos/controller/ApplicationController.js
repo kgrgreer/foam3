@@ -858,7 +858,7 @@ foam.CLASS({
       let check = await this.checkGeneralCapability();
       if ( ! check ) return;
 
-      this.fetchTheme();
+      await this.fetchTheme();
       this.initLayout.resolve();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);

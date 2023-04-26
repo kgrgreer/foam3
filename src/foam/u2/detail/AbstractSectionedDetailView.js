@@ -58,14 +58,24 @@ foam.CLASS({
       documentation: `
         If this array is not empty, only the properties listed in it will be
         included in the detail view.
+
+        NOTE: Setting propertyWhitelist is almost like creating a transient section, thus the order property for all 
+        properties in this list is overriden to be in the order they appear in the array/object.
+        If the order needs to be changed it can be overriden like any other property property but it would be in reference to 
+        this new order added to this whitelist.
       `,
       factory: null,
       adapt: function(o, newValue, p) {
-        if ( Array.isArray(newValue) ) return foam.core.FObjectArray.ADAPT.value.call(this, o, newValue, p);
+        if ( Array.isArray(newValue) ) {
+          let arr = foam.core.FObjectArray.ADAPT.value.call(this, o, newValue, p);
+          return arr.map((a, idx) => {
+            return a.clone().copyFrom({ order: idx });
+          });
+        }
         if ( typeof newValue !== 'object' ) throw new Error('You must set propertyWhitelist to an array of properties or a map from names to overrides encoded as an object.');
-        return Object.entries(newValue).reduce((acc, [propertyName, overrides]) => {
+        return Object.entries(newValue).reduce((acc, [propertyName, overrides], idx) => {
           var axiom = this.of.getAxiomByName(propertyName);
-          if ( axiom ) acc.push(axiom.clone().copyFrom(overrides));
+          if ( axiom ) acc.push(axiom.clone().copyFrom({ order: idx }).copyFrom(overrides));
           return acc;
         }, []);
       },

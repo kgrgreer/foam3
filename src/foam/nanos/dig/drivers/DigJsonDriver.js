@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.dig.drivers',
   name: 'DigJsonDriver',
   extends: 'foam.nanos.dig.drivers.DigFormatDriver',
+
   flags: [ 'java' ],
 
   javaImports: [
@@ -75,7 +76,7 @@ foam.CLASS({
       if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
         var ret = parseMap(x.get(HttpParameters.class).getParameter("fieldValue"));
         if ( ret != null && ((Map)ret.value()).size() != 0 ) {
-          Map map = (Map)ret.value();
+          Map map  = (Map) ret.value();
           Set keys = map.entrySet();
           for ( Object ob : list ) {
             if ( ob instanceof FObject ) {

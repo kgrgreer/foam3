@@ -30,6 +30,7 @@ foam.CLASS({
             id: this.id + '/email',
             label: `${this.EMAIL_LABEL}: ${this.theme.supportConfig.supportEmail}`,
             parent: this.id,
+            openNewTab: true,
             handler: {
               class: 'foam.nanos.menu.LinkMenu',
               link$: this.slot(function(theme$supportConfig) {

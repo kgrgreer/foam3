@@ -33,6 +33,14 @@ foam.CLASS({
       `
     },
     {
+      class: 'FObjectProperty',
+      javaType: 'foam.nanos.crunch.edit.EditBehaviour',
+      name: 'editBehaviour',
+      javaFactory: `
+        return new foam.nanos.crunch.edit.PermissiveEditBehaviour();
+      `
+    },
+    {
       name: 'min',
       class: 'Int',
       value: 1
@@ -41,6 +49,11 @@ foam.CLASS({
       name: 'max',
       class: 'Int',
       value: 0
+    },
+    {
+      class: 'Boolean',
+      name: 'goNextOnValid',
+      documentation: 'Automatically go to next wizardlet when minmax is valid'
     },
     {
       class: 'Object',

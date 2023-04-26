@@ -166,8 +166,6 @@ foam.CLASS({
         }
       }
     },
-    'currentWizardlet',
-    'currentSection',
     {
       name: 'backDisabled',
       class: 'Boolean',
@@ -562,7 +560,7 @@ foam.CLASS({
       label: 'Next',
       buttonStyle: 'PRIMARY',
       isEnabled: function (canGoNext, isLoading_) {
-        console.log('what is canGoNext', canGoNext)
+        console.debug('what is canGoNext', canGoNext)
         return canGoNext && ! isLoading_;
       },
       isAvailable: function (isLoading_) {

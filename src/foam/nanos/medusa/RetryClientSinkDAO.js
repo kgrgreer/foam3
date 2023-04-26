@@ -22,6 +22,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM'
   ],
 
@@ -139,6 +140,7 @@ foam.CLASS({
       int retryAttempt = 0;
       int retryDelay = 10;
 
+      OMLogger omLogger = (OMLogger) getX().get("OMLogger");
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
       String alarmId = this.getClass().getSimpleName()+"."+getName();
       EventRecord er = null;
@@ -187,7 +189,8 @@ foam.CLASS({
               if ( retryDelay > getMaxRetryDelay() ) {
                 retryDelay = 10;
               }
-              Loggers.logger(x, this).info("retry attempt", retryAttempt, "delay", retryDelay);
+               omLogger.log("RetryClientSinkDAO", getName(), "retry");
+               Loggers.logger(x, this).info("retry attempt", retryAttempt, "delay", retryDelay);
               Thread.sleep(retryDelay);
             } catch(InterruptedException e) {
               Thread.currentThread().interrupt();

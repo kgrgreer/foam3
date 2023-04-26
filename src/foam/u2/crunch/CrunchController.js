@@ -61,6 +61,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.crunch.wizardflow.lite.CheckGrantedAgent',
+    'foam.u2.crunch.wizardflow.StatusPageAgent',
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
@@ -162,6 +163,7 @@ foam.CLASS({
           .add(this.SubmitAgent)
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
+          .add(this.StatusPageAgent)
           // .add(this.TestAgent)
           ;
       }
@@ -467,6 +469,7 @@ foam.CLASS({
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
+      return x;
     },
 
     function maybeLaunchInterceptView(intercept) {

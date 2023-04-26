@@ -24,7 +24,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.util.concurrent.AbstractAssembly',
     'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'foam.util.retry.RetryForeverStrategy',
     'foam.util.retry.RetryStrategy',
     'java.util.concurrent.locks.Condition',
@@ -60,7 +63,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'threadPoolName',
-      value: 'threadPool'
+      value: 'boxThreadPool'
     },
     {
       name: 'logger',
@@ -103,11 +106,11 @@ foam.CLASS({
         Agency pool = (Agency) x.get(getThreadPoolName());
 
         //TODO: use below code after finish testing.
-        // final AssemblyLine assemblyLine = x.get("threadPool") == null ?
-        //   new foam.util.concurrent.SyncAssemblyLine()   :
-        //   new foam.util.concurrent.AsyncAssemblyLine(x) ;
+        // final AssemblyLine assemblyLine = x.get(getThreadPoolName()) == null ?
+        //   new SyncAssemblyLine()   :
+        //   new AsyncAssemblyLine(x) ;
 
-        final AssemblyLine assemblyLine = new foam.util.concurrent.SyncAssemblyLine();
+        final AssemblyLine assemblyLine = new SyncAssemblyLine();
 
         pool.submit(x, new ContextAgent() {
           volatile long count = 0;
@@ -119,7 +122,7 @@ foam.CLASS({
               if ( queue.size() > 0 ) {
                 if ( queue.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                   SFEntry e = queue.poll();
-                  assemblyLine.enqueue(new foam.util.concurrent.AbstractAssembly() { 
+                  assemblyLine.enqueue(new AbstractAssembly() { 
                     public void executeJob() {
                       try {
                         //getLogger().info("sfID: " + e.getSf().getId(), "sfObject: " + e.getObject());

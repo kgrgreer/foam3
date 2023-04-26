@@ -98,7 +98,7 @@ foam.CLASS({
       javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
+          "SocketConnectionBox",
           getKey()
         }, (Logger) getX().get("logger"));
       `
@@ -168,13 +168,13 @@ NOTE: duplicated in SocketConnectionReplyBox
 `,
       name: 'send',
       javaCode: `
+      PM pm = PM.create(getX(), "SocketConnectionBox", getId(), "send");
       long pending = pending_.incrementAndGet();
-      PM pm = PM.create(getX(), this.getClass().getSimpleName(), getId(), "send");
       Box replyBox = (Box) msg.getAttributes().get("replyBox");
       String replyBoxId = null;
       if ( replyBox != null ) {
         replyBoxId = java.util.UUID.randomUUID().toString();
-        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), this.getClass().getSimpleName(), getId()+":roundtrip")));
+        getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), "SocketConnectionBox", getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
@@ -186,40 +186,51 @@ NOTE: duplicated in SocketConnectionReplyBox
       String message = null;
       try {
         OMLogger omLogger = (OMLogger) getX().get("OMLogger");
+        PM pmFormat = PM.create(getX(), "SocketConnectionBox", getId(), "send:format");
         foam.lib.formatter.FObjectFormatter formatter = formatter_.get();
         formatter.setX(getX());
         formatter.output(msg);
         message = formatter.builder().toString();
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        pmFormat.log(getX());
+
         Socket socket = (Socket) getSocket();
         if ( socket.isClosed() ||
              ! socket.isConnected() ) {
           throw new SocketException("Socket not connected.");
         }
-        omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
+        PM pmOut = PM.create(getX(), "SocketConnectionBox", getId(), "send:out");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
           // getLogger().debug("send", "replyBoxId", replyBoxId, "pre-formating", msg);
           // getLogger().debug("send", "replyBoxId", replyBoxId, "formatted", message);
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
-          omLogger.log(this.getClass().getSimpleName(), getId(), "sent");
         }
+        pmOut.log(getX());
         // If no other send operations immediately pending, then flush
-        if ( pending == pending_.longValue() ) {
-          out_.flush();
+        if ( pending_.decrementAndGet() == 0 ) {
+          omLogger.log("SocketConnectionBox", getId(), "send:flush");
+          try {
+            out_.flush();
+          } catch (IOException e) {
+            getLogger().warning("send,flush", e.getMessage(), e);
+          }
+        } else {
+          omLogger.log("SocketConnectionBox", getId(), "send:noflush");
         }
       } catch ( Throwable t ) {
+        pending_.decrementAndGet();
         pm.error(getX(), t);
         // TODO: perhaps report last exception on key via manager.
         getLogger().error("Error sending message", message, t);
         getValid().getAndSet(false);
         if ( replyBox != null ) {
-         Message reply = new Message();
-         reply.getAttributes().put("replyBox", replyBox);
-         reply.replyWithException(t);
-         getReplyBoxes().remove(replyBoxId);
-         releaseHoldingThread(t);
+          Message reply = new Message();
+          reply.getAttributes().put("replyBox", replyBox);
+          reply.replyWithException(t);
+          getReplyBoxes().remove(replyBoxId);
+          releaseHoldingThread(t);
         } else {
           throw new RuntimeException(t);
         }
@@ -237,13 +248,14 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
       ],
       javaCode: `
+      getLogger().info("execute,start");
       OMLogger omLogger = (OMLogger) x.get("OMLogger");
       try {
         while ( getValid().get() ) {
           PM pm = null;
           try {
-            omLogger.log(this.getClass().getSimpleName(), getId(), "receive");
-            pm = PM.create(x, this.getClass().getSimpleName(), getId(), "receive");
+            omLogger.log("SocketConnectionBox", getId(), "receive");
+            pm = PM.create(x, "SocketConnectionBox", getId(), "receive");
 
             int length = in_.readInt();
             byte[] bytes = readBytes(in_, length);
@@ -290,6 +302,11 @@ NOTE: duplicated in SocketConnectionReplyBox
           } catch ( java.net.SocketTimeoutException e ) {
             // getLogger().debug("SocketTimeoutException", e.getMessage());
             continue;
+          } catch ( java.io.EOFException e ) {
+            getLogger().warning(e.getMessage());
+            if ( pm != null ) pm.error(x, e);
+            releaseHoldingThread(e);
+            break;
           } catch ( Throwable t ) {
             getLogger().error(t);
             if ( pm != null ) pm.error(x, t);
@@ -301,6 +318,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         }
       } finally {
         ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).remove(this);
+        getLogger().info("execute,end");
       }
       `
     },
