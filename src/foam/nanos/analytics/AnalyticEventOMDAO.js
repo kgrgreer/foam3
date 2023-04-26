@@ -4,6 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// Server side OM reporting on how many times an analytic event fires
 foam.CLASS({
   package: 'foam.nanos.analytics',
   name: 'AnalyticEventOMDAO',

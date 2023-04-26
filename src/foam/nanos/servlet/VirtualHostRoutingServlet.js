@@ -136,6 +136,7 @@ foam.CLASS({
           for ( String tag : scriptTags ) {
             out.println(tag);
           }
+          customScriptsFailed = true;
         }
         catch ( Exception e ) {
           logger.error(e);

@@ -335,6 +335,9 @@ foam.CLASS({
       name: 'pubAnalyticEvt',
       value: true
     },
+
+    // so this just allows us to save extra data we want to store when a wizardlet fires in the initial configuration of the wizardlet
+
     {
       class: 'foam.u2.wizard.PathProperty',
       name: 'evtExtra',

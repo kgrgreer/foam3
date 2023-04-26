@@ -4,6 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// server side delegate that sets the timestamp on an event
+// why is it updating an existing event?
+
 foam.CLASS({
   package: 'foam.nanos.analytics',
   name: 'AnalyticEventTimestampDAO',

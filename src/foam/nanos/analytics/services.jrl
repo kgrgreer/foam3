@@ -1,3 +1,5 @@
+// DAO for collecting analyticEvents
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "analyticEventDAO",
@@ -5,17 +7,23 @@ p({
   "authenticate": false,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
+      // fixed size
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.analytics.AnalyticEvent.TIMESTAMP))
-        .setSize(1000000)
+        .setSize(1,000,000) // 1M entries
         .build())
       .setOf(foam.nanos.analytics.AnalyticEvent.getOwnClassInfo())
+      
+      // PM the dao too
       .setPm(true)
       .setFuid(true)
       .setAuthorize(true)
       .setSAF(true)
+
+      // fee like the journal should be temporary or expiring
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("analyticEvents")
+      
       .setDecorator(
         new foam.nanos.analytics.AnalyticEventOMDAO.Builder(x).setDelegate(
         new foam.nanos.analytics.AnalyticEventTimestampDAO.Builder(x).setDelegate(

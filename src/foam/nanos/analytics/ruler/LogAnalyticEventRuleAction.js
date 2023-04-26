@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// Server side DAO specific event creation saving the session and the 'id' (in traceId)
+
 foam.CLASS({
   package: 'foam.nanos.analytics.ruler',
   name: 'LogAnalyticEventRuleAction',

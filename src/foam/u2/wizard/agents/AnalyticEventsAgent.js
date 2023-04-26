@@ -4,6 +4,8 @@
 * http://www.apache.org/licenses/LICENSE-2.0
 */
 
+// client side agent that 
+
 foam.CLASS({
   package: 'foam.u2.wizard.agents',
   name: 'AnalyticEventsAgent',
@@ -95,6 +97,9 @@ foam.CLASS({
 
       // TODO: add subclass support
       var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId, sessionId});
+
+      // put to the DAO on the server side
+      // could also stream to a separate service
       await this.analyticEventDAO.put(analyticEvent);
     }
   ]

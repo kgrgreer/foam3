@@ -41,6 +41,8 @@ foam.CLASS({
       name: 'tags'
     },
     {
+      // shouldn't the flow be identifyable through the sessionId, why is there a second ID to track?
+      // answer .. the traceId is the ID of the object being put(saved/edited)
       class: 'String',
       name: 'traceId'
     },
@@ -56,6 +58,7 @@ foam.CLASS({
       }
       `
     },
+    // Is this necessary?
     {
       class: 'Object',
       name: 'objectId'
