@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'indexVerificationMaxWait',
       class: 'Long',
-      value: 600000, // 10 minutes.
+      value: 10000, // should be instant. 
       units: 'ms'
     }
   ],
@@ -93,7 +93,8 @@ foam.CLASS({
       final Logger logger = Loggers.logger(x, this);
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-
+      final ElectoralService electoral = (ElectoralService) x.get("electoralService");
+ 
       EventRecord er = new EventRecord(x, "Medusa", EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
       er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
       er.clearId();
@@ -136,7 +137,7 @@ foam.CLASS({
       // line.shutdown();
       // Perform manual polling for completion.
       long waited = 0L;
-      long sleep = 10000L;
+      long sleep = 1000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
           logger.info("waiting on index verification, replies", replies.size(), "errors", errors.size(), "nodes", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
@@ -151,7 +152,8 @@ foam.CLASS({
         if ( errors.size() >= nodes.size() -1 ) {
           break;
         }
-        if ( support.getPrimary(x).getId() != myConfig.getId() ) {
+        if ( electoral.getState() != ElectoralServiceState.IN_SESSION ||
+             support.getPrimary(x).getId() != myConfig.getId() ) {
           // Another vote occurred, another mediator is primary
           // Abandon announce.
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -189,14 +191,7 @@ foam.CLASS({
         er.setClusterable(false);
         ((DAO) x.get("eventRecordDAO")).put(er);
 
-        // Halt the system.
-        er = new EventRecord(x, "Medusa", "Mediator going OFFLINE", "After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification", LogLevel.ERROR, null);
-        er.setClusterable(false);
-        ((DAO) x.get("eventRecordDAO")).put(er);
-        ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
-        cfg.setStatus(Status.OFFLINE);
-        cfg.setErrorMessage("Index verification failed");
-        ((DAO) x.get("localClusterConfigDAO")).put(cfg);
+        electoral.dissolve(x);
       } else {
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         logger.debug("max", max, "index", replaying.getIndex());
