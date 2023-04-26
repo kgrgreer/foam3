@@ -15,9 +15,7 @@ foam.CLASS({
       required: true,
       validationTextVisible: false,
       label: 'Email or Username',
-      preSet: function(_, n) {
-        return n.trim();
-      }
+      trim: true
     },
     {
       class: 'String',
