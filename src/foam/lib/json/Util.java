@@ -21,7 +21,7 @@ public class Util {
   /** Append src string to dst StringBuilder as an escaped JSON string. **/
   public static void escape(String src, StringBuilder dst) {
     int start = 0;
-    int len = 0;
+    int len   = 0;
 
     if ( ! foam.util.SafetyUtil.isEmpty(src) )
       len = src.length();

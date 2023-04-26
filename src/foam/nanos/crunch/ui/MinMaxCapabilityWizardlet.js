@@ -79,7 +79,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isValid',
-      value: false
+      value: false,
+      postSet: function(o,n) {
+        if ( ! n ) {
+          this.isAvailablePromise =
+            Promise.all(this.choiceWizardlets.map(cw => cw.isAvailablePromise))
+              .then(() => { this.cancel(); });
+        } else {
+          if ( this.capability.goNextOnValid ) {
+            this.wizardController?.goNext();
+          }
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -243,6 +254,15 @@ foam.CLASS({
       this.isValid$.sub(()=>{
         if ( this.isValid && this.autoNextOnValid ) this.wizardController.next();
       });
+    function load() {
+      // This needs to happen on load as this MinMax might be a child of another MinMax
+      // Skip this wizardlet if only one choice is available and max is 1
+      const choiceWizardlets = this.choiceWizardlets;
+      if ( choiceWizardlets.length === 1 && this.max == 1 ) {
+        this.data.selectedData = [choiceWizardlets[0].capability.id];
+        this.isVisible = false;
+      }
+      this.SUPER();
     },
     function addPrerequisite(wizardlet, opt_meta) {
       const meta = {
@@ -251,6 +271,11 @@ foam.CLASS({
       };
 
       this.choiceWizardlets.push(wizardlet);
+      if ( wizardlet.saveOnAvailable ) {
+        console.error( 'MinMax choice', wizardlet.id, 'of MinMax', this.id, `has saveOnAvailable active,
+        this can cause unexpected wizardelet.save() calls, disabling this behavior`)
+        wizardlet.saveOnAvailable = false;
+      }
 
       // isAvailable defaults to false if this MinMax is in control of the
       //   prerequisite wizardlet
@@ -323,8 +348,7 @@ foam.CLASS({
       code: function() {
         const choiceWizardlets = this.choiceWizardlets;
         if ( choiceWizardlets.length === 1 ) {
-          choiceWizardlets[0].isAvailable = true;
-          this.data.selectedData = [choiceWizardlets[0].capability.id];
+          this.capability.goNextOnValid = true;
           this.isVisible = false;
         }
       }

@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.controller.AppStyles',
     'foam.u2.DetailPropertyView',
     'foam.u2.borders.Block'
   ],
@@ -48,12 +49,14 @@ foam.CLASS({
     ^wizardlet-row:not(:last-of-type) {
       margin-bottom: 4px;
     }
-    ^wizardlet-actions {
+    ^wizardlet-actions, ^title {
       display: flex;
       align-items: center;
+      gap: 4px;
     }
     ^ .foam-u2-borders-Block {
       border-color: #333;
+      border-left-size: 6px;
     }
     ^current.foam-u2-borders-Block {
       border-color: $primary400;
@@ -64,6 +67,7 @@ foam.CLASS({
     function render() {
       const self = this;
       const wizardController = self.wizardController;
+      self.AppStyles.create();
       this
         .addClass(this.myClass())
         .start('h1').add(wizardController.title || 'Untitled Wizard').end()
@@ -84,6 +88,16 @@ foam.CLASS({
                   .addClass(self.myClass('wizardlet-row'))
                   .startContext({ data: wizardlet })
                     .add(wizardlet.title || wizardlet.id)
+                    .startContext({ controllerMode: foam.u2.ControllerMode.VIEW })
+                    .start('span')
+                      .addClass(this.myClass('title'), 'h500')
+                      .add(wizardlet.TITLE, ' ')
+                      .start('span')
+                        .addClass('p')
+                        .add(wizardlet.ID)
+                      .end()
+                    .end()
+                    .endContext()
                     .start()
                       .addClass(self.myClass('wizardlet-actions'))
                       .tag(wizardlet.IS_AVAILABLE)

@@ -192,7 +192,7 @@ foam.CLASS({
       javaCode: `
         if ( getOf() == null ) setOf(obj.getClassInfo());
         if ( getIsFirstRow() ) outputHeader(x);
-        for (String name : getProps()) {
+        for ( String name : getProps() ) {
           Object p = getOf().getAxiomByName(name);
           if ( p != null && p instanceof PropertyInfo ) ((PropertyInfo)p).toCSV(x, obj, this);
         }
