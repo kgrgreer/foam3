@@ -297,6 +297,7 @@ foam.CLASS({
             .callIf(self.mode_ == self.SIGN_IN && self.showAction, function() { this.tag(self.RESET_PASSWORD) })
           .endContext()
         .end()
+        .br()
         .add(
           this.slot(function(showAction) {
             return self.E().callIf(showAction, function() {
