@@ -110,7 +110,7 @@ foam.CLASS({
         }
       `,
       postSet: function(oldValue, newValue) {
-        if ( oldValue !== newValue ) {
+        if ( oldValue !== newValue && ! this.regionId.startsWith(newValue) ) {
           this.regionId = undefined;
         }
       },
