@@ -32,6 +32,11 @@ foam.CLASS({
       of: 'foam.nanos.boot.NSpec'
     },
     {
+      name: 'threadPoolName',
+      class: 'String',
+      value: 'boxThreadPool'
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -83,7 +88,7 @@ foam.CLASS({
       entry.setDop(dop);
       entry.setObject(obj);
       
-      Agency agency = (Agency) x.get(support.getThreadPoolName());
+      Agency agency = (Agency) x.get(getThreadPoolName());
       for ( ClusterConfig config : support.getSfBroadcastMediators() ) {
         if ( config.getId().equals(myConfig.getId()) ) continue;
         agency.submit(x, new ContextAgent() {
