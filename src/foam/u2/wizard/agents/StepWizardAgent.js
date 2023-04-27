@@ -59,8 +59,8 @@ foam.CLASS({
       this.onDetach(this.wizardController.status$.sub(() => {
         const v = this.wizardController.status;
         if ( v == this.WizardStatus.IN_PROGRESS ) return;
-        this.wizardController.onClose();
         this.resolveAgent();
+        this.wizardController.onClose();
       }));
 
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
