@@ -254,6 +254,7 @@ foam.CLASS({
       this.isValid$.sub(()=>{
         if ( this.isValid && this.autoNextOnValid ) this.wizardController.next();
       });
+    },
     function load() {
       // This needs to happen on load as this MinMax might be a child of another MinMax
       // Skip this wizardlet if only one choice is available and max is 1
