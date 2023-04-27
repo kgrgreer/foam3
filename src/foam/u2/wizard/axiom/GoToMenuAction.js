@@ -42,13 +42,17 @@ foam.CLASS({
       }
     },
     {
+      class: 'Object',
       name: 'label',
       factory: function() {
         /* ignoreWarning */ 
+        let a;
         if ( this.menu ) {
-          return `${this.GO_TO} ${this.menu.label}`;
+          a = Promise.resolve(`${this.GO_TO} ${this.menu.label}`);
         }
-        return this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => v.label);
+        a =  this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => `${this.GO_TO} ${v.label}`);
+        console.log(a);
+        return a;
       }       
     }
   ]
