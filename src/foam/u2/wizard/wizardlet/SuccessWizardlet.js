@@ -22,7 +22,7 @@ foam.CLASS({
     {
       name: 'dynamicActions',
       factory: function() {
-        let label = this.stack?.stack_[this.stack.pos - 1]?.breadcrumbTitle';
+        let label = this.stack?.stack_[this.stack.pos - 1]?.breadcrumbTitle;
         return [
           {
             name: 'goNext',
