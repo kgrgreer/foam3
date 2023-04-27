@@ -13,7 +13,7 @@ public class UnknownPropertiesParser
 {
   public UnknownPropertiesParser() {
     super(new Parser() {
-      Parser delegate = new Repeat(new Seq1(1, Whitespace.instance(), new UnknownKeyValueParser0()),
+      Parser delegate = new Repeat(new Seq1(2, new Optional(CommentParser.create()), Whitespace.instance(), new Alt(new UnknownKeyValueParser0(), CommentParser.create())),
       Literal.create(","));
       public PStream parse(PStream ps, ParserContext x) {
         ps = ps.apply(delegate, x);
