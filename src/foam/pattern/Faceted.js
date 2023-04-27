@@ -104,8 +104,15 @@ foam.CLASS({
       // of facet checking
       cls.create = function(args, X, ignoreFacets) {
         if ( ! ignoreFacets ) {
-          // If class does not have an 'of', then check for 'data.of' instead.
-          var of       = args && ( args[axiom.ofProperty] || ( args.data && ( args.data[axiom.ofProperty] || args.data.cls_ ) ) );
+          // If class does not have an 'of', then check for 'data.of' instead. Also check data$ incase data doesnt exist
+          var of;
+          if ( args ) {
+            of = args[axiom.ofProperty] || ( args.data && ( args.data[axiom.ofProperty] || args.data.cls_ ) ) ;
+            if ( ! of ) {
+              let data = args?.data$?.get();
+              of = data?.[axiom.ofProperty] || data?.cls_;
+            }
+          }
           var facetCls = this.getFacetOf(of, X);
 
           if ( facetCls !== this ) return facetCls.create(args, X, true);
