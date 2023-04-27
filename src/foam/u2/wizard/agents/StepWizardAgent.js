@@ -55,12 +55,11 @@ foam.CLASS({
         data: this.wizardController
       };
 
-      this.wizardController.onClose = this.resolveAgent;
-      view.onClose = this.resolveAgent;
 
       this.onDetach(this.wizardController.status$.sub(() => {
         const v = this.wizardController.status;
         if ( v == this.WizardStatus.IN_PROGRESS ) return;
+        this.wizardController.onClose();
         this.resolveAgent();
       }));
 
