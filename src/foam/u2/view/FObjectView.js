@@ -228,6 +228,7 @@ foam.CLASS({
         }).catch(err => console.warn(err));
       } else {
         this.choices = this.choicesFallback(this.of);
+        this.choicesLoaded.resolve();
       }
     },
 
