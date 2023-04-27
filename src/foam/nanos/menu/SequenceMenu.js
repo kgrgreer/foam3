@@ -44,7 +44,7 @@ foam.CLASS({
       //
       // NOTE: it is by design for the first element of a stack to never be
       // removed to prevent client from jumping back beyond its initial view.
-      if ( X.stack.pos <= 0 )
+      if ( X.stack.pos < 0 )
         X.stack.push({ class: 'foam.u2.borders.NullBorder' });
 
       return sequence.execute();
