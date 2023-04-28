@@ -34,6 +34,7 @@ p({
   "client":"{\"of\":\"foam.nanos.notification.email.EmailTemplate\"}"
 })
 
+// not lazy as needed by notification system during startup.
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailMessageDAO",
