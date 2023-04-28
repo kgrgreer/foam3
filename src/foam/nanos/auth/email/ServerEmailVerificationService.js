@@ -78,10 +78,15 @@ foam.CLASS({
       `
     },
     {
+      name: 'verifyUserByCode',
+      javaCode: `
+        sendCode(x, user, emailTemplate);
+      `
+    },
+    {
       name: 'verifyByCode',
       javaCode: `
         User user = findUser(x, identifier, userName);
-        if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
         sendCode(x, user, emailTemplate);
       `
     },
@@ -90,6 +95,7 @@ foam.CLASS({
       type: 'Void',
       args: 'Context x, User user, String emailTemplate',
       javaCode: `
+        if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
         Calendar calendar = Calendar.getInstance();
         calendar.add(java.util.Calendar.MINUTE, this.TIMEOUT);
         EmailVerificationCode code = new EmailVerificationCode.Builder(x)
