@@ -82,7 +82,7 @@ foam.CLASS({
     // under lock.
     synchronized ( this ) {
 
-      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
 
@@ -111,29 +111,18 @@ foam.CLASS({
                 }
               } catch (PrimaryNotFoundException e) {
                 if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
-                  logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
-                  final DAO dao = (DAO) x.get("localClusterConfigDAO");
-                  AssemblyLine line = new SyncAssemblyLine(x);
-                  line.enqueue(new AbstractAssembly() {
-                    public void executeJob() {
-                      ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
-                      myCfg.setStatus(Status.OFFLINE);
-                      dao.put(myCfg);
-                    }
-                  });
-                  line.enqueue(new AbstractAssembly() {
-                    public void executeJob() {
-                      ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
-                      myCfg.setStatus(Status.ONLINE);
-                      dao.put(myCfg).fclone();
-                    }
-                  });
+                  logger.error("No Primary detected", "manually cycle ONLINE->OFFLINE->ONLINE");
                 } else {
                   logger.warning("No Primary detected", "dissolving");
                   electoralService.dissolve(x);
                 }
               } catch (MultiplePrimariesException e) {
-                logger.warning("Mulitiple Primaries detected", "dissolving");
+                logger.warning("Multiple Primaries detected", "dissolving");
+                if ( myConfig.getIsPrimary() ) {
+                  ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
+                  cfg.setIsPrimary(false);
+                  getDelegate().put_(x, cfg);
+                }
                 electoralService.dissolve(x);
               }
             }
