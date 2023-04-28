@@ -243,13 +243,14 @@ foam.CLASS({
       name: 'callVote',
       args: 'Context x',
       javaCode: `
-     getLogger().debug("callVote", getState());
-     if ( getState() != ElectoralServiceState.ELECTION ) {
-        getLogger().debug("callVote", getState(), "exit");
-        return;
-      }
+      getLogger().debug("callVote", getState());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
+      if ( getState() != ElectoralServiceState.ELECTION ||
+           config.getStatus() != Status.ONLINE ) {
+        getLogger().debug("callVote", getState(), config.getStatus(), "exit");
+        return;
+      }
       List<ClusterConfig> voters = support.getVoters(x);
 
       if ( ! support.hasQuorum(x) ) {
