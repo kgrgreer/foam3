@@ -111,6 +111,7 @@
       label: 'Back to Sign In',
       buttonStyle: 'LINK',
       code: function(X) {
+        X.data.cancel();
         X.pushMenu('sign-in', true);
       }
     }
