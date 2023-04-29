@@ -243,31 +243,40 @@ foam.CLASS({
       name: 'callVote',
       args: 'Context x',
       javaCode: `
-     getLogger().debug("callVote", getState());
-     if ( getState() != ElectoralServiceState.ELECTION ) {
-        getLogger().debug("callVote", getState(), "exit");
-        return;
-      }
+      getLogger().debug("callVote", getState());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
+      if ( getState() != ElectoralServiceState.ELECTION ||
+           config.getStatus() != Status.ONLINE ) {
+        getLogger().debug("callVote", getState(), config.getStatus(), "exit");
+        return;
+      }
       List<ClusterConfig> voters = support.getVoters(x);
 
-      if ( ! support.hasQuorum(x) ) {
-        if ( ! support.getHasNodeQuorum() ) {
-          getLogger().warning("callVote", getState(), "waiting for node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum(), support.getHasNodeQuorum());
+      if ( ! support.getHasNodeQuorum() ) {
+        getLogger().warning("callVote aborted", getState(), "waiting for node quorum", "voters", voters.size(), "required", support.getMediatorQuorum(), "node quroum", support.getHasNodeQuorum());
 
-          support.outputBuckets(x);
-        } else {
-          // nothing to do.
-          getLogger().warning("callVote", getState(), "waiting for mediator quorum", "voters/quorum", voters.size(), support.getMediatorQuorum(), support.getHasNodeQuorum());
-        }
+        support.outputBuckets(x);
         return;
       }
+
+      if ( ! support.getHasMediatorQuorum() ) {
+        getLogger().warning("callVote aborted", getState(), "waiting for mediator quorum", "voters", voters.size(), "required", support.getMediatorQuorum(), "mediator quorum", support.getHasMediatorQuorum());
+        return;
+      }
+
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( replaying.getReplaying() ) {
+        getLogger().info("callVote aborted", getState(), "waiting on replay", replaying.getReplaying());
+        return;
+      }
+
       if ( voters.size() < support.getMediatorQuorum() ) {
-        getLogger().debug("callVote", getState(), "insuficient votes", "voters", voters.size(), "quorum", support.getMediatorQuorum());
+        getLogger().info("callVote aborted", getState(), "insuficient votes", "voters", voters.size(), "required", support.getMediatorQuorum());
         return;
       }
-      getLogger().debug("callVote", getState(), "achieved mediator and node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum());
+
+      getLogger().info("callVote", getState(), "achieved mediator and node quorum");
 
       try {
         setVotes(0);

@@ -34,7 +34,7 @@ foam.CLASS({
     {
       name: 'threadPoolName',
       class: 'String',
-      value: 'boxThreadPool'
+      value: 'medusaThreadPool'
     },
     {
       name: 'logger',

@@ -56,7 +56,7 @@ foam.CLASS({
       name: 'initialTimerDelay',
       class: 'Long',
       units: 'ms',
-      value: 60000
+      value: 300000
     },
     {
       documentation: 'A second replay on the same index will not occur until at least minReplayInterval has past',
@@ -118,6 +118,7 @@ foam.CLASS({
         getInitialTimerDelay(),
         getTimerInterval()
       );
+      setLastReplay(System.currentTimeMillis());
       `
     },
     {
@@ -138,7 +139,7 @@ foam.CLASS({
       args: 'Context x',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
-      logger.info("execute");
+      // logger.info("execute");
       PM pm = PM.create(x, this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
@@ -150,12 +151,16 @@ foam.CLASS({
           setEventRecord(er);
         }
 
-        if ( getLastIndex() == 0L ||
-             getLastIndex() != replaying.getIndex() ) {
+        if ( getLastIndex() == 0L ) {
+          setLastIndex(replaying.getIndex());
+          setLastIndexSince(System.currentTimeMillis());
+          return;
+        }
+
+        if ( getLastIndex() != replaying.getIndex() ) {
           logger.debug("execute", "skip", getLastIndex(), replaying.getIndex());
           setLastIndex(replaying.getIndex());
           setLastIndexSince(System.currentTimeMillis());
-          setLastReplay(0L);
           if ( er.getSeverity() == LogLevel.WARN ) {
             er.setSeverity(LogLevel.INFO);
             er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
@@ -169,12 +174,23 @@ foam.CLASS({
         Long nextIndex = replaying.getIndex() + 1;
         MedusaEntry next = (MedusaEntry) medusaDAO.find(nextIndex);
         if ( next == null ) {
-          return;
-        }
-        if ( next.getPromoted() ) {
+          if ( getLastIndex() != replaying.getIndex() ) {
+            setLastIndex(replaying.getIndex());
+            setLastIndexSince(System.currentTimeMillis());
+            return;
+          }
+          if ( ! replaying.getReplaying() ) {
+            if ( er.getSeverity() == LogLevel.WARN ) {
+              er.setSeverity(LogLevel.INFO);
+              er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+              er.clearId();
+              setEventRecord(er);
+            }
+            return;
+          }
+        } else if ( next.getPromoted() ) {
           setLastIndex(nextIndex);
           setLastIndexSince(System.currentTimeMillis());
-          setLastReplay(0L);
           if ( er.getSeverity() == LogLevel.WARN ) {
             er.setSeverity(LogLevel.INFO);
             er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
@@ -182,17 +198,16 @@ foam.CLASS({
             setEventRecord(er);
           }
           return;
-        }
-
-        // not null, not promoted, and in this state for at least a timer cycle
-        logger.warning("no consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", new java.util.Date(getLastIndexSince()));
-
-        if ( er.getSeverity() == LogLevel.INFO ) {
-          er.setSeverity(LogLevel.WARN);
-          er.setMessage("No Consensus: "+next.toSummary());
-          er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
-          er.clearId();
-          setEventRecord(er);
+        } else {
+          // not null, not promoted, and in this state for at least a timer cycle
+          logger.warning("not promoted", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", new java.util.Date(getLastIndexSince()));
+          if ( er.getSeverity() == LogLevel.INFO ) {
+            er.setSeverity(LogLevel.WARN);
+            er.setMessage("Not promoted: "+next.toSummary());
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+            er.clearId();
+            setEventRecord(er);
+          }
         }
 
         // REVIEW: currently experiencing replay issues whereby the first
@@ -211,15 +226,19 @@ foam.CLASS({
         // TOOD: getMinReplayInterval has to be adjusted based on count.
         // Nodes with multiple mediator requests are constrained on memory and
         // 1m records might take 10 minutes to read and send.
+        // note bootstrap entries are promoted with zero count.
         if ( ( maxEntry != null &&
-               maxEntry.getConsensusNodes().length > 1 &&
+               ( maxEntry.getConsensusNodes().length > 1 ||
+                 maxEntry.getPromoted() ) && // bootstrap entries are promoted with zero count.
                maxEntry.getIndex() >= replaying.getReplayIndex() ) ||
-             getLastReplay() == 0L ||
              System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
           logger.info("request replay");
           ReplayRequestCmd cmd = new ReplayRequestCmd();
           // request parents as well to handle 'parent not found' scenario
-          long min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
+          long min = 0;
+          if ( next != null ) {
+            min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
+          }
           cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(min).build());
           setLastReplay(System.currentTimeMillis());
           ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);

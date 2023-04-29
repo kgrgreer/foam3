@@ -24,6 +24,12 @@
       args: 'Context x, String identifier, String userName, String emailTemplate'
     },
     {
+      name: 'verifyUserByCode',
+      type: 'Void',
+      async: true,
+      args: 'Context x, foam.nanos.auth.User user, String emailTemplate'
+    },
+    {
       name: 'verifyUserEmail',
       type: 'Boolean',
       async: true,

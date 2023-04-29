@@ -39,6 +39,7 @@ foam.CLASS({
     'java.io.OutputStreamWriter',
     'java.net.Socket',
     'java.net.SocketException',
+    'java.net.SocketTimeoutException',
     'java.nio.ByteBuffer',
     'java.nio.charset.StandardCharsets',
     'java.util.Map',
@@ -173,6 +174,7 @@ NOTE: duplicated in SocketConnectionReplyBox
       Box replyBox = (Box) msg.getAttributes().get("replyBox");
       String replyBoxId = null;
       if ( replyBox != null ) {
+        PM pmBoxCreate = PM.create(getX(), "SocketConnectionBox", getId(), "send:replyBox:create");
         replyBoxId = java.util.UUID.randomUUID().toString();
         getReplyBoxes().put(replyBoxId, new BoxHolder(replyBox, PM.create(getX(), "SocketConnectionBox", getId()+":roundtrip")));
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
@@ -182,6 +184,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         } else {
           msg.getAttributes().put("replyBox", box);
         }
+        pmBoxCreate.log(getX());
       }
       String message = null;
       try {
@@ -210,28 +213,29 @@ NOTE: duplicated in SocketConnectionReplyBox
         pmOut.log(getX());
         // If no other send operations immediately pending, then flush
         if ( pending_.decrementAndGet() == 0 ) {
+          out_.flush();
           omLogger.log("SocketConnectionBox", getId(), "send:flush");
-          try {
-            out_.flush();
-          } catch (IOException e) {
-            getLogger().warning("send,flush", e.getMessage(), e);
-          }
         } else {
           omLogger.log("SocketConnectionBox", getId(), "send:noflush");
         }
-      } catch ( Throwable t ) {
-        pending_.decrementAndGet();
-        pm.error(getX(), t);
-        // TODO: perhaps report last exception on key via manager.
-        getLogger().error("Error sending message", message, t);
+      } catch ( SocketTimeoutException | SocketException e ) {
+        pm.error(getX(), e);
+        getLogger().error("Error sending message", message, e.getMessage());
         getValid().getAndSet(false);
+        releaseHoldingThread(e);
+        throw new RuntimeException(e);
+      } catch ( Throwable t ) {
+        pm.error(getX(), t);
+        getLogger().error("Error sending message", message, t);
         if ( replyBox != null ) {
+          pending_.decrementAndGet();
           Message reply = new Message();
           reply.getAttributes().put("replyBox", replyBox);
           reply.replyWithException(t);
           getReplyBoxes().remove(replyBoxId);
-          releaseHoldingThread(t);
         } else {
+          getValid().getAndSet(false);
+          releaseHoldingThread(t);
           throw new RuntimeException(t);
         }
       } finally {
