@@ -264,8 +264,9 @@ This is the heart of Medusa.`,
       pm.log(x);
 
       if ( replaying.getReplaying() &&
+           replaying.getReplayIndex() > 0 &&
            replaying.getIndex() >= replaying.getReplayIndex() ) {
-        getLogger().info("promote", "replayComplete", replaying.getIndex());
+        getLogger().info("promote", "replayComplete", replaying.getIndex(), replaying.getReplayIndex());
         ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
       }
       return entry;
