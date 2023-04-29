@@ -41,6 +41,7 @@ This is the heart of Medusa.`,
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
+    'foam.nanos.NanoService',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
@@ -299,9 +300,12 @@ This is the heart of Medusa.`,
         .setClusterable(false)
         .build();
 
+      NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
+
       long lastLogTime = 0L;
       long lastLogIndex = 0L;
       try {
+        monitor.start();
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
           DaggerService dagger = (DaggerService) x.get("daggerService");
@@ -399,6 +403,7 @@ This is the heart of Medusa.`,
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
         logger.error("exit");
+        monitor.stop();
       }
      `
     },
@@ -440,10 +445,14 @@ This is the heart of Medusa.`,
                 cause = cause.getCause();
               }
               EventRecord er = new EventRecord(x, this, "Failed to parse", entry.toSummary(), LogLevel.ERROR, cause);
-              er.setRequestMessage(data);;
+              er.setRequestMessage(data);
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              if ( replaying.getReplaying() ) {
+                // report to log
+                getLogger().error("promoter", "Failed to parse", cause.getMessage(), entry.toSummary(), data, cause);
+              }
               throw new MedusaException("Failed to parse", cause);
             }
 
