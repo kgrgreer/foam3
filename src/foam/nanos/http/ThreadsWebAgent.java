@@ -11,7 +11,10 @@ import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import java.io.PrintWriter;
 import java.lang.StackTraceElement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 /** Display thread information. **/
@@ -21,7 +24,26 @@ public class ThreadsWebAgent
   public ThreadsWebAgent() {}
 
   private String removeJavaBaseClass(String str){
-    return str.substring(str.indexOf("/") + 1);
+    return str.substring(str.lastIndexOf("/") + 1);
+  }
+
+  // Return the last non java or sun stack element.
+  protected String getMethodName(StackTraceElement[] stackTraceElements) {
+    if ( stackTraceElements.length > 0 ) {
+      String last = removeJavaBaseClass(stackTraceElements[0].toString());
+      for ( int j = 0; j < stackTraceElements.length; j++ ) {
+        StackTraceElement element = stackTraceElements[j];
+        String name = removeJavaBaseClass(element.toString());
+        if ( name.startsWith("foam") ) {
+          if ( ! last.startsWith("foam") ) {
+            return name + "..." + last;
+          }
+          return name;
+        }
+      }
+      return last;
+    }
+    return "Unscheduled";
   }
 
   public void execute(X x) {
@@ -39,6 +61,7 @@ public class ThreadsWebAgent
 
     int parkedThreads    = 0;
     int sleepingThreads  = 0;
+    Map<Thread.State, Integer> threadsInState = new HashMap();
     out.println("<table style=\"width: 100%\">");
     out.println("<tr>");
     out.println("<th style=\"text-align: left\">Thread Name</th>");
@@ -59,10 +82,10 @@ public class ThreadsWebAgent
             continue;
           case "sleep":
             sleepingThreads += 1;
-            methodName = removeJavaBaseClass(elements[0].toString());
+            methodName = getMethodName(elements);
             break;
           default:
-            methodName = removeJavaBaseClass(elements[0].toString());
+            methodName = getMethodName(elements);
             break;
         }
       } else {
@@ -75,6 +98,12 @@ public class ThreadsWebAgent
       out.println("</td>");
       out.println("<td>");
       out.println(thread.getState());
+      Integer count = threadsInState.get(thread.getState());
+      if ( count == null ) {
+        threadsInState.put(thread.getState(), new Integer(1));
+      } else {
+        threadsInState.put(thread.getState(), new Integer(count.intValue() + 1));
+      }
       out.println("</td>");
       out.println("<td>");
       out.println(methodName);
@@ -85,6 +114,8 @@ public class ThreadsWebAgent
 
     out.println("<br><br><H2>Summary</H2>\n");
     out.format("Total Threads : %d ; Parked Threads (not listed) : %d ; Sleeping Threads : %d ; Other Threads : %d", threadArray.length, parkedThreads, sleepingThreads, (threadArray.length - parkedThreads - sleepingThreads));
+    out.format("<br>");
+    out.println(threadsInState.keySet().stream().map(key -> key + " : " + threadsInState.get(key)).collect(Collectors.joining(" ; ")));
 
     String param = req.getParameter("id");
     if ( ! SafetyUtil.isEmpty(param) ) {
