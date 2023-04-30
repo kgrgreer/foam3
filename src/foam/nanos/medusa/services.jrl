@@ -195,6 +195,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "daggerService",
   "serve": false,
+  "lazy": false,
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
 })
 
@@ -247,11 +248,10 @@ p({
 //   """
 // })
 
-// mm specific
+// mm specific - started by MedusaConsensusDAO
 // p({
 //   "class":"foam.nanos.boot.NSpec",
 //   "name":"medusaConsensusMonitor",
-//   "lazy":false,
 //   "service": {
 //     class:"foam.nanos.medusa.MedusaConsensusMonitor"
 //   }
