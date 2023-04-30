@@ -300,12 +300,9 @@ This is the heart of Medusa.`,
         .setClusterable(false)
         .build();
 
-      NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
-
       long lastLogTime = 0L;
       long lastLogIndex = 0L;
       try {
-        monitor.start();
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
           DaggerService dagger = (DaggerService) x.get("daggerService");
@@ -379,8 +376,7 @@ This is the heart of Medusa.`,
           } finally {
             pm.log(x);
           }
-          if ( entry == null &&
-               ! replaying.getReplaying() ) {
+          if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
@@ -403,6 +399,7 @@ This is the heart of Medusa.`,
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
         logger.error("exit");
+        NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
         monitor.stop();
       }
      `
