@@ -109,7 +109,7 @@ foam.CLASS({
           if ( args ) {
             of = args[axiom.ofProperty] || ( args.data && ( args.data[axiom.ofProperty] || args.data.cls_ ) ) ;
             if ( ! of ) {
-              let data = args?.data$?.get();
+              let data = args.data$?.get();
               of = data?.[axiom.ofProperty] || data?.cls_;
             }
           }
