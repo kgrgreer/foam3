@@ -10,15 +10,12 @@ foam.CLASS({
   extends: 'foam.u2.wizard.views.NullEditWizardletBorder',
   documentation: 'Border for wizardlets that the user is allowed to edit',
 
-  import: ['ctrl'],
-  
-  properties: [
-    {
-      class: 'FObjectProperty',
-      name: 'oldData'
-    }
-  ],
+  imports: ['ctrl'],
 
+  requires: [
+    'foam.u2.borders.CardBorder'
+  ],
+  
   messages: [
     {
       name: 'SAVE_FAILED',
@@ -27,18 +24,25 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-    min-height: 60px;
-  
-    background-color: $white;
-    border: solid 2px red;
-    border-radius: 5px;
-  
-    padding: 16px;
-  
-    transition: all 0.2s linear;
+    ^flex{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      // margin: 8px 0;
     }
+    ^button-flex{
+      display: flex;
+      justify-content: flex-end;
+    }
+ 
   `,
+
+  properties: [
+    {
+      class: 'FObjectProperty',
+      name: 'oldData'
+    }
+  ],
   
   methods: [
     function init() {
@@ -50,10 +54,16 @@ foam.CLASS({
       this
         .addClass()
           .startContext({data: this})
-            .start().addClass('h500').add(this.title).end()
-            .add(this.EDIT, ' ', this.SAVE, ' ', this.CANCEL)
+            .start().addClass(this.myClass('flex'))
+            .start().addClass('h500', this.myClass('wizard-heading')).add(this.title).end()
+            .start().addClass(this.myClass('button-flex'))
+              .add(this.EDIT, ' ', this.SAVE, ' ', this.CANCEL)
+            .end()
+            .end()
           .endContext()
-        .tag('div', null, this.content$);
+          .start(this.CardBorder).addClass(this.myClass('card'))
+          .tag('div', null, this.content$)
+        .end()
     }
   ],
 
@@ -61,7 +71,7 @@ foam.CLASS({
     {
       name: 'Edit',
       label: 'Edit',
-      buttonStyle: 'PRIMARY',
+      buttonStyle: 'LINK',
       isAvailable: function(controllerMode) {
         return this.controllerMode !== foam.u2.ControllerMode.EDIT
       },
@@ -72,7 +82,7 @@ foam.CLASS({
     {
       name: 'Save',
       label: 'Save',
-      buttonStyle: 'PRIMARY',
+      buttonStyle: 'LINK',
       isAvailable: function(controllerMode) {
         return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
@@ -89,12 +99,11 @@ foam.CLASS({
     {
       name: 'Cancel',
       label: 'Cancel',
-      buttonStyle: 'PRIMARY',
+      buttonStyle: 'Link',
       isAvailable: function(controllerMode) {
         return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
       code: function() {
-        debugger
         this.wizardlet.data = this.oldData
         this.controllerMode = foam.u2.ControllerMode.VIEW
       }

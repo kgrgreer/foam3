@@ -8,14 +8,16 @@ foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'NullEditWizardletBorder',
   extends: 'foam.u2.View',
-
-  requires: [
-    'foam.u2.ControllerMode'
-  ],
+  documentation: 'Border for wizardlets that the user is not allowed to edit',
 
   imports: ['wizardlet'],
 
   exports: ['controllerMode'],
+
+  requires: [
+    'foam.u2.ControllerMode',
+    'foam.u2.borders.CardBorder'
+  ],
 
   messages: [
     { name: 'INSTRUCTION', message: 'This information can not be edited through the UI. Please contact support in order to update this information'}
@@ -23,19 +25,14 @@ foam.CLASS({
   
   css: `
     ^ {
-    min-height: 60px;
-  
-    background-color: $white;
-    border: solid 2px blue;
-    border-radius: 5px;
-  
-    padding: 16px;
-  
-    transition: all 0.2s linear;
+     display: flex;
+     flex-direction: column;
+     gap: 0.8rem;
+    }
+    ^ .foam-u2-borders-CardBorder {
+      padding: 24px 32px;
     }
   `,
-  
-  documentation: 'Border for wizardlets that the user is not allowed to edit',
 
   properties:[
     {
@@ -61,10 +58,11 @@ foam.CLASS({
 
       this
         .addClass()
-          .start().addClass('h500').add(this.title).end()
+          .start().addClass('h500', this.myClass('wizard-heading')).add(this.title).end()
           .start().addClass('p').add(this.INSTRUCTION).end()
-          .tag('div', null, this.content$)
-
+          .start(this.CardBorder).addClass(this.myClass('card'))
+            .tag('div', null, this.content$)
+          .end()
     }
   ]
   });
