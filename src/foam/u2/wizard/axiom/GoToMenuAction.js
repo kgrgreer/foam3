@@ -46,13 +46,10 @@ foam.CLASS({
       name: 'label',
       factory: function() {
         /* ignoreWarning */ 
-        let a;
         if ( this.menu ) {
-          a = Promise.resolve(`${this.GO_TO} ${this.menu.label}`);
+          return Promise.resolve(`${this.GO_TO} ${this.menu.label}`);
         }
-        a =  this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => `${this.GO_TO} ${v.label}`);
-        console.log(a);
-        return a;
+        return this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => `${this.GO_TO} ${v.label}`);
       }       
     }
   ]
