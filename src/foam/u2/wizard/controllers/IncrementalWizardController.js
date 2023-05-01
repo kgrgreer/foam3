@@ -563,9 +563,6 @@ foam.CLASS({
         console.debug('what is canGoNext', canGoNext)
         return canGoNext && ! isLoading_;
       },
-      isAvailable: function (isLoading_) {
-        return ! isLoading_;
-      },
       code: function(x) {
         this.isLoading_ = true;
         return this.next().then((isFinished) => {
