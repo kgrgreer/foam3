@@ -27,13 +27,7 @@ foam.CLASS({
       visibility: function(usernameRequired_) {
         return usernameRequired_ ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      validationPredicates: [
-        {
-          args: ['usernameRequired_', 'username'],
-          query: 'usernameRequired_==false||username.len>0',
-          errorMessage: 'USERNAME_REQUIRED'
-        }
-      ]
+      required: true
     },
     {
       class: 'String',
