@@ -145,35 +145,39 @@
           return true;
         },
       },
-      function hideNotificationType(X) {
-        var self = X.rowView;
+      {
+        name: 'hideNotificationType',
+        availablePermissions: ['notificationRowView.hideNotificationType'],
+        code: function(X) {
+          var self = X.rowView;
 
-        if ( self.subject.user.disabledTopics.includes(self.data.notificationType) ) {
-          self.notify('Disabled already exists for this notification something went wrong.', '', self.LogLevel.ERROR, true);
-          return;
-        }
-
-        var userClone = self.subject.user.clone();
-
-        // check if disabledTopic already exists
-        userClone.disabledTopics.push(self.data.notificationType);
-        self.userDAO.put(userClone).then(user => {
-          self.finished.pub();
-          self.subject.user = user;
-          X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
-        }).catch(e => {
-          self.throwError.pub(e);
-
-          if ( e.exception && e.exception.userFeedback  ) {
-            var currentFeedback = e.exception.userFeedback;
-            while ( currentFeedback ) {
-              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
-              currentFeedback = currentFeedback.next;
-            }
-          } else {
-            this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
+          if ( self.subject.user.disabledTopics.includes(self.data.notificationType) ) {
+            self.notify('Disabled already exists for this notification something went wrong.', '', self.LogLevel.ERROR, true);
+            return;
           }
-        });
+
+          var userClone = self.subject.user.clone();
+
+          // check if disabledTopic already exists
+          userClone.disabledTopics.push(self.data.notificationType);
+          self.userDAO.put(userClone).then(user => {
+            self.finished.pub();
+            self.subject.user = user;
+            X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          }).catch(e => {
+            self.throwError.pub(e);
+
+            if ( e.exception && e.exception.userFeedback  ) {
+              var currentFeedback = e.exception.userFeedback;
+              while ( currentFeedback ) {
+                this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+                currentFeedback = currentFeedback.next;
+              }
+            } else {
+              this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
+            }
+          });
+        },
       },
       {
         name: 'markAsRead',
