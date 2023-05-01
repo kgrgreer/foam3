@@ -33,11 +33,18 @@ foam.CLASS({
           restrictedCharacters: /^[^\s\/]$/
         };
       },
-      validateObj: function(username, usernameAvailable) {
-        if ( username.length === 0 ) return this.USERNAME_ERR;
-        // Availability Check
-        if ( ! usernameAvailable ) return this.USERNAME_AVAILABILITY_ERR;
-      }
+      validationPredicates: [
+        {
+          args: ['userName'],
+          query: 'userName.len>0',
+          errorMessage: 'USERNAME_EMPTY_ERR'
+        },
+        {
+          args: ['usernameAvailable'],
+          query: 'usernameAvailable==true',
+          errorMessage: 'USERNAME_AVAILABILITY_ERR'
+        }
+      ]
     },
     {
       class: 'EMail',
@@ -54,11 +61,18 @@ foam.CLASS({
           displayMode: foam.u2.DisplayMode.RW
         };
       },
-      validateObj: function(email, emailAvailable) {
-        if ( email.length === 0 || ! /\S+@\S+\.\S+/.test(email) ) return this.EMAIL_ERR;
-        // Availability Check
-        if ( ! emailAvailable ) return this.EMAIL_AVAILABILITY_ERR;
-      }
+      validationPredicates: [
+        {
+          args: ['email'],
+          query: 'email.len>0&&email~/\s+@\s+\.\s+/',
+          errorMessage: 'EMAIL_ERR'
+        },
+        {
+          args: ['emailAvailable'],
+          query: 'emailAvailable==true',
+          errorMessage: 'EMAIL_AVAILABILITY_ERR'
+        }
+      ]
     },
     {
       class: 'Password',
@@ -71,10 +85,18 @@ foam.CLASS({
           passwordIcon: true
         }
       },
-      validateObj: function(desiredPassword, passwordAvailable) {
-        if ( ! desiredPassword || desiredPassword.length < 10 ) return this.PASSWORD_ERR;
-        if ( ! passwordAvailable ) return this.WEAK_PASSWORD_ERR;
-      }
+      validationPredicates: [
+        {
+          args: ['desiredPassword'],
+          query: 'desirePassword exists && desiredPassword.len>10',
+          errorMessage: 'PASSWORD_ERR'
+        },
+        {
+          args: ['passwordAvailable'],
+          query: 'passwordAvailable==true',
+          errorMessage: 'WEAK_PASSWORD_ERR'
+        }
+      ]
     },
     {
       name: 'dao_',
