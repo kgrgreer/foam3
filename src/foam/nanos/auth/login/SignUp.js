@@ -11,7 +11,7 @@ foam.CLASS({
   messages: [
     { name: 'EMAIL_ERR', message: 'Valid email required' },
     { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters' },
-    { name: 'USERNAME_ERR', message: 'Username required' },
+    { name: 'USERNAME_EMPTY_ERR', message: 'Username required' },
     { name: 'USERNAME_AVAILABILITY_ERR', message: 'This username is taken. Please try another.' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
     { name: 'WEAK_PASSWORD_ERR', message: 'Password is weak' }
@@ -35,8 +35,8 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['userName'],
-          query: 'userName.len>0',
+          args: ['username'],
+          query: 'username.len>0',
           errorMessage: 'USERNAME_EMPTY_ERR'
         },
         {
@@ -64,7 +64,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['email'],
-          query: 'email.len>0&&email~/\s+@\s+\.\s+/',
+          query: 'email.len>0&&email~/\\S+@\\S+\.\\S+$/',
           errorMessage: 'EMAIL_ERR'
         },
         {
@@ -88,7 +88,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['desiredPassword'],
-          query: 'desirePassword exists && desiredPassword.len>10',
+          query: 'desiredPassword exists && desiredPassword.len>10',
           errorMessage: 'PASSWORD_ERR'
         },
         {

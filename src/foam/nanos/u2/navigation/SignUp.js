@@ -115,7 +115,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['email'],
-          query: 'email.len>0&&email~/\s+@\s+\.\s+/',
+          query: 'email.len>0&&email~/\\S+@\\S+\.\\S+$/',
           errorMessage: 'EMAIL_ERR'
         },
         {
@@ -180,7 +180,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['desiredPassword'],
-          query: 'desirePassword exists && desiredPassword.len>10',
+          query: 'desiredPassword exists && desiredPassword.len>10',
           errorMessage: 'PASSWORD_ERR'
         },
         {
