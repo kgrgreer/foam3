@@ -58,20 +58,20 @@ foam.CLASS({
       // TODO: this should be moved to the server's getTranslations() method
       this.loadLanguageLocales().then(() => {
         if ( this.hasVariant() ) {
-          this.loadVariantLocales().then(() => {
+          return this.loadVariantLocales().then(() => {
             if ( this.theme ) {
-              this.loadTheme();
-              this.loadVariantTheme();
+              let pArr = [];
+              pArr.push(this.loadTheme());
+              pArr.push(this.loadVariantTheme());
+              return pArr;
             }
-            this.initLatch.resolve()
           });
         } else {
           if ( this.theme ) {
-            this.loadTheme();
+            return this.loadTheme();
           }
-          this.initLatch.resolve();
         }
-      });
+      }).then(() => { this.initLatch.resolve(); });
     },
 
     function maybeReload() {
