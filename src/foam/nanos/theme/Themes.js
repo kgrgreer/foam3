@@ -185,7 +185,7 @@ Later themes:
       }
 
       if ( theme == null ) {
-        logger.debug("Themes", "fallback");
+        // logger.debug("Themes", "fallback");
         theme = (Theme) themeDAO.find(
           MLang.AND(
             MLang.EQ(Theme.NAME, "foam")

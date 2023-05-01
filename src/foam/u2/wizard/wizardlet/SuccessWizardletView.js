@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'SuccessWizardletView',
   extends: 'foam.u2.View',
 
+  axioms: [foam.pattern.Faceted.create()],
+
   css: `
     ^ {
       text-align: center;
@@ -16,13 +18,12 @@ foam.CLASS({
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 2rem 0;
+      margin: 8rem 0;
       height: 100%;
+      gap: 42px;
     }
     ^image {
-      width: 120pt;
-      margin-bottom: 69px;
-      margin-top: 122px;
+      width: 12rem;
     }
   `,
 

@@ -41,6 +41,7 @@ This is the heart of Medusa.`,
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
+    'foam.nanos.NanoService',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
@@ -264,8 +265,9 @@ This is the heart of Medusa.`,
       pm.log(x);
 
       if ( replaying.getReplaying() &&
+           replaying.getReplayIndex() > 0 &&
            replaying.getIndex() >= replaying.getReplayIndex() ) {
-        getLogger().info("promote", "replayComplete", replaying.getIndex());
+        getLogger().info("promote", "replayComplete", replaying.getIndex(), replaying.getReplayIndex());
         ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
       }
       return entry;
@@ -374,8 +376,7 @@ This is the heart of Medusa.`,
           } finally {
             pm.log(x);
           }
-          if ( entry == null &&
-               ! replaying.getReplaying() ) {
+          if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
@@ -398,6 +399,8 @@ This is the heart of Medusa.`,
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
         logger.error("exit");
+        NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
+        monitor.stop();
       }
      `
     },
@@ -439,10 +442,14 @@ This is the heart of Medusa.`,
                 cause = cause.getCause();
               }
               EventRecord er = new EventRecord(x, this, "Failed to parse", entry.toSummary(), LogLevel.ERROR, cause);
-              er.setRequestMessage(data);;
+              er.setRequestMessage(data);
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              if ( replaying.getReplaying() ) {
+                // report to log
+                getLogger().error("promoter", "Failed to parse", cause.getMessage(), entry.toSummary(), data, cause);
+              }
               throw new MedusaException("Failed to parse", cause);
             }
 

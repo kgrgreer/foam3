@@ -1,8 +1,8 @@
+// not lazy as needed by notification system during startup.
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "localNotificationDAO",
   "lazy": false,
-  "serve": false,
   "serviceScript": """
     mdao = new foam.dao.MDAO(foam.nanos.notification.Notification.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.notification.Notification.GROUP_ID,foam.nanos.notification.Notification.READ });

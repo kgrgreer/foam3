@@ -126,6 +126,9 @@ foam.CLASS({
   methods: [
     function init() {
       this.verificationCode$.sub(() => this.verifyCode());
+    },
+    function cancel() {
+      this.emailVerificationService.detach();
     }
   ],
 

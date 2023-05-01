@@ -723,7 +723,6 @@ foam.POM({
     { name: "foam/u2/crunch/wizardflow/LoadTopConfig",                flags: "web" },
     { name: "foam/u2/crunch/wizardflow/ShowPreexistingAgent",         flags: "web" },
     { name: "foam/u2/crunch/wizardflow/SaveAllAgent",                 flags: "web" },
-    { name: "foam/u2/crunch/wizardflow/SubmitAgent",                  flags: "web" },
     { name: "foam/u2/crunch/wizardflow/ApprovalRequestAgent",         flags: "web" },
     { name: "foam/u2/crunch/wizardflow/CapabilityStoreAgent",         flags: "web" },
     { name: "foam/u2/crunch/wizardflow/DebugAgent",                   flags: "debug&web" },

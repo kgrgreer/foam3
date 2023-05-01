@@ -159,6 +159,7 @@ foam.CLASS({
     },
     {
       // these next two could be a subclass RequestResponseER
+      // REVIEW: non-storageTransient? Could leak data
       name: 'requestMessage',
       class: 'String',
       updateVisibility: 'RO',

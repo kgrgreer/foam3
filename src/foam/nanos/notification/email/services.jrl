@@ -34,9 +34,11 @@ p({
   "client":"{\"of\":\"foam.nanos.notification.email.EmailTemplate\"}"
 })
 
+// not lazy as needed by notification system during startup.
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailMessageDAO",
+  "lazy":false,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())

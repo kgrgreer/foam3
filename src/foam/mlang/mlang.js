@@ -4966,6 +4966,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'If',
@@ -5009,6 +5010,8 @@ foam.CLASS({
     }
   ]
 });
+
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Month',
@@ -5039,13 +5042,13 @@ foam.CLASS({
       name: 'f',
       code: function() {
         var date = new Date();
-        if ( date.getMonath()+ numberOfMonths > 12 ) date.setYear(date.getYear()+ Math.floor((date.getMonth()+ numberOfMonths)/12));
-        if ( date.getMonth()+ numberOfMonths < 0 ) date.setYear(date.getYear()-1-Math.floor((date.getMonth()- numberOfMonths)/12));
+        if ( date.getMonath() + numberOfMonths > 12 ) date.setYear(date.getYear()+ Math.floor((date.getMonth()+ numberOfMonths)/12));
+        if ( date.getMonth() + numberOfMonths < 0 ) date.setYear(date.getYear()-1-Math.floor((date.getMonth()- numberOfMonths)/12));
         date.setMonth(date.getMonth()+numberOfMonths);
         date.setDate(1);
         date.setHours(0);
         date.setMinutes(0);
-        return date
+        return date;
       },
       javaCode: `
         Calendar cal = Calendar.getInstance();
@@ -5065,6 +5068,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang',

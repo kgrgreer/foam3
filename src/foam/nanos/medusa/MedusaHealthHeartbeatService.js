@@ -30,6 +30,14 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'start',
+      javaCode: `
+      // service order is important
+      getX().get("daggerService");
+      super.start();
+      `
+    },
+    {
       name: 'getPackets',
       args: 'X x, String data',
       javaType: 'java.net.DatagramPacket[]',

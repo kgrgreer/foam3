@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.*;
 import org.apache.commons.io.IOUtils;
 
-/** @deprecated Use JSONFObjectFormatter if you can because it is much more efficient. **/
+/** Deprecated: Use JSONFObjectFormatter if you can because it is much more efficient. **/
 public class Outputter
   extends    AbstractSink
   implements foam.lib.Outputter
