@@ -50,7 +50,7 @@ foam.CLASS({
       name: 'timerInterval',
       class: 'Long',
       units: 'ms',
-      value: 30000
+      value: 60000
     },
     {
       name: 'initialTimerDelay',
@@ -148,7 +148,7 @@ foam.CLASS({
 
         // Movement
         if ( getLastIndex() != replaying.getIndex() ) {
-          logger.debug("skip", getLastIndex(), replaying.getIndex());
+          // logger.debug("skip", getLastIndex(), replaying.getIndex());
           setLastIndex(replaying.getIndex());
           setLastIndexSince(System.currentTimeMillis());
           if ( er.getSeverity() == LogLevel.WARN ) {

@@ -42,7 +42,8 @@ foam.CLASS({
     'foam.nanos.pm.PM',
     'java.time.Duration',
     'java.util.HashMap',
-    'java.util.Map'
+    'java.util.Map',
+    'java.util.concurrent.atomic.AtomicBoolean'
   ],
 
   properties: [
@@ -55,8 +56,17 @@ foam.CLASS({
       name: 'journal',
       class: 'FObjectProperty',
       of: 'foam.dao.Journal'
+    },
+    {
+      name: 'replaysInProgress',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
     }
   ],
+
+  javaCode: `
+  Object lock_ = new Object();
+  `,
 
   methods: [
     {
@@ -124,21 +134,39 @@ foam.CLASS({
                    details.getMaxIndex() > 0 &&
                    cacheDAO.find(details.getMinIndex()) != null &&
                    cacheDAO.find(details.getMaxIndex()) != null ) {
-                logger.debug("cache,select,start", details.getRequester(), p);
+                logger.info("cache,select,start", details.getRequester(), p);
                 startTime = System.currentTimeMillis();
                 cacheDAO.where(p).select(new SetNodeSink(x, (Sink) clientDAO));
-                logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+                logger.info("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
               } else {
-                logger.debug("journal,select,start", details.getRequester(), p);
-                startTime = System.currentTimeMillis();
-                getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
-                logger.debug("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+                synchronized ( lock_ ) {
+                  AtomicBoolean ab = (AtomicBoolean) getReplaysInProgress().get(details.getRequester());
+                  if ( ab == null ) {
+                    ab = new AtomicBoolean(false);
+                    getReplaysInProgress().put(details.getRequester(), ab);
+                  }
+                  if ( ab.get() ) {
+                    logger.info("journal,select,already in progress,ignoring request", details.getRequester(), p);
+                    return;
+                  } else {
+                    ab.set(true);
+                  }
+                }
+                try {
+                  logger.info("journal,select,start", details.getRequester(), p);
+                  startTime = System.currentTimeMillis();
+                  getJournal().replay(x, new PredicatedPutDAO(x, p, new MedusaSetNodeDAO(x, clientDAO)));
+                  logger.info("journal,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
 
-                // cache of last x received, including storage transient
-                logger.debug("cache,select,start", details.getRequester());
-                startTime = System.currentTimeMillis();
-                cacheDAO.select(new SetNodeSink(x, (Sink) clientDAO));
-                logger.debug("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+                  // cache of last x received, including storage transient
+                  logger.info("cache,select,start", details.getRequester());
+                  startTime = System.currentTimeMillis();
+                  cacheDAO.select(new SetNodeSink(x, (Sink) clientDAO));
+                  logger.info("cache,select,end", details.getRequester(), Duration.ofMillis(System.currentTimeMillis() - startTime));
+                } finally {
+                  AtomicBoolean ab = (AtomicBoolean) getReplaysInProgress().get(details.getRequester());
+                  ab.set(false);
+                }
               }
               pm.log(x);
             }
