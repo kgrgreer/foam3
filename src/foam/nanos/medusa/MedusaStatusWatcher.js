@@ -54,6 +54,11 @@ foam.CLASS({
       name: 'SHUTDOWN',
       type: 'String',
       value: 'SHUTDOWN'
+    },
+    {
+      name: 'DISSOLVE',
+      type: 'String',
+      value: 'DISSOLVE'
     }
   ],
 
@@ -129,7 +134,8 @@ foam.CLASS({
             if ( event.kind() == StandardWatchEventKinds.ENTRY_CREATE &&
                  ( SHUTDOWN.equals(event.context().toString()) ||
                    OFFLINE.equals(event.context().toString()) ||
-                   ONLINE.equals(event.context().toString()) ) ) {
+                   ONLINE.equals(event.context().toString()) ||
+                   DISSOLVE.equals(event.context().toString()) ) ) {
               logger.warning("detected", event.context());
 
               ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -144,11 +150,17 @@ foam.CLASS({
                 if ( OFFLINE.equals(request) &&
                      config.getStatus() != Status.OFFLINE ) {
                   config.setStatus(Status.OFFLINE);
+                  ((DAO) x.get("localClusterConfigDAO")).put(config);
                 } else if ( ONLINE.equals(request) &&
-                     config.getStatus() != Status.ONLINE ) {
+                            config.getStatus() != Status.ONLINE ) {
                   config.setStatus(Status.ONLINE);
+                  ((DAO) x.get("localClusterConfigDAO")).put(config);
+                } else if ( DISSOLVE.equals(request) &&
+                            config.getStatus() == Status.ONLINE &&
+                            config.getType() == MedusaType.MEDIATOR ) {
+                  ElectoralService electoral = (ElectoralService) x.get("electoralService");
+                  electoral.dissolve(x);
                 }
-                ((DAO) x.get("localClusterConfigDAO")).put(config);
                 break;
               }
             }

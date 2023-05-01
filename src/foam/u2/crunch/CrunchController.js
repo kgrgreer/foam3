@@ -55,7 +55,6 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.MaybeDAOPutAgent',
     'foam.u2.crunch.wizardflow.ShowPreexistingAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
-    'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
     'foam.u2.crunch.wizardflow.DebugAgent',
@@ -155,12 +154,12 @@ foam.CLASS({
             this.add(self.DebugAgent)
           })
           .add(this.CreateControllerAgent)
-          .add(this.PublishToWizardletsAgent, { event: 'onReady' })
+          .addAs('ReadyAgent', this.PublishToWizardletsAgent, { event: 'onReady' })
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
           .add(this.SaveAllAgent)
-          .add(this.SubmitAgent)
+          .addAs('SubmitAgent', this.PublishToWizardletsAgent, { event: 'onSubmit' })
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           .add(this.StatusPageAgent)

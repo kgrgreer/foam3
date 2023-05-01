@@ -181,10 +181,6 @@ foam.CLASS({
         return;
       }
 
-      if ( getState() == ElectoralServiceState.VOTING ) {
-        return;
-      }
-
       if ( getState() == ElectoralServiceState.ELECTION &&
         getElectionTime() > 0L ) {
         getLogger().debug("dissolve", getState(), "since", getElectionTime());
