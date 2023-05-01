@@ -522,7 +522,7 @@ foam.CLASS({
       label: 'Save and exit',
       code: function(x) {
         this.saveProgress().then(() => {
-          this.onClose({});
+          this.status = this.WizardStatus.DISCARDED;
         }).catch(e => {
           console.error(e);
           try {

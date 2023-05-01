@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.wizard.wizardlet.BaseWizardlet',
 
   imports: [
-    'currentMenu'
+    'currentMenu',
+    'stack'
   ],
 
   properties: [
@@ -19,11 +20,17 @@ foam.CLASS({
       name: 'message'
     },
     {
-      class: 'String',
-      name: 'actionLabel',
+      name: 'dynamicActions',
       factory: function() {
-        return "Return to " + this.currentMenu.label;
-      }
+        let label = this.stack?.stack_[this.stack.pos - 1]?.breadcrumbTitle;
+        return [
+          {
+            name: 'goNext',
+            class: 'foam.u2.wizard.axiom.WizardAction',
+            label: label ? 'Return to ' + label : 'Done'
+          }
+        ]
+      } 
     },
     {
       name: 'sections',
