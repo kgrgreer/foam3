@@ -26,8 +26,7 @@ foam.CLASS({
       name: 'username',
       visibility: function(usernameRequired_) {
         return usernameRequired_ ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      required: true
+      }
     },
     {
       class: 'String',

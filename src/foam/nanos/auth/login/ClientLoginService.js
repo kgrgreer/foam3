@@ -14,7 +14,6 @@ foam.CLASS({
     'defaultUserLanguage',
     'emailVerificationService',
     'loginSuccess',
-    'notifyUser',
     'stack',
     'subject',
     'wizardController',
@@ -88,18 +87,15 @@ foam.CLASS({
           }
           if ( this.UnverifiedEmailException.isInstance(e) ) {
             var email = this.usernameRequired ? data.email : data.identifier;
-            if ( wizardFlow ) {
-              this.wizardVerifyEmail(x, email, data.username, data.password);
-              var latch = foam.core.Latch.create();
-              this.onDetach(this.emailVerificationService.sub('emailVerified', () => latch.resolve()));
-              await latch;
-              // retry signin
-              await this.signin(x, data, true);
-            }
-            else await this.verifyEmail(x, email, data.username, data.password);
+            this.wizardVerifyEmail(x, email, data.username, data.password);
+            var latch = foam.core.Latch.create();
+            this.onDetach(this.emailVerificationService.sub('emailVerified', () => latch.resolve()));
+            await latch;
+            // retry signin
+            await this.signin(x, data, wizardFlow);
             return;
           }
-          this.notifyUser(err.data, this.SIGNIN_ERR, this.LogLevel.ERROR);
+          this.notifyUser_(err.data, this.SIGNIN_ERR, this.LogLevel.ERROR);
         }
       }
     },
@@ -186,32 +182,6 @@ foam.CLASS({
           type: type,
           transient: true
         }));
-      }
-    },
-    {
-      name: 'wizardEmailVerified',
-      code: async function(x, data) {
-        try {
-          await this.signin(x, data, true);
-          this.subject = await this.auth.getCurrentSubject(null);
-          this.loginSuccess = true;
-        } catch (err) {
-          this.error('^login-failed-post-verify', err);
-          console.error(err);
-        }
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'emailVerifiedListener',
-      code: async function(x, data, wizardFlow) {
-        if (wizardFlow) {
-          await this.wizardEmailVerified(x, data);
-        } else {
-          await this.signin(x, data, wizardFlow);
-        }
       }
     }
   ]
