@@ -32,6 +32,14 @@
 
    ],
 
+   imports: [
+
+   ],
+
+   exports: [
+
+   ],
+
    javaCode: `
      // Additional free-form code to be added to the generated Java output
    `,
@@ -56,6 +64,10 @@
 
    `,
 
+   topics: [
+
+   ],
+   
    sections: [
 
    ],
@@ -73,6 +85,10 @@
    ],
 
    methods: [
+
+   ],
+
+   templates: [
 
    ],
 
