@@ -64,6 +64,7 @@ foam.CLASS({
     'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.agents.ConfigureFlowAgent',
     'foam.u2.wizard.agents.DeveloperModeAgent',
+    'foam.u2.wizard.agents.GreetingWizardAgent',
     'foam.u2.wizard.agents.StepWizardAgent',
     'foam.u2.wizard.agents.CreateControllerAgent',
     'foam.u2.wizard.agents.DetachAgent',
@@ -155,6 +156,7 @@ foam.CLASS({
           })
           .add(this.CreateControllerAgent)
           .add(this.PublishToWizardletsAgent, { event: 'onReady' })
+          .add(this.GreetingWizardAgent)
           .add(this.StepWizardAgent)
           .add(this.DetachAgent)
           .add(this.SpinnerAgent)
