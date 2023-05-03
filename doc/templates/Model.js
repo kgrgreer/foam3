@@ -14,12 +14,12 @@
    extends: 'foam.u2.View',
    extends: 'foam.u2.Component',
 
-   javExtends: '', // optional, used if you want the Java class to extend something different than extends:
-
    // optional, used instead of extends: to specify you want to update the original
    // class definition, rather than creating a new one which inherits its attributes
    refines: '',
    abstract: true, // defaults to false, makes generated Java class abstract
+
+   javaExtends: '', // optional, used if you want the Java class to extend something different than extends:
 
    implements: [
 
@@ -97,11 +97,56 @@
    ],
 
    properties: [
-
+     {
+       name: '',
+       label: '',
+       documentation: '',
+       help: '',
+       hidden: true,
+       value:
+       factory:
+       expression:
+       adapt:
+       preSet:
+       assertValue:
+       postSet:
+       expression:
+       getter:
+       setter:
+       cloneProperty: function(value, cloneMap) {
+       },
+       final: true,
+       required: true,
+       readPermissionRequired: true,
+       writePermissionRequired: true,
+       includeInHash: false,
+       flags: [ ],
+       fromString: function(str) { return str; },
+       containsPII: true,
+       containsDeletablePII: true,
+       type: ,
+       sortable: false,
+       sheetsOutput: true,
+       valueToString:,
+       unitPropValueToString:,
+       dependsOnPropertiesWithNames:
+       initObject:
+     }
    ],
 
    methods: [
-
+     {
+       name: '',
+       code: ,
+       javaCode: ` `,
+       documentation:
+       flags:
+       type:
+       async:
+       synchronized:
+       remote:
+       args:
+     }
    ],
 
    templates: [
