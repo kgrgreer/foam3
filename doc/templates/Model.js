@@ -77,23 +77,47 @@
    ],
 
    css: `
+     ^ {
+       margin: 0px;
+     }
 
+     ^name {
+       padding: 4px;
+     }
    `,
 
-   topics: [
+   cssTokens: [
+     {
+       name: 'buttonRadius',
+       value: '4px'
+     }
+   ],
 
+   topics: [
+     'topic1',
+     'topic2'
    ],
 
    sections: [
-
+     {
+       name: 'section1',
+       title: 'Section 1',
+       order: 1
+     },
+     {
+       name: 'section1',
+       title: 'Section 2',
+       order: 2,
+       permissionRequired: true
+     }
    ],
 
    tableColumns: [
-
+     'prop1', 'prop2'
    ],
 
    searchColumns: [
-
+     'prop1', 'prop2'
    ],
 
    properties: [
@@ -135,6 +159,11 @@
    ],
 
    methods: [
+     function render() {
+       this.SUPER();
+
+       // ...
+     },
      {
        name: '',
        code: function() { },
@@ -150,10 +179,19 @@
    ],
 
    templates: [
-
+     {
+       name: 'template1',
+       args: [],
+       template: `
+ return <%=this.firstName%> <%=this.lastName%>
+        `,
+     }
    ],
 
    listeners: [
+     function click(e) {
+       // ...
+     },
      {
        name: '',
        code: function() { },
