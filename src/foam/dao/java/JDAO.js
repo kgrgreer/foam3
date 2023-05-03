@@ -14,16 +14,19 @@ foam.CLASS({
 In this current implementation setDelegate must be called last.`,
 
   javaImports: [
-    'foam.nanos.fs.ResourceStorage',
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.CompositeJournal',
     'foam.dao.DAO',
     'foam.dao.F3FileJournal',
+    'foam.dao.Journal',
     'foam.dao.MDAO',
     'foam.dao.NullJournal',
-    'foam.nanos.boot.NSpec',
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.dao.WriteOnlyF3FileJournal',
+    'foam.nanos.boot.NSpec',
+    'foam.nanos.fs.ResourceStorage',
     'foam.nanos.ndiff.NDiffJournal'
   ],
 
@@ -68,6 +71,12 @@ In this current implementation setDelegate must be called last.`,
       value: true
     },
     {
+      documentation: `Force caller to wait on nspec initailzation. The first call to 'get' for an nspec (x.get(servicename)) will have the calling thread wait on reply of service. This is the default behaviour and should be used for all essential services.  Also this should be used if the model is using SeqNo or NUID for id generation.`,
+      class: 'Boolean',
+      name: 'waitReplay',
+      value: true
+    },
+    {
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
@@ -109,12 +118,13 @@ In this current implementation setDelegate must be called last.`,
             // if NSpec present in X then go through NDiff
             // (set up in EasyDAO's decorator chain)
             NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_CTX_KEY);
-            
-            if ( nspec != null ) {
-              String nSpecName = nspec.getName();
 
-              new CompositeJournal.Builder(resourceStorageX)
-              .setDelegates(new foam.dao.Journal[] {
+            String nSpecName = getFilename();
+            Journal[] journals = null;
+
+            if ( nspec != null ) {
+              nSpecName = nspec.getName();
+              journals = new Journal[] {
                 // replays the repo journal
                 new NDiffJournal.Builder(resourceStorageX)
                 .setDelegate(journal0)
@@ -128,17 +138,28 @@ In this current implementation setDelegate must be called last.`,
                 .setNSpecName(nSpecName)
                 .setRuntimeOrigin(true) 
                 .build()
-              })
-              .build()
-              .replay(resourceStorageX, delegate);
+              };
             } else {
-              new CompositeJournal.Builder(resourceStorageX)
-                .setDelegates(new foam.dao.Journal[] {
-                  journal0,
-                  getJournal()
-                })
-                .build()
-                .replay(resourceStorageX, delegate);
+              journals = new Journal[] {
+                    journal0,
+                    getJournal()
+              };
+            }
+            final Journal jnl = new CompositeJournal.Builder(resourceStorageX)
+              .setDelegates(journals)
+              .build();
+ 
+            if ( getWaitReplay() ) {
+              jnl.replay(resourceStorageX, delegate);
+            } else {
+              final X y = resourceStorageX;
+              final String name = nSpecName;
+              Agency agency = (Agency) getX().get("threadPool");
+              agency.submit(getX(), new ContextAgent() {
+                public void execute(X x) {
+                  jnl.replay(y, delegate);
+                }
+              }, this.getClass().getSimpleName()+"-replay");
             }
     `
     }
