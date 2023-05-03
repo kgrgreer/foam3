@@ -9,6 +9,18 @@
    name: 'Thing',
    extends: 'com.acme.somepackage.SomeObject', // optional, defaults to 'foam.core.FObject'
 
+   // Common classes to extend when implementing GUI components:
+   extends: 'foam.u2.Element',
+   extends: 'foam.u2.View',
+   extends: 'foam.u2.Component',
+
+   javExtends: '', // optional, used if you want the Java class to extend something different than extends:
+
+   // optional, used instead of extends: to specify you want to update the original
+   // class definition, rather than creating a new one which inherits its attributes
+   refines: '',
+   abstract: true, // defaults to false, makes generated Java class abstract
+
    implements: [
 
    ],
@@ -17,7 +29,11 @@
 
    ],
 
+   label: 'Presentable Name', // optional, defaults to internationalized name:
    plural: 'Things', // optional, defaults to just adding 's' to end of name:
+   order: '', // optional, ???
+
+   flags: [ ],
 
    documentation: `
      Documentation goes here.
@@ -67,7 +83,7 @@
    topics: [
 
    ],
-   
+
    sections: [
 
    ],
