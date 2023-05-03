@@ -339,6 +339,10 @@ foam.CLASS({
         before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
         that may not be explicitly put
       `
+    },
+    {
+      class: 'String',
+      name: 'greetingWizard'
     }
   ],
 
