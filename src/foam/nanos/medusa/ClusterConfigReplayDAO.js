@@ -99,16 +99,18 @@ foam.CLASS({
           if ( replaying.getReplaying() ) {
             replaying.getReplayDetails().put(config.getId(), details);
 
-            if ( replaying.getStartTime() == null ) {
-              replaying.setStartTime(new java.util.Date());
-              replaying.updateIndex(x, dagger.getGlobalIndex(x));
-              ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
-            }
-            if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
-              dagger.setGlobalIndex(x, details.getMaxIndex());
-            }
-
             synchronized ( this ) {
+
+              if ( replaying.getStartTime() == null ) {
+                replaying.setStartTime(new java.util.Date());
+                replaying.updateIndex(x, dagger.getGlobalIndex(x));
+
+                ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
+                logger.info("replay,start,test");
+              }
+              if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
+                dagger.setGlobalIndex(x, details.getMaxIndex());
+              }
 
               if ( details.getMaxIndex() > replaying.getReplayIndex() ) {
                 replaying.setReplayIndex(details.getMaxIndex());
