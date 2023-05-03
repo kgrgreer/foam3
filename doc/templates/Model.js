@@ -137,9 +137,9 @@
    methods: [
      {
        name: '',
-       code: ,
+       code: function() { },
        javaCode: ` `,
-       documentation:
+       documentation: '',
        flags:
        type:
        async:
@@ -154,11 +154,46 @@
    ],
 
    listeners: [
+     {
+       name: '',
+       code: function() { },
+       documentation: '',
 
+       // One or none of the following:
+       isFramed: true,
+       isMerged: true,
+       isidled: true,
+       delay: 100, // optional, used for isMerged or isFramed, defaults to 16ms
+       on: [ ]
+     }
    ],
 
    actions: [
-
+     {
+       name: '',
+       label: '',
+       ariaLabel: '',
+       toolTip: '',
+       icon: '',
+       iconFontFamily: '',
+       iconFontClass: '',
+       iconFontName: '',
+       themeIcon: '',
+       code: function() { },
+       documentation: '',
+       buttonStyle: '',
+       confirmationRequired: function() {},
+       keyboardShortcuts: [ ],
+       help: ''
+       isDefault: true,
+       isAvailable: function() { },
+       isEnabled: function() { },
+       confirmationView: function() { },
+       availablePermissions: [ ],
+       enabledPermissions: [ ],
+       confirmationRequiredPermissions: [ ],
+       mementoName: []
+     }
    ]
 
  });
