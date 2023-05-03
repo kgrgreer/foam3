@@ -58,6 +58,12 @@ foam.CLASS({
     function init() {
       const x = this.__subContext__;
       x.register(this.TabularSectionView, 'foam.u2.detail.SectionView');
+      this.data = {
+        of: 'foam.u2.wizard.wizardlet.DataModel12',
+        first: {
+          value: 'fist value in init hardcoded'
+        }
+      }
     }
   ]
 });
