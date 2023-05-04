@@ -147,7 +147,7 @@ foam.CLASS({
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( this.getIsResourceStorage() ) {
           // jar file deployment
-          out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
+          out.print("<script async language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
         } else {
