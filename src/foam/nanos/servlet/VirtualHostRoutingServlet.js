@@ -237,7 +237,7 @@ foam.CLASS({
         out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
         out.println("\\">");
-        out.print("<p\\n class=\\"foam.u2.LoadingSpinner\\" size=\\"32\\" text=\\"Loading....\\" showText=true >loading....</p>");
+        out.print("<p>loading....</p>");
         out.println("</foam>");
 
         out.println("</body>");
