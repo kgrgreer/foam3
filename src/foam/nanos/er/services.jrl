@@ -9,6 +9,7 @@ p({
       .setSAF(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("eventRecords")
+      .setWaitReplay(false)
       .setPm(true)
       .setDecorator(
         new foam.nanos.er.EventRecordResponseDAO.Builder(x).setDelegate(

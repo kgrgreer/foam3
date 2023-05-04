@@ -365,6 +365,8 @@ foam.CLASS({
           if ( time <= winnerTime_.get() ) {
             getLogger().info("vote", id, time, getState(), "ignore", "wtime", winnerTime_.get());
           } else {
+            // TODO/REVIEW - big issue with votes arriving just after election decided with a later time.
+            // could ignore the first and wait for another?
             getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", winnerTime_.get());
             setState(ElectoralServiceState.VOTING);
             setElectionTime(0L);
@@ -486,8 +488,10 @@ foam.CLASS({
       getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
       // NOTE: set winner time early to hopefully discard late arriving vote requests.
-      winnerTime_.set(time);
-
+      // Initially was setting this to the time of the election that won, but the late votes are from an election started, and presumably abandoned, after the winning election started.
+      // Now setting winner time to local time to hopefully ignore anything after the time this instance believe the election was won.
+      // winnerTime_.set(time);
+      winnerTime_.set(System.currentTimeMillis());
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;
       try {
