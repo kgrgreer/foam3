@@ -258,7 +258,7 @@ foam.CLASS({
 
         List leaves = new ArrayList<>();
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), false, true, leaves);
         processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
         var ret = (CapabilityPayload) find_(x, receivingCapPayload.getId());
@@ -297,7 +297,7 @@ foam.CLASS({
                 (FObject) capabilityDataObjects.get(cap.getName());
             }
 
-            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunctionDirectly(x, cap.getId(), dataObj);
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
             getLogger().debug("Updated capability", cap.getName(), cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
           } else if ( item instanceof List ) {
             processCapabilityList(x, (List) item, null, capabilityDataObjects);
