@@ -50,6 +50,7 @@ foam.CLASS({
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
+    'foam.u2.LoadingSpinner',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
     'foam.u2.crunch.WizardRunner',
@@ -550,13 +551,12 @@ foam.CLASS({
 //          this.__subSubContext__.notificationDAO.put(clonedNotification);
 //        }
 //      });
-
+      self.addMacroLayout();
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
           // Work around to ensure wrapCSS is exported into context before
           // calling AppStyles which needs theme replacement
           self.AppStyles.create();
-          self.addMacroLayout();
         });
       });
     },
@@ -655,7 +655,7 @@ foam.CLASS({
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
       const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false);
+      var val = this.theme ? foam.util.path(this.theme, prop, false) : undefined;
 
       // NOTE: We add a negative lookahead for */, which is used to close a
       // comment in CSS. We do this because if we don't, then when a developer
@@ -675,7 +675,7 @@ foam.CLASS({
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false);
+      var val = this.theme ? foam.util.path(this.theme, prop, false) : undefined;
       return val ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
         '/*%' + M + '%*/ ' + val) : css;
@@ -915,6 +915,7 @@ foam.CLASS({
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',
             data: this.stack,
+            stackDefault: { class: 'foam.u2.LoadingSpinner', size: 32, text: 'Loading...', showText: true },
             showActions: false,
             nodeName: 'main'
           },

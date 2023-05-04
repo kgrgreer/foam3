@@ -38,7 +38,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showActions',
       value: true
-    }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'stackDefault',
+      documentation: 'Default view for the stack, rendered when the stack is empty'
+    },
+    'defaultView_'
   ],
 
   css: '%CUSTOMCSS%',
@@ -54,6 +60,11 @@ foam.CLASS({
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
         .end();
       }
+      if ( this.data.pos < 0 && this.stackDefault) {
+        debugger;
+        this.tag(this.stackDefault, {}, this.defaultView_$);
+      }
+      this.data.pos$.sub(() => { if ( this.data.pos >= 0 && this.defaultView_) this.defaultView_.remove() })
 
       this.listenStackView();
     },
