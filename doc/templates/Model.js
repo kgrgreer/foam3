@@ -40,20 +40,27 @@
      Can be multi-line if you quote with back-quotes.
    `,
 
+   // List of other models required by this Class. Like Java 'imports'.
    requires: [
-
+     'com.acme.package.Class1',
+     'com.acme.package.Class2',
    ],
 
+   // imports added to generated Java class
    javaImports: [
-
+     'com.acme.package.ClassX',
+     'com.acme.package.ClassY',
    ],
 
    imports: [
-
+     'mandatoryImport',
+     'optionalImport?',
+     'renamedExport as something'
    ],
 
    exports: [
-
+     'directExport',
+     'renamedExport as something'
    ],
 
    javaCode: `
