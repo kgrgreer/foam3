@@ -162,7 +162,7 @@
 
    properties: [
      {
-       class: 'Int | String | I18NString | FormattedString | Date | DateTime | Time | Byte | Short | Long | Float | Double | Function | Object | Array | List | StringArray | Class | EMail | Image | URL | Website | Color | Password | PhoneNumber | Code | UitValue | Map | FObjectProperty | Reference | FUIDProperty ",
+       class: 'Int | String | Boolean | FObjectArray | I18NString | FormattedString | Date | DateTime | Time | Byte | Short | Long | Float | Double | Function | Object | Array | List | StringArray | Class | EMail | Image | URL | Website | Color | Password | PhoneNumber | Code | UitValue | Map | FObjectProperty | Reference | FUIDProperty | DAOProperty ",
        name: '',
        shortName: '', // optional, used for QueryParser and for smaller JSON
        aliases: [ 'alias1', 'alias2' ], // optional, used for QueryParser
@@ -244,8 +244,9 @@
        isFramed: true,
        isMerged: true,
        isidled: true,
+
        delay: 100, // optional, used for isMerged or isFramed, defaults to 16ms
-       on: [ ]
+       on: [ 'this.propertyChange.prop1', 'data.propChange' ], // optional
      }
    ],
 
