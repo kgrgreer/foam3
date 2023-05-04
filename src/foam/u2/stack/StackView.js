@@ -47,13 +47,22 @@ foam.CLASS({
     'defaultView_'
   ],
 
-  css: '%CUSTOMCSS%',
+  css: `
+    %CUSTOMCSS%
+    ^pos {
+      height:100%;
+    }
+    ^pos > * {
+      height: 100%;
+    }
+  `,
 
   methods: [
     // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
       this.addClass();
-      this.addClass('foam-u2-stack-StackView');
+      this.addClass('foam-u2-stack-StackView')
+        .enableClass(this.myClass('pos'), this.data.pos$.map(v => v < 0));
 
       if ( this.showActions ) {
         this.start('actions')
