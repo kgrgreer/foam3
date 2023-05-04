@@ -67,16 +67,39 @@
      // Additional free-form code to be added to the generated Java output
    `,
 
+   // Add extra Axioms
    axioms: [
-
+     // Common "Extra" Axioms
+     { class: 'foam.pattern.Singleton' },
+     { class: 'foam.pattern.Multiton', property: 'of' }
    ],
 
+   // Java-like Inner-Classes
    classes: [
+     {
+       name: 'SubClass1',
 
+       properties: [],
+       methods: []
+     }
    ],
 
-   constants: [
+   constants: {
+     KEY1: 'value1',
+     PI: 3.1415926
+   },
 
+   // Or, long form syntax:
+   constants: [
+     {
+       name: 'KEY1',
+       documentation: '',
+       value: 42
+     },
+     {
+       name: 'STARTUP_TIME',
+       factory: function() { return new Date(); }
+     }
    ],
 
    messages: [
