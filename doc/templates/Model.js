@@ -16,23 +16,34 @@
 
    // optional, used instead of extends: to specify you want to update the original
    // class definition, rather than creating a new one which inherits its attributes
-   refines: '',
+   refines: 'com.acme.somepackage.SomeThing',
+
    abstract: true, // defaults to false, makes generated Java class abstract
 
-   javaExtends: '', // optional, used if you want the Java class to extend something different than extends:
+   javaExtends: 'com.acme.SomeClass', // optional, used if you want the Java class to extend something different than extends:
 
-   implements: [
-
+   // Add implements clauses to generated Java class
+   javaImplements: [
+     'com.acme.somePackage.SomeJavaInterface',
    ],
 
-   mixins: [
+   // Declare intent to implement an interface
+   implements: [
+     'com.acme.somePackage.SomeInterface',
+     'com.acme.somePackage.SomeInterface2',
+   ],
 
+   // Add all axioms from the specified to this class
+   mixins: [
+     'com.acme.somePackage.SomeModel',
+     'com.acme.somePackage.SomeModel2'
    ],
 
    label: 'Presentable Name', // optional, defaults to internationalized name:
    plural: 'Things', // optional, defaults to just adding 's' to end of name:
-   order: '', // optional, ???
+   order: '', // optional, TODO
 
+   // TODO:
    flags: [ ],
 
    documentation: `
@@ -102,8 +113,9 @@
      }
    ],
 
+   // Internationalization Messages
    messages: [
-     { name: 'MESSAGE',        message: 'Message' },
+     { name: 'MESSAGE', message: 'Message' },
      {
        name: 'MY_STRING',
        messageMap: {
@@ -253,7 +265,9 @@
    actions: [
      {
        name: '',
-       label: '',
+       code: function() { },
+
+       label: '', // optional, defaults to foam.String.labelize(name)
        ariaLabel: '',
        toolTip: '',
        icon: '',
@@ -261,12 +275,11 @@
        iconFontClass: '',
        iconFontName: '',
        themeIcon: '',
-       code: function() { },
        documentation: '',
        buttonStyle: '',
        confirmationRequired: function() {},
        keyboardShortcuts: [ ],
-       help: ''
+       help: '', // optional, help text shown to user
        isDefault: true,
        isAvailable: function() { },
        isEnabled: function() { },
