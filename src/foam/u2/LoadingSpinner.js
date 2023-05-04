@@ -75,7 +75,7 @@ foam.CLASS({
           .style({ width: foam.core.Int.isInstance(this.size) ? this.size+'px' : this.size })
           .start('svg')
             .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet', 
-                    fill: this.theme ? foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea'
+                    fill: this.theme$.map(v => (v ?  foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea'))
                   })
             .start('g')
               .style({
