@@ -103,7 +103,14 @@
    ],
 
    messages: [
-
+     { name: 'MESSAGE',        message: 'Message' },
+     {
+       name: 'MY_STRING',
+       messageMap: {
+         en: 'English',
+         fr: 'Francais',
+       }
+     }
    ],
 
    css: `
