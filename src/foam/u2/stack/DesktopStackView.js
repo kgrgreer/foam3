@@ -23,8 +23,6 @@ foam.CLASS({
     }
   ],
 
-  css: '%CUSTOMCSS%',
-
   methods: [
     function listenStackView() {
       var self = this;

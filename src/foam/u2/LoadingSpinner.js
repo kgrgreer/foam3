@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: 'Small view that just shows a loading spinner',
 
-  imports: ['theme'],
+  imports: ['theme?'],
 
   cssTokens: [
     {
@@ -74,7 +74,9 @@ foam.CLASS({
         .start()
           .style({ width: foam.core.Int.isInstance(this.size) ? this.size+'px' : this.size })
           .start('svg')
-            .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet', fill: foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) })
+            .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet', 
+                    fill: this.theme$.map(v => (v ?  foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea'))
+                  })
             .start('g')
               .style({
                 'transform-origin': 'center',

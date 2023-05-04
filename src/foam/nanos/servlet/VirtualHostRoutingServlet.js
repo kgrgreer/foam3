@@ -147,7 +147,7 @@ foam.CLASS({
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( this.getIsResourceStorage() ) {
           // jar file deployment
-          out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
+          out.print("<script async language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
         } else {
@@ -155,7 +155,7 @@ foam.CLASS({
           if ( x.get("liveScriptBundler") == null ) {
             out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
           } else {
-            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
+            out.println("<script async language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
             if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
             out.println("\\"></script>");
           }
@@ -236,7 +236,15 @@ foam.CLASS({
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
         out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
-        out.println("\\">\\n</foam>");
+        out.println("\\">");
+
+        out.print("<div style=\\" text-align:center;height:100%;display: flex;vertical-align:middle;width: 100%;flex-direction: column;justify-content: center;align-items: center; \\">");
+        out.print("<img style=\\" max-width: 400px; \\" src=\\"");
+        out.print(theme.getLargeLogo());
+        out.println("\\"></img>");
+        out.print("<h3 style=\\"font-family: system-ui, sans-serif; \\">Loading....</h3>");
+        out.println("</div>");
+        out.println("</foam>");
 
         out.println("</body>");
         out.println("</html>");
