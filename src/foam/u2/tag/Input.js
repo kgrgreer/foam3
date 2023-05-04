@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    /* Still show outline when focused as read-only to help accessibility *
+    /* Still show outline when focused as read-only to help accessibility */
     ^:read-only:focus { outline: 1px solid rgb(238, 238, 238); }
   `,
 
@@ -113,6 +113,7 @@ foam.CLASS({
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
       if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
+      if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode$);
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').
