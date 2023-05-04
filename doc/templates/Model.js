@@ -4,6 +4,11 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
+ // TODO: Might be better to break into several examples:
+ // 1. Business Object
+ // 2. U2 Element/View/Controller
+ // 3. Java Class
+
  foam.CLASS({
    package: 'com.acme.somepackage', // optional, but should be used for all non-demo code
    name: 'Thing',
