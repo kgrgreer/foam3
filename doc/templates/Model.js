@@ -41,15 +41,19 @@
    // Add all axioms from the specified to this class
    mixins: [
      'com.acme.somePackage.SomeModel',
-     'com.acme.somePackage.SomeModel2'
+     'com.acme.somePackage.SomeModel2',
+
+     // A common mixin if you want to use mLang's:
+     'foam.mlang.Expressions'
    ],
 
    label: 'Presentable Name', // optional, defaults to internationalized name:
    plural: 'Things', // optional, defaults to just adding 's' to end of name:
    order: '', // optional, TODO
 
-   // TODO:
-   flags: [ ],
+   // Provide compiler flags, for example [ 'java' ] means to compile for java
+   // But if flags: is missing, it assumes java
+   flags: [ 'java' ],
 
    documentation: `
      Documentation goes here.
