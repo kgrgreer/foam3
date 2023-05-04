@@ -128,6 +128,7 @@
      'topic2'
    ],
 
+   // Used for SectionedDetailView
    sections: [
      {
        name: 'section1',
@@ -142,17 +143,22 @@
      }
    ],
 
+   // Used for TableViews, if not specified, all non hidden: properties are used
    tableColumns: [
      'prop1', 'prop2'
    ],
 
+   // Used by ReciprocalSearch
    searchColumns: [
      'prop1', 'prop2'
    ],
 
    properties: [
      {
+       class: 'Int | String | I18NString | FormattedString | Date | DateTime | Time | Byte | Short | Long | Float | Double | Function | Object | Array | List | StringArray | Class | EMail | Image | URL | Website | Color | Password | PhoneNumber | Code | UitValue | Map | FObjectProperty | Reference | FUIDProperty ",
        name: '',
+       shortName: '', // optional, used for QueryParser and for smaller JSON
+       aliases: [ 'alias1', 'alias2' ], // optional, used for QueryParser
        label: '',
        documentation: '',
        help: '',
