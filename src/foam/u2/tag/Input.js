@@ -68,6 +68,7 @@ foam.CLASS({
     'placeholder',
     'ariaLabel',
     [ 'autocomplete', true ],
+    'inputMode', // Allows a browser to display an appropriate virtual keyboard
     {
       name: 'choices',
       documentation: `Array of [value, text] choices. You can pass in just
@@ -113,7 +114,7 @@ foam.CLASS({
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
       if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
-      if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode$);
+      if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode);
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').

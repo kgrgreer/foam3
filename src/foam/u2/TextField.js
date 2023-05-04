@@ -39,11 +39,6 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'displayWidth'
-    },
-    {
-      class: 'String',
-      name: 'inputMode',
-      documentation: 'Allows a browser to display an appropriate virtual keyboard'
     }
   ],
 
