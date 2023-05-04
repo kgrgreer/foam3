@@ -197,8 +197,7 @@
        expression:
        getter:
        setter:
-       cloneProperty: function(value, cloneMap) {
-       },
+       cloneProperty: function(value, cloneMap) {},
        final: true,
        required: true,
        readPermissionRequired: true,
@@ -218,31 +217,31 @@
 
        // Common Java properties
        generateJava: false,
-       javaValue:
-       javaType:
-       javaFactory:
-       synchronized:
-       javaGetter:
-       javaSetter:
-       javaAdapt:
-       javaPreSet:
-       javaPostSet:
-       javaAssertValue:
+       javaValue:,
+       javaType:,
+       javaFactory:,
+       synchronized:,
+       javaGetter:,
+       javaSetter:,
+       javaAdapt:,
+       javaPreSet:,
+       javaPostSet:,
+       javaAssertValue:,
 
        // Rarely used, advanced or internal Java properties
-       javaCloneProperty
-       javaCompare
-       javaComparePropertyToObject
-       javaComparePropertyToValue
+       javaCloneProperty:,
+       javaCompare:,
+       javaComparePropertyToObject:,
+       javaComparePropertyToValue:,
        javaCSVParser:
-       javaDiffProperty
-       javaFormatJSON
-       javaFromCSVLabelMapping
+       javaDiffProperty:,
+       javaFormatJSON:,
+       javaFromCSVLabelMapping:,
        javaInfoType:
        javaJSONParser:
        javaQueryParser:
-       javaToCSV
-       javaToCSVLabel
+       javaToCSV:,
+       javaToCSVLabel:,
        javaValidateObj
      }
    ],
