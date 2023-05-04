@@ -215,6 +215,35 @@
        unitPropValueToString:,
        dependsOnPropertiesWithNames:
        initObject:
+
+       // Common Java properties
+       generateJava: false,
+       javaValue:
+       javaType:
+       javaFactory:
+       synchronized:
+       javaGetter:
+       javaSetter:
+       javaAdapt:
+       javaPreSet:
+       javaPostSet:
+       javaAssertValue:
+
+       // Rarely used, advanced or internal Java properties
+       javaCloneProperty
+       javaCompare
+       javaComparePropertyToObject
+       javaComparePropertyToValue
+       javaCSVParser:
+       javaDiffProperty
+       javaFormatJSON
+       javaFromCSVLabelMapping
+       javaInfoType:
+       javaJSONParser:
+       javaQueryParser:
+       javaToCSV
+       javaToCSVLabel
+       javaValidateObj
      }
    ],
 
