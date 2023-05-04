@@ -61,10 +61,11 @@ foam.CLASS({
         .end();
       }
       if ( this.data.pos < 0 && this.stackDefault) {
-        debugger;
         this.tag(this.stackDefault, {}, this.defaultView_$);
       }
-      this.data.pos$.sub(() => { if ( this.data.pos >= 0 && this.defaultView_) this.defaultView_.remove() })
+      this.data.pos$.sub(() => { 
+        if ( this.data.pos >= 0 && this.defaultView_) this.defaultView_.remove() 
+      })
 
       this.listenStackView();
     },
