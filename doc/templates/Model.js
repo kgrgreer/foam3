@@ -147,9 +147,15 @@
      }
    ],
 
+   // Declare pub/sub topics
+   // Let's you do: this.topic1.pub/sub() instead of this.pub/sub('topic1')
    topics: [
      'topic1',
-     'topic2'
+     'topic2',
+     {
+       name: 'longFormTopic',
+       description: 'Explain what the topic is used for.'
+     }
    ],
 
    // Used for SectionedDetailView
