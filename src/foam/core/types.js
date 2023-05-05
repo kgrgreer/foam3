@@ -387,7 +387,7 @@ foam.CLASS({
       function(o, n, prop) {
         // if boolean, return a function that returns the same boolean
         // Useful for overriding functions with no-op in jrls and JSON
-        if ( ( n !== undefined || n !== null ) && typeof n === 'boolean' ) { return () => n }
+        if ( ( foam.Undefined.isInstance(n) || foam.Null.isInstance(n) ) && foam.Boolean.isInstance(n) ) { return () => n }
         return n;
       }
     ],
