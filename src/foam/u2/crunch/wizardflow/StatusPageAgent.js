@@ -40,7 +40,8 @@ foam.CLASS({
               padding: '5rem 0'
             }
           ]
-        }
+        },
+        parent: this
       }));
     }
   ]

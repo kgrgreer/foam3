@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: 'Small view that just shows a loading spinner',
 
-  imports: ['theme?'],
+  imports: ['theme?', 'cssTokenOverrideService?'],
 
   cssTokens: [
     {
@@ -62,6 +62,14 @@ foam.CLASS({
       class: 'Int',
       name: 'angle'
     },
+    {
+      name: 'color',
+      factory: function() {
+        this.theme$.sub(this.setColor);
+        this.cssTokenOverrideService?.cacheUpdated.sub(this.setColor);
+        this.setColor();
+      }
+    },
     'size'
   ],
 
@@ -75,7 +83,7 @@ foam.CLASS({
           .style({ width: foam.core.Int.isInstance(this.size) ? this.size+'px' : this.size })
           .start('svg')
             .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet', 
-                    fill: this.theme$.map(v => (v ?  foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea'))
+                    fill: this.color$
                   })
             .start('g')
               .style({
@@ -110,6 +118,13 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'setColor',
+      isFramed: true,
+      code: function() {
+        this.color = this.theme ?  foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea';
+      }
+    },
     {
       name: 'tick',
       isFramed: 'true',
