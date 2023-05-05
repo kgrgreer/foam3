@@ -14,8 +14,17 @@ foam.CLASS({
   `,
   properties: [
     {
+      name: 'message',
+      type: 'String'
+    },
+    {
       name: 'code',
-      value: function (slot) {
+      value: function (slot, X) {
+        if (X.message)
+          slot.analyticsAgent?.pub('event', {
+            name: X.message,
+            tags: ['wizard']
+          });
         const wizardController = slot.data$.get();
         wizardController.goNext();
       }
