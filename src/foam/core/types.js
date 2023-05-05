@@ -383,6 +383,15 @@ foam.CLASS({
       function() {}
     ],
     [
+      'adapt',
+      function(o, n, prop) {
+        // if boolean, return a function that returns the same boolean
+        // Useful for overriding functions with no-op in jrls and JSON
+        if ( ( n !== undefined || n !== null ) && typeof n === 'boolean' ) { return () => n }
+        return n;
+      }
+    ],
+    [
       'assertValue',
       function(value, prop) {
         foam.assert(typeof value === 'function', prop.name, 'Cannot set to non function type.');
