@@ -64,6 +64,7 @@
    requires: [
      'com.acme.package.Class1',
      'com.acme.package.Class2',
+     'graphics.Ball as Square' // Can rename with 'as' to avoid name conflicts
    ],
 
    // imports added to generated Java class
@@ -75,7 +76,7 @@
    imports: [
      'mandatoryImport',
      'optionalImport?',
-     'renamedExport as something'
+     'renamedImport as something'
    ],
 
    exports: [
