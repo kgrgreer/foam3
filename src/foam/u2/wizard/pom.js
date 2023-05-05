@@ -54,6 +54,7 @@ foam.POM({
     { name: "WizardPosition",                          flags: "js|java" },
     { name: "AlternateFlow",                           flags: "web" },
     { name: "analytics/AlternateFlowRefinement",       flags: "js|java" },
+    { name: "axiom/AnalyticWizardAction",              flags: "web" },
     { name: "axiom/WizardAction",                      flags: "web" },
     { name: "axiom/NullWizardAction",                  flags: "web" },
     { name: "axiom/AlternateFlowAction",               flags: "web" },
