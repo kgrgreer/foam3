@@ -69,14 +69,21 @@ foam.CLASS({
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
         .end();
       }
+      this.maybeAddDefault();
+      this.data.pos$.sub(() => { 
+        if ( this.data.pos >= 0 && this.defaultView_) {
+          this.defaultView_.remove();
+          return;
+        }
+        this.maybeAddDefault();
+      });
+
+      this.listenStackView();
+    },
+    function maybeAddDefault() {
       if ( this.data.pos < 0 && this.stackDefault) {
         this.tag(this.stackDefault, {}, this.defaultView_$);
       }
-      this.data.pos$.sub(() => { 
-        if ( this.data.pos >= 0 && this.defaultView_) this.defaultView_.remove() 
-      })
-
-      this.listenStackView();
     },
     function listenStackView() {
       this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));

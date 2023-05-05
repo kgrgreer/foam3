@@ -48,7 +48,7 @@ foam.CLASS({
       value: -1,
       preSet: function(_, p) {
         if ( isNaN(p) || p > this.depth ) return this.depth - 1;
-        if ( p < 0 ) return 0;
+        if ( p < 0 ) return -1;
         return p;
       }
     },
@@ -167,7 +167,7 @@ foam.CLASS({
     {
       name: 'back',
       // icon: 'arrow_back',
-      isEnabled: function(pos) { return pos > 0; },
+      isEnabled: function(pos) { return pos >= 0; },
       code: function(X) {
         this.jump(this.pos-1, X);
       }
