@@ -536,29 +536,9 @@ foam.CLASS({
       this.updateDisplayWidth();
 
 
+      self.AppStyles.create();
 
-//      this.__subSubContext__.notificationDAO.where(
-//        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
-//      ).on.put.sub((sub, on, put, obj) => {
-//        if ( obj.toastState == this.ToastState.REQUESTED ) {
-//          this.add(this.NotificationMessage.create({
-//            message: obj.toastMessage,
-//            type: obj.severity,
-//            description: obj.toastSubMessage
-//          }));
-//          var clonedNotification = obj.clone();
-//          clonedNotification.toastState = this.ToastState.DISPLAYED;
-//          this.__subSubContext__.notificationDAO.put(clonedNotification);
-//        }
-//      });
       self.addMacroLayout();
-      this.clientPromise.then(() => {
-        this.fetchTheme().then(() => {
-          // Work around to ensure wrapCSS is exported into context before
-          // calling AppStyles which needs theme replacement
-          self.AppStyles.create();
-        });
-      });
     },
 
     async function reloadClient() {
