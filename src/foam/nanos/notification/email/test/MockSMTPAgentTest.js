@@ -54,7 +54,7 @@ foam.CLASS({
       DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
       for ( int i = 0; i < send; i++ ) {
         EmailMessage msg = new EmailMessage();
-        msg.setId(i);
+        msg.setId(String.valueOf(i));
         msg.setUser(1L); // system
         msg.setFrom("noreply@test.com");
         msg.setTo(new String[] { "test@test.com" });
