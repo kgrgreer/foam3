@@ -35,6 +35,7 @@ public class AddressUtilTests extends Test {
     testRegionNormalization(x, "", "CA-ON", "CA-ON");
     testRegionNormalization(x, "CA", "undefined", "L4A 5B9", "CA-ON");
     testRegionNormalization(x, "CA", "undefined", "G4A 5B9", "CA-QC");
+    testRegionNormalization(x, "CA", "", "G4A 5B9", "CA-QC");
     testRegionNormalization(x, "US", "NE", "US-NE");
     testRegionNormalization(x, "US", "US-NE", "US-NE");
     testRegionNormalization(x, "US", "Nebraska", "US-NE");
@@ -58,6 +59,6 @@ public class AddressUtilTests extends Test {
 
   public void testRegionNormalization(X x, String country, String region, String postalCode, String normalizedRegion) {
     var computed = AddressUtil.normalizeRegion(x, country, region, postalCode);
-    test(normalizedRegion.equals(computed), "[" + country + ":" + region + "] normalized to " + computed);
+    test(normalizedRegion.equals(computed), "[" + country + ":" + region + ":" + postalCode + "] normalized to " + computed);
   }
 }
