@@ -93,9 +93,12 @@ public class AddressUtil {
     return new String[] { streetNumber, streetName };
   }
 
+  // TODO: country defaults to CA if not given. Remove when we can.
   public static String normalizeRegion(X x, String country, String region) {
-    if ( SafetyUtil.isEmpty(region) || SafetyUtil.isEmpty(country) ) {
-      return region;
+    if ( SafetyUtil.isEmpty(region) ) return region;
+
+    if ( SafetyUtil.isEmpty(country) ) {
+      country = "CA";
     }
 
     country = country.trim();
@@ -109,24 +112,27 @@ public class AddressUtil {
     }
   }
 
+  // TODO: country defaults to CA if not given. Remove when we can.
   public static String normalizeRegion(X x, String country, String region, String postalCode) {
-    if ( SafetyUtil.isEmpty(region) || SafetyUtil.isEmpty(country) ) {
-      return region;
+    if ( SafetyUtil.isEmpty(country) ) {
+      country = "CA";
     }
 
     country = country.trim();
-    region = region.trim();
-    
-    Region regionObject = lookupRegion(x, country, region);
-    if ( regionObject != null ) {
-      return regionObject.getCode();
-    } else if ( ! SafetyUtil.isEmpty(postalCode) ) {
-      // look up region code using postal code
-      String regionCode = lookupRegionCodeWithPostalCode(x, country, postalCode.trim());
-      if ( ! SafetyUtil.isEmpty(regionCode) ) return regionCode;
+    if ( ! SafetyUtil.isEmpty(region) ) region = region.trim();
+    if ( ! SafetyUtil.isEmpty(postalCode) ) postalCode = postalCode.trim();
+
+    if ( ! SafetyUtil.isEmpty(region) ) {
+      Region regionObject = lookupRegion(x, country, region);
+      if ( regionObject != null ) return regionObject.getCode();
     }
 
-    return country + "-" + region;
+    if ( ! SafetyUtil.isEmpty(postalCode) ) {
+      String regionCode = lookupRegionCodeWithPostalCode(x, country, postalCode);
+      if ( ! SafetyUtil.isEmpty(regionCode) ) return regionCode; 
+    }
+
+    return SafetyUtil.isEmpty(region) ? region : country + "-" + region;
   }
 
   private static Region lookupRegion(X x, String country, String region) {
@@ -139,19 +145,21 @@ public class AddressUtil {
       )
     ));
   }
-
+  
+  // TODO: lookup logic defaults to CA logic if not given. Remove when we can.
   private static String lookupRegionCodeWithPostalCode(X x, String country, String postalCode) {
+    if ( SafetyUtil.isEmpty(postalCode) ) return "";
+
     switch(country) {
       case "CA":
-      // NOTE: Temporarily default to CA logic to increase conversion rate for intuit
       default: 
         return caPostalCodeToRegionCodeMap.get(postalCode.substring(0, 1).toUpperCase());
     }
   }
 
+  // TODO: country defaults to CA if not given. Remove when we can.
   public static String normalizeCountry(X x, String country) {
     if ( SafetyUtil.isEmpty(country) ) {
-      // NOTE: Temporarily hardcode it to CA to increase conversion rate for intuit
       return "CA";
     }
 
