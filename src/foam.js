@@ -62,7 +62,7 @@
       }
       return false;
     },
-    require: function(fn, batch, isProject) {
+    require: function(fn /* filename */, batch, isProject) {
       if ( fn ) {
         fn = foam.cwd + fn;
         if ( ! isProject && foam.seen(fn) ) return;
@@ -85,6 +85,7 @@
     },
     flags:       {},
     loaded:      {},
+    excluded:    {},
     seen:        function(fn) {
       if ( foam.loaded[fn] ) {
         console.warn(`Duplicated load of '${fn}'`);
@@ -168,6 +169,12 @@
           foam.require(name, ! isProjects, isProjects);
         });
       }
+
+      pom.exclude && pom.exclude.forEach(f => {
+        var path = foam.cwd + '/' + f + ".js";
+        console.log('**************** EXCLUDING', path);
+        foam.excluded[path] = true;
+      });
 
       // TODO: requireModule vs requireFile -> require
       (foam.loadModules || loadFiles)(pom.projects, true);

@@ -21,14 +21,14 @@ require('../src/foam_node.js');
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   { version: '', license: '', pom: 'pom' },
-  { debug: true, java: false, web: true }
+  { debug: true, java: false, web: true, genjava: false }
 );
 
 foam.require(X.pom, false, true);
 
-var version = X.version;
-var files   = {}; // filename to content map for uglify
-var loaded  = Object.keys(globalThis.foam.loaded);
+var version  = X.version;
+var files    = {}; // filename to content map for uglify
+var loaded   = Object.keys(globalThis.foam.loaded);
 
 loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 
@@ -36,6 +36,8 @@ loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 loaded.forEach(l => {
   try {
     l = path_.resolve(__dirname, l);
+    if ( foam.excluded[l] ) { console.log('****** EXCLUDING', l); return; }
+    console.log('****** INCLUDING', l);
     files[l] = fs_.readFileSync(l, "utf8");
   } catch (x) {}
 });
