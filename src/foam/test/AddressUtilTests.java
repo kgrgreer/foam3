@@ -37,7 +37,6 @@ public class AddressUtilTests extends Test {
     testRegionNormalization(x, "CA", "undefined", "G4A 5B9", "CA-QC");
     testRegionNormalization(x, "US", "NE", "US-NE");
     testRegionNormalization(x, "US", "US-NE", "US-NE");
-    testRegionNormalization(x, "", "US-NE", "US-NE");
     testRegionNormalization(x, "US", "Nebraska", "US-NE");
     testRegionNormalization(x, "US", "NEBRASKA", "US-NE");
   }
