@@ -326,7 +326,7 @@ foam.CLASS({
         if ( tableColumns ) return tableColumns.columns;
 
         return this.of.getAxiomsByClass(foam.core.Property)
-            .filter(function(p) { return ! p.hidden; })
+            .filter(p => ! p.hidden)
             .map(foam.core.Property.NAME.f);
       }
     },
