@@ -408,16 +408,18 @@ foam.CLASS({
             this.start()
               .addClass(self.myClass('footer'), 'p-legal-light')
               // empty space
-              .start().addClass(self.myClass('footer-left'))
-              .end()
+              .callIf(self.includeSupport, function() {
+                this.start().addClass(self.myClass('footer-left'))
+                .end()
+              })
               // link
               .start().addClass(self.myClass('footer-center'))
                 .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
               .end()
               // support info
-              .start().addClass(self.myClass('footer-right'))
-                .callIf(self.includeSupport, function() {
-                  this
+              .callIf(self.includeSupport, function() {
+                this
+                  .start().addClass(self.myClass('footer-right'))
                     .start()
                       .start('span')
                         .addClass('')
@@ -435,8 +437,8 @@ foam.CLASS({
                         .end()
                       .end()
                     .end()
+                  .end()
                 })
-              .end()
             .end()
           })
         .end();

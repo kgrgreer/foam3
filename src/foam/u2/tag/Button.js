@@ -49,7 +49,7 @@ foam.CLASS({
     },
     {
       name: 'buttonPrimaryLightColor',
-      value: function(e) { return e.FROM_HUE(e.TOKEN('$buttonPrimaryColor'), 41, 95) }
+      value: function(e) { return e.FROM_HUE(e.TOKEN('$buttonPrimaryColor'), 41, 90) }
     }
   ],
   css: `
@@ -307,7 +307,7 @@ foam.CLASS({
 
     ^text{
       background: none;
-      border: 1px solid transparent;
+      border: 1px solid $buttonPrimaryColor;
       color: $buttonPrimaryColor;
     }
 
