@@ -28,7 +28,7 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      margin-top: 1rem;
+      gap: 0.4rem;
     }
     ^helptext {
       text-align: center;
