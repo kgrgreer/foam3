@@ -146,14 +146,14 @@ public class AddressUtil {
     ));
   }
   
-  // TODO: lookup logic defaults to CA logic if not given. Remove when we can.
   private static String lookupRegionCodeWithPostalCode(X x, String country, String postalCode) {
     if ( SafetyUtil.isEmpty(postalCode) ) return "";
 
     switch(country) {
       case "CA":
-      default: 
         return caPostalCodeToRegionCodeMap.get(postalCode.substring(0, 1).toUpperCase());
+      default: 
+        return "";
     }
   }
 
