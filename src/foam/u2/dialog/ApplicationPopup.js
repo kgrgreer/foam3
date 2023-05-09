@@ -128,7 +128,7 @@ foam.CLASS({
       grid-template-columns: auto;
       align-items: center;
       gap: 0.4rem;
-      padding: 1em;
+      padding: 0.6em 1em;
       text-align: center;
       border-top: 1px solid $grey300;
       flex-shrink: 0;
@@ -403,18 +403,16 @@ foam.CLASS({
             this.start()
               .addClass(self.myClass('footer'), 'p-legal-light')
               // empty space
-              .callIf(self.includeSupport, function() {
-                this.start().addClass(self.myClass('footer-left'))
+              .start().addClass(self.myClass('footer-left'))
                 .end()
-              })
               // link
               .start().addClass(self.myClass('footer-center'))
                 .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
               .end()
               // support info
-              .callIf(self.includeSupport, function() {
-                this
-                  .start().addClass(self.myClass('footer-right'))
+              .start().addClass(self.myClass('footer-right'))
+                .callIf(self.includeSupport, function() {
+                  this
                     .start()
                       .start('span')
                         .addClass('')
@@ -432,8 +430,8 @@ foam.CLASS({
                         .end()
                       .end()
                     .end()
-                  .end()
                 })
+              .end()
             .end()
           })
         .end();
