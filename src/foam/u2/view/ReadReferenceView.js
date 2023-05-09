@@ -135,7 +135,7 @@ foam.CLASS({
   methods: [
     {
       name: 'render',
-      code: async function() {
+      code: function() {
         this.SUPER();
         var self = this;
         this.add(
