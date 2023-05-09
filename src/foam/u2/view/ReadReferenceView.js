@@ -99,7 +99,6 @@ foam.CLASS({
     {
       name: 'of',
       expression: function (obj) {
-        // if ( ! obj ) debugger;
         return obj?.cls_;
       }
     },
