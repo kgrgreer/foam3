@@ -27,8 +27,8 @@ foam.CLASS({
 
   documentation: `
     A read-only view for a reference property that creates a link on this reference property.
-    
-    -- How to configure the link -- 
+
+    -- How to configure the link --
         - Use enableLink and menuKeys to configure the link.
           - To disable the link, set enableLink to false.
           - To set the link to a custom menu, you can provide a list of menus to 'menuKeys'. The first menu
@@ -49,7 +49,7 @@ foam.CLASS({
                                         /      \   n
                                      y /         - - - - - - - - - - - - - - - - -
                                       /                                            \
-                              have a menu with                            have permission to    
+                              have a menu with                            have permission to
                                 permission ?                          service.{prop.targetDAOKey}?
                                  /       \   n                                   /     \     n
                               y /          - - - - - -                        y /        - - - - -
@@ -65,9 +65,9 @@ foam.CLASS({
 
     -- Where to set enableLink and menuKeys --
         - enableLink and menuKeys can be set directly to reference property or
-          they can be passed to the view. 
+          they can be passed to the view.
           Warning: Do not try to do both or it may result in unexpected behaviours.
-    
+
         1. setting properties on reference property
 
         {
@@ -99,6 +99,7 @@ foam.CLASS({
     {
       name: 'of',
       expression: function (obj) {
+        // if ( ! obj ) debugger;
         return obj?.cls_;
       }
     },
@@ -135,9 +136,9 @@ foam.CLASS({
   methods: [
     {
       name: 'render',
-      code: function() {
-        var self = this;
+      code: async function() {
         this.SUPER();
+        var self = this;
         this.add(
           this.obj$.map((obj) => {
             if ( ! obj ) return '';
@@ -153,7 +154,7 @@ foam.CLASS({
                   evt.preventDefault();
                   if ( self.linkTo === 'daoSummary' ) {
                     const pred = foam.mlang.predicate.False.create();
-                    
+
                     this.stack.push(this.StackBlock.create({
                       parent: this,
                       id: `daoSummary.${self.obj.cls_.name}.${self.obj.id}`,
@@ -195,15 +196,15 @@ foam.CLASS({
       this.enableLink = this.prop.enableLink && this.enableLink;
       this.menuKeys = this.prop.menuKeys || this.menuKeys;
 
-      this.configLink().then(() => {
-        const dao = this.ctrl.__subContext__[prop.targetDAOKey];
-        if ( dao ) {
-          dao.find(this.data).then((o) => (this.obj = o));
-        }
-      });
+      this.configLink();
     },
 
     async function configLink() {
+      const dao = this.ctrl.__subContext__[this.prop.targetDAOKey];
+      if ( dao ) {
+        this.obj = await dao.find(this.data);
+      }
+
       // enableLink set to false?
       if ( ! this.enableLink ) {
         this.enableLink = false;
@@ -220,7 +221,7 @@ foam.CLASS({
 
           for ( const maybeMenu of availableMenus ) {
             if ( ! maybeMenu ) continue;
-            
+
             let configuredDAOKey = maybeMenu?.handler?.config?.daoKey;
             this.linkTo = (
               configuredDAOKey &&
@@ -251,9 +252,9 @@ foam.CLASS({
         this.enableLink = true;
         return;
       }
-
+      var p = `referenceDetailView.${this.of?.id ?? 'unknown'}`;
       this.enableLink = await this.auth.check(
-        null, `referenceDetailView.${this.of?.id ?? 'unknown'}`);
+        null, p);
     }
   ]
 });
