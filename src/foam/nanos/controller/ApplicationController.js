@@ -895,7 +895,12 @@ foam.CLASS({
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',
             data: this.stack,
-            stackDefault: { class: 'foam.u2.LoadingSpinner', size: 32, text: 'Loading...', showText: true },
+            stackDefault: { 
+              class: 'foam.u2.LoadingSpinner', 
+              size: 32, text: 'Loading...', 
+              showText: true,
+              color: this.document.querySelector(`meta[name='theme-color']`).getAttribute('content')
+            },
             showActions: false,
             nodeName: 'main'
           },
