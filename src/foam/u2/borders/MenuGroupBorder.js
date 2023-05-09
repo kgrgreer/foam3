@@ -19,7 +19,8 @@ foam.CLASS({
       height: 100%;
     }
     ^header {
-      background: $white;
+      position: absolute;
+      top: 0;
       display: flex;
       width: 100%;
       padding: 8px 16px;

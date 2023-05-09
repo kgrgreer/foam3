@@ -127,13 +127,13 @@ foam.CLASS({
       documentation: 'Using assembly line, write to all online mediators in zone 0 and same realm,region',
       name: 'cmd_',
       javaCode: `
+      if ( IN_FLIGHT_CMD.equals(obj) ) {
+        return inFlight_.get();
+      }
       Object cmd = getDelegate().cmd_(x, obj);
       if ( ! DAO.PURGE_CMD.equals(obj) ) {
         submit(x, obj, DOP.CMD);
         return cmd;
-      }
-      if ( IN_FLIGHT_CMD.equals(obj) ) {
-        return inFlight_.get();
       }
       return cmd;
       `
@@ -168,29 +168,34 @@ foam.CLASS({
         // logger.debug("submit", "job", id, dop.getLabel(), "assembly");
         AssemblyLine queue = (AssemblyLine) getQueues().get(id);
         if ( queue == null ) {
-          synchronized ( this ) {
+          synchronized ( id.intern() ) {
             queue = (AssemblyLine) getQueues().get(id);
             if ( queue == null ) {
-              // Create one AssemblyLine per mediator and perform dao put under lock
-              // so there will only be one retry, rather than every thread retrying.
+              // Create one AssemblyLine per mediator 
               // To be replaced by SAF (Store and Forward)
-              queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+
+              // TODO: Using Sync rather than Async, as Async has the ability
+              // to consume the threadpool with a Retry client.
+              // Throughput testing does not show a difference between
+              // Sync and Async.
+              // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+              queue = new SyncAssemblyLine(x);
               getQueues().put(id, queue);
+
+              // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+              DAO dao = new RetryClientSinkDAO.Builder(x)
+               .setName(config.getId())
+               .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+               .setMaxRetryAttempts(getMaxRetryAttempts())
+               .setMaxRetryDelay(support.getMaxRetryDelay())
+               .build();
+              getClients().put(id, dao);
             }
-            // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
-            DAO dao = new RetryClientSinkDAO.Builder(x)
-             .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
-             .setMaxRetryAttempts(getMaxRetryAttempts())
-             .setMaxRetryDelay(support.getMaxRetryDelay())
-             .build();
-            getClients().put(id, dao);
           }
         }
         inFlight_.getAndIncrement();
         queue.enqueue(new AbstractAssembly() {
-          // TODO: review use of executeUnderLock
-          public void executeUnderLock() {
-            // logger.debug("AssemblyLine", "executeUnderLock", id);
+          public void executeJob() {
             try {
               if ( DOP.PUT == dop ) {
                 ((DAO) getClients().get(id)).put_(x, (FObject) obj);
@@ -198,25 +203,16 @@ foam.CLASS({
                 ((DAO) getClients().get(id)).cmd_(x, obj);
               }
             } catch ( Throwable t ) {
-              logger.error("assembly", "executeUnderLock", id, t);
+              logger.error("assembly", id, t);
             } finally {
               inFlight_.getAndDecrement();
-              ((OMLogger) x.get("OMLogger")).log("medusa.broadcast.node-mediator");
+              ((OMLogger) x.get("OMLogger")).log("medusa:broadcast:node-mediator");
             }
           }
         });
       }
       return obj;
     `
-    },
-    {
-      name: 'cmd_',
-      javaCode: `
-      if ( IN_FLIGHT_CMD.equals(obj) ) {
-        return inFlight_.get();
-      }
-      return getDelegate().cmd_(x, obj);
-      `
     }
   ]
 });

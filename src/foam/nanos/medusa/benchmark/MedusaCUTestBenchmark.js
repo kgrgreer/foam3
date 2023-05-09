@@ -6,9 +6,10 @@
 
 foam.CLASS({
   package: 'foam.nanos.medusa.benchmark',
-  name: 'MedusaTestBenchmark',
+  name: 'MedusaCUTestBenchmark',
   extends: 'foam.nanos.bench.Benchmark',
 
+  documentation: 'Create AND update a MedusaTestObject.',
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
@@ -24,7 +25,8 @@ foam.CLASS({
     'foam.nanos.medusa.MedusaEntry',
     'foam.nanos.medusa.DaggerService',
     'foam.nanos.medusa.test.MedusaTestObject',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'foam.mlang.sink.Count'
   ],
 
   properties: [
@@ -61,6 +63,26 @@ foam.CLASS({
     test.setDescription("MedusaTestObject");
     test.setData("MedusaTestObject");
     test = (MedusaTestObject) ((DAO) x.get(getServiceName())).put(test);
+    // create an update for later compaction testing
+    test = (MedusaTestObject) test.fclone();
+    test.setDescription(test.getDescription()+"-"+test.getDescription());
+    test.setData(test.getData()+"-"+test.getData());
+    test = (MedusaTestObject) ((DAO) x.get(getServiceName())).put(test);
+      `
+    },
+    {
+      name: 'teardown',
+      javaCode: `
+      // double stats as each operation is a create followed by an update.
+      br.setPass(br.getPass() * 2);
+      br.setFail(br.getFail() * 2);
+      DAO dao = (DAO) x.get("medusaEntryDAO");
+      Count entries = (Count) dao.select(new Count());
+      if ( entries.getValue() > 0 ) {
+        br.getExtra().put("MedusaEntries", entries.getValue());
+      } else {
+        br.getExtra().put("MedusaEntries", "0");
+      }
       `
     }
   ]

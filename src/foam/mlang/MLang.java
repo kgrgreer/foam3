@@ -25,11 +25,13 @@ import java.util.Arrays;
  */
 public class MLang
 {
-  public static final Predicate TRUE  = new True();
-  public static final Predicate FALSE = new False();
+  public static final Predicate TRUE    = new True();
+  public static final Predicate FALSE   = new False();
 
-  public static final Expr NEW_OBJ    = new ContextObject("NEW");
-  public static final Expr OLD_OBJ    = new ContextObject("OLD");
+  public static final Expr      NOW     = new CurrentTime();
+
+  public static final Expr      NEW_OBJ = new ContextObject("NEW");
+  public static final Expr      OLD_OBJ = new ContextObject("OLD");
 
   public static Comparator DESC(Comparator c) {
     return new Desc(c);

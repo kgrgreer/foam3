@@ -166,8 +166,6 @@ foam.CLASS({
         }
       }
     },
-    'currentWizardlet',
-    'currentSection',
     {
       name: 'backDisabled',
       class: 'Boolean',
@@ -524,7 +522,7 @@ foam.CLASS({
       label: 'Save and exit',
       code: function(x) {
         this.saveProgress().then(() => {
-          this.onClose({});
+          this.status = this.WizardStatus.DISCARDED;
         }).catch(e => {
           console.error(e);
           try {
@@ -562,11 +560,8 @@ foam.CLASS({
       label: 'Next',
       buttonStyle: 'PRIMARY',
       isEnabled: function (canGoNext, isLoading_) {
-        console.log('what is canGoNext', canGoNext)
+        console.debug('what is canGoNext', canGoNext)
         return canGoNext && ! isLoading_;
-      },
-      isAvailable: function (isLoading_) {
-        return ! isLoading_;
       },
       code: function(x) {
         this.isLoading_ = true;

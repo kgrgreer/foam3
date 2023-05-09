@@ -28,6 +28,9 @@ foam.CLASS({
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.HashMap',
@@ -79,7 +82,7 @@ foam.CLASS({
     // under lock.
     synchronized ( this ) {
 
-      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
 
@@ -108,19 +111,18 @@ foam.CLASS({
                 }
               } catch (PrimaryNotFoundException e) {
                 if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
-                  logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
-                  ClusterConfig myCfg = (ClusterConfig) myConfig.fclone();
-                  myCfg.setStatus(Status.OFFLINE);
-                  DAO dao = (DAO) x.get("localClusterConfigDAO");
-                  myCfg = (ClusterConfig) dao.put(myCfg).fclone();
-                  myCfg.setStatus(Status.ONLINE);
-                  dao.put(myCfg);
+                  logger.error("No Primary detected", "manually cycle ONLINE->OFFLINE->ONLINE");
                 } else {
                   logger.warning("No Primary detected", "dissolving");
                   electoralService.dissolve(x);
                 }
               } catch (MultiplePrimariesException e) {
-                logger.warning("Mulitiple Primaries detected", "dissolving");
+                logger.warning("Multiple Primaries detected", "dissolving");
+                if ( myConfig.getIsPrimary() ) {
+                  ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
+                  cfg.setIsPrimary(false);
+                  getDelegate().put_(x, cfg);
+                }
                 electoralService.dissolve(x);
               }
             }

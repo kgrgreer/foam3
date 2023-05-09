@@ -35,7 +35,12 @@ foam.CLASS({
       javaCode: `
         msg.getAttributes().put("serviceKey", getServiceName());
         foam.box.Box box = ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).get(getX(), getHost(), getPort(), getServiceName());
-        box.send(msg);
+        try {
+          box.send(msg);
+        } catch ( RuntimeException e ) {
+          ((SocketConnectionBoxManager) getX().get("socketConnectionBoxManager")).remove((SocketConnectionBox) box);
+          throw e;
+        }
       `
     }
   ]

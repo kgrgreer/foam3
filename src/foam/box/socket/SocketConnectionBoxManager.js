@@ -38,8 +38,7 @@ foam.CLASS({
     {
       documentation: 'Create a Box per nspec service rather than one socket for all services to a particular host:port',
       class: 'Boolean',
-      name: 'boxPerService',
-      value: false
+      name: 'boxPerService'
     },
     {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',
@@ -52,6 +51,11 @@ foam.CLASS({
       class: 'Int',
       name: 'connectTimeout',
       value: 10000
+    },
+    {
+      class: 'String',
+      name: 'threadPoolName',
+      value: 'boxThreadPool'
     },
     {
       class: 'Map',
@@ -192,17 +196,18 @@ foam.CLASS({
           socket.connect(address, getConnectTimeout());
           box = new SocketConnectionBox(x, key, socket);
           add(box);
-          Agency agency = (Agency) x.get("threadPool");
+          Agency agency = (Agency) x.get(getThreadPoolName());
           agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
           return box;
         } catch ( java.net.ConnectException |
-                   java.net.NoRouteToHostException e ) {
+                   java.net.NoRouteToHostException |
+                   java.net.UnknownHostException e ) {
           remove(box);
           getLogger().warning(key, e.getClass().getSimpleName(), e.getMessage());
           throw new RuntimeException(e);
         } catch ( Throwable t ) { // All other IOExceptions
           remove(box);
-          getLogger().error(key, t.getClass().getSimpleName(), t.getMessage());
+          getLogger().error(key, t.getClass().getSimpleName(), t.getMessage(), t);
           throw new RuntimeException(t);
         }
       `

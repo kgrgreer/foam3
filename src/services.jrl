@@ -553,7 +553,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"supportEmailDAO",
-  "lazy":true,
   "serve":true,
   "serviceScript":
   """
@@ -779,7 +778,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"reportTemplateDAO",
-  "lazy":false,
   "serve":true,
   "authenticate": true,
   "serviceScript":"""
@@ -885,7 +883,6 @@ p({
 p({
   class: "foam.nanos.boot.NSpec",
   name: "ruleRetryStrategy",
-  lazy: true,
   service: {
     class: "foam.util.retry.RetryStrategyFactory",
     prototype: {

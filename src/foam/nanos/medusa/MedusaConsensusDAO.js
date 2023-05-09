@@ -41,6 +41,7 @@ This is the heart of Medusa.`,
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
+    'foam.nanos.NanoService',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
@@ -264,8 +265,9 @@ This is the heart of Medusa.`,
       pm.log(x);
 
       if ( replaying.getReplaying() &&
+           replaying.getReplayIndex() > 0 &&
            replaying.getIndex() >= replaying.getReplayIndex() ) {
-        getLogger().info("promote", "replayComplete", replaying.getIndex());
+        getLogger().info("promote", "replayComplete", replaying.getIndex(), replaying.getReplayIndex());
         ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
       }
       return entry;
@@ -374,8 +376,7 @@ This is the heart of Medusa.`,
           } finally {
             pm.log(x);
           }
-          if ( entry == null &&
-               ! replaying.getReplaying() ) {
+          if ( entry == null ) {
             try {
               synchronized ( promoterLock_ ) {
                 promoterLock_.wait(replaying.getReplaying() ? 500 : getTimerInterval());
@@ -398,6 +399,8 @@ This is the heart of Medusa.`,
         alarm.setNote(e.getMessage());
         ((DAO) x.get("alarmDAO")).put(alarm);
         logger.error("exit");
+        NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
+        monitor.stop();
       }
      `
     },
@@ -428,7 +431,7 @@ This is the heart of Medusa.`,
           FObject nu = null;
           String data = entry.getData();
           if ( ! SafetyUtil.isEmpty(data) ) {
-            PM pmParser = PM.create(x, "MedusaConsensusDAO", "parse");
+            PM pmParser = PM.create(x, "MedusaConsensusDAO", "mdao:parse");
             try {
               nu = parser_.get().parseString(entry.getData());
               pmParser.log(x);
@@ -439,10 +442,14 @@ This is the heart of Medusa.`,
                 cause = cause.getCause();
               }
               EventRecord er = new EventRecord(x, this, "Failed to parse", entry.toSummary(), LogLevel.ERROR, cause);
-              er.setRequestMessage(data);;
+              er.setRequestMessage(data);
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              if ( replaying.getReplaying() ) {
+                // report to log
+                getLogger().error("promoter", "Failed to parse", cause.getMessage(), entry.toSummary(), data, cause);
+              }
               throw new MedusaException("Failed to parse", cause);
             }
 
@@ -463,7 +470,7 @@ This is the heart of Medusa.`,
                 er.setClusterable(false);
                 ((DAO) x.get("eventRecordDAO")).put(er);
               } else {
-                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
+                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "mdao:overlay,old,nu");
                 try {
                   nu = old.fclone().overlay(nu);
                   pmOverlay.log(x);
@@ -480,7 +487,7 @@ This is the heart of Medusa.`,
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
             FObject tran = null;
-            PM pmParser = PM.create(x, "MedusaConsensusDAO", "parse", "transient");
+            PM pmParser = PM.create(x, "MedusaConsensusDAO", "mdao:parse:transient");
             try {
               tran = parser_.get().parseString(entry.getTransientData());
               pmParser.log(x);
@@ -514,7 +521,7 @@ This is the heart of Medusa.`,
                     er.setClusterable(false);
                     ((DAO) x.get("eventRecordDAO")).put(er);
                   } else {
-                     PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,old,nu");
+                     PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "mdao:overlay,old,nu");
                      try {
                       nu = old.fclone().overlay(nu);
                       pmOverlay.log(x);
@@ -529,21 +536,24 @@ This is the heart of Medusa.`,
                   }
                 }
               } else {
-                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "overlay,nu,transient");
+                PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "mdao:overlay,nu,transient");
                 nu = nu.overlay(tran);
                 pmOverlay.log(x);
               }
             }
           }
           if ( nu != null ) {
+            PM pmPut = PM.create(x, "MedusaConsensusDAO", "mdao:put");
             if ( DOP.PUT == entry.getDop() ) {
               dao.put_(x, nu);
             } else if ( DOP.REMOVE == entry.getDop() ) {
               dao.remove_(x, nu);
             } else {
+              pmPut.error(x);
               getLogger().warning("Unsupported operation", entry.getDop().getLabel());
               throw new UnsupportedOperationException(entry.getDop().getLabel());
             }
+            pmPut.log(x);
 
             // Secondaries will block on registry
             // NOTE: See PromotedPurgeAgent/PromotedClearAgent for
@@ -553,8 +563,10 @@ This is the heart of Medusa.`,
             // non-active Regions.
             if ( ! replaying.getReplaying() &&
                  ! config.getIsPrimary() ) {
+              PM pmWait = PM.create(x, "MedusaConsensusDAO", "mdao:wait");
               MedusaRegistry registry = (MedusaRegistry) x.get("medusaRegistry");
               registry.register(x, (Long) entry.getId());
+              pmWait.log(x);
             }
           }
           if ( nu != null ) {

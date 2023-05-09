@@ -8,16 +8,6 @@ p({
   `
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "socketServer",
-  "lazy": false,
-  "service": {
-    "class": "foam.box.socket.SocketServer",
-    "threadPoolName": "medusaThreadPool"
-  }
-})
-
 // deprecated by HealthWebAgent under service/health
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -205,6 +195,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "daggerService",
   "serve": false,
+  "lazy": false,
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
 })
 
@@ -257,11 +248,10 @@ p({
 //   """
 // })
 
-// mm specific
+// mm specific - started by MedusaConsensusDAO
 // p({
 //   "class":"foam.nanos.boot.NSpec",
 //   "name":"medusaConsensusMonitor",
-//   "lazy":false,
 //   "service": {
 //     class:"foam.nanos.medusa.MedusaConsensusMonitor"
 //   }

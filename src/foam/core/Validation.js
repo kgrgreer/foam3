@@ -113,7 +113,7 @@ foam.CLASS({
           .flat());
         return [args, function() {
           if ( required && self_.isDefaultValue(this[name]) ) {
-            return `${label} ${self_.REQUIRED} `;
+            return `${self_.REQUIRED}`;
           }
           for ( var i = 0 ; i < validationPredicates.length ; i++ ) {
             var vp   = validationPredicates[i];
@@ -141,7 +141,7 @@ foam.CLASS({
   refines: 'foam.core.String',
 
   messages: [
-    { name: 'REQUIRED',        message: 'required' },
+    { name: 'REQUIRED',        message: 'Required' },
     { name: 'SHOULD_BE_LEAST', message: 'should be at least' },
     { name: 'SHOULD_BE_MOST',  message: 'should be at most' },
     { name: 'CHARACTER',       message: 'character' }
@@ -430,7 +430,7 @@ foam.CLASS({
   refines: 'foam.core.PhoneNumber',
 
   messages: [
-    { name: 'PHONE_NUMBER_REQUIRED', message: 'Phone number required' },
+    { name: 'PHONE_NUMBER_REQUIRED', message: 'Required' },
     { name: 'INVALID_PHONE_NUMBER',  message: 'Valid phone number required' }
   ],
 

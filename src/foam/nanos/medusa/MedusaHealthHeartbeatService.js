@@ -30,6 +30,17 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'start',
+      javaCode: `
+      // service order is important
+      getX().get("daggerService");
+      getX().get("socketServer");
+      getX().get("MedusaConensusMonitor");
+
+      super.start();
+      `
+    },
+    {
       name: 'getPackets',
       args: 'X x, String data',
       javaType: 'java.net.DatagramPacket[]',

@@ -88,6 +88,18 @@ foam.CLASS({
             double replayedS = replayed / (double) time;
             double promotedS = ((Long) count.getValue()) / (double) time;
             double min100K = minutes / ( (Long) count.getValue() / 100000.0 );
+            StringBuilder version = new StringBuilder();
+            String ver = this.getClass().getPackage().getImplementationVersion();
+            if ( foam.util.SafetyUtil.isEmpty(ver) ) {
+              version.append(appConfig.getVersion());
+            } else {
+              String revision = this.getClass().getPackage().getSpecificationVersion();
+              version.append(ver);
+              if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
+                   revision.length() > 2 ) {
+                version.append("-"+revision.substring(0, 3));
+              }
+            }
 
             StringBuilder report = new StringBuilder();
             report.append("instance,replayed,promoted,duration s,replayed/s,promoted/s,minutes,min/100K,app,java,date");
@@ -108,7 +120,7 @@ foam.CLASS({
             report.append(",");
             report.append(String.format("%.2f", min100K));
             report.append(",");
-            report.append(appConfig.getVersion());
+            report.append(version.toString());
             report.append(",");
             report.append(String.valueOf(Runtime.version().version().get(0)));
             report.append(",");

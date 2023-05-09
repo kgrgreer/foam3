@@ -261,7 +261,7 @@ foam.CLASS({
           return MLang.EQ(getPropertyInfo(), x.get("spid"));
         }
         ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "getUnauthenticatedPredicate", "spid restrictions disabled.");
-        return null;
+        return MLang.TRUE;
       `
     }
   ]

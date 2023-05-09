@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
@@ -272,6 +273,7 @@ try {
       ],
       args: [ 'Context x', 'CharSequence record', 'String c', 'String prefix' ],
       javaCode: `
+      PM pm = PM.create(x, "FileJournal", "write");
       BufferedWriter writer = getWriter();
       writer.write(prefix);
       writer.write("p(");
@@ -279,6 +281,7 @@ try {
       writer.write(')');
       writer.write(c);
       writer.newLine();
+      pm.log(x);
       `
     },
     {

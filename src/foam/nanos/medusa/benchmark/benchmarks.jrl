@@ -11,6 +11,10 @@ p({
   id: "MedusaTestBenchmark"
 })
 p({
+  class: "foam.nanos.medusa.benchmark.MedusaCUTestBenchmark",
+  id: "MedusaCUTestBenchmark"
+})
+p({
   class: "foam.nanos.medusa.benchmark.MedusaPingBenchmark",
   id: "MedusaPingBenchmark"
 })

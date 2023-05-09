@@ -4014,17 +4014,19 @@ foam.CLASS({
     function MQL(mql) { return this.MQLExpr.create({query: mql}); },
     function STRING_LENGTH(a) { return this._unary_("StringLength", a); },
     function IS_VALID(o) { return this.IsValid.create({arg1: o}); },
+    function YEARS(p) { return foam.mlang.Years.create({arg1: p}); },
     function MONTH(m) {
       var month = foam.mlang.Month.create({numberOfMonths: m});
       return month;
     },
-
     function DAYS(d) {
       var day = foam.mlang.Day.create({numberOfDays: d});
       return day;
-    }
+    },
+    function NOW() { return foam.mlang.CurrentTime.create(); }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang',
@@ -4238,6 +4240,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'FScriptPredicate',
@@ -4437,9 +4440,11 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'CurrentTime',
   extends: 'foam.mlang.AbstractExpr',
+
   axioms: [
     { class: 'foam.pattern.Singleton' }
   ],
+
   methods: [
     {
       name: 'f',
@@ -4457,6 +4462,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang',
@@ -4966,6 +4972,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'If',
@@ -5009,6 +5016,8 @@ foam.CLASS({
     }
   ]
 });
+
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Month',
@@ -5039,13 +5048,13 @@ foam.CLASS({
       name: 'f',
       code: function() {
         var date = new Date();
-        if ( date.getMonath()+ numberOfMonths > 12 ) date.setYear(date.getYear()+ Math.floor((date.getMonth()+ numberOfMonths)/12));
-        if ( date.getMonth()+ numberOfMonths < 0 ) date.setYear(date.getYear()-1-Math.floor((date.getMonth()- numberOfMonths)/12));
+        if ( date.getMonath() + numberOfMonths > 12 ) date.setYear(date.getYear()+ Math.floor((date.getMonth()+ numberOfMonths)/12));
+        if ( date.getMonth() + numberOfMonths < 0 ) date.setYear(date.getYear()-1-Math.floor((date.getMonth()- numberOfMonths)/12));
         date.setMonth(date.getMonth()+numberOfMonths);
         date.setDate(1);
         date.setHours(0);
         date.setMinutes(0);
-        return date
+        return date;
       },
       javaCode: `
         Calendar cal = Calendar.getInstance();
@@ -5065,6 +5074,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang',
@@ -5120,6 +5130,70 @@ foam.CLASS({
   ]
 });
 
-// TODO(braden): We removed Expr.pipe(). That may still be useful to bring back,
-// probably with a different name. It doesn't mean the same as DAO.pipe().
-// remove eof()
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Years',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of years since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+
+  javaImports:[
+    'java.time.LocalDate',
+    'java.time.Period',
+    'java.time.ZoneId',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var d = this.arg1.f(obj);
+
+        var monthDiff = Date.now() - d.getTime();
+
+        // convert the calculated difference in date format
+        var ageDt = new Date(monthDiff);
+
+        // extract year from date
+        var year = ageDt.getUTCFullYear();
+
+        // now calculate the age of the user
+        return Math.abs(year - 1970);
+      },
+      javaCode: `
+        Date      d = (Date) getArg1().f(obj);
+        LocalDate l = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        return Period.between(l, LocalDate.now()).getYears();
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() {
+        return 'Years(\'' + this.arg1 + '\')';
+      },
+      javaCode: ' return "Day(\'" + getArg1() + "\')"; '
+    }
+  ]
+});

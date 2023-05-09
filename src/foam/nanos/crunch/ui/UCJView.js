@@ -45,7 +45,6 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
-    'foam.u2.crunch.wizardflow.SubmitAgent',
     'foam.u2.crunch.wizardflow.WAOSettingAgent',
     'foam.u2.DisplayMode',
     'foam.u2.stack.Stack',

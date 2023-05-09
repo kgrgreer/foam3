@@ -181,10 +181,6 @@ foam.CLASS({
         return;
       }
 
-      if ( getState() == ElectoralServiceState.VOTING ) {
-        return;
-      }
-
       if ( getState() == ElectoralServiceState.ELECTION &&
         getElectionTime() > 0L ) {
         getLogger().debug("dissolve", getState(), "since", getElectionTime());
@@ -243,31 +239,40 @@ foam.CLASS({
       name: 'callVote',
       args: 'Context x',
       javaCode: `
-     getLogger().debug("callVote", getState());
-     if ( getState() != ElectoralServiceState.ELECTION ) {
-        getLogger().debug("callVote", getState(), "exit");
-        return;
-      }
+      getLogger().debug("callVote", getState());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
+      if ( getState() != ElectoralServiceState.ELECTION ||
+           config.getStatus() != Status.ONLINE ) {
+        getLogger().debug("callVote", getState(), config.getStatus(), "exit");
+        return;
+      }
       List<ClusterConfig> voters = support.getVoters(x);
 
-      if ( ! support.hasQuorum(x) ) {
-        if ( ! support.getHasNodeQuorum() ) {
-          getLogger().warning("callVote", getState(), "waiting for node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum(), support.getHasNodeQuorum());
+      if ( ! support.getHasNodeQuorum() ) {
+        getLogger().warning("callVote aborted", getState(), "waiting for node quorum", "voters", voters.size(), "required", support.getMediatorQuorum(), "node quroum", support.getHasNodeQuorum());
 
-          support.outputBuckets(x);
-        } else {
-          // nothing to do.
-          getLogger().warning("callVote", getState(), "waiting for mediator quorum", "voters/quorum", voters.size(), support.getMediatorQuorum(), support.getHasNodeQuorum());
-        }
+        support.outputBuckets(x);
         return;
       }
+
+      if ( ! support.getHasMediatorQuorum() ) {
+        getLogger().warning("callVote aborted", getState(), "waiting for mediator quorum", "voters", voters.size(), "required", support.getMediatorQuorum(), "mediator quorum", support.getHasMediatorQuorum());
+        return;
+      }
+
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( replaying.getReplaying() ) {
+        getLogger().info("callVote aborted", getState(), "waiting on replay", replaying.getReplaying());
+        return;
+      }
+
       if ( voters.size() < support.getMediatorQuorum() ) {
-        getLogger().debug("callVote", getState(), "insuficient votes", "voters", voters.size(), "quorum", support.getMediatorQuorum());
+        getLogger().info("callVote aborted", getState(), "insuficient votes", "voters", voters.size(), "required", support.getMediatorQuorum());
         return;
       }
-      getLogger().debug("callVote", getState(), "achieved mediator and node quorum", "voters/quorum", voters.size(), support.getMediatorQuorum());
+
+      getLogger().info("callVote", getState(), "achieved mediator and node quorum");
 
       try {
         setVotes(0);
@@ -294,7 +299,7 @@ foam.CLASS({
           agency.submit(x, new ContextAgent() {
             long result = -1L;
             public void execute(X x) {
-              getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
+              // getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
               ClientElectoralService electoralService =
                 new ClientElectoralService.Builder(x)
                  .setDelegate(new SessionClientBox.Builder(x)
@@ -306,12 +311,12 @@ foam.CLASS({
                 if ( getState() == ElectoralServiceState.ELECTION ) {
                   getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "request");
                   result = electoralService.vote(config.getId(), getElectionTime());
-                  getLogger().debug("callVote", "executeJob", getState(), "voter", clientConfig.getId(), "response", result);
+                  getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), "response", result);
                   recordResult(x, result, clientConfig);
                   callReport(x);
                 }
               } catch (Throwable e) {
-                getLogger().debug("callVote", "executeJob", "voter", clientConfig.getId(), clientConfig.getName(), e.getMessage());
+                getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId(), e.getMessage());
               }
             }
           }, this.getClass().getSimpleName()+":callVote");
@@ -360,6 +365,8 @@ foam.CLASS({
           if ( time <= winnerTime_.get() ) {
             getLogger().info("vote", id, time, getState(), "ignore", "wtime", winnerTime_.get());
           } else {
+            // TODO/REVIEW - big issue with votes arriving just after election decided with a later time.
+            // could ignore the first and wait for another?
             getLogger().info("vote", id, time, getState(), "->", ElectoralServiceState.VOTING, "wtime", winnerTime_.get());
             setState(ElectoralServiceState.VOTING);
             setElectionTime(0L);
@@ -370,7 +377,7 @@ foam.CLASS({
           v = generateVote(getX());
         }
       } catch (Throwable t) {
-        getLogger().error("vote", id, time, "response", v, t);
+        getLogger().error("vote", getState(), id, time, "response", v, t);
       }
       getLogger().debug("vote", getState(), id, time, "response", v);
       return v;
@@ -481,8 +488,10 @@ foam.CLASS({
       getLogger().info("report", getState(), "primary", "winner", winnerId, time);
 
       // NOTE: set winner time early to hopefully discard late arriving vote requests.
-      winnerTime_.set(time);
-
+      // Initially was setting this to the time of the election that won, but the late votes are from an election started, and presumably abandoned, after the winning election started.
+      // Now setting winner time to local time to hopefully ignore anything after the time this instance believe the election was won.
+      // winnerTime_.set(time);
+      winnerTime_.set(System.currentTimeMillis());
       ClusterConfig winner = (ClusterConfig) dao.find(winnerId);
       ClusterConfig primary = null;
       try {

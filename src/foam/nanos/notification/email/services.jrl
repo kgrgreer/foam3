@@ -8,7 +8,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailTemplateDAO",
-  "lazy":false,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailTemplate.getOwnClassInfo())
@@ -24,7 +23,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"emailTemplateDAO",
-  "lazy":false,
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
@@ -36,9 +34,11 @@ p({
   "client":"{\"of\":\"foam.nanos.notification.email.EmailTemplate\"}"
 })
 
+// not lazy as needed by notification system during startup.
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localEmailMessageDAO",
+  "lazy":false,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.email.EmailMessage.getOwnClassInfo())
@@ -46,6 +46,7 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("emailMessages")
+      .setWaitReplay(false)
       .setSAF(true)
       .setServiceProviderAware(false)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
@@ -174,7 +175,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"emailConfigDAO",
-  "lazy":false,
   "serve":true,
   "authorize":true,
   "serviceScript":"""

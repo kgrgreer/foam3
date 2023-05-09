@@ -17,8 +17,8 @@ foam.CLASS({
       value: '0px',
     },
     {
-      name: 'borderSize',
-      value: '1px solid $grey300',
+      name: 'borderColor',
+      value: '$grey300'
     }
   ],
 
@@ -71,7 +71,7 @@ foam.CLASS({
       transition: 0.2s ease;
       width: var(--sidebar-width);
       box-shadow: $boxShadowSize;
-      border-right: $borderSize;
+      border-right: 1px solid $borderColor;
     }
 
     ^sidebarClosed^sideNav{

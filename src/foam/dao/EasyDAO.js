@@ -569,6 +569,12 @@ foam.CLASS({
       name: 'journalName'
     },
     {
+      documentation: `See JDAO.  Force caller to wait on nspec initailzation. The first call to 'get' for an nspec (x.get(servicename)) will have the calling thread wait on reply of service. This is the default behaviour and should be used for all essential services.  Also this should be used if the model is using SeqNo or NUID for id generation.`,
+      class: 'Boolean',
+      name: 'waitReplay',
+      value: true
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.dao.Journal',
       generateJava: false,
@@ -909,7 +915,13 @@ model from which to test ServiceProvider ID (spid)`,
           if ( getWriteOnly() ) {
             delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
           } else {
-            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster() && !getSAF());
+            foam.dao.java.JDAO jdao = new foam.dao.java.JDAO();
+            jdao.setX(x);
+            jdao.setFilename(getJournalName());
+            jdao.setCluster(getCluster() && !getSAF());
+            jdao.setWaitReplay(getWaitReplay());
+            jdao.setDelegate(delegate);
+            delegate = jdao;
           }
         }
         return delegate;
