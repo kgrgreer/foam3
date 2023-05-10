@@ -69,8 +69,8 @@ foam.CLASS({
   methods: [
     function validate() {
       foam.assert(
-        ! this.isMerged || ! this.isFramed,
-        "Listener can't be both isMerged and isFramed: ",
+        ! this.isMerged || ! this.isFramed || ! this.isIdled,
+        "Listener can't be more than one of isMerged, isIdled and isFramed: ",
         this.name);
     }
   ]
@@ -422,6 +422,7 @@ foam.CLASS({
 
         if ( imp.required && ! this.__context__[imp.key + '$'] ) {
           var m = 'Missing required import: ' + imp.key + ' in ' + this.cls_.id;
+          if ( this.cls_.id == 'foam.core.Currency' ) debugger;
           foam.assert(false, m);
         }
       }
@@ -503,6 +504,48 @@ foam.LIB({
               c.count_-lc);
         }
       }
+    },
+
+    function usageReport() {
+      var errors             = {};
+      var unusedFiles        = {};
+      var partiallyUsedFiles = {};
+      var unusedModels = Object.keys(foam.UNUSED);
+      var usedModels   = Object.keys(foam.USED);
+
+      unusedModels.forEach(m => {
+        try {
+          var cls = foam.maybeLookup(m);
+          if ( cls ) {
+            var s = cls.model_.source;
+//            console.log('UNUSED', s);
+            unusedFiles[s] = true;
+          }
+        } catch (x) {
+          errors[m] = true;
+        }
+      });
+      usedModels.forEach(m => {
+        try {
+          var cls = foam.maybeLookup(m);
+          if ( cls ) {
+            var s = cls.model_.source;
+//            console.log('USED',s );
+            if ( unusedFiles[s] ) {
+              delete unusedFiles[s];
+              partiallyUsed[s] = true;
+            }
+          }
+        } catch (x) {
+          errors[m] = true;
+        }
+      });
+
+      return {
+        unused: Object.keys(unusedFiles),
+        partiallyUsed: Object.keys(partiallyUsedFiles),
+        errors: Object.keys(errors)
+      };
     }
   ]
 });
