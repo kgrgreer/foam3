@@ -174,6 +174,7 @@ foam.CLASS({
     ^footer-center img {
       height: 1em;
       display: inline-block;
+      vertical-align: top;
     }
 
     ^dialogActionsView-with-footer .foam-u2-dialog-DialogActionsView-actions {
