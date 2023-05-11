@@ -437,8 +437,8 @@ foam.CLASS({
       },
       {
         name: 'NANOS',
-        keywords: [ 'genjava', 'genjs', 'pomsplit' ],
-        paths: [ 'analytic', 'xsd', 'src/foam/xsd' ]
+        keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
+        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar' ]
       },
       {
 //        name: 'Core',
@@ -627,7 +627,7 @@ name: 'NANOS',
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
-              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
+//              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
