@@ -88,7 +88,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.react(function(data) {
+      this.add(self.dynamic(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
@@ -100,7 +100,7 @@ foam.CLASS({
           }
         ).br().
         start('b').add('Diff:  ').end().tag({class: 'foam.demos.gitlog.DiffView'}, {data: data.diff});
-      });
+      }));
     }
   ]
 });
@@ -376,6 +376,7 @@ foam.CLASS({
       'kristina': 'Kristina Smirnova',
       'Lenore Chen': 'Lenore Chen',
       'LenoreChen': 'Lenore Chen',
+      'Mahimaa Jayaprakash': 'Mahimaa Jayaprakash',
       'Mahimaa': 'Mahimaa Jayaprakash',
       'Mayowa Olurin': 'Mayowa Olurin',
       'mayowa': 'Mayowa Olurin',
@@ -429,6 +430,16 @@ foam.CLASS({
       'yij793': 'Garfiled Jian'
     },
     PROJECT_RULES: [
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
+        paths: [ 'cluster' ]
+      },
+      {
+        name: 'NANOS',
+        keywords: [ 'genjava', 'genjs', 'pomsplit' ],
+        paths: [ 'analytic', 'xsd', 'src/foam/xsd' ]
+      },
       {
 //        name: 'Core',
         name: 'NANOS',
@@ -664,9 +675,6 @@ name: 'NANOS',
       } else if ( year == 2022 ) {
         this.loadData('data2022.log');
         this.loadData('np2022.log');
-
-        this.loadData('data2021.log');
-        this.loadData('np2021.log');
       }
 
     },
@@ -798,7 +806,7 @@ name: 'NANOS',
 
     function searchPane(self) {
       this.start('').
-        add('Year: ',             self.YEAR).br().
+//        add('Year: ',             self.YEAR).br().
         add('Keyword: ',          self.QUERY).br().
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().
