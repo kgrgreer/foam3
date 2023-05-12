@@ -291,6 +291,12 @@ public class MLang
     return prepareFormula(new MaxFunc(), arg1, arg2);
   }
 
+  public static Expr YEARS(Object o) {
+    var y = new Years();
+    y.setArg1(MLang.prepare(o));
+    return y;
+  }
+
   public static Expr prepareFormula(Formula formula, Object... args) {
     formula.setArgs(toExprArray(args));
     return formula;
