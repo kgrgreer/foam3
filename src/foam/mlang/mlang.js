@@ -5143,7 +5143,6 @@ foam.CLASS({
   ],
   */
 
-
   javaImports:[
     'java.time.LocalDate',
     'java.time.Period',
@@ -5176,12 +5175,11 @@ foam.CLASS({
 
         // extract year from date
         var year = ageDt.getUTCFullYear();
-
         // now calculate the age of the user
         return Math.abs(year - 1970);
       },
       javaCode: `
-        Date      d = (Date) getArg1().f(obj);
+        Date      d = new Date(((Date) getArg1().f(obj)).getTime() + 3600*24*1000);
         LocalDate l = d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         return Period.between(l, LocalDate.now()).getYears();
@@ -5190,10 +5188,8 @@ foam.CLASS({
     {
       name: 'toString',
       type: 'String',
-      code: function() {
-        return 'Years(\'' + this.arg1 + '\')';
-      },
-      javaCode: ' return "Day(\'" + getArg1() + "\')"; '
+      code: function() { return 'YEARS(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "YEARS(\'" + getArg1() + "\')"; '
     }
   ]
 });
