@@ -8,9 +8,10 @@ foam.CLASS({
   package: 'foam.parse',
   name: 'Test',
   properties: [
-    { class: 'Int', name: 'id' },
+    { class: 'Int',    name: 'id' },
     { class: 'String', name: 'firstName' },
     { class: 'String', name: 'lastName' },
+    { class: 'Date',   name: 'born' },
     { class: 'FObjectProperty', of: 'foam.nanos.auth.Address', name: 'address' }
   ]
 });
@@ -39,6 +40,7 @@ foam.CLASS({
         id: 42,
         firstName: 'Kevin',
         lastName: 'Greer',
+        born: new Date('11/19/1970'),
         address: { city: 'Toronto', regionId: 'ON' }
       });
 
@@ -72,6 +74,8 @@ foam.CLASS({
       test('firstName=="Kevin"&&lastName=="Greer"');
       test('firstName=="Kevin"||id==42');
       test('address instanceof foam.nanos.auth.Address');
+      test('YEARS(born)>51');
+      test('YEARS(1970-11-19)>51');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
     },
@@ -108,6 +112,7 @@ foam.CLASS({
     'foam.parse.Parsers',
     'foam.parse.StringPStream'
   ],
+
   axioms: [
       foam.pattern.Multiton.create({property: 'thisValue'})
   ],
@@ -174,6 +179,7 @@ foam.CLASS({
           ),
 
           value: alt(
+            sym('years'),
             sym('regex'),
             sym('string'),
             sym('date'),
@@ -215,6 +221,7 @@ foam.CLASS({
           ),
 
           date: alt(
+            'now',
             // YYYY-MM-DDTHH:MM
             seq(sym('number'), '-', sym('number'), '-', sym('number'), 'T',
                 sym('number'), ':', sym('number')),
@@ -235,7 +242,10 @@ foam.CLASS({
             ),
 
           fieldLen: seq(
-            sym('field'),'.len'),
+            sym('field'), '.len'),
+
+          years: seq1(1,
+            literalIC('YEARS('), sym('value'), ')'),
 
           field: seq(
             sym('fieldname'),
@@ -244,8 +254,8 @@ foam.CLASS({
           enum: str(seq(sym('word'), repeat(str(seq(literal('.'), sym('word')))))),
 
           string: str(seq1(1, '"',
-                      repeat(alt(literal('\\"', '"'), notChars('"'))),
-                      '"')),
+            repeat(alt(literal('\\"', '"'), notChars('"'))),
+            '"')),
 
           word: str(repeat(sym('char'), null, 1)),
 
@@ -271,7 +281,7 @@ foam.CLASS({
         const cls        = this.of;
         const fields     = [];
         const properties = cls.getAxiomsByClass(foam.core.Property);
-        const constants = cls.getAxiomsByClass(foam.core.Constant);
+        const constants  = cls.getAxiomsByClass(foam.core.Constant);
 
         if ( this.thisValue !== undefined ) {
           fields.push(this.Literal.create({
@@ -355,11 +365,9 @@ foam.CLASS({
             return expr;
           },
 
-          fieldLen: function(v) {
-            return foam.mlang.StringLength.create({
-              arg1: v[0]
-            })
-          },
+          fieldLen: function(v) { return self.STRING_LENGTH(v[0]); },
+
+          years: function(v) { return self.YEARS(v); },
 
           formula: function(v) {
             return self.ADD.apply(self, v);
@@ -395,6 +403,7 @@ foam.CLASS({
           },
 
           date: function(v) {
+          if ( 'now' === v ) return this.NOW();
           var args = [];
             for (var i = 0; i < v.length; i ++ ) {
               if ( i == 0 || i % 2 === 0 ) {
