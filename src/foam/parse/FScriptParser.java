@@ -17,10 +17,11 @@ import foam.mlang.expr.*;
 import foam.mlang.predicate.*;
 import foam.mlang.predicate.Not;
 import foam.util.SafetyUtil;
-
 import java.lang.Exception;
 import java.util.*;
 import java.util.regex.Pattern;
+import static foam.mlang.MLang.*;
+
 
 public class FScriptParser
 {
@@ -64,13 +65,12 @@ public class FScriptParser
       }
 
       if ( prop.getAliases().length != 0 ) {
-        for ( int i = 0; i < prop.getAliases().length; i++) {
+        for ( int i = 0 ; i < prop.getAliases().length ; i++) {
           props.put(prop.getAliases()[i], prop);
         }
       }
     }
-    ArrayList<String> sortedKeys =
-      new ArrayList<String>(props.keySet());
+    ArrayList<String> sortedKeys = new ArrayList<String>(props.keySet());
 
     Collections.sort(sortedKeys, Collections.reverseOrder());
     for (String propName : sortedKeys) {
@@ -78,15 +78,22 @@ public class FScriptParser
     }
   }
 
+  public Object parse(String s) {
+    StringPStream ps = new StringPStream();
+
+    ps.setString(s);
+    PStream ret = parse(ps, new ParserContextImpl());
+
+    return ret == null ? null : ret.value();
+  }
+
   public PStream parse(PStream ps, ParserContext x) {
     return getGrammar().parse(ps, x, "");
   }
 
   protected Grammar getGrammar() {
-
     Grammar grammar = new Grammar();
     grammar.addSymbol("FIELD_NAME", new Alt(new Alt(expressions)));
-
     grammar.addSymbol("START", new Seq1(1,new Optional(grammar.sym("LET")), grammar.sym("START_VALUES"), EOF.instance()));
     grammar.addSymbol("START_VALUES", new Alt(grammar.sym("OR"), grammar.sym("TEMPLATE_STRING"), grammar.sym("FORMULA"), grammar.sym("IF_ELSE")));
 
@@ -100,7 +107,7 @@ public class FScriptParser
       Or or = new Or();
       Predicate[] args = new Predicate[values.length];
       for ( int i = 0 ; i < args.length ; i++ ) {
-        args[i] = (Predicate)values[i];
+        args[i] = (Predicate) values[i];
       }
       or.setArgs(args);
       return or;
@@ -110,6 +117,7 @@ public class FScriptParser
       "AND",
       new Repeat(grammar.sym("EXPR"),
         new Seq1(1, Whitespace.instance(), Literal.create("&&"), Whitespace.instance()),1));
+
     grammar.addAction("AND", (val, x) -> {
       And and = new And();
       Object[] valArr = (Object[]) val;
@@ -199,6 +207,7 @@ public class FScriptParser
         new Literal("null", null)
       ))
     );
+
     grammar.addAction("COMPARISON", (val, x) -> {
       Object[] values = (Object[]) val;
       if ( values[1] instanceof foam.mlang.predicate.RegExp ) {
@@ -215,10 +224,10 @@ public class FScriptParser
 
       Binary bin = ( Binary ) values[1];
       bin.setArg1((Expr) values[0]);
-      bin.setArg2(( values[2] instanceof Expr ) ?
-        ( Expr ) values[2] : new foam.mlang.Constant (values[2]));
+      bin.setArg2(( values[2] instanceof Expr ) ? ( Expr ) values[2] : new foam.mlang.Constant (values[2]));
       return bin;
     });
+
     grammar.addSymbol(
       "FORMULA",
       new Repeat(grammar.sym("MINUS"), new Seq1(1, Whitespace.instance(), Literal.create("+"), Whitespace.instance()),1)
@@ -227,7 +236,7 @@ public class FScriptParser
       Object[] vals = (Object[]) val;
       if ( vals[0] == null ) return null;
       Expr[] args = new Expr[vals.length];
-      for ( int i = 0; i < vals.length; i++ ) {
+      for ( int i = 0 ; i < vals.length ; i++ ) {
         args[i] = (Expr)vals[i];
       }
       Formula formula = new Add();
@@ -243,7 +252,7 @@ public class FScriptParser
       Object[] vals = (Object[]) val;
       if ( vals[0] == null ) return null;
       Expr[] args = new Expr[vals.length];
-      for ( int i = 0; i < vals.length; i++ ) {
+      for ( int i = 0 ; i < vals.length ; i++ ) {
         if ( vals[i] instanceof If && ! isPropNumber(((If) vals[i]).getTrueExpr())) return Action.NO_PARSE;
         args[i] = (Expr)vals[i];
       }
@@ -302,7 +311,7 @@ public class FScriptParser
       ) {
         return Action.NO_PARSE;
       }
-      if ( vals.length == 1 || vals[1] == null || !(vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
+      if ( vals.length == 1 || vals[1] == null || ! (vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
       Expr[] args = new Expr[2];
       Object [] formulas = (Object[]) vals[1];
       var firstArg = ( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]);
@@ -310,7 +319,7 @@ public class FScriptParser
       var cnst = ( temp[1] instanceof Expr ) ? (Expr) temp[1] : new foam.mlang.Constant (temp[1]);
       Formula formula = (Formula) temp[0];
       formula.setArgs(new Expr[] {firstArg, cnst});
-      for ( int i = 1 ; i < formulas.length; i++ ) {
+      for ( int i = 1 ; i < formulas.length ; i++ ) {
         var tempArr = (Object[]) formulas[i];
         var tempFormula = (Formula) tempArr[0];
         var constant = ( tempArr[1] instanceof Expr ) ? (Expr) tempArr[1] : new foam.mlang.Constant (tempArr[1]);
@@ -404,6 +413,7 @@ public class FScriptParser
         }
       ),
       new Optional(grammar.sym("VALUE"))));
+
     grammar.addAction("UNARY", (val, x) -> {
       Object[] values = (Object[]) val;
       Predicate pred = (Predicate) values[2];
@@ -421,7 +431,7 @@ public class FScriptParser
       Literal.create("instanceof"),
       Whitespace.instance(),
       grammar.sym("CLASS_INFO")));
-    grammar.addAction("INSTANCE_OF", (val, x) -> {
+      grammar.addAction("INSTANCE_OF", (val, x) -> {
       Object[] vals = (Object[]) val;
       ClassInfo cls = (ClassInfo) vals[1];
       IsInstanceOf pred = new IsInstanceOf();
@@ -432,8 +442,8 @@ public class FScriptParser
       return pred;
     });
 
-
     grammar.addSymbol("VALUE", new Alt(
+      grammar.sym("YEARS"),
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
       grammar.sym("VAR"),
@@ -471,7 +481,7 @@ public class FScriptParser
       var flags = -1;
       if ( vals[1] != null ) {
         Object[] flagsArr = (Object[]) vals[1];
-        for (int i = 0; i < flagsArr.length-1; i++ ) {
+        for (int i = 0 ; i < flagsArr.length-1 ; i++ ) {
           var en = hm.get(flagsArr[i]);
           flags = en == null ? flags : flags | (int) en;
         }
@@ -480,6 +490,7 @@ public class FScriptParser
     });
 
     grammar.addSymbol("DATE", new Alt(
+      Literal.create("now"),
       new Seq(
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
@@ -514,6 +525,7 @@ public class FScriptParser
       )
     ));
     grammar.addAction("DATE", (val, x) -> {
+      if ( "now".equals(val) ) return MLang.NOW;
       Calendar start = new GregorianCalendar();
       start.clear();
       start.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -535,7 +547,6 @@ public class FScriptParser
 
       return start.getTime();
     });
-
 
     grammar.addSymbol("STRING", new Alt(
       new Seq1(1,
@@ -581,7 +592,6 @@ public class FScriptParser
       return templStr;
     });
 
-
     grammar.addSymbol("ENUM", new Seq(
       grammar.sym("WORD"),
       new Repeat(
@@ -604,7 +614,7 @@ public class FScriptParser
       }
       var sb = new StringBuilder();
       sb.append(values[0]);
-      for ( int i = 0; pckArr.length - 1 > i; i ++) {
+      for ( int i = 0 ; pckArr.length - 1 > i ; i ++) {
         sb.append(compactToString(pckArr[i]));
       }
       Class cls;
@@ -615,7 +625,7 @@ public class FScriptParser
       }
       String name = (String)((Object[]) pckArr[pckArr.length-1])[1];
       if ( ! cls.isEnum() ) return null;
-      for (int i = 0; cls.getEnumConstants().length > i ; i ++ ) {
+      for (int i = 0 ; cls.getEnumConstants().length > i ; i ++ ) {
         Enum en= (Enum) cls.getEnumConstants()[i];
         if ( en.name().equals(name)) return en;
       }
@@ -684,13 +694,25 @@ public class FScriptParser
       Literal.create("^"),
       Literal.create("_")
     ));
+
     grammar.addSymbol("NUMBER", new Alt(
       grammar.sym("DOUBLE"),
       grammar.sym("INTEGER")
     ));
 
+    grammar.addSymbol("YEARS", new Seq1(2,
+      LiteralIC.create("YEARS("),
+      Whitespace.instance(),
+      grammar.sym("VALUE"), // FORMULA?
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+    grammar.addAction("YEARS", (val, x) -> {
+      return YEARS(val);
+    });
+
     grammar.addSymbol("MAX", new Seq2(2, 6,
-      Literal.create("MAX("),
+      LiteralIC.create("MAX("),
       Whitespace.instance(),
       grammar.sym("FORMULA"),
       Whitespace.instance(),
@@ -699,7 +721,6 @@ public class FScriptParser
       grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(")")
-
     ));
     grammar.addAction("MAX", (val, x) -> {
       Object[] vals = (Object[]) val;
@@ -710,7 +731,7 @@ public class FScriptParser
     });
 
     grammar.addSymbol("MIN", new Seq2(2, 6,
-      Literal.create("MIN("),
+      LiteralIC.create("MIN("),
       Whitespace.instance(),
       grammar.sym("FORMULA"),
       Whitespace.instance(),
@@ -719,7 +740,6 @@ public class FScriptParser
       grammar.sym("FORMULA"),
       Whitespace.instance(),
       Literal.create(")")
-
     ));
     grammar.addAction("MIN", (val, x) -> {
       Object[] vals = (Object[]) val;
@@ -748,18 +768,14 @@ public class FScriptParser
 
     grammar.addSymbol("DOUBLE", new Seq(new Optional(Literal.create("-")),
       new Seq(
-        new Repeat(
-          Range.create('0', '9'), 1
-        ),
+        new Repeat(Range.create('0', '9'), 1),
         Literal.create("."),
-        new Repeat(
-          Range.create('0', '9'), 1
-        )
+        new Repeat(Range.create('0', '9'), 1)
       )));
     grammar.addAction("DOUBLE", (val, x) -> {
       var sb = new StringBuilder();
       Object[] values = (Object[]) val;
-      if ( values[0] != null  ) sb.append(values[0]);
+      if ( values[0] != null ) sb.append(values[0]);
       Object[] v = (Object[]) values[1];
       sb.append(compactToString(v[0]));
       sb.append(v[1]);
@@ -776,7 +792,6 @@ public class FScriptParser
     grammar.addSymbol("FIELD_LEN", new Seq1(0, grammar.sym("FIELD"), Literal.create(".len")));
     grammar.addAction("FIELD_LEN", (val, x) -> new StringLength((Expr) val));
 
-
     grammar.addSymbol("FIELD", new Seq(grammar.sym("FIELD_NAME"), new Optional(
       new Seq1(1, Literal.create("."), new Repeat(new foam.lib.parse.Not(Literal.create("len"),
         grammar.sym("WORD")), Literal.create("."),1)))));
@@ -791,7 +806,6 @@ public class FScriptParser
         }
       }
       return expr;
-
     });
 
     return grammar;
@@ -817,14 +831,14 @@ public class FScriptParser
   }
 
   protected Boolean isCapitalized(String str) {
-    for ( int i = 0; i < str.length(); i++ ) {
+    for ( int i = 0 ; i < str.length() ; i++ ) {
       if ( ! Character.isUpperCase(str.charAt(i)) ) return false;
     }
     return true;
   }
 
   protected Boolean isPropNumber(Expr expr) {
-    return ! (expr instanceof AbstractPropertyInfo && !(expr instanceof AbstractDoublePropertyInfo) && !(expr instanceof AbstractFloatPropertyInfo) &&
-      !(expr instanceof AbstractIntPropertyInfo) && !(expr instanceof AbstractLongPropertyInfo) || (expr instanceof Dot));
+    return ! (expr instanceof AbstractPropertyInfo && ! (expr instanceof AbstractDoublePropertyInfo) && ! (expr instanceof AbstractFloatPropertyInfo) &&
+      ! (expr instanceof AbstractIntPropertyInfo) && ! (expr instanceof AbstractLongPropertyInfo) || (expr instanceof Dot));
   }
 }
