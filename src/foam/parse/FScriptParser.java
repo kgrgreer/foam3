@@ -701,7 +701,7 @@ public class FScriptParser
     ));
 
     grammar.addSymbol("YEARS", new Seq1(2,
-      LiteralIC.create("YEARS("),
+      new LiteralIC("YEARS("),
       Whitespace.instance(),
       grammar.sym("VALUE"), // FORMULA?
       Whitespace.instance(),
@@ -712,7 +712,7 @@ public class FScriptParser
     });
 
     grammar.addSymbol("MAX", new Seq2(2, 6,
-      LiteralIC.create("MAX("),
+      new LiteralIC("MAX("),
       Whitespace.instance(),
       grammar.sym("FORMULA"),
       Whitespace.instance(),
@@ -731,7 +731,7 @@ public class FScriptParser
     });
 
     grammar.addSymbol("MIN", new Seq2(2, 6,
-      LiteralIC.create("MIN("),
+      new LiteralIC("MIN("),
       Whitespace.instance(),
       grammar.sym("FORMULA"),
       Whitespace.instance(),
