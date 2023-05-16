@@ -5,7 +5,7 @@ import foam.core.ContextAwareSupport;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
-import foam.support.model.Ticket;
+// import foam.support.model.Ticket;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -51,13 +51,13 @@ public class POP3EmailService
         // by setting the ticket emailId to the emailId from the imapfolder.getUID() method.
         // and putting to  TicketDAO
 
-        try{ 
-          ArraySink sink = (ArraySink) ticketDAO.where(EQ(Ticket.EMAIL_ID, emailId)).select(new ArraySink());
-          List ticketList = sink.getArray();
-          System.out.println(ticketList); 
-        } catch ( Throwable e ) {
+        // try{ 
+        //   ArraySink sink = (ArraySink) ticketDAO.where(EQ(Ticket.EMAIL_ID, emailId)).select(new ArraySink());
+        //   List ticketList = sink.getArray();
+        //   System.out.println(ticketList); 
+        // } catch ( Throwable e ) {
          
-        }
+        // }
 
         System.out.println(emailId);
       }
