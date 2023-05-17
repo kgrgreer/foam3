@@ -2278,22 +2278,31 @@ foam.CLASS({
       }
     },
 
-    function writeFileIfUpdated(outfile, javaSource) {
+    function writeFileIfUpdated(X, outfile, javaSource) {
       if ( ! ( this.fs_.existsSync(outfile) && (this.fs_.readFileSync(outfile).toString() === javaSource))) {
+        // console.log('[GENJAVA] Updating ', outfile);
+        var of = outfile.substring(outfile.lastIndexOf('/'));
+
+        // Uncomment next two lines if you would like to do a diff to see where a file changed.
+        // this.fs_.writeFileSync("/tmp/" + of + ".old", javaSource);
+        // this.fs_.writeFileSync("/tmp/" + of + ".new", this.fs_.readFileSync(outfile).toString());
+
         this.fs_.writeFileSync(outfile, javaSource);
+
+        X.javaFiles.push(outfile);
       }
     },
 
-    function outputJavaClass(outdir, javaClass) {
+    function outputJavaClass(X, outdir, javaClass) {
       var outfile = outdir + this.sep + javaClass.id.replace(/\./g, this.sep) + '.java';
       this.ensurePath(outfile);
-      this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
+      this.writeFileIfUpdated(X, outfile, javaClass.toJavaSource());
     },
 
     function targetJava(X) {
       if ( ! this.flags || ! foam.checkForFlag(this.flags, 'java') ) return false;
       var cls = foam.lookup(this.id);
-      this.outputJavaClass(X.outdir, cls.buildJavaClass());
+      this.outputJavaClass(X, X.outdir, cls.buildJavaClass());
       return true;
     }
   ]
@@ -2310,7 +2319,7 @@ foam.CLASS({
       if ( ! this.SUPER(X) ) return;
 
       if ( this.skeleton )
-        this.outputJavaClass(X.outdir, foam.java.Skeleton.create({of: this.id}).buildJavaClass());
+        this.outputJavaClass(X, X.outdir, foam.java.Skeleton.create({of: this.id}).buildJavaClass());
 
       return true;
     }
