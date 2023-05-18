@@ -98,9 +98,8 @@ foam.CLASS({
 
     ^body {
       max-height: 90vh;
-      min-height: var(--max-height, 100vh);
       overflow: auto;
-      display: flex;
+      display: contents;
       align-items: center;
       flex-direction: column;
     }
