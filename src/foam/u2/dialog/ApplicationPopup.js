@@ -99,7 +99,7 @@ foam.CLASS({
     ^body {
       max-height: 90vh;
       overflow: auto;
-      display: flex;
+      display: contents;
       align-items: center;
       flex-direction: column;
     }
