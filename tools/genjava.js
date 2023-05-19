@@ -13,8 +13,8 @@ require('../src/foam_node.js');
 
 var [argv, X, flags] = require('./processArgs.js')(
   '',
-  { outdir: '/build/src/java', pom: 'pom' },
-  { java: true, genjava: true }
+  { outdir: '/build/src/java', pom: 'pom', javacParams: '--release 11' },
+  { java: true, genjava: true, verbose: false, javac: false }
 );
 
 X.outdir    = path_.resolve(path_.normalize(X.outdir));
@@ -39,13 +39,20 @@ for ( var key in foam.USED ) try {
 
 console.log(`END GENJAVA: ${jCount}/${mCount} models processed, ${X.javaFiles.length} Java files created in ${Math.round((Date.now()-startTime)/1000)}s.`);
 
-/*
+if ( ! flags.javac ) return;
+
 console.log(X.javaFiles);
 console.log(foam.poms);
 
 var fs_   = require('fs');
 var exec_ = require('child_process');
 var found = 0;
+
+
+function verbose() {
+  if ( flags.verbose ) console.log.apply(console, arguments);
+}
+
 
 function matchJavaSources(pom, f) {
   if ( f.name.indexOf("AmazonS3") != -1 ) return false;
@@ -55,7 +62,7 @@ function matchJavaSources(pom, f) {
 }
 
 function processDir(pom, location, skipIfHasPOM) {
-  console.log('\tdirectory:', location);
+  verbose('\tdirectory:', location);
   var files = fs_.readdirSync(location, {withFileTypes: true});
 
   if ( skipIfHasPOM && files.find(f => f.name.endsWith('pom.js')) ) return;
@@ -68,7 +75,7 @@ function processDir(pom, location, skipIfHasPOM) {
       processDir(pom, fn, true);
     } else if ( f.name.endsWith('.java') ) {
       if ( matchJavaSources(pom, f) ) {
-        console.log('\t\tfile:', fn);
+        verbose('\t\tfile:', fn);
         found++;
         X.javaFiles.push(fn);
       }
@@ -80,7 +87,7 @@ var seen = {};
 function processPOM(pom) {
   if ( seen[pom.location] ) return;
   seen[pom.location] = true;
-  console.log('GENJAVA: Scanning POM for java files:', pom.location);
+  verbose('GENJAVA: Scanning POM for java files:', pom.location);
   processDir(pom, pom.location, false);
 }
 
@@ -90,7 +97,9 @@ console.log(`GENJAVA: Found ${found} java files.`);
 console.log(X.javaFiles);
 fs_.writeFileSync('javaFiles', X.javaFiles.join('\n') + '\n'
 );
-var cmd = `javac -parameters -verbose --release 11 -d ./build/classes -classpath "./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @javaFiles`;
+
+var cmd = `javac -parameters ${X.javacParams} -d ./build/classes -classpath "./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @javaFiles`;
+
 console.log('GENJAVA Executing:', cmd);
 exec_.exec(cmd, [], (error, stdout, stderr) => {
   if ( error ) {
@@ -100,5 +109,4 @@ exec_.exec(cmd, [], (error, stdout, stderr) => {
   console.log(stderr);
 });
 
-console.log('************ PROCESS', process.env);
-*/
+// console.log('************ PROCESS', process.env);
