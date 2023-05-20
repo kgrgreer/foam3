@@ -6,18 +6,23 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.a = 'foo'; this.b = 'a,b,c';
+      this.add('A:', this.A, ' B: ', this.B).br().br();
+
       this.dynamic({
         pre:  function()     { console.log('pre-react'); },
         code: function(a, b) { console.log('React: ', a, b); },
         post: function()     { console.log('post-react'); }
       });
 
-      this.a = 'foo'; this.b = 'a,b,c,d,efg';
-      this.add('A:', this.A, ' B: ', this.B).br().br();
 
       this.add(this.dynamic(function(a, b) {
         this.add('Test A+B a:', a, ', b:', b).br();
       }));
+
+      this.add(function(a, b) {
+        this.add('Test A+B a:', a, ', b:', b).br();
+      });
 
       this.add(function(a) {
         this.add('TEST A: ', a).br();
@@ -35,9 +40,17 @@ foam.CLASS({
         add(this.dynamic(function(b) {
           b.split(',').forEach(i => this.start('li').add(i).end());
         })).
-      end().
+      end();
 
-      add('END').br();
+      this.add('OL:').start('ol').
+        add(function(b) {
+          b.split(',').forEach(i => this.start('li').add(i).end());
+        }).
+      end();
+
+      this.add('select:').tag(foam.u2.tag.Select, {choices$: this.b$.map(b => b.split(',')) });
+
+      this.add('END').br();
     }
   ],
 
