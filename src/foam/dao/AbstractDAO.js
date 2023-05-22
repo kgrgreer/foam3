@@ -232,7 +232,7 @@ throw new UnsupportedOperationException();
         return this.listen_(this.__context__, sink, undefined);
       },
       swiftCode: 'return try listen_(__context__, sink)',
-      javaCode: `this.listen_(this.getX(), sink, predicate);`,
+      javaCode: 'this.listen_(this.getX(), sink, predicate);',
     },
 
     /**
