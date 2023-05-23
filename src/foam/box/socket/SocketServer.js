@@ -78,11 +78,24 @@ foam.CLASS({
                   while ( true ) {
                     Socket client = serverSocket.accept();
                     client.setSoTimeout(getSoTimeout());
-                    agency.submit(
-                      x,
-                      new SocketServerProcessor(getX(), client),
-                      client.getRemoteSocketAddress().toString()
-                    );
+                    
+                    final X x_ = x;
+                    Thread thread = new Thread(new Runnable() {
+                      @Override
+                      public void run() {
+                        try {
+                          SocketServerProcessor processor = new SocketServerProcessor(getX(), client);
+                          processor.execute(x_);
+                        } catch( IOException ioe ) {
+                          logger.error(ioe);
+                        }
+                      }
+                    }, client.getRemoteSocketAddress().toString());
+                    // agency.submit(
+                    //   x,
+                    //   new SocketServerProcessor(getX(), client),
+                    //   client.getRemoteSocketAddress().toString()
+                    // );
                   }
                 } catch ( IOException ioe ) {
                   logger.error(ioe);
