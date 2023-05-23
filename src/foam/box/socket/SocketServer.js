@@ -45,6 +45,11 @@ foam.CLASS({
       class: 'Int',
       name: 'soTimeout',
       value: 60000
+    },
+    {
+      class: 'Boolean',
+      name: 'useThreadPoolForConnection',
+      value: true
     }
   ],
 
@@ -68,41 +73,42 @@ foam.CLASS({
           final ServerSocket serverSocket = serverSocket0;
 
           Agency agency = (Agency) getX().get(getThreadPoolName());
+          final X x_ = getX();
           logger.info("start", "threadPoolName", getThreadPoolName(), "threadsPerCore", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getThreadsPerCore(), "numberOfThreads", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getNumberOfThreads());
-          agency.submit(
-            getX(),
-            new ContextAgent() {
-              @Override
-              public void execute(X x) {
-                try {
-                  while ( true ) {
-                    Socket client = serverSocket.accept();
-                    client.setSoTimeout(getSoTimeout());
-                    
-                    final X x_ = x;
-                    Thread thread = new Thread(() -> {
-                      try {
-                        SocketServerProcessor processor = new SocketServerProcessor(getX(), client);
-                        processor.execute(x_);
-                      } catch( IOException ioe ) {
-                        logger.error(ioe);
-                      }
-                    }, client.getRemoteSocketAddress().toString());
-                    thread.setDaemon(true);
-                    thread.start();
-                    // agency.submit(
-                    //   x,
-                    //   new SocketServerProcessor(getX(), client),
-                    //   client.getRemoteSocketAddress().toString()
-                    // );
-                  }
-                } catch ( IOException ioe ) {
-                  logger.error(ioe);
+          Thread serverThread = new Thread(() -> {
+            try {
+              while ( true ) {
+                Socket client = serverSocket.accept();
+                client.setSoTimeout(getSoTimeout());
+
+                if ( getUseThreadPoolForConnection() ) {
+                  agency.submit(
+                    x_,
+                    new SocketServerProcessor(x_, client),
+                    client.getRemoteSocketAddress().toString()
+                  );
+                } else {
+                  Thread acceptThread = new Thread(() -> {
+                    try {
+                      SocketServerProcessor processor = new SocketServerProcessor(x_, client);
+                      processor.execute(x_);
+                    } catch ( IOException ioe ) {
+                      logger.error("Failed to accecpt connection with: " + client.getRemoteSocketAddress(), ioe);
+                    }
+                  }, client.getRemoteSocketAddress().toString());
+                  acceptThread.setDaemon(true);
+                  acceptThread.start();
                 }
               }
-            },
-            "SocketServer.accept-"+getPort()
-          );
+            } catch ( IOException ioe ) {
+              logger.error("SocketServer.accept-" + getPort() + " terminate", ioe);
+            } catch ( Exception e) {
+              logger.error("SocketServer.accept-" + getPort() + " terminate", e);
+            }
+          }, "SocketServer.accept-"  + getPort());
+          serverThread.setDaemon(true);
+          serverThread.setPriority(Thread.MAX_PRIORITY);
+          serverThread.start();
 
         } catch (java.net.BindException e) {
           logger.error(e.getMessage(), e);
