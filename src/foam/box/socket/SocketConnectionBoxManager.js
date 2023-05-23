@@ -197,7 +197,17 @@ foam.CLASS({
           box = new SocketConnectionBox(x, key, socket);
           add(box);
           Agency agency = (Agency) x.get(getThreadPoolName());
-          agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
+          //agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
+
+          final SocketConnectionBox b = box;
+          final X x_ = x;
+          Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+              b.execute(x_);
+            }
+          }, socket.getRemoteSocketAddress().toString());
+  
           return box;
         } catch ( java.net.ConnectException |
                    java.net.NoRouteToHostException |
