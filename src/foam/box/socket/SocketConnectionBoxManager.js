@@ -203,7 +203,7 @@ foam.CLASS({
           final X x_ = x;
           Thread thread = new Thread(() -> {
             b.execute(x_);
-          }), socket.getRemoteSocketAddress().toString());
+          }, socket.getRemoteSocketAddress().toString());
           thread.setDaemon(true);
           thread.start();
           
