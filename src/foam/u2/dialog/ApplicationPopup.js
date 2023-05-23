@@ -73,6 +73,11 @@ foam.CLASS({
       align-items: center;
       padding: 12px;
     }
+    @media only screen and (max-width: 767px) {
+      ^header {
+        padding: 6px;
+      }
+    }
     ^header.showBorder {
       border-bottom: 1px solid $grey300;
     }
@@ -134,6 +139,11 @@ foam.CLASS({
       flex-shrink: 0;
       white-space: nowrap;
     }
+    @media only screen and (max-width: 767px) {
+      ^footer {
+        padding: 0.3em 1em;
+      }
+    }
     ^footer-right, ^footer-left {
       display: flex;
       align-items: center;
@@ -158,11 +168,17 @@ foam.CLASS({
       text-align: center;
       transition: all 150ms;
     }
-
     ^inner-title-small {
       padding: 1.2rem 0;
     }
-
+    @media only screen and (max-width: 767px) {
+      ^inner-title, ^inner-title-small {
+        font-size: 1.6rem;
+        line-height: 1.25;
+        padding: 1.2rem 0;
+        transition: none;
+      }
+    }
     ^footer.p-legal-light {
       color: #6F6F6F;
     }
