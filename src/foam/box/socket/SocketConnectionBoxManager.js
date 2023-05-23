@@ -201,13 +201,12 @@ foam.CLASS({
 
           final SocketConnectionBox b = box;
           final X x_ = x;
-          Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-              b.execute(x_);
-            }
-          }, socket.getRemoteSocketAddress().toString());
-  
+          Thread thread = new Thread(() -> {
+            b.execute(x_);
+          }), socket.getRemoteSocketAddress().toString());
+          thread.setDaemon(true);
+          thread.start();
+          
           return box;
         } catch ( java.net.ConnectException |
                    java.net.NoRouteToHostException |

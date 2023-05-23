@@ -80,17 +80,16 @@ foam.CLASS({
                     client.setSoTimeout(getSoTimeout());
                     
                     final X x_ = x;
-                    Thread thread = new Thread(new Runnable() {
-                      @Override
-                      public void run() {
-                        try {
-                          SocketServerProcessor processor = new SocketServerProcessor(getX(), client);
-                          processor.execute(x_);
-                        } catch( IOException ioe ) {
-                          logger.error(ioe);
-                        }
+                    Thread thread = new Thread(() -> {
+                      try {
+                        SocketServerProcessor processor = new SocketServerProcessor(getX(), client);
+                        processor.execute(x_);
+                      } catch( IOException ioe ) {
+                        logger.error(ioe);
                       }
                     }, client.getRemoteSocketAddress().toString());
+                    thread.setDaemon(true);
+                    thread.start();
                     // agency.submit(
                     //   x,
                     //   new SocketServerProcessor(getX(), client),
