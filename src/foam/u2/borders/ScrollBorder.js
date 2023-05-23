@@ -14,6 +14,9 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
     }
+    ^shouldOverflow{
+      height: 100%;
+    }
     ^reverse {
       width: 100%;
       display: flex;
@@ -25,6 +28,9 @@ foam.CLASS({
     /* Extra div added by borders?? */
     ^reverse > div:not(.edge) {
       flex: 1;
+    }
+    ^shouldOverflow > ^reverse > div:not(.edge) {
+      height: 100%;
     }
     ^::before {
       display: block;
@@ -67,14 +73,20 @@ foam.CLASS({
       class: 'Boolean',
       name: 'botShadow'
     },
+    {
+      class: 'Boolean',
+      name: 'disableScroll'
+    },
     'topEdge_',
     'botEdge_'
   ],
 
   methods: [
     function init () {
+     
       this
         .addClass()
+        .enableClass(this.myClass('shouldOverflow'), this.disableScroll$)
         .enableClass(this.myClass('topShadow'), this.topShadow$)
         .enableClass(this.myClass('botShadow'), this.botShadow$)
         .start('', {}, this.topEdge_$)
