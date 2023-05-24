@@ -52,13 +52,15 @@ foam.CLASS({
     }
 
     ^bodyWrapper {
-      display: flex;
       flex-direction: column;
       flex: 1;
       padding: 0 4rem;
       align-self: center;
       width: 100%;
       overflow: auto;
+    }
+    ^bodyWrapper:not(^removeFlex)  {
+      display: flex;
     }
     ^actionBar {
       padding: 2.4rem;
@@ -104,7 +106,7 @@ foam.CLASS({
     ^body {
       max-height: 90vh;
       overflow: auto;
-      display: contents;
+      display: flex;
       align-items: center;
       flex-direction: column;
     }
@@ -380,6 +382,7 @@ foam.CLASS({
           }))
           .start()
             .addClass(this.myClass('bodyWrapper'))
+            .enableClass(this.myClass('removeFlex'), this.forceFullHeightBody$)
             .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
               this.forceFullHeightBody = false;
@@ -398,7 +401,7 @@ foam.CLASS({
                 .show(titleSlot)
                 .add(titleSlot);
             }))
-            .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
+            .start(this.ScrollBorder, { topShadow$: this.isScrolled$, disableScroll$: this.forceFullHeightBody$ })
               .addClass(this.myClass('body'))
               .enableClass(this.myClass('fullHeightBody'), this.forceFullHeightBody$.or(this.fullscreen$.or(this.forceFullscreen$).not()))
               .call(function() { content = this.content; })
