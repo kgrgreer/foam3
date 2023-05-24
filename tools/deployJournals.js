@@ -4,9 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-const path_     = require('path');
-const fs_       = require('fs');
-const path = path_.posix;
+const path_ = require('path');
+const fs_   = require('fs');
+const path  = path_.posix;
 
 require('../src/foam_node.js');
 
@@ -48,9 +48,9 @@ async function findJournals({ jrls, srcPath }) {
 
 
 const main = async function() {
-
   foam.require(X.pom, false, true);
   const jrls = {};
+
   await asyncForEach(foam.poms, async(p) => {
     if ( p.pom.journals ) {
       p.pom.journals.forEach(async (j) => {
@@ -62,6 +62,7 @@ const main = async function() {
       await findJournals({jrls, srcPath: p.location});
     }
   });
+
   for ( const key in jrls ) {
     // console.log('writing...', path_.join(outPath, key  + '.0'))
     fs_.writeFileSync(path_.join(outPath, key + '.0'), jrls[key]);
@@ -69,7 +70,7 @@ const main = async function() {
 }
 
 async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
+  for ( let index = 0 ; index < array.length ; index++ ) {
     await callback(array[index], index, array);
   }
 }
