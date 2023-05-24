@@ -197,7 +197,6 @@ foam.CLASS({
           box = new SocketConnectionBox(x, key, socket);
           add(box);
           Agency agency = (Agency) x.get(getThreadPoolName());
-          //agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
 
           final SocketConnectionBox b = box;
           final X x_ = x;
