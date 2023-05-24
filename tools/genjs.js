@@ -36,8 +36,8 @@ loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 loaded.forEach(l => {
   try {
     l = path_.resolve(__dirname, l);
-    if ( foam.excluded[l] ) { console.log('****** EXCLUDING', l); return; }
-    console.log('****** INCLUDING', l);
+    if ( foam.excluded[l] ) { /* console.log('****** EXCLUDING', l); */ return; }
+    // console.log('****** INCLUDING', l);
     files[l] = fs_.readFileSync(l, "utf8");
   } catch (x) {}
 });
