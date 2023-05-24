@@ -1,7 +1,7 @@
 require('../src/foam_node.js');
 
 const path_ = require('path');
-const fs_ = require('fs').promises;
+const fs_   = require('fs').promises;
 
 var [argv, X, flags] = require('./processArgs.js')(
   '',
@@ -131,8 +131,8 @@ foam.CLASS({
 
 const PROPS = foam.tools.PomSplit.getAxiomsByClass(foam.core.Property);
 
-const prop = str => `\x1B[36;1m<${foam.String.labelize(str)}>\x1B[0m`;
-const DOC_ARGS = PROPS.map(p => '<' + foam.String.labelize(p.name) + '>').join(' ');
+const prop          = str => `\x1B[36;1m<${foam.String.labelize(str)}>\x1B[0m`;
+const DOC_ARGS      = PROPS.map(p => '<' + foam.String.labelize(p.name) + '>').join(' ');
 const DOCUMENTATION = `pom.js file splitter
 
 \x1B[31;1musage: node pomsplit.js ${DOC_ARGS}\x1B[0m
