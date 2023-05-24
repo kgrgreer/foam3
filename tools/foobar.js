@@ -5,22 +5,24 @@
  */
 
 const path_ = require('path');
-const fs_ = require('fs');
-const path = require('path');
+const fs_   = require('fs');
+const path  = require('path');  // Why require twice?
 
 require('../src/foam_node.js');
 
-const FOAM_POM = path_.join(__dirname, '../src/pom');
-const CORE_POM = path_.join(__dirname, '../src/foam/nanos/pom');
+const FOAM_POM   = path_.join(__dirname, '../src/pom');
+const CORE_POM   = path_.join(__dirname, '../src/foam/nanos/pom');
 const FOOBAR_POM = path_.join(__dirname, '../src/foam/foobar/pom');
-const TOOL_DIR = __dirname;
+const TOOL_DIR   = __dirname;
 
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
-    version: '', license: '', pom: 'pom',
     buildDebug: false,
-    task: 'CleanBuild'
+    license:    '',
+    pom:        'pom',
+    task:       'CleanBuild',
+    version:    ''
   },
   { debug: true, java: false, web: true }
 );
@@ -48,7 +50,7 @@ var pomData;
 const foobarPomCtx = {
   foam: {
     POM: function FOOBAR_POM (pom) {
-      pomData = pom;
+      pomData    = pom;
       configData = pom.foobar;
     }
   }
@@ -62,9 +64,9 @@ with ( foobarPomCtx ) {
 }
 
 const config = foam.foobar.FoobarConfig.create({
-  config: configData,
+  config:   configData,
   toolsDir: TOOL_DIR,
-  srcDirs: pomData.projects.map(p => path_.dirname(p.name)).join(',')
+  srcDirs:  pomData.projects.map(p => path_.dirname(p.name)).join(',')
 });
 
 if ( config.get('protected') ) {
@@ -80,7 +82,7 @@ const main = async function main () {
   const foobarX = X.createSubContext({
     config,
     toolsDir: TOOL_DIR,
-    srcDirs: pomData.projects.map(p => path_.dirname(p.name)).join(',')
+    srcDirs:  pomData.projects.map(p => path_.dirname(p.name)).join(',')
   });
 
   const ctrl = foam.foobar.FoobarController.create({}, foobarX);
@@ -98,4 +100,3 @@ const mainWithSimpleErrors = async function mainWithSimpleErrors () {
 }
 
 X.buildDebug ? main() : mainWithSimpleErrors();
-
