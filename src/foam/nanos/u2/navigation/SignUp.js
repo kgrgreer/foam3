@@ -41,9 +41,9 @@ foam.CLASS({
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
-    { name: 'EMAIL_ERR', message: 'Valid email required' },
+    { name: 'EMAIL_ERR', message: 'Required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
-    { name: 'USERNAME_EMPTY_ERR', message: 'Username required' },
+    { name: 'USERNAME_EMPTY_ERR', message: 'Required' },
     { name: 'USERNAME_AVAILABILITY_ERR', message: 'This username is taken. Please try another.' },
     //TODO: Find out better way to deal with PASSWORD_ERR
     { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters' },
