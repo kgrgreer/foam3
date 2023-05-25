@@ -22,6 +22,7 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
@@ -39,7 +40,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'enable'
+      name: 'enable',
+      value: true
     },
     {
       class: 'String',
