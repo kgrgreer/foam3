@@ -83,7 +83,6 @@ foam.CLASS({
 
   methods: [
     function init () {
-     
       this
         .addClass()
         .enableClass(this.myClass('shouldOverflow'), this.disableScroll$)

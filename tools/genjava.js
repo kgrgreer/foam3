@@ -18,6 +18,8 @@ var [argv, X, flags] = require('./processArgs.js')(
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     buildlib:      false,
+    buildjournals: false,
+    journaldir:    './target/journals2/',
     libdir:        './build/lib',
     outdir:        '/build/src/java',
     pom:           'pom'
@@ -30,8 +32,10 @@ var [argv, X, flags] = require('./processArgs.js')(
   }
 );
 
-X.outdir    = path_.resolve(path_.normalize(X.outdir));
-X.javaFiles = [];
+X.outdir        = path_.resolve(path_.normalize(X.outdir));
+X.javaFiles     = [];
+X.journalFiles  = [];
+X.journalOutput = {};
 
 foam.require(X.pom, false, true);
 
@@ -57,8 +61,9 @@ if ( ! flags.javac ) return;
 // console.log(X.javaFiles);
 // console.log(foam.poms);
 
-var fs_   = require('fs');
-var exec_ = require('child_process');
+const fs_   = require('fs');
+const exec_ = require('child_process');
+
 var found = 0;
 
 
@@ -110,6 +115,8 @@ function processDir(pom, location, skipIfHasPOM) {
         found++;
         X.javaFiles.push(fn);
       }
+    } else if ( f.name.endsWith('.jrl') ) {
+      addJournal(fn);
     }
   });
 }
@@ -149,6 +156,30 @@ function loadLibs(pom) {
 
 if ( X.buildlib && ! fs_.existsSync(X.libdir) ) fs_.mkdirSync(X.libdir, {recursive: true});
 
+function addJournal(fn) {
+  X.journalFiles.push(fn);
+  if ( ! X.buildjournals ) return;
+  var i = fn.lastIndexOf('/');
+  var journalName = fn.substring(i+1, fn.length-4);
+  var file = fs_.readFileSync(fn);
+  X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
+}
+
+function outputJournals() {
+  if ( ! X.buildjournals ) return;
+
+  if ( fs_.existsSync(X.journaldir) ) {
+//    fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
+  } else {
+    fs_.mkdirSync(X.journaldir, {recursive: true});
+  }
+
+  Object.keys(X.journalOutput).forEach(f => {
+    fs_.writeFileSync(X.journaldir + f + '.0', X.journalOutput[f]);
+  });
+}
+
+
 var seen = {};
 function processPOM(pom) {
   if ( seen[pom.location] ) return;
@@ -162,19 +193,26 @@ foam.poms.forEach(processPOM);
 console.log(`GENJAVA: Found ${found} java files.`);
 
 //console.log(X.javaFiles);
-fs_.writeFileSync('javaFiles', X.javaFiles.join('\n') + '\n');
+fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
+fs_.writeFileSync('journalFiles', X.journalFiles.join('\n') + '\n');
 
 if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @javaFiles`;
+var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
 
 console.log('GENJAVA Compiling:', cmd);
 exec_.exec(cmd, [], (error, stdout, stderr) => {
   console.log('GENJAVA Finished Compiling');
-  if ( error ) console.log(error);
   console.log(stdout);
   console.log(stderr);
+  if ( error ) {
+    console.log(error);
+    process.exit(1);
+  }
 });
 
+console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
+console.log(X.journalFiles);
 
+outputJournals();
 // console.log('************ PROCESS', process.env);
