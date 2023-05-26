@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
