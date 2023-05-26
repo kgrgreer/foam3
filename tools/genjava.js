@@ -203,9 +203,12 @@ var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:
 console.log('GENJAVA Compiling:', cmd);
 exec_.exec(cmd, [], (error, stdout, stderr) => {
   console.log('GENJAVA Finished Compiling');
-  if ( error ) console.log(error);
   console.log(stdout);
   console.log(stderr);
+  if ( error ) {
+    console.log(error);
+    process.exit(1);
+  }
 });
 
 console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
