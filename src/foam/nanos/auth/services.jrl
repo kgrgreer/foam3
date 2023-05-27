@@ -74,3 +74,18 @@ p({
       }
     """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"credentialsDAO",
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("credentials")
+      .setOf(foam.nanos.auth.Credential.getOwnClassInfo())
+      .build();
+    `,
+  "client":"{\"of\":\"foam.nanos.auth.Credential\"}"
+})

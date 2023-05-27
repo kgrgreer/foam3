@@ -609,6 +609,7 @@ foam.POM({
     { name: "crunch/predicate/IsAgentUpdate",                                             flags: "js|java" },
     { name: "crunch/predicate/IsCapabilityJunctionOf",                                    flags: "js|java" },
     { name: "auth/CreateUserCapabilityJunctionOnSpidSet",                                 flags: "js|java" },
+    { name: "auth/Credential",                                                            flags: "js|java" },
     { name: "auth/SetUserServiceProviderJunctionRuleAction",                              flags: "js|java" },
     { name: "auth/FilterBySpidService",                                                   flags: "js|java" },
     { name: "auth/PreventDuplicateEmailLoginService",                                     flags: "js|java" },
