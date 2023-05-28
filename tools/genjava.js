@@ -74,22 +74,30 @@ function verbose() {
 
 function matchJavaSources(pom, f, isDir) {
   var javaSources = pom.pom.javaSources;
-  if ( ! javaSources ) return true;
+  if ( ! javaSources ) { return true; }
   f = f.substring(pom.location.length);
   for ( var i = 0 ; i < javaSources.length ; i++ ) {
     var pattern = javaSources[i];
     if ( pattern.startsWith('-') ) {
       pattern = pattern.substring(1);
       if ( isDir ) {
-        if ( f.startsWith(pattern) ) return false;
+        console.log(`*** nomatch ${f} "${pattern}"`);
+        if ( f.startsWith(pattern) ) {
+          return false;
+        }
       } else {
         if ( f.endsWith(pattern) ) return false;
       }
     } else {
       if ( isDir ) {
-        if ( f.startsWith(pattern) ) return true;
+        console.log(`*** match ${f} "${pattern}"`);
+        if ( f.startsWith(pattern) ) {
+          return true;
+        }
       } else {
-        if ( f.endsWith(pattern) ) return true;
+        if ( f.endsWith(pattern) ) {
+          return true;
+        }
       }
     }
   }
@@ -111,11 +119,12 @@ function processDir(pom, location, skipIfHasPOM) {
         processDir(pom, fn, true);
     } else if ( f.name.endsWith('.java') ) {
       if ( matchJavaSources(pom, fn, false) ) {
-        verbose('\t\tfile:', fn);
+        verbose('\t\tjava source:', fn);
         found++;
         X.javaFiles.push(fn);
       }
     } else if ( f.name.endsWith('.jrl') ) {
+      verbose('\t\tjournal source:', fn);
       addJournal(fn);
     }
   });
@@ -162,6 +171,7 @@ function addJournal(fn) {
   var i = fn.lastIndexOf('/');
   var journalName = fn.substring(i+1, fn.length-4);
   var file = fs_.readFileSync(fn);
+  // console.log('***', fn, journalName, file.length);
   X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
 }
 
@@ -169,7 +179,7 @@ function outputJournals() {
   if ( ! X.buildjournals ) return;
 
   if ( fs_.existsSync(X.journaldir) ) {
-//    fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
+    fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
   } else {
     fs_.mkdirSync(X.journaldir, {recursive: true});
   }
@@ -186,7 +196,7 @@ function processPOM(pom) {
   if ( X.buildlib ) loadLibs(pom);
   seen[pom.location] = true;
   verbose('GENJAVA: Scanning POM for java files:', pom.location);
-  processDir(pom, pom.location, false);
+  processDir(pom, pom.location || '/', false);
 }
 
 foam.poms.forEach(processPOM);
