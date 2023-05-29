@@ -168,10 +168,13 @@ if ( X.buildlib && ! fs_.existsSync(X.libdir) ) fs_.mkdirSync(X.libdir, {recursi
 function addJournal(fn) {
   X.journalFiles.push(fn);
   if ( ! X.buildjournals ) return;
-  var i = fn.lastIndexOf('/');
+  var i           = fn.lastIndexOf('/');
   var journalName = fn.substring(i+1, fn.length-4);
-  var file = fs_.readFileSync(fn);
-  // console.log('***', fn, journalName, file.length);
+  var file        = fs_.readFileSync(fn).toString();
+
+  if ( ! file.length ) return;
+
+  file = `// The following ${(file || '').split('\n').length} lines were copied from "${path_.relative(process.cwd(), fn)}"\n` + file
   X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
 }
 
