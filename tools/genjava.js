@@ -37,7 +37,7 @@ X.javaFiles     = [];
 X.journalFiles  = [];
 X.journalOutput = {};
 
-foam.require(X.pom, false, true);
+X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
 // Promote all UNUSED Models to USED
 // 2 passes in case interfaces generated new classes in 1st pass
