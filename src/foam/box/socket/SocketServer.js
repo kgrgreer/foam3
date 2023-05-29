@@ -93,7 +93,7 @@ foam.CLASS({
                       SocketServerProcessor processor = new SocketServerProcessor(x_, client);
                       processor.execute(x_);
                     } catch ( IOException ioe ) {
-                      logger.error("Failed to accecpt connection with: " + client.getRemoteSocketAddress(), ioe);
+                      logger.error("Accept failed", client.getRemoteSocketAddress(), ioe);
                     }
                   }, client.getRemoteSocketAddress().toString());
                   acceptThread.setDaemon(true);
