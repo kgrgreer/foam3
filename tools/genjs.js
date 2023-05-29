@@ -24,7 +24,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   { debug: true, java: false, web: true, genjava: false }
 );
 
-foam.require(X.pom, false, true);
+X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
 var version  = X.version;
 var files    = {}; // filename to content map for uglify
