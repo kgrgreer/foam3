@@ -165,7 +165,7 @@ foam.CLASS({
                 showAction: true
               }
             }]
-          }
+          }, parent: this
         }, this));
       }
     },
