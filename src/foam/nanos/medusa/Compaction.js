@@ -32,7 +32,7 @@ foam.CLASS({
             }
           ]
         };
-      },
+      }
     },
     {
       documentation: 'Entry is eligible for compaction',
@@ -57,6 +57,13 @@ foam.CLASS({
       name: 'clearable',
       class: 'Boolean',
       value: true
+    },
+    {
+      documentation: 'DAO specific Sink to control compaction. When null/undefined, a test for a facetted sink will occur',
+      name: 'sink',
+      class: 'FObjectProperty',
+      of: 'foam.dao.Sink',
+      view: { class: 'foam.u2.view.JSONTextView' }
     }
   ]
 });
