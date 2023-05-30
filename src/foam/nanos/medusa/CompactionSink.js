@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.core.ClassInfo',
     'foam.core.ContextAware',
     'foam.core.X',
+    'foam.core.FacetManager',
     'foam.dao.DAO',
     'foam.dao.AbstractSink',
     'foam.dao.ProxySink',
@@ -64,15 +65,51 @@ foam.CLASS({
         getSinks().put(entry.getNSpecName(), getDelegate());
       } else {
         Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
-        if ( compaction != null &&
-             ! compaction.getCompactible() ) {
-          getSinks().put(entry.getNSpecName(), new AbstractSink());
+        if ( compaction != null ) {
+          if ( ! compaction.getCompactible() ) {
+            ((Logger) x.get("logger")).info("CompactionSink",entry.getNSpecName(), "sink,null");
+            getSinks().put(entry.getNSpecName(), new AbstractSink());
+          } else {
+            getSinks().put(entry.getNSpecName(), getFacetedSink(x, entry));
+          }
         } else {
+          ((Logger) x.get("logger")).info("CompactionSink",entry.getNSpecName(), "sink,delegate");
           getSinks().put(entry.getNSpecName(), getDelegate());
         }
       }
 
       return (Sink) getSinks().get(entry.getNSpecName());
+      `
+    },
+    {
+      name: 'getFacetedSink',
+      args: 'X x, MedusaEntry entry',
+      type: 'Sink',
+      javaCode: `
+      DAO dao = (DAO) x.get(entry.getNSpecName());
+      Compaction compaction = (Compaction) ((DAO) getX().get("compactionDAO")).find(entry.getNSpecName());
+
+      Sink sink = (Sink) compaction.getSink();
+      if ( sink == null ) {
+        try {
+          FacetManager fm = (FacetManager) x.get("facetManager");
+          sink = (Sink) fm.create(dao.getOf().getId()+"CompactionSink", x);
+        } catch (Throwable t) {
+          // nop
+        }
+      }
+
+      if ( sink != null ) {
+        if ( sink instanceof ContextAware ) {
+          ((ContextAware) sink).setX(x);
+        }
+        ((ProxySink) sink).setDelegate(getDelegate());
+      } else {
+        sink = getDelegate();
+      }
+
+      ((Logger) x.get("logger")).info("CompactionSink",entry.getNSpecName(), "sink",sink.getClass().getName());
+      return sink;
       `
     }
   ]

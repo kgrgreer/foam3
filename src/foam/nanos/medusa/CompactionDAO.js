@@ -336,13 +336,13 @@ TODO: handle node roll failure - or timeout
               cmd = (FileRollCmd) client.cmd(new FileRollCmd());
               replies.put(cfg.getId(), cmd);
               if ( ! foam.util.SafetyUtil.isEmpty(cmd.getError()) ) {
-                logger.error("cmd", cfg.getId(), cmd.getError());
+                logger.error("node,failed", cfg.getId(), cmd.getError());
                 failures.put(cfg.getId(), cmd);
               } else {
-                logger.debug("cmd", cfg.getId(), cmd.getRolledFilename());
+                logger.info("node,complete", cfg.getId(), cmd.getRolledFilename());
               }
             } catch (RuntimeException e) {
-              logger.error("cmd", cfg.getId(), e.getMessage());
+              logger.error("node,failed", cfg.getId(), e.getMessage());
               failures.put(cfg.getId(), null);
             }
           }
@@ -430,8 +430,9 @@ TODO: handle node roll failure - or timeout
             try {
               Object response = client.put(bs);
               replies.put(cfg.getId(), response);
+              logger.info("secondary,reconfigure,complete", cfg.getId());
             } catch (RuntimeException e) {
-              logger.error("secondary, reconfigure, failed", cfg.getId(), e.getMessage());
+              logger.error("secondary,reconfigure,failed", cfg.getId(), e.getMessage());
               failures.put(cfg.getId(), e.getMessage());
             }
           }
@@ -528,7 +529,6 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      double ratio = ((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue();
       double compressed = ((((Long) processed.getValue()) - ((Long) compacted.getValue())) / ((Long) processed.getValue()).doubleValue()) * 100.0;
       long compactionTime = System.currentTimeMillis() - startTime;
       double seconds = compactionTime / 1000.0;
@@ -537,7 +537,7 @@ TODO: handle node roll failure - or timeout
       double promotedS = ((Long) compacted.getValue()) / seconds;
       double min100K = minutes / ( (Long) compacted.getValue() / 100000.0 );
       StringBuilder report = new StringBuilder();
-      report.append("instance,processed,compacted,duration s,ratio,compressed,date");
+      report.append("instance,processed,compacted,duration s,compressed,date");
       report.append("\\n");
       report.append(System.getProperty("hostname", "loalhost"));
       report.append(",");
@@ -546,8 +546,6 @@ TODO: handle node roll failure - or timeout
       report.append(compacted.getValue());
       report.append(",");
       report.append(Math.round(seconds));
-      report.append(",");
-      report.append(String.format("%.2f", ratio));
       report.append(",");
       report.append(String.format("%.2f%%", compressed));
       report.append(",");
@@ -590,8 +588,9 @@ TODO: handle node roll failure - or timeout
               try {
                 Object response = client.cmd(cmd);
                 replies.put(cfg.getId(), response);
+                logger.info("secondary,purge,complete", cfg.getId());
               } catch (RuntimeException e) {
-                logger.error("secondary, purge, failed", cfg.getId(), e.getMessage());
+                logger.error("secondary,purge,failed", cfg.getId(), e.getMessage());
                 failures.put(cfg.getId(), e.getMessage());
               }
             }
