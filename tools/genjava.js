@@ -174,7 +174,7 @@ function addJournal(fn) {
 
   if ( ! file.length ) return;
 
-  file = `// The following ${(file || '').split('\n').length} lines were copied from "${path_.relative(process.cwd(), fn)}"\n` + file
+  file = `// The following ${(file || '').split('\n').length} lines were copied from "${path_.relative(process.cwd(), fn)}"\n` + file + '\n';
   X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
 }
 
