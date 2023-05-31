@@ -211,7 +211,7 @@ exec_.exec(cmd, [], (error, stdout, stderr) => {
 });
 
 console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
-console.log(X.journalFiles);
+// console.log(X.journalFiles);
 
 outputJournals();
 // console.log('************ PROCESS', process.env);
