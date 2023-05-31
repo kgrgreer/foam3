@@ -403,7 +403,7 @@ foam.CLASS({
           },
 
           date: function(v) {
-          if ( 'now' === v ) return this.NOW();
+          if ( 'now' === v ) return self.NOW();
           var args = [];
             for (var i = 0; i < v.length; i ++ ) {
               if ( i == 0 || i % 2 === 0 ) {
