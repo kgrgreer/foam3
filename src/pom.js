@@ -7,11 +7,7 @@
 foam.POM({
   name: "foam",
   version: 3,
-  javaSources: [
-    '-DatastoreDAO.java',
-    '.java',
-    ''
-  ],
+  excludes: [ 'DatastoreDAO.java' ],
   files: [
     { name: "foam/core/lib",                                          flags: "js" },
     { name: "foam/core/stdlib",                                       flags: "js" },

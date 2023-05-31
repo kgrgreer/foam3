@@ -72,37 +72,24 @@ function verbose() {
 }
 
 
-function matchJavaSources(pom, f, isDir) {
-  var javaSources = pom.pom.javaSources;
-  if ( ! javaSources ) { return true; }
-  f = f.substring(pom.location.length);
-  for ( var i = 0 ; i < javaSources.length ; i++ ) {
-    var pattern = javaSources[i];
-    if ( pattern.startsWith('-') ) {
-      pattern = pattern.substring(1);
-      if ( isDir ) {
-        console.log(`*** nomatch ${f} "${pattern}"`);
-        if ( f.startsWith(pattern) ) {
-          return false;
-        }
-      } else {
-        if ( f.endsWith(pattern) ) return false;
-      }
-    } else {
-      if ( isDir ) {
-        console.log(`*** match ${f} "${pattern}"`);
-        if ( f.startsWith(pattern) ) {
-          return true;
-        }
-      } else {
-        if ( f.endsWith(pattern) ) {
-          return true;
-        }
-      }
+function isExcluded(pom, f) {
+  var ex = pom.pom.excludes;
+  if ( ! ex ) return false;
+  for ( var i = 0 ; i < ex.length ; i++ ) {
+    var p = ex[i];
+    if ( p.endsWith('*') ) p = p.substring(0, p.length-1);
+
+    if (
+      f.endsWith(p) ||
+      ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) )
+    {
+      return true;
     }
   }
+
   return false;
 }
+
 
 function processDir(pom, location, skipIfHasPOM) {
   verbose('\tdirectory:', location);
@@ -113,12 +100,11 @@ function processDir(pom, location, skipIfHasPOM) {
   files.forEach(f => {
     var fn = location + '/' + f.name;
     if ( f.isDirectory() && ! f.name.startsWith('.') ) {
-      if ( f.name.indexOf('android') != -1 ) return false;
-      if ( f.name.indexOf('examples') != -1 ) return false;
-      if ( matchJavaSources(pom, fn, true) )
-        processDir(pom, fn, true);
+      if ( f.name.indexOf('android') != -1 ) return;
+      if ( f.name.indexOf('examples') != -1 ) return;
+        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
     } else if ( f.name.endsWith('.java') ) {
-      if ( matchJavaSources(pom, fn, false) ) {
+      if ( ! isExcluded(pom, fn) ) {
         verbose('\t\tjava source:', fn);
         found++;
         X.javaFiles.push(fn);
