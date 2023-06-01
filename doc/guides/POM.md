@@ -1,5 +1,16 @@
 ## POM - Project Object Model
 
+## Purpose
+
+The purpose of a POM file is to provide the information needed to build or execute a FOAM project. It is used by for both Web and NodeJS JS applications and for Java server applications.
+
+For pre-packaged JS web apps, the tool genjs.js will read a pom and create a single .js file containing a minified collection of all required .js files.
+
+For non-packaged JS web apps, the web app will download and process the POM directly.
+
+For server-side Java apps, genjava.js will process to POM and compile the resulting body
+of .java source files.
+
 ## POM Attributes
 
 ### name
