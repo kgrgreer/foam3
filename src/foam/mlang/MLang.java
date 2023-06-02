@@ -321,6 +321,18 @@ public class MLang
     return d;
   }
 
+  public static Expr HOURS(Object o) {
+    var h = new Hours();
+    h.setArg1(MLang.prepare(o));
+    return h;
+  }
+
+  public static Expr MINUTES(Object o) {
+    var m = new Minutes();
+    m.setArg1(MLang.prepare(o));
+    return m;
+  }
+
   public static Expr prepareFormula(Formula formula, Object... args) {
     formula.setArgs(toExprArray(args));
     return formula;
