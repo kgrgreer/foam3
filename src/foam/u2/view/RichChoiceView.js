@@ -529,7 +529,7 @@ foam.CLASS({
                 this.addClass(self.myClass('setAbove'))
                   .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
                     .addClass(self.myClass('heading'))
-                    .translate(section.heading, section.heading)
+                    .translate(section.heading$)
                   .end()
                   .start()
                     .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
