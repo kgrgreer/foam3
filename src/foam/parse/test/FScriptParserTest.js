@@ -282,6 +282,30 @@ foam.CLASS({
     sps.setString("DAYS(birthday) == 365");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "DAYS(now - 365d)==365");
 
+    var hour = Date.from(LocalDateTime.now().minusDays(2).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(hour);
+
+    sps.setString("HOURS(birthday) == 48");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "HOURS(now - 2d)==48");
+
+    hour = Date.from(LocalDateTime.now().minusDays(2).plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(hour);
+
+    sps.setString("HOURS(birthday) == 47");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "HOURS(now - 2d + 30m)==47");
+
+    var minute = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(minute);
+
+    sps.setString("MINUTES(birthday) == 120");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MINUTES(now - 2h)==120");
+
+    minute = Date.from(LocalDateTime.now().minusHours(2).plusSeconds(30).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(minute);
+
+    sps.setString("MINUTES(birthday) == 119");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MINUTES(now - 2h + 30s)==119");
+
     sps.setString("emailVerified==false");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "emailVerified==false");
 
