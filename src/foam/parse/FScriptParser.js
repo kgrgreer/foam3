@@ -83,8 +83,6 @@ foam.CLASS({
       test('MONTHS(born)==240');
       test('DAYS(born) > 7280 && DAYS(born) < 7300');
       test('HOURS(born) > 174720 && HOURS(born) < 175200');
-      test('MINUTES(born) > 10500000');
-      test('MINUTES(born) < 11100000');
       test('MINUTES(born) > 10500000 && MINUTES(born) < 11100000');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
