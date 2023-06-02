@@ -40,7 +40,7 @@ foam.CLASS({
         id: 42,
         firstName: 'Kevin',
         lastName: 'Greer',
-        born: new Date('11/19/1970'),
+        born: new Date(new Date().setFullYear(new Date().getFullYear() - 20)),
         address: { city: 'Toronto', regionId: 'ON' }
       });
 
@@ -74,8 +74,10 @@ foam.CLASS({
       test('firstName=="Kevin"&&lastName=="Greer"');
       test('firstName=="Kevin"||id==42');
       test('address instanceof foam.nanos.auth.Address');
-      test('YEARS(born)>51');
+      test('YEARS(born)==20');
       test('YEARS(1970-11-19)>51');
+      test('MONTHS(born)==240');
+      test('DAYS(born) > 7280 && DAYS(born) < 7300');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
     },
@@ -180,6 +182,8 @@ foam.CLASS({
 
           value: alt(
             sym('years'),
+            sym('months'),
+            sym('days'),
             sym('regex'),
             sym('string'),
             sym('date'),
@@ -246,6 +250,12 @@ foam.CLASS({
 
           years: seq1(1,
             literalIC('YEARS('), sym('value'), ')'),
+
+          months: seq1(1,
+            literalIC('MONTHS('), sym('value'), ')'),
+
+          days: seq1(1,
+            literalIC('DAYS('), sym('value'), ')'),
 
           field: seq(
             sym('fieldname'),
@@ -368,6 +378,10 @@ foam.CLASS({
           fieldLen: function(v) { return self.STRING_LENGTH(v[0]); },
 
           years: function(v) { return self.YEARS(v); },
+
+          months: function(v) { return self.MONTHS(v); },
+
+          days: function(v) { return self.DAYS(v); },
 
           formula: function(v) {
             return self.ADD.apply(self, v);

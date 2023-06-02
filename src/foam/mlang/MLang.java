@@ -297,6 +297,30 @@ public class MLang
     return y;
   }
 
+  public static Expr MONTH(Object o) {
+    var m = new Month();
+    m.setNumberOfMonths((int)o);
+    return m;
+  }
+
+  public static Expr MONTHS(Object o) {
+    var m = new Months();
+    m.setArg1(MLang.prepare(o));
+    return m;
+  }
+
+  public static Expr DAY(Object o) {
+    var d = new Day();
+    d.setNumberOfDays((int)o);
+    return d;
+  }
+
+  public static Expr DAYS(Object o) {
+    var d = new Days();
+    d.setArg1(MLang.prepare(o));
+    return d;
+  }
+
   public static Expr prepareFormula(Formula formula, Object... args) {
     formula.setArgs(toExprArray(args));
     return formula;
