@@ -1485,21 +1485,15 @@ foam.CLASS({
       if ( translationService ) {
         /* Add the translation of the supplied source to the Element as a String */
         let xmsgObj, translation;
-        let getOptDefault = () => {
-          if ( foam.core.Slot.isInstance(opt_default) ) {
-            return opt_default.get();
-          } 
-          return opt_default;
-        }
         if ( foam.core.Slot.isInstance(source) ) {
-          translation = source.map(v => this.translationService.getTranslation(foam.locale, v, getOptDefault()))
+          translation = source.map(v => this.translationService.getTranslation(foam.locale, v, opt_default || v))
           xmsgObj = {source$: source, data$: translation };
         } else {
-          translation = this.translationService.getTranslation(foam.locale, source, getOptDefault());
+          translation = this.translationService.getTranslation(foam.locale, source, opt_default || source);
           xmsgObj = {source: source, data: translation };
         }
         if ( foam.xmsg ) {
-          return this.tag({ ...xmsgObj, class: 'foam.i18n.InlineLocaleEditor', defaultText: getOptDefault() });
+          return this.tag({ ...xmsgObj, class: 'foam.i18n.InlineLocaleEditor', defaultText: opt_default });
         }
         return this.add(translation);
       }
