@@ -315,6 +315,7 @@ foam.POM({
     { name: "cron/NextDate",                                                              flags: "js|java" },
     { name: "cron/NextDateService",                                                       flags: "js|java" },
     { name: "cron/ClientNextDateService",                                                 flags: "js|java" },
+    { name: "cron/test/CronScheduleTest",                                                 flags: "js|java" },
     { name: "cron/test/IntervalScheduleTest",                                             flags: "js|java" },
     { name: "cron/test/TimeOfDayScheduleTest",                                            flags: "js|java" },
     { name: "export/ClientGoogleSheetsExportService",                                     flags: "js|java" },
