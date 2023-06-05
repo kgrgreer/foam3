@@ -85,7 +85,7 @@ foam.CLASS({
       sched.setMinute(-1);
       sched.setSecond(-1);
       sched.setDayOfMonth(-1);
-      sched.setDayOfWeek(2); // Tuesday
+      sched.setDayOfWeek(LocalDateTime.now().getDayOfWeek().getValue()); // day of test run.
       last = sched.getNextScheduledTime(x, null);
       lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
       next = sched.getNextScheduledTime(x, last);
