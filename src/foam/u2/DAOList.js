@@ -99,6 +99,10 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    { name: 'MESSAGE_OF', message: 'of'}
+  ],
+
   methods: [
     function render() {
       let view = this;
@@ -160,7 +164,7 @@ foam.CLASS({
     methods: [
       function render() {
         var self = this;
-        this.start(this.rowView, { data: this.data }) 
+        this.start(this.rowView, { data: this.data })
           .addClass(this.myClass())
           .call(this.insertClick.bind(self), [this.data])
         .end()
