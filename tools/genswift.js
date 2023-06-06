@@ -11,11 +11,11 @@ var path_ = require('path');
 
 // Enable FOAM swift support.
 globalThis.FOAM_FLAGS = {
-  'js': false,
-  'java': false,
-  'node': false,
-  'swift': true,
   'debug': true,
+  'java':  false,
+  'js':    false,
+  'node':  false,
+  'swift': true
 };
 
 var dir = __dirname;
@@ -41,9 +41,9 @@ var indir = process.argv[2];
 indir = path_.resolve(path_.normalize(indir));
 
 var externalFile = require(indir);
-var classes = externalFile.classes;
+var classes      = externalFile.classes;
+var outdir       = process.argv[3];
 
-var outdir = process.argv[3];
 outdir = path_.resolve(path_.normalize(outdir));
 execSync('rm -rf ' + outdir);
 
@@ -52,7 +52,7 @@ var executor = foam.classloader.NodeJsModelExecutor.create({
   modelId: 'foam.swift.GenSwift',
   modelArgs: {
     models: classes,
-    outdir: outdir,
-  },
+    outdir: outdir
+  }
 });
 executor.execute();
