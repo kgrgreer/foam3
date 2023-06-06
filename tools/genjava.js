@@ -17,18 +17,18 @@ var [argv, X, flags] = require('./processArgs.js')(
     d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
-    buildlib:      false,
-    buildjournals: false,
     journaldir:    './target/journals2/',
     libdir:        './build/lib',
     outdir:        '/build/src/java',
     pom:           'pom'
   },
   {
-    genjava: true,
-    java:    true,
-    javac:   false,
-    verbose: false
+    buildlib:      false,
+    buildjournals: false,
+    genjava:       true,
+    java:          true,
+    javac:         false,
+    verbose:       false
   }
 );
 
