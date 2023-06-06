@@ -138,12 +138,27 @@ foam.CLASS({
           if ( capability == null ) {
             logger.error(this.getClass().getSimpleName(), "Capability not found", ucj.getTargetId());
             alarm.setNote(this.ERROR_CAPABILITY_NOT_FOUND + ucj.getTargetId());
-          } else if ( capability.getOf() != null &&
-                      ucj.getData() != null ) {
-            logger.error(this.getClass().getSimpleName(), "Type mismatch", "capability", capability.getId(), "expected", capability.getOf().getId(), "received", ucj.getData().getClassInfo().getId());
           }
-          ((DAO) x.get("alarmDAO")).put(alarm);
-          throw new RuntimeException(alarm.getNote());
+          // want to handle the case where ! ( ucj.getData().getClassInfo().equals(capability.getOf())
+            if ( ! ucj.getData().getClassInfo().equals(capability.getOf()) ) {
+              // I want to then check if class extends ucj.getData()
+              if ( ucj.getData().getClassInfo().getClass().isAssignableFrom(capability.getOf().getClass()) ) {
+                try {
+                  FObject newObj = (FObject)capability.getOf().newInstance();
+                  newObj.copyFrom(ucj.getData());
+                  ucj.setData(newObj);
+                } catch (java.lang.Exception e){
+                  throw new RuntimeException(e);
+                }
+              }
+            } else {
+              if ( capability.getOf() != null &&
+                      ucj.getData() != null ) {
+                logger.error(this.getClass().getSimpleName(), "Type mismatch", "capability", capability.getId(), "expected", capability.getOf().getId(), "received", ucj.getData().getClassInfo().getId());
+              }
+              ((DAO) x.get("alarmDAO")).put(alarm);
+              throw new RuntimeException(alarm.getNote());
+            }
         }
 
         return super.put_(x, obj);
