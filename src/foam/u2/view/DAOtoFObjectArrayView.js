@@ -48,9 +48,7 @@ foam.CLASS({
 
       this.addClass();
 
-      this.tag(this.STACK);
-
-      this.stack.push({class: this.daoView, data: this.dao }, this);
+      this.start(this.daoView, { data: this.dao }).end();
     }
   ]
 });
