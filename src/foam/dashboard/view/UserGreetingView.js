@@ -66,6 +66,6 @@ foam.CLASS({
             return this.title + (this.subject.user ? ', ' + this.subject.user.firstName : '');
           }))
         .end();
-    } 
+    }
   ]
 });
