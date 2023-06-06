@@ -24,13 +24,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'stack',
-      view: { class: 'foam.u2.stack.StackView', showActions: false },
-      factory: function() {
-        return this.Stack.create();
-      }
-    },
-    {
       class: 'foam.u2.ViewSpec',
       name: 'daoView',
       factory: function() { return foam.u2.view.EmbeddedTableView; }
@@ -55,9 +48,7 @@ foam.CLASS({
 
       this.addClass();
 
-      this.tag(this.STACK);
-
-      this.stack.push({class: this.daoView, data: this.dao }, this);
+      this.start(this.daoView, { data: this.dao }).end();
     }
   ]
 });
