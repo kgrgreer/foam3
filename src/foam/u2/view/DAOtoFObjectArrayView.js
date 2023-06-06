@@ -16,8 +16,6 @@ foam.CLASS({
     'foam.dao.ArrayDAO'
   ],
 
-  exports: [ 'stack' ],
-
   css: `
     ^ .foam-u2-stack-StackView {
       height: auto;
@@ -57,7 +55,9 @@ foam.CLASS({
 
       this.addClass();
 
-      this.start(this.daoView, { data: this.dao }).end();
+      this.tag(this.STACK);
+
+      this.stack.push({class: this.daoView, data: this.dao }, this);
     }
   ]
 });
