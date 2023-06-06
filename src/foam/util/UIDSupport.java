@@ -8,7 +8,12 @@ package foam.util;
 
 public class UIDSupport {
   /**
-   * Modulo constant for UID checksum
+   * Modulo constant for UID checksum.
+   *
+   * CHECKSUM_MOD must be <= 1/2 * (0xfff - 0x100) = 1919, where 0x100 and
+   * 0xfff are the min and max values of three hex digits. The bound of the
+   * CHECKSUM_MOD is to ensure the checksum after permutation is exactly three
+   * hex digits.
    */
   public final static int CHECKSUM_MOD = 997;
 
@@ -57,6 +62,9 @@ public class UIDSupport {
     return toHexString(checksum, 3) + String.valueOf(id);
   }
 
+  /**
+   * Shift the character `n' positions in the hex digit space.
+   */
   private static char shift(char c, int n) {
     int digit = Character.digit(c, 16);
     return Character.forDigit ((digit + n) % 16, 16);

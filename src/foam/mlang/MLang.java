@@ -297,6 +297,42 @@ public class MLang
     return y;
   }
 
+  public static Expr MONTH(Object o) {
+    var m = new Month();
+    m.setNumberOfMonths((int)o);
+    return m;
+  }
+
+  public static Expr MONTHS(Object o) {
+    var m = new Months();
+    m.setArg1(MLang.prepare(o));
+    return m;
+  }
+
+  public static Expr DAY(Object o) {
+    var d = new Day();
+    d.setNumberOfDays((int)o);
+    return d;
+  }
+
+  public static Expr DAYS(Object o) {
+    var d = new Days();
+    d.setArg1(MLang.prepare(o));
+    return d;
+  }
+
+  public static Expr HOURS(Object o) {
+    var h = new Hours();
+    h.setArg1(MLang.prepare(o));
+    return h;
+  }
+
+  public static Expr MINUTES(Object o) {
+    var m = new Minutes();
+    m.setArg1(MLang.prepare(o));
+    return m;
+  }
+
   public static Expr prepareFormula(Formula formula, Object... args) {
     formula.setArgs(toExprArray(args));
     return formula;

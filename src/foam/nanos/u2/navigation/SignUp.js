@@ -239,8 +239,8 @@ foam.CLASS({
                   signinOnSubmit: true
                 }
               }]
-            }
-          }));
+            }, parent: this
+          }, this));
         }
       }
     },

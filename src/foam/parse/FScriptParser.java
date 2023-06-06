@@ -444,6 +444,10 @@ public class FScriptParser
 
     grammar.addSymbol("VALUE", new Alt(
       grammar.sym("YEARS"),
+      grammar.sym("MONTHS"),
+      grammar.sym("DAYS"),
+      grammar.sym("HOURS"),
+      grammar.sym("MINUTES"),
       grammar.sym("REGEX"),
       grammar.sym("DATE"),
       grammar.sym("VAR"),
@@ -709,6 +713,50 @@ public class FScriptParser
     ));
     grammar.addAction("YEARS", (val, x) -> {
       return YEARS(val);
+    });
+
+    grammar.addSymbol("MONTHS", new Seq1(2,
+      new LiteralIC("MONTHS("),
+      Whitespace.instance(),
+      grammar.sym("VALUE"), // FORMULA?
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+    grammar.addAction("MONTHS", (val, x) -> {
+      return MONTHS(val);
+    });
+
+    grammar.addSymbol("DAYS", new Seq1(2,
+      new LiteralIC("DAYS("),
+      Whitespace.instance(),
+      grammar.sym("VALUE"), // FORMULA?
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+    grammar.addAction("DAYS", (val, x) -> {
+      return DAYS(val);
+    });
+
+    grammar.addSymbol("HOURS", new Seq1(2,
+      new LiteralIC("HOURS("),
+      Whitespace.instance(),
+      grammar.sym("VALUE"), // FORMULA?
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+    grammar.addAction("HOURS", (val, x) -> {
+      return HOURS(val);
+    });
+
+    grammar.addSymbol("MINUTES", new Seq1(2,
+      new LiteralIC("MINUTES("),
+      Whitespace.instance(),
+      grammar.sym("VALUE"), // FORMULA?
+      Whitespace.instance(),
+      Literal.create(")")
+    ));
+    grammar.addAction("MINUTES", (val, x) -> {
+      return MINUTES(val);
     });
 
     grammar.addSymbol("MAX", new Seq2(2, 6,

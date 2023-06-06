@@ -11,7 +11,7 @@ foam.CLASS({
     { class: 'Int',    name: 'id' },
     { class: 'String', name: 'firstName' },
     { class: 'String', name: 'lastName' },
-    { class: 'Date',   name: 'born' },
+    { class: 'DateTime',   name: 'born' },
     { class: 'FObjectProperty', of: 'foam.nanos.auth.Address', name: 'address' }
   ]
 });
@@ -36,11 +36,15 @@ foam.CLASS({
     function test__() {
       var fs = foam.parse.FScriptParser.create({of: foam.parse.Test});
 
+      var born = new Date(new Date().setFullYear(new Date().getFullYear() - 20));
+      born.setHours(9);
+      born.setMinutes(30);
+
       var data = foam.parse.Test.create({
         id: 42,
         firstName: 'Kevin',
         lastName: 'Greer',
-        born: new Date('11/19/1970'),
+        born: born,
         address: { city: 'Toronto', regionId: 'ON' }
       });
 
@@ -74,8 +78,12 @@ foam.CLASS({
       test('firstName=="Kevin"&&lastName=="Greer"');
       test('firstName=="Kevin"||id==42');
       test('address instanceof foam.nanos.auth.Address');
-      test('YEARS(born)>51');
+      test('YEARS(born)==20');
       test('YEARS(1970-11-19)>51');
+      test('MONTHS(born)==240');
+      test('DAYS(born) > 7280 && DAYS(born) < 7300');
+      test('HOURS(born) > 174720 && HOURS(born) < 175200');
+      test('MINUTES(born) > 10500000 && MINUTES(born) < 11100000');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
     },
@@ -180,6 +188,10 @@ foam.CLASS({
 
           value: alt(
             sym('years'),
+            sym('months'),
+            sym('days'),
+            sym('hours'),
+            sym('minutes'),
             sym('regex'),
             sym('string'),
             sym('date'),
@@ -246,6 +258,18 @@ foam.CLASS({
 
           years: seq1(1,
             literalIC('YEARS('), sym('value'), ')'),
+
+          months: seq1(1,
+            literalIC('MONTHS('), sym('value'), ')'),
+
+          days: seq1(1,
+            literalIC('DAYS('), sym('value'), ')'),
+
+          hours: seq1(1,
+            literalIC('HOURS('), sym('value'), ')'),
+
+          minutes: seq1(1,
+            literalIC('MINUTES('), sym('value'), ')'),
 
           field: seq(
             sym('fieldname'),
@@ -368,6 +392,14 @@ foam.CLASS({
           fieldLen: function(v) { return self.STRING_LENGTH(v[0]); },
 
           years: function(v) { return self.YEARS(v); },
+
+          months: function(v) { return self.MONTHS(v); },
+
+          days: function(v) { return self.DAYS(v); },
+
+          hours: function(v) { return self.HOURS(v); },
+
+          minutes: function(v) { return self.MINUTES(v); },
 
           formula: function(v) {
             return self.ADD.apply(self, v);

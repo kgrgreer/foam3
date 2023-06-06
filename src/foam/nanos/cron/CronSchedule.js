@@ -13,11 +13,16 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'java.util.Calendar'
+    'java.time.LocalDate',
+    'java.time.LocalDateTime',
+    'java.time.DayOfWeek',
+    'java.time.ZoneId',
+    'java.time.temporal.TemporalAdjusters',
+    'java.util.Date'
   ],
 
   documentation: `
-    Schedule for periodic tasks. Prefer IntervalSchedule unless dayOfWeek is required.
+    Schedule for periodic tasks.
   `,
 
   properties: [
@@ -54,7 +59,7 @@ foam.CLASS({
       name: 'dayOfWeek',
       value: -1,
       documentation: `Day of week to execute script.
-          Ranges from 0 - 6, where 0 is Sunday. -1 for wildcard`
+          Ranges from 1 - 7, where 1 is Monday (matches java time dayofweek). -1 for wildcard`
     },
     {
       class: 'Int',
@@ -62,6 +67,11 @@ foam.CLASS({
       value: 0,
       documentation: `Second to execute the script.
            Ranges from 0 - 59. -1 for wildcard`
+    },
+    {
+      class: 'Reference',
+      of: 'foam.time.TimeZone',
+      name: 'timezone'
     }
   ],
 
@@ -79,53 +89,69 @@ foam.CLASS({
         }
       ],
       type: 'Date',
-      javaCode:
-`Calendar next = Calendar.getInstance();
-next.setTime(from);
-next.add(Calendar.SECOND, 1);
-next.set(Calendar.MILLISECOND, 0);
-
-boolean dateFound = false;
-while ( next.get(Calendar.YEAR) < 3000 ) {
-  if ( getMonth() >= 0 && next.get(Calendar.MONTH) != getMonth() - 1 ) {
-    next.add(Calendar.MONTH, 1);
-    next.set(Calendar.DAY_OF_MONTH, 1);
-    next.set(Calendar.HOUR_OF_DAY, 0);
-    next.set(Calendar.MINUTE, 0);
-    next.set(Calendar.SECOND, 0);
-    continue;
-  }
-  if ( ( getDayOfMonth() >= 0 && next.get(Calendar.DAY_OF_MONTH) != getDayOfMonth() ) ||
-      ( getDayOfWeek() >= 0 && next.get(Calendar.DAY_OF_WEEK) != getDayOfWeek() + 1) ) {
-    next.add(Calendar.DAY_OF_MONTH, 1);
-    next.set(Calendar.HOUR_OF_DAY, 0);
-    next.set(Calendar.MINUTE, 0);
-    next.set(Calendar.SECOND, 0);
-    continue;
-  }
-  if ( getHour() >= 0 && next.get(Calendar.HOUR_OF_DAY) != getHour() ) {
-    next.add(Calendar.HOUR_OF_DAY, 1);
-    next.set(Calendar.MINUTE, 0);
-    next.set(Calendar.SECOND, 0);
-    continue;
-  }
-  if ( getMinute() >= 0 && next.get(Calendar.MINUTE) != getMinute() ) {
-    next.add(Calendar.MINUTE, 1);
-    next.set(Calendar.SECOND, 0);
-    continue;
-  }
-  if( getSecond() >= 0 && next.get(Calendar.SECOND) != getSecond() ) {
-    next.add(Calendar.SECOND, 1);
-    continue;
-  }
-
-  dateFound = true;
-  break;
+      javaCode: `
+var zone = ZoneId.systemDefault();
+if ( ! foam.util.SafetyUtil.isEmpty(getTimezone()) ) {
+  zone = ZoneId.of(getTimezone());
 }
-if ( ! dateFound ) {
-  throw new IllegalArgumentException("Unable to get next scheduled time");
+
+LocalDateTime last = null;
+if ( from == null ) {
+  last = LocalDate.now(zone).atStartOfDay();
+} else {
+  last = LocalDateTime.ofInstant(from.toInstant(), zone);
 }
-return next.getTime();`
+var time = last;
+
+// test if component needs to be bumped to the next hour, minute,...
+if ( getHour() > -1 ) {
+  if ( time.getHour() >= getHour() &&
+       ! time.isAfter(last) ) {
+    time = time.plusDays(1);
+  }
+  time = time.withHour(getHour());
+}
+if ( getMinute() > -1 ) {
+  if ( time.getMinute() >= getMinute() &&
+       ! time.isAfter(last) ) {
+    time = time.plusHours(1);
+  }
+  time = time.withMinute(getMinute());
+}
+if ( getSecond() > -1 ) {
+  if ( time.getSecond() >= getSecond() &&
+       ! time.isAfter(last) ) {
+    time = time.plusMinutes(1);
+  }
+  time = time.withSecond(getSecond());
+}
+if ( getMonth() > -1 ) {
+  if ( time.getMonthValue() >= getMonth() &&
+       ! time.isAfter(last) ) {
+    time = time.plusYears(1);
+  }
+  time = time.withMonth(getMonth() - 1);
+}
+if ( getDayOfMonth() > -1 ) {
+  if ( time.getDayOfMonth() >= getDayOfMonth() &&
+       ! time.isAfter(last) ) {
+    time = time.plusMonths(1);
+  }
+  // handle 28, 30, 31 days of month.
+  if ( getDayOfMonth() <= time.toLocalDate().lengthOfMonth() ) {
+    time = time.withDayOfMonth(getDayOfMonth());
+  } else {
+    time = time.with(TemporalAdjusters.lastDayOfMonth());
+  }
+} else if ( getDayOfWeek() > -1 ) {
+  DayOfWeek dow = DayOfWeek.of(getDayOfWeek());
+  if ( time.getDayOfWeek().getValue() >= dow.getValue() &&
+       ! time.isAfter(last) ) {
+    time = time.with(TemporalAdjusters.next(dow));
+  }
+}
+return Date.from(time.atZone(zone).toInstant());
+`
     },
     {
       name: 'postExecution',
