@@ -153,7 +153,7 @@ if ( X.buildlib && ! fs_.existsSync(X.libdir) ) fs_.mkdirSync(X.libdir, {recursi
 
 function addJournal(fn) {
   X.journalFiles.push(fn);
-  if ( ! X.buildjournals ) return;
+  if ( ! flags.buildjournals ) return;
   var i           = fn.lastIndexOf('/');
   var journalName = fn.substring(i+1, fn.length-4);
   var file        = fs_.readFileSync(fn).toString();
@@ -165,7 +165,7 @@ function addJournal(fn) {
 }
 
 function outputJournals() {
-  if ( ! X.buildjournals ) return;
+  if ( ! flags.buildjournals ) return;
 
   if ( fs_.existsSync(X.journaldir) ) {
     fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
