@@ -109,7 +109,7 @@ public class UIDSupport {
    */
   public static int hash(String uid) {
     var hex = undoPermute(uid);
-    return mod(Long.parseLong(hex, 16));
+    return mod16(hex);
   }
 
   /**
@@ -140,6 +140,28 @@ public class UIDSupport {
    */
   public static int mod(long n) {
     return (int) (n % CHECKSUM_MOD);
+  }
+
+  /**
+   * Calculate the checksum of a hexadecimal number.
+   *
+   * Traverse the hexadecimal number from right to left and iteratively compute
+   * the checksum modulus without converting the hexadecimal number to decimal
+   * to prevent potential conversion overflow.
+   *
+   * @param hex The hexadecimal number in string format
+   * @return checksum
+   */
+  public static int mod16(String hex) {
+    int modulo = 0;
+    int base = 1;
+
+    for ( int i = hex.length() - 1; i >=0 ; i-- ) {
+      int digit = Character.digit(hex.charAt(i), 16);
+      modulo = mod(modulo + digit * base);
+      base = mod(base * 16);
+    }
+    return modulo;
   }
 
   /**
