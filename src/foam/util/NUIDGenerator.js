@@ -22,7 +22,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'static foam.util.UIDSupport.*',
-    'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicLong',
     'java.util.concurrent.atomic.AtomicBoolean'
   ],
 
@@ -35,7 +35,7 @@ foam.CLASS({
     init_();
   }
 
-  AtomicInteger seqNo_ = new AtomicInteger();
+  AtomicLong seqNo_ = new AtomicLong();
   AtomicBoolean initMaxSeqNo_ = new AtomicBoolean(false);
   `,
 
