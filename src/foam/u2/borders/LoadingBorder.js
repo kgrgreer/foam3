@@ -7,6 +7,9 @@
 foam.ENUM({
   package: 'foam.u2.borders',
   name: 'LoadingLevel',
+
+  flags: [ 'java' ],
+
   values: [
     {
       name: 'idle',
@@ -20,10 +23,13 @@ foam.ENUM({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.borders',
   name: 'LoadingBorder',
   extends: 'foam.u2.Element',
+
+  flags: [ ],
 
   requires: [
     'foam.u2.LoadingSpinner',

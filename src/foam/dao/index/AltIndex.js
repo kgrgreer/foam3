@@ -32,7 +32,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AnonymousSink',
     'foam.dao.index.NoPlan',
-    'foam.mlang.sink.NullSink',
+    'foam.mlang.sink.NullSink'
   ],
 
   constants: {
@@ -58,7 +58,7 @@ foam.CLASS({
     /** Returns smallest estimate from the delegates */
     function estimate(size, sink, skip, limit, order, predicate) {
       var cost = Number.MAX_VALUE;
-      for ( var i = 0; i < this.delegates.length; i++ ) {
+      for ( var i = 0 ; i < this.delegates.length ; i++ ) {
         cost = Math.min(
           cost,
           this.delegates[i].estimate(size, sink, skip, limit, order, predicate)
@@ -69,7 +69,7 @@ foam.CLASS({
 
     function toPrettyString(indent) {
       var ret = "";
-      for ( var i = 0; i < this.delegates.length; i++ ) {
+      for ( var i = 0 ; i < this.delegates.length ; i++ ) {
         ret += this.delegates[i].toPrettyString(indent + 1);
       }
       return ret;

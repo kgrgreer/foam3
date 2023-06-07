@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.om.OMLogger',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.Map'
   ],
@@ -22,8 +23,6 @@ foam.CLASS({
       name: 'id',
       class: 'String',
       visibility: 'HIDDEN',
-//      class: 'Reference',
-//      of: 'foam.nanos.medusa.ClusterConfig'
     },
     {
       // TODO: protected access to this. See updateIndex for synchronized access.
@@ -55,6 +54,7 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      documentation: 'Number of MedusaEntry which are to be replayed from all the nodes to each mediator.',
       name: 'count',
       class: 'Long',
       visibility: 'RO'
@@ -70,40 +70,36 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      name: 'uptime',
-      class: 'String',
-      expression: function(startTime) {
-        var delta = 0;
-        if ( startTime ) {
-          delta = new Date().getTime() - startTime.getTime();
-        }
-        let duration = foam.core.Duration.duration(delta);
-        return duration;
-      }
-    },
-    {
       name: 'timeElapsed',
-      class: 'String',
-      label: 'Elapsed',
-      expression: function(index, replayIndex, startTime, endTime) {
-        var delta = 0;
-        if ( startTime ) {
-          let end = endTime || new Date();
-          delta = end.getTime() - startTime.getTime();
+      class: 'Duration',
+      getter: function() {
+        var time = 0;
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          time = end.getTime() - this.startTime.getTime();
         }
-        let duration = foam.core.Duration.duration(delta);
-        return duration;
+        return time;
       },
-      visibility: 'RO'
+      javaGetter: `
+      var time = 0L;
+      if ( getStartTime() != null ) {
+        var end = getEndTime();
+        if ( end == null ) {
+          end = new java.util.Date();
+        }
+        time = end.getTime() - getStartTime().getTime();
+      }
+      return time;
+      `
     },
     {
       name: 'percentComplete',
       label: '% Complete',
       class: 'Float',
-      expression: function(index, replayIndex) {
-        if ( replayIndex > index ) {
-          return index / replayIndex;
-        } else if ( replayIndex > 0 ) {
+      getter: function() {
+        if ( this.replayIndex > this.index ) {
+          return this.index / this.replayIndex;
+        } else if ( this.replayIndex > 0 ) {
           return 1;
         }
         return 0;
@@ -111,7 +107,7 @@ foam.CLASS({
       visibility: 'RO',
       javaGetter: `
       if ( getReplayIndex() > getIndex() ) {
-        return (float) (int) (((float) getIndex() / (float) getReplayIndex()) * 100);
+        return (float) (int) ((getIndex() / (float) getReplayIndex()) * 100);
       } else if ( getReplayIndex() > 0 ) {
         return (float) 100.0;
       } else {
@@ -121,52 +117,81 @@ foam.CLASS({
     },
     {
       name: 'timeRemaining',
-      class: 'String',
+      class: 'Duration',
       label: 'Remaining',
-      expression: function(index, replayIndex, startTime, endTime) {
-        var timeElapsed = 1;
-        if ( startTime ) {
-          let end = endTime || new Date();
-          timeElapsed = end.getTime() - startTime.getTime();
+      getter: function() {
+        var time = 0;
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          time = end.getTime() - this.startTime.getTime();
         }
-        let remaining = ( timeElapsed / index ) * ( replayIndex - index );
-        let duration = foam.core.Duration.duration(remaining);
-        return duration;
+        if ( time > 0 ) {
+          return ( this.replayIndex - this.index ) / ( this.index / time );
+        }
+        return 0;
       },
       visibility: 'RO',
       javaGetter: `
-      if ( getIndex() == 0 ) {
-        return "0";
+      long time = 0L;
+      long remaining = 0L;
+      if ( getReplayIndex() > getIndex() ) {
+        if ( getStartTime() != null ) {
+          var end = getEndTime();
+          if ( end == null ) {
+            end = new java.util.Date();
+          }
+          time = end.getTime() - getStartTime().getTime();
+        }
+        if ( time > 0 ) {
+          remaining = (long) ( (getReplayIndex() - getIndex()) / (getIndex() / (float) time) );
+        }
       }
-      var timeElapsed = 1L;
+      return remaining;
+      `
+    },
+    {
+      name: 'replayTps',
+      class: 'Float',
+      getter: function() {
+        if ( this.startTime ) {
+          let end = this.endTime || new Date();
+          let tm = ( end.getTime() - this.startTime.getTime() ) / 1000;
+          if ( tm > 0 ) {
+            if ( this.replayIndex > this.index ) {
+              tps = this.index / tm;
+            } else {
+              tps = this.replayIndex / tm;
+            }
+          }
+          return tps;
+        }
+        return 0.0;
+      },
+      javaGetter: `
+      var tps = 0.0;
       if ( getStartTime() != null ) {
         var end = getEndTime();
         if ( end == null ) {
           end = new java.util.Date();
         }
-        timeElapsed = end.getTime() - getStartTime().getTime();
+        var tm = ( end.getTime() - getStartTime().getTime() ) / 1000;
+        if ( tm > 0 ) {
+          if ( getReplayIndex() > getIndex() ) {
+            tps = getIndex() / tm;
+          } else {
+            tps = getReplayIndex() / tm;
+          }
+        }
       }
-      return String.valueOf((( timeElapsed / getIndex() ) * ( getReplayIndex() - getIndex() )) / 1000);
+      return (float) tps;
       `
     },
     {
-      name: 'replayTps',
-      class: 'String',
-      expression: function(index, replayIndex, startTime, endTime) {
-        if ( startTime ) {
-          let end = endTime || new Date();
-          let tm = (end.getTime() - startTime.getTime()) / 1000;
-          let tps = index / tm;
-          return Math.round(tps);
-        }
-        return 0;
-      }
-    },
-    {
-      name: 'replayNodes',
+      name: 'replayDetails',
       class: 'Map',
       javaFactory: 'return new ConcurrentHashMap();',
-      visibility: 'RO'
+      visibility: 'RO',
+      storageTransient: true
     }
   ],
 
@@ -188,6 +213,7 @@ foam.CLASS({
       if ( index > getIndex() ) {
         setIndex(index);
       }
+      ((OMLogger) x.get("OMLogger")).log("medusa.replay.index");
       `
     }
   ]

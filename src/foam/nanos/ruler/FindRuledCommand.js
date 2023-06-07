@@ -16,3 +16,9 @@ foam.CLASS({
     }
   ]
 })
+
+foam.CLASS({
+  package: 'foam.nanos.ruler',
+  name: 'SelectRuledCommand',
+  extends: 'foam.nanos.ruler.FindRuledCommand'
+})

@@ -24,10 +24,8 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.MAX',
-    'foam.mlang.sink.Max',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.log.LogLevel',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.util.concurrent.AbstractAssembly',
@@ -43,7 +41,7 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'ALARM_NAME',
+      name: 'EVENT_NAME',
       type: 'String',
       value: 'Medusa Primary Announce'
     }
@@ -53,7 +51,7 @@ foam.CLASS({
     {
       name: 'indexVerificationMaxWait',
       class: 'Long',
-      value: 60000,
+      value: 10000, // should be instant. 
       units: 'ms'
     }
   ],
@@ -95,38 +93,32 @@ foam.CLASS({
       final Logger logger = Loggers.logger(x, this);
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-
-      // generate an alarm
-      Alarm alarm = new Alarm.Builder(x)
-        .setName(ALARM_NAME)
-        .setIsActive(false)
-        .setReason(AlarmReason.MANUAL)
-        .setNote(myConfig.getId())
-        .setClusterable(false)
-        .build();
-      alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+      final ElectoralService electoral = (ElectoralService) x.get("electoralService");
+ 
+      EventRecord er = new EventRecord(x, "Medusa", EVENT_NAME, "Index verification starting", LogLevel.INFO, null);
+      er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+      er.clearId();
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map<Long, Long> counts = new ConcurrentHashMap();
       final Set<String> replies = new HashSet();
+      final Set<String> errors = new HashSet();
       List<ClusterConfig> nodes = support.getReplayNodes();
       for ( ClusterConfig cfg : nodes ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
-            DAO client = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-            Max max = new Max(0, MedusaEntry.INDEX);
+            DAO client = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
             Long m = 0L;
+            ReplayDetailsCmd details = new ReplayDetailsCmd();
+            details.setRequester(myConfig.getId());
+            details.setResponder(cfg.getId());
             try {
-              max = (Max) client.select(max);
-              if ( max != null ) {
-                m = (Long) max.getValue();
-                replies.add(cfg.getId());
-              }
+              details = (ReplayDetailsCmd) client.cmd_(x, details);
+              m = details.getMaxIndex();
+              replies.add(cfg.getId());
             } catch (RuntimeException e) {
               logger.error(cfg.getId(), e);
-              // Fallback for now - it's many seconds stale but better than nothing
-              ReplayingInfo replaying = cfg.getReplayingInfo();
-              m = replaying.getIndex();
+              errors.add("cfg.getId() "+e.getMessage());
             }
             logger.info(cfg.getId(), "max", m);
             synchronized ( this ) {
@@ -148,6 +140,7 @@ foam.CLASS({
       long sleep = 1000L;
       while ( waited < getIndexVerificationMaxWait() ) {
         try {
+          logger.info("waiting on index verification, replies", replies.size(), "errors", errors.size(), "nodes", nodes.size(), "waiting", getIndexVerificationMaxWait() - waited);
           Thread.currentThread().sleep(sleep);
           waited += sleep;
         } catch (InterruptedException e) {
@@ -155,6 +148,20 @@ foam.CLASS({
         }
         if ( replies.size() >= nodes.size() -1 ) {
           break;
+        }
+        if ( errors.size() >= nodes.size() -1 ) {
+          break;
+        }
+        if ( electoral.getState() != ElectoralServiceState.IN_SESSION ||
+             support.getPrimary(x).getId() != myConfig.getId() ) {
+          // Another vote occurred, another mediator is primary
+          // Abandon announce.
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          replaying.setReplaying(false);
+          er.setMessage("Index verification abandoned");
+          er.setSeverity(LogLevel.INFO);
+          ((DAO) x.get("eventRecordDAO")).put(er);
+          return;
         }
       }
       logger.debug("line.shutdown", "continue");
@@ -171,35 +178,28 @@ foam.CLASS({
       if ( replies.size() < nodes.size() -1 ||
            count == null ||
            count < support.getNodeQuorum() ) {
+        String message = null;
         if ( replies.size() < nodes.size() -1 ) {
           logger.debug("replies", replies.size(), "nodes", nodes.size());
-          logger.error("Index verification", "failed", "Unable to determine max index", "PAUSING");
+          message = "Index verification failed; unable to determine max index.";
         } else {
           logger.debug("max", max, "count", count, "quorum", quorum);
-          logger.error("Index verification", "failed", "Max index does not have quorum", "PAUSING");
+          message = "Index verification failed; max index does not have quorum.";
         }
+        er.setMessage(message);
+        er.setSeverity(LogLevel.ERROR);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
-        alarm = (Alarm) alarm.fclone();
-        alarm.setSeverity(foam.log.LogLevel.ERROR);
-        alarm.setNote("Index Verification Failed");
-        ((DAO) x.get("alarmDAO")).put(alarm);
-
-        // Halt the system.
-        logger.error("After manual verification, cycle Primary (ONLINE->OFFLINE->ONLINE) which will repeat Index Verification");
-        ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
-        cfg.setStatus(Status.OFFLINE);
-        cfg.setErrorMessage("Index verification failed");
-        ((DAO) x.get("localClusterConfigDAO")).put(cfg);
+        electoral.dissolve(x);
       } else {
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         logger.debug("max", max, "index", replaying.getIndex());
         replaying.updateIndex(x, max);
         replaying.setReplaying(false);
-        logger.info("Index verification", "complete");
-
-        alarm = (Alarm) alarm.fclone();
-        alarm.setIsActive(false);
-        ((DAO) x.get("alarmDAO")).put(alarm);
+        er.setMessage("Index verification complete");
+        er.setSeverity(LogLevel.INFO);
+        ((DAO) x.get("eventRecordDAO")).put(er);
       }
       `
     }

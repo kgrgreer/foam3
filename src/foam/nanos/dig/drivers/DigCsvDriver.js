@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
+    'foam.lib.csv.CSVOutputterImpl',
     'foam.lib.csv.CSVSupport',
     'foam.lib.json.OutputterMode',
     'foam.nanos.boot.NSpec',
@@ -65,27 +66,30 @@ foam.CLASS({
     {
       name: 'outputFObjects',
       javaCode: `
-      HttpServletResponse resp = x.get(HttpServletResponse.class);
-      PrintWriter out = x.get(PrintWriter.class);
-      ClassInfo cInfo = dao.getOf();
-      String output = null;
-      
+      HttpServletResponse resp   = x.get(HttpServletResponse.class);
+      PrintWriter         out    = x.get(PrintWriter.class);
+      ClassInfo           cInfo  = dao.getOf();
+      String              output = null;
+
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
         return;
       }
 
-      CSVOutputter outputterCsv = new foam.lib.csv.CSVOutputterImpl.Builder(x)
+      CSVOutputterImpl csv = new CSVOutputterImpl.Builder(x)
         .setOf(cInfo)
         .build();
 
+      if ( cols != null && cols.length > 0 ) csv.setProps(cols);
+
       for ( Object o : fobjects ) {
         FObject fobj = (FObject) o;
-        outputterCsv.outputFObject(x, fobj);
+        csv.outputFObject(x, fobj);
       }
 
       // Output the formatted data
-      out.println(outputterCsv.toString());
+      out.append(csv.getSb());
+      out.println();
       `
     }
   ]

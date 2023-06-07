@@ -48,7 +48,7 @@ foam.CLASS({
         if ( status != null ) {
           ucj.status = status;
         }
-        
+
         ucj.lastUpdatedRealUser = this.subject.realUser.id;
         return await this.userCapabilityJunctionDAO.put(ucj);
       }

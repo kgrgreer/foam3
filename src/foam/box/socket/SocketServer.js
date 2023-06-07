@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.net.Port',
     'java.io.IOException',
     'java.net.ServerSocket',
@@ -38,7 +38,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'threadPoolName',
-      value: 'threadPool'
+      value: 'boxThreadPool'
     },
     {
       documentation: 'So not to block server shutdown, have sockets timeout. Catch and continue on SocketTimeoutException.',
@@ -47,17 +47,9 @@ foam.CLASS({
       value: 60000
     },
     {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
+      class: 'Boolean',
+      name: 'useThreadPoolForConnection',
+      value: true
     }
   ],
 
@@ -65,8 +57,8 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+        final Logger logger = Loggers.logger(getX(), this, "port", String.valueOf(getPort()));
         try {
-          getLogger().info("Starting,port", getPort());
           ServerSocket serverSocket0 = null;
           SslContextFactory contextFactory = (SslContextFactory) getX().get("sslContextFactory");
 
@@ -81,34 +73,48 @@ foam.CLASS({
           final ServerSocket serverSocket = serverSocket0;
 
           Agency agency = (Agency) getX().get(getThreadPoolName());
-          agency.submit(
-            getX(),
-            new ContextAgent() {
-              @Override
-              public void execute(X x) {
-                try {
-                  while ( true ) {
-                    Socket client = serverSocket.accept();
-                    client.setSoTimeout(getSoTimeout());
-                    agency.submit(
-                      x,
-                      new SocketServerProcessor(getX(), client),
-                      client.getRemoteSocketAddress().toString()
-                    );
-                  }
-                } catch ( IOException ioe ) {
-                  getLogger().error(ioe);
+          final X x_ = getX();
+          logger.info("start", "threadPoolName", getThreadPoolName(), "threadsPerCore", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getThreadsPerCore(), "numberOfThreads", ((foam.nanos.pool.AbstractFixedThreadPool) agency).getNumberOfThreads());
+          Thread serverThread = new Thread(() -> {
+            try {
+              while ( true ) {
+                Socket client = serverSocket.accept();
+                client.setSoTimeout(getSoTimeout());
+
+                if ( getUseThreadPoolForConnection() ) {
+                  agency.submit(
+                    x_,
+                    new SocketServerProcessor(x_, client),
+                    client.getRemoteSocketAddress().toString()
+                  );
+                } else {
+                  Thread acceptThread = new Thread(() -> {
+                    try {
+                      SocketServerProcessor processor = new SocketServerProcessor(x_, client);
+                      processor.execute(x_);
+                    } catch ( IOException ioe ) {
+                      logger.error("Accept failed", client.getRemoteSocketAddress(), ioe);
+                    }
+                  }, client.getRemoteSocketAddress().toString());
+                  acceptThread.setDaemon(true);
+                  acceptThread.start();
                 }
               }
-            },
-            "SocketServer.accept-"+getPort()
-          );
+            } catch ( IOException ioe ) {
+              logger.error("SocketServer.accept-" + getPort() + " terminate", ioe);
+            } catch ( Exception e) {
+              logger.error("SocketServer.accept-" + getPort() + " terminate", e);
+            }
+          }, "SocketServer.accept-"  + getPort());
+          serverThread.setDaemon(true);
+          serverThread.setPriority(Thread.MAX_PRIORITY);
+          serverThread.start();
 
         } catch (java.net.BindException e) {
-          getLogger().error(e.getMessage(), e);
+          logger.error(e.getMessage(), e);
           System.exit(1);
         } catch ( Exception e ) {
-          getLogger().error(e);
+          logger.error(e);
         }
       `
     }

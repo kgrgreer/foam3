@@ -19,7 +19,6 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'ActionView',
   extends: 'foam.u2.tag.Button',
-  mixins: [ 'foam.nanos.controller.MementoMixin' ],
 
   documentation: `
     A button View for triggering Actions.
@@ -36,7 +35,7 @@ foam.CLASS({
     'foam.u2.dialog.ConfirmationModal'
   ],
 
-  imports: ['ctrl'],
+  imports: [ 'ctrl?' ],
 
   enums: [
     {
@@ -124,20 +123,12 @@ foam.CLASS({
     },
     {
       name: 'mementoName',
-      factory: function(action) { return this.action.mementoName; }
+      factory: function() { return this.action.mementoName; }
     }
   ],
 
   methods: [
     function render() {
-      if ( this.mementoName ) {
-        if ( this.memento?.head == this.mementoName ) {
-          this.click();
-        }
-        this.initMemento();
-      } else {
-        this.currentMemento_ = this.memento;
-      }
 
       this.tooltip = this.action.toolTip;
 
@@ -163,14 +154,25 @@ foam.CLASS({
   listeners: [
     function click(e) {
       try {
-        if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
-          this.ctrl.add(this.ConfirmationModal.create({
-            primaryAction: this.action,
-            data: this.data,
-            title: this.action.confirmationView().title || this.action.label + ' ' + this.data.toSummary() + '?'
-          }).add(this.action.confirmationView().body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + this.data.toSummary() + '?'));
+        if ( this.ctrl && this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
+          let modal = this.action.confirmationView(this.__subContext__, this.data);
+          if ( ! modal ) {
+            this.action && this.action.maybeCall(this.__subContext__, this.data);
+          }
+          else {
+            (async () => {
+              this.ctrl.add(this.ConfirmationModal.create({
+                primaryAction: this.action,
+                data: this.data,
+                title: modal.title || this.action.label + ' ' + await this.data.toSummary() + '?'
+              }).add(modal.body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + await this.data.toSummary() + '?'));
+            })();
+          }
         } else if ( this.buttonState == this.ButtonState.NO_CONFIRM ) {
           this.action && this.action.maybeCall(this.__subContext__, this.data);
+          let running = this.action.getRunning$(this.data);
+          this.loading_ = running.get();
+          this.onDetach(running.sub(() => { this.loading_ = running.get(); }));
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {
           this.buttonState = this.ButtonState.DEBOUNCE;
           this.removeAllChildren();
@@ -184,10 +186,6 @@ foam.CLASS({
         }
       } catch (x) {
         console.warn('Unexpected Exception in Action: ', x);
-      }
-      if ( this.memento && this.mementoName ) {
-        this.memento.head = this.mementoName;
-        this.memento.params = foam.u2.stack.Stack.ACTION_ID;
       }
       if (e) {
         e.preventDefault();
@@ -219,7 +217,7 @@ foam.CLASS({
     {
       name: 'setConfirm',
       code: function(confirm) {
-        let newState = confirm ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM;
+        let newState    = confirm ? this.ButtonState.CONFIRM : this.ButtonState.NO_CONFIRM;
         let stateChange = this.buttonState != newState;
         this.buttonState = newState;
         this.isDestructive = confirm;

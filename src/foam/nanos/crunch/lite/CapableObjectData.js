@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.nanos.crunch.lite',
   name: 'CapableObjectData',
 
+  imports: [
+    'auth?',
+    'crunchController?'
+  ],
+
   properties: [
     {
       name: 'capablePayloads',
@@ -37,8 +42,7 @@ foam.CLASS({
       class: 'StringArray',
       name: 'capabilityIds',
       columnPermissionRequired: true,
-      section: 'capabilityInformation',
-      visibility: 'HIDDEN'
+      section: 'capabilityInformation'
     },
     {
       class: 'String',
@@ -56,10 +60,12 @@ foam.CLASS({
       //   behaviour works with mlang.Expressions so it's odd that
       //   it doesn't work for this case.
       name: 'setRequirements',
-      flags: ['web'],
+      flags: [ 'java' ],
+      args: 'String[] capabilityIds',
       code: function(capabilityIds) {
         this.capabilityIds = capabilityIds;
-      }
+      },
+      javaCode: 'setCapabilityIds(capabilityIds);'
     },
     {
       name: 'getCapablePayloadDAO',
@@ -70,5 +76,37 @@ foam.CLASS({
         });
       }
     }
+  ],
+
+  actions: [
+    {
+      name: 'openCapableWizard',
+      isAvailable: auth => {
+        return auth?.check(null, 'developer.capableObjectData.openCapableWizard');
+      },
+      code: async function () {
+        if ( ! this.crunchController ) return;
+        for ( const capabilityId of this.capabilityIds ) {
+          const seq = this.crunchController.createCapableWizardSequence(
+            undefined, this, capabilityId
+          );
+          await seq.execute();
+        }
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.nanos.crunch.lite',
+  name: 'BaseCapable',
+
+  flags: [ 'java' ],
+
+  implements: [
+    'foam.nanos.crunch.lite.Capable'
+  ],
+  mixins: [
+    'foam.nanos.crunch.lite.CapableObjectData'
   ]
 });

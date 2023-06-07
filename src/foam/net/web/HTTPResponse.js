@@ -21,8 +21,8 @@ foam.CLASS({
 
   topics: [
     'data',
-    'err',
-    'end'
+    'end',
+    'err'
   ],
 
   properties: [
@@ -41,9 +41,8 @@ foam.CLASS({
     {
       name: 'payload',
       factory: function() {
-        if ( this.streaming ) {
+        if ( this.streaming )
           return null;
-        }
 
         switch ( this.responseType ) {
           case 'text':        return this.resp.text();
@@ -58,8 +57,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'streaming',
-      value: false
+      name: 'streaming'
     },
     {
       class: 'Boolean',
@@ -71,8 +69,11 @@ foam.CLASS({
     {
       name: 'resp',
       postSet: function(_, r) {
-        if ( r.headers.entries ) this.copyHeaders_(r);
-        else                     this.copyHeadersEdge_(r);
+        if ( r.headers.entries ) {
+          this.copyHeaders_(r);
+        } else {
+          this.copyHeadersEdge_(r);
+        }
         this.status = r.status;
       }
     }
@@ -89,9 +90,8 @@ foam.CLASS({
       }, this);
 
       var onData = foam.Function.bind(function(e) {
-        if ( e.value ) {
+        if ( e.value )
           this.data.pub(e.value);
-        }
 
         if ( e.done || ! this.streaming) {
           this.end.pub();
@@ -106,6 +106,7 @@ foam.CLASS({
     function stop() {
       this.streaming = false;
     },
+
     function copyHeaders_(r) {
       var iterator = r.headers.entries();
       var next = iterator.next();
@@ -114,6 +115,7 @@ foam.CLASS({
         next = iterator.next();
       }
     },
+
     function copyHeadersEdge_(r) {
       // Deal with https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13928907/
       var headers = this.headers;

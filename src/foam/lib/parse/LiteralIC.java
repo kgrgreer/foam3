@@ -21,6 +21,9 @@ public class LiteralIC
     value_  = v;
   }
 
+  public String getString() { return string_; }
+  public void setString(String s) { string_ = s; }
+
   public PStream parse(PStream ps, ParserContext x) {
     for ( int i = 0 ; i < string_.length() ; i++ ) {
       if ( ! ps.valid() ||
@@ -35,6 +38,6 @@ public class LiteralIC
   }
 
   public String toString() {
-    return "LiteralIC(" + string_ + ")";
+    return "LiteralIC(" + string_ + ","+((value_!=null)?value_.toString():"null")+")";
   }
 }

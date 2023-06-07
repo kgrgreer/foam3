@@ -12,6 +12,8 @@ FOAM3 is the active version of FOAM.
 
 The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos (but some links may be broken).
 
+Ask questions and get help on the [FOAM Discussion Group](https://groups.google.com/g/foam-framework-discuss).
+
 <!--
 [![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3) -->
 

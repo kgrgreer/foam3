@@ -14,47 +14,43 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      width: 90%;
-      line-height: 17px;
-    }
-    ^ .created {
+    ^created {
       font-size: 1.1rem;
-      color: #5e6061;
-      margin-left: 16px;
+      color: $grey500;
     }
-    ^ .description {
-      font-size: 1.4rem;
-      color: #1e1f21;
-      white-space: nowrap;
-      text-overflow:ellipsis;
+    ^description {
+      color: $black;
       width: 100%;
-      overflow: hidden;
-      margin-left: 32px;
-      display: inline-block;
     }
   `,
 
   properties: [
     'of',
-    'created',
-    'description'
+    {
+      name: 'created',
+      expression: function(data$created) {
+        return data$created.toLocaleString([], { dateStyle: 'medium', timeStyle: 'medium' });
+      }
+    },
+    {
+      name: 'description',
+      expression: function(data$body) {
+        return data$body;
+      }
+    }
   ],
 
   methods: [
     function render() {
       this.SUPER();
 
-      this.created = this.data.created.toUTCString();
-      this.description = this.data.body;
-
       this
         .addClass(this.myClass())
         .start()
-          .start().addClass('created')
+          .start().addClass(this.myClass('created'))
             .add(this.created$)
           .end()
-          .start().addClass('description')
+          .start().addClass('p', this.myClass('description'))
             .add(this.description$)
           .end()
         .end();

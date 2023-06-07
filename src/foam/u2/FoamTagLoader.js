@@ -57,11 +57,15 @@ foam.CLASS({
 
     function installView(el, view) {
       var id = el.id;
-
+      // skip install if element doesnt exist in DOM
+      if ( ! this.document.getElementsByClassName(el.className).length ) return;
       // this.setAttributes(el, view);
 
+      view.replaceElement_(el);
+      /*
       el.outerHTML = view.outerHTML;
       view.load();
+      */
 
       // Store view in global variable if named. Useful for testing.
       if ( id ) globalThis[id] = view;
@@ -71,7 +75,7 @@ foam.CLASS({
       for ( var j = 0 ; j < el.attributes.length ; j++ ) {
         var attr = el.attributes[j];
         var p = this.findPropertyIC(obj.cls_, attr.name);
-        if ( p ) p.set(obj, attr.value);
+        if ( p ) p.set(obj, p.fromString(attr.value));
       }
     }
   ],
@@ -92,5 +96,6 @@ foam.SCRIPT({
   name: 'FoamTagLoaderScript',
   requires: [ 'foam.u2.FoamTagLoader' ],
   flags: [ 'web' ],
-  code: function() { foam.u2.FoamTagLoader.create(); }
+  // TODO: globalThis.window check shouldn't be necessary
+  code: function() { globalThis.window && foam.u2.FoamTagLoader.create(); }
 });

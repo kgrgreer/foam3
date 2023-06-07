@@ -19,7 +19,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.CheckBox'
+    'foam.u2.CheckBox',
+    'foam.dao.FnSink'
   ],
 
   css: `
@@ -38,7 +39,7 @@ foam.CLASS({
       font-size: 1.4rem;
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
       background-image: url(images/ic-search.svg);
       background-repeat: no-repeat;
       background-position: 8px;
@@ -97,7 +98,8 @@ foam.CLASS({
     { name: 'LABEL_LOADING', message: '- LOADING OPTIONS -' },
     { name: 'LABEL_NO_OPTIONS', message: '- NO OPTIONS AVAILABLE -' },
     { name: 'LABEL_SELECTED', message: 'SELECTED OPTIONS' },
-    { name: 'LABEL_FILTERED', message: 'OPTIONS' }
+    { name: 'LABEL_FILTERED', message: 'OPTIONS' },
+    { name: 'LABEL_EMPTY', message: 'NO LABEL' }
   ],
 
   properties: [
@@ -178,12 +180,12 @@ foam.CLASS({
       expression: function(property, daoContents, idToStringDisplayMap, search, selectedOptions) {
         if ( ! daoContents || ! idToStringDisplayMap ) return [];
 
-        var options = Object.values(idToStringDisplayMap);
+        var options = Object.keys(idToStringDisplayMap);
         // Filter out search
         if ( search ) {
           var lowerCaseSearch = search.toLowerCase();
           options = options.filter(function(option) {
-            return option.toLowerCase().includes(lowerCaseSearch);
+            return idToStringDisplayMap[option].toLowerCase().includes(lowerCaseSearch);
           });
         }
         // Filter out selectedOptions
@@ -219,13 +221,12 @@ foam.CLASS({
           return this.TRUE;
         }
         if ( selectedOptions.length === 1 ) {
-          var key = this.getKeyByValue(selectedOptions[0]);
+          var key = selectedOptions[0];
           if ( ! isNaN(key) )
             key = parseInt(key) ? parseInt(key) : key;
           return this.EQ(this.property, key);
         }
-        var keys = selectedOptions.map( (label) => {
-          var key = this.getKeyByValue(label);
+        var keys = selectedOptions.map(key => {
           if ( ! isNaN(key) )
             key = parseInt(key) ? parseInt(key) : key;
           return key;
@@ -250,7 +251,7 @@ foam.CLASS({
         return;
       }
       this.onDetach(this.daoContents$.sub(this.updateReferenceObjectsArray));
-      this.onDetach(this.dao$.sub(this.daoUpdate));
+      this.onDetach(this.dao$proxy.listen(this.FnSink.create({ fn: this.daoUpdate })));
       this.daoUpdate();
 
       this.addClass()
@@ -285,7 +286,7 @@ foam.CLASS({
                   class: 'foam.u2.CheckBox',
                   data: true,
                   showLabel: true,
-                  label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                  label: idToStringDisplayMap[option] ? self.getLabelWithCount(option) : self.LABEL_EMPTY
                 }).end()
               .end();
             });
@@ -318,7 +319,7 @@ foam.CLASS({
                   class: 'foam.u2.CheckBox',
                   data: false,
                   showLabel: true,
-                  label: option ? self.getLabelWithCount(option) : self.LABEL_EMPTY
+                  label: idToStringDisplayMap[option] ? self.getLabelWithCount(option) : self.LABEL_EMPTY
                 }).end()
               .end();
             });
@@ -332,9 +333,8 @@ foam.CLASS({
     },
 
     function getLabelWithCount(option) {
-      var referenceKey = this.getKeyByValue(option);
-      var countForKey = this.daoContents.groups[referenceKey].value;
-      return countForKey > 1 ? `[${countForKey}] ${option}` : option;
+      var countForKey = this.daoContents.groups[option].value;
+      return countForKey > 1 ? `[${countForKey}] ${this.idToStringDisplayMap[option]}` : this.idToStringDisplayMap[option];
     },
 
     /**
@@ -342,16 +342,11 @@ foam.CLASS({
      */
     function restoreFromPredicate(predicate) {
       if ( predicate === this.TRUE ) return;
-
       var selections = Array.isArray(predicate.arg2.value) ? predicate.arg2.value : [predicate.arg2.value];
       // wait for idToStringDisplayMap to populate
-      this.idToStringDisplayMap$.sub(() => {
-        var options = [];
-        selections.forEach((selection) => {
-          options.push(this.idToStringDisplayMap[selection]);
-        });
-        this.selectedOptions = options;
-      })
+      this.idToStringDisplayMap$.sub(foam.events.oneTime(() => {
+        this.selectedOptions = selections;
+      }));
     },
 
     /**
@@ -366,6 +361,8 @@ foam.CLASS({
   listeners: [
     {
       name: 'daoUpdate',
+      isMerged: true,
+      mergeDelay: 250,
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;

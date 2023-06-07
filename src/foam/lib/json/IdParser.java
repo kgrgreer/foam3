@@ -11,20 +11,20 @@ import foam.lib.parse.ProxyParser;
 import foam.lib.parse.Seq1;
 
 public class IdParser
-    extends ProxyParser
+  extends ProxyParser
 {
   public IdParser() {
     super(new Seq1(7,
-        Whitespace.instance(),
-        Literal.create("{"),
-        Whitespace.instance(),
-        new KeyParser("id"),
-        Whitespace.instance(),
-        Literal.create(":"),
-        Whitespace.instance(),
-        AnyParser.instance(),
-        Whitespace.instance(),
-        Literal.create("}")
+      Whitespace.instance(),
+      Literal.create("{"),
+      Whitespace.instance(),
+      new KeyParser("id"),
+      Whitespace.instance(),
+      Literal.create(":"),
+      Whitespace.instance(),
+      AnyParser.instance(),
+      Whitespace.instance(),
+      Literal.create("}")
     ));
   }
 }

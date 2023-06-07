@@ -24,7 +24,7 @@ foam.CLASS({
     {
       flags: ['js'],
       path: 'foam.box.RawSocketBox',
-    },
+    }
   ],
 
   properties: [
@@ -35,12 +35,13 @@ foam.CLASS({
     {
       name: 'delegate',
       factory: function() {
+        /* ignoreWarning */
         // Use default FOAM implementation of Socket. Do not attempt to lookup
         // sensitive "foam.net.node.Socket" class in box context.
         return foam.lookup('foam.net.node.Socket').create(null, this).
-            connectTo(this.address).then(function(s) {
-              return this.RawSocketBox.create({ socket: s });
-            }.bind(this));
+          connectTo(this.address).then(function(s) {
+            return this.RawSocketBox.create({ socket: s });
+          }.bind(this));
       },
       swiftFactory: `
 let socketService = __context__["socketService"] as! SocketService // TODO import

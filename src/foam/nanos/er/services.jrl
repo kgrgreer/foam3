@@ -1,0 +1,59 @@
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"eventRecordDAO",
+  serve:true,
+  serviceScript:"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.er.EventRecord.getOwnClassInfo())
+      .setFuid(true)
+      .setSAF(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("eventRecords")
+      .setWaitReplay(false)
+      .setPm(true)
+      .setDecorator(
+        new foam.nanos.er.EventRecordResponseDAO.Builder(x).setDelegate(
+          new foam.nanos.er.EventRecordDAO.Builder(x).setDelegate(new foam.dao.NullDAO(x, foam.nanos.er.EventRecord.getOwnClassInfo())).build()).build())
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.er.EventRecord.CREATED))
+        .setSize(100000)
+        .build())
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.er.EventRecord.CREATED) })
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.CREATED })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.EVENT })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.HOSTNAME })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.PARTNER })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.SEVERITY })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.SOURCE });
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.er.EventRecord"
+    }
+  """
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"eventRecordResponseDAO",
+  serve:true,
+  serviceScript:"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.er.EventRecordResponse.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("eventRecordResponses")
+      .setPm(true)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.CODE })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.EVENT })
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.er.EventRecord.PARTNER });
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.er.EventRecordResponse"
+    }
+  """
+})

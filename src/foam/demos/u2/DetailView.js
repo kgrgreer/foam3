@@ -4,13 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/*
-  TODO:
-    - help
-    - required
-    - more validation
-*/
-
 var E = foam.__context__.E.bind(foam.__context__);
 
 foam.CLASS({
@@ -20,7 +13,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
+      label: 'ID',
       width: 12,
+      value: '1234',
+      updateVisibility: 'DISABLED',
+      help: 'Unique identifier for this User.',
       documentation: 'Unique name of the Group.'
     },
     {
@@ -29,6 +26,13 @@ foam.CLASS({
       // TODO: doesn't work
       visibility: foam.u2.DisplayMode.RO,
       factory: function() { return new Date(); }
+    },
+    {
+      class: 'Date',
+      name: 'terminated',
+      visibility: function(isEmployee, enabled) {
+        return isEmployee & ! enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO;
+      }
     },
     {
       class: 'Boolean',
@@ -43,11 +47,17 @@ foam.CLASS({
     },
     {
       class: 'Int',
+      name: 'employeeId',
+      help: 'Date of start of employment.',
+      visibility: function(isEmployee) { return isEmployee ? 'RW' : 'HIDDEN'; }
+    },
+    {
+      class: 'Int',
       name: 'salary',
+      help: "The employee's annual salary.",
       units: 'CAD$',
-      // TODO:
-      xxxvalidateObj: function(salary) {
-        if ( salary && salary < 30000 ) throw 'Salary must be at least $30,000.';
+      validateObj: function(salary) {
+        if ( salary < 30000 ) return 'Salary must be at least $30,000.';
       },
       visibility: function(isEmployee) {
         return isEmployee ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -62,11 +72,23 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'firstName'
+      name: 'firstName',
+      label: '',
+      required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'toggleNameLabel',
+      value: false
     },
     {
       class: 'String',
-      name: 'lastName'
+      name: 'lastName',
+      required: true,
+      validateObj: function(lastName) {
+        if ( ! lastName ) return 'Required';
+        if ( lastName && lastName.length < 2 ) return 'Last Name must be at least 2 chars';
+      },
     },
     {
       class: 'EMail',
@@ -108,6 +130,10 @@ foam.CLASS({
       name: 'country',
       value: 'Canada',
       view: { class: 'foam.u2.view.ChoiceView', choices: [ 'Canada', 'United States' ] },
+      postSet: function(_,n) {
+        if ( n == 'Canada' ) this.region = 'ON';
+        if ( n == 'United States' ) this.region = '';
+      },
       width: 30
     }
   ]
@@ -119,105 +145,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'User'
+    'User', 'foam.u2.PropertyBorder'
   ],
-
-  classes: [
-    /*
-    Responsibilities:
-      1. display property's view
-      2. label
-      3. units
-      4. visibility
-      5. validation
-      6. tooltip
-      7. help
-      */
-
-    {
-      name: 'PropertyView',
-      extends: 'foam.u2.Element', // isn't actually a View (no data), more like a border or wrapper
-      properties: [
-        'prop',
-        'args',
-        {
-          name: 'label',
-          factory: function() { return this.prop.label; }
-        },
-        {
-          name: 'units',
-          factory: function() { return this.prop.units; }
-        },
-        {
-          name: 'view'
-        }
-      ],
-      methods: [
-        function xxxtoE(args, X) {
-          return foam.u2.DetailPropertyView.create({prop: this.prop}, this);
-        },
-
-        function createVisibilitySlot() {
-          return this.prop.createVisibilityFor(
-            this.__context__.data$,
-            this.controllerMode$).map(m => m != foam.u2.DisplayMode.HIDDEN);
-        },
-
-        function render() {
-          var prop = this.prop;
-
-          if ( prop.help ) this.tooltip = prop.help;
-
-          // Needs to be called after tooltip is set, which seems like a bug. KGR
-          this.SUPER();
-
-          var data = this.__context__.data;
-          var view = prop.toE_(this.args, this.__subContext__);
-
-          var errorSlot = prop.validateObj && prop.validationTextVisible ?
-            data.slot(prop.validateObj) :
-            foam.core.ConstantSlot.create({ value: null });
-
-          this.
-            addClass().
-            show(this.createVisibilitySlot()).
-            style({'padding-top': '8px'}).
-
-            start('div').style({'padding-bottom': '2px'}).add(this.label).end().
-
-            start('div').
-              style({display: 'flex', 'flex-wrap': 'wrap'}).
-              tag(this.view$.map(v => {
-                // TODO: add a method to Property to bind a view
-                var p = v ? prop.clone().copyFrom({view: v}) : prop;
-                return p.toE_({}, this.__context__);
-              })).
-              add(this.units$.map(units => {
-                if ( ! units ) return '';
-                return this.E().
-                  style({position: 'relative', 'align-self': 'center'}).
-                  add(units).
-                  call(function() {
-                    this.el().then((el) => {
-                      // TODO: find parent and add extra padding
-                      var style = this.__context__.window.getComputedStyle(el);
-                      this.style({'margin-left': -8-parseFloat(style.width)});
-                    });
-                  });
-              })).
-              start('div').
-                style({'flex-basis': '100%', width: '0', color: 'red'}).
-                show(errorSlot).
-                br().
-                add(errorSlot).
-              end().
-            end();
-        }
-      ]
-    }
-  ],
-
-  // css: foam.u2.DetailView.model_.css,
 
   css: `
     ^ {
@@ -232,8 +161,6 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.__subContext__.register(this.PropertyView, 'foam.u2.PropertyView');
-
       var self = this, data = this.data;
 
 //      this.add(this.data.cls_.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
@@ -245,61 +172,82 @@ foam.CLASS({
         start('h3').add('Title').end().
         start(Columns).
           start(Column).
-            add(data.ID, data.ENABLED, data.FIRST_NAME, data.EMAIL).
+            add(data.TOGGLE_NAME_LABEL.__).
+            add(data.ID.__, data.ENABLED.__).
+            tag(data.FIRST_NAME.__, { config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+            tag(data.FIRST_NAME.__, { reserveLabelSpace: true, config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+            add(data.EMAIL.__).
           end().
           start(Column).
-            add(data.CREATED, data.IS_EMPLOYEE, data.LAST_NAME, data.BIRTHDAY).
+            add(data.CREATED.__, data.TERMINATED.__, data.LAST_NAME.__, data.BIRTHDAY.__).
+          end().
+          start(Column).
+            add(data.IS_EMPLOYEE.__, data.EMPLOYEE_ID.__).
           end().
         end().
         br().
         start(Tabs).
           start(Tab, {label: 'Address'}).
-            add(data.ADDRESS).
+            add(data.ADDRESS.__).
             start(Columns).
               start(Column).
-                add(data.CITY, data.COUNTRY).
+                add(data.CITY.__, data.COUNTRY.__).
               end().
               start(Column).
-                tag(self.PropertyView, {
+                tag(self.PropertyBorder, {
                   prop: data.POSTAL_CODE,
                   label: this.data.country$.map(c => {
                     return { Canada: 'Postal Code', 'United States': 'Zip Code' }[c];
                   })
                 }).
-                tag(self.PropertyView, {
+                tag(self.PropertyBorder, {
                   prop: data.REGION,
                   view$: this.data.country$.map(c => {
-                    if ( c === 'Canada' ) return {
-                      class: 'foam.u2.view.ChoiceView',
-                      choices: [
-                        [ 'ON', 'Ontario' ],
-                        [ 'PQ', 'Quebec' ],
-                        [ 'OT', 'Other' ]
-                      ]
-                    };
+                    if ( c === 'Canada' ) {
+                      return {
+                        class: 'foam.u2.view.ChoiceView',
+                        choices: [
+                          [ 'ON', 'Ontario' ],
+                          [ 'PQ', 'Quebec' ],
+                          [ 'OT', 'Other' ]
+                        ]
+                      };
+                    }
                     return data.REGION.view;
                   }),
-                  label: this.data.country$.map(c => {
-                    return { Canada: 'Province', 'United States': 'State' }[c];
-                  })
+                  config: {
+                    label$: this.data.country$.map(c => { return { Canada: 'Province', 'United States': 'State' }[c] })
+                  }
                 }).
               end().
             end().
           end().
           start(Tab, {label: 'Employee Information'}).
             show(data.isEmployee$).
-            add(data.JOB_TITLE, data.SALARY).
+            add(data.JOB_TITLE.__, data.SALARY.__).
           end().
         end().
         start(FoldingSection, {title: 'Employee Information'}).
           show(data.isEmployee$).
+          add(data.JOB_TITLE.__).
+          tag(data.JOB_TITLE.__, { config: { label: 'somthing', units: '123' } }).
+          // How to add a Property view without wrapping in a PropertyBorder
           add(data.JOB_TITLE).
-          tag(self.PropertyView, {
+          add(data.JOB_TITLE.toE_({}, this.__subSubContext__)).
+          tag(self.PropertyBorder, {
             prop: data.SALARY,
-            units: this.data.country$.map(c => {
-              return { Canada: 'CAD$', 'United States': '$' }[c];
-            })
+            config: {
+              units$: this.data.country$.map(c => {
+                return { Canada: 'CAD', 'United States': '$' }[c];
+              })
+            }
           }).
+        end().
+        start(FoldingSection, {title: 'Reserve Label Space test'}).
+          add(data.TOGGLE_NAME_LABEL.__).
+          tag(data.FIRST_NAME.__, { config: { label: 'Name' }}).
+          tag(data.FIRST_NAME.__, { config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
+          tag(data.FIRST_NAME.__, { reserveLabelSpace: true, config: { label$: data.toggleNameLabel$.map(v => v ? 'Name' : '') } }).
         end();
     }
   ]

@@ -93,7 +93,10 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
         class: 'foam.u2.tag.TextArea',
         rows: 4,
         cols: 144
-      }
+      },
+      javaPostSet: `
+      if ( val != null ) setCompactible(true);
+      `
     },
     {
       document: 'Stringified FObject of only storageTransient properties',
@@ -108,11 +111,22 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       }
     },
     {
-      document: 'FObject id',
+      document: `FObject id.
+Initially this was storageTransient and thus not persisted on the nodes.
+With 'compaction' object id is used ensure we only process each ojbect once.
+But with this change from storageTransient, multipart ids are stored as classes which may not exists on the nodes, and thus fail replay.
+Using the MaybeFObjectParser allows the nodes to process the multipart ids as 'Strings'`,
       class: 'Object',
       name: 'objectId',
       visibility: 'RO',
-      storageTransient: true
+      javaCompare: `
+      if ( o1 != null && o2 != null ) {
+        return o1.toString().compareTo(o2.toString());
+      }
+      if ( o1 == null && o2 == null) return 0;
+      return o1 == null ? -1 : 1;
+      `,
+      javaJSONParser: 'new foam.lib.json.MaybeFObjectParser()'
     },
     {
       document: 'FObject on route to Primary',
@@ -174,18 +188,19 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       visibility: 'RO'
     },
     {
-      documentation: 'Solely for information. Originating Mediator.',
-      name: 'mediator',
-      class: 'String',
-      visibility: 'RO',
-      storageTransient: true
-    },
-    {
       documentation: 'Set when journal on the Node. Used to distinguish unique entries during consensus determination.',
       name: 'node',
       class: 'String',
       visibility: 'RO',
       includeInDigest: false, // REVIEW: false to deal with node change (at the moment) when sent to STANDBY Region, but believe this a security hole; without node in digest, one could send the same entry quorum times with a different node set. Also see comments in MedusaSetNodeDAO - Joel
+    },
+    {
+      documentation: 'Indicate if entry is eligible for Compaction.  Entries with only transient data are not eligible for compaction.',
+      name: 'compactible',
+      class: 'Boolean',
+      value: false,
+      visibility: 'RO',
+      storageTransient: true // See 'data' postSet
     },
     {
       name: 'created',
@@ -256,9 +271,43 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       `
     },
     {
+      name: 'toDebugSummary',
+      type: 'String',
+      code: function() {
+        return this.nSpecName + ':' + this.index;
+      },
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNSpecName());
+        sb.append(":");
+        sb.append(getIndex());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash()) ) {
+          sb.append(getHash().substring(0,7));
+        }
+        sb.append(":");
+        sb.append(getIndex1());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash1()) ) {
+          sb.append(getHash1().substring(0,7));
+        }
+        sb.append(":");
+        sb.append(getIndex2());
+        sb.append(":");
+        if ( ! foam.util.SafetyUtil.isEmpty(getHash2()) ) {
+          sb.append(getHash2().substring(0,7));
+        }
+        sb.append(":");
+        if ( getObjectId() != null ) {
+          sb.append(getObjectId().toString());
+        }
+        return sb.toString();
+      `
+    },
+    {
       name: 'toString',
       type: 'String',
       javaCode: `return toSummary();`
-   }
+    }
   ]
 });

@@ -44,8 +44,29 @@ foam.CLASS({
   package: 'foam.pattern',
   name: 'Faceted',
 
+  properties: [
+    [ 'name', 'foam.pattern.Faceted' ],
+    {
+      class: 'Boolean',
+      name: 'inherit',
+      documentation: `
+        Setting this to true will enable climbing the inheritance tree when
+        searching for an implementation. This works well with views that
+        display a subset of an object's properties such as CitationView or
+        RowView as it may result in a generalized representation with missing
+        information.
+      `
+    },
+    {
+      class: 'String',
+      name: 'ofProperty',
+      value: 'of'
+    }
+  ],
+
   methods: [
     function installInClass(cls) {
+      const axiom = this;
       var oldCreate = cls.create;
 
       cls.getFacetOf = function(of, X) {
@@ -55,8 +76,13 @@ foam.CLASS({
         var name;
         var pkg;
         if ( foam.String.isInstance(of) ) {
-          name = of.substring(of.lastIndexOf('.') + 1);
-          pkg  = of.substring(0, of.lastIndexOf('.'))
+          if ( of.indexOf('.') != -1 ) {
+            name = of.substring(of.lastIndexOf('.') + 1);
+            pkg  = of.substring(0, of.lastIndexOf('.'))
+          } else {
+            name = of;
+            pkg  = this.package;
+          }
         } else {
           name = of.name;
           pkg  = of.package;
@@ -64,16 +90,29 @@ foam.CLASS({
 
         var id = ( pkg ? pkg + '.' : '' ) + name + this.name;
 
-        // The of[this.name] checks for an inner-class facet
-        return X.maybeLookup(id) || of[this.name] || this;
+        let facet = X.maybeLookup(id) || of[this.name] || this;
+        if ( axiom.inherit && facet === this ) {
+          const ofCls = foam.String.isInstance(of) ? X.maybeLookup(of) : of;
+          if ( ! ofCls || ! ofCls.model_.extends ) return facet;
+          if ( ofCls == foam.core.FObject ) return facet;
+          return this.getFacetOf(X.maybeLookup(ofCls.model_.extends)) || facet;
+        }
+        return facet;
       };
 
       // ignoreFacets is set to true when called to prevent a second-level
       // of facet checking
       cls.create = function(args, X, ignoreFacets) {
         if ( ! ignoreFacets ) {
-          // If class does not have an 'of', then check for 'data.of' instead.
-          var of       = args && ( args.of || ( args.data && ( args.data.of || args.data.cls_ ) ) );
+          // If class does not have an 'of', then check for 'data.of' instead. Also check data$ incase data doesnt exist
+          var of;
+          if ( args ) {
+            of = args[axiom.ofProperty] || ( args.data && ( args.data[axiom.ofProperty] || args.data.cls_ ) ) ;
+            if ( ! of ) {
+              let data = args.data$?.get();
+              of = data?.[axiom.ofProperty] || data?.cls_;
+            }
+          }
           var facetCls = this.getFacetOf(of, X);
 
           if ( facetCls !== this ) return facetCls.create(args, X, true);
@@ -82,9 +121,5 @@ foam.CLASS({
         return oldCreate.apply(this, arguments);
       }
     }
-  ],
-
-  properties: [
-    ['name', 'foam.pattern.Faceted']
   ]
 });

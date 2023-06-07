@@ -1,7 +1,132 @@
 p({
+  class:"foam.nanos.menu.Menu",
+  id:"crunch",
+  label: "CRUNCH",
+  handler: {
+    class:"foam.nanos.menu.SubMenu"
+  },
+  parent:""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.crunchlab",
+  "label": "Lab",
+  "keywords": ["crunchlab", "crunch lab", "crunch", "lab", "debug crunch", "debug capabilities"],
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {"class":"foam.u2.crunch.CrunchLab"}
+  },
+  "parent":"crunch"
+})
+
+p({
   "class":"foam.nanos.menu.Menu",
-  "id":"admin.capstore",
+  "id":"crunch.capstore",
   "label":"Capability Store",
-  "handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.crunch.CapabilityStore"}},
-  "parent":"admin"
+  "handler": {
+    "class":"foam.nanos.menu.ViewMenu",
+    "view": {
+      "class":"foam.u2.crunch.CapabilityStore"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.capability-category",
+  "label": "Capability Categories",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"capabilityCategoryDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.capability",
+  "label": "Capabilities",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"capabilityDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.catetory-capability-junction",
+  "label": "Category Capability Junctions",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"capabilityCategoryCapabilityJunctionDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.user-capability-junction",
+  "label": "User Capability Junctions",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userCapabilityJunctionDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.user-capability-junction-history",
+  "label": "User Capability Junction History",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userCapabilityJunctionHistoryDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.capability-payload",
+  "label": "Capability Payloads",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"capabilityPayloadDAO"
+    }
+  },
+  "parent":"crunch"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "crunch.capability-payload-record",
+  "label": "Capability Payload Records",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"capabilityPayloadRecordDAO"
+    }
+  },
+  "parent":"crunch"
 })

@@ -1,3 +1,4 @@
+<code>
 repeat(450, (i) => turtle1.fd(i).rt(89))
 
 
@@ -2045,3 +2046,4 @@ repeat(20, (i) => {
   });
   t.lt(90);
 });
+</code>

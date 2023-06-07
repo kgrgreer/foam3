@@ -63,7 +63,8 @@ if ( flags.support ) {
     require('fs').readFileSync(__dirname + '/../src/foam/support/support.js'));
 }
 
-for ( var i = 0; i < data.length; i++ ) {
+for ( var i = 0 ; i < data.length ; i++ ) {
   with (env) { eval(data[i].toString()); }
 }
+
 require('fs').writeFileSync(outfile, payload);

@@ -12,6 +12,7 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
@@ -28,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
+    'foam.nanos.auth.User',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -39,6 +41,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.Date'
   ],
@@ -51,7 +54,8 @@ foam.CLASS({
     'subject',
     'ticketDAO',
     'ticketStatusDAO',
-    'userDAO'
+    'userDAO',
+    'ticketCommentDAO',
   ],
 
   tableColumns: [
@@ -59,10 +63,20 @@ foam.CLASS({
     'type',
     // REVIEW: view fails to display when owner in tableColumn, the 2nd entry in allColumns is undefined.
     // 'owner',
-    'assignedTo.legalName',
+    'assignedToSummary',
     'createdBy.legalName',
     'lastModified',
     'status',
+    'title',
+    'comment',
+    'dateCommented',
+    'createdFor'
+  ],
+
+  searchColumns: [
+    'id',
+    'status',
+    'created',
     'title'
   ],
 
@@ -76,8 +90,12 @@ foam.CLASS({
       message: 'You have successfully unassigned this ticket'
     },
     {
+      name: 'SUCCESS_CLOSED',
+      message: 'You have successfully closed this ticket'
+    },
+    {
       name: 'COMMENT_NOTIFICATION',
-      message: 'A ticket assigned to you has been updated'
+      message: 'A ticket assigned to you has been updated '
     }
   ],
 
@@ -138,6 +156,7 @@ foam.CLASS({
       section: 'infoSection',
       order: 3,
       tableWidth: 130,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.ticketStatusDAO.find(value).then(function(status) {
           if (status) {
@@ -196,9 +215,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['title', 'type'],
-          predicateFactory: function(e) {
-            return e.NEQ(foam.nanos.ticket.Ticket.TITLE, "");
-          },
+          query: 'title!=""',
           errorString: 'Please provide a summary of the Ticket.'
         }
       ],
@@ -214,20 +231,46 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
+      projectionSafe: false,
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.COMMENT))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
       order: 9
+    },
+    {
+      class: 'String',
+      name: 'dateCommented',
+      value: '',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'infoSection',
+      projectionSafe: false,
+      tableCellFormatter: function(_, obj) {
+        obj.ticketCommentDAO
+          .where(obj.EQ(foam.nanos.ticket.TicketComment.TICKET, obj.id))
+          .orderBy(obj.DESC(foam.nanos.ticket.TicketComment.CREATED))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.ticket.TicketComment.CREATED))
+          .then(function(comment) {
+            if ( comment ) {
+              this.add(comment.projection);
+            }
+          }.bind(this));
+      },
+      order: 10
     },
     {
       class: 'DateTime',
@@ -242,6 +285,7 @@ foam.CLASS({
       name: 'createdBy',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -257,6 +301,7 @@ foam.CLASS({
       name: 'createdByAgent',
       visibility: 'RO',
       includeInDigest: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -278,6 +323,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -292,6 +338,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       visibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -306,6 +353,7 @@ foam.CLASS({
       class: 'String',
       transient: true,
       hidden: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         this.add(obj.title);
       }
@@ -338,8 +386,36 @@ foam.CLASS({
           this.assignedToGroup = '';
         }
       },
+      javaPostSet: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(val);
+          if ( user != null ) {
+            clearAssignedToSummary();
+            setAssignedToSummary(user.getLegalName());
+          }
+        }
+      `,
       order: 7,
       gridColumns: 6
+    },
+    {
+      class: 'String',
+      label: 'Assigned To',
+      name: 'assignedToSummary',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      visibility: 'RO',
+      javaGetter: `
+        DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
+        if ( userDAO != null ) {
+          User user = (User) userDAO.find(getAssignedTo());
+          if ( user != null ) {
+            return user.getLegalName();
+          }
+        }
+        return null;
+      `
     },
     {
       class: 'Reference',
@@ -374,16 +450,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id', 'title', 'comment', 'externalComment'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.nanos.ticket.Ticket.ID, 0),
-                e.NEQ(foam.nanos.ticket.Ticket.TITLE, "")
-              ),
-              e.NEQ(foam.nanos.ticket.Ticket.COMMENT, ""),
-              e.NEQ(foam.nanos.ticket.Ticket.EXTERNAL_COMMENT, "")
-            );
-          },
+          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -399,31 +466,42 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("notificationDAO");
         Subject subject = (Subject) x.get("subject");
         if (subject.getUser().getId() == getCreatedFor()) {
           if ( getAssignedTo() != 0 ) {
-            Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+            Notification notification = new TicketNotification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION+this.getId())
               .setUserId(getAssignedTo())
               .setSpid(getSpid())
+              .setTicket(this.getId())
               .build();
-            findAssignedTo(x).doNotify(x, notification);
+            try {
+              findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+            } catch (NullPointerException e) {
+              notificationDAO.put_(x, notification);
+            }
           } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-            DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-            Notification notification = new Notification.Builder(x)
-              .setBody(this.COMMENT_NOTIFICATION)
+            Notification notification = new TicketNotification.Builder(x)
+              .setBody(this.COMMENT_NOTIFICATION+this.getId())
               .setGroupId(getAssignedToGroup())
               .setSpid(getSpid())
+              .setTicket(this.getId())
               .build();
             notificationDAO.put(notification);
           }
         } else if ( getCreatedFor() != 0 ){
-          Notification notification = new Notification.Builder(x)
-            .setBody(this.COMMENT_NOTIFICATION)
+          Notification notification = new TicketNotification.Builder(x)
+            .setBody(this.COMMENT_NOTIFICATION+this.getId())
             .setUserId(getCreatedFor())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
-          findCreatedFor(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getCreatedFor()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         }
       `
     },
@@ -434,19 +512,25 @@ foam.CLASS({
         { name: 'old', type: 'Ticket' }
       ],
       javaCode: `
+        DAO notificationDAO = (DAO) x.get("notificationDAO");
         if ( getAssignedTo() != 0 ) {
-          Notification notification = new Notification.Builder(x)
+          Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setUserId(getAssignedTo())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
-            findAssignedTo(x).doNotify(x, notification);
+          try {
+            findAssignedTo(new Session.Builder(x).setUserId(getAssignedTo()).build().applyTo(x)).doNotify(x, notification);
+          } catch (NullPointerException e) {
+            notificationDAO.put_(x, notification);
+          }
         } else if ( ! SafetyUtil.isEmpty(getAssignedToGroup()) ){
-          DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-          Notification notification = new Notification.Builder(x)
+          Notification notification = new TicketNotification.Builder(x)
             .setBody(this.COMMENT_NOTIFICATION)
             .setGroupId(getAssignedToGroup())
             .setSpid(getSpid())
+            .setTicket(this.getId())
             .build();
           notificationDAO.put(notification);
         }
@@ -490,9 +574,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
 
-        if ( user.getId() != this.getCreatedBy() && user.getId() != this.getAssignedTo() && ! auth.check(x, "ticket.update." + this.getId()) ) {
-          throw new AuthorizationException("You don't have permission to update this ticket.");
-        }
+        // The creator of the ticket can update
+        if ( user.getId() == this.getCreatedBy() ) return;
+
+        // The assignee of the ticket can update
+        Ticket oldTicket = (Ticket) ((DAO) x.get("localTicketDAO")).find(this.getId());
+        if ( user.getId() == this.getAssignedTo() || user.getId() == oldTicket.getAssignedTo() ) return;
+
+        // Group with update permission can update
+        if ( auth.check(x, "ticket.update." + this.getId()) ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
@@ -509,24 +601,6 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'close',
-      tableWidth: 70,
-      confirmationRequired: function() {
-        return true;
-      },
-      isAvailable: function(status, id) {
-        return status != 'CLOSED' &&
-               id > 0;
-      },
-      code: function() {
-        this.status = 'CLOSED';
-        this.assignedTo = 0;
-        this.ticketDAO.put(this).then(function(ticket) {
-          this.copyFrom(ticket);
-        }.bind(this));
-      }
-    },
-    {
       name: 'assign',
       section: 'infoSection',
       isAvailable: function(status){
@@ -535,7 +609,7 @@ foam.CLASS({
       availablePermissions: [
         "ticket.assign.*"
       ],
-      code: function(X) {        
+      code: function(X) {
         X.ctrl.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
@@ -558,11 +632,12 @@ foam.CLASS({
         assignedTicket.assignedTo = X.subject.user.id;
 
         this.ticketDAO.put(assignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();
@@ -579,16 +654,17 @@ foam.CLASS({
       isAvailable: function(subject, assignedTo, status){
         return (subject.user.id === assignedTo) && (status === 'OPEN');
       },
-      code: function(X) {        
+      code: function(X) {
         var unassignedTicket = this.clone();
         unassignedTicket.assignedTo = 0;
 
         this.ticketDAO.put(unassignedTicket).then(req => {
+          this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();
@@ -597,6 +673,25 @@ foam.CLASS({
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
+      }
+    },
+    {
+      name: 'close',
+      tableWidth: 70,
+      section: 'infoSection',
+      confirmationRequired: function() {
+        return true;
+      },
+      isAvailable: function(status, id) {
+        return id && status !== 'CLOSED';
+      },
+      code: function() {
+        this.status = 'CLOSED';
+        this.assignedTo = 0;
+        this.ticketDAO.put(this).then(function(ticket) {
+          this.copyFrom(ticket);
+          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
+        }.bind(this));
       }
     }
   ],
@@ -613,7 +708,7 @@ foam.CLASS({
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
 
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();

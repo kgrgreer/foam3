@@ -82,10 +82,10 @@ return (foam.box.ExportBox)registration;
 
         this.registry_[name] = box;
 
-        box.onDetach(function() {
+        box.onDetach(() => {
           if ( this.registry_[name] === box )
             this.unregister(name);
-        }.bind(this));
+        });
 
         return box;
       },

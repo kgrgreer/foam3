@@ -41,6 +41,8 @@ p({
       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
       .setAuthorize(false)
       .setCluster(false)
+      .setDecorator(new foam.nanos.alarming.CandlestickAlarmDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.analytics.Candlestick.getOwnClassInfo())).build())
       .build();
   """
 })
@@ -153,3 +155,52 @@ p({
       .build();
   """
 })
+
+// Clustered OMs explicitly enabled in Medusa setups.
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "localCcom1MinuteDAO",
+//   "serviceScript": """
+//     return new foam.dao.EasyDAO.Builder(x)
+//       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+//       .setAuthorize(false)
+////      .setSAF(true)
+//       .build();
+//   """
+// })
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "com1MinuteDAO",
+//   "serve": true,
+//   "serviceScript": """
+//     return new foam.dao.EasyDAO.Builder(x)
+//       .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+//       .setInnerDAO(x.get("localCcom1MinuteDAO"))
+//       .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.analytics.Candlestick.COUNT) })
+//       .build();
+//   """,
+//   "client": """
+//     {
+//       "of":"foam.nanos.analytics.Candlestick"
+//     }
+//   """
+// })
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "ccomFoldManager",
+//   "serviceScript": """
+//     return new foam.nanos.analytics.DAOFoldManager.Builder(x)
+//       .setDao((foam.dao.DAO) x.get("localCcom1MinuteDAO"))
+//       .setPeriodLengthMs(60*1000)
+//       .build();
+//   """
+// })
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "CCOMLogger",
+//   "description":"Clustered Candlestick OM Logger",
+//   "service": {
+//     class:"foam.nanos.om.OMLogger",
+//     foldManagerContextKey: "ccomFoldManager"
+//   }
+// })

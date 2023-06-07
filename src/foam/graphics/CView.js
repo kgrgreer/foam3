@@ -468,7 +468,6 @@ foam.CLASS({
       name: 'border'
     },
     {
-      class: 'Color',
       name: 'color'
     },
     {
@@ -853,19 +852,74 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'clip'
+    },
+    {
+      class: 'Int',
+      name: 'cornerRadius'
     }
   ],
 
   methods: [
     function paintSelf(x) {
       x.beginPath();
-      x.rect(0, 0, this.width, this.height);
+
+      if ( this.cornerRadius ){
+        this.roundRect(x, 0, 0, this.width, this.height, this.cornerRadius)
+      } else {
+        x.rect(0, 0, this.width, this.height);
+      }
+
+
       if ( this.border && this.borderWidth ) {
         x.lineWidth = this.borderWidth;
         x.stroke();
       }
       if ( this.color ) x.fill();
       if ( this.clip ) x.clip();
+    },
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      if (typeof radius === "number") {
+        radius = {
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius
+        };
+
+      } else {
+        var defaultRadius = {
+          topLeft: 0,
+          topRight: 0,
+          bottomLeft: 0,
+          bottomRight: 0
+        };
+
+        for (var side in defaultRadius) {
+          radius[side] = radius[side] || defaultRadius[side];
+        }
+      }
+      ctx.beginPath();
+
+      ctx.moveTo(x + radius.topLeft, y);
+
+      ctx.lineTo(x + width - radius.topRight, y);
+
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius.topRight);
+
+      ctx.lineTo(x + width, y + height - radius.bottomRight);
+
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius.bottomRight, y + height);
+
+      ctx.lineTo(x + radius.bottomLeft, y + height);
+
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bottomLeft);
+
+      ctx.lineTo(x, y + radius.topLeft);
+
+      ctx.quadraticCurveTo(x, y, x + radius.topLeft, y);
+
+      ctx.closePath();
     }
   ]
 });
@@ -954,8 +1008,8 @@ foam.CLASS({
   documentation: 'A CView for drawing a polygon.',
 
   properties: [
-    { class: 'Array', of: 'Float', name: 'xCoordinates' },
-    { class: 'Array', of: 'Float', name: 'yCoordinates' },
+    { class: 'Array', of: 'Float', name: 'xCoordinates' }, // 'of' not used
+    { class: 'Array', of: 'Float', name: 'yCoordinates' }, // 'of' not used
     { class: 'foam.core.Color', name: 'color', value: '#000' },
     { class: 'Float', name: 'lineWidth', value: 1 }
   ],
@@ -1288,7 +1342,7 @@ foam.CLASS({
       postSet: function(o, n) {
         n.canvas = this;
 
-        if ( this.attributeMap.width === undefined || this.attributeMap.height === undefined ) {
+        if ( this.getAttribute('width') === undefined || this.getAttribute('height') === undefined ) {
           this.setAttribute('width',  n.width);
           this.setAttribute('height', n.height);
         }

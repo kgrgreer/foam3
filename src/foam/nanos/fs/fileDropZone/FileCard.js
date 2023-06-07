@@ -32,8 +32,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: /*%WHITE%*/ #FFFFFF;
-      border: 1px solid /*%GREY5%*/ #F5F7FA;
+      background: $white;
+      border: 1px solid $grey50;
       border-radius: 4px;
       box-sizing: border-box;
       height: 40px;
@@ -62,7 +62,7 @@ foam.CLASS({
     }
 
     ^name {
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
       cursor: pointer;
       overflow: hidden;
       text-align: left;
@@ -71,7 +71,7 @@ foam.CLASS({
     }
 
     ^name:hover {
-      color: /*%PRIMARY1%*/ #604AFF;
+      color: $primary700;
     }
 
     ^ .foam-u2-ActionView {
@@ -85,7 +85,7 @@ foam.CLASS({
     }
 
     ^size {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       white-space: nowrap;
     }
 
@@ -99,7 +99,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'canBeRemoved',
-      value: true
+      expression: function(controllerMode) { return controllerMode != foam.u2.ControllerMode.VIEW; }
     },
     {
       name: 'index'
@@ -115,7 +115,7 @@ foam.CLASS({
       var self = this;
       if ( this.selected == this.index ) {
         this.style({
-          'border-color': '/*%PRIMARY1%*/ #604aff'
+          'border-color': '$primary700'
         });
       }
       var indicator = this.theme && this.theme.glyphs.file.expandSVG({ fill: this.theme.grey1 });
@@ -126,10 +126,10 @@ foam.CLASS({
         }, function() {
           this.start({ class: 'foam.u2.tag.Image', data: 'images/attach-icon.svg' }).end();
         })
-        .start().addClasses(['h600', this.myClass('name')])
+        .start().addClass('h600', this.myClass('name'))
           .add(this.data.filename)
         .end()
-        .start(this.FileSizeView, { data: this.data.filesize }).addClasses([this.myClass('size'), 'p-legal']).end();
+        .start(this.FileSizeView, { data: this.data.filesize }).addClass(this.myClass('size'), 'p-legal').end();
 
       this.addClass()
         .start(this.Cols)

@@ -1,0 +1,77 @@
+p({
+  class: "foam.nanos.ruler.Rule",
+  id: "foam-nanos-er-EventRecordNotificationRule",
+  name: "foam-nanos-er-EventRecordNotificationRule",
+  ruleGroup: "EventRecord",
+  daoKey: "eventRecordDAO",
+  after: true,
+  priority: 100,
+  operation: 0,
+  predicate:{
+    class:"foam.nanos.ruler.predicate.PropertyEQValue",
+    propName: "severity",
+    propValue: {
+      class: "foam.log.LogLevel",
+      ordinal: 3
+    }
+  },
+  lifecycleState:1,
+  action: {
+    class: "foam.nanos.er.EventRecordNotificationRuleAction"
+  }
+})
+
+p({
+  class: "foam.nanos.ruler.Rule",
+  id: "foam-nanos-er-EventRecordAlarmRule",
+  name: "foam-nanos-er-EventRecordAlarmRule",
+  ruleGroup: "EventRecord",
+  daoKey: "eventRecordDAO",
+  after: true,
+  priority: 110,
+  operation: 0,
+  predicate:{
+    class:"foam.mlang.predicate.And",
+    args: [
+      {
+        class:"foam.nanos.ruler.predicate.PropertyEQValue",
+        propName: "raiseAlarm",
+        propValue: true
+      },
+      {
+        class:"foam.mlang.predicate.Or",
+        args:[
+          {
+            class:"foam.nanos.ruler.predicate.PropertyEQValue",
+            propName: "severity",
+            propValue: {
+              class: "foam.log.LogLevel",
+              ordinal: 1
+            }
+          },
+          {
+            class:"foam.nanos.ruler.predicate.PropertyEQValue",
+            propName: "severity",
+            propValue: {
+              class: "foam.log.LogLevel",
+              ordinal: 2
+            }
+          },
+          {
+            class:"foam.nanos.ruler.predicate.PropertyEQValue",
+            propName: "severity",
+            propValue: {
+              class: "foam.log.LogLevel",
+              ordinal: 3
+            }
+          }
+        ]
+      }
+    ]
+  },
+  lifecycleState:1,
+  action: {
+    class: "foam.nanos.er.EventRecordAlarmRuleAction"
+    alarmSeverity: "WARN"
+  }
+})

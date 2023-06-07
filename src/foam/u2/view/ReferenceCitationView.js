@@ -7,5 +7,10 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReferenceCitationView',
-  extends: 'foam.u2.CitationView'
+  extends: 'foam.u2.CitationView',
+  css: `
+    ^row {
+      font-size: 1.5255rem;
+    }
+  `,
 });

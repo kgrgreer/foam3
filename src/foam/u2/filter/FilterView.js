@@ -8,7 +8,10 @@ foam.CLASS({
   package: 'foam.u2.filter',
   name: 'FilterView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [
+    'foam.u2.memento.Memorable',
+    'foam.util.DeFeedback'
+  ],
 
   documentation: `
     Filter View takes the properties defined in 'searchColumns' and creates
@@ -20,11 +23,13 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.memento.Memento',
     'foam.core.SimpleSlot',
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterController',
     'foam.u2.filter.property.PropertyFilterView',
-    'foam.u2.search.TextSearchView'
+    'foam.u2.search.TextSearchView',
+    'foam.parse.QueryParser'
   ],
 
   imports: [
@@ -80,8 +85,7 @@ foam.CLASS({
     }
 
     ^general-field input {
-      border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 5px;
+      border: 1px solid $grey200;
       height: 34px;
       width: 100%;
     }
@@ -107,12 +111,12 @@ foam.CLASS({
     }
 
     ^filter-button-active{
-      color: /*%PRIMARY3%*/ #406DEA;
-      background: /*%GREY5%*/ #F5F7FA;
+      color: $primary400;
+      background: $grey100;
     }
 
     ^filter-button-active svg {
-      fill: /*%PRIMARY3%*/ #406DEA;
+      fill: $primary400;
       transform: rotate(180deg);
     }
 
@@ -132,13 +136,13 @@ foam.CLASS({
 
     ^link-mode.clear {
       align-self: center;
-      color: /*%DESTRUCTIVE3%*/ red;
+      color: $destructive400;
       flex-shrink: 0;
       margin-right: 0;
     }
 
     ^link-mode.clear:hover {
-      color: /*%DESTRUCTIVE1%*/ darkred;
+      color: $destructive700;
     }
 
     ^message-advanced {
@@ -198,7 +202,7 @@ foam.CLASS({
     {
       name: 'generalSearchField',
       postSet: function(o, n) {
-        this.filterController.add(n, n.name, 0);
+        this.filterController.add(n, n.name, 0, false);
       }
     },
     {
@@ -245,49 +249,43 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'mementoUpdated'
+      name: 'mementoString',
+      shortName: 'filters',
+      memorable: true
     },
     {
-      class: 'Boolean',
-      name: 'mementoToggle'
+      name: 'searchData',
+      shortName: 'search',
+      memorable: true
     }
   ],
 
   methods: [
     function init() {
       this.onDetach(this.searchColumns$.sub(this.updateFilters));
-      this.onDetach(this.dao$.sub(this.updateFilters));
+      this.onDetach(this.dao.of$.sub(this.updateFilters));
     },
     async function render() {
       var self = this;
+      this.mementoString$.sub(this.getData);
+      this.getData();
+      this.filterController.mementoPredicate$.sub(this.updateMementoString);
 
       await this.updateFilters();
-
-      // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
-      var counter = 0;
-      counter = this.updateCurrentMementoAndReturnCounter(counter);
-
-      counter = this.filters ? this.filters.length : 0;
-      //memento which will be exported to table view
-      if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
 
       this.onDetach(this.filterController$.dot('isAdvanced').sub(this.isAdvancedChanged));
       var selectedLabel = ctrl.__subContext__.translationService.getTranslation(foam.locale, 'foam.u2.filter.FilterView.SELECTED', this.SELECTED);
       this.addClass(self.myClass())
         .add(this.slot(function(filters) {
 
-          counter = self.updateCurrentMementoAndReturnCounter.call(self, counter);
-
           var generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
-            onKey: true
-          },  this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
+            onKey: true,
+            name: 'filterSearch',
+            searchData$: self.searchData$
+          }, this, self.__subContext__);
 
-          if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
-
-          self.show(filters && filters.length);
 
           var e = this.E();
           var labelSlot = foam.core.ExpressionSlot.create({ args: [this.filterController.activeFilterCount$],
@@ -300,7 +298,8 @@ foam.CLASS({
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown' })
+              .start(self.TOGGLE_DRAWER, { label$: labelSlot, buttonStyle: 'SECONDARY', isIconAfter: true, themeIcon: 'dropdown', size: 'SMALL' })
+                .show(filters && filters.length)
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -325,16 +324,7 @@ foam.CLASS({
                         property: axiom,
                         dao: self.dao,
                         preSetPredicate: self.assignPredicate(axiom)
-                      },  self, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
-
-                      counter--;
-                      if ( self.currentMemento_ ) {
-                        if ( counter != 0 ) {
-                          self.currentMemento_ = self.currentMemento_.tail;
-                          if ( self.currentMemento_.tail == null )
-                            self.currentMemento_.tail = foam.nanos.controller.Memento.create();
-                        }
-                      }
+                      }, self, self.__subContext__);
 
                       this.start()
                         .add(propView)
@@ -416,7 +406,7 @@ foam.CLASS({
         }
       }
 
-      var perms =  await Promise.all(permissionedProperties.map( async p => 
+      var perms =  await Promise.all(permissionedProperties.map( async p =>
         await this.auth.check(ctrl.__subContext__, modelName + '.rw.' + p) ||
         await this.auth.check(ctrl.__subContext__, modelName + '.ro.' + p)
       ));
@@ -426,22 +416,75 @@ foam.CLASS({
     },
     function assignPredicate(property) {
       var predicate = this.filterController.finalPredicate;
+      var retPred = null;
       if ( predicate ) {
         if ( foam.mlang.predicate.And.isInstance(predicate) ) {
           var subPredicates = predicate.args;
           for ( subPredicate of subPredicates ) {
-            if ( subPredicate.arg1 && subPredicate.arg1.name == property.name ) return subPredicate;
+            let ret = this.unwrapPredicate(subPredicate, property);
+            if ( ! ret ) continue;
+            if ( retPred != null ) {
+              retPred = this.AND(retPred, ret);
+            } else {
+              retPred = ret;
+            }
           }
-        }
-        else {
-          if ( predicate.arg1 && predicate.arg1.name == property.name ) return predicate;
+        } else {
+          return this.unwrapPredicate(predicate, property);
         }
       }
-      return null;
+      return retPred;
+    },
+    function unwrapPredicate(pred, prop) {
+      if ( foam.mlang.predicate.Or.isInstance(pred) ) {
+        var subPredicates = pred.args;
+        for ( subPredicate of subPredicates ) {
+          if ( subPredicate.arg1 && subPredicate.arg1.name == prop.name ) {
+            // Replace OR with IN since the PropFilterViews expect IN
+            let p = this.IN(subPredicate.arg1, subPredicates.map(s => {
+              if ( s.arg1 && s.arg1.name == prop.name ) {
+                return s.arg2.value;
+              }
+            }));
+            return p;
+          }
+        }
+      } else {
+        if ( pred.arg1 && pred.arg1.name == prop.name ) return pred;
+      }
     }
   ],
 
   listeners: [
+    {
+      name: 'updateMementoString',
+      code: function() {
+        this.deFeedback(() => {
+          var mem = this.filterController.mementoPredicate.toMQL();
+          if ( mem ) {
+            this.mementoString = '{' + mem + '}';
+          } else {
+            this.mementoString = undefined;
+          }
+        });
+      }
+    },
+    {
+      name: 'getData',
+      code: function() {
+        this.deFeedback(() => {
+          var queryParser = foam.parse.QueryParser.create({ of: this.dao.of }, this);
+          var value = this.mementoString;
+          if ( value && value.indexOf('{') != -1 && value.indexOf('}') != -1 ) {
+            value = value.substr(value.indexOf('{') + 1, value.indexOf('}') - 1);
+          }
+          if ( value ) {
+            var mementoPredicate = queryParser.parseString(value);
+            this.data = (this.data != this.TRUE) ? this.AND(mementoPredicate, this.data) : mementoPredicate;
+          }
+        });
+      }
+    },
     {
       name: 'toggleMode',
       code: function() {
@@ -467,48 +510,13 @@ foam.CLASS({
       }
     },
 
-    function updateCurrentMementoAndReturnCounter() {
-      if ( ! this.filters ) return 0;
-      if ( this.memento ) {
-        var m = this.memento;
-        //i + 1 as there is a textSearch that we also need for memento
-        for ( var i = 0 ; i < this.filters.length + 1 ; i++ ) {
-          if ( ! m ) {
-            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento });
-            this.memento.tail = m;
-          } else {
-            if ( ! m.tail )
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
-            m = m.tail;
-          }
-        }
-        this.currentMemento_ = this.memento.tail;
-      }
-
-      if ( this.currentMemento_ && this.currentMemento_.tail ) {
-        var m = this.memento;
-        var counter = 0;
-
-        while ( counter < this.filters.length &&  m != null ) {
-          m = m.tail;
-
-          counter++;
-
-          if ( ! m || m.head.length == 0 )
-            continue;
-        }
-      }
-      this.mementoUpdated = true;
-      this.mementoToggle = ! this.mementoToggle;
-      return counter;
-    },
     async function updateFilters() {
       var of = this.dao && this.dao.of;
 
       if ( ! of ) this.filters = [];
-      
+
       var searchColumns_ = await this.filterPropertiesByReadPermission(this.searchColumns, of.id);
-      if ( searchColumns_ && searchColumns_.length > 0 ) {
+      if ( searchColumns_ ) {
         this.filters =  searchColumns_;
         return;
       }
@@ -520,37 +528,6 @@ foam.CLASS({
         this.filters = columns;
         return;
       }
-
-      columns = of.getAxiomByName('tableColumns');
-      columns = columns && columns.columns;
-      columns = await this.filterPropertiesByReadPermission(columns, of.id);
-      if ( columns ) {
-        this.columns = columns.filter(function(c) {
-        //  to account for nested columns like approver.legalName
-        if ( c.split('.').length > 1 ) return false;
-
-        var a = of.getAxiomByName(c);
-
-        if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-
-        return a
-          && ! a.storageTransient
-          && ! a.networkTransient
-          && a.searchView
-          && ! a.hidden
-        });
-        return;
-      }
-
-      columns = of.getAxiomsByClass(foam.core.Property)
-        .filter((p) => {
-          return ! p.storageTransient
-          && ! p.networkTransient
-          && p.searchView
-          && ! p.hidden
-        })
-        .map(foam.core.Property.NAME.f);
-      this.filters = await this.filterPropertiesByReadPermission(columns, of.id);
     }
   ],
 
@@ -563,6 +540,7 @@ foam.CLASS({
         if ( this.filterController.isAdvanced ) return;
         this.filterController.clearAll();
         this.generalSearchField.view.data = '';
+        this.mementoString = '';
       }
     },
     {

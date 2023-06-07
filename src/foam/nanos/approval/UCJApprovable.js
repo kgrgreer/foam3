@@ -20,7 +20,8 @@
   `,
 
   requires: [
-    'foam.u2.crunch.EasyCrunchWizard'
+    'foam.u2.crunch.EasyCrunchWizard',
+    'foam.u2.stack.StackBlock'
   ],
 
   javaImports: [
@@ -31,8 +32,8 @@
     {
       name: 'lookupId',
       documentation:`
-        In terms of lookup, UCJApprovable is able to default to ucj. id here since lookupId isn't even used here to query the 
-        approvable in this case. In the generic Approvable case, the lookupId would be a string consisting of the daoKey, objId 
+        In terms of lookup, UCJApprovable is able to default to ucj. id here since lookupId isn't even used here to query the
+        approvable in this case. In the generic Approvable case, the lookupId would be a string consisting of the daoKey, objId
         and propertiesToUpdate hash so that the system can detect duplicate requests.
       `,
       expression: function(ucj) {
@@ -67,11 +68,14 @@
       name: 'launchViewReference',
       code: function(x, approval) {
         this.config.approval = approval;
-        x.stack.push({
-          class: this.config.view,
-          data: this.ucj,
-          config: this.config
-        });
+        x.stack.push(this.StackBlock.create({
+          view: {
+            class: this.config.view,
+            data: this.ucj,
+            config: this.config,
+          }, parent: this
+         })
+        );
       }
     },
     {

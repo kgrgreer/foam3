@@ -56,6 +56,7 @@ foam.CLASS({
     'document',
     'error',
     'framed',
+    'idled',
     'info',
     'installCSS',
     'log',
@@ -176,6 +177,31 @@ foam.CLASS({
       }(), 'merged(' + l.name + ')');
     },
 
+    function idled(l, opt_delay) {
+      var delay = opt_delay || 16;
+      var ctx   = this;
+
+      return foam.Function.setName(function() {
+        var lastArgs = null;
+        var timeout;
+        function idledListener() {
+          timeout  = undefined;
+          var args = Array.from(lastArgs);
+          lastArgs = null;
+          l.apply(this, args);
+        }
+
+        var f = function() {
+          lastArgs = arguments;
+
+          timeout && ctx.clearTimeout(timeout);
+          timeout = ctx.setTimeout(idledListener, delay);
+        };
+
+        return f;
+      }(), 'idled(' + l.name + ')');
+    },
+
     function framed(l) {
       var ctx = this;
 
@@ -223,8 +249,7 @@ foam.CLASS({
       this.window.cancelAnimationFrame(id);
     },
 
-    function installCSS(text,  /* optional */ owner, /* optional */ id) {
-      /* Create a new <style> tag containing the given CSS code. */
+    function installCSS(text, /* optional */ owner, /* optional */ id) {
       this.document && this.document.head && this.document.head.insertAdjacentHTML(
         'beforeend',
         '<style' +

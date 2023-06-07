@@ -16,8 +16,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.notification.email.EmailConfig',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.notification.email.EmailConfig'
   ],
 
   methods: [
@@ -25,12 +28,12 @@ foam.CLASS({
       name: 'apply',
       type: 'foam.nanos.notification.email.EmailMessage',
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = Loggers.logger(x, this);
         EmailConfig emailConfig = (EmailConfig) ((DAO) x.get("emailConfigDAO")).find(emailMessage.getSpid());
 
         // Service property check
         if ( emailConfig == null ) {
-          logger.error( "EmailConfigDAO missing spid for email message.");
+          logger.error("EmailConfig not found", "spid", emailMessage.getSpid());
           return emailMessage;
         }
 
@@ -47,6 +50,18 @@ foam.CLASS({
         // FROM:
         if ( ! emailMessage.isPropertySet("from") ) {
           emailMessage.setFrom(emailConfig.getFrom());
+        }
+
+        // TO:
+        if ( ! emailMessage.isPropertySet("to") ) {
+          User user = ((Subject) x.get("subject")).getRealUser();
+          emailMessage.setTo(new String[] { user.getEmail() });
+        }
+
+        // SPID:
+        if ( ! emailMessage.isPropertySet("spid") ) {
+          User user = ((Subject) x.get("subject")).getRealUser();
+          emailMessage.setSpid(user.getSpid());
         }
 
         return emailMessage;

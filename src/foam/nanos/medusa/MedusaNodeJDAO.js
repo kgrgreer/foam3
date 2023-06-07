@@ -9,7 +9,13 @@ foam.CLASS({
   name: 'MedusaNodeJDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Skip writing to underlying JDAO if only transientDate.`,
+  documentation: `Skip writing to underlying JDAO if only transient Data.`,
+
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.FileRollCmd',
+    'foam.dao.java.JDAO'
+  ],
 
   properties: [
     {
@@ -37,6 +43,34 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
       return getMdao().put_(x, obj);
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      foam.nanos.logger.Loggers.logger(x, this).debug("cmd",obj);
+      if ( obj instanceof FileRollCmd ) {
+
+        // Roll the JDAO's Journal
+        // the reset delegate which will recreate the
+        // the Journal, MessageDigest, and trigger replay
+
+        obj = getDelegate().cmd_(x, obj);
+        if ( obj != null &&
+             foam.util.SafetyUtil.isEmpty(((FileRollCmd) obj).getError()) ) {
+          ((DAO) x.get("medusaNodeDAO")).cmd_(x, DAO.PURGE_CMD);
+          JDAO jdao = (JDAO) getDelegate();
+          var delegate = jdao.getDelegate();
+          jdao.clearDelegate();
+          jdao.setDelegate(delegate);
+
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          replaying.clearCount();
+        }
+      } else if ( DAO.PURGE_CMD.equals(obj) ) {
+        getMdao().cmd_(x, obj);
+      }
+      return obj;
       `
     }
   ]

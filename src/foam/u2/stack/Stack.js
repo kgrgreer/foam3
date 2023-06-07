@@ -19,10 +19,6 @@ foam.CLASS({
   package: 'foam.u2.stack',
   name: 'Stack',
 
-  imports: [
-    'memento'
-  ],
-
   requires: [
     'foam.nanos.controller.Memento',
     'foam.u2.stack.StackBlock'
@@ -52,7 +48,7 @@ foam.CLASS({
       value: -1,
       preSet: function(_, p) {
         if ( isNaN(p) || p > this.depth ) return this.depth - 1;
-        if ( p < 0 ) return 0;
+        if ( p < 0 ) return -1;
         return p;
       }
     },
@@ -127,60 +123,19 @@ foam.CLASS({
       this.depth = pos + 1;
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
+      if ( pos > 0 && ctrl.memento_ && block.parent?.memento_ ) {
+        // Use toString here instead of usedStr since on refresh stack pushes happen faster
+        // than memento.update() is called since it is merged
+        this.stack_[pos - 1].currentMemento = ctrl.memento_.toString(null, block.parent.memento_);
+        ctrl.memento_.usedStr = ctrl.memento_.toString();
+      }
       this.pos = pos;
       if ( block.shouldResetBreadcrumbs )
         this.navStackBottom = pos;
     },
-
-    function deleteMemento(mementoToDelete) {
-      /** setting the last not null memento in memento chain to null to update application controller memento value on stack.back **/
-      var m = this.findCurrentMemento();
-      if ( ! m ) return;
-
-      var tail = this.memento.tail;
-
-      if ( tail == null ) {
-        this.memento.value$.set('');
-        return;
-      }
-
-      while ( m != null && m.parent != null && m.value.indexOf(mementoToDelete) != 0 ) {
-        m = m.parent;
-      }
-
-      if ( m && m.parent ) {
-        m.value = '';
-        return m.parent;
-      }
-    },
-
-    function findCurrentMemento() {
-      var tail = this.memento;
-      if ( ! tail )
-        return tail;
-      while ( true ) {
-        if ( tail.tail == null ) {
-          return tail;
-        }
-        tail = tail.tail;
-      }
-    },
     function jump(jumpPos) {
-
       while ( this.pos > jumpPos ) {
-      // Check if the class of the view to which current memento points has property viewTitle set 
-      // using the identifier added to the memento params by stackView
-        if ( this.stack_[this.pos].parent ) {
-          var actionMemento;
-          var parent = this.getContextFromParent(this.stack_[this.pos].parent);
-          if ( parent.memento?.params == this.BCRMB_ID ) {
-            actionMemento = this.deleteMemento(parent.memento.head);
-          }
-          //Remove all actions that may have been performed in this view
-          while ( actionMemento?.params == this.ACTION_ID ) {
-            actionMemento = this.deleteMemento(actionMemento.head);
-          }
-        }
+        this.stack_[this.pos].removed.pub();
         this.pos--;
       }
       if ( this.navStackBottom > this.pos ) {
@@ -212,7 +167,7 @@ foam.CLASS({
     {
       name: 'back',
       // icon: 'arrow_back',
-      isEnabled: function(pos) { return pos > 0; },
+      isEnabled: function(pos) { return pos >= 0; },
       code: function(X) {
         this.jump(this.pos-1, X);
       }

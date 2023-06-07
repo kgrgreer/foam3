@@ -7,11 +7,9 @@
 package foam.util;
 
 import java.lang.reflect.Array;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.apache.commons.lang3.ArrayUtils.toObject;
 
 public class Arrays {
 
@@ -172,4 +170,18 @@ public class Arrays {
     sortRange(a, c, skip, limit, p2 + 1, end);
   }
 
+  public static Object[] toArray(Object o) {
+    if ( o.getClass().isArray() ) {
+      if ( o.getClass() == boolean[].class ) return toObject((boolean[]) o);
+      if ( o.getClass() == byte[].class    ) return toObject((byte[]) o);
+      if ( o.getClass() == char[].class    ) return toObject((char[]) o);
+      if ( o.getClass() == double[].class  ) return toObject((double[]) o);
+      if ( o.getClass() == float[].class   ) return toObject((float[]) o);
+      if ( o.getClass() == int[].class     ) return toObject((int[]) o);
+      if ( o.getClass() == long[].class    ) return toObject((long[]) o);
+      if ( o.getClass() == short[].class   ) return toObject((short[]) o);
+      return (Object[]) o;
+    }
+    return null;
+  }
 }

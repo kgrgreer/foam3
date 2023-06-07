@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'foam.u2.memento',
   name: 'Memento',
@@ -62,27 +68,17 @@ foam.CLASS({
       documentation: 'String input memento. Used to set the memento from a String.',
       displayWidth: 100,
       postSet: function(_, s) {
-        // parser & separated string of key=value bindings and store in b
+        // parser & separated string of key=value bindings and store in bs
         var bs = [];
 
-        if ( s && s.indexOf('=') == -1 ) s += '?';
-
-        var i = s.indexOf('?');
-        if ( i != -1 ) {
-          var route = s.substring(0, i).split('/');
-          s = s.substring(i+1);
-          s = route.map(p => 'route=' + p).join('&') + (s ? '&' + s : '');
-        }
+        s = this.addRouteKeys(s);
 
         if ( s ) {
-          s.split('&').forEach(p => {
-            var [k,v] = p.split('=');
-            bs.push([k, v]);
-          });
+          bs = this.createBindings(s);
         }
 
         function consumeBinding(k) {
-          // find and remove a binding from bindings 'b'
+          // find and remove a binding from bindings 'bs'
           for ( var i = 0 ; i < bs.length ; i++ ) {
             var kv = bs[i];
             if ( kv[0] == k ) {
@@ -95,15 +91,27 @@ foam.CLASS({
         // Remove bindings for 'obj' properties and set remaining bindings in 'tail'
         this.props.forEach(p => {
           var value = consumeBinding(p.shortName || p.name);
-          this.obj[p.name] = value;
+          // Required to avoid setting memento props as the string 'undefined'
+          if ( !! value )
+            this.obj[p.name] = value;
         });
 
         this.tailStr = this.encodeBindings(bs);
       }
     },
     {
+      class: 'Boolean',
+      name: 'shouldDetach'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.FObject',
+      name: 'tails',
+      documentation: 'Stores all sub-mementos that are linked to this Memento'
+    },
+    {
       name: 'tail',
-      documentation: 'Sub-Memento, if it exists.'
+      documentation: 'Currently active Sub-Memento, if it exists.'
     },
     {
       name: 'tailStr',
@@ -114,7 +122,8 @@ foam.CLASS({
     },
     {
       name: 'usedStr',
-      documentation: 'Only the bindings from "str" that are used by this Memorable or sub-Mementos. Should be used when storing memento as a String.'
+      documentation: 'Only the bindings from "str" that are used by this Memorable or sub-Mementos. Should be used when storing memento as a String.',
+      factory: function () { return this.toString(); }
     }
   ],
 
@@ -129,18 +138,22 @@ foam.CLASS({
 
       // Connect to parent Memento if it exists.
       if ( this.memento_ ) {
+        this.memento_.tails.push(this);
         this.memento_.tail = this;
         this.str           = this.memento_.tailStr;
-        this.obj.onDetach(() => {
-          // TODO?: make own method
-          if ( this.memento_.tail === this ) {
-            console.log('Detaching tail ', this.obj?.cls_.name);
-            this.memento_.tail = null;
-            this.memento_.update();
-          }
-        });
-//         this.memento_.update();
       }
+    },
+
+    function createBindings(s) {
+      let arr = [];
+      // Do not split inside '{}', can be used as an escape char
+      // This only works for one level of nesting, can we use a foam parser?
+      s.split(/&(?=[^\}]*(?:\{|$))/).forEach(p => {
+        // Limit split to one in order to preserve nested mementos
+        var [k,v] = p.split(/=(.*)/, 2)
+        arr.push([k,v]);
+      });
+      return arr;
     },
 
     function getBoundNames(set) {
@@ -149,6 +162,17 @@ foam.CLASS({
 
         if ( this.tail ) this.tail.getBoundNames(set);
       }
+    },
+
+    function addRouteKeys(s) {
+      if ( s && s.indexOf('=') == -1 ) s += '?';
+      var i = s.indexOf('?');
+      if ( i != -1 ) {
+        var route = s.substring(0, i).split('/');
+        s = s.substring(i+1);
+        s = route.map(p => 'route=' + p).join('&') + (s ? '&' + s : '');
+      }
+      return s
     },
 
     function encodeBindings(bs) {
@@ -161,9 +185,9 @@ foam.CLASS({
       return s;
     },
 
-    function toString() {
+    function toString(encoded, opt_limit) {
       /** Converts this Memento (and tail) to path?params encoded String. **/
-      var e = this.encode();
+      var e = encoded || this.encode(opt_limit);
       var s = e.route;
       if ( e.params ) {
         if ( s ) s += '?';
@@ -172,30 +196,33 @@ foam.CLASS({
       return s;
     },
 
-    function encode() {
+    function encode(opt_limit) {
       /** Recursively encode memento as a {route: "route1/route2/...", params: "key1=value1&key2=value2..."} map. **/
       var s = '', route = '', hasRoute = false, set = {};
 
       if ( this.tail )
-        this.getBoundNames(set);
+        this.tail.getBoundNames(set);
 
       if ( this.obj ) this.props.forEach(p => {
         var value = this.obj[p.name];
-        if ( p.name === 'route' ) {
-          route = this.obj.route;
+        if ( p.name === 'route' || p.shortName === 'route' ) {
+          route = this.obj[p.name];
           hasRoute = true;
         } else {
-          if ( this.obj.hasOwnProperty(p.name) || set[p.shortName || p.Name] ) {
+          if ( this.obj[p.name] || set[p.shortName || p.name] ) {
             if ( s ) s += '&';
             var val = this.obj[p.name];
+            if ( val && this.cls_.isInstance(val) ) val = `{${val.usedStr}}`;
             if ( val === undefined ) val = '';
             s += (p.shortName || p.name) + '=' + val;
           }
         }
       });
 
-      if ( this.tail ) {
+      if ( this.tail && this.tail != opt_limit ) {
         var e2 = this.tail.encode();
+        // set the usedStr for the tail
+        this.tail.usedStr = this.tail.toString(e2);
         var s2 = e2.params;
         if ( e2.route ) {
           if ( hasRoute ) route += '/';
@@ -211,6 +238,14 @@ foam.CLASS({
   ],
 
   listeners: [
+    function removeMementoTail() {
+      // Logging to track memento issues
+      console.log('Detaching tail ', this.obj?.cls_.name, this.tailStr);
+      this.tail = null;
+      this.tails = [];
+      this.tailStr = undefined;
+      this.update();
+    },
     {
       name: 'update',
       documentation: `
@@ -221,8 +256,15 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 32,
       code: function() {
-        this.usedStr = this.toString();
-        if ( this.memento_ ) this.memento_.update();
+        if ( this.memento_ ) {
+          // If parent has more than one child set this memento_ as parent's tail
+          // Useful where there are multiple child views using mementos for a single parent
+          // Eg. two embedded table view under one summary view 
+          if ( this.memento_.tails.length > 1 && this.memento_.tail != this ) { this.memento_.tail = this; }
+          this.memento_.update();
+        } else {
+          this.usedStr = this.toString();
+        }
       }
     }
   ]
@@ -271,14 +313,14 @@ foam.CLASS({
       name: 'onHashChange',
       documentation: 'Called when the window hash is updated, causes update to memento.',
       code: function() {
-        this.deFeedback(() => this.str = this.window.location.hash.substring(1));
+        this.deFeedback(() => { this.str = decodeURI(this.window.location.hash.substring(1)); });
       }
     },
     {
       name: 'onMementoChange',
       documentation: 'Called when the memento changes, causes update to hash.',
       code: function() {
-        this.deFeedback(() => this.window.location.hash = '#' + this.usedStr);
+        this.deFeedback(() =>  this.window.location.hash = '#' + this.usedStr);
       }
     }
   ]
@@ -321,19 +363,14 @@ foam.CLASS({
       name: 'memento_',
       documentation: 'Memento bound to this object.',
       hidden: true,
-      initObj: function() {
+      initObject: function(obj) { obj.memento_; },
+      factory: function() {
         // If no top-level Memento found, then create a WindowHashMemento to be
         // the top-level one.
-        this.memento_ = this.parentMemento_ ?
+        return this.parentMemento_ ?
           this.Memento.create({obj: this, memento_: this.parentMemento_}, this) :
           this.WindowHashMemento.create({obj: this}, this);
       }
-    }
-  ],
-
-  methods: [
-    function removeMementoTail() {
-      // TODO
     }
   ]
 });

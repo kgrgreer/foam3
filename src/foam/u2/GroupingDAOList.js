@@ -32,17 +32,14 @@ foam.CLASS({
       padding: 32px 24px;
     }
     ^group-title {
-      color: #1e1f21;
-      margin: 40px 0px;
+      color: $black;
+      margin-bottom: 24px;
     }
-    ^ .foam-nanos-notification-NotificationRowView {
-      margin: 16px 0px;
-      background: white;
-      min-height: 50px;
-      border-radius: 3px;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      border: solid 1px #e7eaec;
-      background-color: #ffffff;
+    ^row + ^row{
+      margin-top: 16px;
+    }
+    ^row + ^group-title {
+      margin-top: 24px;
     }
   `,
 
@@ -93,17 +90,15 @@ foam.CLASS({
           var group = this.groupExpr.f(obj);
           if ( group !== curGroup ) {
             this.start().
-              addClasses(['h100', this.myClass('group-title')]).
+              addClass('h300', this.myClass('group-title')).
               translate(group)
             .end();
           }
           curGroup = group;
 
-          this.add(foam.u2.ViewSpec.createView(
-            this.rowView,
-            { data: obj },
-            this,
-            this.__subSubContext__));
+          this.start(this.rowView, { data: obj })
+            .addClass(this.myClass('row'))
+          .end();
         });
       }
     }

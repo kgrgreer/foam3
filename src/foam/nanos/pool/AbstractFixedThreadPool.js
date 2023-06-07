@@ -26,7 +26,7 @@ foam.CLASS({
       class: 'Int',
       name: 'numberOfThreads',
       javaFactory: `
-      return Math.max(32, getThreadsPerCore() * Runtime.getRuntime().availableProcessors());
+      return Math.max(64, getThreadsPerCore() * Runtime.getRuntime().availableProcessors());
       `
     },
     {

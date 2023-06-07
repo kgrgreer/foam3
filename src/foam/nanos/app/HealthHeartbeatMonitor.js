@@ -64,6 +64,10 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+        Loggers.logger(getX(), this).info("start, disabled on localhost");
+        return;
+      }
       Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName(), true);
       timer.scheduleAtFixedRate(
@@ -97,6 +101,7 @@ foam.CLASS({
               logger.warning("heartbeat", "missed", health.getId());
               health = (Health) health.fclone();
               health.setStatus(getUnhealthyStatus());
+              health.setUpTime(0L);
               ((DAO) x.get("healthDAO")).put_(x, health);
 
               if ( alarm != null ) {
@@ -110,7 +115,7 @@ foam.CLASS({
                 alarm.setSeverity(foam.log.LogLevel.INFO);
                 alarm.setReason(AlarmReason.TIMEOUT);
                 alarm.setClusterable(false);
-                alarm.setNote(health.toSummary() + " missed " + getMissed() + " heartbeats");
+                alarm.setNote("heartbeats missed "+health.toSummary());
                 alarmDAO.put(alarm);
               }
             } else if ( alarm != null &&
@@ -120,6 +125,7 @@ foam.CLASS({
               alarmDAO.put(alarm);
             }
           }
+
           public void remove(Object obj, Detachable sub) {}
           public void eof() {}
           public void reset(Detachable sub) {}

@@ -7,13 +7,14 @@
 foam.INTERFACE({
   package: 'foam.swift.ui',
   name: 'PropertyView',
+
   methods: [
     {
       name: 'fromProperty',
       args: [
         {
           swiftType: 'PropertyInfo',
-          name: 'prop',
+          name: 'prop'
         }
       ]
     }

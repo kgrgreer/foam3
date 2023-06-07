@@ -35,6 +35,7 @@ This section explains the code in the `foam.nanos.auth` package so that it can b
 
 ## Authentication Mechanisms
 
+### User Login
 There is a service named `auth` that can be used to handle authentication. You can access it from your code like so:
 
 Java:
@@ -52,6 +53,35 @@ imports: [
 // In a method or other code:
 var user = await this.auth.login(null, 'test@example.com', 'P45$w0RD');
 ```
+
+### Agent Login (Act as)
+The login method on the auth service is appropriate for initializing a logged in user session but foam supports functionality similar to sudo programs available on unix-like computers with the agentAuth service. This service allows users to act on our system as another user with refined privileges. Privileges are refined based on configuration of the relationship.
+
+The dual user reference on a subject is used to store acting users. The login authenticated user is referenced on the subject as `realUser` and the user being acted as is referenced as `user`. Acting as a user is permitted through an active junction with references to the involved entities. On the junction `sourceId` defines the user that can act as another user referenced by `targetId`. A `group` is defined on the junction to further refine accessibility of the acting context.
+
+This logic exists in the AgentAuthService and is called through the `actAs` method - other helper methods are included on the service to probe and revert the acting as context.
+
+Java:
+```Java
+AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
+Subject subject = agentAuth.actAs(x, agent, user);
+```
+
+JavaScript:
+```JavaScript
+imports: [
+  'agentAuth'
+],
+
+// In a method or other code:
+// typically you would have fetched the agent and user through logic relating to the agentJunctionDAO
+var subject = await this.agentAuth.login(null, agent, user);
+```
+
+### Anonymous User
+Sometimes a foam system may want to have a reference to a controlled and configurable user prior to any traditional authentication. This provides usability on user referenced services and allows for an application to act as if there was a user. An anonymous user is referenced by the acting service provider holding various permissions defined by their anonymous group and is logged into the sessions subject when called for.
+
+The service holding this feature is in the authService and is called through the authorizeAnonymous method.
 
 TODO:
 * Explain authentication via the web client vs as an API user

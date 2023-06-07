@@ -63,13 +63,13 @@
       overflow: visible;
     }
     ^scrolled .foam-u2-view-TableView-thead {
-      box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
+      box-shadow: 0 1.5px 4px $grey300;
     }
     ^nav{
       align-items: center;
-      background: /*%WHITE%*/ white;
+      background: $white;
       border-radius: 0 0 4px 4px;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       box-sizing: border-box;
       gap: 8px;
       justify-content: flex-end;
@@ -86,7 +86,7 @@
       border-radius: 0px;
       padding: 0px;
       height: auto;
-      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+      border-bottom: 2px solid $primary400;
     }
     ^counters:hover {
       cursor: pointer;
@@ -233,7 +233,7 @@
               data: obj,
               config: this.config,
               idOfRecord: id
-            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento.tail })
+            }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento?.tail })
           }));
         }
       }
@@ -291,13 +291,9 @@
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
-  ],
-
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.onDetach(this.table_$.sub(this.refresh));
       this.onDetach(this.table_$.dot('data').sub(this.refresh));
       this.onDetach(this.table_$.dot('updateValues').sub(this.refresh));
@@ -391,7 +387,7 @@
           this.stack.push(this.StackBlock.create({
             view: {
               class: 'foam.comics.v2.DAOCreateView',
-              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
+              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
               of: this.data.of
             }, parent: this.__subContext__.createSubContext({ memento: this.table_.memento })
@@ -485,6 +481,9 @@
     {
       name: 'updateRenderedPages_',
       isFramed: true,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         if ( ! this.table_ ) return;
 
@@ -503,7 +502,7 @@
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] ) continue;
           var dao   = this.data$proxy.limit(this.pageSize).skip(page * this.pageSize);
-          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight) 
+          this.renderedPageSlots_[page] = this.table_.rowsFrom(dao, this.TABLE_HEAD_HEIGHT + page * this.pageSize * this.rowHeight)
           var tbody = this.table_.slotE_(this.renderedPageSlots_[page]);
           this.table_.add(tbody);
           this.renderedPages_[page] = tbody;

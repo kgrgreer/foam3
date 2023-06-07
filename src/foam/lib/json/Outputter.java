@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.*;
 import org.apache.commons.io.IOUtils;
 
+/** Deprecated: Use JSONFObjectFormatter if you can because it is much more efficient. **/
 public class Outputter
   extends    AbstractSink
   implements foam.lib.Outputter
@@ -62,21 +63,21 @@ public class Outputter
       writer        = new PrintWriter(stringWriter_);
     }
 
-    this.x_ = x;
-    this.writer_ = writer;
+    x_      = x;
+    writer_ = writer;
   }
 
   @Override
   public String stringify(FObject obj) {
     initWriter();
     outputFObject(obj);
-    return this.toString();
+    return toString();
   }
 
   public String stringifyDelta(FObject oldFObject, FObject newFObject) {
     initWriter();
     outputFObjectDelta(oldFObject, newFObject);
-    return this.toString();
+    return toString();
   }
 
   protected void initWriter() {
@@ -107,14 +108,14 @@ public class Outputter
       writer_.append("\"\"\"");
       writer_.append(escapeMultiline(s));
       writer_.append("\"\"\"");
-    }
-    else {
+    } else {
       writer_.append("\"");
       writer_.append(escape(s));
       writer_.append("\"");
     }
   }
 
+  // TODO: don't create a new string, just copy directly to destnation
   public String escape(String s) {
     // I tested with a ThreadLocal StringBuilder, but
     // not faster in Java 11. KGR
@@ -165,6 +166,7 @@ public class Outputter
   }
 
   protected void outputNumber(Number value) {
+    // TODO: don't do this, creates extra garbage
     writer_.append(value.toString());
   }
 
@@ -301,16 +303,15 @@ public class Outputter
   }
 
   protected boolean isArray(Object value) {
-    return value != null &&
-        ( value.getClass() != null ) &&
-        value.getClass().isArray();
+    return value != null && ( value.getClass() != null ) && value.getClass().isArray();
   }
 
   public void outputDateValue(java.util.Date date) {
-    if ( outputReadableDates_ )
+    if ( outputReadableDates_ ) {
       outputString(sdf.get().format(date));
-    else
+    } else {
       outputNumber(date.getTime());
+    }
   }
 
   protected void outputDate(java.util.Date date) {
@@ -322,22 +323,27 @@ public class Outputter
   protected synchronized List getProperties(ClassInfo info) {
     String of = info.getObjClass().getSimpleName();
 
+    // ???: Why is this needed? Is it needed?
     if ( propertyMap_.containsKey(of) && propertyMap_.get(of).isEmpty() ) {
       propertyMap_.remove(of);
     }
 
     if ( ! propertyMap_.containsKey(of) ) {
       List<PropertyInfo> filteredAxioms = new ArrayList<>();
-      Iterator e = info.getAxiomsByClass(PropertyInfo.class).iterator();
+      Iterator           e              = info.getAxiomsByClass(PropertyInfo.class).iterator();
+      String             ofLC           = of.toLowerCase();
+
       while ( e.hasNext() ) {
         PropertyInfo prop = (PropertyInfo) e.next();
-        if ( propertyPredicate_ == null || propertyPredicate_.propertyPredicateCheck(this.x_, of.toLowerCase(), prop) ) {
+        if ( propertyPredicate_ == null || propertyPredicate_.propertyPredicateCheck(x_, ofLC, prop) ) {
           filteredAxioms.add(prop);
         }
       }
       propertyMap_.put(of, filteredAxioms);
+
       return filteredAxioms;
     }
+
     return propertyMap_.get(of);
   }
 

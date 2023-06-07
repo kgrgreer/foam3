@@ -7,6 +7,9 @@
 foam.INTERFACE({
   package: 'foam.nanos.crunch',
   name: 'CrunchService',
+
+  skeleton: true,
+
   documentation: `
     CrunchService provides common logic used by the client and other CRUNCH
     services.
@@ -20,7 +23,7 @@ foam.INTERFACE({
   ],
 
   topics: [
-    'updateJunction'
+    'updateJunctionTopic'
   ],
 
   methods: [
@@ -32,6 +35,16 @@ foam.INTERFACE({
         { name: 'x',     type: 'Context' },
         { name: 'capId', type: 'String' },
         { name: 'ucj',   type: 'foam.nanos.crunch.UserCapabilityJunction' }
+      ],
+      flags: ['java']
+    },
+    {
+      name: 'getPrereqObjects',
+      type: 'java.util.List<Capability>',
+      async: true,
+      args: [
+        { name: 'x',     type: 'Context' },
+        { name: 'capId', type: 'String' }
       ],
       flags: ['java']
     },

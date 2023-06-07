@@ -9,7 +9,14 @@
   name: 'SearchField',
   extends: 'foam.u2.TextField',
 
+  cssTokens: [
+    ['searchRoundness', '$inputBorderRadius']
+  ],
+
   css: `
+    ^ {
+      border-radius: $searchRoundness;
+    }
     ^icon{
       background-image: url("images/ic-search.svg");
       background-repeat: no-repeat;

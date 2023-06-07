@@ -206,16 +206,6 @@ foam.CLASS({
       documentation: 'Email template name.'
     },
     {
-      class: 'String',
-      name: 'slackWebhook',
-      documentation: 'Webhook associated to Slack.'
-    },
-    {
-      class: 'String',
-      name: 'slackMessage',
-      documentation: 'Message to be sent to Slack.'
-    },
-    {
       class: 'Boolean',
       name: 'clusterable',
       value: true,
@@ -239,6 +229,13 @@ foam.CLASS({
         }
         return spid_;
       `
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.alarming.Alarm',
+      name: 'alarm',
+      storageTransient: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -263,14 +260,14 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("create")) && ! getTransient() ) throw new AuthorizationException("You don't have permission to create this notification.");
+      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("create", true)) && ! getTransient() ) throw new AuthorizationException("You don't have permission to create this notification.");
       `
     },
     {
       name: 'authorizeOnUpdate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update")) && ! getTransient() ) throw new AuthorizationException("You don't have permission to update notifications you do not own.");
+      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update", false)) && ! getTransient() ) throw new AuthorizationException("You don't have permission to update notifications you do not own.");
       `
     },
     {
@@ -284,17 +281,18 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("read")) ) throw new AuthorizationException("You don't have permission to read notifications you do not own.");
+      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("read", false)) ) throw new AuthorizationException("You don't have permission to read notifications you do not own.");
       `
     },
     {
       name: 'createPermission',
       args: [
-        { name: 'operation', type: 'String' }
+        { name: 'operation', type: 'String' },
+        { name: 'skipId', type: 'Boolean' }
       ],
       type: 'String',
       javaCode: `
-        return "notification." + operation + "." + getId();
+        return skipId ? "notification." + operation : "notification." + operation + "." + getId();
       `
     }
   ],

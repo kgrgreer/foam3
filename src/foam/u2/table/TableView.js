@@ -9,6 +9,13 @@
   name: 'TableView',
   extends: 'foam.u2.table.UnstyledTableView',
 
+  cssTokens: [
+    {
+      name: 'borderSize',
+      value: '2px solid $grey300'
+    }
+  ],
+
   css: `
     ^ {
       border-spacing: 0px;
@@ -34,15 +41,34 @@
       scroll-behavior: smooth;
     }
 
+    @keyframes slide {
+      from {
+       top: 32px;
+       opacity: 0;
+      }
+      80% {
+        opacity: 0.3;
+      }
+      to {
+        top: 0;
+        opacity: 1;
+      }
+    }
+    ^row {
+      position: relative;
+      animation-duration: 0.3s;
+      animation-timing-function: ease;
+      animation-name: slide;
+    }
     ^tr {
-      background: /*%WHITE%*/ white;
+      background: $white;
       display: flex;
       height: 48px;
       justify-content: space-between;
     }
 
     ^tbody ^tr:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -50,10 +76,11 @@
     ^thead {
       position: sticky;
       top: 0;
+      z-index: 1;
     }
 
     ^thead > ^tr {
-      border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: $borderSize;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
       width: 100%;
@@ -64,7 +91,7 @@
     ^th {
       align-self: center;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       display: block;
       overflow: hidden;
       padding-left: 16px;
@@ -85,7 +112,7 @@
      * OTHER
      */
     ^selected {
-      background: /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50;
     }
 
     ^noselect {
@@ -106,7 +133,7 @@
     }
 
     ^row-group{
-      background: /*%GREY5%*/ #F5F7FA;
+      background: $grey50;
     }
 
     ^resizeButton {
@@ -127,9 +154,9 @@
     /* PAGINATION */
     ^nav{
       align-items: center;
-      background: /*%WHITE%*/ white;
+      background: $white;
       border-radius: 0 0 4px 4px;
-      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      border-top: 1px solid $grey300;
       box-sizing: border-box;
       gap: 8px;
       justify-content: flex-end;
@@ -146,7 +173,7 @@
       border-radius: 0px;
       padding: 0px;
       height: auto;
-      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+      border-bottom: 2px solid $primary400;
     }
   `,
 

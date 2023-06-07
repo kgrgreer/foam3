@@ -20,7 +20,7 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'user',
+    'subject',
     'fileTypeDAO'
   ],
 
@@ -34,7 +34,7 @@ foam.CLASS({
     ^ {
       align-items: center;
       box-sizing: border-box;
-      border: 2px dashed /*%GREY3%*/ #B2B6BD;
+      border: 2px dashed $grey400;
       border-radius: 4px;
       display: flex;
       flex-direction: column;
@@ -45,8 +45,8 @@ foam.CLASS({
       width: 100%;
     }
     ^:focus {
-      background: /*%PRIMARY5%*/ #E5F1FC;
-      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+      background: $primary50;
+      border: 2px dashed $primary400;
     }
     ^instruction-container.selection {
       margin-bottom: 16px;
@@ -59,11 +59,11 @@ foam.CLASS({
       z-index: -1;
     }
     ^link, ^link:hover {
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
     ^input:focus + ^instruction-container > ^browse-container > ^link{
       border: 1px solid;
-      border-color: /*%PRIMARY1%*/ #406dea;
+      border-color: $primary700;
     }
     ^caption-container {
       display: flex;
@@ -88,8 +88,8 @@ foam.CLASS({
       gap: 8px;
     }
     ^dragged{
-      background: /*%PRIMARY5%*/ #E5F1FC;
-      border: 2px dashed /*%PRIMARY3%*/ #406DEA;
+      background: $primary50;
+      border: 2px dashed $primary400;
     }
   `,
 
@@ -155,6 +155,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDragged_'
+    },
+    {
+      class: 'Boolean',
+      name: 'showHelp'
     }
   ],
 
@@ -169,9 +173,10 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
-      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles) { 
-          if ( isMultipleFiles ) return true;
-          return ! hasFiles;
+      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles, controllerMode) {
+          let cm = controllerMode != foam.u2.ControllerMode.VIEW;
+          if ( isMultipleFiles && cm ) return true;
+          return ! hasFiles && cm;
         });
 
       this.start('input')
@@ -207,7 +212,8 @@ foam.CLASS({
               .end();
             }))
         .end()
-        .start().addClass(this.myClass('caption-container')).hide(this.files$.map((v) => { return v.length > 0; }))
+        .start().addClass(this.myClass('caption-container'))
+        .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
           .start()
             .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
             .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
@@ -276,7 +282,7 @@ foam.CLASS({
         if ( isIncluded ) continue;
         if ( this.isMultipleFiles ) {
           var f = this.File.create({
-            owner:    this.user.id,
+            owner:    this.subject.user.id,
             filename: files[i].name,
             filesize: files[i].size,
             mimeType: files[i].type,
@@ -287,7 +293,7 @@ foam.CLASS({
           this.files.push(f);
         } else {
           this.files[0] = this.File.create({
-            owner:    this.user.id,
+            owner:    this.subject.user.id,
             filename: files[i].name,
             filesize: files[i].size,
             mimeType: files[i].type,

@@ -21,12 +21,19 @@ foam.CLASS({
   imports: [
     'ctrl',
     'document',
-    'dropdown',
     'theme'
   ],
 
   exports: [
     'overlay_ as dropdown'
+  ],
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'overlayButtonHighlight',
+      value: '$primary50'
+    }
   ],
 
   properties: [
@@ -73,12 +80,12 @@ foam.CLASS({
 
   css: `
     ^disabled button {
-      color: /*%GREY4%*/ grey;
+      color: $buttonSecondaryColor$disabled$foreground;
     }
 
     ^button-container button {
       border: 1px solid transparent;
-      background-color: /*%WHITE%*/ #FFFFFF;
+      background-color: $white;
       justify-content: space-between;
       text-align: left;
       white-space: nowrap;
@@ -90,26 +97,51 @@ foam.CLASS({
       height: 100%;
     }
 
-    ^button-container button:hover {
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+    ^button-container button:hover:not(:disabled) {
+      background-color: $overlayButtonHighlight;
+      color: $overlayButtonHighlight$foreground;
     }
 
     ^button-container button:focus {
-      border-color: /*%PRIMARY4%*/ #C6D2FF;
-      background-color: /*%PRIMARY5%*/ #E5F1FC;
+      border-color: $overlayButtonHighlight$hover;
+      background-color: $overlayButtonHighlight;
+      color: $overlayButtonHighlight$foreground;
     }
 
     ^button-container button:focus:not(:focus-visible){
       border-color: transparent;
     }
 
+    /* destructive */
+
+    ^button-container .destructive{
+      color: $destructive500;
+    }
+
+    ^button-container .destructive svg { fill: $destructive500; }
+
+    ^button-container .destructive:hover:not(:disabled) {
+      background-color: $destructive50;
+    }
+
+    ^button-container .destructive:focus {
+      border-color: $destructive500;
+      background-color: $destructive50;
+    }
+
+    ^button-container .destructive:disabled {
+      color: $destructive50;
+    }
+
+    ^button-container .destructive:disabled svg { fill: $destructive50; }
+
     ^iconOnly{
       padding: 0px;
     }
 
     ^dropdown svg {
-      width: 1rem;
-      height: 1rem;
+      font-size: 0.6rem;
+      fill: currentcolor;
     }
 
     ^iconContainer {
@@ -122,12 +154,8 @@ foam.CLASS({
       this.SUPER();
 
       this.shown = false;
-      for ( let action of this.data ) {
-        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-          this.shown = true;
-          break;
-        }
-      }
+      this.onDetach(this.data$.sub(this.recheckShown));
+      await this.recheckShown();
     },
 
     function addContent() {
@@ -139,7 +167,9 @@ foam.CLASS({
           if ( shown ) {
             e.callIfElse(self.theme,
               function() {
-                this.tag({ class: 'foam.u2.tag.Image', glyph: 'dropdown' }).addClass(self.myClass('dropdown'));
+                this.start(self.HTMLView, { data: self.theme.glyphs.dropdown.expandSVG() })
+                  .addClass(self.myClass('SVGIcon'), self.myClass('dropdown'))
+                .end();
               },
               function() {
                 this.tag({ class: 'foam.u2.tag.Image', data$: self.dropdownIcon$ }).addClass(self.myClass('dropdown'));
@@ -242,7 +272,7 @@ foam.CLASS({
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.overlay_.parentEl = this;
+      this.overlay_.parentEl = this.el_();
       this.isMouseClick = !! evt.detail;
       var x = evt.clientX || this.getBoundingClientRect().x;
       var y = evt.clientY || this.getBoundingClientRect().y;
@@ -271,6 +301,15 @@ foam.CLASS({
         if ( this.document.activeElement === this.lastEl_.el_() ) {
           this.firstEl_.focus();
           e.preventDefault();
+        }
+      }
+    },
+
+    async function recheckShown() {
+      for ( let action of this.data ) {
+        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
+          this.shown = true;
+          break;
         }
       }
     }

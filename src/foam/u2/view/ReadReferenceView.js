@@ -8,11 +8,27 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReadReferenceView',
   extends: 'foam.u2.View',
+  axioms: [foam.pattern.Faceted.create()],
+
+  imports: [
+    'auth',
+    'ctrl',
+    'menuDAO',
+    'pushMenu',
+    'stack'
+  ],
+
+  requires: [
+    'foam.comics.v2.DAOControllerConfig',
+    'foam.u2.detail.SectionedDetailView',
+    'foam.u2.stack.StackBlock',
+    'foam.u2.view.ReferenceCitationView'
+  ],
 
   documentation: `
     A read-only view for a reference property that creates a link on this reference property.
-    
-    -- How to configure the link -- 
+
+    -- How to configure the link --
         - Use enableLink and menuKeys to configure the link.
           - To disable the link, set enableLink to false.
           - To set the link to a custom menu, you can provide a list of menus to 'menuKeys'. The first menu
@@ -33,7 +49,7 @@ foam.CLASS({
                                         /      \   n
                                      y /         - - - - - - - - - - - - - - - - -
                                       /                                            \
-                              have a menu with                            have permission to    
+                              have a menu with                            have permission to
                                 permission ?                          service.{prop.targetDAOKey}?
                                  /       \   n                                   /     \     n
                               y /          - - - - - -                        y /        - - - - -
@@ -49,9 +65,9 @@ foam.CLASS({
 
     -- Where to set enableLink and menuKeys --
         - enableLink and menuKeys can be set directly to reference property or
-          they can be passed to the view. 
+          they can be passed to the view.
           Warning: Do not try to do both or it may result in unexpected behaviours.
-    
+
         1. setting properties on reference property
 
         {
@@ -78,20 +94,12 @@ foam.CLASS({
         }
   `,
 
-  requires: [
-    'foam.comics.v2.DAOControllerConfig',
-    'foam.u2.detail.SectionedDetailView',
-    'foam.u2.view.ReferenceCitationView'
-  ],
-
-  axioms: [foam.pattern.Faceted.create()],
-
   properties: [
     'obj',
     {
       name: 'of',
       expression: function (obj) {
-        return obj.cls_;
+        return obj?.cls_;
       }
     },
     'prop',
@@ -124,61 +132,54 @@ foam.CLASS({
     }
   ],
 
-  imports: [
-    'ctrl',
-    'menuDAO',
-    'pushMenu',
-    'stack'
-  ],
-
   methods: [
     {
       name: 'render',
       code: function() {
-        var self = this;
         this.SUPER();
+        var self = this;
         this.add(
           this.obj$.map((obj) => {
             if ( ! obj ) return '';
 
-            if ( this.enableLink ) {
-              return this.E()
-                .start('a')
-                  .attrs({ href: '#' })
-                  .on('click', (evt) => {
-                    evt.preventDefault();
-                    if ( self.linkTo === 'daoSummary' ) {
-                      const pred = foam.mlang.predicate.False.create();
-
-                      self.stack.push(
-                        {
-                          class: 'foam.comics.v2.DAOSummaryView',
-                          data: self.obj,
-                          of: self.obj.cls_,
-                          backLabel: 'Back',
-                          config: self.DAOControllerConfig.create({
-                            daoKey: self.prop.targetDAOKey,
-                            createPredicate: pred,
-                            editPredicate: pred,
-                            deletePredicate: pred,
-                            editEnabled: false
-                          })
-                        },
-                        self
-                      );
-                      // link to a menu
-                    } else {
-                      self.pushMenu(self.linkTo);
-                    }
-                  })
-                  .tag(self.ReferenceCitationView, { data: obj })
-                .end();
-            } else {
-              return this.E()
-                .start()
-                  .tag(self.ReferenceCitationView, { data: obj })
-                .end();
+            if ( ! this.enableLink ) {
+              return this.E().tag(self.ReferenceCitationView, { data: obj });
             }
+
+            return this.E()
+              .start('a')
+                .attrs({ href: '#' })
+                .on('click', (evt) => {
+                  evt.preventDefault();
+                  if ( self.linkTo === 'daoSummary' ) {
+                    const pred = foam.mlang.predicate.False.create();
+
+                    this.stack.push(this.StackBlock.create({
+                      parent: this,
+                      id: `daoSummary.${self.obj.cls_.name}.${self.obj.id}`,
+                      breadcrumbTitle: '' + self.obj.id,
+                      view: {
+                        class: 'foam.comics.v2.DAOSummaryView',
+                        data: self.obj,
+                        of: self.obj.cls_,
+                        backLabel: 'Back',
+                        config: self.DAOControllerConfig.create({
+                          daoKey: self.prop.targetDAOKey,
+                          createPredicate: pred,
+                          editPredicate: pred,
+                          deletePredicate: pred,
+                          editEnabled: false
+                        })
+                      }
+                    }));
+
+                    // link to a menu
+                  } else {
+                    self.pushMenu(self.linkTo);
+                  }
+                })
+                .tag(self.ReferenceCitationView, { data: obj })
+              .end();
           })
         );
       }
@@ -194,19 +195,18 @@ foam.CLASS({
       this.enableLink = this.prop.enableLink && this.enableLink;
       this.menuKeys = this.prop.menuKeys || this.menuKeys;
 
-      this.configLink().then(() => {
-        const dao = this.ctrl.__subContext__[prop.targetDAOKey];
-        if ( dao ) {
-          dao.find(this.data).then((o) => (this.obj = o));
-        }
-      });
+      this.configLink();
     },
 
     async function configLink() {
+      const dao = this.ctrl.__subContext__[this.prop.targetDAOKey];
+      if ( dao ) {
+        this.obj = await dao.find(this.data);
+      }
+
       // enableLink set to false?
       if ( ! this.enableLink ) {
         this.enableLink = false;
-        this.linkTo = '';
         return;
       }
 
@@ -214,46 +214,46 @@ foam.CLASS({
         // menus are provided?
         if ( this.menuKeys ) {
           // check permissions for menus
-          const permissions = await Promise.all(
-            [...this.menuKeys].map((menuId) => {
-              return this.menuDAO.find(menuId); 
-            })
+          const availableMenus = await Promise.all(
+            this.menuKeys.map(menuId => this.menuDAO.find(menuId))
           );
 
-          const firstMenu = permissions.find(p => p);
-          // have a menu with permission?
-          if ( firstMenu ) {
-            this.enableLink = true;
-            // if menu is dao menu and daoKey matches prop's targetDAOkey, set link to dao summary
-            if (
-              firstMenu.handler &&
-              firstMenu.handler.config &&
-              firstMenu.handler.config.daoKey === this.prop.targetDAOKey
-            ) {
-              this.linkTo = 'daoSummary';
-            } else {
-              this.linkTo = firstMenu.id;
-            }
-          } else {
-            this.enableLink = false;
-            this.linkTo = '';
-          }
-        // menus not provided
-        } else {
-          // have permission to service.{prop.targetDAOKey} ?
-          if ( this.__subContext__[this.prop.targetDAOKey] ) {
-            this.enableLink = true;
-            this.linkTo = 'daoSummary';
-          } else {
-            this.enableLink = false;
-            this.linkTo = '';
+          for ( const maybeMenu of availableMenus ) {
+            if ( ! maybeMenu ) continue;
+
+            let configuredDAOKey = maybeMenu?.handler?.config?.daoKey;
+            this.linkTo = (
+              configuredDAOKey &&
+              configuredDAOKey === this.prop.targetDAOKey
+            ) ? 'daoSummary' : maybeMenu.id;
+
+            await this.maybeEnableLink();
+            return;
           }
         }
+
+        // have permission to service.{prop.targetDAOKey} ?
+        if ( this.__subContext__[this.prop.targetDAOKey] ) {
+          this.linkTo = 'daoSummary';
+          await this.maybeEnableLink();
+          return;
+        }
+
+        this.enableLink = false;
       } catch (e) {
         console.error(e);
-        this.enableLink = true;
-        this.linkTo = 'daoSummary';
+        this.enableLink = false;
       }
+    },
+
+    async function maybeEnableLink() {
+      if ( this.linkTo !== 'daoSummary' ) {
+        this.enableLink = true;
+        return;
+      }
+      var p = `referenceDetailView.${this.of?.id ?? 'unknown'}`;
+      this.enableLink = await this.auth.check(
+        null, p);
     }
   ]
 });

@@ -264,7 +264,7 @@ foam.CLASS({
           }
           if ( superMethod.body.data != f.body.data ) o.out(f, '\n');
         } else {
-          o.out(f, '\n');
+          if ( f.body.data != '' || f.type == '' || f.abstract) o.out(f, '\n');
         }
       });
       this.classes.forEach(function(c) { o.out(c, '\n'); });

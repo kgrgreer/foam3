@@ -25,6 +25,14 @@ foam.CLASS({
     if the value is set to the default value.
   `,
 
+  constants: [
+    {
+        name: 'SALT_CMD',
+        type: 'String',
+        value: 'SALT_CMD'
+    }
+  ],
+
   implements: [
     'foam.nanos.boot.NSpecAware'
   ],
@@ -72,7 +80,7 @@ foam.CLASS({
         if ( getPropertyInfo() instanceof foam.core.AbstractLongPropertyInfo ) {
           return new NUIDGenerator(getX(), getSalt(), getDelegate(), getPropertyInfo());
         }
-        return new AUIDGenerator(getX(), getSalt());
+        return new AUIDGenerator.Builder(getX()).setSalt(getSalt()).setMinLength(getMinLength()).build();
       `,
       hidden: true,
     },
@@ -81,6 +89,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       type: 'foam.nanos.boot.NSpec',
       hidden: true,
+    },
+    {
+      name: 'minLength',
+      class: 'Int'
     }
   ],
 
@@ -119,8 +131,25 @@ foam.CLASS({
       javaCode: `
         if ( getPropertyInfo().isDefaultValue(obj) ) {
           getPropertyInfo().set(obj, getUIDGenerator().getNext(null));
+        } else if ( getUIDGenerator() instanceof NUIDGenerator ) {
+          // NOTE: On replay, medusa node "put" its entries (with non-zero ids)
+          // on the mediator and the sequence number of the NUID generator may
+          // need to keep up with the sequence number embedded in the ids.
+          ((NUIDGenerator) getUIDGenerator()).maybeUpdateSeqNo(
+            (long) getPropertyInfo().get(obj));
         }
         return getDelegate().put_(x, obj);
+      `
+    },
+    {
+      name: 'cmd_',
+      args: 'Context x, Object obj',
+      javaCode:
+      `
+        if ( FUIDDAO.SALT_CMD.equals(obj) ) {
+          return getSalt();
+        }
+        return getDelegate().cmd_(x, obj);
       `
     }
   ]

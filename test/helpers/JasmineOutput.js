@@ -24,6 +24,8 @@ foam.CLASS({
   package: 'test.helpers',
   name: 'JasmineOutput',
 
+  flags: ['node'],
+
   imports: [ 'exemplarRegistry as registry' ],
 
   properties: [
@@ -85,5 +87,3 @@ foam.CLASS({
 
   ]
 });
-
-

@@ -9,6 +9,16 @@ foam.CLASS({
   name: 'DraftDetailView',
   extends: 'foam.u2.View',
 
+  topics: [
+    'cancelUpdate',
+    'dataUpdate'
+  ],
+
+  imports: [
+    'onCancel?',
+    'onSave?'
+  ],
+
   documentation: `
     A detail view that holds off on updating the given object until the user clicks save.
     TODO: Nested property change events. Without this, this view does not know if nested
@@ -17,8 +27,20 @@ foam.CLASS({
   `,
 
   css: `
-    ^ .foam-u2-ActionView-save {
-      margin-top: 8px;
+    ^actionBar {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      width: 100%;
+    }
+    ^actionBar > * {
+      justify-self: flex-end;
+    }
+    ^ {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
     }
   `,
 
@@ -31,28 +53,32 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'workingData'
-    },
-    {
-      class: 'Boolean',
-      name: 'hasDiff'
     }
   ],
 
   actions: [
     {
       name: 'save',
-      isEnabled: function(hasDiff) { return hasDiff },
-      isAvailable: function (controllerMode) {
+      isEnabled: function(workingData$errors_) {
+        return ! workingData$errors_;
+      },
+      isAvailable: function(controllerMode) {
         return controllerMode != foam.u2.ControllerMode.VIEW;
       },
-      code: function() { this.data = this.workingData; }
+      code: function() {
+        this.data = this.workingData;
+        this.onSave && this.onSave(this.data);
+      }
     },
+    {
+      name: 'cancel',
+      code: function() {
+        this.onCancel && this.onCancel(this.data);
+      }
+    }
   ],
 
   reactions: [
-    ['', 'propertyChange.workingData', 'updateHasDiff'],
-    ['workingData', 'propertyChange', 'updateHasDiff'],
-    ['data', 'propertyChange', 'updateHasDiff'],
     ['', 'propertyChange.data', 'updateWorkingData'],
   ],
   listeners: [
@@ -63,22 +89,20 @@ foam.CLASS({
         this.workingData = this.data && this.data.clone();
       }
     },
-    {
-      name: 'updateHasDiff',
-      isFramed: true,
-      code: function() {
-        this.hasDiff = ! this.data.equals(this.workingData);
-      }
-    }
   ],
   methods: [
     function render() {
       this.SUPER();
+      this.updateWorkingData();
       this
         .addClass(this.myClass())
         .tag(this.view, { data$: this.workingData$ })
         .startContext({ data: this })
-          .tag(this.SAVE, { buttonStyle: 'SECONDARY' })
+          .start()
+            .addClass(this.myClass('actionBar'))
+            .tag(this.SAVE, { buttonStyle: 'PRIMARY' })
+            .tag(this.CANCEL, { buttonStyle: 'TERTIARY' })
+          .end()
         .endContext();
     }
   ]

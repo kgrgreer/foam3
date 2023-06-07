@@ -11,15 +11,15 @@ foam.ENUM({
   values: [
     {
       name: 'DEFAULT',
-      color: '/*%WHITE%*/ #FFFFFF'
+      color: '$white'
     },
     {
       name: 'DESTRUCTIVE',
-      color: '/*%DESTRUCTIVE3%*/ #D9170E'
+      color: '$destructive400'
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00'
+      color: '$warn400'
     }
   ]
 });
@@ -51,8 +51,8 @@ foam.CLASS({
       z-index: 4;
     }
     ^inner {
-      background-color: /*%WHITE%*/ white;
-      border: 1px solid /*%GREY4%*/ #DADDE2;
+      background-color: $white;
+      border: 1px solid $grey300;
       border-radius: 0 0 3px 3px;
       border-top: none;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);      
@@ -68,7 +68,7 @@ foam.CLASS({
       position: relative;
     }
     ^title{
-      margin-right: 40px;
+      margin-right: min(10%, 16px);
       padding-bottom: 16px;
     }
     ^actionBar {
@@ -76,18 +76,23 @@ foam.CLASS({
       justify-content: flex-end;
       padding: 16px 0px;
     }
+    ^fullscreen ^wrapper {
+      height: 100%;
+      width: 100%;
+      border-radius: 0;
+    }
   `,
 
   properties: [
     {
-      class: 'Int',
+      class: 'String',
       name: 'maxHeight',
-      value: 65
+      value: '65vh'
     },
     {
-      class: 'Int',
+      class: 'String',
       name: 'maxWidth',
-      value: 45
+      value: '45vw'
     },
     {
       class: 'Enum',
@@ -119,17 +124,22 @@ foam.CLASS({
       var bgColor = this.returnExpandedCSS(this.modalStyle.color);
       this
         .addClass(this.myClass())
+        .enableClass(this.myClass('fullscreen'), this.fullscreen$)
         .on('keydown', this.onKeyDown)
         .start()
           .addClass(this.myClass('background'))
           .on('click', this.closeable ? this.close : null)
         .end()
         .start(this.Rows)
-          .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
+          .addClass(this.myClass('wrapper'))
+          .style({
+            'max-height': this.slot(function(fullscreen, maxHeight) { return ! fullscreen ? maxHeight : ''}),
+            'max-width': this.slot(function(fullscreen, maxWidth) { return ! fullscreen ? maxWidth : ''})
+          })
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('/*%GREY4%*/ #DADDE2')})
+              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('$grey300')})
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)
@@ -138,7 +148,7 @@ foam.CLASS({
                 .addClass(this.myClass('X'))
               .end()
             .endContext()
-            .start().addClasses(['h400', this.myClass('title')]).add(this.title).end()
+            .start().addClass('h400', this.myClass('title')).add(this.title).end()
             .start()
               .addClass(this.myClass('modal-body'))
               .add(this.addBody())

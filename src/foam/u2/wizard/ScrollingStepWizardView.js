@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.u2.borders.LoadingBorder',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.wizard.WizardPosition',
+    'foam.u2.wizard.WizardStatus',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.WizardletSearchController'
   ],
@@ -64,7 +65,7 @@ foam.CLASS({
       align-items: center;
       background-color: rgba(255,255,255,0.7);
       backdrop-filter: blur(5px);
-      box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-grow: 0;
       justify-content: flex-end;
@@ -79,9 +80,9 @@ foam.CLASS({
 
     ^network-failure-banner {
       backdrop-filter: blur(10px);
-      background-color: /*%DESTRUCTIVE2%*/ #A61414;
+      background-color: $destructive500;
       border-radius: 8px;
-      color: /*%WHITE%*/ white;
+      color: $white;
       margin-bottom: 16px;
       padding: 8px;
       position: sticky;
@@ -244,7 +245,7 @@ foam.CLASS({
               .add(this.slot(function (data$someFailures) {
                 return data$someFailures
                   ? this.E()
-                    .addClasses(['p', this.myClass('network-failure-banner')])
+                    .addClass('p', this.myClass('network-failure-banner'))
                     .add(this.NETWORK_FAILURE_MESSAGE)
                   : this.E();
               }))
@@ -256,6 +257,7 @@ foam.CLASS({
               .addClass(this.myClass('bottomnav'))
               .start()
                 .addClass(this.myClass('actions'))
+                .tag(this.data.OPEN_WIZARD_INSPECTOR)
                 .startContext({ data: self })
                   .tag(this.SUBMIT, {
                     label$: this.primaryLabel$,
@@ -310,7 +312,7 @@ foam.CLASS({
             }))
             .start()
               .addClass('h300')
-              .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
+              .translate(wizardlet.id+'.name', wizardlet.title)
             .end();
         }));
     },
@@ -358,6 +360,7 @@ foam.CLASS({
         }
 
         this.data.submitted = true;
+        this.data.status = this.WizardStatus.COMPLETED;
         this.onClose(x, true);
       }
     }

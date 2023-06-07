@@ -25,12 +25,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'theme'
+    'theme?'
   ],
 
   css: `
-    ^ .input-image {
-      --fieldSize: /*%INPUTHEIGHT%*/ 34px;
+    ^ {
+      position: relative;
+      width: 100%;
+    }
+    ^input-image {
+      --fieldSize: $inputHeight;
       position: absolute;
       width: 16px;
       height: calc( var(--fieldSize) / 1.2);
@@ -38,11 +42,8 @@ foam.CLASS({
       right: 1vh;
       opacity: 0.3;
     }
-    ^ .full-width-input-password:focus + .input-image {
+    .full-width-input-password:focus + ^input-image {
       opacity: 1;
-    }
-    ^ .full-width-input-password:focusout + .input-image {
-      opacity: 0.3;
     }
   `,
 
@@ -86,6 +87,10 @@ foam.CLASS({
       name: 'isAvailable',
       value: true
     },
+    {
+      class: 'String',
+      name: 'autocomplete'
+    }
   ],
 
   methods: [
@@ -94,12 +99,13 @@ foam.CLASS({
       var typingTimer;
       var doneTypingInterval = 400; 
 
-      this.addClass().start()
+      this.addClass()
         .start(this.TextField, {
-          type: this.type,
+          type$: this.type$,
           data$: this.data$,
           onKey: true,
-        }, this.inputElement$)
+          autocomplete: this.autocomplete
+        })
           .addClass('full-width-input-password')
           .on('keyup', () => {
             clearTimeout(typingTimer);
@@ -113,17 +119,16 @@ foam.CLASS({
 
         .start('img')
           .show(this.passwordIcon$)
-          .addClass('input-image')
+          .addClass(this.myClass('input-image'))
           .attr('src', this.visibilityIcon$)
           .on('mousedown', (e) => e.preventDefault())
           .on('click', () => this.visible())
-        .end()
-      .end();
+        .end();
     },
 
     function visibleIcon(visibilityIcon, type) {
       this.visibilityIcon = visibilityIcon;
-      this.inputElement.setAttribute('type', type);
+      this.type = type;
       this.passwordInvisible = ! this.passwordInvisible;
       this.enableClass('property-password', this.passwordInvisible);
     }
@@ -140,7 +145,7 @@ foam.CLASS({
       }
     },
     function checkAvailability() {
-      this.theme.passwordPolicy.validate(this.data)
+      this.theme?.passwordPolicy.validate(this.data)
         .then((pw) => {
           this.isAvailable = !pw;
         });

@@ -38,9 +38,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['id'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(foam.nanos.auth.ServiceProvider.ID, /^[a-z0-9]+$/);
-          },
+          query: 'id~/^[a-z0-9]+$/',
           errorString: 'Invalid character(s) in id.'
         }
       ]
@@ -78,13 +76,13 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       javaCode: `
-        return super.grantsPermission(permission) || prerequisiteImplies(getX(), permission);
+        return super.grantsPermission(x, permission) || prerequisiteImplies(x, permission);
       `
     },
     {
       name: 'setupSpid',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       documentation: `
@@ -163,7 +161,7 @@ foam.CLASS({
     {
       name: 'invalidateDependents',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',    javaType: 'foam.core.X' },
         { name: 'user', javaType: 'foam.nanos.auth.User' },
         { name: 'spid', javaType: 'String' }
       ],

@@ -29,6 +29,11 @@ foam.CLASS({
         class: 'foam.u2.MultiView',
         views: [ {class: 'foam.u2.RangeView', minValue: 0, maxValue: 100}, 'foam.u2.IntView' ]
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'enableLogging',
+      documentation: 'If enabled, information is output to stderr to aid with tracing. Is copied to PM.'
     }
   ],
 
@@ -41,11 +46,17 @@ foam.CLASS({
       type: 'Object',
       javaCode: `
         if ( getPercentage() != 100 ) {
-          return ThreadLocalRandom.current().nextInt(0, 100) < getPercentage() ?
-            new PM() :
-            NULLPM__ ;
+          if ( ThreadLocalRandom.current().nextInt(0, 100) < getPercentage() ) {
+            PM pm = new PM();
+            pm.setEnableLogging(getEnableLogging());
+            return pm;
+          }
+
+          return NULLPM__;
         }
-        return new PM();
+        PM pm = new PM();
+        pm.setEnableLogging(getEnableLogging());
+        return pm;
       `
     }
   ],

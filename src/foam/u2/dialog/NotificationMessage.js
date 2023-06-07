@@ -38,21 +38,21 @@ foam.CLASS({
   css: `
     ^ {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       position: fixed;
       /* TODO: reduce max width when notification messages are updated */
-      max-width: max(30vw, 480px);
-      min-width: max(16vw, 300px);
-      right: 32px;
-      top: 24px;
+      max-width: calc(min(100vw, 48rem) - 3.2rem);
+      min-width: calc(max(30vw, 30rem) - 3.2rem);
+      right: 1.6rem;
+      top: 2.4rem;
       z-index: 15000;
     }
     ^inner {
       align-items: center;
       animation-name: fade;
       animation-duration: 10s;
-      background: /*%WHITE%*/ white;
-      border: 1px solid /*%GREY4%*/ #DADDE2;
+      background: $white;
+      border: 1px solid $grey300;
       border-radius: 3px;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       box-sizing: border-box;
@@ -61,7 +61,7 @@ foam.CLASS({
       margin: auto;
       min-height: 64px;
       padding: 12px 16px;
-      width: -webkit-fill-available;
+      width: 100%;
     }
     @keyframes fade {
       0% { opacity: 0; transform: translateX(300px);}
@@ -73,42 +73,55 @@ foam.CLASS({
       align-items: center;
       display: flex;
       margin-right: 1em;
-      width: -webkit-fill-available;
+      width: 100%;
+      gap: 1.2rem;
     }
     ^status-icon {
       align-items: center;
       height: 32px;
       justify-content: center;
-      margin-right: 1em; 
-      max-width: max(10%, 32px);
-      width: 32px;
+      flex: 0 0 3.2rem;
     }
     ^content {
-      max-width: 90%;
-      vertical-align: middle;
-      white-space: nowrap;
-      word-wrap: break-word;
+      display: flex;
+      overflow: hidden;
+      flex-direction: column;
     }
     ^title{
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: -webkit-fill-available;
+      word-break: break-word;
+      white-space: normal;
     }
     ^description {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: -webkit-fill-available;
+      word-break: break-word;
+      white-space: normal;
     }
     ^close-icon {
       position: absolute;
       right: 0.5em;
       top: 0.5em;
     }
-    ^close-icon > *{
-      width: 20px;
-      height: 20px;
+    ^close-icon > ^iconButton{
+      width: 2rem;
+      height: 2rem;
       padding: 0;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^ {
+        max-width: calc(min(75vw, 48rem) - 3.2rem);
+        min-width: calc(max(30vw, 30rem) - 3.2rem);
+        right: 3.2rem;
+      }
     }
   `,
 
@@ -133,12 +146,16 @@ foam.CLASS({
         // exception name and message.
         var ex = this.err.exception || this.err;
         if ( ex.id ) {
-          this.message = ex.id.split('.').pop();
-          if ( this.message.endsWith('Exception') ) {
-            this.message = this.message.replace('Exception', '');
+          if ( ex.title ) {
+            this.message = ex.title;
+          } else {
+            this.message = ex.id.split('.').pop();
+            if ( this.message.endsWith('Exception') ) {
+              this.message = this.message.replace('Exception', '');
+            }
+            this.message = foam.String.labelize(this.message);
           }
-          this.message = foam.String.capitalize(foam.String.labelize(this.message).toLowerCase());
-          this.message = this.translationService.getTranslation(foam.locale, ex.id, this.message);
+          this.message = this.translationService.getTranslation(foam.locale, ex.title || ex.id, this.message);
         }
         if ( ex.getTranslation ) {
           this.description = ex.getTranslation();
@@ -193,7 +210,7 @@ foam.CLASS({
               .tag(this.CircleIndicator, indicator)
             .end()
             .start().addClass(this.myClass('content'))
-              .start().addClasses(['h600', this.myClass('title')])
+              .start().addClass('h600', this.myClass('title'))
                 .callIfElse(foam.String.isInstance(this.message), function() {
                   this.add(self.message);
                   console.log(self.message);
@@ -202,7 +219,7 @@ foam.CLASS({
                   console.log(self.message);
                 })
               .end()
-              .start().addClasses(['p', this.myClass('description')])
+              .start().addClass('p', this.myClass('description'))
                 .callIfElse(foam.String.isInstance(this.description), function() {
                   this.add(self.description);
                   console.log(self.description);
@@ -216,7 +233,9 @@ foam.CLASS({
           .startContext({ data: this })
             .start()
                 .addClass(this.myClass('close-icon'))
-                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .addClass(self.myClass('iconButton'))
+                .end()
             .end()
           .endContext()
         .end();

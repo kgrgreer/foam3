@@ -117,10 +117,14 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( foam.dao.DAO.PURGE_CMD === obj ) {
         this.cache = {};
-      } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
-        delete this.cache[obj.id];
+        return this.SUPER(x, obj) || true;
       }
-      this.SUPER(x, obj);
+      if ( this.PurgeRecordCmd.isInstance(obj) ) {
+        delete this.cache[obj.id];
+        return this.SUPER(x, obj) || true;
+      }
+
+      return this.SUPER(x, obj);
     }
   ]
 });

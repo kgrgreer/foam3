@@ -40,7 +40,7 @@ foam.CLASS({
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       if ( myConfig.getRegionStatus() == RegionStatus.ACTIVE ) {
-        getLogger().debug("put", entry.getIndex());
+        // getLogger().debug("put", entry.getIndex());
         DaggerService service = (DaggerService) x.get("daggerService");
         try {
           entry.setSignature(service.sign(x, entry));

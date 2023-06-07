@@ -23,7 +23,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
     }
 
     ^ .foam-u2-DateTimeView {
@@ -34,12 +34,13 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
     }
   `,
 
   properties: [
     {
+      // NOTE: generates build warning: Change of Axiom foam.u2.filter.properties.DateTimeFilterView.date1 type from foam.core.Date to foam.core.DateTime in model foam.u2.filter.properties.DateTimeFilterView
       class: 'DateTime',
       name: 'date1',
       documentation: `

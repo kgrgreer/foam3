@@ -8,11 +8,13 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ColumnConfigPropView',
   extends: 'foam.u2.Controller',
+
   requires: [
     'foam.u2.view.ColumnViewHeader',
     'foam.u2.view.ColumnViewBody',
     'foam.u2.view.RootColumnConfigPropView'
   ],
+
   css: `
     ^ {
       max-width: 200px;
@@ -34,17 +36,17 @@ foam.CLASS({
     ^resetButton {
       float: right;
       background: none;
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:hover:not(:disabled) {
       text-decoration: underline;
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:focus {
-      color: /*%PRIMARY3%*/ #406DEA;
+      color: $primary400;
     }
     ^resetButton:disabled {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
     }
     ^colContainer {
       overflow-x: hidden;
@@ -54,6 +56,7 @@ foam.CLASS({
       width: -moz-fill-available;
     }
   `,
+
   properties: [
     'data',
     {
@@ -111,6 +114,7 @@ foam.CLASS({
       value: []
     }
   ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -370,6 +374,7 @@ foam.CLASS({
       return arr;
     }
   ],
+
   listeners: [
     {
       name: 'onMenuSearchUpdate',
@@ -383,13 +388,13 @@ foam.CLASS({
       }
     }
   ],
+
   actions: [
     {
       name: 'resetColumns',
       label: 'Reset Columns',
       code: function() {
         localStorage.removeItem(this.data.of.id);
-        this.data.memento.head = '';
         this.data.selectedColumnNames = undefined;
         this.data.resetColWidths();
         this.data.updateColumns();
@@ -404,11 +409,13 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'RootColumnConfigPropView',
   extends: 'foam.u2.Controller',
   imports: ['theme'],
+
   properties: [
     // {
     //   class: 'Boolean',
@@ -454,6 +461,7 @@ foam.CLASS({
        documentation: 'to reuse onGroupChanged function'
     }
   ],
+
   constants: [
     {
       name: 'ON_DRAG_OVER_BG_COLOR',
@@ -461,6 +469,7 @@ foam.CLASS({
       value: '#e5f1fc'
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -487,6 +496,7 @@ foam.CLASS({
         }));
     }
   ],
+
   listeners: [
     function onDragStart(e) {
       e.dataTransfer.setData('draggableId', this.index);
@@ -511,15 +521,19 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ColumnViewHeader',
   extends: 'foam.u2.View',
+
   imports: ['theme'],
+
   requires: [
     'foam.u2.CheckBox',
     'foam.u2.tag.Image'
   ],
+
   css: `
   ^selected {
     background: #cfdbff;
@@ -531,7 +545,7 @@ foam.CLASS({
     justify-content: space-between;
   }
   ^some-padding:hover {
-    background-color: /*%PRIMARY5%*/ #E5F1FC;
+    background-color: $primary50;
     border-radius: 4px;
   }
   ^label {
@@ -551,6 +565,7 @@ foam.CLASS({
     white-space: nowrap;
   }
   `,
+
   properties: [
     'onSelectionChangedParentFunction',
     'onGroupByChangedParentFunction',
@@ -563,6 +578,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -622,6 +638,7 @@ foam.CLASS({
           .end();
     }
   ],
+
   listeners: [
     function toggleSelection(e) {
       e.stopPropagation();
@@ -693,6 +710,7 @@ foam.CLASS({
       documentation: 'to reuse onGroupChanged function'
     }
   ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -764,6 +782,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.view',
@@ -908,64 +927,64 @@ foam.CLASS({
       var arr = [];
       if ( ! this.of || ! this.of.getAxiomByName || subProperties.length === 0 || ( ! ignoreExpanded && ! expanded ) )
           return arr;
-        var l = level + 1;
-        var r = this.of.getAxiomByName(this.rootProperty[0]);
-        if ( ! r )
-          return arr;
-
-        var selectedSubProperties = [];
-        var otherSubProperties = [];
-
-        var thisRootPropName = this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(this.rootProperty);
-        //find selectedColumn for the root property
-        var selectedColumn = this.selectedColumns.filter(c => {
-          var thisSelectedColumn = foam.String.isInstance(c) ? c : c.name;
-          return ( ! foam.String.isInstance(c) && this.level === 0 && thisSelectedColumn === thisRootPropName ) ||
-          ( foam.String.isInstance(c) && c.split('.').length >= this.level && c.split('.')[this.level] === this.rootProperty[0] );
-        });
-
-        if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length == ( this.level + 1 )) ) {
-          selectedSubProperties.push(['', 'To Summary']);
-        } else {
-          otherSubProperties.push(['', 'To Summary']);
-        }
-
-        for ( var i = 0 ; i < subProperties.length ; i++ ) {
-          //the comparison mentioned above is working with the assumption that columns which are specified in 'tableColumns' are top-level properties and
-          //we are not using nested "custom" table columns
-          if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length > ( this.level + 1 ) && c.split('.')[this.level+1] === subProperties[i][0]) ) {
-            selectedSubProperties.push(subProperties[i]);
-          } else {
-            otherSubProperties.push(subProperties[i]);
-          }
-        }
-        otherSubProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
-
-        for ( var i = 0 ; i < selectedSubProperties.length ; i++ ) {
-          arr.push(this.cls_.create({
-            index: i,
-            rootProperty: selectedSubProperties[i],
-            selectedColumns$: this.selectedColumns$,
-            level: l,
-            parentExpanded$: this.expanded$,
-            of: r.of,
-            isPropertySelected: true,
-            isPropertyGrouped: false
-          }));
-        }
-
-        for ( var i = 0 ; i < otherSubProperties.length ; i++ ) {
-          arr.push(this.cls_.create({
-            index: selectedSubProperties.length + i,
-            rootProperty: otherSubProperties[i],
-            selectedColumns$: this.selectedColumns$,
-            level:l, parentExpanded$: this.expanded$,
-            of: r.of,
-            isPropertySelected: false,
-            isPropertyGrouped: false
-          }, this));
-        }
+      var l = level + 1;
+      var r = this.of.getAxiomByName(this.rootProperty[0]);
+      if ( ! r )
         return arr;
+
+      var selectedSubProperties = [];
+      var otherSubProperties = [];
+
+      var thisRootPropName = this.columnHandler.checkIfArrayAndReturnPropertyNameForRootProperty(this.rootProperty);
+      //find selectedColumn for the root property
+      var selectedColumn = this.selectedColumns.filter(c => {
+        var thisSelectedColumn = foam.String.isInstance(c) ? c : c.name;
+        return ( ! foam.String.isInstance(c) && this.level === 0 && thisSelectedColumn === thisRootPropName ) ||
+        ( foam.String.isInstance(c) && c.split('.').length >= this.level && c.split('.')[this.level] === this.rootProperty[0] );
+      });
+
+      if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length == ( this.level + 1 )) ) {
+        selectedSubProperties.push(['', 'To Summary']);
+      } else {
+        otherSubProperties.push(['', 'To Summary']);
+      }
+
+      for ( var i = 0 ; i < subProperties.length ; i++ ) {
+        //the comparison mentioned above is working with the assumption that columns which are specified in 'tableColumns' are top-level properties and
+        //we are not using nested "custom" table columns
+        if ( selectedColumn.find(c => foam.String.isInstance(c) && c.split('.').length > ( this.level + 1 ) && c.split('.')[this.level+1] === subProperties[i][0]) ) {
+          selectedSubProperties.push(subProperties[i]);
+        } else {
+          otherSubProperties.push(subProperties[i]);
+        }
+      }
+      otherSubProperties.sort((a, b) => { return a[1].toLowerCase().localeCompare(b[1].toLowerCase());});
+
+      for ( var i = 0 ; i < selectedSubProperties.length ; i++ ) {
+        arr.push(this.cls_.create({
+          index: i,
+          rootProperty: selectedSubProperties[i],
+          selectedColumns$: this.selectedColumns$,
+          level: l,
+          parentExpanded$: this.expanded$,
+          of: r.of,
+          isPropertySelected: true,
+          isPropertyGrouped: false
+        }));
+      }
+
+      for ( var i = 0 ; i < otherSubProperties.length ; i++ ) {
+        arr.push(this.cls_.create({
+          index: selectedSubProperties.length + i,
+          rootProperty: otherSubProperties[i],
+          selectedColumns$: this.selectedColumns$,
+          level:l, parentExpanded$: this.expanded$,
+          of: r.of,
+          isPropertySelected: false,
+          isPropertyGrouped: false
+        }, this));
+      }
+      return arr;
     }
   ]
 });

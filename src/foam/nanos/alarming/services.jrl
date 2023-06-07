@@ -29,32 +29,22 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setRuler(true)
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.MonitoringReport.NAME });
+      .build();
   """,
   "client":"{\"of\":\"foam.nanos.alarming.MonitoringReport\"}"
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"alarmDAO",
-  "serve":true,
+  "name":"localAlarmDAO",
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
       .setPm(true)
-      .setPipelinePm(true)
-      .setDecorator(new foam.nanos.alarming.AddAlarmNameDAO.Builder(x)
-        .setDelegate(new foam.nanos.alarming.AlarmLoggingDAO.Builder(x)
-        .setDelegate(new foam.nanos.alarming.AlarmNotificationDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.alarming.Alarm.getOwnClassInfo()))
-        .build())
-        .build())
-        .build())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("alarms")
       .setWriteOnly(true)
-      .setCluster(false)
+      .setSAF(true)
       .setOrder(new foam.mlang.order.Comparator[] {
         foam.nanos.alarming.Alarm.LAST_MODIFIED,
         new foam.mlang.order.Desc.Builder(x).setArg1(
@@ -69,6 +59,24 @@ p({
        foam.nanos.alarming.Alarm.SEVERITY,
        foam.nanos.alarming.Alarm.IS_ACTIVE
      });
+  `
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"alarmDAO",
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.alarming.Alarm.getOwnClassInfo())
+      .setInnerDAO(x.get("localAlarmDAO"))
+      .setDecorator(new foam.nanos.alarming.AddAlarmNameDAO.Builder(x)
+        .setDelegate(new foam.nanos.alarming.AlarmLoggingDAO.Builder(x)
+        .setDelegate(new foam.nanos.alarming.AlarmNotificationDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.alarming.Alarm.getOwnClassInfo()))
+        .build())
+        .build())
+        .build())
+      .build();
   `,
   "client":"{\"of\":\"foam.nanos.alarming.Alarm\"}"
 })
@@ -80,7 +88,24 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.alarming.OMName.getOwnClassInfo())
+      .setCluster(false)
       .build();
     `
   ,"client":"{\"of\":\"foam.nanos.alarming.OMName\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"candlestickAlarmDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.alarming.CandlestickAlarm.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("candlestickalarms")
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.alarming.CandlestickAlarm.KEY });
+  """,
+  "client":"{\"of\":\"foam.nanos.alarming.CandlestickAlarm\"}"
 })

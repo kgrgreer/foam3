@@ -27,11 +27,11 @@ import static foam.mlang.MLang.EQ;
 
 public class Boot {
   // Context key used to store the top-level root context in the context.
-  public final static String ROOT = "_ROOT_";
+  public final static String ROOT      = "_ROOT_";
   public final static String BOOT_TIME = "BOOT_TIME";
 
   protected DAO                       serviceDAO_;
-  protected X                         root_      = new ProxyX();
+  protected X                         root_      = new MutableX();
   protected Map<String, NSpecFactory> factories_ = new HashMap<>();
 
   public Boot() {
@@ -103,8 +103,6 @@ public class Boot {
       @Override
       public void put(Object obj, Detachable sub) {
         NSpec sp = (NSpec) obj;
-
-        logger.info("Reloading Service", sp.getName());
         factories_.get(sp.getName()).invalidate(sp);
       }
     }, null);
@@ -156,18 +154,8 @@ public class Boot {
     ((ProxyDAO) root_.get("nSpecDAO")).setDelegate(
       new foam.nanos.auth.AuthorizationDAO.Builder(getX())
         .setDelegate(serviceDAO_)
-        .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("service"))
+        .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("service"))
         .build());
-
-    serviceDAO_.where(EQ(NSpec.LAZY, false)).select(new AbstractSink() {
-      @Override
-      public void put(Object obj, Detachable sub) {
-        NSpec sp = (NSpec) obj;
-
-        logger.info("Invoking Service", sp.getName());
-        root_.get(sp.getName());
-      }
-    });
 
     String startScript = System.getProperty("foam.main", "main");
     if ( startScript != null ) {
@@ -184,6 +172,16 @@ public class Boot {
         logger.warning("Boot, Script not found", startScript);
       }
     }
+
+    serviceDAO_.where(EQ(NSpec.LAZY, false)).select(new AbstractSink() {
+      @Override
+      public void put(Object obj, Detachable sub) {
+        NSpec sp = (NSpec) obj;
+
+        logger.info("Invoking Service", sp.getName());
+        root_.get(sp.getName());
+      }
+    });
   }
 
   protected List perfectList(List src) {

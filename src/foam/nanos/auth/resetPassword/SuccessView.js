@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: 'Forgot Password Success View',
 
   imports: [
+    'loginView?',
     'notify',
     'stack'
   ],
@@ -30,7 +31,7 @@ foam.CLASS({
       width: 490px;
       height: 121px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: $white;
       padding-top: 5px;
     }
 
@@ -42,7 +43,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin-top: 20px;
       margin-bottom: 30px;
     }
@@ -58,7 +59,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin-top: 15px;
       margin-left: 20px;
       margin-right: 288px;
@@ -99,7 +100,7 @@ foam.CLASS({
               .add('Back to Sign In')
               .on('click', function() {
                 window.location.href = '#';
-                self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
+                self.stack.push({ ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, self);
               })
             .end()
           .end()

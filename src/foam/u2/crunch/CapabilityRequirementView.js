@@ -31,7 +31,7 @@ foam.CLASS({
     }
 
     ^subTitle {
-      color: /*%GREY1%*/ #494F59;
+      color: $grey700;
       width: 85%;
       display: inline-block;
       padding-bottom: 1em;
@@ -109,9 +109,14 @@ foam.CLASS({
 
         .start().addClass('titles')
           // title
-          .start().addClasses([this.myClass('title'), 'h400']).translate(mainCapability[0].id+'.name', mainCapability[0].name).end()
+          .start().addClass(this.myClass('title'), 'h400')
+            .callIfElse(mainCapability[0].marketingHeader,
+              function() { this.translate(mainCapability[0].id+'.marketingHeader', mainCapability[0].marketingHeader); },
+              function() { this.translate(mainCapability[0].id+'.name', mainCapability[0].name); }
+            )
+          .end()
           // subTitle
-          .start().addClasses([this.myClass('subTitle'), 'p-lg'])
+          .start().addClass(this.myClass('subTitle'), 'p-lg')
             .translate(mainCapability[0].id + '.requirementViewTitle' , mainCapability[0].requirementViewTitle || this.INTRO_TEXT)
           .end()
         .end()

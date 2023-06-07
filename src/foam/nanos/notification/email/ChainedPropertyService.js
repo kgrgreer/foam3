@@ -16,6 +16,15 @@ foam.CLASS({
   `Model that stores the array of decorators that fills the emailMessage
    with service level precedence on properties.`,
 
+  javaImports: [
+    'foam.core.X',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.session.Session',
+    'java.util.Map',
+    'java.util.HashMap'
+  ],
+
   properties: [
     {
       name: 'data',
@@ -29,9 +38,25 @@ foam.CLASS({
       name: 'apply',
       javaCode:
       `
-      EmailPropertyService[] propertyApplied = getData();
-      for ( EmailPropertyService eps: propertyApplied ) {
-        emailMessage = eps.apply(x, group, emailMessage, templateArgs);
+      User user = (User) emailMessage.findUser(getX());
+      X userX = foam.util.Auth.sudo(getX(), user);
+      group = user.getGroup();
+      if ( userX.get("group") != null ) {
+        // null on notification broadcast
+        group = ((Group) userX.get("group")).getId();
+      }
+
+      Map args = templateArgs;
+      if ( args == null ||
+           args.size() == 0 ) {
+        args = emailMessage.getTemplateArguments();
+        if ( args == null ) {
+          args = new HashMap();
+        }
+      }
+
+      for ( EmailPropertyService eps: getData() ) {
+        emailMessage = eps.apply(userX, group, emailMessage, args);
       }
       return emailMessage;
       `

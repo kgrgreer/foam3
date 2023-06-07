@@ -33,39 +33,44 @@ foam.CLASS({
     ^ {
       display: flex;
       align-items: normal;
-      width: 40px;
+      position: relative;
     }
-    ^ img {
-      height: 25px;
-      width: 25px;
-      cursor: pointer;
-      border-bottom: 1px solid transparent;
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
-    }
-    ^ img:hover {
-      border-bottom: 1px solid white;
-    }
-    ^ .selected-icon {
-      border-bottom: 1px solid white;
+    ^bell {
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: $buttonRadius;
+      box-sizing: border-box;
+      display: inline-flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 0;
+      outline: none;
+      text-align: center;
     }
     ^ .dot {
+      align-items: center;
+      background: $destructive400;
       border-radius: 50%;
-      display: inline-block;
-      background: red;
-      width: 15px;
-      height: 15px;
-      position: relative;
-      right: 10px;
-      text-align: center;
+      color: $white;
+      display: flex;
       font-size: 0.8rem;
+      height: 15px;
+      justify-content: center;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      text-align: center;
+      width: 15px;
     }
-    ^ .dot > span {
-      padding-top: 3px;
-      display: inline-block;
+    ^svgIcon {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    ^svgIcon svg {
+      aspect-ratio: 1;
+      width: 1.15em;
+      fill: $grey500;
     }
   `,
 
@@ -77,17 +82,29 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showCountUnread',
-      expression: (countUnread) => countUnread > 0
+      expression: function(countUnread) { countUnread > 0 }
+    },
+    {
+      class: 'Boolean',
+      name: 'showText'
+    },
+    {
+      class: 'String',
+      name: 'formattedCount',
+      expression: function(countUnread) {
+        return countUnread > 9 ? '9+' : countUnread;
+      }
     }
   ],
 
   constants: [
     { name: 'BELL_IMAGE', value: 'images/bell.png' },
-    { name: 'MENU_ID', value: 'notifications' }
+    { name: 'MENU_ID',    value: 'notifications' }
   ],
 
   messages: [
-    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` }
+    { name: 'INVALID_MENU', message: `No menu in menuDAO with id: "notifications"` },
+    { name: 'NOTIF', message: 'Notifications' }
   ],
 
   methods: [
@@ -95,27 +112,26 @@ foam.CLASS({
       this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
       this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
       this.onDAOUpdate();
-
+      var self = this;
       this.addClass()
         .addClass('icon-container')
-        .on('click', this.changeToNotificationsPage.bind(this))
-
-        .start('img')
-          .enableClass('selected-icon', this.currentMenu$.map((menu) => {
-            return this.Menu.isInstance(menu) && menu.id === 'notifications';
-          }))
-          .attrs({ src: this.BELL_IMAGE })
+        .startContext({ data: this })
+        .start()
+          .start({ class: 'foam.u2.tag.Image', glyph: 'bell', role: 'presentation' })
+            .addClass(this.myClass('SVGIcon'))
+          .end()
+          .callIf(this.showText, function() {
+            this.add(self.formattedCount$.map(v => `${self.NOTIF} (${v})`));
+          })
+          .addClass(this.myClass('bell'))
         .end()
-        .start('span')
+        .endContext()
+        .start()
           .addClass('dot')
-          .add(this.countUnread$)
-          .show(this.showCountUnread$)
+          .add(this.countUnread$.map(v => v > 9 ? '9+' : v ))
+          .show(this.slot(function(showCountUnread, showText) { return showCountUnread && ! showText; }))
         .end()
       .end();
-    },
-
-    function changeToNotificationsPage() {
-      this.pushMenu(this.MENU_ID);
     }
   ],
 
@@ -137,6 +153,15 @@ foam.CLASS({
         ).select(this.COUNT()).then((count) => {
           this.countUnread = count.value;
         });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'notifications',
+      code: function() {
+        this.pushMenu(this.MENU_ID);
       }
     }
   ]

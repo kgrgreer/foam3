@@ -36,39 +36,45 @@ foam.CLASS({
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
 
-            boolean isRenewable = ucj.getIsRenewable(); // ucj either expired, in grace period, or in renewal period
+            Logger logger = (Logger) x.get("logger");
+            logger.debug("ValidateUCJDataOnPut", "start", ucj);
 
-            // this should never happen since ucj data should be frozen on pending or approved
-            // and data change is a predicate of this rule
-            if ( ucj.getStatus() == CapabilityJunctionStatus.PENDING || ucj.getStatus() == CapabilityJunctionStatus.APPROVED )
-              return;
+            try {
+              boolean isRenewable = ucj.getIsRenewable(); // ucj either expired, in grace period, or in renewal period
 
-            Capability capability = (Capability) ucj.findTargetId(systemX);
-
-            if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) return;
-            if ( ! isRenewable ) ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
-
-            if ( capability.getOf() == null ) {
-              ucj.setStatus(CapabilityJunctionStatus.PENDING);
-              return;
-            }
-
-            FObject data = ucj.getData();
-
-            if ( data == null ) data = capability.getImpliedData(x, ucj);
-
-            if ( data != null ) {
-              try {
-                Subject subject = ucj.getSubject(x);
-                X sourceX = (X) x.put("subject", subject);
-
-                data.validate(sourceX);
+              // this should never happen since ucj data should be frozen on pending or approved
+              // and data change is a predicate of this rule
+              if ( ucj.getStatus() == CapabilityJunctionStatus.PENDING || ucj.getStatus() == CapabilityJunctionStatus.APPROVED )
+                return;
+  
+              Capability capability = (Capability) ucj.findTargetId(systemX);
+  
+              if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) return;
+              if ( ! isRenewable ) ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
+  
+              if ( capability.getOf() == null ) {
                 ucj.setStatus(CapabilityJunctionStatus.PENDING);
-                ucj.resetRenewalStatus();
-              } catch (Throwable e) {
-                Logger logger = (Logger) x.get("logger");
-                logger.warning("Validation failed", e.getMessage(), ucj.toString());
+                return;
               }
+  
+              FObject data = ucj.getData();
+  
+              if ( data == null ) data = capability.getImpliedData(x, ucj);
+  
+              if ( data != null ) {
+                try {
+                  Subject subject = ucj.getSubject(x);
+                  X sourceX = (X) x.put("subject", subject);
+  
+                  data.validate(sourceX);
+                  ucj.setStatus(CapabilityJunctionStatus.PENDING);
+                  ucj.resetRenewalStatus();
+                } catch (Throwable e) {
+                  logger.warning("Validation failed", e.getMessage(), ucj.toString());
+                }
+              }
+            } finally {
+              logger.debug("ValidateUCJDataOnPut", "end", ucj);
             }
           }
         }, "validate ucj data on put");

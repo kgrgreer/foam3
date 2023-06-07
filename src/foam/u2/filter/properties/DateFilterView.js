@@ -38,7 +38,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
     }
 
     ^ .foam-u2-DateView {
@@ -49,7 +49,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
     }
   `,
 
@@ -107,6 +107,7 @@ foam.CLASS({
           });
         }
 
+        if ( ! date2 || isNaN(date2.valueOf()) ) return this.TRUE;
         return this.AND(this.GT(this.property, date1), this.LT(this.property, date2));
       }
     },

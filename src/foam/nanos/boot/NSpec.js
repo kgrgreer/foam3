@@ -8,7 +8,19 @@ foam.CLASS({
   name: 'NSpec',
 
   javaImplements: [
+    'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.EnabledAware'
+  ],
+
+  constants: [
+    {
+      name: 'NSPEC_CTX_KEY',
+      type: 'String',
+      value: 'NSPEC_CTX_KEY',
+      documentation: `
+      Constant for addressing the NSpec through the context
+      `
+    }
   ],
 
   requires: [
@@ -20,8 +32,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
-    'pushMenu'
+    'window'
   ],
 
   javaImports: [
@@ -64,77 +75,38 @@ foam.CLASS({
       class: 'Boolean',
       name: 'lazy',
       tableWidth: 65,
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'lazyClient',
+      tableWidth: 65,
+      value: true
     },
     {
       class: 'Boolean',
       name: 'serve',
       tableWidth: 72,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      },
       documentation: 'If true, this service is served over the network via boxes. If the service is a WebAgent, it will be served as a WebAgent only if this is false.'
     },
     {
       class: 'Boolean',
       name: 'authenticate',
       shortName: 'a',
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
     },
     {
       class: 'Boolean',
       name: 'parameters',
-      value: false,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: false
     },
     {
       class: 'Boolean',
       name: 'pm',
-      value: true,
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .call(function() {
-              if ( value ) { this.style({color: 'green'}); }
-            })
-            .add(value ? ' Y' : '-')
-          .end();
-      }
+      value: true
     },
     {
-      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, o as to avoid the synchronization overhead associated with accessing the created singleton service.`,
+      documentation: `When enabled, a reference to the 'built' NSpec is managed by a ThreadLocal, as to avoid the synchronization overhead associated with accessing the created singleton service.`,
       class: 'Boolean',
       name: 'threadLocalEnabled',
       value: false
@@ -143,6 +115,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'service',
       view: 'foam.u2.view.FObjectView',
+      javaCloneProperty: 'set(dest, get(source));',
       readPermissionRequired:  true,
       writePermissionRequired: true
     },
@@ -270,6 +243,75 @@ foam.CLASS({
         if ( ! auth.check(x, "service." + getName()) ) {
           throw new AuthorizationException("You do not have permission to access the service named " + getName());
         }
+      `,
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        String permission = "nspec.create";
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( ! auth.check(x, permission) ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+          throw new AuthorizationException("Permission denied: Cannot create NSpec.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        try {
+          checkAuthorization(x);
+        } catch ( AuthorizationException e ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied", "service." + getId());
+          throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+
+      String permission = "nspec.update." + getId();
+      AuthService auth = (AuthService) x.get("auth");
+
+      if ( ! auth.check(x, permission) ) {
+        ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+        throw new AuthorizationException("Permission denied: Cannot update this NSpec.");
+      }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+        String permission  = "nspec.remove." + getId();
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( ! auth.check(x, permission) ) {
+          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied.", permission);
+          throw new AuthorizationException("Permission denied: Cannot delete this NSpec.");
+        }
       `
     }
   ],
@@ -287,7 +329,7 @@ foam.CLASS({
       code: function() {
         var service = this.__context__[this.name];
         if ( foam.dao.DAO.isInstance(service) ) {
-          this.pushMenu(`admin.data${foam.nanos.controller.Memento.SEPARATOR}${this.name}`);
+          this.window.location = `#admin.data/${this.name}`;
         }
       }
     }

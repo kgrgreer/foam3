@@ -27,17 +27,19 @@ foam.CLASS({
     'foam.u2.CheckBox',
     'foam.u2.md.OverlayDropdown',
     'foam.u2.tag.Image',
+    'foam.u2.table.TableHeaderComponent',
+    'foam.u2.table.UnstyledTableRow',
     'foam.u2.view.EditColumnsView',
-    'foam.u2.view.OverlayActionListView',
-    'foam.u2.table.UnstyledTableRow'
+    'foam.u2.view.OverlayActionListView'
   ],
 
   exports: [
     'columns',
+    'currentMemento_ as memento',
     'hoverSelection',
+    'props',
     'selection',
-    'subStack as stack',
-    'currentMemento_ as memento'
+    'subStack as stack'
   ],
 
   imports: [
@@ -106,8 +108,12 @@ foam.CLASS({
     {
       name: 'selectedColumnNames',
       expression: function(columns, of, memento, memento$head) {
-        var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
-        return ls || columns;
+        try {
+          var ls = memento && memento.head.length != 0 ? memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) : JSON.parse(localStorage.getItem(of.id));
+          return ls || columns;
+        } catch (x) {
+          return columns;
+        }
       }
     },
     {
@@ -325,7 +331,7 @@ foam.CLASS({
     async function render() {
       var view = this;
 
-      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property).filter(p => ! p.hidden));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
@@ -426,61 +432,7 @@ foam.CLASS({
 
               // Render the table headers for the property columns.
               forEach(columns_, function([col, overrides]) {
-                var found = view.props.find(p => p.fullPropertyName === view.columnHandler.propertyNamesForColumnArray(col));
-                var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.propertyNamesForColumnArray(col));
-                var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
-
-                if ( ! prop ) return;
-
-                var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
-                var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
-                var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
-                var colTooltip = colData.colPath.join( '/' );
-
-                this.start().
-                  addClass(view.myClass('th')).
-                  addClass(view.myClass('th-' + prop.name))
-                  .style({
-                    'align-items': 'center',
-                    display: 'flex',
-                    flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
-                    'justify-content': 'start',
-                    'word-wrap': 'break-word'
-                  })
-                  .start('', { tooltip: colTooltip })
-                    .addClass('h600')
-                    .style({
-                      overflow: 'hidden',
-                      'text-overflow': 'ellipsis'
-                    })
-                    .add(colHeader).
-                  end()./*
-                  .forEach(
-                    view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col),
-                    function(c, i) { if ( i ) this.add(' / '); this.add(c); }
-                  ).*/
-                  callIf(isFirstLevelProperty && prop.sortable, function() {
-                    var currArrow = view.restingIcon;
-                    this.on('click', function(e) {
-                      view.sortBy(prop);
-                      }).
-                      callIf(prop.label !== '', function() {
-                        this.start()
-                          .start('img')
-                            .attr('src', this.slot(function(order) {
-                              if ( prop === order ) {
-                                currArrow = view.ascIcon;
-                              } else {
-                                if ( view.Desc.isInstance(order) && order.arg1 === prop )
-                                currArrow = view.descIcon;
-                              }
-                              return currArrow;
-                            }, view.order$))
-                          .end()
-                        .end();
-                    });
-                  }).
-                end();
+                this.tag(view.TableHeaderComponent, { data: view, col: col, overrides: overrides, resizeable: false });
               }).
 
               // Render a th at the end for the column that contains the context
@@ -601,9 +553,6 @@ foam.CLASS({
       },
       function shouldColumnBeSorted(c) {
         return c[c.length - 1] === this.DESCENDING_ORDER_CHAR || c[c.length - 1] === this.ASCENDING_ORDER_CHAR;
-      },
-      function returnMementoColumnNameDisregardSorting(c) {
-        return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;

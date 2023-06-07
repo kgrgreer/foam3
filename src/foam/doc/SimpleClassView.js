@@ -8,9 +8,9 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'SimpleClassView',
   extends: 'foam.u2.View',
-  
+
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   requires: [
@@ -20,7 +20,7 @@ foam.CLASS({
     'foam.doc.AxiomSummaryView',
     'foam.doc.ClassLink',
     'foam.doc.MethodAxiom',
-    'foam.doc.PropertyAxiom',
+    'foam.doc.PropertyAxiom'
   ],
 
   css: `
@@ -37,8 +37,8 @@ foam.CLASS({
       name: 'axiomDAO',
       expression: function(data) {
         return this.AxiomDAO.create({modelIds: [data.id]});
-      },
-    },
+      }
+    }
   ],
 
   methods: [
@@ -159,6 +159,6 @@ foam.CLASS({
         })
 
         // TODO property and method detail sections.
-    },
+    }
   ]
 });

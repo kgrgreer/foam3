@@ -11,21 +11,14 @@ foam.CLASS({
 
   documentation: '',
 
-  constants: [
-    {
-      name: 'PING',
-      type: 'String',
-      value: 'PING'
-    }
-  ],
-
   methods: [
     {
       name: 'cmd_',
       javaCode: `
-      if ( obj != null &&
-           PING.equals(obj.toString()) )  {
-        return System.currentTimeMillis();
+      if ( obj instanceof PingCmd ) {
+        PingCmd cmd = (PingCmd) obj;
+        cmd.setEcho(System.currentTimeMillis());
+        return cmd;
       }
       return getDelegate().cmd_(x, obj);
       `

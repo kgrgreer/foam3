@@ -27,10 +27,21 @@ public class SafetyUtil {
     return compare(o1, o2) == 0;
   }
 
+  public static boolean equalsIgnoreCase(String o1, String o2) {
+    if ( o1 == o2 )  return true;
+    if ( o1 == null ) return false;
+    return o1.equalsIgnoreCase(o2);
+  }
+
   public static int compare(Object o1, Object o2) {
     if ( o1 == o2   ) return  0;
     if ( o2 == null ) return  1;
     if ( o1 == null ) return -1;
+
+    // Compare classes if the classes are different
+    if ( o1.getClass() != o2.getClass() ) {
+      compare(o1.getClass().getName(), o2.getClass().getName());
+    }
 
     // Number subtypes (Long, Integer, etc.) are type-specific comparable and
     // can only be compareTo the same type eg., Long can only compareTo Long.
@@ -55,6 +66,19 @@ public class SafetyUtil {
       return -1;
     }
 
+    // Handle array comparison
+    if ( o1.getClass().isArray() ) {
+      if ( o1.getClass() == boolean[].class ) return compare((boolean[]) o1, (boolean[]) o2);
+      if ( o1.getClass() == byte[].class    ) return compare((byte[])    o1, (byte[]) o2);
+      if ( o1.getClass() == char[].class    ) return compare((char[])    o1, (char[]) o2);
+      if ( o1.getClass() == double[].class  ) return compare((double[])  o1, (double[]) o2);
+      if ( o1.getClass() == float[].class   ) return compare((float[])   o1, (float[]) o2);
+      if ( o1.getClass() == int[].class     ) return compare((int[])     o1, (int[]) o2);
+      if ( o1.getClass() == long[].class    ) return compare((long[])    o1, (long[]) o2);
+      if ( o1.getClass() == short[].class   ) return compare((short[])   o1, (short[]) o2);
+      return compare((Object[]) o1, (Object[]) o2);
+    }
+
     if ( o1.equals(o2) ||
       ! ( o1 instanceof Comparable || o2 instanceof Comparable ) ) return 0;
     if ( ! (o2 instanceof Comparable) ) return 1;
@@ -64,6 +88,134 @@ public class SafetyUtil {
   }
 
   public static int compare(Object[] o1, Object[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(boolean[] o1, boolean[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(byte[] o1, byte[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(char[] o1, char[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(double[] o1, double[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(float[] o1, float[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(int[] o1, int[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(long[] o1, long[] o2) {
+    if ( o1 == o2   ) return  0;
+    if ( o2 == null ) return  1;
+    if ( o1 == null ) return -1;
+
+    int d = compare(o1.length, o2.length);
+    if ( d != 0 ) return d;
+
+    for ( int i = 0 ; i < o1.length ; i++ ) {
+      d = compare(o1[i], o2[i]);
+      if ( d != 0 ) return d;
+    }
+
+    return 0;
+  }
+
+  public static int compare(short[] o1, short[] o2) {
     if ( o1 == o2   ) return  0;
     if ( o2 == null ) return  1;
     if ( o1 == null ) return -1;
@@ -157,10 +309,10 @@ public class SafetyUtil {
 
   public static Object deepClone(Object o) {
     if ( o == null ) return null;
-    if ( o instanceof foam.core.FObject ) return ((foam.core.FObject)o).deepClone();
+    if ( o instanceof foam.core.FObject ) return ((foam.core.FObject) o).deepClone();
     if ( o.getClass().isArray() ) return foam.util.Arrays.deepClone(o);
-    if ( o instanceof java.util.Map ) return deepCloneMap((java.util.Map)o);
-    if ( o instanceof java.util.Collection ) return deepCloneCollection((java.util.Collection)o);
+    if ( o instanceof java.util.Map ) return deepCloneMap((java.util.Map) o);
+    if ( o instanceof java.util.Collection ) return deepCloneCollection((java.util.Collection) o);
 
     // TODO: Non FObjects arn't cloneable, should we throw?
     // Certainly not for immutable boxed types Int, String, Double, etc,

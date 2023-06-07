@@ -169,6 +169,7 @@ foam.CLASS({
   name: 'DAOSlot',
   implements: ['foam.core.Slot'],
   extends: 'foam.dao.ResetListener',
+  flags: [],
   properties: [
     {
       name: 'dao',
@@ -295,6 +296,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'AnonymousSink',
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   axioms: [
     {
@@ -418,12 +420,12 @@ if ( getCount() >= getLimit() ) {
 if count <= limit {
   delegate.remove(obj, sub)
 }`,
-      javaCode: 'if ( getCount() >= getLimit() ) {\n'
-        + '  sub.detach();\n'
-        + '} else {'
-        + '  setCount(getCount() + 1);\n'
-        + '  getDelegate().put(obj, sub);\n'
-        + '}\n'
+      javaCode: `if ( getCount() >= getLimit() ) {
+          sub.detach();
+        } else {
+          setCount(getCount() + 1);
+          getDelegate().put(obj, sub);
+        }`
     }
   ]
 });
@@ -462,11 +464,11 @@ foam.CLASS({
   return
 }
 delegate.put(obj, sub)`,
-      javaCode: 'if ( getCount() < getSkip() ) {\n'
-        + '  setCount(getCount() + 1);\n'
-        + '  return;'
-        + '}\n'
-        + 'getDelegate().put(obj, sub);'
+      javaCode: `if ( getCount() < getSkip() ) {
+          setCount(getCount() + 1);
+          return;
+        }
+        getDelegate().put(obj, sub);`
     },
     {
       name: 'remove',
@@ -478,11 +480,11 @@ delegate.put(obj, sub)`,
   return
 }
 delegate.remove(obj, sub)`,
-      javaCode: 'if ( getCount() < getSkip() ) {\n'
-        + '  setCount(getCount() + 1);\n'
-        + '  return;'
-        + '}\n'
-        + 'getDelegate().remove(obj, sub);'
+      javaCode: `if ( getCount() < getSkip() ) {
+          setCount(getCount() + 1);
+          return;
+        }
+        getDelegate().remove(obj, sub);`
     },
     {
       name: 'reset',
@@ -490,8 +492,7 @@ delegate.remove(obj, sub)`,
         this.count = 0;
         this.delegate.reset(sub);
       },
-      swiftCode: `count = 0;
-delegate.reset(sub);`,
+      swiftCode: 'count = 0;delegate.reset(sub);',
       javaCode: `setCount(0);getDelegate().reset(sub);`
     }
   ]
@@ -524,8 +525,7 @@ foam.CLASS({
         this.array.push(obj);
       },
       swiftCode: 'array.append(obj)',
-      javaCode: 'if ( getArray() == null ) setArray(new java.util.ArrayList());\n'
-        + 'getArray().add(obj);'
+      javaCode: 'if ( getArray() == null ) setArray(new java.util.ArrayList());\ngetArray().add(obj);'
     },
     {
       name: 'eof',
@@ -601,11 +601,11 @@ foam.CLASS({
           return this.delegate.put(obj, sub);
         }
       },
-      javaCode: 'if ( getResults() == null ) setResults(new java.util.HashSet<>());\n' +
-        '    if ( ! getResults().contains(((foam.core.FObject)obj).getProperty("id")) ) {\n' +
-        '      getDelegate().put(obj, sub);\n' +
-        '      getResults().add(((foam.core.FObject)obj).getProperty("id"));\n' +
-        '    }'
+      javaCode: `if ( getResults() == null ) setResults(new java.util.HashSet<>());
+            if ( ! getResults().contains(((foam.core.FObject)obj).getProperty("id")) ) {
+              getDelegate().put(obj, sub);
+              getResults().add(((foam.core.FObject)obj).getProperty("id"));
+            }`
     }
   ]
 });
@@ -615,6 +615,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'DescribeSink',
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   documentation: 'Calls .describe() on every object.  Useful for debugging to quickly see what items are in a DAO.',
 
@@ -633,8 +634,9 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'FnSink',
   implements: [ 'foam.dao.Sink' ],
-  documentation: 'Converts all sink events to call to a singular function.' +
-    '  Useful for subscribing a listener method to a DAO',
+  documentation: `Converts all sink events to call to a singular function.
+      Useful for subscribing a listener method to a DAO`,
+  flags: [],
 
   axioms: [
     {
@@ -684,6 +686,7 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'FramedSink',
   extends: 'foam.dao.ProxySink',
+  flags: [],
 
   documentation: 'A proxy that waits until the next frame to flush the calls to the delegate.',
 
@@ -789,11 +792,13 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.dao',
   name: 'JournalSink',
 
   implements: [ 'foam.dao.Sink' ],
+  flags: [],
 
   properties: [
     {
@@ -807,8 +812,7 @@ foam.CLASS({
     },
     {
       name: 'prefix',
-      class: 'String',
-      value: ''
+      class: 'String'
     }
   ],
 
@@ -825,7 +829,7 @@ foam.CLASS({
       code: function(o) {
         var x = this.__context__; // TODO: is this always correct?
         this.journal.remove(x, '', this.dao, o);
-      },
+      }
     },
     {
       name: 'eof',

@@ -4,78 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-/*
-TODO:
- - Remove use of E() and replace with create-ing axiom to add same behaviour.
- - start('leftPanel') should work for locating pre-existing named spaces
- - Don't generate .java and remove need for flags: ['js'].
-*/
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'ControllerMode',
-
-  documentation: 'CRUD controller modes: CREATE/VIEW/EDIT.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'modePropertyName'
-    },
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode; }
-    }
-  ],
-
-  methods: [
-    function getVisibilityValue(prop) {
-      return prop.visibility || prop[this.modePropertyName];
-    }
-  ],
-
-  values: [
-    {
-      name: 'CREATE',
-      modePropertyName: 'createVisibility'
-    },
-    {
-      name: 'VIEW',
-      modePropertyName: 'readVisibility',
-      restrictDisplayMode: function(mode) {
-        return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
-      }
-    },
-    {
-      name: 'EDIT',
-      modePropertyName: 'updateVisibility'
-    }
-  ]
-});
-
-
-foam.ENUM({
-  package: 'foam.u2',
-  name: 'DisplayMode',
-
-  documentation: 'View display mode; how or if a view is displayed.',
-
-  properties: [
-    {
-      name: 'restrictDisplayMode',
-      value: function(mode) { return mode === foam.u2.DisplayMode.RW ? this : mode; }
-    }
-  ],
-
-  values: [
-    { name: 'RW', label: 'Read-Write' },
-    { name: 'DISABLED' },
-    { name: 'RO', label: 'Read-Only' },
-    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
-  ]
-});
-
-
 foam.CLASS({
   package: 'foam.u2',
   name: 'Entity',
@@ -110,116 +38,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'CSS',
-
-  documentation: 'Axiom to install CSS.',
-
-  properties: [
-    {
-      class: 'String',
-      name: 'code'
-    },
-    {
-      name: 'name',
-      factory: function() { return 'CSS-' + Math.abs(foam.util.hashCode(this.code)); }
-    },
-    {
-      class: 'Boolean',
-      name: 'expands_',
-      documentation: 'True iff the CSS contains a ^ which needs to be expanded.',
-      expression: function(code) {
-        return code.includes('^');
-      }
-    }
-  ],
-
-  methods: [
-    function maybeInstallInDocument(X, cls) {
-      var document = X.document;
-      if ( ! document ) return;
-      var installedStyles = document.installedStyles || ( document.installedStyles = {} );
-      if ( this.expands_ ) {
-        var map = installedStyles[this.$UID] || (installedStyles[this.$UID] = {});
-        if ( ! map[cls.id] ) {
-          map[cls.id] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
-        }
-      } else {
-        if ( ! installedStyles[this.$UID] ) {
-          installedStyles[this.$UID] = true;
-          X.installCSS(this.expandCSS(cls, this.code), cls.id);
-        }
-      }
-    },
-
-    function installInClass(cls) {
-      // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
-
-      if ( isFirstCSS ) cls.private_.hasCSS = true;
-
-      cls.create = function(args, opt_parent) {
-        var X = opt_parent ?
-          ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
-          foam.__context__;
-
-        // Now call through to the original create
-        try {
-          return oldCreate.call(this, args, X);
-        } finally {
-          // if a class has inheritCSS: false then finish installing its other
-          // CSS axioms, but prevent any parent classes from installing theirs
-          // We put this in the context to communicate to other CSSAxioms
-          // down the chain. The last/first one will revert back to the original
-          // X so that objects aren't created with lastClassToInstallCSSFor
-          // in their contexts.
-          var lastClassToInstallCSSFor = X.lastClassToInstallCSSFor;
-
-          if ( ! lastClassToInstallCSSFor || lastClassToInstallCSSFor == cls ) {
-            // Install CSS if not already installed in this document for this cls
-            axiom.maybeInstallInDocument(X, this);
-          }
-
-          if ( ! lastClassToInstallCSSFor && ! this.model_.inheritCSS ) {
-            X = X.createSubContext({
-              lastClassToInstallCSSFor: this,
-              originalX: X
-            });
-          }
-
-          if ( lastClassToInstallCSSFor && isFirstCSS ) X = X.originalX;
-        }
-      };
-    },
-
-    function expandCSS(cls, text) {
-      if ( ! this.expands_ ) return text;
-
-      /* Performs expansion of the ^ shorthand on the CSS. */
-      // TODO(braden): Parse and validate the CSS.
-      // TODO(braden): Add the automatic prefixing once we have the parser.
-      var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/\^(.)/g, function(match, next) {
-        var c = next.charCodeAt(0);
-        // Check if the next character is an uppercase or lowercase letter,
-        // number, - or _. If so, add a - because this is a modified string.
-        // If not, there's no extra -.
-        if ( (65 <= c && c <= 90) || (97 <= c && c <= 122) ||
-            (48 <= c && c <= 57) || c === 45 || c === 95 ) {
-          return base + '-' + next;
-        }
-
-        return base + next;
-      });
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'DefaultValidator',
 
   documentation: 'Default Element validator.',
@@ -229,10 +47,6 @@ foam.CLASS({
   methods: [
     function validateNodeName(name) {
       return true;
-    },
-
-    function validateClass(cls) {
-      // TODO
     },
 
     function validateAttributeName(name) {
@@ -252,7 +66,7 @@ foam.CLASS({
     },
 
     function sanitizeText(text) {
-      if ( ! text ) return text;
+      if ( text === null || text === undefined ) return text;
       text = text.toString();
       if ( text.search(/[&<"']/) == -1 ) return text;
       return text.replace(/[&<"']/g, (m) => {
@@ -326,7 +140,12 @@ foam.CLASS({
       });
     },
     function output(out) {
-      this.render();
+      let ret = this.render();
+      Promise.resolve(ret).then(v => {
+        if ( v != undefined ) {
+          console.error('render() should not return a value, this may cause issues with slotted elements', this.cls_.id);
+        }
+      });
       this.state = this.OUTPUT;
       this.output_(out);
       return out;
@@ -549,7 +368,6 @@ foam.CLASS({
       this.__context__.warn('Must output before loading.');
     },
     function unload() {
-      this.__context__.warn('Must output before loading.');
     },
     function toString() { return 'UNLOADED'; }
   ]
@@ -722,6 +540,11 @@ foam.CLASS({
   ],
 
   constants: [
+    {
+      // TODO: To replace ^ in future, to be compatible with U3
+      name: 'CSS_SELF',
+      value: '<<'
+    },
     {
       name: 'CSS_CLASSNAME_PATTERN',
       factory: function() { return /^[a-z_-][a-z\d_-]*$/i; }
@@ -1052,6 +875,17 @@ foam.CLASS({
   ],
 
   methods: [
+    function replaceElement_(el) {
+      el.outerHTML = this.outerHTML;
+      this.load();
+    },
+
+    function detach() {
+      this.SUPER();
+      this.childNodes = [];
+      this.children   = [];
+    },
+
     function init() {
       /*
       if ( ! this.translationService )
@@ -1082,7 +916,8 @@ foam.CLASS({
       var e = await this.el();
       observer.observe(e, config);
       this.onunload.sub(function(s) {
-        observer.disconnect()
+        // might already be disconnected
+        try { observer.disconnect(); } catch(x) {}
       });
       return this;
     },
@@ -1447,6 +1282,8 @@ foam.CLASS({
         }
         this.parentNode = undefined;
       }
+
+      this.detach();
     },
 
     function addEventListener(topic, listener, opt_args) {
@@ -1466,11 +1303,6 @@ foam.CLASS({
           return;
         }
       }
-    },
-
-    function setNodeName(name) {
-      this.nodeName = name;
-      return this;
     },
 
     function setID(id) {
@@ -1493,12 +1325,13 @@ foam.CLASS({
       return this.entity('nbsp');
     },
 
-    function cssClass(cls) {
-      console.warn('Deprecated use of cssClass(). Use addClass() instead in ', this.cls_.name);
-      return this.addClass(cls);
-    },
-
-    function addClass(cls) { /* Slot | String */
+    function addClass(cls) { /* ...( Slot | String ) */
+      if ( arguments.length > 1 ) {
+        for ( let i = 0; i < arguments.length; i++ ) {
+          this.addClass(arguments[i]);
+        }
+        return this;
+      }
       /* Add a CSS cls to this Element. */
       var self = this;
       if ( cls === undefined ) {
@@ -1522,7 +1355,9 @@ foam.CLASS({
     },
 
     function addClasses(a) {
-      a && a.forEach((i) => this.addClass(i));
+      // Deprecated: Use Add class with multiple args
+      console.warn('addClasses has been deprecated, use addClass instead');
+      this.addClass(...a);
       return this;
     },
 
@@ -1649,14 +1484,21 @@ foam.CLASS({
       var translationService = this.translationService;
       if ( translationService ) {
         /* Add the translation of the supplied source to the Element as a String */
-        var translation = this.translationService.getTranslation(foam.locale, source, opt_default);
+        let xmsgObj, translation;
+        if ( foam.core.Slot.isInstance(source) ) {
+          translation = source.map(v => this.translationService.getTranslation(foam.locale, v, opt_default || v))
+          xmsgObj = {source$: source, data$: translation };
+        } else {
+          translation = this.translationService.getTranslation(foam.locale, source, opt_default || source);
+          xmsgObj = {source: source, data: translation };
+        }
         if ( foam.xmsg ) {
-          return this.tag({class: 'foam.i18n.InlineLocaleEditor', source: source, defaultText: opt_default, data: translation});
+          return this.tag({ ...xmsgObj, class: 'foam.i18n.InlineLocaleEditor', defaultText: opt_default });
         }
         return this.add(translation);
       }
-      console.warn('Missing Translation Service in ', this.cls_.name);
-      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+      // console.warn('Missing Translation Service in ', this.cls_.name);
+      if ( opt_default === undefined ) opt_default = source;
       return this.add(opt_default);
     },
 
@@ -1670,6 +1512,17 @@ foam.CLASS({
     },
 
     function toE() { return this; },
+
+    function react(fn, opt_self) {
+      var slot = (opt_self || this).slot(fn);
+      update = () => {
+        this.removeAllChildren();
+        slot.get();
+      };
+      update();
+      slot.sub(update);
+      return this;
+    },
 
     function add_(cs, parentNode) {
       // Common case is one String, so optimize that case.
@@ -1693,7 +1546,7 @@ foam.CLASS({
         } else if ( c.toE ) {
           var e = c.toE(null, Y);
           if ( foam.core.Slot.isInstance(e) ) {
-            var v = this.slotE_(c);
+            var v = this.slotE_(e);
             if ( Array.isArray(v) ) {
               for ( var j = 0 ; j < v.length ; j++ ) {
                 var u = v[j];
@@ -1713,7 +1566,7 @@ foam.CLASS({
         } else if ( c.then ) {
           this.add(this.PromiseSlot.create({ promise: c }));
         } else if ( typeof c === 'function' ) {
-          throw new Error('Unsupported');
+          console.warn('Unsupported use of add(function).');
         } else {
           // String or Number
           es.push(c);
@@ -1772,10 +1625,15 @@ foam.CLASS({
       return this;
     },
 
-    function repeat(s, e, f) {
-      // TODO: support descending
-      for ( var i = s ; i <= e ; i++ ) {
-        f.call(this, i);
+    function repeat(s, e, f, opt_allowReverse) {
+      if ( s <= e ) {
+        for ( var i = s ; i <= e ; i++ ) {
+          f.call(this, i);
+        }
+      } else if ( opt_allowReverse ) {
+        for ( var i = s ; i >= e ; i-- ) {
+          f.call(this, i);
+        }
       }
       return this;
     },
@@ -2015,6 +1873,7 @@ foam.CLASS({
     },
 
     function slotE_(slot) {
+       this.onDetach(slot);
       // TODO: add same context capturing behviour to other slotXXX_() methods.
       /*
         Return an Element or an Array of Elements which are
@@ -2069,12 +1928,10 @@ foam.CLASS({
         self.insertBefore(tmp, first);
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) {
-            if ( e[i].state === e[i].LOADED ) {
-              e[i].remove(); e[i].detach();
-            }
+            e[i].remove();
           }
         } else {
-          if ( e.state === e.LOADED ) { e.remove(); e.detach(); }
+          e.remove();
         }
         var e2 = nextE();
         self.insertBefore(e2, tmp);
@@ -2250,6 +2107,7 @@ foam.CLASS({
   refines: 'foam.core.FObject',
   methods: [
     function toE(args, X) {
+      X = X || globalThis.ctrl || foam.__context__;
       return foam.u2.ViewSpec.createView(
         { class: 'foam.u2.DetailView', showActions: true, data: this },
         args, this, X);
@@ -2328,23 +2186,49 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      // Experimental Code to make it easier to add underlying Property View
+      // Without wrapping in a PropertyBorder
+      name: '__',
+      transient: true,
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
+    },
+    {
+      class: 'Boolean',
+      name: 'reserveLabelSpace',
+      documentation: 'Property to indicate if PropertyBorders need to reserve label space when label is empty'
     }
   ],
 
   methods: [
     function toE(args, X) {
-      var e = foam.u2.ViewSpec.createView(this.view, args, this, X);
+      return this.toE_(args, X);
+    },
 
-      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
-        e.data$ = X.data$.dot(this.name);
-      }
-
-      e.fromProperty && e.fromProperty(this);
+    function toE_(args, X) {
+      var e = this.createElFromSpec_(this.view, args, X);
 
       // e could be a Slot, so check if addClass exists
       e.addClass && e.addClass('property-' + this.name);
 
       return e;
+    },
+
+    function toPropertyView(args, X) {
+      return this.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: this }, args, X);
+    },
+
+    function createElFromSpec_(spec, args, X) {
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+
+      if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
+        el.data$ = X.data$.dot(this.name);
+      }
+
+      el.fromProperty && el.fromProperty(this);
+
+      return el;
     },
 
     function combineControllerModeAndVisibility_(data$, controllerMode$) {
@@ -2482,6 +2366,22 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'EMailViewRefinement',
+  refines: 'foam.core.EMail',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'email' }
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2',
@@ -2558,7 +2458,7 @@ foam.CLASS({
   requires: [ 'foam.u2.view.CurrencyView' ],
   properties: [
     [ 'displayWidth', 15 ],
-    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: false } ]
+    [ 'view', { class: 'foam.u2.view.CurrencyView', onKey: true } ]
   ]
 });
 
@@ -2571,16 +2471,16 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      expression: function(label, labelFormatter) {
+      expression: function(label, checkboxLabelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
           label: this.help,
-          labelFormatter: labelFormatter
+          labelFormatter: checkboxLabelFormatter
         };
       }
     },
     {
-      name: 'labelFormatter'
+      name: 'checkboxLabelFormatter'
     }
   ]
 });
@@ -2604,12 +2504,7 @@ foam.CLASS({
         class: 'foam.u2.view.ModeAltView',
         readView: { class: 'foam.u2.view.ReadColorView' },
         writeView: {
-          class: 'foam.u2.MultiView',
-          views: [
-            { class: 'foam.u2.TextField' },
-            { class: 'foam.u2.view.ColorPicker', onKey: true },
-            { class: 'foam.u2.view.ReadColorView' }
-          ]
+          class: 'foam.u2.view.ColorEditView'
         }
       }
     }
@@ -2811,6 +2706,15 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'ImageViewRefinement',
+  refines: 'foam.core.Image',
+  requires: [ 'foam.u2.tag.Image' ],
+  properties: [
+    [ 'view', { class: 'foam.u2.tag.Image' } ]
+  ]
+});
 
 foam.CLASS({
   package: 'foam.u2',
@@ -2921,6 +2825,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2',
@@ -3033,7 +2938,9 @@ foam.CLASS({
 
   documentation: 'View for safely displaying HTML content.',
 
-  css: '^ { padding: 6px 0; }',
+  css: `
+    ^ { padding: 6px 0; }
+  `,
 
   properties: [
     {

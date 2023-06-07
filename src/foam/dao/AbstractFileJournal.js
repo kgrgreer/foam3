@@ -481,6 +481,14 @@ try {
           prop.set(oldFObject, prop.get(diffFObject));
         }
       `
+    },
+    {
+      name: 'cmd',
+      args: 'Context x, Object obj',
+      type: 'Object',
+      javaCode: `
+      return obj;
+      `
     }
   ]
 });

@@ -90,6 +90,8 @@ foam.CLASS({
   name: 'AbstractDAODecorator',
   implements: ['foam.dao.DAOInterceptor'],
 
+  flags: [],
+
   methods: [
     function write(X, dao, obj, existing) {
       return Promise.resolve(obj);
@@ -107,6 +109,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.dao',
   name: 'CompoundDAODecorator',
+
+  flags: [],
 
   implements: ['foam.dao.DAOInterceptor'],
 
@@ -179,7 +183,7 @@ foam.CLASS({
         // slightly faster if DAO.find() could take an object
         // as well.
         var self = this;
-        return ( ( ! obj.id ) ? Promise.resolve(null) : this.dao.find_(x, obj.id) ).then(function(existing) {
+        return ( ( ! obj?.id ) ? Promise.resolve(null) : this.dao.find_(x, obj.id) ).then(function(existing) {
           return self.decorator.write(x, self.dao, obj, existing);
         }).then(function(obj) {
           return self.delegate.put_(x, obj);

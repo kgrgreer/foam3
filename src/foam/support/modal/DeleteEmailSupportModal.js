@@ -39,16 +39,16 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: center;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding-left: 40px;
       margin-bottom: 100px;
-      
+
     }
     ^ .Mask {
       width: 448px;
       height: 1000px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: $white;
     }
     ^ .Rectangle-7 {
       float: left;
@@ -81,7 +81,7 @@ foam.CLASS({
       color: #ffffff;
     }
     ^ .div {
-      margin-top: 40px; 
+      margin-top: 40px;
     }
     ^ .div2 {
       padding: 0 20px;
@@ -91,18 +91,14 @@ foam.CLASS({
     properties: [
       {
         class: 'String',
-        name: 'email'    
-      },
-      {
-        class: 'Long',
-        name: 'id'
+        name: 'email'
       },
       {
         class: 'String',
-        name: 'status',     
+        name: 'status',
     }
     ],
-    
+
     messages:[
       { name:'titlelabel', message:'Do you want to delete the email xx@xx.com?' },
     ],
@@ -116,7 +112,7 @@ foam.CLASS({
           title: 'Delete Email'
         }))
         .start().addClass('div2')
-          .start().addClass('label1') 
+          .start().addClass('label1')
             .add(this.titlelabel)
           .end()
           .start().addClass('div')
@@ -127,7 +123,7 @@ foam.CLASS({
         .end();
       }
     ],
-        
+
     actions: [
       {
         name: 'deleteButton',

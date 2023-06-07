@@ -1,5 +1,4 @@
-
-## U3
+## U2/U3
 ##  Background
 U3 is FOAM's native UI library.
 It is named U3 because it is FOAM's third UI library.
@@ -24,7 +23,7 @@ All 32 components extend foam.u2.Element, which loosely modelled after the DOM <
 add('testing');
 
 ##   U3 vs. Real DOM
-The first example creates a ul tag with 100 li children using the browser's build-in DOM API.
+The first example creates a ul tag with 10 li children using the browser's build-in DOM API.
 The second example does the same thing using U3. Notice how the two examples are very similar.
 --
 console.profile('p1');
@@ -37,7 +36,7 @@ function test1() {
     node.appendChild(li);
   }
   start().call(function() { this.element_.appendChild(node); });
-  log('DOM', performance.now() - startTime);
+  log('DOM ', performance.now() - startTime);
 }
 test1();
 console.profileEnd('p1');
@@ -51,7 +50,7 @@ function test2() {
     node.start('li').add("text" + i).end();            // Append an <li>
 
   add(node);
-  log('U3', performance.now() - startTime);
+  log('U3 ', performance.now() - startTime);
 }
 test2()
 console.profileEnd('p2');
@@ -112,14 +111,14 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ {
-      background: white;
+      background:$white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background-color:$white; }
   `,
   methods: [
     function render() {
@@ -155,10 +154,9 @@ start('div').hide().show().add('show()').end();         // will be shown
 
 ##   focused / focus() / blur()
 --
-// TODO: update to use data when working
-start('input', {value: "doesn't have focus"}).attrs({value: 'not focused'}).end();
+start('input').attrs({value: 'not focused'}).end();
 add(' ');
-start('input', {value: "doesn't have focus"}).attrs({value: 'focused'}).focus().end();
+start('input').attrs({value: 'focused'}).focus().end();
 
 ##   Creating a Component
 <ol>
@@ -216,6 +214,23 @@ foam.CLASS({
 tag({class:'ExampleElement'});
 
 ##    render()
+--
+foam.CLASS({
+  name: 'Sample',
+  extends: 'foam.u2.Element',
+
+  methods: [
+    function render() {
+      this.setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
+      start('img').attr('src','/foam3/src/foam/u2/images/foam_red.png').end().
+      tag('hr').
+      start('center').add('FOAM Logo').end();
+    }
+  ]
+});
+
+tag({class: 'Sample'});
+
 ##   Keyboard Shortcuts
 --
 foam.CLASS({
@@ -240,7 +255,19 @@ foam.CLASS({
 var k = KeyboardTest.create();
 tag(k);
 
-##   el()
+##   el() / .element_
+Sometimes it is necessary to access the real underlying DOM node.
+--
+// U2 or U3
+var a = start('b');
+a.el().then(el => el.innerHTML = 'foobar');
+
+start().br().end();
+
+// U3
+var a = start('b');
+a.element_.innerHTML = 'foobar2';
+
 ##   id
 You can set an element's id, but keep in mind that it isn't normally a good idea to do so because
 it prevents you from instantiating two instances of your component.
@@ -269,7 +296,7 @@ no-breaking space, the same as adding &amp;nbsp; to your html
 start('div')
   .style({width: 100})
   .add('Breaking space').br()
-  .add('NonBreaking').nbsp().add('space').br()
+  .add('NonBreaking').nbsp().add('space').br().
 end();
 ##    remove()
 ##    add()
@@ -448,7 +475,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: `
     ^ { background: pink; }
-    ^subsection { background: green; }
+    ^subsection { background: lightblue; }
   `,
   classes: [
     {
@@ -824,4 +851,48 @@ tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
 this.startContext({data: timer}).add(timer.I);
 
 ##   StackView
+##   FObject View
+FObject View.
+--
+foam.CLASS({
+  name: 'FObjectViewExample',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    { class: 'FObjectProperty', name: 'obj1', factory: function() { return foam.util.Timer.create(); } },
+    { class: 'FObjectProperty', name: 'obj2', view: { class: 'foam.u2.view.FObjectView' }, factory: function() { return foam.util.Timer.create(); } },
+  ],
+
+  methods: [
+    function render() {
+      this.add('OBJ1:',this.OBJ1, 'OBJ2:', this.OBJ2);
+    }
+  ]
+});
+
+tag({class: 'FObjectViewExample'});
+
+
 ##   More
+Example of defining tableColumns for use with a TableView.
+--
+foam.CLASS({
+  name: 'TableColumnsExample',
+
+  tableColumns: [ 'a', 'b', 'c' ],
+
+  properties: [ 'id', 'a', 'b', 'c', 'x', 'y', 'z' ]
+});
+s
+var t1 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExample'})});
+tag(t1).style({height: '200px'});
+
+foam.CLASS({
+  name: 'TableColumnsExampleSubClass',
+  extends: 'TableColumnsExample',
+
+  tableColumns: [ 'x', 'y', 'z' ],
+});
+
+var t2 = foam.u2.table.TableView.create({data: foam.dao.MDAO.create({of: 'TableColumnsExampleSubClass'})});
+start(t2).style({height: '200px'});

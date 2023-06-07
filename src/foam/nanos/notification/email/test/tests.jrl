@@ -1,0 +1,8 @@
+p({
+  class:"foam.nanos.notification.email.test.EmailMessageRuleTest",
+  id:"EmailMessageRuleTest"
+})
+p({
+  class:"foam.nanos.notification.email.test.MockSMTPAgentTest",
+  id:"SMTPAgentTest"
+})

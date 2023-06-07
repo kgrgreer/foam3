@@ -1,0 +1,8 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"admin","targetId":"*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"system","targetId":"*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"auth.promptlogin"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.fileTypeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.groupDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.myNotificationDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"anonymous","targetId":"service.prerequisiteCapabilityJunctionDAO"})

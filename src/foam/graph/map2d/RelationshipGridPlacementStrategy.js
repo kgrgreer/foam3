@@ -67,7 +67,6 @@ foam.CLASS({
 
         let add;
         add = (obj, row, col, pushCols) => {
-          console.log('ADD ' + obj.id);
           var entry = null;
           if ( alreadyAdded[obj.id] ) {
             entry = intermediatePlan[obj.id];
@@ -89,7 +88,6 @@ foam.CLASS({
 
           childNodes = this.graph.getDirectChildren(obj.id, true);
           childNodes.forEach((o, i) => {
-            console.log('adding ' + o.id + ' to queue');
             addingQueue.push({
               parent: entry,
               obj: o,

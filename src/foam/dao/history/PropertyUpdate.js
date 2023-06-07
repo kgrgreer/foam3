@@ -24,5 +24,18 @@ foam.CLASS({
       name: 'newValue',
       view: 'foam.u2.view.AnyView'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(x) {
+        return this.name + " (" + this.oldValue + " -> " + this.newValue + ")";
+      },
+      javaCode: `
+        return getName() + " (" + this.getOldValue() + " -> " + this.getNewValue() + ")";
+      `
+    }
   ]
 });

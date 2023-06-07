@@ -7,11 +7,12 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'CapableWAO',
-  implements: [ 'foam.u2.wizard.WAO' ],
+  implements: [ 'foam.u2.wizard.wao.WAO' ],
   flags: ['web'],
 
   imports: [
     'capable',
+    'capabilityDAO',
     'crunchService'
   ],
 
@@ -21,11 +22,20 @@ foam.CLASS({
     'foam.nanos.crunch.ui.CapabilityWizardlet'
   ],
 
+  properties: [
+    {
+      name: 'capability',
+      factory: function() {
+        return this.wizardlet?.capability;
+      }
+    }
+  ],
+
   methods: [
     async function save(wizardlet) {
       if ( wizardlet.loading ) return;
       if ( ! wizardlet.isAvailable ) return;
-      var wData = wizardlet.data ? wizardlet.data.clone() : null;
+      var wData = wizardlet.data ? wizardlet.data.clone(this) : null;
       wizardlet.loading = true;
 
       if ( wizardlet.status === this.CapabilityJunctionStatus.AVAILABLE ) {
@@ -51,9 +61,17 @@ foam.CLASS({
     },
     async function load(wizardlet) {
       if ( wizardlet.loading ) return;
+      if ( ! this.capability )
+        this.capability = await this.capabilityDAO.find(wizardlet.id);
 
       var targetPayload = await this.capable.getCapablePayloadDAO().find(
-        wizardlet.capability.id ) || this.targetPayload;
+        this.capability.id ) || this.targetPayload;
+
+      // TODO: investigate nullWAO decorator not working on beforeWizardlet
+      if ( wizardlet.data && ! targetPayload ){
+        return;
+      }
+
       this.load_(wizardlet, targetPayload);
     },
     async function load_(wizardlet, payload) {
@@ -76,7 +94,7 @@ foam.CLASS({
 
       // Set transient 'capability' property if it exists
       var prop = wizardlet.of.getAxiomByName('capability');
-      if ( prop ) prop.set(loadedData, wizardlet.capability);
+      if ( prop ) prop.set(loadedData, this.capability);
 
       // Finally, apply new data to wizardlet
       if ( wizardlet.data ) {
@@ -91,7 +109,7 @@ foam.CLASS({
     },
     function makePayload(wizardlet) {
       return this.CapabilityJunctionPayload.create({
-        capability: wizardlet.capability,
+        capability: this.capability,
         data: wizardlet.data
       });
     }

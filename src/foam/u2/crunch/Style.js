@@ -41,7 +41,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px /*%GREY4%*/ #e7eaec;
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
       background-position: 50% 50%;
     }
 
@@ -59,7 +59,10 @@ foam.CLASS({
       height: 80px;
       border-radius: 40px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
-      background-color: /*%WHITE%*/ #ffffff;
+      background-color: $white;
+    }
+
+    ^mode-card {
     }
 
     ^mode-circle {
@@ -71,7 +74,7 @@ foam.CLASS({
       width: 100%;
       height: 100%;
 
-      background-color: white;
+      background-color: $white;
 
       border: 2px solid #f3f3f3;
       border-radius: 5px;
@@ -111,7 +114,7 @@ foam.CLASS({
 
     ^tooltip {
       position: absolute;
-      bottom: 12px; 
+      bottom: 12px;
     }
     ^tooltip ^tooltiptext {
       visibility: hidden;

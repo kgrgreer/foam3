@@ -31,12 +31,12 @@ foam.CLASS({
       name: 'selectedColor',
       expression: function(isSelected, isDisabled) {
         if ( isDisabled ) {
-          return this.theme ? this.theme.grey4 : '#E7EAEC';
+          return '$grey100';
         }
         if ( isSelected ) {
-          return this.theme ? this.theme.primary3 : '#406DEA';
+          return '$primary400';
         }
-        return this.theme ? this.theme.grey2 : '#9BA1A6';
+        return '$grey500';
       }
     },
     {
@@ -51,16 +51,18 @@ foam.CLASS({
 
   methods: [
     function render() {
+      const e = foam.css.TokenUtilsBuilder.create({}, this);
+      let colorSlot = this.slot(function(selectedColor, theme) { return e.TOKEN(selectedColor).f(this) });
       this
         .addClass('radio')
         .attrs({ width: 20, height: 20 })
         .start('circle')
-          .attrs({ cx: 10, cy: 10, r: 8, 'stroke': this.selectedColor$, 'stroke-width': 2, 'transform-origin': '0 0', fill: 'none' })
+          .attrs({ cx: 10, cy: 10, r: 8, 'stroke': colorSlot, 'stroke-width': 2, 'transform-origin': '0 0', fill: 'none' })
         .end()
         .start('circle')
           .addClass(this.myClass('innerCircle'))
           .enableClass('selected', this.isSelected$)
-          .attrs({ cx: 10, cy: 10, r: 0, fill: this.selectedColor$ })
+          .attrs({ cx: 10, cy: 10, r: 0, fill: colorSlot })
         .end();
     }
   ]

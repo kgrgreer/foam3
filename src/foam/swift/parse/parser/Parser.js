@@ -19,8 +19,8 @@ foam.INTERFACE({
         {
           swiftType: 'ParserContext',
           name: 'x',
-        },
-      ],
-    },
+        }
+      ]
+    }
   ]
 });

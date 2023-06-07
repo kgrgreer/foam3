@@ -19,7 +19,7 @@ public class ServicesWebAgent
 
   public void execute(X x) {
     final PrintWriter out   = x.get(PrintWriter.class);
-          DAO         dao   = (DAO)         x.get("nSpecDAO");
+          DAO         dao   = (DAO) x.get("nSpecDAO");
     final int[]       count = { 0, 0 };
 
     out.println("<pre>");

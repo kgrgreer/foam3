@@ -71,7 +71,8 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.validate();
+      // TODO: fix
+      // this.validate();
       this.SUPER();
     },
 

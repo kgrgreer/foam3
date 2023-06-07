@@ -11,11 +11,13 @@ foam.CLASS({
   documentation: `
     A customizable model to configure any DAOController
   `,
+  implements: [ 'foam.mlang.Expressions' ],
 
   requires: [
     'foam.comics.SearchMode',
     'foam.comics.v2.CannedQuery',
-    'foam.comics.v2.namedViews.NamedViewCollection'
+    'foam.comics.v2.namedViews.NamedViewCollection',
+    'foam.mlang.order.Desc'
   ],
 
   messages: [
@@ -25,8 +27,23 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'StringArray',
+      name: 'order'
+    },
+    {
       name: 'click',
-      documentation: 'Used to override the default click listener exported by DAOController'
+      documentation: 'Used to override the default click listener exported by DAOController',
+      adapt: function(_, n) {
+        if ( typeof n === 'function' ) return n;
+        // adapt a class method path
+        var lastIndex = n.lastIndexOf('.');
+        var classObj = foam.lookup(n.substring(0, lastIndex));
+        return classObj[n.substring(lastIndex + 1)];
+      }
+    },
+    {
+      name: 'disableSelection',
+      class: 'Boolean'
     },
     {
       class: 'String',
@@ -57,6 +74,8 @@ foam.CLASS({
         if ( predicate ) {
           dao = dao.where(predicate);
         }
+        dao = dao.orderBy.apply(dao, this.order.map(p => p.split('-').length > 1 ?
+          this.DESC(this.of.getAxiomByName(p.split('-')[1])) : this.of.getAxiomByName(p.split('-')[0])));
         return dao;
       }
     },
@@ -95,12 +114,33 @@ foam.CLASS({
       value: null
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
+      name: 'primaryMenu',
+      documentation: `
+        When provided overrides primary action to launch provided menu.
+      `,
+      postSet: function(_, n) {
+        this.primaryMenu$find.then(v => this.primaryAction = v)
+      },
+      value: null
+    },
+    {
       class: 'foam.u2.ViewSpec',
       name: 'createView',
       factory: function() {
         return {
           class: 'foam.u2.view.FObjectView',
           detailView: { class: 'foam.u2.detail.SectionedDetailView' }
+        };
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'browseController',
+      factory: function() {
+        return {
+          class: 'foam.comics.v2.DAOBrowseControllerView'
         };
       }
     },
@@ -141,34 +181,7 @@ foam.CLASS({
       factory: null,
       expression: function(of, tableColumns) {
         var tableSearchColumns = of.getAxiomByName('searchColumns');
-
-        var filteredDefaultColumns = tableColumns.filter(c => {
-          //  to account for nested columns like approver.legalName
-          if ( c.split('.').length > 1 ) return false;
-
-          var a = of.getAxiomByName(c);
-
-          if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
-
-          return a
-            && ! a.storageTransient
-            && ! a.networkTransient
-            && a.searchView
-            && ! a.hidden
-        });
-
-        var allProps = of.getAxiomsByClass(foam.core.Property).filter(p => {
-          return ! p.storageTransient
-            && ! p.networkTransient
-            && p.searchView
-            && ! p.hidden
-        })
-
-        return tableSearchColumns
-          ? tableSearchColumns.columns
-          : filteredDefaultColumns
-            ? filteredDefaultColumns
-            : allProps
+        return tableSearchColumns ? tableSearchColumns.columns : [];
       }
     },
     {
@@ -195,7 +208,7 @@ foam.CLASS({
       name: 'browseViews',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.NamedViewCollection);
+        return of && of.getAxiomsByClass(this.NamedViewCollection);
       }
     },
     {
@@ -204,7 +217,7 @@ foam.CLASS({
       name: 'cannedQueries',
       factory: null,
       expression: function(of) {
-        return of.getAxiomsByClass(this.CannedQuery);
+        return of && of.getAxiomsByClass(this.CannedQuery);
       }
     },
     {
@@ -379,6 +392,10 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'preSelectedCannedQuery'
+    },
+    {
+      class: 'String',
+      name: 'redirectMenu'
     }
   ]
 });

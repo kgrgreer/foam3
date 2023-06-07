@@ -1,0 +1,137 @@
+p({
+  id: "schedulable",
+  wizardConfig: {
+    class: "foam.u2.crunch.EasyCrunchWizard",
+    incrementalWizard: true
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-create-success",
+  name: "Success Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    class: 'foam.u2.wizard.wizardlet.SuccessWizardlet',
+    message: 'Scheduled successfully!',
+    of: 'foam.nanos.cron.Schedulable',
+    combinedSection: true,
+    isLastWizardlet: true,
+    wao: {
+      class: "foam.u2.wizard.wao.PrerequisiteWAO",
+      of: "foam.nanos.cron.Schedulable",
+      prerequisiteCapabilityId: "schedulable-dao-put",
+      delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
+    }
+  }
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "schedulable-dao-put",
+  name: "Put Wizardlet",
+  of:  "foam.nanos.cron.Schedulable",
+  wizardlet: {
+    class: "foam.nanos.crunch.ui.CapabilityWizardlet",
+    of: "foam.nanos.cron.Schedulable",
+    isVisible: false,
+    saveOnAvailable: false,
+    saveOnCurrent: true,
+    wao:{
+      class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+      of: "foam.nanos.cron.Schedulable",
+      minMaxCapabilityId: 'schedulable-xorminmax',
+      delegate: {
+        class: "foam.u2.wizard.wao.DAOWAO",
+        daoKey: "schedulableDAO",
+        of: "foam.nanos.cron.Schedulable"
+      }
+    }
+  }
+})
+
+p({
+  id: 'schedulable-review',
+  name: 'Schedulable Review',
+  of: 'foam.core.MapHolder',
+  wizardlet: {
+    class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
+    title: "Review Your Schedule",
+    showTitles: false,
+    of: 'foam.core.MapHolder',
+    items: [
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'objectToSchedule',
+        border: {
+          class: 'foam.u2.borders.TopBorderCard',
+          color: '#406dea'
+        },
+        view: {
+          class: 'foam.u2.detail.VerticalDetailView',
+          showTitle: false
+        }
+      },
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'schedule',
+        border: {
+          class: 'foam.u2.borders.BackgroundCard',
+          backgroundColor: '#DADDE2'
+        },
+        view: {
+          class: 'foam.u2.detail.VerticalDetailView'
+        },
+        title: 'Schedule Details'
+      },
+      {
+        class: 'foam.u2.wizard.wizardlet.ReviewItem',
+        name: 'note',
+        border: {
+          class: 'foam.u2.borders.NullBorder',
+          cssClasses: ['p']
+        },
+        view: {
+          class: 'foam.u2.HTMLView',
+          data: "<span> Charges will be <span class=\'p-semiBold\' > automatically debited </span> from your account <span class=\'p-semiBold\' > on the scheduled day or the next business day </span> if it falls on a weekend or statutory holiday. Expect an X day delay to see your wallet funding.</span>"
+        },
+        predicate: {"class":"foam.mlang.predicate.True"}
+      }
+    ],
+    wao: {
+      class: 'foam.u2.wizard.wao.CompositeWAO',
+      of: 'foam.core.MapHolder',
+      delegates: [
+        {
+          class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+          of: 'foam.core.MapHolder',
+          minMaxCapabilityId: 'schedulable-xorminmax',
+          loadFromPath: 'objectToSchedule',
+          loadIntoPath: 'value.objectToSchedule'
+        },
+        {
+          class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+          of: 'foam.core.MapHolder',
+          minMaxCapabilityId: 'schedulable-xorminmax',
+          loadFromPath: 'schedule',
+          loadIntoPath: 'value.schedule'
+        }
+      ]
+    }
+  }
+})
+
+p({
+  class: 'foam.nanos.crunch.MinMaxCapability',
+  id: "schedulable-xorminmax",
+  name: "Schedulable MinMax",
+  min: 1,
+  max: 1
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: 'generic-schedulable',
+  of: 'foam.nanos.cron.Schedulable',
+  name: "Generic Schedulable"
+})

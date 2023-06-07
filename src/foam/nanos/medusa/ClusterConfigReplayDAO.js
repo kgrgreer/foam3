@@ -12,6 +12,9 @@ foam.CLASS({
   documentation: `On status change to ONLINE initiate replay, in Active Region.`,
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'static foam.mlang.MLang.AND',
@@ -25,31 +28,17 @@ foam.CLASS({
     'foam.mlang.sink.Max',
     'foam.mlang.sink.Min',
     'foam.mlang.sink.Sequence',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'java.util.List'
-  ],
-
-  properties: [
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
-    }
   ],
 
   methods: [
     {
       name: 'put_',
       javaCode: `
+      Logger logger = Loggers.logger(x, this, "put");
       ClusterConfig nu = (ClusterConfig) obj;
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
       nu = (ClusterConfig) getDelegate().put_(x, nu);
@@ -62,7 +51,7 @@ foam.CLASS({
            nu.getRealm().equals(myConfig.getRealm()) &&
            nu.getRegion().equals(myConfig.getRegion()) ) {
 
-        getLogger().info(nu.getName(), old.getStatus(), "->", nu.getStatus());
+        logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus());
 
         ClusterConfig config = nu;
 
@@ -86,12 +75,6 @@ foam.CLASS({
             serviceName = "medusaEntryDAO";
           }
           DAO clientDAO = support.getClientDAO(x, serviceName, myConfig, config);
-          // clientDAO = new RetryClientSinkDAO.Builder(x)
-          //   .setName(serviceName)
-          //   .setDelegate(clientDAO)
-          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
-          //   .setMaxRetryDelay(support.getMaxRetryDelay())
-          //   .build();
 
           // NOTE: using internalMedusaDAO else we'll block on ReplayingDAO.
           DAO dao = (DAO) x.get("internalMedusaDAO");
@@ -106,19 +89,24 @@ foam.CLASS({
             details.setMinIndex((Long) min.getValue());
             minIndex = details.getMinIndex();
           }
-          getLogger().info("ReplayDetailsCmd", "from", myConfig.getId(), "to", config.getId(), "request");
+          logger.info("ReplayDetailsCmd", "request", details);
           details = (ReplayDetailsCmd) clientDAO.cmd_(x, details);
-          getLogger().info("ReplayDetailsCmd", "from", myConfig.getId(), "to", config.getId(), "response", details);
+          logger.info("ReplayDetailsCmd", "response", details);
 
-          synchronized ( this ) {
-            DaggerService dagger = (DaggerService) x.get("daggerService");
-            ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            if ( replaying.getReplaying() ) {
-            replaying.getReplayNodes().put(details.getResponder(), details);
+
+          DaggerService dagger = (DaggerService) x.get("daggerService");
+          ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+          if ( replaying.getReplaying() ) {
+            replaying.getReplayDetails().put(config.getId(), details);
+
+            synchronized ( this ) {
 
               if ( replaying.getStartTime() == null ) {
                 replaying.setStartTime(new java.util.Date());
                 replaying.updateIndex(x, dagger.getGlobalIndex(x));
+
+                ((foam.nanos.om.OMLogger) x.get("OMLogger")).log("medusa.replay.start");
+                logger.info("replay,start,test");
               }
               if ( details.getMaxIndex() > dagger.getGlobalIndex(x)) {
                 dagger.setGlobalIndex(x, details.getMaxIndex());
@@ -128,24 +116,45 @@ foam.CLASS({
                 replaying.setReplayIndex(details.getMaxIndex());
               }
 
-              // Detect baseline - no data.
-              // Have to check almost all nodes.
-              int online = 0;
-              List<ClusterConfig> nodes = support.getReplayNodes();
-              for ( ClusterConfig cfg : nodes ) {
-                if ( cfg.getStatus() == Status.ONLINE ) online++;
+              if ( replaying.getMaxIndex() > 0 ) {
+                replaying.setMaxIndex(Math.max(details.getMaxIndex(), replaying.getMaxIndex()));
+              } else {
+                replaying.setMaxIndex(details.getMaxIndex());
               }
-              getLogger().debug("test for baseline", "online", online, "nodes", ( nodes.size() - ( support.getNodeQuorum() - 1 ) ), "index", replaying.getIndex(), "replayingIndex", replaying.getReplayIndex());
-              if ( online >= ( nodes.size() - ( support.getNodeQuorum() - 1 ) ) ) {
-                // found enough online nodes, now test if all reporting zero index.
-                if ( replaying.getIndex() >= replaying.getReplayIndex() &&
-                   ( myConfig.getType() == MedusaType.MEDIATOR &&
-                     support.getHasNodeQuorum() ) ||
-                   ( myConfig.getType() == MedusaType.NERF &&
-                     support.getHasMediatorQuorum() ) ) {
-                  getLogger().info("baseline dectected");
-                  ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
-                }
+
+              if ( replaying.getMinIndex() > 0 ) {
+                replaying.setMinIndex(Math.min(details.getMinIndex(), replaying.getMinIndex()));
+              } else {
+                replaying.setMinIndex(details.getMinIndex());
+              }
+
+              Long replayed = 0L;
+              for ( Object o : replaying.getReplayDetails().values() ) {
+                ReplayDetailsCmd detail = (ReplayDetailsCmd) o;
+                replayed += detail.getCount();
+              }
+              replaying.setCount(replayed);
+            }
+
+            // Detect baseline - no data.
+            // Have to check almost all nodes.
+            int online = 0;
+            List<ClusterConfig> nodes = support.getReplayNodes();
+            for ( ClusterConfig cfg : nodes ) {
+              if ( cfg.getStatus() == Status.ONLINE ) online++;
+            }
+            logger.debug("test for baseline", "online", online, "nodes", ( nodes.size() - ( support.getNodeQuorum() - 1 ) ), "index", replaying.getIndex(), "replayingIndex", replaying.getReplayIndex());
+            if ( online >= ( nodes.size() - ( support.getNodeQuorum() - 1 ) ) ) {
+              // found enough online nodes, now test if all reporting zero index.
+              if ( replaying.getIndex() >= replaying.getReplayIndex() &&
+                 ( myConfig.getType() == MedusaType.MEDIATOR &&
+                   support.getHasNodeQuorum() ) ||
+                 ( myConfig.getType() == MedusaType.NERF &&
+                   support.getHasMediatorQuorum() ) ) {
+                logger.info("baseline dectected");
+                replaying.updateIndex(x, dagger.getGlobalIndex(x));
+                replaying.setReplayIndex(replaying.getIndex());
+                ((DAO) x.get("medusaEntryMediatorDAO")).cmd(new ReplayCompleteCmd());
               }
             }
           }
@@ -153,13 +162,12 @@ foam.CLASS({
           if ( details.getMaxIndex() >= minIndex ) {
             ReplayCmd cmd = new ReplayCmd();
             details = (ReplayDetailsCmd) details.fclone();
-            details.setMinIndex(minIndex);
             cmd.setDetails(details);
             cmd.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
-            getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "request", cmd.getDetails());
+            logger.info("ReplayCmd", "request", cmd.getDetails());
             cmd = (ReplayCmd) clientDAO.cmd_(x, cmd);
-            getLogger().info("ReplayCmd", "from", myConfig.getId(), "to", config.getId(), "response");
+            logger.info("ReplayCmd", "response", cmd.getDetails());
           }
         }
       }
@@ -169,29 +177,32 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
+      final Logger logger = Loggers.logger(x, this, "cmd");
       if ( obj instanceof ReplayRequestCmd ) {
-        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-        ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
+        ((OMLogger) x.get("OMLogger")).log(obj.getClass().getSimpleName());
+        final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        final ReplayRequestCmd cmd = (ReplayRequestCmd) obj;
 
-        getLogger().info("ReplayRequestCmd", "min", cmd.getDetails().getMinIndex());
+        final List<ClusterConfig> nodes = support.getReplayNodes();
 
-        java.util.List<ClusterConfig> nodes = support.getReplayNodes();
+        Agency agency = (Agency) x.get(support.getThreadPoolName());
         for ( ClusterConfig cfg : nodes ) {
-          ReplayCmd c = new ReplayCmd();
-          ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
-          details.setRequester(myConfig.getId());
-          details.setResponder(cfg.getId());
-          c.setDetails(details);
+          agency.submit(x, new ContextAgent() {
+            public void execute(X x) {
+              ReplayCmd c = new ReplayCmd();
+              ReplayDetailsCmd details = (ReplayDetailsCmd) cmd.getDetails().fclone();
+              details.setRequester(myConfig.getId());
+              details.setResponder(cfg.getId());
+              c.setDetails(details);
+              c.setServiceName("medusaMediatorDAO"); // TODO: configuration
 
-          DAO clientDAO = support.getClientDAO(x, "medusaEntryDAO", myConfig, cfg);
-          // clientDAO = new RetryClientSinkDAO.Builder(x)
-          //   .setName("medusaEntryDAO")
-          //   .setDelegate(clientDAO)
-          //   .setMaxRetryAttempts(support.getMaxRetryAttempts())
-          //   .setMaxRetryDelay(support.getMaxRetryDelay())
-          //   .build();
-          clientDAO.cmd_(x, c);
+              DAO clientDAO = support.getClientDAO(x, "medusaNodeDAO", myConfig, cfg);
+              logger.info("ReplayRequestCmd", "request", c);
+              c = (ReplayCmd) clientDAO.cmd_(x, c);
+              logger.info("ReplayRequestCmd", "response", c);
+            }
+          }, this.getClass().getSimpleName());
         }
         return obj;
       }

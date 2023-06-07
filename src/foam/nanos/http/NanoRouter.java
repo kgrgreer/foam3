@@ -7,10 +7,7 @@
 package foam.nanos.http;
 
 import foam.box.Skeleton;
-import foam.core.ContextAware;
-import foam.core.Detachable;
-import foam.core.X;
-import foam.core.XFactory;
+import foam.core.*;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
@@ -71,7 +68,6 @@ public class NanoRouter
     String   path       = req.getRequestURI();
     String[] urlParams  = path.split("/");
     String   serviceKey = urlParams[2];
-    Object   service    = getX().get(serviceKey);
     NSpec    spec       = (NSpec) nSpecDAO_.find(serviceKey);
 
     foam.core.ClassInfoImpl clsInfo = new foam.core.ClassInfoImpl();
@@ -90,7 +86,8 @@ public class NanoRouter
     // enable xss filtering to allow browser to sanitize page if xss attack is detected
     resp.setHeader("X-XSS-Protection", "1");
     // protect against clickjacking attacks
-    resp.setHeader("X-Frame-Options", "SAMEORIGIN");
+    // replaced by CSP frame-ancestors
+    // resp.setHeader("X-Frame-Options", "SAMEORIGIN");
 
     try {
       if ( spec == null ) {
@@ -104,6 +101,10 @@ public class NanoRouter
         return;
       }
 
+      // XLocator could be used by the factory of transient properties during
+      // replay of DAO services.
+      XLocator.set(getX());
+      Object   service   = getX().get(serviceKey);
       WebAgent agent     = getWebAgent(spec, service);
       if ( agent == null ) {
         System.err.println("No service found for: " + serviceKey);
@@ -131,6 +132,7 @@ public class NanoRouter
       t.printStackTrace();
       throw t;
     } finally {
+      XLocator.set(null);
       if ( ! serviceKey.equals("static") ) pm.log(x_);
     }
   }

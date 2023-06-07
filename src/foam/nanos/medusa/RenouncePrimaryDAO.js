@@ -24,9 +24,9 @@ foam.CLASS({
     'foam.core.Agency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.*',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.util.ArrayList',
@@ -87,15 +87,8 @@ foam.CLASS({
            old.getStatus() == Status.ONLINE &&
            old.getIsPrimary() &&
            electoralService.getState() == ElectoralServiceState.IN_SESSION ) {
-
-        // generate an alarm
-        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
-          .setName(ALARM_NAME)
-          .setIsActive(true)
-          .setReason(AlarmReason.MANUAL)
-          .setNote(myConfig.getId())
-          .setClusterable(false)
-          .build());
+        EventRecord er = new EventRecord(x, "Medusa", ALARM_NAME, null, LogLevel.WARN, null);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         // block - see ReplayingDAO - will block on OFFLINE and Primary
         // replaying.setIsReplaying(true);
@@ -137,14 +130,9 @@ foam.CLASS({
 
         // unblock - ReplayingDAO will unblock when OFFLINE and not primary
         // replaying.setIsReplaying(false);
-
-        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
-          .setName(ALARM_NAME)
-          .setIsActive(false)
-          .setReason(AlarmReason.MANUAL)
-          .setNote(myConfig.getId())
-          .setClusterable(false)
-          .build());
+        er = new EventRecord(x, "Medusa", ALARM_NAME);
+        er.setClusterable(false);
+        ((DAO) x.get("eventRecordDAO")).put(er);
 
         if ( support.getShutdown() ) {
           Agency agency = (Agency) x.get(support.getThreadPoolName());

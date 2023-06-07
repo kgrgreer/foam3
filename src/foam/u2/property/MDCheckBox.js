@@ -20,7 +20,7 @@ foam.CLASS({
       transition: background-color 140ms, border-color 140ms;
     }
     ^:checked {
-      background-color: /*%BLACK%*/ #1e1f21;
+      background-color: $black;
     }
     ^ .label {
       // WHY DOESN"T WORK?
@@ -32,18 +32,24 @@ foam.CLASS({
 
    methods: [
     function render() {
-    this.SUPER();
-      this.setAttribute('type', 'checkbox');
-      this.addClass()
-        .on('click', function() {
-           if ( this.getAttribute('disabled') ) return;
-           this.data = ! this.data;
-         }.bind(this));
+      this.SUPER();
+        this.setAttribute('type', 'checkbox');
+        this.addClass()
+          .on('click', function() {
+             if ( this.getAttribute('disabled') ) return;
+             this.data = ! this.data;
+           }.bind(this));
 
-      this.start()
-        .addClass('label')
-        .add(this.label$)
-      .end();
+        this.start()
+          .addClass('label')
+          .add(this.label)
+        .end();
     },
+
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      this.label = p.label;
+    }
   ]
 });

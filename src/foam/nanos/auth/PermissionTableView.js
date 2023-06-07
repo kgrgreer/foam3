@@ -16,7 +16,6 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'foam.graphics.Label',
     'foam.graphics.ScrollCView',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.GroupPermissionJunction',
@@ -32,12 +31,13 @@ foam.CLASS({
   ],
 
   constants: {
-    ROWS: 26
+    COLS: 26,
+    ROWS: 19
   },
 
   css: `
     ^ thead th {
-      background: white;
+      background:$white;
       padding: 0;
       text-align: center;
     }
@@ -52,7 +52,7 @@ foam.CLASS({
        height: 150px;
      }
 
-    ^ tbody tr { background: white; }
+    ^ tbody tr { background:$white; }
 
     ^ .foam-u2-md-CheckBox {
       margin: 1px;
@@ -63,8 +63,8 @@ foam.CLASS({
       background: #FFCCCC;
     }
 
-    ^ tbody tr:hover, ^hovered {
-      background: #ccc;
+    ^hovered {
+      background: #ccc !important;
     }
 
     ^ table {
@@ -75,13 +75,13 @@ foam.CLASS({
 
     ^header {
       box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-      background: white;
+      background:$white;
       padding: 8px;
       margin: 8px 0;
     }
 
     ^ .permissionHeader {
-      background: white;
+      background:$white;
       color: #444;
       text-align: left;
       padding-left: 6px;
@@ -95,13 +95,22 @@ foam.CLASS({
     ^ thead th {
       position: sticky;
       top: 0;
-    } 
-    
+    }
+
     ^ tbody td:first-child, ^ thead th:first-child {
       position: sticky;
       left: 0;
       z-index: 2;
     }
+
+    ^groupLabel {
+      font-weight: normal;
+      padding-top: 4px;
+      writing-mode: vertical-lr;
+      white-space: nowrap;
+      background: white;
+    }
+
   `,
 
   properties: [
@@ -118,17 +127,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'groupQuery',
+      name: 'gQuery',
+      postSet: function() { this.gSkip = 0; },
       view: {
         class: 'foam.u2.TextField',
         type: 'Search',
         placeholder: 'Group Search',
         onKey: true
       }
-    },
-    {
-      name: 'selectedGroup',
-      documentation: 'Array for managing checkbox value on groups filter'
     },
     {
       name: 'columns_',
@@ -155,9 +161,15 @@ foam.CLASS({
       class: 'Int',
       name: 'skip'
     },
+    {
+      class: 'Int',
+      name: 'gSkip',
+      preSet: function(_, skip) { if ( skip === undefined || skip === null ) debugger; return skip || 0; }
+    },
     'ps', /* permissions array */
     'gs', /* groups array */
     'currentGroup',
+    'currentPermission',
     {
       name: 'filteredPs',
       expression: function(ps, query) {
@@ -172,12 +184,27 @@ foam.CLASS({
       expression: function(filteredPs) {
         return filteredPs.length;
       }
+    },
+    {
+      name: 'filteredGs',
+      expression: function(gs, gQuery) {
+        gQuery = gQuery.trim();
+        return gs.filter(function(g) {
+          return gQuery == '' || g.id.indexOf(gQuery) != -1;
+        });
+      }
+    },
+    {
+      name: 'filteredCols',
+      expression: function(filteredGs) {
+        return filteredGs.length;
+      }
     }
   ],
 
   methods: [
-    async function initMatrix() {
-      var ps   = this.filteredPs, gs = this.gs;
+    async function matrix() {
+      var ps   = this.filteredPs, gs = this.filteredPs;
       var self = this;
       var perms = await this.groupPermissionJunctionDAO.select();
       perms.array.forEach(perm => {
@@ -197,83 +224,107 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
+        .style({
+          'padding-left':  '16px',
+          'padding-top':   '0',
+          'padding-right': '16px',
+        })
+
         .start()
-          .style({
-            'padding-left':  '16px',
-            'padding-top':   '16px',
-            'padding-right': '16px',
-          })
-          .start()
-            .addClass(this.myClass('header'))
-            .start('span')
-              .style({
-                'padding': '8px'
-              })
-              .add('Permission Matrix')
-            .end()
-            .add(this.GROUP_QUERY, ' ', this.QUERY)
+          .addClass(this.myClass('header'))
+          .start('span')
+            .style({padding: '8px'})
+            .add('Permission Matrix')
           .end()
-          .start()
-            .addClass(this.myClass('table-wrapper'))
-              .start('table')
-              .style({ 'width': '100%', 'flex': '1' })
-              .on('wheel', this.onWheel, {passive: true})
-              .start('thead')
-                .start('tr')
-                  .start('th')
-                    .attrs({colspan:1000})
-                    .style({textAlign: 'left', padding: '8px', fontWeight: 400})
-                    .add(gs.length, ' groups, ', ps.length, ' permissions', self.filteredRows$.map(function(rows) { return rows == ps.length ?  '' : (', ' + rows + ' selected'); }))
-                    .start()
-                      .style({float: 'right'})
-                      .add('⋮')
-                    .end()
-                  .end()
-                .end()
-                .start('tr')
-                  .start('th').style({minWidth: '510px'}).end()
-                  .call(function() { self.initTableColumns.call(this, gs, self); })
-                .end()
-              .end()
-              .add(this.slot(function(skip, filteredPs) {
-                var count = 0;
-                return self.E('tbody').forEach(filteredPs, function(p) {
-                  if ( count > self.skip + self.ROWS ) return;
-                  if ( count < self.skip ) { count++; return; }
-                  count++;
-                  this.start('tr')
-                    .start('td')
-                      .addClass('permissionHeader')
-                      .attrs({title: p.description})
-                      .add(p.id)
-                    .end()
-                    .forEach(gs, function(g) {
-                      this.start('td')
-                        .show(self.groupQuery$.map(function(q) {
-                          return q == '' || g.id.indexOf(q) != -1;
-                        }))
-                        .on('mouseover', function() { self.currentGroup = g; })
-                        .on('mouseout', function() { if ( self.currentGroup === g ) self.currentGroup = ''; })
-                        .enableClass(self.myClass('hovered'), self.currentGroup$.map(function(cg) { return cg === g; } ))
-                        .attrs({title: g.id + ' : ' + p.id})
-                        .tag(self.createCheckBox(p, g))
-                      .end();
-                    })
-                  .end();
-                });
-              }))
-            .end()
-            .start(self.ScrollCView.create({
-              value$: self.skip$,
-              extent: self.ROWS,
-              height: self.ROWS*21,
-              width: 26,
-              size$: self.filteredRows$.map(function(m){return m-1;})
-            }))
-              .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
-            .end()
+          .add(this.G_QUERY, ' ', this.QUERY)
+        .end()
+
+        .add(this.slot(this.table))
+
+        .start('div')
+          .start(self.ScrollCView.create({
+            value$:   self.gSkip$,
+            extent$:  self.filteredCols$.map(m => Math.min(self.COLS, m)),
+            width$:   self.filteredCols$.map(m => m * 26),
+            vertical: false,
+            height:   26,
+            size$:    self.filteredCols$
+          }))
           .end()
+          .style({float: 'right', 'padding-right': '26px'})
         .end();
+    },
+
+    function table(filteredPs, filteredGs, gSkip) {
+      var ps   = filteredPs, gs = filteredGs;
+      var self = this;
+
+      return this.E().start()
+        .addClass(this.myClass('table-wrapper'))
+        .start('table')
+          .style({ 'width': '100%', 'flex': '1' })
+          .on('wheel', this.onWheel, {passive: true})
+          .start('thead')
+            .start('tr')
+              .start('th')
+                .attrs({colspan:1000})
+                .style({'text-align': 'left', padding: '8px', 'font-weight': 400})
+                .call(self.count, [self])
+              .end()
+            .end()
+            .start('tr')
+              .start('th')
+                .style({minWidth: '510px'})
+              .end()
+              .call(function() { self.tableColumns.call(this, gs, self); })
+            .end()
+          .end()
+          .add(this.slot(this.tableBody))
+        .end()
+        .start(self.ScrollCView.create({
+          value$: self.skip$,
+          extent: self.ROWS,
+          height: self.ROWS*25,
+          width: 26,
+          size$: self.filteredRows$.map(function(m){return m-1;})
+        }))
+          .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
+        .end()
+      .end();
+    },
+
+    function tableBody(skip, gSkip, filteredPs) {
+      var ps   = this.filteredPs, gs = this.filteredGs.slice(gSkip, gSkip+this.COLS);
+      var self = this, count = 0;
+      return self.E('tbody').forEach(filteredPs, function(p) {
+        if ( count >= skip + self.ROWS ) return;
+        if ( count++ < skip ) return;
+        this.start('tr')
+          .start('td')
+            .enableClass(self.myClass('hovered'), self.currentPermission$.map(function(cp) { return cp === p; } ))
+            .addClass('permissionHeader')
+            .attrs({title: p.description})
+            .style({width: '600px', 'max-width': '600px', overflow: 'auto'})
+            .add(p.id)
+          .end()
+          .forEach(gs, function(g) {
+            this.start('td')
+              .on('mouseover', function() { self.currentGroup = g; self.currentPermission = p; })
+              // removed mouseout because it just caused flicker
+              .enableClass(self.myClass('hovered'), self.slot(function(currentGroup, currentPermission) { return currentGroup == g || currentPermission == p; }))
+//              .attrs({title: g.id + ' : ' + p.id}) // Not needed becasue with scrollbars, col&row labels are always visible
+              .tag(self.createCheckBox(p, g))
+            .end();
+          })
+        .end();
+      });
+    },
+
+    function count(self) {
+      var msg = self.filteredRows + ' of ' + self.ps.length + ' permissions, ';
+      msg += self.filteredCols + ' of ' + self.gs.length + ' groups';
+
+      this.add(msg);
     },
 
     // * -> null, foo.bar -> foo.*, foo.* -> *
@@ -334,9 +385,9 @@ foam.CLASS({
         if ( parent ) {
           function update() {
             if ( parent.granted ) {
-              data.impliedByGroups[parent.id] = true;
+              data.impliedByGroups[a.id] = true;
             } else {
-              delete data.impliedByGroups[parent.id];
+              delete data.impliedByGroups[a.id];
             }
             data.impliedByGroup = !! Object.keys(data.impliedByGroups).length;
           }
@@ -358,32 +409,16 @@ foam.CLASS({
       };
     },
 
-    function initTableColumns(gs, matrix) {
+    function tableColumns(gs, matrix) {
+      gs = gs.slice(matrix.gSkip, matrix.gSkip+matrix.COLS);
       var self = this;
       this.forEach(gs, function(g) {
-        this.start('th')
-          .show(matrix.groupQuery$.map(function(q) {
-            return q == '' || g.id.indexOf(q) != -1;
-          }))
+        this.start('td')
+          .style({'white-space': 'pre'})
           .attrs({title: g.description})
-          .call(function() {
-            var cv = foam.graphics.Box.create({
-              color$: matrix.currentGroup$.map(function(cg) { return cg === g ? '#ccc' : 'white'; }),
-              autoRepaint: true,
-              width: 20,
-              height: 200});
-            var l = foam.graphics.Label.create({
-              text: g.id,
-              x: 25,
-              y: 8,
-              color: 'black',
-              font: '300 16px Helvetica',
-              width: 200,
-              height: 20,
-              rotation: -Math.PI/2});
-            cv.add(l);
-            this.add(cv);
-          })
+          .addClass(matrix.myClass('groupLabel'))
+          .enableClass(matrix.myClass('hovered'), matrix.currentGroup$.map(function(cg) { return cg === g; } ))
+          .add(g.displayName_)
         .end();
       });
     },
@@ -393,16 +428,31 @@ foam.CLASS({
       var self = this;
 
       this.groupDAO.orderBy(this.Group.ID).select().then(function(gs) {
-        for ( var i = 0 ; i < gs.array.length ; i++ ) {
-          self.gMap[gs.array[i].id] = gs.array[i];
+        gs = gs.array;
+
+        var gs2 = [];
+        function findChildren(parent, prefix) {
+          for ( var i = 0 ; i < gs.length ; i ++ ) {
+            var g = gs[i];
+            if ( g.parent === parent ) {
+              gs2.push(g);
+              g.displayName_ = prefix ? prefix + '┌ ' + g.id : g.id;
+              findChildren(g.id, prefix + '   ');
+            }
+          }
+        }
+        findChildren('', '');
+        gs = gs2;
+        for ( var i = 0 ; i < gs.length ; i++ ) {
+          self.gMap[gs[i].id] = gs[i];
         }
         self.permissionDAO.orderBy(self.Permission.ID).select().then(function(ps) {
           for ( var i = 0 ; i < ps.array.length ; i++ ) {
             self.pMap[ps.array[i].id] = ps.array[i];
           }
-          self.gs = gs.array;
+          self.gs = gs;
           self.ps = ps.array;
-          self.initMatrix();
+          self.matrix();
         })
       });
     },
@@ -426,11 +476,15 @@ foam.CLASS({
       name: 'onWheel',
       isFramed: true,
       code: function(e) {
-        var negative = e.deltaY < 0;
-        // Convert to rows, rounding up. (Therefore minumum 1.)
-        var rows = Math.ceil(Math.abs(e.deltaY) / 40);
-        this.skip = Math.max(0, this.skip + (negative ? -rows : rows));
-        if ( e.deltaY !== 0 ) e.preventDefault();
+        function process(skip, delta) {
+          var negative = delta < 0;
+          // Convert to rows, rounding up. (Therefore minumum 1.)
+          var num = Math.ceil(Math.abs(delta) / 40);
+          return Math.max(0, skip + (negative ? -num : num));
+        }
+        this.skip  = process(this.skip,  e.deltaY);
+        this.gSkip = process(this.gSkip, e.deltaX);
+        e.preventDefault();
       }
     }
   ],
@@ -480,15 +534,24 @@ foam.CLASS({
         ^implied { color: gray }
       `,
       methods: [
+        function init() {
+          // TODO: setting the tooltip doesn't work from render() in U2, but does in U3
+          if ( this.data.impliedByGroup ) {
+            this.tooltip = "Implied by " + Object.keys(this.data.impliedByGroups).join(', ');
+          }
+        },
         function render() {
           this.SUPER();
           this.
             addClass(this.myClass()).
-            style({width: '18px', height: '18px'}).
+            style({height: '18px'}).
             enableClass(this.myClass('implied'), this.data.checked$, true).
             enableClass(this.myClass('checked'), this.data.checked$).
-            add(this.slot(function(data$granted) {
-              return data$granted ? '✓' : '';
+            add(this.slot(function(data$granted, data$implied, data$impliedByGroup) {
+              if ( ! data$granted      ) return '';
+              if ( data$impliedByGroup ) return '←';
+              if ( data$implied        ) return '↑';
+              return '✓';
             })).
             on('click', this.onClick);
         }

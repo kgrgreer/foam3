@@ -139,11 +139,14 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      // deprecated - not needed with MedusaHealth heartbeat
+      name: 'location',
+      class: 'String'
+    },
+    {
+      documentation: 'used by info web agent for external monitoring',
       name: 'replayingInfo',
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.ReplayingInfo',
-      visibility: 'RO',
       storageTransient: true
     },
     {
@@ -160,6 +163,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -177,6 +181,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -193,7 +198,8 @@ foam.CLASS({
       class: 'DateTime',
       visibility: 'RO',
       tableWidth: 150,
-      storageOptional: true
+      storageOptional: true,
+      javaCompare: 'return 0;'
     },
     {
       documentation: `The id of the user who created the transaction.`,
@@ -202,6 +208,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -218,6 +226,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       storageOptional: true,
+      javaCompare: 'return 0;',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -227,24 +237,6 @@ foam.CLASS({
           }
         }.bind(this));
       }
-    },
-    {
-      // deprecated - replaced by heartbeat
-      name: 'version',
-      class: 'String',
-      javaFactory: `
-    String version = this.getClass().getPackage().getImplementationVersion();
-    String revision = this.getClass().getPackage().getSpecificationVersion();
-    StringBuilder sb = new StringBuilder();
-    sb.append(version);
-    if ( ! foam.util.SafetyUtil.isEmpty(revision) &&
-         revision.length() > 2 ) {
-      sb.append("-"+revision.substring(0, 3));
-    }
-    return sb.toString();
-      `,
-      storageTransient: true,
-      clusterTransient: true
     }
   ]
 });

@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    /* Still show outline when focused as read-only to help accessibility *
+    /* Still show outline when focused as read-only to help accessibility */
     ^:read-only:focus { outline: 1px solid rgb(238, 238, 238); }
   `,
 
@@ -68,12 +68,13 @@ foam.CLASS({
     'placeholder',
     'ariaLabel',
     [ 'autocomplete', true ],
+    'inputMode', // Allows a browser to display an appropriate virtual keyboard
     {
       name: 'choices',
-      documentation: 'Array of [value, text] choices. You can pass in just ' +
-          'an array of strings, which are expanded to [str, str]. Can also ' +
-          'be a map, which results in [key, value] pairs listed in ' +
-          'enumeration order.',
+      documentation: `Array of [value, text] choices. You can pass in just
+          an array of strings, which are expanded to [str, str]. Can also
+          be a map, which results in [key, value] pairs listed in
+          enumeration order.`,
       factory: function() { return []; },
       adapt: function(old, nu) {
         if ( typeof nu === 'object' && ! Array.isArray(nu) ) {
@@ -108,11 +109,12 @@ foam.CLASS({
       var self = this;
 
       if ( this.size          ) this.setAttribute('size',        this.size);
-      if ( this.type          ) this.setAttribute('type',        this.type);
+      if ( this.type          ) this.setAttribute('type',        this.type$);
       if ( this.placeholder   ) this.setAttribute('placeholder', this.placeholder);
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
       if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
+      if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode);
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').
@@ -146,8 +148,7 @@ foam.CLASS({
       this.SUPER(p);
 
       if ( ! this.hasOwnProperty('onKey') ) {
-        if ( p.hasOwnProperty('onKey') ) this.onKey = p.onKey;
-        else this.onKey = p.validateObj;
+        this.onKey = p.hasOwnProperty('onKey') ? p.onKey : p.validateObj;
       }
       if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;

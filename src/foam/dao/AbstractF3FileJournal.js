@@ -26,20 +26,38 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.StdoutLogger',
+    'foam.nanos.om.OMLogger',
+    'foam.nanos.pm.PM',
+    'foam.util.SafetyUtil',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
+    'java.io.File',
+    'java.io.IOException',
     'java.io.InputStream',
     'java.io.InputStreamReader',
+    'java.io.FileInputStream',
+    'java.io.FileOutputStream',
     'java.io.OutputStream',
     'java.io.OutputStreamWriter',
+    'java.nio.file.Files',
+    'java.nio.file.Path',
+    'java.nio.file.StandardCopyOption',
+    'java.nio.file.StandardOpenOption',
+    'java.time.format.DateTimeFormatter',
+    'java.time.LocalDateTime',
     'java.util.Calendar',
     'java.util.Iterator',
     'java.util.List',
+    'java.util.Set',
     'java.util.regex.Pattern',
-    'java.util.TimeZone'
+    'java.util.TimeZone',
+    'java.util.stream.Collectors',
+    'java.util.stream.Stream'
   ],
 
   javaCode: `
@@ -150,7 +168,7 @@ foam.CLASS({
       javaType: 'java.io.BufferedReader',
       javaGetter: `
 try {
-  InputStream is = getX().get(foam.nanos.fs.Storage.class).getInputStream(getFilename());
+  InputStream is = getX().get(Storage.class).getInputStream(getFilename());
   if ( is == null ) {
     getLogger().warning("File not found", "for reading", getFilename());
     return null;
@@ -169,7 +187,7 @@ try {
       javaType: 'java.io.BufferedWriter',
       javaFactory: `
 try {
-  OutputStream os = getX().get(foam.nanos.fs.Storage.class).getOutputStream(getFilename());
+  OutputStream os = getX().get(Storage.class).getOutputStream(getFilename());
   if ( os == null ) {
     getLogger().warning("File not found", "for writing", getFilename());
     return null;
@@ -235,7 +253,7 @@ try {
                 x,
                 fmt.builder(),
                 getMultiLineOutput() ? "\\n" : "",
-                foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
+                SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
               if ( isLast ) getWriter().flush();
             } catch (Throwable t) {
               getLogger().error("Failed to write put", getFilename(), of.getId(), "id", id, t);
@@ -255,6 +273,7 @@ try {
       ],
       args: [ 'Context x', 'CharSequence record', 'String c', 'String prefix' ],
       javaCode: `
+      PM pm = PM.create(x, "FileJournal", "write");
       BufferedWriter writer = getWriter();
       writer.write(prefix);
       writer.write("p(");
@@ -262,6 +281,7 @@ try {
       writer.write(')');
       writer.write(c);
       writer.newLine();
+      pm.log(x);
       `
     },
     {
@@ -299,7 +319,7 @@ try {
 
           try {
             writeComment_(x, obj);
-            writeRemove_(x, fmt.builder(), foam.util.SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
+            writeRemove_(x, fmt.builder(), SafetyUtil.isEmpty(prefix) ? "" : prefix + ".");
 
             if ( isLast ) getWriter().flush();
           } catch (Throwable t) {
@@ -404,9 +424,12 @@ try {
         ((StringPStream) ps).setString(line);
         x.set("X", ( getX() == null ) ? new ProxyX() : getX());
 
-        ErrorReportingPStream eps = new ErrorReportingPStream(ps);
-        ps = eps.apply(parser, x);
-        return eps.getMessage();
+        ErrorReportingPStream erpst = new ErrorReportingPStream(ps);
+        ErrorReportingPStreamFactory factory = new ErrorReportingPStreamFactory(erpst, getFilename());
+        factory.create(getX());
+
+        ps = factory.apply(parser, x);
+        return factory.getMessage();
       `
     },
     {
@@ -458,6 +481,116 @@ try {
         System.err.println(msg);
         throw e;
       }
+      `
+    },
+    {
+      documentation: 'Backup/rename existing file with the next sequence number. New writes to new empty file.  NOTE: relies on upstream logic to block/pause io to journal',
+      name: 'roll',
+      args: 'X x',
+      type: 'String',
+      javaCode: `
+      Logger logger = Loggers.logger(x, this);
+      String filename = getFilename();
+      logger.info("roll", filename);
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "roll");
+      try {
+        getWriter().flush();
+        getWriter().close();
+        AbstractF3FileJournal.WRITER.clear(this);
+
+        // set filename to something that will fail file reading/writing.
+        setFilename(null);
+
+        // NOTE: java File rename or move under Linux does not
+        // allow for swapping files.  When file A is renamed to B,
+        // just the inode is updated, the file is unchanged,
+        // and the VM file operations continue to act against
+        // the original inode.
+        // Employing copy and truncate as an alternative.
+
+        File existing = x.get(Storage.class).get(filename);
+        String backup = filename + "." + nextSuffix(x, filename);
+        File copy = x.get(Storage.class).get(backup);
+
+        // Copy - faster than Files.copy (apparently)
+        try (
+          InputStream is = new FileInputStream(existing);
+          OutputStream os = new FileOutputStream(copy);
+        ) {
+          byte[] buffer = new byte[4096];
+          int length =0;
+          while ( (length = is.read(buffer)) > 0 ) {
+            os.write(buffer, 0, length);
+          }
+        }
+        // truncate original
+        Files.write(existing.toPath(), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+
+        setFilename(filename);
+        AbstractF3FileJournal.WRITER.clear(this);
+
+        pm.log(x);
+        return backup;
+      } catch (IOException e) {
+        logger.error("roll", filename, e);
+        pm.error(x, e);
+        throw new RuntimeException(e.getMessage());
+      }
+      `
+    },
+    {
+      name: 'nextSuffix',
+      args: 'X x, String filename',
+      type: 'Long',
+      javaThrows: ['java.io.IOException'],
+      javaCode: `
+        long suffix = 0;
+        Set<String> names = Stream.of(x.get(Storage.class).get(filename).getParentFile().listFiles())
+          .filter(file -> !file.isDirectory())
+          .filter(file -> file.getName().startsWith(filename))
+          .map(File::getName)
+          .sorted()
+          .collect(Collectors.toSet());
+        for ( String name : names ) {
+          int p = name.lastIndexOf(".");
+          if ( p == filename.length() ) {
+            try {
+              long s = Long.parseLong(name.substring(p+1));
+              if ( s > suffix ) {
+                suffix = s;
+              }
+            } catch (NumberFormatException e) {
+              Loggers.logger(x, this).debug("nextSuffix", name, e.getMessage());
+            }
+          }
+        }
+        suffix += 1;
+        return suffix;
+      `
+    },
+    {
+      name: 'cmd',
+      args: 'X x, Object obj',
+      type: 'Object',
+      javaCode: `
+      if ( obj != null &&
+           obj instanceof FileRollCmd ) {
+        FileRollCmd cmd = (FileRollCmd) obj;
+        // DAOs have to explicitly pass cmd to Journals, so common
+        // for loops. Test if already handled.
+        if ( SafetyUtil.isEmpty(cmd.getRolledFilename()) &&
+             SafetyUtil.isEmpty(cmd.getError()) ) {
+          try {
+            cmd.setRolledFilename(roll(x));
+            ((foam.nanos.logger.Logger) x.get("logger")).info(this.getClass().getSimpleName(), "cmd", "FileRollCmd", cmd.getRolledFilename());
+          } catch (Throwable t) {
+            cmd.setError(t.getMessage());
+          }
+        }
+        return cmd;
+      }
+      // retain behaviour of AbstractDAO returning null to indicate not handled.
+      return null;
       `
     }
   ]

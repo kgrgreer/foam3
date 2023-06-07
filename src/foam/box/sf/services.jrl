@@ -1,0 +1,118 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sfManager",
+  "lazy": false,
+  "service": {
+    "class": "foam.box.sf.SFManager"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"internalSFDAO",
+  "description": "A read-only database of SF.",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(false)
+      .setReadOnly(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("storeAndForwards")
+      .setOf(foam.box.sf.SF.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.box.sf.SF"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sfMonitorDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.box.sf.SFMonitor.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.box.sf.SFMonitorDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFMonitor.getOwnClassInfo()))
+      .build())
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.box.sf.SFMonitor"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sfBroadcastReceiverDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.box.sf.SFEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.nanos.medusa.sf.SFBroadcastReceiverDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFEntry.getOwnClassInfo()))
+      .build())
+      .build();
+   `
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sfTestObjectDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("sftestobjects")
+      .setSAF(true)
+      .setFuid(true)
+      .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
+      .build();
+    `,
+  "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"demoHttpSinkUsingAtime",
+  "description": "A demo http sink for SFSink",
+  "serviceScript":
+  """
+    return new foam.dao.HTTPSink(
+      "http://localhost:7777/",
+      null,
+      foam.nanos.http.Format.JSON,
+      new foam.lib.AndPropertyPredicate(
+        x,
+        new foam.lib.PropertyPredicate[] {
+          new foam.lib.ExternalPropertyPredicate(),
+          new foam.lib.NetworkPropertyPredicate(),
+          new foam.lib.PermissionedPropertyPredicate()
+        }
+      ),
+      false
+    );
+  """
+})

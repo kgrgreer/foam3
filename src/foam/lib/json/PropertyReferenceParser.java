@@ -70,30 +70,23 @@ public class PropertyReferenceParser
       String classId = (String) x.get("forClass_");
       String propName = (String) x.get("name");
 
-      Class cls;
       try {
-        cls = Class.forName(classId);
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      }
+        Class cls = Class.forName(classId);
 
-      // TODO(adamvy): Use the context to resolve the class rather than reflection
-      // TODO(adamvy): Better handle errors.
+        // TODO(adamvy): Use the context to resolve the class rather than reflection
+        // TODO(adamvy): Better handle errors.
 
-      ClassInfo info;
-      try {
-        info = (ClassInfo) cls.getMethod("getOwnClassInfo").invoke(null);
+        ClassInfo info = (ClassInfo) cls.getMethod("getOwnClassInfo").invoke(null);
+
+        Object axiom = info.getAxiomByName(propName);
+        if ( axiom == null ) {
+          System.err.println("Unknown Property Reference: " + classId + "." + propName);
+        }
+        return ps.setValue(axiom);
       } catch (Exception e) {
+        x.set("error", e);
         throw new RuntimeException(e);
       }
-
-      Object axiom = info.getAxiomByName(propName);
-
-      if ( axiom == null ) {
-        System.err.println("Unknown Property Reference: " + classId + "." + propName);
-      }
-
-      return ps.setValue(axiom);
     }
 
     return ps;

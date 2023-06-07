@@ -29,10 +29,9 @@ foam.CLASS({
 
   css: `
     ^ { padding: 10px; }
-    ^ .error { border: 2px solid red; }
     ^title { font-size: 1.8rem; }
-    ^title, ^ button, ^ input, ^ select {
-      width: 160px; height: 28px; margin: 8px 0; display: flex;
+    ^title, ^ button, ^ input,  ^ select {
+      width: 210px; height: 28px; margin-top: 16px; display: flex;
     }
   `,
 
@@ -40,6 +39,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isReturn',
+      label: '',
       value: true,
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -52,6 +52,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'departDate',
+      label: '',
       factory: function() { return new Date(Date.now()+3600000*24); },
       validateObj: function(departDate) {
         var today = new Date();
@@ -62,6 +63,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'returnDate',
+      label: '',
       factory: function() { return new Date(Date.now()+2*3600000*24); },
       visibility: function(isReturn) {
         return isReturn ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -78,9 +80,9 @@ foam.CLASS({
       this.
         addClass(this.myClass()).
         start('div').addClass(this.myClass('title')).add('Book Flight').end().
-        add(this.IS_RETURN).
-        add(this.DEPART_DATE).
-        add(this.RETURN_DATE).
+        add(this.IS_RETURN.__).
+        add(this.DEPART_DATE.__).
+        add(this.RETURN_DATE.__).
         add(this.BOOK);
     }
   ],

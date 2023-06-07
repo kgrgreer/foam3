@@ -13,6 +13,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  mixins: ['foam.u2.memento.Memorable'],
+
   requires: [
     'foam.core.SimpleSlot',
     'foam.comics.v2.DAOControllerConfig',
@@ -108,25 +110,38 @@ foam.CLASS({
     {
       name: 'order'
     },
-    //TODO: CLEAN UP ALL THESE COLUMN PROPS...
     {
       name: 'columns_',
+      documentation: `Internal prop used by the table view to render the columns,
+        should always have the current table columns`,
       factory: function() { return []; }
     },
     {
       name: 'allColumns',
+      documentation: `Array that stores all properties and actions defined
+        in the model and filters out any the user does not have permission to access
+        Should be accessed through the 'columns' prop instead of being used directly`
     },
     {
       name: 'selectedColumnNames',
-      expression: function(columns, of, memento) {
-        var ls = memento && memento.head.length != 0 ?
-          memento.head.split(',').map(c => this.returnMementoColumnNameDisregardSorting(c)) :
-          JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
+      documentation: `Property responsible for deciding what columns to use when tableView is rendered
+        Order of precedece: Memento -> localStorage -> default cols.
+        Gets updated when 'columns' changes and tries to fetch the latest value from localStorage.
+        Can also be set by any column config view to change the current columns loaded by the table`,
+      memorable: true,
+      expression: function(columns, of) {
+        var ls = JSON.parse(localStorage.getItem(of.id))?.map(c => foam.Array.isInstance(c) ? c[0] : c)
         return ls || columns;
+      },
+      adapt: function(_,n) {
+        return foam.Array.isInstance(n) ? n : n.split(',');
       }
     },
     {
       name: 'selectedColumnsWidth',
+      documentation: `Manages preferred column widths for a user, responsible for
+        grabbing widths from LS and passing them to table columns. Updating column
+        widths here should propogate changes to the rest of the view and LS`,
       factory: function() {
         var local = {};
         JSON.parse(localStorage.getItem(this.of.id))?.map(c => {
@@ -141,11 +156,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'colWidthUpdated',
       documentation: `used to trigger/listen to columnWidth changes as they are stored
-        in an object where value cahnges do not trigger slots`
+        in an object where value changes do not trigger slots`
     },
     {
       name: 'columns',
-      expression: function(of, allColumns, isColumnChanged) {
+      documentation:  `Stores an Array of preferred columns defined in the tableColumns
+      axiom on the model, if undefined this acts as an alias for allColumns`,
+      expression: function(of, allColumns) {
         if ( ! of ) return [];
         var tc = of.getAxiomByName('tableColumns');
         return tc ? tc.columns : allColumns;
@@ -271,7 +288,7 @@ foam.CLASS({
       name: 'updateValues',
       class: 'Boolean',
       value: false,
-      documentation: 'If isColumnChanged is changed, columns_ will be updated'
+      documentation: 'If updateValues is changed, rows are re-rendered'
     },
     'currentMemento_',
     {
@@ -286,7 +303,7 @@ foam.CLASS({
       value: undefined,
       expression: function(props) {
         for ( var p of props ) {
-          if ( p.property.tableCellFormatter && ! p.property.cls_.hasOwnProperty('tableCellFormatter') ) {
+          if ( ! p.property.projectionSafe && ! p.property.cls_.hasOwnProperty('tableCellFormatter') ) {
             return false;
           }
           if ( ! foam.lookup(p.property.cls_.id) ) {
@@ -342,22 +359,6 @@ foam.CLASS({
     },
     function updateColumns() {
       this.updateLocalStorage();
-      if ( ! this.memento )
-        return;
-
-      var newMementoColumns = [];
-      for ( var s of this.selectedColumnNames ) {
-        var columns = [];
-        if ( this.memento.head.length != 0 )
-          columns = this.memento.head.split(',');
-        var col = columns.find(c => this.returnMementoColumnNameDisregardSorting(c) === s);
-        if ( ! col ) {
-          newMementoColumns.push(s);
-        } else {
-          newMementoColumns.push(col);
-        }
-      }
-      this.memento.head = newMementoColumns.join(',');
 
       this.isColumnChanged = ! this.isColumnChanged;
     },
@@ -372,80 +373,12 @@ foam.CLASS({
         .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns') ? view.of.getAxiomByName('tableColumns').columns.includes(a) : false)
       );
 
-      this.columns$.sub(this.updateColumns_);
-      this.of$.sub(this.updateColumns_);
       this.editColumnsEnabled$.sub(this.updateColumns_);
       this.selectedColumnNames$.sub(this.updateColumns_);
-      this.allColumns$.sub(this.updateColumns_);
+      this.isColumnChanged$.sub(this.updateColumns_);
       this.updateColumns_();
 
       this.onDetach(this.colWidthUpdated$.sub(this.updateLocalStorage));
-      //set memento's selected columns
-      if ( this.memento ) {
-        if ( this.memento.head.length != 0 ) {
-          var columns = this.memento.head.split(',');
-          for ( var c of columns ) {
-            if ( this.shouldColumnBeSorted(c) && ! c.includes('.')) {
-              var prop = view.props.find(p => p.fullPropertyName === c.substr(0, c.length - 1) );
-              if ( prop ) {
-                if ( c[c.length - 1] === this.DESCENDING_ORDER_CHAR )
-                  this.order = this.DESC(prop.property);
-                else
-                  this.order = prop.property;
-              }
-            }
-          }
-        } else {
-          this.memento.head = this.columns_.map(c => {
-            return this.columnHandler.propertyNamesForColumnArray(c);
-          }).join(',');
-        }
-        if ( ! this.memento.tail ) {
-          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento}, this);
-        }
-        this.currentMemento_= this.memento.tail
-        var nextViewMemento = this.currentMemento_.tail;
-      }
-
-      if ( nextViewMemento && nextViewMemento.head.length != 0 ) {
-        if ( nextViewMemento.head == 'create' ) {
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: 'foam.comics.v2.DAOCreateView',
-              data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
-              config$: this.config$,
-              of: this.data.of
-            }, parent: this.__subContext__.createSubContext({ memento: this.currentMemento_ })
-          }));
-        } else if ( nextViewMemento.tail && nextViewMemento.tail.head ) {
-          var id = nextViewMemento.tail.head;
-          if ( ! foam.core.MultiPartID.isInstance(this.data.of.ID) ) {
-            id = this.data.of.ID.fromString(id);
-          } else {
-            id = this.data.of.ID.of.create();
-            mementoHead = '{' + nextViewMemento.tail.head.replaceAll('=', ':') + '}';
-            var idFromJSON = foam.json.parseString(mementoHead);
-            for ( var key in idFromJSON ) {
-              var axiom = this.data.of.getAxiomByName(key);
-
-              if ( axiom )
-                axiom.set(id, idFromJSON[key]);
-            }
-          }
-          this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
-            if ( ! v ) return;
-            if ( self.state != self.LOADED ) return;
-            this.stack.push(this.StackBlock.create({
-              view: {
-                class: 'foam.comics.v2.DAOSummaryView',
-                data: null,
-                config: this.config,
-                idOfRecord: id
-              }, parent: this.__subContext__.createSubContext({ memento: nextViewMemento })
-            }));
-          });
-        }
-      }
       if ( view.editColumnsEnabled )
         var editColumnView = foam.u2.view.EditColumnsView.create({data:view}, this);
 
@@ -589,9 +522,13 @@ foam.CLASS({
       code: function(obj) {
         var actions = {};
         var actionsMerger = action => { actions[action.name] = action; };
+        if ( obj?.cls_ ) {
+          // Model actions
+          obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
+        } else {
+          console.error('FObject is missing cls_', obj);
+        }
 
-        // Model actions
-        obj.cls_.getAxiomsByClass(foam.core.Action).forEach(actionsMerger);
         // Context menu actions
         this.contextMenuActions.forEach(actionsMerger);
 
@@ -625,17 +562,14 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         if ( ! this.of ) return [];
-        var auth = this.auth;
-        var self = this;
-        var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns || this.allColumns;
+        var cols = this.editColumnsEnabled ? this.selectedColumnNames : this.columns;
+        // Filter out any columns not preset in allColumns since that performs the permission checks before being populated
         Promise.all(this.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(this, cols).map(
           c => foam.Array.isInstance(c) ?
             c :
             [c, null]
-        ).map(c =>{
-          return c;
-        }))
-        .then(columns => this.columns_ = columns.filter(c => c));
+        ))
+        .then(columns => this.columns_ = columns );
       }
     }
   ]

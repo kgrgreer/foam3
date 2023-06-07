@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.u2.stack.Stack'
   ],
 
+  imports: [ 'ctrl' ],
+
   exports: [ 'data as stack' ],
 
   properties: [
@@ -36,40 +38,73 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showActions',
       value: true
-    }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'stackDefault',
+      documentation: 'Default view for the stack, rendered when the stack is empty'
+    },
+    'defaultView_'
   ],
 
-  css: '%CUSTOMCSS%',
+  css: `
+    %CUSTOMCSS%
+    ^pos {
+      height:100%;
+    }
+    ^pos > * {
+      height: 100%;
+    }
+  `,
 
   methods: [
     // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
       this.addClass();
-      this.addClass('foam-u2-stack-StackView');
+      this.addClass('foam-u2-stack-StackView')
+        .enableClass(this.myClass('pos'), this.data.pos$.map(v => v < 0));
 
       if ( this.showActions ) {
         this.start('actions')
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
         .end();
       }
+      this.maybeAddDefault();
+      this.data.pos$.sub(() => { 
+        if ( this.data.pos >= 0 && this.defaultView_) {
+          this.defaultView_.remove();
+          return;
+        }
+        this.maybeAddDefault();
+      });
 
       this.listenStackView();
+    },
+    function maybeAddDefault() {
+      if ( this.data.pos < 0 && this.stackDefault) {
+        this.tag(this.stackDefault, {}, this.defaultView_$);
+      }
     },
     function listenStackView() {
       this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
     },
-    function renderStackView(s) {
+    function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
       var view   = s.view;
       var parent = s.parent;
 
-      var X = this.data.getContextFromParent(parent, this);
-      var v = foam.u2.ViewSpec.createView(view, null, this, X);
-
-      if ( ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/) && X.memento ) {
-        if ( X.memento.params != this.data.BCRMB_ID )
-          X.memento.params = this.data.BCRMB_ID;
+      var X = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(parent, this);
+      var v;
+      var ctrlMem = this.ctrl.memento_;
+      if ( s.currentMemento ) {
+        this.ctrl.window.location = '#' + s.currentMemento;
+        v = foam.u2.ViewSpec.createView(view, null, this, X);
+        console.log('setting memento', s.currentMemento);
+      } else {
+        v = foam.u2.ViewSpec.createView(view, null, this, X);
+      }
+      if ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/ ) {
         this.data.top.breadcrumbTitle$.follow(v.viewTitle$ || v.children[0].viewTitle$);
       }
 

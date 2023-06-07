@@ -53,13 +53,13 @@ foam.CLASS({
       padding: 8px;
     }
     ^tab.selected {
-      background: white;
+      background:$white;
       border-bottom: 1px solid white;
       position: relative;
       z-index: 1;
     }
     ^bottomEdge {
-      background: white;
+      background:$white;
       height: 2.5px;
       left: 0;
       position: absolute;
@@ -67,7 +67,7 @@ foam.CLASS({
       width: 100%;
     }
     ^content {
-      background: white;
+      background:$white;
       border: 1px solid black;
       left: -4px;
       margin: 4px;
@@ -78,6 +78,10 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Array',
+      name: 'tabs'
+    },
     {
       name: 'selected',
       postSet: function(o, n) {
@@ -103,6 +107,8 @@ foam.CLASS({
     function add(tab) {
       if ( Tab.isInstance(tab) ) {
 
+        this.tabs.push(tab);
+
         if ( ! this.selected ) this.selected = tab;
 
         this.tabRow.start('span').
@@ -114,6 +120,16 @@ foam.CLASS({
           br().
           start('div').addClass(this.myClass('bottomEdge')).show(tab.selected$).end().
         end();
+
+        tab.shown$.sub(() => {
+          if ( ! tab.shown && tab.selected ) {
+            for ( var i = 0 ; i < this.tabs.length ; i++ ) {
+              var t = this.tabs[i];
+              if ( t.shown ) this.selected = t;
+              return;
+            }
+          }
+        });
 
         // tab.shown$ = tab.selected$;
         // Rather than using 'shown', setting visibility maintains the size of the
@@ -134,14 +150,14 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: white;
+      background:$white;
       border-radius: 3px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
       margin: 8px;
       transform-origin: top left;
       display: inline-block;
     }
-    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background:$white; }
   `,
 
   methods: [
@@ -165,8 +181,8 @@ foam.CLASS({
   css: `
     ^ { background: gray; padding: 10px; display: inline-block; }
     ^title { padding: 6px; align-content: center; background: aliceblue; }
-    ^footer { padding: 6px; align-content: left; background: white; }
-    ^content { padding: 6px; width: 300px; height: 200px; background: white; }
+    ^footer { padding: 6px; align-content: left; background:$white; }
+    ^content { padding: 6px; width: 300px; height: 200px; background:$white; }
   `,
 
   properties: [
@@ -205,7 +221,7 @@ foam.CLASS({
       padding: 10px 4px;
     }
     ^title {
-      background: white;
+      background:$white;
       color: #666;
       display: inline;
       font-size: larger;
@@ -247,7 +263,7 @@ foam.CLASS({
       padding: 10px;
     }
     ^title {
-      background: white;
+      background:$white;
       color: #666;
       display: inline;
       padding: 3px;
@@ -255,7 +271,7 @@ foam.CLASS({
       width: 33%;
     }
     ^content {
-      background: white;
+      background:$white;
       display: inline-block;
       height: 200px;
       width: 66%;
@@ -297,7 +313,7 @@ foam.CLASS({
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
     }
     ^control {
-      background: white;
+      background:$white;
       display: inline;
       float: right;
       height: 30px;
@@ -315,13 +331,13 @@ foam.CLASS({
       width: 100%;
     }
     ^title {
-      background: white;
+      background:$white;
       padding: 3px;
       position: relative;
       top: -3px;
     }
     ^content {
-      background: white;
+      background:$white;
       display: initial;
      //  height: 200px;
       position: relative;
@@ -401,7 +417,7 @@ foam.CLASS({
     ^.expanded {
     }
     ^control {
-      background: white;
+      background:$white;
       display: inline;
       float: right;
       height: 30px;
@@ -419,13 +435,13 @@ foam.CLASS({
       width: 100%;
     }
     ^title {
-      background: white;
+      background: $white;
       padding: 3px;
       position: relative;
       top: -3px;
     }
     ^content {
-      background: white;
+      background: $white;
       height: 200px;
       width: 300px;
     }
@@ -493,7 +509,7 @@ foam.CLASS({
 
   css: `
     ^ { background: gray; padding: 10px; display: inline-flex; }
-    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: white; }
+    ^content { margin: 4px; padding: 6px; width: 300px; height: 200px; background: $white; }
   `,
 
   properties: [

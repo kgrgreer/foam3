@@ -44,6 +44,7 @@ foam.CLASS({
     {
       name: 'delegate',
       factory: function() {
+        /* ignoreWarning */
         var ws = this.WebSocket.create({
           uri: this.prepareURL(this.uri),
         });

@@ -59,7 +59,8 @@ foam.CLASS({
       javaCode: `
     MedusaTestObject test = new MedusaTestObject();
     test.setDescription("MedusaTestObject");
-    ((DAO) x.get(getServiceName())).put(test);
+    test.setData("MedusaTestObject");
+    test = (MedusaTestObject) ((DAO) x.get(getServiceName())).put(test);
       `
     }
   ]

@@ -63,6 +63,18 @@ The above code would display the following:
 
 <foam class="foam.flow.widgets.EnumSummary" of="foam.nanos.crunch.AssociatedEntity" />
 
+<h2>ApiShortSummary</h2>
+
+ApiShortSummary is used for documenting models from the perspective of use as an API.
+
+<code>
+<foam class="foam.flow.widgets.ApiShortSummary" of="net.nanopay.tx.RequestMoney" whitelist="['requestId','requestAmount','requestExpiryDate','senderMemo','requesterName','requesterEmail','fiAccountId','custAccount','returnUrl']" />
+</code>
+
+The above code would display the following:
+
+<foam class="foam.flow.widgets.ApiShortSummary" of="net.nanopay.tx.RequestMoney" whitelist="['requestId','requestAmount','requestExpiryDate','senderMemo','requesterName','requesterEmail','fiAccountId','custAccount','returnUrl']" />
+
 <h2>DocumentationIncomplete</h2>
 
 The DocumentationIncomplete widget is a banner that can be used to indicate

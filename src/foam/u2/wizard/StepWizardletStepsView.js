@@ -90,11 +90,11 @@ foam.CLASS({
       padding-left: calc(24px + 24px + 4px);
       padding-top: 2px;
       padding-bottom: 8px;
-      color: /*%GREY2%*/ #9ba1a6;
+      color: $grey500;
     }
     ^sub-item:hover {
       cursor: pointer;
-      color: /*%GREY1%*/ #5e6061 !important;
+      color: $grey700 !important;
     }
     ^sub-item:first-child {
       padding-top: 16px;
@@ -159,6 +159,11 @@ foam.CLASS({
       this.searchController = this.WizardletSearchController.create({
         wizardlets$: this.data.wizardlets$
       });
+
+      var wizardletIsVisibleSlots = foam.core.ArraySlot.create({ slots: this.data.wizardlets.map(w => w.isVisible$) });
+      var slots_ = [this.data.wizardlets$, this.data.wizardPosition$, wizardletIsVisibleSlots];
+      var arraySlot = foam.core.ArraySlot.create({ slots: slots_ });
+
       this
         .addClass(this.myClass())
         .start()
@@ -168,17 +173,13 @@ foam.CLASS({
             onKey: true
           })
         .end()
-        .add(this.slot(function (
-          data$wizardlets,
-          data$wizardPosition,
-          data$availabilityInvalidate
-        ) {
+        .add(arraySlot.map( a => {
           let elem = this.E();
 
           let afterCurrent = false;
 
           this.stepElements = [];
-          for ( let w = 0 ; w < data$wizardlets.length ; w++ ) {
+          for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
             let wizardlet = this.data.wizardlets[w];
             let isCurrent = wizardlet === this.data.currentWizardlet;
 
@@ -206,14 +207,14 @@ foam.CLASS({
                       .start(this.CircleIndicator, this.configureIndicator(
                         wizardlet, isCurrent,
                         this.calculateWizardletDisplayNumber(
-                          wizardlet, data$wizardlets)
+                          wizardlet, self.data.wizardlets)
                       ))
                         .addClass('circle')
                       .end()
 
                       // Render title
                       .start('p').addClass(self.myClass('title'))
-                        .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
+                        .translate(wizardlet.id+'.name', wizardlet.title)
                         .style({
                           'color': isCurrent ? this.theme.black : this.theme.grey2
                         })
@@ -225,8 +226,8 @@ foam.CLASS({
                 .end();
 
             // Get section index to highlight current section
-            let wi = data$wizardPosition.wizardletIndex;
-            let si = data$wizardPosition.sectionIndex;
+            let wi = this.data.wizardPosition.wizardletIndex;
+            let si = this.data.wizardPosition.sectionIndex;
 
             // Render section labels
             let sections = this.data.wizardlets[w].sections;
@@ -294,12 +295,27 @@ foam.CLASS({
       code: async function() {
         var el    = await this.parentNode.el();
 
+        if ( ! this.data.currentWizardlet ) {
+          console.warn('setScrollPos() failed; no current wizardlet', {
+            data: this.data
+          });
+          return;
+        }
+
         var currChild = null;
         for ( let node of this.stepElements ) {
           if ( node.getAttribute('data-wizardlet') == this.data.currentWizardlet.id ) {
             currChild = node;
             break;
           }
+        }
+        if ( ! currChild ) {
+          // TODO: investigate why this is called before elements are loaded
+          console.warn('setScrollPos() failed; unable to find active wizardlet element', {
+            'wizardlet id': this.data.currentWizardlet.id,
+            data: this.data
+          });
+          return;
         }
         var firstChild = await this.childNodes[0].childNodes[0].el();
         currChild = await currChild.el();

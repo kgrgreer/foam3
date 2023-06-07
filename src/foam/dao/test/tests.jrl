@@ -1,0 +1,5 @@
+p({
+  class:"foam.dao.test.FileRollCmdTest",
+  id:"FileRollCmdTest",
+  description:"Tests Journal backup and writing to new empty journal"
+})

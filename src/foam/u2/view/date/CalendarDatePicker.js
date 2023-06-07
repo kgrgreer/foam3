@@ -26,43 +26,40 @@ foam.CLASS({
       value: false
     }
   ],
-  axioms: [
-    foam.u2.CSS.create({
-      code: `
-        ^ {
-          color: /*%GREY1%*/ #5e6061;
-        }
-        ^selected_day_cell {
-          background-color: /*%PRIMARY5%*/ #e5f1fc;
-        }
-        ^prev_month_cell, ^next_month_cell {
-          color: lightgray !important;
-        }
-        ^calendar_table td {
-          text-align: center;
-        }
-        ^calendar_table th {
-          cursor: default;
-        }
-        ^calendar_table td {
-          cursor: pointer;
-        }
+  css: `
+    ^ {
+      color: /*%GREY1%*/ #5e6061;
+    }
+    ^selected_day_cell {
+      background-color: /*%PRIMARY5%*/ #e5f1fc;
+    }
+    ^prev_month_cell, ^next_month_cell {
+      color: lightgray !important;
+    }
+    ^calendar_table td {
+      text-align: center;
+    }
+    ^calendar_table th {
+      cursor: default;
+    }
+    ^calendar_table td {
+      cursor: pointer;
+    }
 
-        ^calendar_table td:hover {
-          background-color: /*%GREY5%*/ #F5F7FA;
-        }
+    ^calendar_table td:hover {
+      background-color: /*%GREY5%*/ #F5F7FA;
+    }
 
-        ^calendar_table tr > td {
-          border:1px solid /*%GREY3%*/ #cbcfd4;
-          padding: 0.5em;
-        }
+    ^calendar_table tr > td {
+      border:1px solid /*%GREY3%*/ #cbcfd4;
+      padding: 0.5em;
+    }
 
-        ^calendar_table {
-          border-collapse: collapse;
-        }
-      `
-    })
-  ],
+    ^calendar_table  {
+      border-collapse: collapse;
+    }
+  `,
+
   methods: [
     function daysInMonth(month, year) {
       var d = new Date();

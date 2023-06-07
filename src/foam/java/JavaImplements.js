@@ -7,7 +7,6 @@
 foam.CLASS({
   package: 'foam.java',
   name: 'JavaImplements',
-  flags: ['java'],
   properties: [
     {
       class: 'String',

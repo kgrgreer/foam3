@@ -11,10 +11,9 @@ import java.util.Map;
  */
 public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements ContextAware {
 
-  private static final String OM_MESSAGE_CACHE_HIT = "CacheHIT";
+  private static final String OM_MESSAGE_CACHE_HIT  = "CacheHIT";
   private static final String OM_MESSAGE_CACHE_MISS = "CacheMISS";
-
-  private static final int INITIAL_CACHE_SIZE = 16;
+  private static final int    INITIAL_CACHE_SIZE    = 16;
 
   private final int maxSize_;
   private final String cacheName_;
@@ -25,11 +24,11 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
     super(INITIAL_CACHE_SIZE, 0.75f, true);
 
     this.cacheName_ = cacheName;
-    this.maxSize_ = maxSize;
+    this.maxSize_   = maxSize;
   }
 
   @Override
-  public V get(Object key) {
+  public synchronized V get(Object key) {
     V result = super.get(key);
 
     // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
@@ -45,7 +44,7 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
   }
 
   @Override
-  public V getOrDefault(Object key, V defaultValue) {
+  public synchronized V getOrDefault(Object key, V defaultValue) {
     V result = super.getOrDefault(key, defaultValue);
 
     // TODO: Remove once LRULinkedHashMap efficacy has been determined, auth checks are too frequent for OM profiling
@@ -60,13 +59,29 @@ public class LRULinkedHashMap<K, V> extends LinkedHashMap<K, V> implements Conte
     return result;
   }
 
+  public synchronized V put(K key, V value) {
+    return super.put(key, value);
+  }
+
+  public synchronized java.util.Collection values() {
+    return super.values();
+  }
+
+  public synchronized boolean remove(Object key, Object value) {
+    return super.remove(key, value);
+  }
+
+  public synchronized void clear() {
+    super.clear();
+  }
+
   @Override
   protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
     return size() >= maxSize_;
   }
 
   @Override
-  public X getX() {
+  public synchronized X getX() {
     return x_;
   }
 

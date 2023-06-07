@@ -56,6 +56,24 @@ foam.CLASS({
   properties: [
     [ 'extends', 'foam.core.AbstractInterface' ],
     {
+      class: 'Boolean',
+      name: 'proxy',
+      label: 'Generate Proxy',
+      help: 'If enabled, causes automatic proxy generation.'
+    },
+    {
+      class: 'Boolean',
+      name: 'client',
+      label: 'Generate Client Stub',
+      help: 'If enabled, causes automatic client generation.'
+    },
+    {
+      class: 'Boolean',
+      name: 'skeleton',
+      label: 'Generate Server Skeleton',
+      help: 'If enabled, causes automatic skeleton generation.'
+    },
+    {
       class: 'AxiomArray',
       name: 'methods',
       of: 'foam.core.internal.InterfaceMethod',
@@ -70,6 +88,42 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      if ( this.proxy )
+        foam.CLASS({
+          package: this.package,
+          name: 'Proxy' + this.name,
+          implements: [ this.id ],
+          flags: this.flags,
+          source: this.source,
+          properties: [
+            {
+              class: 'Proxy',
+              of: this.id,
+              name: 'delegate'
+            }
+          ]
+        });
+
+        if ( this.client )
+          foam.CLASS({
+            package: this.package,
+            name: 'Client' + this.name,
+            implements: [ this.id ],
+            flags: this.flags,
+            source: this.source,
+            properties: [
+              {
+                class: 'Stub',
+                of: this.id,
+                name: 'delegate'
+              }
+            ]
+          });
+    },
+
     function validate() {
       if ( this.extends !== 'foam.core.AbstractInterface' )
         throw 'INTERFACE: ' + this.id + ' does not extend AbstractInterface.  Did you mean impelments [ \'' + this.extends + '\' ], ?';
@@ -118,6 +172,21 @@ foam.LIB({
       } else {
         m.class = m.class || 'foam.core.InterfaceModel';
         foam.CLASS(m);
+
+        if ( m.proxy ) {
+          let id = m.package + '.Proxy' + m.name;
+          foam.__context__.registerFactory({id: id, package: m.package, name: 'Proxy' + m.name}, function() {
+            foam.lookup(m.id);
+            return foam.lookup(id);
+          });
+        }
+        if ( m.client ) {
+          let id = m.package + '.Client' + m.name;
+          foam.__context__.registerFactory({id: id, package: m.package, name: 'Client' + m.name}, function() {
+            foam.lookup(m.id);
+            return foam.lookup(id);
+          });
+        }
       }
     }
   ]

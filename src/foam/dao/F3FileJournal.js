@@ -28,6 +28,11 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao'
+    },
+    {
+      documentation: 'Perform replay synchronously. Manual workaround for deadlock with AsyncAssemblyLine',
+      class: 'Boolean',
+      name: 'syncReplay'
     }
   ],
 
@@ -46,9 +51,11 @@ foam.CLASS({
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
         PM pm = new PM(dao.getOf(), "replay." + getFilename());
-        AssemblyLine assemblyLine = x.get("threadPool") == null ?
-          new foam.util.concurrent.SyncAssemblyLine()   :
-          new foam.util.concurrent.AsyncAssemblyLine(x, "replay") ;
+        AssemblyLine assemblyLine =
+          ( getSyncReplay() ||
+            x.get("threadPool") == null ) ?
+          new foam.util.concurrent.SyncAssemblyLine() :
+          new foam.util.concurrent.AsyncAssemblyLine(x, "replay");
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
@@ -71,7 +78,7 @@ foam.CLASS({
 
                 public void endJob(boolean isLast) {
                   if ( obj == null ) {
-                    getLogger().error("Parse error", getParsingErrorMessage(strEntry), "entry:", strEntry);
+                    getLogger().error("Parse error in the jrl file " + getFilename(), getParsingErrorMessage(strEntry), "entry Object is: ", strEntry);
                     return;
                   }
                   switch ( operation ) {

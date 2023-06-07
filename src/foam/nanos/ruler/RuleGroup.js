@@ -41,8 +41,7 @@
       javaFactory: `
       return foam.mlang.MLang.TRUE;
       `,
-      documentation: 'predicate is checked against an object; if returns true, the rule group is executed.'+
-      'Defaults to return true.'
+      documentation: 'predicate is checked against an object; if returns true, the rule group is executed. Defaults to return true.'
     },
     {
       class: 'Boolean',

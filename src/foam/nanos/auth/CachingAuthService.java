@@ -17,6 +17,7 @@ import foam.util.LRULinkedHashMap;
 import java.security.Permission;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.security.auth.AuthPermission;
 import static foam.mlang.MLang.TRUE;
@@ -105,6 +106,10 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
     DAO userDAO = (DAO) getX().get("localUserDAO");
     if ( userDAO != null ) userDAO.listen(purgeSink, TRUE);
 
+    // Capability.permissionsGranted could change check() outcome.
+    DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
+    if ( capabilityDAO != null ) capabilityDAO.listen(purgeSink, TRUE);
+
     DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
     if ( userCapabilityJunctionDAO != null ) userCapabilityJunctionDAO.listen(purgeSink, TRUE);
 
@@ -129,6 +134,22 @@ public class CachingAuthService extends ProxyAuthService implements NanoService,
       userId = ((User) obj).getId();
     } else if ( obj instanceof UserCapabilityJunction ) {
       userId = ((UserCapabilityJunction) obj).getSourceId();
+    } else if ( obj instanceof GroupPermissionJunction ) {
+      GroupPermissionJunction gpj = (GroupPermissionJunction) obj;
+      for ( Object o  : userPermissionCache_.values() ) {
+        Map m = (Map) o;
+        String p = gpj.getTargetId();
+        if ( p.endsWith(".*") ) {
+          p = p.substring(0, p.length()-2);
+          for ( Object o2 : m.keySet() ) {
+            String p2 = (String) o2;
+            if ( p2.startsWith(p) )
+              m.remove(p2);
+          }
+        }
+        m.remove(p);
+      }
+      return;
     }
 
     if ( userId != null ) {

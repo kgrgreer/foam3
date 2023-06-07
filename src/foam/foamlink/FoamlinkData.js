@@ -10,6 +10,9 @@ foam.CLASS({
   documentation: `
     Information about classes and files as determined by Foamlink.
   `,
+
+  flags: ['node'],
+
   properties: [
     {
       name: 'filesToClasses',

@@ -29,7 +29,8 @@ foam.CLASS({
         //   0: {
         //     views: { name: ... },
         //     subs: { name: ... },
-        //     predicates: { name: ... }
+        //     predicates: { name: ... },
+        //     memorable: { name: <Boolean>, ... }
         //   }
         // }
         return {};
@@ -45,6 +46,12 @@ foam.CLASS({
     },
     {
       name: 'finalPredicate',
+      factory: function() {
+        return this.TRUE;
+      }
+    },
+    {
+      name: 'mementoPredicate',
       factory: function() {
         return this.TRUE;
       }
@@ -117,7 +124,8 @@ foam.CLASS({
         this.criterias$set(newKey, {
           views: {},
           subs: {},
-          predicates: {}
+          predicates: {},
+          memorable: {}
         });
         return;
       }
@@ -125,14 +133,16 @@ foam.CLASS({
       this.previewCriterias$set(newKey, {
         views: {},
         subs: {},
-        predicates: {}
+        predicates: {},
+        memorable: {}
       });
       this.updateFilterPredicate();
     },
 
-    function add(view, name, criteriaKey) {
+    function add(view, name, criteriaKey, memorable) {
       var criterias = this.isPreview ? this.previewCriterias : this.criterias;
       criterias[criteriaKey].views[name] = view;
+      criterias[criteriaKey].memorable[name] = memorable ?? true;
       criterias[criteriaKey].subs[name] = view.predicate$.sub(() => {
         this.onViewPredicateUpdate(criteriaKey, name);
       });
@@ -172,6 +182,18 @@ foam.CLASS({
         args: Object.values(criterias).map((criteria) => { return this.and(criteria.predicates); })
       }).partialEval();
       if ( orPredicate === this.FALSE ) orPredicate = this.TRUE;
+
+      this.mementoPredicate = this.Or.create({
+        args: Object.values(criterias)
+                .map((criteria) => {
+                  let temp = {}
+                  Object.keys(criteria.predicates).forEach(key => {
+                    if ( criteria.memorable[key] )
+                      temp[key] = criteria.predicates[key];
+                   })
+                  return this.and(temp); 
+                })
+      }).partialEval();
 
       if ( ! this.isPreview ) {
         this.finalPredicate = orPredicate;

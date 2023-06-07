@@ -94,11 +94,7 @@ foam.CLASS({
       name: 'hostname',
       visibility: 'RO',
       javaFactory: `
-      String hostname = System.getProperty("hostname", "localhost");
-      if ( "localhost".equals(hostname) ) {
-        hostname = System.getProperty("user.name");
-      }
-      return hostname;
+      return System.getProperty("hostname", "localhost");
       `
     },
     {
@@ -109,7 +105,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isActive'
+      name: 'isActive',
+      value: true
     },
     {
       class: 'Enum',
@@ -138,6 +135,22 @@ foam.CLASS({
       view: { class: 'foam.u2.tag.TextArea' },
       createVisibility: 'RW',
       updateVisibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'eventRecord',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      menuKeys: [
+        'er'
+      ]
+    },
+    {
+      documentation: 'UID for external systems - such a google chat',
+      class: 'String',
+      name: 'externalId',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     }
   ],
 
@@ -146,6 +159,9 @@ foam.CLASS({
       name: 'stop',
       label: 'Stop Alarm',
       availablePermissions: ['foam.nanos.alarming.Alarm.rw.stop'],
+      isAvailable: function(isActive) {
+        return isActive;
+      },
       code: function() {
         let self = this;
         this.note = '';
@@ -168,6 +184,9 @@ foam.CLASS({
       name: 'start',
       label: 'Start Alarm',
       availablePermissions: ['foam.nanos.alarming.Alarm.rw.start'],
+      isAvailable: function(isActive) {
+        return ! isActive;
+      },
       code: function() {
         this.isActive = true;
         this.reason = this.AlarmReason.MANUAL;

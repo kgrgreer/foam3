@@ -64,13 +64,14 @@ foam.CLASS({
       factory: function() { return this.Candlestick.AVERAGE; }
     }
   ],
-  reactions: [
-    ['', 'propertyChange.customDatasetStyling', 'dataUpdate']
-  ],
+
   listeners: [
     {
       name: 'dataUpdate',
       isFramed: true,
+      on: [
+        'this.propertyChange.customDatasetStyling'
+      ],
       code: function() {
         var self = this;
         self.data

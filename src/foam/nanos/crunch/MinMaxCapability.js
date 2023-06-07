@@ -33,6 +33,14 @@ foam.CLASS({
       `
     },
     {
+      class: 'FObjectProperty',
+      javaType: 'foam.nanos.crunch.edit.EditBehaviour',
+      name: 'editBehaviour',
+      javaFactory: `
+        return new foam.nanos.crunch.edit.PermissiveEditBehaviour();
+      `
+    },
+    {
       name: 'min',
       class: 'Int',
       value: 1
@@ -43,6 +51,11 @@ foam.CLASS({
       value: 0
     },
     {
+      class: 'Boolean',
+      name: 'goNextOnValid',
+      documentation: 'Automatically go to next wizardlet when minmax is valid'
+    },
+    {
       class: 'Object',
       name: 'beforeWizardlet',
       documentation: `
@@ -50,10 +63,7 @@ foam.CLASS({
       `,
       factory: function() {
         return foam.nanos.crunch.ui.MinMaxCapabilityWizardlet.create({}, this);
-      },
-      javaFactory: `
-        return new MinMaxCapabilityWizardlet();
-      `
+      }
     },
     {
       class: 'Object',
@@ -65,8 +75,8 @@ foam.CLASS({
       factory: function() {
         return foam.nanos.crunch.ui.CapabilityWizardlet.create({isVisible: false}, this);
       },
-      includeInDigest: false,
-    },
+      includeInDigest: false
+    }
   ],
 
   methods: [

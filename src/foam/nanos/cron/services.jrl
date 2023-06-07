@@ -8,7 +8,7 @@ p({
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("cronjobs")
-      .setDecorator(new foam.nanos.cron.CronJobDAO.Builder(x)
+      .setDecorator(new foam.nanos.cron.CronDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo())).build())
       .build()
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.SCHEDULED_TIME })
@@ -16,7 +16,12 @@ p({
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.LAST_RUN })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cron.Cron.ENABLED });
   """,
-  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+  "client":"""
+    {
+      "of":"foam.nanos.cron.Cron",
+      "cache": false
+    }
+  """
 })
 
 p({
@@ -25,10 +30,13 @@ p({
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.cron.Cron.getOwnClassInfo())
-      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(
-        new foam.nanos.cron.CronScheduleDAO.Builder(x)
-          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo()))
-          .build()))
+      .setDecorator(
+        new foam.nanos.cron.CronJobDAO.Builder(x)
+          .setDelegate(new foam.nanos.script.ScriptRunnerDAO(
+            new foam.nanos.cron.CronScheduleDAO.Builder(x)
+              .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo()))
+              .build()))
+          .build())
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.cron.Cron.ENABLED).build(),
@@ -54,7 +62,12 @@ p({
       .setCluster(false)
       .build();
   """,
-  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+  "client":"""
+    {
+      "of":"foam.nanos.cron.Cron",
+      "cache": false
+    }
+  """
 })
 
 p({
@@ -145,5 +158,24 @@ p({
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.OWNER })
       .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.script.ScriptEvent.LAST_RUN });
   """,
-  "client":"{\"of\":\"foam.nanos.cron.ScriptEvent\"}"
+  "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "nextDateService",
+  "description": "A service that returns the next date of a schedule",
+  "serve": true,
+  "authenticate": false,
+  "serviceClass": "foam.nanos.cron.NextDate",
+  "boxClass": "foam.nanos.cron.NextDateServiceSkeleton",
+  "client": """
+    {
+      "class": "foam.nanos.cron.ClientNextDateService",
+      "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/nextDateService"
+        }
+    }
+  """
 })

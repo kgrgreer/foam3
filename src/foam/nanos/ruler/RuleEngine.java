@@ -12,7 +12,6 @@ import foam.nanos.auth.*;
 import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
-
 import java.lang.Exception;
 import java.time.Duration;
 import java.time.Instant;
@@ -69,10 +68,10 @@ public class RuleEngine extends ContextAwareSupport {
     for ( Rule rule : rules ) {
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey(), rule.getId());
       try {
-        if ( stops_.get() ) break;
-        if ( ! isRuleActive(rule)                   ) continue;
-        if ( ! checkPermission(rule, obj)           ) continue;
-        if ( ! rule.f(userX_, obj, oldObj)          ) continue;
+        if ( stops_.get()                  ) break;
+        if ( ! isRuleActive(rule)          ) continue;
+        if ( ! checkPermission(rule, obj)  ) continue;
+        if ( ! rule.f(userX_, obj, oldObj) ) continue;
 
         applyRule(rule, obj, oldObj, agency);
       } catch (Exception e) {
@@ -90,8 +89,8 @@ public class RuleEngine extends ContextAwareSupport {
       // Allow network exceptions to pass through
       // TODO: use foam.core.Exception when interface properties
       //       are supported in Java generation
-      if ( e instanceof foam.core.ExceptionInterface ) {
-        RuntimeException clientE = (RuntimeException) ((ExceptionInterface) e).getClientRethrowException();
+      if ( e instanceof foam.core.FOAMException ) {
+        RuntimeException clientE = (RuntimeException) ((foam.core.FOAMException) e).getClientRethrowException();
         if ( clientE != null ) throw clientE;
       }
 
@@ -206,14 +205,19 @@ public class RuleEngine extends ContextAwareSupport {
     }, "Async apply rule id: " + rule.getId()));
   }
 
+  /**
+   * Check if the rule is in an ACTIVE state:
+   * 1) the rule is enabled
+   * 2) the rule lifecycle state is active
+   * 3) the rule has an action.
+   *
+   * @param rule    rule object to check
+   * @return true if the rule is ACTIVE, false otherwise
+   */
   private boolean isRuleActive(Rule rule) {
-    // Check if the rule is in an ACTIVE state
-    boolean isActive = true;
-    if (rule instanceof LifecycleAware) {
-      isActive = ((LifecycleAware) rule).getLifecycleState() == LifecycleState.ACTIVE;
-    }
-
-    return isActive && rule.getAction() != null;
+    return rule.getEnabled() &&
+           rule.getLifecycleState() == LifecycleState.ACTIVE &&
+           rule.getAction() != null;
   }
 
   private boolean checkPermission(Rule rule, FObject obj) {

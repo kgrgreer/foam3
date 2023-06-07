@@ -29,7 +29,8 @@ foam.CLASS({
     'status',
     'uptime',
     'nextHeartbeatIn',
-    'alarms'
+    'alarms',
+    'bootTime'
   ],
 
   properties: [
@@ -77,16 +78,23 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      // NOTE: bootTime must be present in tableColumns for upTime to reported correctly in tableView
       name: 'bootTime',
       shortName: 'bt',
       class: 'Long',
       visibility: 'RO',
+      tableCellFormatter: function(value) {
+        this.add(new Date(value).toISOString());
+      }
     },
     {
       name: 'upTime',
       shortName: 'ut',
       class: 'Duration',
-      javaFactory: 'return System.currentTimeMillis() - getBootTime();',
+      getter: function() {
+        return Date.now() - this.bootTime;
+      },
+      javaGetter: 'return System.currentTimeMillis() - getBootTime();',
       visibility: 'RO',
       clusterTransient: true
     },
@@ -107,11 +115,12 @@ foam.CLASS({
     {
       name: 'nextHearbeatIn',
       class: 'Duration',
-      expression: function(heartbeatTime, heartbeatSchedule) {
-        if ( heartbeatTime && heartbeatSchedule && heartbeatSchedule > 0 ) {
-          return (heartbeatTime + heartbeatSchedule) - Date.now();
+      getter: function() {
+        var time = 0;
+        if ( this.heartbeatTime && this.heartbeatSchedule && this.heartbeatSchedule > 0 ) {
+          time = (this.heartbeatTime + this.heartbeatSchedule) - Date.now();
         }
-        return 0;
+        return time;
       },
       javaGetter: `
       if ( getHeartbeatSchedule() > 0L ) {
@@ -136,6 +145,13 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      name: 'memoryTotal',
+      shortName: 'mt',
+      class: 'Long',
+      units: 'bytes',
+      visibility: 'RO',
+    },
+    {
       name: 'memoryFree',
       shortName: 'mf',
       class: 'Long',
@@ -143,15 +159,42 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      name: 'memoryUsed',
+      shortName: 'mu',
+      class: 'Long',
+      units: 'bytes',
+      storageTransient: true,
+      visibility: 'RO',
+      getter: function() {
+        return this.memoryTotal - this.memoryFree;
+      },
+      javaGetter: `
+      return getMemoryTotal() - getMemoryFree();
+      `
+    },
+    {
+      name: 'memoryUsedPercent',
+      label: 'Memory Used %',
+      class: 'Long',
+      storageTransient: true,
+      visibility: 'RO',
+      getter: function() {
+        if ( this.memoryTotal && this.memoryTotal > 0 ) {
+          return ( (this.memoryTotal - this.memoryFree) / this.memoryTotal ) * 100.0;
+        }
+        return 0;
+      },
+      javaGetter: `
+      if ( getMemoryTotal() > 0 ) {
+        return (long) (((getMemoryTotal() - getMemoryFree()) / (float) getMemoryTotal()) * 100.0);
+      }
+      return 0L;
+      `
+    },
+    {
       name: 'alarms',
       shortName: 'al',
       class: 'Int',
-      visibility: 'RO',
-    },
-    {
-      name: 'errorMessage',
-      shortName: 'em',
-      class: 'String',
       visibility: 'RO',
     }
   ],
@@ -199,6 +242,7 @@ foam.CLASS({
 
     Runtime runtime = Runtime.getRuntime();
     setMemoryMax(runtime.maxMemory());
+    setMemoryTotal(runtime.totalMemory());
     setMemoryFree(runtime.freeMemory());
 
     DAO alarmDAO = (DAO) x.get("alarmDAO");

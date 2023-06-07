@@ -1,6 +1,8 @@
+// not lazy as needed by notification system during startup.
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localSmsMessageDAO",
+  "lazy":false,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.sms.SMSMessage.getOwnClassInfo())
@@ -10,6 +12,7 @@ p({
       .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("smsMessages")
+      .setWaitReplay(false)
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
         .setComparator(foam.mlang.MLang.DESC(foam.nanos.notification.sms.SMSMessage.CREATED))
         .setPredicate(foam.mlang.MLang.EQ(foam.nanos.notification.sms.SMSMessage.STATUS, foam.nanos.notification.sms.SMSStatus.SENT))

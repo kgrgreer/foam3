@@ -14,7 +14,7 @@ foam.CLASS({
   ],
   
   methods: [
-    function init() {
+    function render() {
       this.f$.relateTo(
         this.c$,
         function f2c(c) {

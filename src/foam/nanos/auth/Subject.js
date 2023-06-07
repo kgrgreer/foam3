@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'Subject',
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.auth.User',
     'java.util.ArrayList',
     'java.util.Stack'
@@ -36,11 +37,16 @@ foam.CLASS({
         realUserIsSet_ = true;
       }
       ArrayList userPath = getUserPath();
-      if ( userPath.size() < 2 || val != (User) userPath.get(userPath.size() - 1) ) {
+
+      // userPath is empty or value not same as last
+      if ( getUserPath().size() == 0 || val != (User) userPath.get(userPath.size() - 1) ) {
         userPath.add(val);
-      } else {
+      }
+      // Value is the same as the second last, so just revert
+      else if ( getUserPath().size() >= 2 && val == (User) userPath.get(userPath.size() - 2) ) {
         userPath.remove(userPath.size() - 1);
       }
+
       userIsSet_ = true;
       user_      = val;
       `
@@ -57,6 +63,17 @@ foam.CLASS({
   javaCode: `
     public Subject(User user) {
       setUser(user);
+    }
+
+    public Subject addUser(User user) {
+      Subject s2 = (Subject) new Subject(getRealUser());
+      s2.setUserPath(new ArrayList(getUserPath()));
+      s2.setUser(user);
+      return s2;
+    }
+
+    public X pushUser(X x, User user) {
+      return x.put("subject", addUser(user));
     }
   `,
 

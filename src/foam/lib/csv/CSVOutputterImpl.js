@@ -15,7 +15,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.*',
     'java.util.List',
-    'java.util.Date'
+    'java.util.Date',
+    'java.text.*'
   ],
 
   properties: [
@@ -25,11 +26,16 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Boolean',
+      name: 'sheetsCompatible',
+      documentation: 'If enabled dates and times will be output in a Google Sheets compatible format without the timezone.'
+    },
+    {
       class: 'StringArray',
       name: 'props',
       factory: null,
       expression: function(of) {
-        return of.getAxiomByName('tableColumns') 
+        return of.getAxiomByName('tableColumns')
           ? of.getAxiomByName('tableColumns').columns
           : of.getAxiomsByClass()
             .filter((p) => ! p.networkTransient)
@@ -65,6 +71,12 @@ foam.CLASS({
       flags: ['java'],
       javaType: 'java.lang.StringBuilder',
       javaFactory: 'return new StringBuilder();'
+    },
+    {
+      class: 'Object',
+      name: 'dateFormatter',
+      javaType: 'java.text.DateFormat',
+      javaFactory: 'return new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa");'
     }
   ],
 
@@ -108,7 +120,12 @@ foam.CLASS({
             value = '"' + ((String)value).replace("\\"", "\\"\\"") + '"';
           getSb().append(value);
         } else if ( value instanceof Date ) {
-          getSb().append(value.toString());
+          if ( getSheetsCompatible() ) {
+            String getSheetsCompatibleDate = getDateFormatter().format(value);
+            getSb().append(getSheetsCompatibleDate);
+          } else {
+            getSb().append(value.toString());
+          }
         } else if ( value == null ) {
         } else {
           outputValue_(value.toString());
@@ -175,7 +192,7 @@ foam.CLASS({
       javaCode: `
         if ( getOf() == null ) setOf(obj.getClassInfo());
         if ( getIsFirstRow() ) outputHeader(x);
-        for (String name : getProps()) {
+        for ( String name : getProps() ) {
           Object p = getOf().getAxiomByName(name);
           if ( p != null && p instanceof PropertyInfo ) ((PropertyInfo)p).toCSV(x, obj, this);
         }

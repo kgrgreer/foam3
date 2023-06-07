@@ -19,15 +19,22 @@
      'formatNode',
      'relationship',
      'isAutoExpandedByDefault',
-     'childNodesForAutoExpansion'
+     'childNodesForAutoExpansion',
+     'classToTreeNodeConfig'
    ],
 
    properties: [
-     [ 'nodeWidth',   155 ],
-     [ 'nodeHeight',  60 ],
-     [ 'lineWidth',   0.5 ],
-     [ 'padding',     30 ],
-     [ 'color',       'white'],
+     [ 'canvasMinWidth',     1374],
+     [ 'canvasMinHeight',     750],
+     [ 'nodeWidth',          155 ],
+     [ 'nodeHeight',          60 ],
+     [ 'nodeCornerRadius',     0 ],
+     [ 'lineWidth',          0.5 ],
+     [ 'padding',             60 ],
+     [ 'color',           'white'],
+     [ 'border',           'gray'],
+     [ 'connectorWidth',      0.5],
+     [ 'connectorColor',   'gray'],
      {
        name: 'data'
      },
@@ -48,6 +55,14 @@
        class: 'Int',
        name: 'childNodesForAutoExpansion',
        value: 5
+     },
+     {
+      class: 'Map',
+      name: 'classToTreeNodeConfig'
+     },
+     {
+      class: 'Boolean',
+      name: 'isCentering'
      }
    ],
 
@@ -60,15 +75,45 @@
        this.SUPER();
 
        if ( this.data ) {
+        var treeNodeConfig = this.classToTreeNodeConfig[this.data.cls_.id];
+
+        var treeNodeWidth = treeNodeConfig && treeNodeConfig.width
+          ? treeNodeConfig.width
+          : this.nodeWidth;
+        
+        var treeNodeHeight = treeNodeConfig && treeNodeConfig.height
+          ? treeNodeConfig.height
+          : this.nodeHeight;
+
+        var treeNodeCornerRadius = treeNodeConfig && treeNodeConfig.nodeCornerRadius
+          ? treeNodeConfig.nodeCornerRadius
+          : this.nodeHeight;
+
+        var treeNodeExpandIconColor = treeNodeConfig && treeNodeConfig.expandIconColor
+          ? treeNodeConfig.expandIconColor
+          : this.expandIconColor;
+
+        var treeNodeExpandIconWidth = treeNodeConfig && treeNodeConfig.expandIconWidth
+          ? treeNodeConfig.expandIconWidth
+          : this.expandIconWidth;
+        
+        var treeNodeBorder = treeNodeConfig && treeNodeConfig.nodeBorder
+          ? treeNodeConfig.nodeBorder
+          : this.border;
+
         this.root = this.TreeNode.create({
-          width:     this.nodeWidth,
-          height:    this.nodeHeight,
+          width:     treeNodeWidth,
+          height:    treeNodeHeight,
           padding:   this.padding,
           lineWidth: this.lineWidth,
-          y:         this.nodeHeight * 2,
-          data:      this.data
+          y:         this.padding,
+          data:      this.data,
+          expandIconColor: treeNodeExpandIconColor,
+          expandIconWidth: treeNodeExpandIconWidth,
+          cornerRadius: treeNodeCornerRadius,
+          border: treeNodeBorder
         });
-        this.add(this.root);
+        this.add(this.root); 
         this.doLayout();
        }
      }
@@ -102,13 +147,16 @@
          })
 
          var width  = Math.abs(maxes.maxLeft - maxes.maxRight);
-         var height = (this.nodeHeight * 2) * (this.root.outline.length + 1);
+         this.height = this.canvasMinHeight;
 
-         if ( this.width != width || this.height != height ) {
+         if ( 
+            ( this.width != width )
+            && ! this.isCentering
+          ) {
            this.width  = width;
-           this.height = height;
 
            this.root.centerX = 0;
+
            this.root.centerX = - Math.min.apply(Math, this.root.outline.map(o => o.left));
 
            // IMPORTANT: Have to add the extra invalidate and doLayout to avoid a bug with
@@ -116,9 +164,29 @@
            this.invalidate();
            this.doLayout();
 
-         } else {
-          this.onSizeChangeComplete.pub();
+           return;
          }
+
+         if (
+          this.width == width
+          && this.width < this.canvasMinWidth
+          && ! this.isCentering
+         ){
+          this.isCentering = true;
+
+          this.root.centerX += ( this.canvasMinWidth - this.width )  / 2;
+
+          this.width = this.canvasMinWidth;
+
+          this.invalidate();
+          this.doLayout();
+
+          return;
+         }
+
+         this.isCentering = false;
+
+         this.onSizeChangeComplete.pub();
       }
      }
    ]

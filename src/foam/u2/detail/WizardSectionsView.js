@@ -20,12 +20,12 @@ foam.CLASS({
     }
     ^wizard-body {
       height: 100%;
-      background-color: white;
+      background-color: $white;
     }
 
     ^footer {
       min-height: 75px;
-      border-top: solid 1px /*%GREY5%*/ #f5f7fa;
+      border-top: solid 1px $grey50;
       padding: 0px 128px;
     }
 
@@ -71,16 +71,14 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.sections', 'restartWizard'],
-    ['', 'propertyChange.data', 'restartWizard'],
-    ['data', 'propertyChange', 'onDataUpdate']
-  ],
-
   listeners: [
     {
       name: 'restartWizard',
       isFramed: true,
+      on: [
+        'this.propertyChange.sections',
+        'this.propertyChange.data'
+      ],
       code: function() {
         for ( var i = 0 ; i < this.sections.length ; i++ ) {
           if ( this.sections[i].createIsAvailableFor(this.data$).get() ) {
@@ -93,6 +91,9 @@ foam.CLASS({
     {
       name: 'onDataUpdate',
       isFramed: true,
+      on: [
+        'data.propertyChange'
+      ],
       code: function() { this.lastUpdate = new Date(); }
     }
   ],
@@ -142,4 +143,4 @@ foam.CLASS({
         .end();
     }
   ]
-}); 
+});

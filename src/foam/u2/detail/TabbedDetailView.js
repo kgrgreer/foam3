@@ -8,11 +8,9 @@ foam.CLASS({
   package: 'foam.u2.detail',
   name: 'TabbedDetailView',
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.core.ArraySlot',
-    'foam.nanos.controller.Memento',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
     'foam.u2.Tab',
@@ -21,7 +19,7 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-Tabs-content > div {
-      background: white;
+      background: $white;
       padding: 14px 16px;
       border-bottom-left-radius: 6px;
       border-bottom-right-radius: 6px;
@@ -54,8 +52,6 @@ foam.CLASS({
     function render() {
       var self = this;
 
-      this.currentMemento_ = this.memento;
-
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -68,7 +64,16 @@ foam.CLASS({
 
           return self.E()
             .add(arraySlot.map(visibilities => {
-              var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
+              var availableSections = visibilities.length == sections.length ? sections.filter((s, i) => s.title && visibilities[i]) : sections;
+              var availableSectionsWithoutTitle = visibilities.length == sections.length ? sections.filter((s, i) => !s.title && visibilities[i]) : sections;
+              
+              // Check available sections with a title
+              if ( ( !availableSections || availableSections.length == 0 ) && availableSectionsWithoutTitle && availableSectionsWithoutTitle.length > 0) {
+                availableSections = availableSectionsWithoutTitle;
+              } else {
+                console.warn('No visible sections in tabbed view for entity: ', self.of ? self.of.id : 'unknown');
+              }
+                
               var e = availableSections.length == 1 ?
                 this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
                   .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })
@@ -86,7 +91,7 @@ foam.CLASS({
 
                       var tab = foam.core.SimpleSlot.create();
                       this
-                        .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.head === s.title }, tab)
+                        .start(self.Tab, { label$: title$ || self.defaultSectionLabel }, tab)
                          .call(function() {
                            this.tag(self.SectionView, {
                              data$: self.data$,
@@ -99,7 +104,6 @@ foam.CLASS({
                     }
                   })
                 .end();
-              self.tabs && ( self.tabs.updateMemento = true );
               return e;
             }));
         }));

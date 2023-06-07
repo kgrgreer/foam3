@@ -35,7 +35,6 @@ foam.CLASS({
     ^dropdown span, ^dropdown svg {
       font-size: 1.4rem;
       font-weight: 500;
-      color: /*%WHITE%*/ #ffffff;
     }
   `,
 
@@ -52,17 +51,24 @@ foam.CLASS({
         localStorage.setItem('localeLanguage', language.toString());
         return language;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'longName'
     }
   ],
 
   methods: [
     async function render() {
       var self = this;
+      this.__subContext__.register(foam.u2.ActionView, 'foam.u2.ActionView');
       this.supportedLanguages = (await this.languageDAO
         .where(foam.mlang.predicate.Eq.create({
           arg1: foam.nanos.auth.Language.ENABLED,
           arg2: true
         })).select()).array;
+
+      if ( this.supportedLanguages.length <= 1 ) return;
 
       var actionArray = this.supportedLanguages.map( c => {
         var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
@@ -79,7 +85,7 @@ foam.CLASS({
         });
       });
 
-      var label = this.formatLabel(this.lastLanguage);
+      var label = this.formatLabel(this.lastLanguage, ! this.longName);
 
       this
         .addClass(this.myClass())
@@ -94,9 +100,14 @@ foam.CLASS({
       .end();
     },
 
-    async function formatLabel(language) {
+    async function formatLabel(language, shortName) {
       let country = await this.countryDAO.find(language.variant);
-      let label   = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      let label;
+      if ( shortName ) {
+        return language.code.toUpperCase();
+      } else {
+        label = language.variant != '' ? `${language.nativeName}(${language.variant})` : `${language.nativeName}`;
+      }
       if ( country && country.nativeName != null ) {
         label = `${language.nativeName}\u00A0(${country.nativeName})`;
       }

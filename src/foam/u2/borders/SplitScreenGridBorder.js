@@ -4,14 +4,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.borders',
   name: 'SplitScreenGridBorder',
   extends: 'foam.u2.Element',
 
   imports: [
-    'displayWidth',
-    'showFooter'
+    'displayWidth'
   ],
 
   requires: [
@@ -24,20 +23,13 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 4vw;
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       height: 100%;
-    }
-
-    ^show-footer {
-      /* minus footer */
-      height: calc(100% - 65px);
-      height: -moz-calc(100% - 65px);
-      height: -webkit-calc(100% - 65px);
     }
 
     ^grid {
       grid-gap: clamp(1rem, 1.5vmax, 5rem);
+      height: 100%;
     }
     
     /* vertically center the 2 sides of splitscreen */
@@ -51,6 +43,7 @@
     /* TODO: Remove this when U3 allows non-E() adds */
     ^split-screen > *{
       width: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
     }
@@ -58,9 +51,20 @@
 
   properties: [
     'leftPanel',
+    {
+      name: 'columnsConfigLeft',
+      documentation: 'Can be provided to customize how the columns respond to resize',
+      flags: ['web'],
+      value: {
+        class: 'foam.u2.layout.GridColumns',
+        columns: 12,
+        lgColumns: 6,
+        xlColumns: 6
+      }
+    },
     'rightPanel',
     {
-      name: 'columnsConfig',
+      name: 'columnsConfigRight',
       documentation: 'Can be provided to customize how the columns respond to resize',
       flags: ['web'],
       value: {
@@ -75,11 +79,10 @@
   methods: [
     function init() {
       this.SUPER();
-
-      var right = this.GUnit.create({ columns: this.columnsConfig })
+      var right = this.GUnit.create({ columns: this.columnsConfigRight })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.rightPanel$);
-        var left = this.GUnit.create({ columns: this.columnsConfig })
+        var left = this.GUnit.create({ columns: this.columnsConfigLeft })
         .addClass(this.myClass('split-screen'))
         .tag('', null, this.leftPanel$);
 
@@ -90,10 +93,10 @@
 
       this.start()
         .addClass(this.myClass())
-        .enableClass(this.myClass('show-footer'), this.showFooter$)
         .add(grid)
       .end();
     }
   ]
 });
+
 

@@ -25,11 +25,13 @@ import java.util.Arrays;
  */
 public class MLang
 {
-  public static final Predicate TRUE  = new True();
-  public static final Predicate FALSE = new False();
+  public static final Predicate TRUE    = new True();
+  public static final Predicate FALSE   = new False();
 
-  public static final Expr NEW_OBJ    = new ContextObject("NEW");
-  public static final Expr OLD_OBJ    = new ContextObject("OLD");
+  public static final Expr      NOW     = new CurrentTime();
+
+  public static final Expr      NEW_OBJ = new ContextObject("NEW");
+  public static final Expr      OLD_OBJ = new ContextObject("OLD");
 
   public static Comparator DESC(Comparator c) {
     return new Desc(c);
@@ -287,6 +289,48 @@ public class MLang
 
   public static Expr MAX_FUNC(Object arg1, Object arg2) {
     return prepareFormula(new MaxFunc(), arg1, arg2);
+  }
+
+  public static Expr YEARS(Object o) {
+    var y = new Years();
+    y.setArg1(MLang.prepare(o));
+    return y;
+  }
+
+  public static Expr MONTH(Object o) {
+    var m = new Month();
+    m.setNumberOfMonths((int)o);
+    return m;
+  }
+
+  public static Expr MONTHS(Object o) {
+    var m = new Months();
+    m.setArg1(MLang.prepare(o));
+    return m;
+  }
+
+  public static Expr DAY(Object o) {
+    var d = new Day();
+    d.setNumberOfDays((int)o);
+    return d;
+  }
+
+  public static Expr DAYS(Object o) {
+    var d = new Days();
+    d.setArg1(MLang.prepare(o));
+    return d;
+  }
+
+  public static Expr HOURS(Object o) {
+    var h = new Hours();
+    h.setArg1(MLang.prepare(o));
+    return h;
+  }
+
+  public static Expr MINUTES(Object o) {
+    var m = new Minutes();
+    m.setArg1(MLang.prepare(o));
+    return m;
   }
 
   public static Expr prepareFormula(Formula formula, Object... args) {

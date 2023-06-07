@@ -6,6 +6,7 @@
 
 package foam.core;
 
+import foam.nanos.logger.Logger;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,9 +24,7 @@ public class SimpleFacetManager
 
   public <T> T create(Class<T> type, Map<String, Object> args, X x) {
     if ( type == foam.core.FObject.class ) {
-      Thread.dumpStack();
-      System.err.println("Unable to create FObject.");
-      return null;
+      throw new RuntimeException("Unable to create FObject");
     }
 
     try {
@@ -62,8 +61,7 @@ public class SimpleFacetManager
       } catch (NoSuchMethodException e) {
         // nop
       } catch (NullPointerException e) {
-        System.err.println("Unable to create "+type.getName());
-        Thread.dumpStack();
+        ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "Unable to create " + type.getName());
         throw e;
       }
 
@@ -81,6 +79,38 @@ public class SimpleFacetManager
       return obj;
     } catch (Throwable e) {
       e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+  }
+
+  public Object create(String clsName, X x) {
+    return create(clsName, Collections.<String, Object>emptyMap(), x);
+  }
+
+  public Object create(String clsName, Map<String, Object> args, X x) {
+    if ( clsName.equals("foam.core.FObject") ) {
+      throw new RuntimeException("Unable to create FObject");
+    }
+
+    try {
+      Object obj;
+      try { 
+        Object f = x.get(clsName + "_Factory");
+        obj = ((XArgsFactory<?>) f).getInstance(args, x);
+      } catch (NullPointerException e) {
+        ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "Unable to create " + clsName);
+        throw e;
+      }
+  
+      if ( obj instanceof ContextAware ) ((ContextAware) obj).setX(x);
+  
+      if ( obj instanceof FObject ) {
+        for ( Map.Entry<String, Object> entry : args.entrySet() )
+          ((FObject) obj).setProperty(entry.getKey(), entry.getValue());
+      }
+
+      return obj;
+    } catch (Throwable e) {
       throw new RuntimeException(e);
     }
   }

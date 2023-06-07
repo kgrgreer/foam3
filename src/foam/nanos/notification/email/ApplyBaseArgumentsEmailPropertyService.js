@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.notification.email',
   name: 'ApplyBaseArgumentsEmailPropertyService',
 
@@ -18,13 +18,13 @@
     'foam.core.X',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.SupportConfig',
-    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailConfig',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.session.Session',
     'foam.nanos.theme.Theme',
-    'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map'
@@ -35,31 +35,14 @@
       name: 'apply',
       type: 'foam.nanos.notification.email.EmailMessage',
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
+        Logger logger = Loggers.logger(x, this);
+
+        User user = (User) emailMessage.findUser(getX());
+        x = foam.util.Auth.sudo(x, user);
+
+        emailMessage.setSpid(user.getSpid());
+
         Theme theme = (Theme) x.get("theme");
-        User user = ((Subject) x.get("subject")).getUser();
-        String spid = null;
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-
-        if ( user != null ) {
-          appConfig = user.findGroup(x).getAppConfig(x);
-          spid = user.getSpid();
-        }
-
-        if ( theme == null
-          || ( user != null && ! user.getSpid().equals(x.get("spid")) )
-        ) {
-          theme = ((Themes) x.get("themes")).findTheme(x);
-        }
-
-        if ( spid == null ) {
-          spid = theme.getSpid();
-        }
-
-        if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-          emailMessage.setSpid(user.getSpid());
-        }
-
         SupportConfig supportConfig = theme.getSupportConfig();
         EmailConfig emailConfig = supportConfig.getEmailConfig();
 
@@ -82,7 +65,7 @@
         // template name check
         String templateName = (String) templateArgs.get("template");
         if ( SafetyUtil.isEmpty(templateName) ) {
-          logger.info("No email template name");
+          logger.debug("EmailTemplate not found");
           return emailMessage;
         }
 
@@ -90,11 +73,10 @@
         if ( SafetyUtil.isEmpty(sendTo) )
           templateArgs.put("sendTo", user.getEmail());
 
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        String url = appConfig.getUrl();
         templateArgs.put("logo", url + "/" + theme.getLogo());
-        templateArgs.put("rasterLogo", url + "/" + theme.getRasterLogo());
         templateArgs.put("largeLogo", url + "/" + theme.getLargeLogo());
-        templateArgs.put("largeRasterLogo", url + "/" + theme.getLargeRasterLogo());
         templateArgs.put("appLink", url);
         templateArgs.put("appName", theme.getAppName());
         templateArgs.put("locale", user.getLanguage().getCode().toString());
@@ -102,6 +84,15 @@
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
+        templateArgs.put("supportLogo", supportConfig.getSupportLogo());
+        templateArgs.put("termsAndCondLink", url + appConfig.getTermsAndCondLink());
+        templateArgs.put("termsAndCondLabel", appConfig.getTermsAndCondLabel());
+        templateArgs.put("copyright", appConfig.getCopyright());
+        templateArgs.put("privacyUrl", url + appConfig.getPrivacyUrl());
+        templateArgs.put("privacyLabel", appConfig.getPrivacy());
+
+        // Temporary color until token support is added for email
+        templateArgs.put("theme", theme);
 
         // personal support user
         User psUser = supportConfig.findPersonalSupportUser(getX());

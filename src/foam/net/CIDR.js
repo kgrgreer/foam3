@@ -92,6 +92,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to 172.x
     }
   ],
 
+  javaCode: `
+  public CIDR(foam.core.X x, String notation) {
+    setX(x);
+    setNotation(notation);
+  }
+  `,
+
   methods: [
     {
       name: 'calculateAddresses',
@@ -137,8 +144,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to 172.x
       }
       long addr32 = IPSupport.instance().ip2long(tokens[0]);
       long mask = Long.parseLong(tokens[1]);
+      mask = ~0 << (32 - mask);
       setLow(addr32 & mask);
-      setHigh(addr32 & mask);
+      setHigh(addr32 | ~mask);
       setStartAddress(IPSupport.instance().long2ip(getLow()));
       setEndAddress(IPSupport.instance().long2ip(getHigh()));
       `

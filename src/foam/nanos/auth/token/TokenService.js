@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.auth.token',
   name: 'TokenService',
 
+  skeleton: true,
+
   documentation: 'System that allows the generation of tokens as well as processing of said generated tokens',
 
   methods: [

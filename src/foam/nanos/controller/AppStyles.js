@@ -11,19 +11,44 @@ foam.CLASS({
 
   documentation: 'Generic CSS that can be included into the top level controller of foam app. Implement to foam class to use.',
 
+  cssTokens: [
+    {
+      name: 'fontFamily',
+      value: '$font1',
+      fallback: ' -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
+    },
+    {
+      name: 'background',
+      value: '$grey50',
+      fallback: 'white'
+    }
+  ],
   css: `
     :root{
       font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
+      --max-height: calc(100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0))
     }
 
     body {
-      background: /*%GREY5%*/ #f5f7fa;
-      color: /*%BLACK%*/ #1E1F21;
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: $background;
+      color: $black;
+      font-family: $fontFamily;
       font-size: 1.4rem;
       letter-spacing: 0.014em;
       margin: 0;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-right: env(safe-area-inset-right, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      padding-left: env(safe-area-inset-left, 0);
       overscroll-behavior: none;
+    }
+
+    blockquote{
+      border-left-color: #ccc;
+      border-left-style: solid;
+      margin: 0;
+      margin-left: 2ch;
+      padding-left: 1ch;
     }
 
     /* TYPOGRAPHY */ 
@@ -175,7 +200,7 @@ foam.CLASS({
       width: 60px;
       height: 20px;
       border-radius: 100px;
-      background-color: /*%BLACK%*/ #1e1f21;
+      background-color: $black;
     }
     .Open {
       width: 49px;
@@ -244,7 +269,8 @@ foam.CLASS({
 
   /* Set core body defaults */
   body {
-    min-height: 100vh;
+    min-height: var(--max-height, 100vh);
+    min-height: -webkit-fill-available;
     line-height: 1.5;
   }
 
@@ -294,6 +320,11 @@ foam.CLASS({
     font-size: 2.8rem;
   }
 
+  .flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* mobile */
   @media only screen and (min-width: 321px) {

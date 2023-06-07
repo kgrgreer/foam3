@@ -17,13 +17,22 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.DOP',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.er.EventRecord',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.pm.PM'
+  ],
+
+  constants: [
+    {
+      documentation: 'Cancel/terminate any active retry attempts',
+      name: 'CANCEL_RETRY_CMD',
+      type: 'String',
+      value: 'CANCEL_RETRY_CMD'
+    },
   ],
 
   properties: [
@@ -44,20 +53,6 @@ foam.CLASS({
       class: 'Int',
       name: 'maxRetryDelay',
       value: 20000
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
   javaCode: `
@@ -117,6 +112,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      if ( CANCEL_RETRY_CMD.equals(obj) ) {
+        setMaxRetryAttempts(0);
+        return obj;
+      }
       return submit(x, obj, DOP.CMD);
       `
     },
@@ -141,9 +140,10 @@ foam.CLASS({
       int retryAttempt = 0;
       int retryDelay = 10;
 
+      OMLogger omLogger = (OMLogger) getX().get("OMLogger");
       PM pm = PM.create(x, getClass().getSimpleName(), getName(), dop);
       String alarmId = this.getClass().getSimpleName()+"."+getName();
-      Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(AND(EQ(Alarm.NAME, alarmId), EQ(Alarm.HOSTNAME, System.getProperty("hostname", "localhost"))));
+      EventRecord er = null;
       try {
         while ( true ) {
           try {
@@ -157,23 +157,26 @@ foam.CLASS({
               throw new UnsupportedOperationException("Unknown operation: "+dop);
             }
           } catch ( ClusterException | MedusaException e ) {
-            getLogger().debug("submit", e.getMessage());
+            // Loggers.logger(x, this).debug("submit", e.getMessage());
             pm.error(x, e);
             throw e;
           } catch ( Throwable t ) {
-            getLogger().warning("submit", t.getMessage());
+            Loggers.logger(x, this).warning("submit", t.getMessage());
             ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-            if ( replaying != null &&
+            if ( isMediator(x) &&
+                 replaying != null &&
                  replaying.getIndex() > ((MedusaEntry) obj).getIndex() ) {
               // This entry has been saved quorum times, no need to retry.
               return obj;
             }
             if ( getMaxRetryAttempts() > -1 &&
                  retryAttempt >= getMaxRetryAttempts() ) {
-              getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
-              if ( alarm == null ) {
-                alarm = new Alarm(alarmId, AlarmReason.TIMEOUT);
-               ((DAO) x.get("alarmDAO")).put_(x, alarm);
+              Loggers.logger(x, this).warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
+              if ( er == null ||
+                   er.getSeverity() != LogLevel.WARN ) {
+                er = new EventRecord(x, "Medusa Client", alarmId, "Timeout", LogLevel.WARN, null);
+                er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put_(x, er).fclone();
+                er.clearId();
               }
               pm.error(x, "Retry limit reached.", t);
               throw new RuntimeException("Rejected, retry limit reached.", t);
@@ -186,7 +189,8 @@ foam.CLASS({
               if ( retryDelay > getMaxRetryDelay() ) {
                 retryDelay = 10;
               }
-              getLogger().info("retry attempt", retryAttempt, "delay", retryDelay);
+               omLogger.log("RetryClientSinkDAO", getName(), "retry");
+               Loggers.logger(x, this).info("retry attempt", retryAttempt, "delay", retryDelay);
               Thread.sleep(retryDelay);
             } catch(InterruptedException e) {
               Thread.currentThread().interrupt();
@@ -194,12 +198,11 @@ foam.CLASS({
               throw t;
             }
           }
-          if ( alarm != null ) {
-            if ( alarm.isFrozen() ) {
-              alarm = (Alarm) alarm.fclone();
-            }
-            alarm.setIsActive(false);
-            ((DAO) x.get("alarmDAO")).put_(x, alarm);
+          if ( er != null &&
+               er.getSeverity() == LogLevel.WARN ) {
+            er.setSeverity(LogLevel.INFO);
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put_(x, er).fclone();
+            er.clearId();
           }
         }
       } finally {
@@ -227,17 +230,33 @@ foam.CLASS({
     {
       // TODO:
       name: 'remove',
-      javaCode: `//nop`
+      javaCode: `
+      //nop
+      `
     },
     {
       name: 'eof',
       javaCode: `
-      getLogger().debug("eof");
+      //nop
       `
     },
     {
       name: 'reset',
-      javaCode: `//nop`
+      javaCode: `
+      //nop
+      `
+    },
+    {
+      name: 'isMediator',
+      args: 'Context x',
+      type: 'boolean',
+      javaCode:`
+        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+        if ( support == null ) return false;
+        ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+        if ( myConfig == null ) return false;
+        return myConfig.getType() == MedusaType.MEDIATOR ? true : false;
+      `
     }
   ]
 });

@@ -40,7 +40,7 @@ foam.CLASS({
       adapt: function(old, nu) {
         if ( ! this.of ) return nu;
         var cls = this.of;
-        for ( var i = 0; i < nu.length; i++ ) {
+        for ( var i = 0 ; i < nu.length ; i++ ) {
           if ( ! cls.isInstance(nu[i]) )
             nu[i] = cls.create(nu[i], this.__subContext__);
         }
@@ -78,8 +78,7 @@ foam.CLASS({
           this.array.push(cls.create(o, this.__subContext__));
       },
       swiftCode: 'array.append(obj)',
-      javaCode: 'if ( getArray() == null ) setArray(new java.util.ArrayList());\n'
-                +`getArray().add(obj);`
+      javaCode: 'if ( getArray() == null ) setArray(new java.util.ArrayList());\ngetArray().add(obj);'
     },
     function outputJSON(outputter) {
       outputter.start('{');

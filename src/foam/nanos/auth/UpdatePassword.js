@@ -14,7 +14,7 @@ foam.CLASS({
     'auth',
     'notify',
     'resetPasswordToken',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -22,8 +22,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPDATE_PASSWORD_TITLE', message: 'Update your password' },
-    { name: 'UPDATE_PASSWORD_SUBTITLE', message: 'Create a new password for your account' },
+    { name: 'TITLE', message: 'Update your password' },
+    { name: 'INSTRUCTION', message: 'Create a new password for your account' },
     { name: 'SUCCESS_MSG', message: 'Your password was successfully updated' },
     { name: 'ORIGINAL_PASSWORD_MISSING', message: 'Please enter the original password' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
@@ -33,13 +33,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'updatePasswordSection',
-      title: function() {
-        return this.UPDATE_PASSWORD_TITLE
-      },
-      subTitle: function() {
-        return this.UPDATE_PASSWORD_SUBTITLE
-      }
+      name: 'resetPasswordSection',
     }
   ],
 
@@ -47,17 +41,16 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'originalPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'current-password'
       },
       validationPredicates: [
         {
           args: ['originalPassword'],
-          predicateFactory: function(e) {
-            return e.NEQ(foam.nanos.auth.UpdatePassword.ORIGINAL_PASSWORD, "");
-          },
+          query: 'originalPassword!=""',
           errorMessage: 'ORIGINAL_PASSWORD_MISSING'
         }
       ]
@@ -71,30 +64,25 @@ foam.CLASS({
     {
       class: 'Password',
       name: 'newPassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
-          passwordIcon: true
+          passwordIcon: true,
+          autocomplete: 'new-password'
         }
       },
       minLength: 10,
       validationPredicates: [
         {
           args: ['newPassword'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.mlang.StringLength.create({
-              arg1: foam.nanos.auth.UpdatePassword.NEW_PASSWORD
-            }), 10);
-          },
+          query: 'newPassword.len>=10',
           errorMessage: 'PASSWORD_LENGTH_10_ERROR'
         },
         {
           args: ['passwordAvailable'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.nanos.auth.UpdatePassword.PASSWORD_AVAILABLE, true);
-          },
+          query: 'passwordAvailable==true',
           errorMessage: 'WEAK_PASSWORD_ERR'
         }
       ]
@@ -103,19 +91,16 @@ foam.CLASS({
       class: 'Password',
       name: 'confirmationPassword',
       label: 'Confirm Password',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       validationPredicates: [
         {
           args: ['newPassword', 'confirmationPassword'],
-          predicateFactory: function(e) {
-            return e.EQ(
-              foam.nanos.auth.UpdatePassword.NEW_PASSWORD,
-              foam.nanos.auth.UpdatePassword.CONFIRMATION_PASSWORD);
-          },
+          query: 'newPassword==confirmationPassword',
           errorMessage: 'PASSWORD_NOT_MATCH'
         }
       ]
@@ -138,9 +123,10 @@ foam.CLASS({
     {
       name: 'makeHorizontal',
       code: function() {
-        this.ORIGINAL_PASSWORD.gridColumns = 4;
-        this.NEW_PASSWORD.gridColumns = 4;
-        this.CONFIRMATION_PASSWORD.gridColumns = 4;
+        let columns = { columns: 12, mdColumns: 4, lgColumns: 4, xlColumns: 4 };
+        this.ORIGINAL_PASSWORD.gridColumns = columns;
+        this.NEW_PASSWORD.gridColumns = columns;
+        this.CONFIRMATION_PASSWORD.gridColumns = columns;
       }
     },
     {
@@ -156,7 +142,7 @@ foam.CLASS({
   actions: [
     {
       name: 'updatePassword',
-      section: 'updatePasswordSection',
+      section: 'resetPasswordSection',
       buttonStyle: 'PRIMARY',
       isEnabled: function(errors_) {
         return ! errors_;
@@ -165,7 +151,6 @@ foam.CLASS({
       code: function() {
         this.auth.updatePassword(null, this.originalPassword, this.newPassword)
         .then((result) => {
-          this.user.copyFrom(result);
           this.reset_();
           this.notify(this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
         })

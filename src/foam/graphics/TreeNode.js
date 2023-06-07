@@ -12,11 +12,13 @@ foam.CLASS({
   requires: [
     'foam.graphics.Box',
     'foam.graphics.CView',
+    'foam.graphics.Gradient',
     'foam.graphics.Label',
     'foam.graphics.Line'
   ],
 
   imports: [
+    'classToTreeNodeConfig',
     'formatNode',
     'graph',
     'parentNode?',
@@ -28,12 +30,14 @@ foam.CLASS({
 
   properties: [
     'data',
-    [ 'height', 155 ],
-    [ 'width', 60 ],
-    [ 'padding', 30 ],
-    [ 'lineWidth', 0.5 ],
-    [ 'border', 'gray' ],
-    [ 'color', 'white' ],
+    [ 'height',                155 ],
+    [ 'width',                  60 ],
+    [ 'padding',                60 ],
+    [ 'lineWidth',             0.5 ],
+    [ 'border',             'gray' ],
+    [ 'color',             'white' ],
+    [ 'expandIconColor',   'black' ],
+    [ 'expandIconWidth',         2 ],
     {
       name: 'outline',
       documentation: `
@@ -126,40 +130,85 @@ foam.CLASS({
 
       if ( this.relationship ) {
         this.data[this.relationship.forwardName].select(childData => {
+          var treeNodeConfig = this.classToTreeNodeConfig[childData.cls_.id];
+
+          var treeNodeBorder = treeNodeConfig && treeNodeConfig.nodeBorder
+            ? treeNodeConfig.nodeBorder
+            : this.graph.border;
+
+          var treeNodeWidth = treeNodeConfig && treeNodeConfig.width
+            ? treeNodeConfig.width
+            : this.graph.nodeWidth;
+          
+          var treeNodeHeight = treeNodeConfig && treeNodeConfig.height
+            ? treeNodeConfig.height
+            : this.graph.nodeHeight;
+          
+          var treeNodeCornerRadius = treeNodeConfig && treeNodeConfig.nodeCornerRadius
+            ? treeNodeConfig.nodeCornerRadius
+            : this.graph.nodeCornerRadius;
+          
+          var treeNodeExpandIconColor = treeNodeConfig && treeNodeConfig.expandIconColor
+            ? treeNodeConfig.expandIconColor
+            : this.expandIconColor;
+  
+          var treeNodeExpandIconWidth = treeNodeConfig && treeNodeConfig.expandIconWidth
+            ? treeNodeConfig.expandIconWidth
+            : this.expandIconWidth;
+
           this.addChildNode({
             data: childData,
-            width: this.width,
-            height: this.height,
+            width: treeNodeWidth,
+            height: treeNodeHeight,
             padding: this.padding,
-            lineWidth: this.lineWidth
+            lineWidth: this.lineWidth,
+            border: treeNodeBorder,
+            cornerRadius: treeNodeCornerRadius,
+            expandIconColor: treeNodeExpandIconColor,
+            expandIconWidth: treeNodeExpandIconWidth,
+            y: this.height + this.padding
           });
         });
       }
 
-      this.canvas.on('click', (e) => {
-        var p = this.parent;
+      var expandFunction = () => {
+        this.expanded = ! this.expanded;
+      }
 
-        while ( this.cls_.isInstance(p) ) {
-          if ( ! p.expanded ) return;
-          p = p.parent;
+      var onClick = expandFunction;
+
+      var treeNodeConfig = this.classToTreeNodeConfig[this.data.cls_.id];
+
+      if ( treeNodeConfig && treeNodeConfig.onClickNode ) {
+        onClick = treeNodeConfig.onClickNode;
+      }
+
+      this.canvas.on('click', 
+        e => {
+          var p = this.parent;
+
+          while ( this.cls_.isInstance(p) ) {
+            if ( ! p.expanded ) return;
+            p = p.parent;
+          }
+
+          var point = this.globalToLocalCoordinates({
+            w: 1,
+            x: e.offsetX,
+            y: e.offsetY,
+          });
+
+          /**
+           * need to adjust the x-value to the middle of the node and not the far left edge
+           * so that the pointer click registers correctly when clicking any part of the node
+           */
+          point.x += this.width / 2;
+
+          if ( this.hitTest(point) ) {
+            onClick(this.data);
+          }
         }
-
-        var point = this.globalToLocalCoordinates({
-          w: 1,
-          x: e.offsetX,
-          y: e.offsetY,
-        });
-
-        /**
-         * need to adjust the x-value to the middle of the node and not the far left edge
-         * so that the pointer click registers correctly when clicking any part of the node
-         */
-        point.x += this.width / 2;
-
-        if ( this.hitTest(point) ) {
-          this.expanded = ! this.expanded;
-        }
-      });
+      );
     },
 
     function paint(x) {
@@ -186,11 +235,11 @@ foam.CLASS({
       }
 
       // Paint lines to childNodes
-      x.lineWidth = this.lineWidth;
-      x.strokeStyle = this.border;
+      x.lineWidth = this.graph.connectorWidth;
+      x.strokeStyle = this.graph.connectorColor;
 
       if ( this.expanded && this.childNodes.length ) {
-        var h = this.childNodes[0].y * 3 / 4;
+        var h = this.childNodes[0].y - this.padding / 2;
         var l = this.childNodes.length;
 
         line(0, this.height, 0, h);
@@ -202,19 +251,39 @@ foam.CLASS({
       }
 
       // Paint expand/collapse arrow
-      x.lineWidth = this.borderWidth;
+      x.lineWidth = this.expandIconWidth;
+      x.strokeStyle = this.expandIconColor;
+
+      let treeNodeConfig = this.classToTreeNodeConfig[this.data.cls_.id];
+
+      var nodePaddingTop = treeNodeConfig && treeNodeConfig.nodePaddingTop
+        ? treeNodeConfig.nodePaddingTop
+        : 24;
+
+      var nodePaddingRight = treeNodeConfig && treeNodeConfig.nodePaddingRight
+        ? treeNodeConfig.nodePaddingRight
+        : 24;
+
+      const rightPos = this.width / 2 - nodePaddingRight;
 
       if ( this.childNodes.length ) {
-        var d = this.expanded ? 5 : -5;
-        var y = this.height - 8;
-        line(-5, y, 0, y + d);
-        line(0, y + d, 5, y);
+        var halfLineLength = 5;
+
+        if ( this.expanded ) {
+          var d = halfLineLength;
+          var y = nodePaddingTop + halfLineLength / 2;
+        } else {
+          var d = -5;
+          var y = nodePaddingTop + halfLineLength + halfLineLength / 2;
+        }
+
+        line(rightPos - halfLineLength * 2, y, rightPos - halfLineLength, y + d);
+        line(rightPos - halfLineLength, y + d, rightPos, y);
       }
     },
 
     function addChildNode(args) {
       var node = this.cls_.create(args, this);
-      node.y = this.height * 2;
       this.add(node);
       this.childNodes = this.childNodes.concat(node);
       node.outline$.sub(() => {
@@ -254,7 +323,7 @@ foam.CLASS({
       for ( var i = 0; i < this.childNodes.length; i++ ) {
         var n1 = this.childNodes[i];
 
-        for ( var j = i + 1; j < this.childNodes.length; j++ ){
+        for ( var j = i + 1; j < this.childNodes.length; j++ ) {
           var n2 = this.childNodes[j];
 
           var distance = n1.distanceTo(n2);
@@ -284,7 +353,7 @@ foam.CLASS({
         }
       }
 
-      for ( var i = 0; i < this.childNodes.length; i++ ){
+      for ( var i = 0; i < this.childNodes.length; i++ ) {
         if ( this.childNodes[i].layout() ) moved = true;
       }
 
@@ -302,7 +371,7 @@ foam.CLASS({
       return moved;
     },
 
-    function findNode(id){
+    function findNode(id) {
       if ( this.data.id === id ) return this;
 
       for ( var i = 0 ; i < this.childNodes.length ; i++ ) {

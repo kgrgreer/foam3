@@ -10,30 +10,54 @@ foam.CLASS({
   extends: 'foam.u2.tag.Button',
 
   imports: [
+    'menu',
     // If rendered in a dropdown, close the dropdown after launching menu
     'dropdown? as parentMenuDropdown'
   ],
 
   properties: [
-    'menu',
     {
       name: 'label',
-      factory: function() { return this.menu.label || ''; }
+      expression: function(menu) { return menu.label || ''; }
     },
     {
       name: 'icon',
-      factory: function() { return this.menu.icon; }
+      expression: function(menu) { return menu.icon || ''; }
     },
     {
       name: 'themeIcon',
-      factory: function() { return this.menu.themeIcon; }
+      expression: function(menu) { return menu.themeIcon || ''; }
+    },
+    {
+      class: 'Function',
+      generateJava: false,
+      name: 'isEnabled',
+      documentation: 'Function to determine if button is enabled.',
+      value: null
+    },
+  ],
+
+  methods: [
+    function render() {
+      this.attrs({ disabled: this.createIsEnabled$(this.__context__, this).map((e) => e ? false : 'disabled') });
+      this.SUPER();
+
+    },
+    function createIsEnabled$(x, data) {
+      return this.isEnabled ?
+      data.slot(this.isEnabled ) :
+      foam.core.ConstantSlot.create({ value: true });      
     }
   ],
 
   listeners: [
     function click(evt) {
       this.SUPER(evt);
-      this.menu.launch_(this.__subContext__, this);
+      let ret = this.menu.launch_(this.__subContext__, this);
+      if ( ret && ret.then ) {
+        this.loading_ = true;
+        ret.then(() => { this.loading_ = false; })
+      }
       if ( this.parentMenuDropdown ) this.parentMenuDropdown.close();
       return;
     }

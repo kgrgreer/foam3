@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.alarming',
   name: 'AddAlarmNameDAO',
   extends: 'foam.dao.ProxyDAO',
-  documentation: `DAO that add name to alarmConfig on Alarm.put. Used to help keep truck of
-  newly added alarms.`,
+  documentation: 'Modify severity of alarm, or disable.  If an alarm is too verbose or determined to be the wrong status, then it can be down regulated with a matching AlarmConfig.',
 
   javaImports: [
     'foam.dao.DAO',

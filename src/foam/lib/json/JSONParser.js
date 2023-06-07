@@ -30,9 +30,12 @@ foam.CLASS({
       ps.setString(data);
       ParserContext x = new ParserContextImpl();
       x.set("X", getX());
-      ps = (StringPStream) ps.apply(defaultClass == null ? parser : ExprParser.create(defaultClass), x);
-
-      return ps == null ? null : (FObject) ps.value();
+      try {
+        ps = (StringPStream) ps.apply(defaultClass == null ? parser : ExprParser.create(defaultClass), x);
+        return ps == null ? null : (FObject) ps.value();
+      } catch ( Throwable t ) {
+        return null;
+      }
     }
 
     public Object[] parseStringForArray(String data, Class defaultClass) {
@@ -41,8 +44,12 @@ foam.CLASS({
       ParserContext x = new ParserContextImpl();
       x.set("X", getX());
 
-      ps = (StringPStream) ps.apply(FObjectArrayParser.create(defaultClass), x);
-      return ps == null ? null : (Object[]) ps.value();
+      try {
+        ps = (StringPStream) ps.apply(FObjectArrayParser.create(defaultClass), x);
+        return ps == null ? null : (Object[]) ps.value();
+      } catch ( Throwable t ) {
+        return null;
+      }
     }
  `,
 

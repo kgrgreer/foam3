@@ -24,7 +24,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'ticketDAO',
-    'user',
+    'subject',
     'hideSummary',
     'stack'
   ],
@@ -67,13 +67,13 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       margin: 0px;
     }
     ^ .foam-u2-TextField {
       margin-bottom:20px;
       margin-top:8px;
-      background-color: #ffffff;
+      background-color: $white;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .foam-u2-tag-TextArea {
@@ -104,12 +104,12 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .bg2 {
       margin-top:20px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: $white;
       padding: 20px;
     }
     ^ .popUpDropDown {
@@ -132,7 +132,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .popUpDropDown > div > div:hover {
       background-color: rgba(89, 165, 213, 0.3);
@@ -160,7 +160,7 @@ foam.CLASS({
     'submitAsPopUp',
     {
       name: 'dao',
-      factory: function() { return this.user.tickets; }
+      factory: function() { return this.subject.user.tickets; }
     },
     {
       class: 'String',
@@ -172,7 +172,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'subject'
+      name: 'emailSubject'
     },
     {
       class: 'String',
@@ -239,7 +239,7 @@ foam.CLASS({
             .add('Subject')
           .end()
           .start()
-            .tag(this.SUBJECT)
+            .tag(this.EMAIL_SUBJECT)
           .end()
           .start().addClass('label')
             .add('Description')
@@ -267,7 +267,7 @@ foam.CLASS({
         var ticket = this.Ticket.create({
           requestorEmail: this.requestorEmail,
           requestorName: this.requestorName,
-          userId: this.user.id,
+          userId: this.subject.user.id,
           subject: this.subject,
           status: this.status
         });
@@ -275,7 +275,7 @@ foam.CLASS({
         this.dao.put(ticket).then(function(ticket) {
           if (self.message == "") return;
           var message = self.TicketMessage.create({
-            senderId: self.user.id,
+            senderId: self.subject.user.id,
             dateCreated: new Date(),
             message: self.message,
             type: 'Internal'

@@ -1,0 +1,14 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.broadcastNotifications",
+  "label":"Broadcasted Notifications",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"broadcastNotificationDAO",
+      "cannedQueries": []
+    }
+  },
+  "parent":"admin"
+})

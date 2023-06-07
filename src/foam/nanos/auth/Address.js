@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'Address',
 
   documentation: 'The base model for the postal address.',
+  
+  axioms: [ foam.pattern.Faceted.create({ ofProperty: 'countryId' }) ],
 
   implements: [
     {
@@ -30,15 +32,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CITY_REQUIRED', message: 'City required' },
+    { name: 'CITY_REQUIRED', message: 'Required' },
     { name: 'COUNTRY_REQUIRED', message: 'Country required' },
     { name: 'INVALID_COUNTRY', message: 'Invalid country' },
-    { name: 'REGION_REQUIRED', message: 'Region required' },
+    { name: 'REGION_REQUIRED', message: 'Required' },
     { name: 'INVALID_REGION', message: 'Invalid region. Please provide valid ISO-3166-2 region.' },
-    { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
+    { name: 'INVALID_ADDRESS_1_REQUIRED', message: 'Required' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
-    { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
-    { name: 'STREET_NAME_REQUIRED', message: 'Street name required' },
+    { name: 'POSTAL_CODE_REQUIRE', message: 'Required' },
+    { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
     { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
   ],
 
@@ -66,15 +68,8 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['structured', 'address1'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, true),
-              e.GTE(foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.ADDRESS1
-              }), 1)
-            );
-          },
-          errorMessage: 'INVALID_ADDRESS_1'
+          query: 'structured==true||address1.len>=1',
+          errorMessage: 'INVALID_ADDRESS_1_REQUIRED'
         }
       ],
       hidden: true
@@ -93,6 +88,7 @@ foam.CLASS({
       targetDAOKey: 'countryDAO',
       name: 'countryId',
       label: 'Country',
+      shortName: 'country',
       of: 'foam.nanos.auth.Country',
       documentation: `A foreign key into the CountryDAO which represents the country.`,
       required: true,
@@ -114,7 +110,7 @@ foam.CLASS({
         }
       `,
       postSet: function(oldValue, newValue) {
-        if ( oldValue !== newValue ) {
+        if ( oldValue !== newValue && ! this.regionId.startsWith(newValue) ) {
           this.regionId = undefined;
         }
       },
@@ -191,21 +187,14 @@ foam.CLASS({
       // and not baked into the model.
       class: 'String',
       name: 'streetNumber',
-      label: 'Street number',
+      label: 'Street #',
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
       gridColumns: 3,
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, false),
-              e.GTE(foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.STREET_NUMBER
-              }), 1)
-            );
-          },
+          query: 'structured==false||streetNumber.len>=1',
           errorMessage: 'STREET_NUMBER_REQUIRED'
         }
       ]
@@ -213,19 +202,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'streetName',
-      label: 'Street name',
+      label: 'Street Name',
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
       validationPredicates: [
         {
           args: ['structured', 'streetName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.nanos.auth.Address.STRUCTURED, false),
-              e.REG_EXP(foam.nanos.auth.Address.STREET_NAME, /^\s*.+\s*$/)
-            );
-          },
+          query: 'structured==false||streetName~/^\s*.+\s*$/',
           errorMessage: 'STREET_NAME_REQUIRED'
         }
       ]
@@ -251,26 +235,16 @@ foam.CLASS({
       },
       gridColumns: 6,
       validationPredicates: [
+        // Requirement for PK is postalCode is optional
+        // real country distictions to come with NP-8818-facade Address
         {
           args: ['postalCode'],
-          predicateFactory: function(e) {
-            return e.GT(
-              foam.mlang.StringLength.create({
-                arg1: foam.nanos.auth.Address.POSTAL_CODE
-              }), 0);
-          },
+          query: 'postalCode.len>0||countryId=="PK"',
           errorMessage: 'POSTAL_CODE_REQUIRE'
         },
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'CA'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z][ -]?\d[ABCEGHJ-NPRSTV-Z]\d$/i)
-            );
-          },
+          query: 'countryId!="CA"||postalCode~/^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ -]?\\d[ABCEGHJ-NPRSTV-Z]\\d$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -282,14 +256,7 @@ foam.CLASS({
         },
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'US'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}(?:[-\s]\d{4})?$/i)
-            );
-          },
+          query: 'countryId!="US"||postalCode~/^\\d{5}(?:[-\\s]\\d{4})?$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -302,15 +269,7 @@ foam.CLASS({
         // Austria
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'AT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{4}$/
-              )
-            );
-          },
+          query: 'countryId!="AT"||postalCode~/^\\d{4}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -323,15 +282,7 @@ foam.CLASS({
         // Belgium
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'BE'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(?:(?:[1-9])(?:\d{3}))$/
-              )
-            );
-          },
+          query: 'countryId!="BE"||postalCode~/^(?:(?:[1-9])(?:\\d{3}))$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -344,15 +295,7 @@ foam.CLASS({
         // Brazil
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'BR'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}-?\d{3}$/
-              )
-            );
-          },
+          query: 'countryId!="BR"||postalCode~/^\\d{5}-?\\d{3}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -367,15 +310,7 @@ foam.CLASS({
         // Mainland China, with no postal code system currently used
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'CN'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{6}$/
-              )
-            );
-          },
+          query: 'countryId!="CN"||postalCode~/^\\d{6}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -388,15 +323,7 @@ foam.CLASS({
         // Cyprus
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'CY'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{4}$/
-              )
-            );
-          },
+          query: 'countryId!="CY"||postalCode~/^\\d{4}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -409,15 +336,7 @@ foam.CLASS({
         // Estonia
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'EE'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="EE"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -430,15 +349,7 @@ foam.CLASS({
         // Finland
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'FI'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="FI"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -451,15 +362,7 @@ foam.CLASS({
         // France
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'FR'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(?:[0-8]\d|9[0-8])\d{3}$/
-              )
-            );
-          },
+          query: 'countryId!="FR"||postalCode~/^(?:[0-8]\\d|9[0-8])\\d{3}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -472,15 +375,7 @@ foam.CLASS({
         // Germany
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'DE'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="DE"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -493,15 +388,7 @@ foam.CLASS({
         // Great Britain
         {
           args: ['postalCode', 'countryId'],
-            predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'GB'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(GIR[ ]?0AA|((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\d[\dA-Z]?[ ]?\d[ABD-HJLN-UW-Z]{2}))|BFPO[ ]?\d{1,4})$/
-              )
-            );
-          },
+          query: 'countryId!="GB"||postalCode~/^(GIR[ ]?0AA|((AB|AL|B|BA|BB|BD|BH|BL|BN|BR|BS|BT|CA|CB|CF|CH|CM|CO|CR|CT|CV|CW|DA|DD|DE|DG|DH|DL|DN|DT|DY|E|EC|EH|EN|EX|FK|FY|G|GL|GY|GU|HA|HD|HG|HP|HR|HS|HU|HX|IG|IM|IP|IV|JE|KA|KT|KW|KY|L|LA|LD|LE|LL|LN|LS|LU|M|ME|MK|ML|N|NE|NG|NN|NP|NR|NW|OL|OX|PA|PE|PH|PL|PO|PR|RG|RH|RM|S|SA|SE|SG|SK|SL|SM|SN|SO|SP|SR|SS|ST|SW|SY|TA|TD|TF|TN|TQ|TR|TS|TW|UB|W|WA|WC|WD|WF|WN|WR|WS|WV|YO|ZE)(\\d[\\dA-Z]?[ ]?\\d[ABD-HJLN-UW-Z]{2}))|BFPO[ ]?\\d{1,4})$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -514,15 +401,7 @@ foam.CLASS({
         // Greece
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'GR'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{3}\s{0,1}\d{2}$/
-              )
-            );
-          },
+          query: 'countryId!="GR"||postalCode~/^\\d{3}\\s{0,1}\\d{2}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -535,15 +414,7 @@ foam.CLASS({
         // Ireland
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IE'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /[A-Za-z]\d{2}\s?[A-Za-z\d]{4}/
-              )
-            );
-          },
+          query: 'countryId!="IE"||postalCode~/[A-Za-z]\\d{2}\\s?[A-Za-z\\d]{4}/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -556,15 +427,7 @@ foam.CLASS({
         // India
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IN'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{6}(?:[-\s]\d{4})?$/i
-              )
-            );
-          },
+          query: 'countryId!="IN"||postalCode~/^\\d{6}(?:[-\\s]\\d{4})?$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -577,15 +440,7 @@ foam.CLASS({
         // Italy
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="IT"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -598,15 +453,7 @@ foam.CLASS({
         // Isreal
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IL'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{7}$/
-              )
-            );
-          },
+          query: 'countryId!="IL"||postalCode~/^\\d{7}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -619,15 +466,7 @@ foam.CLASS({
         // Latvia
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'LV'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(LV-)?\d{4}$/i
-              )
-            );
-          },
+          query: 'countryId!="LV"||postalCode~/^(LV-)?\\d{4}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -640,15 +479,7 @@ foam.CLASS({
         // Lithuania
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'LT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(LT-)?\d{5}$/i
-              )
-            );
-          },
+          query: 'countryId!="LT"||postalCode~/^(LT-)?\\d{5}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -661,15 +492,7 @@ foam.CLASS({
         // Luxembourg
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'LU'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{4}$/
-              )
-            );
-          },
+          query: 'countryId!="LU"||postalCode~/^\\d{4}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -682,15 +505,7 @@ foam.CLASS({
         // Malta
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'MT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^[A-Z]{3}\s?\d{4}$/i
-              )
-            );
-          },
+          query: 'countryId!="MT"||postalCode~/^[A-Z]{3}\\s?\\d{4}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -703,15 +518,7 @@ foam.CLASS({
         // the Netherlands
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'NL'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(?:NL-)?(?:[1-9]\d{3} ?(?:[A-EGHJ-NPRTVWXZ][A-EGHJ-NPRSTVWXZ]|S[BCEGHJ-NPRTVWXZ]))$/i
-              )
-            );
-          },
+          query: 'countryId!="NL"||postalCode~/^(?:NL-)?(?:[1-9]\\d{3} ?(?:[A-EGHJ-NPRTVWXZ][A-EGHJ-NPRSTVWXZ]|S[BCEGHJ-NPRTVWXZ]))$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -724,15 +531,7 @@ foam.CLASS({
         // Portugal: "NNNN-NNN", "NNNN NNN"
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'PT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{4}[- ]{0,1}\d{3}$/
-              )
-            );
-          },
+          query: 'countryId!="PT"||postalCode~/^\\d{4}[- ]{0,1}\\d{3}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -745,15 +544,7 @@ foam.CLASS({
         // Slovakia
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'SK'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(SK-)?\d{3}\s?\d{2}$/i
-              )
-            );
-          },
+          query: 'countryId!="SK"||postalCode~/^(SK-)?\\d{3}\\s?\\d{2}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -766,15 +557,7 @@ foam.CLASS({
         // Slovenia
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'SI'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(SI-)?\d{4}$/i
-              )
-            );
-          },
+          query: 'countryId!="SI"||postalCode~/^(SI-)?\\d{4}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -787,15 +570,7 @@ foam.CLASS({
         // Spain
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'ES'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(?:0[1-9]|[1-4]\d|5[0-2])\d{3}$/
-              )
-            );
-          },
+          query: 'countryId!="ES"||postalCode~/^(?:0[1-9]|[1-4]\\d|5[0-2])\\d{3}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -808,15 +583,7 @@ foam.CLASS({
         // Sweden
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'SE'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(s-|S-){0,1}[0-9]{3}\s?[0-9]{2}$/
-              )
-            );
-          },
+          query: 'countryId!="SE"||postalCode~/^(s-|S-){0,1}[0-9]{3}\\s?[0-9]{2}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -829,15 +596,7 @@ foam.CLASS({
         // Jamaica
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'JM'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(JM)[a-zA-Z]{3}\d{2}$/i
-              )
-            );
-          },
+          query: 'countryId!="JM"||postalCode~/^(JM)[a-zA-Z]{3}\\d{2}$/i',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -850,15 +609,7 @@ foam.CLASS({
         // Lebanon
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'LB'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^(\d{4}|\d{8})$/
-              )
-            );
-          },
+          query: 'countryId!="LB"||postalCode~/^(\\d{4}|\\d{8})$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -871,15 +622,7 @@ foam.CLASS({
         // Mexico
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'MX'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="MX"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -892,15 +635,7 @@ foam.CLASS({
         // Malaysia
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'MY'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{5}$/
-              )
-            );
-          },
+          query: 'countryId!="MY"||postalCode~/^\\d{5}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -913,15 +648,7 @@ foam.CLASS({
         // Trinidad and Tobago
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'TT'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{6}$/
-              )
-            );
-          },
+          query: 'countryId!="TT"||postalCode~/^\\d{6}$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
@@ -934,15 +661,20 @@ foam.CLASS({
         // South Africa
         {
           args: ['postalCode', 'countryId'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'ZA'),
-              e.REG_EXP(
-                foam.nanos.auth.Address.POSTAL_CODE,
-                /^\d{4}$/
-              )
-            );
-          },
+          query: 'countryId!="ZA"||postalCode~/^\\d{4}$/',
+          errorMessage: 'INVALID_POSTAL_CODE',
+          jsErr: function(X) {
+            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
+            if ( ! postalCodeError ) {
+              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
+            }
+            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
+          }
+        },
+        // Pakistan
+        {
+          args: ['postalCode', 'countryId'],
+          query: 'countryId!="PK"||postalCode~/^(\\s*|\\d{5})$/',
           errorMessage: 'INVALID_POSTAL_CODE',
           jsErr: function(X) {
             let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);

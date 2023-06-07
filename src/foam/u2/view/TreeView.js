@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   requires: [
-    'foam.mlang.ExpressionsSingleton'
+    'foam.mlang.ExpressionsSingleton',
+    'foam.u2.tag.Image'
   ],
 
   exports: [
@@ -23,7 +24,8 @@ foam.CLASS({
     'returnExpandedCSS?',
     'selection',
     'startExpanded',
-    'translationService?'
+    'translationService?',
+    'rowConfig'
   ],
 
   css: `
@@ -31,12 +33,6 @@ foam.CLASS({
       white-space: nowrap;
       inset: none;
       cursor: pointer;
-      width: 240px;
-    }
-
-    ^:hover > ^heading {
-      background-color: #e7eaec;
-      color: #406dea;
     }
 
     ^label-container {
@@ -53,35 +49,94 @@ foam.CLASS({
 
     ^heading {
       min-height: 40px;
-      border-left: 4px solid rgba(0,0,0,0);
       display: flex;
       align-items: center;
+      // padding: 0 8px;
     }
 
-    ^button{
-      padding: 0 !important;
-      width: 100%;
-    }
-
-    ^select-level {
+    button^button{
       padding: 8px;
+      width: 100%;
+      justify-content: flex-start;
     }
 
-    ^selected > ^heading {
-      background-color: /*%PRIMARY5%*/ #e5f1fc !important;
-      border-left: 4px solid /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^selected > ^heading > ^select-level > ^label {
-      color: /*%BLACK%*/ #1E1F21 !important;
-      font-weight: bold;
-    }
-
-    ^selected > ^heading > ^select-level > ^toggle-icon {
-      color: /*%BLACK%*/ #1E1F21 !important;
-      font-weight: bold;
-    }
   `,
+
+  classes: [
+    {
+      name: 'LabelView',
+      extends: 'foam.u2.View',
+      requires: [
+        'foam.u2.tag.Image'
+      ],
+    
+      css: `
+        ^select-level {
+          display: flex;
+          justify-content: space-between;
+          overflow: hidden;
+          padding-right: 8px;
+          text-align: left;
+          width: 100%;
+        }
+    
+        ^select-level > * {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+    
+        ^toggle-icon {
+          align-self: center;
+          transition: 0.2s linear;
+        }
+    
+        ^toggle-icon svg{
+          width: 0.75em;
+          height: 0.75em;
+        }
+      `,
+      
+      properties: [
+        {
+          name: 'row'
+        }
+      ],
+      methods: [
+        function render() {
+          let row = this.row;
+          let self = this;
+          var selectedSlot = row.slot(function(selected_) {
+            return selected_ ? 'p-semiBold' : 'p';
+          });
+          this.
+          addClass(this.myClass('select-level')).
+          callIfElse(row.rowConfig?.[row.data.id],
+            function() {
+              this.tag(row.rowConfig?.[row.data.id])
+            },
+            function() {
+              this.start()
+                .addClass(selectedSlot)
+                .addClass(this.myClass('label')).
+                call(row.formatter, [row.data]).
+              end();
+            }
+          ).
+          add(row.hasChildren$.map(hasChildren => {
+            if ( ! hasChildren ) return self.E();
+            return self.E().
+              addClass(self.myClass('toggle-icon')).
+              style({
+                'transform': row.expanded$.map(function(c) { return c ? 'rotate(90deg)': 'rotate(0deg)'; })
+              }).
+              on('click', this.toggleExpanded).
+              tag(self.Image, { glyph: 'next' });
+          }));
+        }
+      ]
+    }
+  ],
 
   properties: [
     {
@@ -135,6 +190,16 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'level'
+    },
+    {
+      class: 'Boolean',
+      name: 'selected_',
+      expression: function(selection, data$id) {
+        if ( selection && foam.util.equals(selection.id, this.data.id) ) {
+          return true;
+        }
+        return false;
+      }
     }
   ],
 
@@ -165,34 +230,6 @@ foam.CLASS({
       if ( this.translationService ) {
         labelString = self.translationService.getTranslation(foam.locale, self.data.label, self.data.label);
       }
-      var mainLabel = this.E().
-        addClass(self.myClass('select-level')).
-        style({
-          'width':         '100%',
-          'padding-right': '20px',
-          'text-align':    'left'
-        }).
-        start()
-          .addClasses([self.myClass('label'), 'p']).
-          call(this.formatter, [self.data]).
-        end().
-        start('span').
-          addClass(self.myClass('toggle-icon')).
-          show(this.hasChildren$).
-          style({
-            'visibility':    'visible',
-            'font-size':     '16px',
-            'float':         'right',
-            'height':        '12px',
-            'width':         '12px',
-            'padding-top':   '4px',
-            'padding-left':  self.expanded$.map(function(c) { return c ? '0px' : '4px'; }),
-            'padding-right': self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
-            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(0deg)' : 'rotate(90deg)'; })
-          }).
-          on('click', this.toggleExpanded).
-          add('\u2303').
-        end();
 
       this.
         addClass(this.myClass()).
@@ -224,12 +261,7 @@ foam.CLASS({
           }
           return isThisItemRelatedToSearch;
         })).
-        addClass(this.slot(function(selected, id) {
-          if ( selected && foam.util.equals(selected.id, id) ) {
-            return this.myClass('selected');
-          }
-          return '';
-        }, this.selection$, this.data$.dot('id'))).
+        enableClass(this.myClass('selected'), this.selected_$).
         on('dblclick', function() { self.dblclick && self.dblclick(self.data); }).
         callIf(this.draggable, function() {
           this.
@@ -242,27 +274,20 @@ foam.CLASS({
         start().
           addClass(self.myClass('heading')).
           style({
-            'padding-left': ((( self.level - 1) * 16 + 8) + 'px')
+            'padding-left': ((( self.level - 1) * 16 ) + 'px')
           }).
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
               buttonStyle: 'UNSTYLED',
-              label: mainLabel,
+              label: { class: 'foam.u2.view.TreeViewRow.LabelView', row: self },
               ariaLabel: labelString,
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
-              // make not be a button so that other buttons can be nested              setNodeName('span').
+              enableClass('selected', this.selected_$).
+              // make not be a button so that other buttons can be nested
               addClass(this.myClass('button')).
-              style({
-                'fill': this.slot(function(selected, id) {
-                  if ( selected && foam.util.equals(selected.id, id) ) {
-                    return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
-                  }
-                  return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
-                }, this.selection$, this.data$.dot('id'))
-              }).
             end().
           endContext().
         end().
@@ -345,7 +370,7 @@ foam.CLASS({
       label: '',
       code: function () {
         if ( this.onClickAddOn )
-          this.onClickAddOn(this.data);
+          this.onClickAddOn(this.data, this.hasChildren);
         this.toggleExpanded();
       }
     },
@@ -378,13 +403,15 @@ foam.CLASS({
   exports: [
     'onObjDrop',
     'selection',
-    'startExpanded'
+    'startExpanded',
+    'rowConfig'
   ],
 
   css: `
     ^ {
-      padding-top: 10px;
       overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 8px;
     }
   `,
 
@@ -413,6 +440,14 @@ foam.CLASS({
       class: 'Function',
       name: 'onClickAddOn'
     },
+    {
+      name: 'rowConfig',
+      documentation: `
+      Allows overrides for menu Row views where required
+      Format: { menuId: viewSpec }
+      ex: { notifications: {class: 'NotificationMenuItem' } }
+      `
+    },
     [ 'defaultRoot', '' ]
   ],
 
@@ -420,10 +455,9 @@ foam.CLASS({
     function render() {
       this.startExpanded = this.startExpanded;
 
-      var M   = this.ExpressionsSingleton.create();
       var of  = this.__context__.lookup(this.relationship.sourceModel);
       var dao = this.data$proxy.where(
-        M.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
+        this.EQ(of.getAxiomByName(this.relationship.inverseName), this.defaultRoot));
       var self = this;
       var isFirstSet = false;
 
@@ -433,7 +467,8 @@ foam.CLASS({
             self.selection = obj;
             isFirstSet = true;
           }
-          return self.TreeViewRow.create({
+          return this.E().tag({
+            class:        foam.u2.view.TreeViewRow,
             data:         obj,
             relationship: self.relationship,
             expanded:     self.startExpanded,
@@ -441,7 +476,7 @@ foam.CLASS({
             query:        self.query,
             onClickAddOn: self.onClickAddOn,
             level:        1
-          }, this);
+          });
         });
     },
 

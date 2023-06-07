@@ -8,7 +8,7 @@
   package: 'foam.u2.view',
   name: 'LazyScrollManager',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'A configurable scroll manager that dynamically lazy loads dao data',
 
@@ -16,8 +16,7 @@
     'foam.dao.FnSink',
     'foam.core.Latch',
     'foam.dao.ProxyDAO',
-    'foam.mlang.sink.Count',
-    'foam.nanos.controller.Memento'
+    'foam.mlang.sink.Count'
   ],
 
   implements: [
@@ -51,17 +50,25 @@
     },
     {
       type: 'Int',
+      name: 'pageSize_',
+      // Used to prevent extra large datasets being requested as it caused chrome to crash
+      max: 1000,
+      factory: function() { return this.pageSize; },
+      documentation: 'The number of items in each "page". There are three pages.'
+    },
+    {
+      type: 'Int',
       name: 'pageSize',
       // Used to prevent extra large datasets being requested as it caused chrome to crash
       max: 1000,
-      value: 30,
+      value: 50,
       documentation: 'The number of items in each "page". There are three pages.'
     },
     {
       class: 'Int',
       name: 'numPages_',
-      expression: function(daoCount, pageSize) {
-        return Math.ceil(daoCount / pageSize);
+      expression: function(daoCount, pageSize_) {
+        return Math.ceil(daoCount / pageSize_);
       }
     },
     {
@@ -84,15 +91,13 @@
     {
       class: 'Int',
       name: 'topRow',
+      memorable: true,
       documentation: 'Stores the index top row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
-        var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
+        var n1 = (n-(this.currentTopPage_*this.pageSize_))/this.pageSize_;
         if ( n < o && n1 <= 1 && n1 < 1 - this.MIN_PAGE_PROGRESS ) {
           this.currentTopPage_ --;
-        }
-        if ( this.memento ) {
-          this.memento.head = this.topRow || 1;
         }
       }
     },
@@ -102,9 +107,9 @@
       documentation: 'Stores the index of last row that is currently displayed in the table',
       postSet: function(o, n) {
         if ( this.scrollToIndex || o == n ) return;
-        var n1 = (n-(this.currentTopPage_*this.pageSize))/this.pageSize;
-        if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 1 && n1%1 > this.MIN_PAGE_PROGRESS ) {
-          this.currentTopPage_ ++;
+        var n1 = (n-(this.currentTopPage_*this.pageSize_))/this.pageSize_;
+        if ( n > o && n1 >= this.NUM_PAGES_TO_RENDER - 2 && n1%1 >= this.MIN_PAGE_PROGRESS ) {
+          this.currentTopPage_++;
         }
       }
     },
@@ -113,7 +118,7 @@
       name: 'displayedRowCount_',
       documentation: 'Stores the number of rows that are currently displayed in the div height',
       expression: function(topRow, bottomRow) {
-        return bottomRow - topRow;
+        return topRow && bottomRow ? bottomRow - topRow : 0;
       }
     },
     {
@@ -153,7 +158,10 @@
       class: 'Function',
       name:'prepDAO',
       documentation: `Function that is run before each page is loaded on a limited DAO,
-      should always return a promise, can be used to create projections`
+      should always return a promise, can be used to create projections`,
+      factory: function() {
+        return function(dao) { return dao.select(); }
+      }
     },
     {
       name: 'appendTo',
@@ -174,25 +182,22 @@
       factory: function () {
         return this.Latch.create();
       }
-    }
-  ],
-
-  reactions: [
-    ['', 'propertyChange.currentTopPage_', 'updateRenderedPages_']
+    },
+    ['isInit', true]
   ],
 
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.updateCount })));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
       this.updateCount();
     },
 
-    function render() {
-      this.initMemento();
+    async function render() {
       var self = this;
       var resize = new ResizeObserver (this.checkPageSize_);
+      let root = await this.rootElement.el()
       let options = {
-        root: this.rootElement?.el_() ?? null,
+        root: root ?? null,
         rootMargin: `-${this.offsetTop}px 0px 0px`,
         threshold: [0.25, 0.5, 0.75]
       };
@@ -204,13 +209,20 @@
           resize.observe(el);
         })
       })
-      
+
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
       // This needs to be here because intersectionObserver does not bind the correct this during callback
       function handleIntersect(entries, observer) {
         self.onRowIntersect(entries, self);
       }
-
+      this.onDetach(() => {
+        // might already be disconnected
+        try { resize.disconnect(); } catch(x) {}
+      });
+      this.onDetach(() => {
+        // might already be disconnected
+        try { this.rowObserver.disconnect(); } catch(x) {}
+      });
       this.onDetach(this.rootElement$.sub(this.updateRenderedPages_));
       this.onDetach(this.order$.sub(this.refresh));
       this.onDetach(this.groupBy$.sub(this.refresh));
@@ -224,7 +236,7 @@
 
     function safeScroll(){
       if ( ! this.scrollToIndex ) return;
-      var page = Math.floor(this.scrollToIndex/this.pageSize);
+      var page = Math.floor(this.scrollToIndex/this.pageSize_);
       if ( this.renderedPages_[page] ) {
         var el = document.querySelector(`[data-idx='${this.scrollToIndex}']`);
         if ( ! el ) return;
@@ -233,10 +245,12 @@
         if ( page == 0 && this.currentTopPage_ != 0 ) {
           this.currentTopPage_ = 0;
           return;
-        } else if ( page == this.numPages_ - 1 && this.currentTopPage_ != this.numPages_ - this.NUM_PAGES_TO_RENDER ) {
+        }
+        if ( page == this.numPages_ - 1 && this.currentTopPage_ != this.numPages_ - this.NUM_PAGES_TO_RENDER ) {
           this.currentTopPage_ = this.numPages_ - this.NUM_PAGES_TO_RENDER;
           return;
-        } else if ( page != this.currentTopPage_ + 1 ) {
+        }
+        if ( page != this.currentTopPage_ + 1 ) {
           this.currentTopPage_ = page - 1;
           return;
         }
@@ -260,38 +274,46 @@
       if ( this.order ) sortParams.push(this.order)
       if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
       this.loadingPages_[page] = true;
-      promise = this.prepDAO(proxy, this.ctx);
+      let promise = this.prepDAO(proxy, this.ctx);
       var e = this.E().attr('data-page', page);
 
       promise.then((values) => {
+        let populateRows = function (args) {
+          if ( values.array[i] === undefined ) return;
+          var index = (page*self.pageSize_) + i + 1;
+          if ( self.groupBy ) {
+            var group = self.groupBy.f(values.array[i]);
+            if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
+              e.tag(self.groupHeaderView, args);
+            }
+            self.currGroup_ = group;
+          }
+          var rowEl = self.E().tag(self.rowView, args)
+              .attr('data-idx', index);
+          e.add(rowEl)
+          rowEl.el().then((a) => {
+            self.rowObserver.observe(a)
+          });
+        }
         if ( foam.mlang.sink.Projection.isInstance( values ) ) {
           for (var i = 0 ; i < values.projection.length ; i++) {
-            if ( values.array[i] === undefined ) continue;
-            var index = (page*this.pageSize) + i + 1;
-            if ( this.groupBy ) {
-              var group = self.groupBy.f(values.array[i]);
-              if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
-                e.tag(self.groupHeaderView, { obj: values.array[i], projection: values.projection[i] });
-              }
-              self.currGroup_ = group;
-            }
-            var rowEl = this.E().tag(self.rowView, { obj: values.array[i], projection: values.projection[i] })
-                .attr('data-idx', index);
-            e.add(rowEl)
-            rowEl.el().then((a) => {
-              self.rowObserver.observe(a)
-            });
+            // TODO: replace obj with data
+            let args = { obj: values.array[i], projection: values.projection[i] }
+            populateRows(args);
           }
-        } else if ( foam.dao.DAO.isInstance( values ) ){
-          // TODO
+        } else if ( foam.dao.Sink.isInstance( values ) && values.array ){
+          for (var i = 0 ; i < values.array.length ; i++) {
+            let args = { data: values.array[i] }
+            populateRows(args);
+          }
         }
         var isSet = false;
-        if  ( self.renderedPages_[page] ) { 
+        if  ( self.renderedPages_[page] ) {
           console.warn('Trying to overwrite a loaded page without clearning....Clearing page');
           this.clearPage(page)
         }
         Object.keys(self.renderedPages_).forEach(j => {
-          if ( j > page && self.renderedPages_[j] && !isSet ){
+          if ( j > page && self.renderedPages_[j] && !isSet ) {
             this.appendTo.insertBefore(e, self.renderedPages_[j]);
             isSet = true;
             // TODO: Figure out why scrolling to the top causes you to go to first page
@@ -315,8 +337,12 @@
       isFramed: true,
       documentation: 'Ensure page size is always atleast as large as the displayedRowCount_',
       code: function () {
-        if (this.displayedRowCount_ > this.pageSize) {
-          this.pageSize = this.displayedRowCount_;
+        if ( this.displayedRowCount_ && this.displayedRowCount_ != this.pageSize_ ) {
+          if (  this.pageSize < this.displayedRowCount_) {
+            this.pageSize_ = this.displayedRowCount_;
+          } else {
+            this.pageSize_ = this.pageSize;
+          }
           this.refresh();
         }
       }
@@ -327,20 +353,20 @@
       code: function() {
         this.currGroup_ = undefined;
         this.rowObserver?.disconnect();
-        // Don't clear loadingPages_ here since they are being 
+        // Don't clear loadingPages_ here since they are being
         // loaded and will have latest data anyway
         Object.keys(this.renderedPages_).forEach(i => {
           this.clearPage(i, true);
         });
-        this.currentTopPage_ = 0;
-        this.topRow = 0;
-        this.bottomRow = 0;
+        if ( ! this.isInit ) {
+          this.currentTopPage_ = 0;
+          this.topRow = 0;
+          this.bottomRow = 0;
+        }
+        this.isInit = false;
         this.updateRenderedPages_();
-        if ( ! this.memento ) return;
-        if ( this.memento.head.length != 0 && Number(this.memento.head)) {
-          this.scrollToIndex = this.memento.head;
-        } else {
-          this.scrollToIndex = 1;
+        if ( this.topRow > 1) {
+          this.scrollToIndex = this.topRow;
         }
       }
     },
@@ -359,6 +385,9 @@
       name: 'updateRenderedPages_',
       isMerged: true,
       mergeDelay: 100,
+      on: [
+        'this.propertyChange.currentTopPage_'
+      ],
       code: function() {
         // Remove any pages that are no longer on screen to save on
         // the amount of DOM we add to the page.
@@ -371,8 +400,8 @@
         for ( var i = 0; i < Math.min(this.numPages_, this.NUM_PAGES_TO_RENDER) ; i++ ) {
           var page = this.currentTopPage_ + i;
           if ( this.renderedPages_[page] || this.loadingPages_[page] ) continue;
-          var skip = page * this.pageSize;
-          var dao  = this.data.limit(this.pageSize).skip(skip);
+          var skip = page * this.pageSize_;
+          var dao  = this.data.limit(this.pageSize_).skip(skip);
           this.getPage(dao, page);
         }
       }
@@ -387,13 +416,19 @@
           if ( entry.boundingClientRect.top <= entry.rootBounds.top ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) <= entry.rootBounds.top )
               index += 1;
+
             self.topRow = index;
           } else if( entry.boundingClientRect.bottom >= entry.rootBounds.bottom ) {
             if ( entry.boundingClientRect.top + (entry.boundingClientRect.height/2) >= entry.rootBounds.bottom )
               index -= 1;
-            self.bottomRow = index;
+
+            if ( index > 0 )
+              self.bottomRow = index;
           }
         });
+
+        if ( ! self.bottomRow && self.displayedRowCount_ <= 0 )
+          self.bottomRow = self.pageSize_ > entries.length ? entries.length : self.pageSize_;
       }
     }
   ],

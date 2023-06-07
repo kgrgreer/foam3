@@ -19,9 +19,9 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Autocompleter',
 
-  documentation: 'Basic autocomplete controller. Supports simple ' +
-      'autocomplete, defaulting to querying by Keyword. Use this as a base ' +
-      'class for other, more sophisticated autocompleters.',
+  documentation: `Basic autocomplete controller. Supports simple
+    autocomplete, defaulting to querying by Keyword. Use this as a base
+    class for other, more sophisticated autocompleters.`,
 
   properties: [
     {
@@ -32,34 +32,29 @@ foam.CLASS({
     {
       class: 'String',
       name: 'partial',
-      documentation: 'The string the user has entered so far. Usually bound ' +
-          'to some text field.'
+      documentation: 'The string the user has entered so far. Usually bound to some text field.'
     },
     {
       name: 'queryFactory',
-      documentation: 'Turns the user\'s string into an mLang query. Defaults ' +
-          'to Keyword.',
+      documentation: 'Turns the user\'s string into an mLang query. Defaults to Keyword.',
       value: function(str) {
         return foam.mlang.predicate.Keyword.create({ arg1: str });
       }
     },
     {
-      class: 'Function',
-      name: 'objToString',
-      documentation: 'When the user has selected an object from the DAO as ' +
-          'the chosen completion, we need to turn it back into a string for ' +
-          'the text field.',
-      required: true
-    },
-    'filteredDAO'
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO',
+      factory: function() {
+        return this.dao;
+      }
+    }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.slot(function(dao, partial) {
-        this.onUpdate();
-      }.bind(this), this.dao$, this.partial$);
+      this.partial$.sub(this.onUpdate);
+      this.onUpdate();
     }
   ],
 

@@ -9,9 +9,9 @@ foam.CLASS({
   name: 'GridColumns',
   extends: 'foam.u2.Element',
   documentation: `
-    A model for the sizes of grid columns 
+    A model for the sizes of grid columns
   `,
-  
+
   properties: [
     {
       class: 'Int',
@@ -90,7 +90,8 @@ foam.CLASS({
   refines: 'foam.core.Property',
   properties: [
     {
-      name: 'gridColumns'
+      name: 'gridColumns',
+      value: 12
     }
   ]
 })

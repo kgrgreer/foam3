@@ -20,7 +20,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -40,7 +40,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -60,7 +60,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }
@@ -77,7 +77,8 @@ p({
     "view": {
       "class": "foam.nanos.medusa.ClusterTopologyView"
     }
-  }
+  },
+  "parent":"medusa"
 })
 
 p({
@@ -92,7 +93,7 @@ p({
       "browseViews":[{
         "name":"Table",
         "view":{
-          "class":"foam.u2.view.ScrollTableView"
+          "class":"foam.u2.table.TableView"
         }
       }]
     }

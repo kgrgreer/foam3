@@ -7,6 +7,12 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+  implements: [
+    {
+      path: 'foam.core.ContextAgent',
+      flags: 'web'
+    }
+  ],
 
   documentation: `
     EasyCrunchWizard is a facade to configure context agents typically found
@@ -52,6 +58,10 @@ foam.CLASS({
       `
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'controller'
+    },
+    {
       class: 'String',
       name: 'view',
       value: 'foam.nanos.crunch.ui.UCJView'
@@ -78,21 +88,48 @@ foam.CLASS({
         Set to true to disabled the creation of Approvables when updating a
         granted UCJ.
       `
-    }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'popup',
+      factory: function() {
+        return {
+          class: 'foam.u2.dialog.ApplicationPopup',
+          fullscreen: true
+        }
+      }
+    },
+    {
+      class: 'FObjectArray',
+      // of: 'foam.util.FluentSpec',
+      of: 'foam.core.FObject',
+      name: 'sequenceExtras'
+    },
   ],
 
   methods: [
-    function applyTo(sequence) {
+    async function applyTo(sequence) {
       var config = this.StepWizardConfig.create({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
         rejectOnInvalidatedSave: this.rejectOnInvalidatedSave,
+        controller: this.controller,
         requireAll: this.requireAll,
         ...(this.incrementalWizard ? {
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})
       });
-      sequence.reconfigure('StepWizardAgent', { config: config });
+      if ( this.popup ) {
+        sequence.reconfigure('ConfigureFlowAgent', { popupMode: true });
+        config.popup = {
+          class: 'foam.u2.dialog.Popup',
+          ...this.popup,
+        };
+      } else {
+        sequence.reconfigure('ConfigureFlowAgent', { popupMode: false });
+      };
+
+      sequence.reconfigure('CreateControllerAgent', { config: config });
       if ( this.skipMode )
         sequence.reconfigure('SkipGrantedAgent', {
           mode: this.skipMode });
@@ -100,9 +137,16 @@ foam.CLASS({
         sequence.remove('WizardStateAgent');
       if ( this.preventApprovableCreation )
         sequence.remove('GrantedEditAgent');
+      
+      // Apply sequence extras
+      for ( const fluentSpec of this.sequenceExtras ) {
+        fluentSpec.apply(sequence);
+      }
     },
-    async function execute () {
-      // Subclasses which fetch information asynchronously can override this
+    async function execute (x) {
+      x = x ?? this.__context__;
+      await this.applyTo(x.sequence);
+      return x;
     }
   ]
 });

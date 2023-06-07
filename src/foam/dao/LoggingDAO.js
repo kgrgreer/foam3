@@ -26,6 +26,10 @@ foam.CLASS({
 
   properties: [
     {
+      type: 'DAO',
+      name: 'delegate'
+    },
+    {
       name: 'name',
     },
     {
@@ -36,9 +40,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'logReads',
-      value: false
-    },
+      name: 'logReads'
+    }
   ],
 
   methods: [

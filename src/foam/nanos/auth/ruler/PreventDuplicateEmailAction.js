@@ -18,11 +18,23 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.Email',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.ServiceProvider',
     'static foam.mlang.MLang.*'
+  ],
+
+  constants: [
+    {
+      name: 'ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME',
+      type: 'String',
+      value: 'spid.default.allowDuplicateEmails'
+    }
   ],
 
   messages: [
@@ -53,9 +65,25 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
+        // check if the allowDuplicateEmail permission has been granted;
+        // if it has, then skip over the duplicate email check below.
+        if ( spidGrantsDuplicateEmailPermission(getX(), spid) ) {
+          return;
+        }
+
+        checkExistingUsers(x, user, spid);
+      `
+    },
+    {
+      name: 'checkExistingUsers',
+      args: 'Context x, User user, String spid',
+      type: 'Void',
+      javaCode: `
+        DAO userDAO = (DAO) x.get("localUserDAO");
         Count count = new Count();
         count = (Count) userDAO
             .where(AND(
+              EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE),
               EQ(User.TYPE, user.getType()),
               EQ(User.EMAIL, user.getEmail()),
               EQ(User.SPID, spid),
@@ -67,5 +95,40 @@ foam.CLASS({
         }
       `
     }
+  ],
+
+  static: [
+    {
+      name: 'spidGrantsDuplicateEmailPermission',
+      type: 'Boolean',
+      documentation: `
+      Common function for checking if the given SPID allows
+      duplicate emails.
+      `,
+      args: 'foam.core.X x, String spid',
+      javaCode: `
+      // the X must contain a crunchService otherwise an NPE
+      // might happen when we try to check the ServiceProvider
+      // for the permission
+      if ( x.get("crunchService") == null ) {
+        foam.nanos.logger.Loggers.logger(x).error("crunchService not present in x");
+        throw new AuthorizationException();
+      }
+
+      DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
+      ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
+
+      if ( sp == null ) return false;
+
+      // need to do setX() here. at this point we know that
+      // the crunchService is present, but it might not be
+      // present in the ServiceProvider's x. this avoids
+      // a crash
+      sp.setX(x);
+
+      return sp.grantsPermission(x, ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
+      `
+    }
   ]
+
 });

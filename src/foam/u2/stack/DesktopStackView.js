@@ -23,8 +23,6 @@ foam.CLASS({
     }
   ],
 
-  css: '%CUSTOMCSS%',
-
   methods: [
     function listenStackView() {
       var self = this;
@@ -39,16 +37,17 @@ foam.CLASS({
         }
         if ( top.popup && ! this.popupsOpened[pos] ) {
           let cls = this.__subContext__.lookup(top.popup.class) || foam.u2.dialog.Popup;
+          let X = this.data.getContextFromParent(top.parent, this);
           let popup = cls.create({
-            ...top.popup,
-            onClose: () => {
-              if ( this.popupsOpened[pos] ) {
-                delete this.popupsOpened[pos];
-                this.data.back();
-              }
+            ...top.popup
+          }, X);
+          popup.sub('action', 'closeModal', () => {
+            if ( this.popupsOpened[pos] ) {
+              delete this.popupsOpened[pos];
+              this.data.back();
             }
-          }, this);
-          popup.add(this.renderStackView(top));
+          })
+          popup.add(this.renderStackView(top, popup));
           this.popupsOpened[pos] = popup;
           ctrl.add(popup);
         }

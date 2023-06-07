@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.edit.EditBehaviour',
+    'foam.nanos.crunch.edit.NullEditBehaviour',
     'foam.nanos.logger.Logger',
     'java.util.Date',
     'java.util.List',
@@ -103,6 +105,17 @@ foam.CLASS({
         ]
       },
       includeInDigest: false
+    },
+    {
+      name: 'marketingHeader',
+      class: 'String',
+      documentation: 'This is the header that can be customized for each product experience',
+      displayWidth: 70,
+      section: 'basicInfo',
+      includeInDigest: false,
+      factory: function() {
+        return this.name;
+      }
     },
     {
       name: 'description',
@@ -239,6 +252,14 @@ foam.CLASS({
       view: { class: 'foam.u2.CheckBox', showLabel: false }
     },
     {
+      class: 'FObjectProperty',
+      javaType: 'foam.nanos.crunch.edit.EditBehaviour',
+      name: 'editBehaviour',
+      javaFactory: `
+        return new foam.nanos.crunch.edit.NullEditBehaviour();
+      `
+    },
+    {
       name: 'associatedEntity',
       class: 'Enum',
       of: 'foam.nanos.crunch.AssociatedEntity',
@@ -254,42 +275,6 @@ foam.CLASS({
       javaFactory: `
         return foam.nanos.crunch.AssociatedEntity.USER;
       `
-    },
-    {
-      class: 'Object',
-      name: 'wizardlet',
-      documentation: `
-        Defines a wizardlet to display this capability in a wizard. This
-        wizardlet will display after this capability's prerequisites.
-      `,
-      hidden: true,
-      factory: function() {
-        return foam.nanos.crunch.ui.CapabilityWizardlet.create({}, this);
-      },
-      includeInDigest: false,
-    },
-    {
-      class: 'Object',
-      name: 'beforeWizardlet',
-      hidden: true,
-      documentation: `
-        A wizardlet to display before this capability's prerequisites, and only
-        if this capability is at the end of a prerequisite group returned by
-        CrunchService's getCapabilityPath method.
-      `
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.u2.crunch.EasyCrunchWizard',
-      name: 'wizardConfig',
-      documentation: `
-        Configuration placed on top level capabilities defining various
-        configuration options supported by client capability wizards.
-      `,
-      includeInDigest: false,
-      factory: function() {
-        return this.EasyCrunchWizard.create({}, this);
-      }
     },
     {
       name: 'requirementViewTitle',
@@ -314,8 +299,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isInternalCapability',
-      documentation: `The purpose of this is to enable an agent level ccapability that is confidential and not accessible from a user.
-      Disables crunchService.isRenewable from propogating anything else in the heirarchy.
+      documentation: `The purpose of this is to enable an agent level capability that is confidential and not accessible from a user.
+      Disables crunchService.isRenewable from propogating anything else in the hierarchy.
       Disables user expiry notifications.
       Disables capability.maybeReOpen()`
     },
@@ -344,6 +329,16 @@ foam.CLASS({
           setLifecycleState( foam.nanos.auth.LifecycleState.DELETED );
         }
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'autoGrantPrereqs',
+      value:true,
+      documentation: `
+        If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
+        before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
+        that may not be explicitly put
+      `
     }
   ],
 
@@ -352,7 +347,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.name;
+        return this.name || this.id;
       },
       javaCode: `
         return getName();
@@ -361,9 +356,7 @@ foam.CLASS({
     {
       name: 'grantsPermission',
       type: 'Boolean',
-      args: [
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'X x, String permission',
       documentation: `Checks if a permission or capability string is implied by the current capability`,
       javaCode: `
         if ( getLifecycleState() == LifecycleState.DELETED || getLifecycleState() == LifecycleState.REJECTED ) return false;
@@ -380,22 +373,19 @@ foam.CLASS({
       name: 'implies',
       type: 'Boolean',
       args: [
-        { name: 'x', type: 'Context' },
+        { name: 'x',          type: 'Context' },
         { name: 'permission', type: 'String' }
       ],
       documentation: `Checks if a permission or capability string is implied by the current capability or its prereqs`,
       javaCode: `
-        if ( this.grantsPermission(permission) ) return true;
+        if ( this.grantsPermission(x, permission) ) return true;
         return this.prerequisiteImplies(x, permission);
       `
     },
     {
       name: 'prerequisiteImplies',
       type: 'Boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'permission', type: 'String' }
-      ],
+      args: 'Context x, String permission',
       documentation: `Checks if a permission or capability string is implied by the prerequisites of a capability`,
       javaCode: `
         // temporary prevent infinite loop when checking the permission "predicatedprerequisite.read.*"
@@ -403,12 +393,12 @@ foam.CLASS({
         if ( PredicatedPrerequisiteCapabilityJunctionDAO.PERMISSION.equals(permission) ) return false;
 
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List<Capability> prereqs = crunchService.getCapabilityPath(x, getId(), false, false);
+        List<Capability> prereqs = crunchService.getPrereqObjects(x, getId());
         if ( prereqs != null && prereqs.size() > 0 ) {
           for ( Capability capability : prereqs ) {
             // getCapabilityPath will include the top-level capability in its return list
             if ( getId().equals(capability.getId()) ) continue;
-            if ( capability != null && capability.grantsPermission(permission) ) return true;
+            if ( capability != null && capability.implies(x, permission) ) return true;
           }
         }
         return false;
@@ -422,6 +412,8 @@ foam.CLASS({
       ],
       documentation: 'check if a given capability is deprecated',
       javaCode: `
+      // TODO: This is currently broken and needs to be reworked
+/*
       Sink count = new Count();
       count = this.getDeprecating(x).getJunctionDAO()
         .where(
@@ -429,7 +421,8 @@ foam.CLASS({
         ).select(count);
 
       return ((Count) count).getValue() > 0;
-      `
+*/
+      return false;`
     },
     {
       name: 'isExpired',
@@ -463,23 +456,6 @@ foam.CLASS({
 
         boolean allGranted = true;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        DAO userDAO = (DAO) x.get("userDAO");
-        Subject currentSubject = (Subject) x.get("subject");
-
-        Subject subject = new Subject(x);
-        if ( ucj instanceof AgentCapabilityJunction ) {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-          AgentCapabilityJunction acj = (AgentCapabilityJunction) ucj;
-          subject.setUser((User) userDAO.find(acj.getEffectiveUser())); // "user"
-        } else if ( ucj.getSourceId() == currentSubject.getUser().getId() ) {
-          // Call setUser() twice
-          // Because it builds a user path and adds a user to the chain for each setUser()
-          subject.setUser(currentSubject.getRealUser());
-          subject.setUser(currentSubject.getUser());
-        } else {
-          subject.setUser((User) userDAO.find(ucj.getSourceId()));
-        }
 
         var prereqs = crunchService.getPrereqs(x, getId(), ucj);
         CapabilityJunctionStatus prereqChainedStatus = null;
@@ -488,9 +464,9 @@ foam.CLASS({
             var cap = (Capability) capabilityDAO.find(capId);
             if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) continue;
 
-            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, subject);
+            UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, capId, ucj.getSubject(x));
 
-            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj);
+            prereqChainedStatus = getPrereqChainedStatus(x, ucj, prereqUcj, (Subject)x.get("subject"));
             if ( prereqChainedStatus == CapabilityJunctionStatus.ACTION_REQUIRED ) return CapabilityJunctionStatus.ACTION_REQUIRED;
             if ( prereqChainedStatus != CapabilityJunctionStatus.GRANTED ) allGranted = false;
           }
@@ -503,17 +479,21 @@ foam.CLASS({
       args: [
         { name: 'x', javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
-        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'subject', javaType: 'foam.nanos.auth.Subject' }
       ],
       static: true,
       javaType: 'foam.nanos.crunch.CapabilityJunctionStatus',
       javaCode: `
         CapabilityJunctionStatus status = ucj.getStatus();
 
+        if ( prereq.getStatus() == CapabilityJunctionStatus.AVAILABLE && getAutoGrantPrereqs() )
+          prereq = ((CrunchService) x.get("crunchService")).updateUserJunction(x, subject, prereq.getTargetId(), null, null);
+
         boolean reviewRequired = getReviewRequired();
         CapabilityJunctionStatus prereqStatus = prereq.getStatus();
 
-        switch ( (CapabilityJunctionStatus) prereqStatus ) {
+        switch ( prereqStatus ) {
           case AVAILABLE :
             status = CapabilityJunctionStatus.ACTION_REQUIRED;
             break;
@@ -543,11 +523,15 @@ foam.CLASS({
             // in this status
             status = CapabilityJunctionStatus.ACTION_REQUIRED;
             break;
+          case REJECTED :
+            // can occur if approval request is rejected
+            status = CapabilityJunctionStatus.ACTION_REQUIRED;
+            break;
           default :
             status = CapabilityJunctionStatus.GRANTED;
         }
-        return status;
 
+        return status;
       `
     },
     {

@@ -55,14 +55,13 @@
         return new Map();
       }
     },
-    {
-      name: 'customizeKey'
-    }
+    'customizeKey',
+    'dao'
   ],
   methods: [
     function init() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update',  this.populateGroupingsCount));
-      this.onDetach(this.data$.dot('dao').sub(this.populateGroupingsCount));
+      this.onDetach(this.dao$.sub(this.populateGroupingsCount));
     },
     async function render() {
       var self = this;
@@ -85,7 +84,7 @@
                   data: grouping,
                   groupByPropertyName: self.groupByPropertyName,
                   redirectMenu: self.redirectMenu,
-                  dao: self.data.dao,
+                  dao: self.dao,
                   customizeKey: self.customizeKey
                 })
               .end();
@@ -98,7 +97,7 @@
       name: 'populateGroupingsCount',
       code: async function() {
         var map_ = new Map();
-        var out = await this.data.dao.select();
+        var out = await this.dao.select();
         for ( v of out.array ) {
           var key = v[this.groupByPropertyName];
           if ( map_.has(key)) {

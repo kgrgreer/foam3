@@ -49,15 +49,14 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    ['', 'propertyChange.yExpr', 'dataUpdate'],
-    ['', 'propertyChange.data', 'dataUpdate']
-  ],
-
   listeners: [
     {
       name: 'dataUpdate',
       isFramed: true,
+      on: [
+        'this.propertyChange.yExpr',
+        'this.propertyChange.data'
+      ],
       code: function () {
         var self = this;
         self.data

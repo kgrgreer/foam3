@@ -28,12 +28,12 @@ foam.CLASS({
         JSONFObjectFormatter formatter = new JSONFObjectFormatter();
         formatter.setOutputShortNames(true);
         formatter.setOutputDefaultClassNames(false);
+        formatter.setCalculateDeltaForNestedFObjects(true);
         formatter.setPropertyPredicate(
           new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
             new foam.lib.StoragePropertyPredicate(),
             new foam.lib.ClusterPropertyPredicate()
           }));
-        formatter.setCalculateDeltaForNestedFObjects(true);
         return formatter;
       }
 
@@ -45,7 +45,7 @@ foam.CLASS({
       }
     };
 
-    protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
+    protected static final ThreadLocal<MedusaTransientJSONFObjectFormatter> transientFormatter_ = new ThreadLocal<MedusaTransientJSONFObjectFormatter>() {
       @Override
       protected MedusaTransientJSONFObjectFormatter initialValue() {
         MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
@@ -56,9 +56,12 @@ foam.CLASS({
       }
 
       @Override
-      public FObjectFormatter get() {
-        FObjectFormatter formatter = super.get();
+      public MedusaTransientJSONFObjectFormatter get() {
+        MedusaTransientJSONFObjectFormatter formatter = super.get();
         formatter.reset();
+        formatter.storageTransientDetectionEnabled_ = false;
+        formatter.storageTransientDetected_ = false;
+        formatter.storageTransientDetectedAt_ = null;
         return formatter;
       }
     };
@@ -92,15 +95,20 @@ foam.CLASS({
       try {
         FObjectFormatter formatter = formatter_.get();
         if ( old != null ) {
-          formatter.maybeOutputDelta(old, obj);
+          if ( formatter.maybeOutputDelta(old, obj) )
+            data = formatter.builder().toString();
         } else {
           formatter.output(obj);
+          data = formatter.builder().toString();
         }
-        data = formatter.builder().toString();
       } finally {
         pm.log(x);
       }
-      return data;
+      if ( ! SafetyUtil.isEmpty(data) ) {
+        // Loggers.logger(x, this).debug("data", obj.getClassInfo().getId(), obj.getProperty("id"), "data", data);
+        return data;
+      }
+      return null;
       `
     },
     {
@@ -126,24 +134,26 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "transientData");
+      String data = null;
       try {
-        FObjectFormatter transientFormatter = transientFormatter_.get();
+        MedusaTransientJSONFObjectFormatter transientFormatter = transientFormatter_.get();
         if ( old != null ) {
-          if ( ! transientFormatter.maybeOutputDelta(old, obj) ) {
-            return null;
-          }
-          return transientFormatter.builder().toString();
+          if ( transientFormatter.maybeOutputDelta(old, obj) &&
+               transientFormatter.isStorageTransientDetected() )
+            data = transientFormatter.builder().toString();
         } else {
           transientFormatter.output(obj);
-          String data = transientFormatter.builder().toString();
-          if ( ! SafetyUtil.isEmpty(data) ) {
-            return data;
-          }
-          return null;
+          if ( transientFormatter.isStorageTransientDetected() )
+            data = transientFormatter.builder().toString();
         }
       } finally {
         pm.log(x);
       }
+      if ( ! SafetyUtil.isEmpty(data) ) {
+        // Loggers.logger(x, this).debug("transientData", obj.getClassInfo().getId(), obj.getProperty("id"), "data", data);
+        return data;
+      }
+      return null;
       `
     }
   ]

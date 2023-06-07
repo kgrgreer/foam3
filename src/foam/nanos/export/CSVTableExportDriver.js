@@ -7,10 +7,11 @@
 foam.CLASS({
   package: 'foam.nanos.export',
   name: 'CSVTableExportDriver',
-  documentation: 'The driver to export data retrieved with projection to CSV',
+  extends: 'foam.nanos.export.TableExportDriver',
+
   implements: [ 'foam.nanos.export.ExportDriver' ],
 
-  extends: 'foam.nanos.export.TableExportDriver',
+  documentation: 'The driver to export data retrieved with projection to CSV',
 
   requires: [
     'foam.nanos.column.CSVTableOutputter',
@@ -19,10 +20,15 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'sheetsCompatibleDates',
+      value: true
+    },
+    {
       name: 'outputter',
       hidden: true,
-      factory: function() {
-        return this.CSVTableOutputter.create();
+      expression: function(sheetsCompatibleDates) {
+        return this.CSVTableOutputter.create({sheetsCompatibleDates: sheetsCompatibleDates});
       }
     },
     {

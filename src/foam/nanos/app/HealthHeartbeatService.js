@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.app',
   name: 'HealthHeartbeatService',
 
-  documentation: 'Health check UDP broadcaster and listener.',
-  // see https://www.baeldung.com/java-broadcast-multicast
+  documentation: 'Health check broadcaster and listener.',
 
   implements: [
     'foam.core.ContextAgent',
@@ -58,8 +57,20 @@ foam.CLASS({
       class: 'Int'
     },
     {
+      documentation: 'Some environments like AWS prefer different send/receive ports for UDP broadcasts. Value 0 will default to system selected port.',
+      name: 'sendPort',
+      class: 'Int',
+      value: 0
+    },
+    {
       name: 'multicastAddress',
       class: 'String'
+    },
+    {
+      documentation: 'Evironments such as AWS do not support multicast',
+      name: 'useMulticast',
+      class: 'Boolean',
+      value: true
     },
     {
       name: 'timer',
@@ -85,7 +96,11 @@ foam.CLASS({
     {
       name: 'start',
       javaCode: `
-      Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getPort());
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+        Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getSendPort(), getPort(), "disabled on localhost");
+        return;
+      }
+      Loggers.logger(getX(), this).info("broadcaster", "start", getMulticastAddress(), getSendPort(), getPort());
       Agency agency = (Agency) getX().get("threadPool");
       agency.submit(getX(), this, this.getClass().getSimpleName());
 
@@ -108,12 +123,25 @@ foam.CLASS({
 
               DatagramSocket socket = null;
               try {
-                socket = new DatagramSocket();
-                DatagramPacket packet
-                  = new DatagramPacket(buf, buf.length, InetAddress.getByName(getMulticastAddress()), getPort());
-                socket.send(packet);
+                if ( getSendPort() == 0 ) {
+                  socket = new DatagramSocket();
+                } else {
+                  socket = new DatagramSocket(getSendPort());
+                }
+                DatagramPacket[] packets = getPackets(x, data);
+                for ( DatagramPacket packet : packets ) {
+                  try {
+                    socket.send(packet);
+                  } catch ( IOException e ) {
+                    if ( "Host is down".equals(e.getMessage()) ) {
+                      ((Logger) x.get("logger")).debug("HealthHeartbeatService", "broadcasting", packet.getAddress()+":"+packet.getPort(), e.getMessage());
+                    } else {
+                      ((Logger) x.get("logger")).warning("HealthHeartbeatService", "broadcasting", packet.getAddress()+":"+packet.getPort(), data, e.getMessage());
+                    }
+                  }
+                }
               } catch ( IOException e ) {
-                Loggers.logger(x, this).warning("broadcaster", e);
+                ((Logger) x.get("logger")).error("HealthHeartbeatService", "broadcasting", data, e.getMessage(), e);
               } finally {
                 if ( socket != null ) socket.close();
                 pm.log(x);
@@ -130,7 +158,7 @@ foam.CLASS({
       name: 'execute',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
-      logger.info("listener", "start", getMulticastAddress(), getPort());
+      logger.info("listener", "start", "multicast", getUseMulticast(), getMulticastAddress(), getPort());
       byte[] buf = new byte[512];
       MulticastSocket socket = null;
       InetAddress group = null;
@@ -161,6 +189,8 @@ foam.CLASS({
             health.setAddress(address);
             health.setPropogationTime(Math.abs(now - health.getHeartbeatTime()));
             ((DAO) x.get("healthDAO")).put_(x, health);
+          } catch ( NullPointerException e ) {
+            logger.debug("listener", "received", received, e.getMessage(), e);
           } catch ( ClassCastException e ) {
             logger.debug("listener", "received", received, e.getMessage(), e);
           } catch ( RuntimeException e ) {
@@ -181,6 +211,19 @@ foam.CLASS({
           }
         }
       }
+      `
+    },
+    {
+      name: 'getPackets',
+      args: 'X x, String data',
+      javaType: 'java.net.DatagramPacket[]',
+      javaThrows: [ 'java.io.IOException' ],
+      javaCode: `
+        if ( getUseMulticast() ) {
+          byte[] buf = data.getBytes();
+          return new DatagramPacket[] { new DatagramPacket(buf, buf.length, InetAddress.getByName(getMulticastAddress()), getPort()) };
+        }
+        throw new UnsupportedOperationException("getSockets");
       `
     }
   ]

@@ -101,7 +101,7 @@ foam.CLASS({
       cursor: pointer;
       margin: 0px;
       font-size: 80%;
-      color: /*%GREY1%*/ #5e6061;
+      color: $grey700;
       padding: 2.5rem;
     }
     ^ .choice.selected {

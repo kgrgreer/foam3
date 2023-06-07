@@ -4,397 +4,214 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var path_ = require('path');
-var fs_   = require('fs');
+console.log('START GENJAVA');
 
-process.on('unhandledRejection', function(e) {
-  console.error("ERROR: Unhandled promise rejection ", e);
-  process.exit(1);
-});
-
-// enable FOAM java support.
-globalThis.FOAM_FLAGS = { 'java': true, 'node': true, 'debug': true, 'js': false, 'swift': false };
-
-// Enable FOAMLink mode but only if FOAMLINK_DATA is set in environment
-var foamlinkMode = process.env.hasOwnProperty('FOAMLINK_DATA');
-if ( foamlinkMode ) {
-  globalThis.FOAMLINK_DATA = process.env['FOAMLINK_DATA'];
-}
-
-var logger = {};
-logger.debug = () => {};
-
-// Store debug files but only if DEBUG_DATA_DIR is set in environment
-var debugDataDir = null;
-if ( process.env.hasOwnProperty('DEBUG_DATA_DIR') ) {
-  debugDataDir = process.env['DEBUG_DATA_DIR'];
-  logger.debug = (...args) => {
-    fs_.appendFileSync(path_.join(debugDataDir, 'debugLog.jrl'),
-      args.join('p({"type": "debug", "value": ' + JSON.stringify(args) + '})\n')
-    );
-  };
-}
+const startTime = Date.now();
+var path_       = require('path');
 
 require('../src/foam_node.js');
-require('../src/foam/nanos/nanos.js');
-require('../src/foam/support/support.js');
 
-var srcPath = __dirname + "/../src/";
-
-if ( ! (
-  process.argv.length == 4 ||
-  process.argv.length == 5 ||
-  process.argv.length == 6 ) ) {
-  console.log("USAGE: genjava.js input-path output-path src-path(optional) files-to-update (optional)");
-  process.exit(1);
-}
-
-if ( process.argv.length > 4 && process.argv[4] !== '--' ) {
-  srcPath = process.argv[4];
-  if ( ! srcPath.endsWith('/') ) {
-    srcPath = srcPath + '/';
-  }
-}
-
-var incrementalMeta = null;
-if ( process.argv.length > 5  &&
-     process.argv[5] !== '--' &&
-     process.argv[5] != '' ) {
-  incrementalMeta = JSON.parse(process.argv[5]);
-  logger.debug('INCREMENTAL', process.argv[5]);
-}
-
-var indir = process.argv[2];
-indir = path_.resolve(path_.normalize(indir));
-
-/*
-const CLASS_TYPES = [
+var [argv, X, flags] = require('./processArgs.js')(
+  '',
   {
-    name: 'classes'
+    d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
+    javacParams:   '--release 11',
+    repo:          'http://repo.maven.apache.org/maven2/', // should be https?
+    journaldir:    './target/journals2/',
+    libdir:        './build/lib',
+    outdir:        '/build/src/java',
+    pom:           'pom'
   },
   {
-    name: 'abstractClasses'
-  },
-  {
-    name: 'skeletons'
-  },
-  {
-    name: 'proxies'
+    buildlib:      false,
+    buildjournals: false,
+    genjava:       true,
+    java:          true,
+    javac:         false,
+    verbose:       false
   }
-];
-*/
+);
 
-var externalFile    = require(indir);
+X.outdir        = path_.resolve(path_.normalize(X.outdir));
+X.javaFiles     = [];
+X.journalFiles  = [];
+X.journalOutput = {};
 
-var classes         = externalFile.classes;
-var abstractClasses = externalFile.abstractClasses;
-var skeletons       = externalFile.skeletons;
-var proxies         = externalFile.proxies;
+X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
-var blacklist = {}
-externalFile.blacklist.forEach(function(cls) {
-  blacklist[cls] = true;
-});
+// Promote all UNUSED Models to USED
+// 2 passes in case interfaces generated new classes in 1st pass
+for ( var i = 0 ; i < 2 ; i++ )
+  for ( var key in foam.UNUSED )
+    try { foam.maybeLookup(key); } catch(x) { }
 
-var fileWhitelist = null;
-var classesNotFound = {};
-var classesFound = {};
-var debugFilesWritten = [];
-
-// Set file whitelist from parsed argument, but only if foamlink is enabled
-if ( incrementalMeta !== null && foamlinkMode ) {
-  fileWhitelist = {}; // set
-  for ( var i = 0; i < incrementalMeta.modified.length; i++ ) {
-    let relativePath = path_.relative(process.cwd(), incrementalMeta.modified[i]);
-    fileWhitelist[relativePath] = true;
+var mCount = 0, jCount = 0;
+// Build Java Classes
+for ( var key in foam.USED ) try {
+  mCount++;
+  if ( foam.maybeLookup(key).model_.targetJava(X) ) {
+    jCount++;
   }
+} catch(x) {}
+
+console.log(`END GENJAVA: ${jCount}/${mCount} models processed, ${X.javaFiles.length} Java files created in ${Math.round((Date.now()-startTime)/1000)}s.`);
+
+if ( ! flags.javac ) return;
+
+// console.log(X.javaFiles);
+// console.log(foam.poms);
+
+const fs_   = require('fs');
+const exec_ = require('child_process');
+
+var found = 0;
+
+
+function verbose() {
+  if ( flags.verbose ) console.log.apply(console, arguments);
 }
-logger.debug('fileWhitelist', fileWhitelist);
 
-[
-  'FObject',
-  'foam.core.AbstractEnum',
-  'foam.core.AbstractInterface',
-  'foam.core.Property',
-  'foam.core.String',
 
-  // These have hand written java impls so we don't want to clobber them.
-  // TODO: Change gen.sh to prefer hand written java files over generated.
-  'foam.dao.LimitedDAO',
-  'foam.dao.OrderedDAO',
-  'foam.dao.SkipDAO',
+function isExcluded(pom, f) {
+  var ex = pom.pom.excludes;
+  if ( ! ex ) return false;
+  for ( var i = 0 ; i < ex.length ; i++ ) {
+    var p = ex[i];
+    if ( p.endsWith('*') ) p = p.substring(0, p.length-1);
 
-  // TODO: These models currently don't compile in java but could be updated to
-  // compile properly.
-  'foam.blob.BlobBlob',
-  'foam.dao.CompoundDAODecorator',
-  'foam.dao.DAOInterceptor',
-  'foam.dao.FlowControl',
-  'foam.dao.sync.SyncRecord',
-  'foam.dao.sync.VersionedSyncRecord',
-  'foam.mlang.Expressions',
-  'foam.nanos.menu.MenuBar',
-
-  'foam.box.Context',
-//  'foam.box.HTTPBox',
-//  'foam.box.SessionClientBox',
-  'foam.box.SocketBox',
-  'foam.box.WebSocketBox',
-  'foam.box.TimeoutBox',
-  'foam.box.RetryBox',
-  'foam.dao.TTLCachingDAO',
-  'foam.dao.CachingDAO',
-  'foam.dao.CompoundDAODecorator',
-  'foam.dao.InterceptedDAO',
-  'foam.dao.DeDupDAO',
-  'foam.dao.IDBDAO',
-  'foam.dao.LoggingDAO',
-  'foam.dao.MDAO',
-  'foam.dao.RequestResponseClientDAO',
-  'foam.dao.SyncDAO',
-  'foam.dao.TimingDAO'
-].forEach(function(cls) {
-  blacklist[cls] = true;
-});
-
-var outdir = process.argv[3];
-outdir = path_.resolve(path_.normalize(outdir));
-
-function ensurePath(p) {
-  var i = 1 ;
-  var parts = p.split(path_.sep);
-  var path = '/' + parts[0];
-
-  while ( i < parts.length ) {
-    try {
-      var stat = fs_.statSync(path);
-      if ( ! stat.isDirectory() ) throw path + 'is not a directory';
-    } catch(e) {
-      fs_.mkdirSync(path);
+    if (
+      f.endsWith(p) ||
+      ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) )
+    {
+      return true;
     }
-
-    path += path_.sep + parts[i++];
   }
+
+  return false;
 }
 
-function loadClass(c) {
-  var path = srcPath;
 
-  if ( foam.Array.isInstance(c) ) {
-    path = path + c[0];
-    c = c[1];
-  }
+function processDir(pom, location, skipIfHasPOM) {
+  verbose('\tdirectory:', location);
+  var files = fs_.readdirSync(location, {withFileTypes: true});
 
-  if ( ! foam.maybeLookup(c) ) {
-    console.warn("Using fallback model loading; " +
-      "may cause errors for files with multiple definitions.");
-    require(path + c.replace(/\./g, '/') + '.js');
-  }
+  if ( skipIfHasPOM && files.find(f => f.name.endsWith('pom.js')) ) return;
 
-  cls = foam.lookup(c);
-  return cls;
-}
-
-function generateClass(/* foam Class */ cls) {
-  if ( fileWhitelist !== null ) {
-    let src = cls.model_.source;
-    if ( ! src ) {
-      classesNotFound[cls.id] = true;
-    } else {
-      delete classesNotFound[cls.id];
-      classesFound[cls.id] = true;
-      if ( ! fileWhitelist[src] ) {
-        return;
+  files.forEach(f => {
+    var fn = location + '/' + f.name;
+    if ( f.isDirectory() && ! f.name.startsWith('.') ) {
+      if ( f.name.indexOf('android') != -1 ) return;
+      if ( f.name.indexOf('examples') != -1 ) return;
+        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+    } else if ( f.name.endsWith('.java') ) {
+      if ( ! isExcluded(pom, fn) ) {
+        verbose('\t\tjava source:', fn);
+        found++;
+        X.javaFiles.push(fn);
       }
+    } else if ( f.name.endsWith('.jrl') ) {
+      verbose('\t\tjournal source:', fn);
+      addJournal(fn);
     }
-  }
-
-  var outfile = outdir + path_.sep + cls.model_.id.replace(/\./g, path_.sep) + '.java';
-
-  ensurePath(outfile);
-
-  writeFileIfUpdated(outfile, cls.buildJavaClass().toJavaSource());
-}
-
-function generateAbstractClass(/* String */ cls) {
-  console.log('generating Abstract Class', cls);
-  cls = foam.lookup(cls);
-
-  var outfile = outdir + path_.sep + cls.id.replace(/\./g, path_.sep) + '.java';
-
-  ensurePath(outfile);
-
-  var javaclass = cls.buildJavaClass(foam.java.Class.create({ abstract: true }));
-
-  writeFileIfUpdated(outfile, javaclass.toJavaSource());
-}
-
-function generateSkeleton(/* String */ cls) {
-  console.log('generating Skeleton', cls);
-  cls = foam.lookup(cls);
-
-  var outfile = outdir + path_.sep +
-    cls.package.replace(/\./g, path_.sep) +
-    path_.sep + cls.name + 'Skeleton.java';
-
-  ensurePath(outfile);
-
-  writeFileIfUpdated(outfile, foam.java.Skeleton.create({ of: cls }).buildJavaClass().toJavaSource());
-}
-
-function generateProxy(/* String */ intf) {
-  console.log('generating Proxy', intf);
-
-  intf = foam.maybeLookup(intf);
-
-  var existing = foam.maybeLookup(intf.package + '.Proxy' + intf.name, true);
-
-  if ( existing ) {
-    generateClass(existing);
-    return;
-  }
-
-  var proxy = foam.core.Model.create({
-    package: intf.package,
-    name: 'Proxy' + intf.name,
-    implements: [intf.id],
-    properties: [
-      {
-        class: 'Proxy',
-        of: intf.id,
-        name: 'delegate'
-      }
-    ]
   });
-
-  proxy.source = intf.model_.source;
-
-  generateClass(proxy.buildClass());
 }
 
-function writeFileIfUpdated(outfile, buildJavaSource, opt_result) {
-  if (! ( fs_.existsSync(outfile) && (fs_.readFileSync(outfile).toString() == buildJavaSource))) {
-    debugFilesWritten.push(outfile);
-    fs_.writeFileSync(outfile, buildJavaSource);
-    if ( opt_result !== undefined) opt_result.push(outfile);
-  }
-}
+var http_ = require('http');
 
-var addDepsToClasses = function() {
-  // Determine all of the paths that the modelDAO should search will use when
-  // arequiring all of the classes.
-  var paths = {};
-  paths[srcPath] = true;
-  classes.forEach(function(cls) {
-    if ( foam.Array.isInstance(cls) ) paths[srcPath + cls[0]] = true;
+function download(url, dest, cb) {
+  var file    = fs_.createWriteStream(dest);
+  var request = http_.get(url, function(response) {
+    response.pipe(file);
+    file.on('finish', function() {
+      file.close(cb);  // close() is async, call cb after close completes.
+    });
+  }).on('error', function(err) { // Handle errors
+    fs_.unlink(dest); // Delete the file async. (But we don't check the result)
+    cb && cb(err.message);
   });
-
-  // Remove the paths from the entries in classes because the modelDAO should be
-  // able to find them now.
-  classes = classes.map(function(cls) {
-    return foam.Array.isInstance(cls) ? cls[1] : cls;
-  });
-
-  var flagFilter = foam.util.flagFilter(['java']);
-
-  var classloader = foam.__context__.classloader;
-  Object.keys(paths).forEach(function(p) {
-    classloader.addClassPath(p);
-  });
-
-  return (function() {
-    var loadClass = foam.cps.awrap(classloader.load.bind(classloader));
-
-    function collectDeps() {
-      var classMap = {};
-      var classQueue = classes.slice(0);
-      let printCounter = 0;
-      while ( classQueue.length ) {
-        var cls = classQueue.pop();
-        if ( ! classMap[cls] && ! blacklist[cls] ) {
-          console.log('generating', cls);
-          cls = foam.lookup(cls);
-          if ( ! checkFlags(cls.model_) ) continue;
-          classMap[cls.id] = true;
-          cls.getAxiomsByClass(foam.core.Requires).filter(flagFilter).forEach(function(r) {
-            r.javaPath && classQueue.push(r.javaPath);
-          });
-          cls.getAxiomsByClass(foam.core.Implements).filter(flagFilter).forEach(function(r) {
-            classQueue.push(r.path);
-          });
-          if ( cls.model_.extends ) classQueue.push(cls.model_.extends);
-        }
-      }
-      classes = Object.keys(classMap);
-    }
-
-    with ( foam.cps ) {
-      return new Promise(
-        sequence(
-          compose(map(loadClass), value(classes)),
-          wrap(collectDeps)));
-    }
-  })();
 };
 
-function checkFlags(model) {
-  var parent = true;
-
-  if ( model.extends &&
-       ( model.extends != 'foam.core.FObject' && model.extends != 'FObject' ) ) {
-    parent = checkFlags(foam.lookup(model.extends).model_);
-  }
-
-  if ( ! parent ) return false;
-
-  if ( model.flags && model.flags.indexOf('java') == -1 ) {
-    return false;
-  }
-
-  return true;
+function loadLibs(pom) {
+  // To be useful, it would also need to download the library's POM and then download
+  // it's dependendencies. Better to let Maven do that.
+  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => {
+    var a   = d.split(':');
+    var filename =  a[1] + '-' + a[2] + '.jar';
+    var url = X.repo + a[0].replaceAll('.', '/') + '/' + a[1] + '/' + a[2] + '/' + filename;
+    console.log('[GENJAVA] Downloading', url);
+    download(url, X.libdir + '/' + filename, e => {
+      if ( e ) {
+        console.log('[GENJAVA] Error Downloading', filename);
+      } else {
+        console.log('[GENJAVA] Downloaded', filename);
+      }
+    });
+  });
 }
 
-addDepsToClasses().then(function() {
-  classes.forEach(loadClass);
-  abstractClasses.forEach(loadClass);
-  skeletons.forEach(loadClass);
-  proxies.forEach(loadClass);
+if ( X.buildlib && ! fs_.existsSync(X.libdir) ) fs_.mkdirSync(X.libdir, {recursive: true});
 
-  function deArray(a) { return foam.Array.isInstance(a) ? a[1] : a; }
+function addJournal(fn) {
+  X.journalFiles.push(fn);
+  if ( ! flags.buildjournals ) return;
+  var i           = fn.lastIndexOf('/');
+  var journalName = fn.substring(i+1, fn.length-4);
+  var file        = fs_.readFileSync(fn).toString();
 
-  var javaClasses = classes.map(deArray).map(function(cls) {
-    if ( foam.String.isInstance(cls) ) {
-      cls = foam.lookup(cls);
-    }
-    return cls;
-  });
+  if ( ! file.length ) return;
 
-  javaClasses.map(deArray).forEach(generateClass);
-  abstractClasses.map(deArray).forEach(generateAbstractClass);
-  skeletons.map(deArray).forEach(generateSkeleton);
-  proxies.map(deArray).forEach(generateProxy);
-}).then(function () {
-  var notFound = Object.keys(classesNotFound).length;
-  var found    = Object.keys(classesFound).length;
+  file = `// The following ${(file || '').split('\n').length} lines were copied from "${path_.relative(process.cwd(), fn)}"\n` + file + '\n';
+  X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
+}
 
-  if ( notFound > 0 ) {
-    var allKeys = {};
-    for ( k in classesNotFound ) allKeys[k] = true;
-    for ( k in classesFound ) allKeys[k] = true;
-    console.log(`${found}/${Object.keys(allKeys).length} sources found (${notFound} missing)`);
-    console.log(Object.keys(classesNotFound));
-    if ( debugDataDir !== null ) {
-      require('fs').writeFileSync(
-        path_.join(debugDataDir, 'classesWithNoSources.json'),
-        JSON.stringify(Object.keys(classesNotFound)));
-    }
+function outputJournals() {
+  if ( ! flags.buildjournals ) return;
+
+  if ( fs_.existsSync(X.journaldir) ) {
+    fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
+  } else {
+    fs_.mkdirSync(X.journaldir, {recursive: true});
   }
 
-  if ( debugDataDir !== null ) {
-    if ( debugFilesWritten.length != 0 ) {
-      require('fs').writeFileSync(
-        path_.join(debugDataDir, 'filesWritten.json'),
-        JSON.stringify(debugFilesWritten));
-      }
+  Object.keys(X.journalOutput).forEach(f => {
+    fs_.writeFileSync(X.journaldir + f + '.0', X.journalOutput[f]);
+  });
+}
+
+
+var seen = {};
+function processPOM(pom) {
+  if ( seen[pom.location] ) return;
+  if ( X.buildlib ) loadLibs(pom);
+  seen[pom.location] = true;
+  verbose('GENJAVA: Scanning POM for java files:', pom.location);
+  processDir(pom, pom.location || '/', false);
+}
+
+foam.poms.forEach(processPOM);
+console.log(`GENJAVA: Found ${found} java files.`);
+
+//console.log(X.javaFiles);
+fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
+fs_.writeFileSync('journalFiles', X.journalFiles.join('\n') + '\n');
+
+if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
+
+var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
+
+console.log('GENJAVA Compiling:', cmd);
+exec_.exec(cmd, [], (error, stdout, stderr) => {
+  console.log('GENJAVA Finished Compiling');
+  console.log(stdout);
+  console.log(stderr);
+  if ( error ) {
+    console.log(error);
+    process.exit(1);
   }
 });
+
+console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
+// console.log(X.journalFiles);
+
+outputJournals();
+// console.log('************ PROCESS', process.env);

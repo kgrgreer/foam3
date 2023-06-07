@@ -7,7 +7,6 @@
 foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'CapabilityIntercept',
-  implements: [ 'foam.core.ExceptionInterface' ],
   extends: 'foam.core.FOAMException',
   javaGenerateConvenienceConstructor: false,
 
@@ -98,20 +97,32 @@ foam.CLASS({
           })
         });
       }
+    },
+    {
+      flags: ['web'],
+      name: 'interceptType',
+      expression: function (capabilities, capables) {
+        if ( capabilities.length + capables.length > 1 ) {
+          return this.InterceptType.COMPOSITE;
+        }
+        return capables.length > 0 ?
+          this.InterceptType.CAPABLE : this.InterceptType.UCJ;
+      }
+    },
+    {
+      flags: ['web'],
+      name: 'wizardController'
+    }
+  ],
+
+  enums: [
+    {
+      name: 'InterceptType',
+      values: ['UCJ', 'CAPABLE', 'COMPOSITE']
     }
   ],
 
   methods: [
-    {
-      // TODO: cloning this property from ExceptionInterface creates a bug.
-      name: 'getClientRethrowException',
-      documentation:
-      `If an exception is intended to go to the client, this
-      returns an exception object; it returns null otherwise.`,
-      type: 'RuntimeException',
-      visibility: 'public',
-      javaCode: `return this;`
-    },
     {
       name: 'addCapabilityId',
       args: [

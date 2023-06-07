@@ -101,5 +101,5 @@ foam.CLASS({
         return authService.check(x, getDeletePermission_());
       `
     }
-  ],
+  ]
 });

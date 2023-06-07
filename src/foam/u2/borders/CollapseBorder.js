@@ -9,20 +9,19 @@ foam.CLASS({
   name: 'CollapseBorder',
   extends: 'foam.u2.Controller',
 
-  requires: [ 'foam.u2.ActionView' ],
+  requires: [
+    'foam.u2.ActionView',
+    'foam.u2.tag.Image'
+  ],
 
   css: `
     ^ {
       position: relative;
-      padding: 0.71em;
-      border-top: 1px solid #999;
-      margin-top: 1.14em;
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
     }
     ^.expanded {
-      border: 1px solid #999;
-      padding-left: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-      padding-top: 20px;
     }
     ^control {
       display: inline;
@@ -32,41 +31,37 @@ foam.CLASS({
     ^toolbar {
       display: flex;
       flex-direction: row;
+      justify-content: space-between;
       align-items: center;
-      position: absolute;
-      padding: 3px;
-      width: calc(100% - 3vmin);
       left: 1.5vmin;
       top: max(-12px, -2vmin);
-      color: #666;
-      padding-top: 0;
+      color: /*%GREY1%*/ #666;
+      cursor: pointer;
+      /* button overrides */
+      width: 100%;
+      border: none;
+      background: none;
+      padding: 0;
     }
-    ^title {
-      background: white;
-      position: relative;
+    ^.expanded > ^toolbar {
+      padding: 0 0 0.8rem 0;
     }
     ^toggle-button {
       border: none;
       outline: none;
-      padding: 3px;
     }
     ^toggle-button:focus {
-      background-color: white;
+      background-color: $white;
     }
-    ^control > ^toggle-button {
-      transform: rotate(-90deg);
-      transition: transform 0.3s;
-      width: 30px;
-    }
-    ^.expanded ^toggle-button {
-      transform: rotate(0deg);
+    ^control {
       transition: transform 0.3s;
     }
-    ^place-right {
-      order: 1;
+    ^.expanded ^control {
+      transform: rotate(90deg);
     }
-    ^space-even {
-      justify-content: space-between;
+    ^control svg {
+      max-height: 1em;
+      fill: $black;
     }
   `,
 
@@ -81,7 +76,11 @@ foam.CLASS({
       name: 'label',
       value: '\u25BD'
     },
-    [ 'toggleLeft', false ] /* if true, will place the toggle action to the left side of the title */
+    {
+      class: 'String',
+      name: 'controlGlyph',
+      value: 'next'
+    }
   ],
 
   methods: [
@@ -89,21 +88,16 @@ foam.CLASS({
       this.
         addClass(this.myClass()).
         enableClass('expanded', this.expanded$).
-        start('div').
+        start('button').
+          attrs({ name: this.TOGGLE.name, 'aria-label': this.TOGGLE.ariaLabel }).
+          on('click', this.toggle.bind(this)).
           addClass(this.myClass('toolbar')).
-          enableClass(this.myClass('space-even'), this.toggleLeft$.map( val => ! val)).
-          start('div').
-            addClass(this.myClass('control')).
-            enableClass(this.myClass('place-right'), this.toggleLeft$.map( val => ! val)).
-            start(this.TOGGLE, {label: this.label$}).
-              addClass(this.myClass('toggle-button')).
-            end().
-          end().
           start('span').
-            addClass(this.myClass('title')).
-            start(this.TOGGLE, {label: this.title$, tabIndex: -1}).
-              addClass(this.myClass('toggle-button')).
-            end().
+            addClass('p-bold').
+            add(this.title$).
+          end().
+          start(this.Image, { glyph: this.controlGlyph }).
+            addClass(this.myClass('control')).
           end().
         end().
         start('div', null, this.content$).

@@ -7,12 +7,13 @@
 package foam.lib.parse;
 
 public class CSVParser
-    extends foam.lib.parse.ProxyParser
-    implements foam.core.Detachable {
+  extends    foam.lib.parse.ProxyParser
+  implements foam.core.Detachable
+{
 
-  boolean detached = false;
+  boolean detached_ = false;
   public void detach() {
-    detached = true;
+    detached_ = true;
   }
 
   public CSVParser(foam.core.ClassInfo info, foam.dao.Sink sink) {
@@ -35,8 +36,8 @@ public class CSVParser
       )
     );
     Parser csvRow = new Seq1(0,
-        new Repeat(field, new Chars(",")),
-        new Repeat(new Chars("\n\r"))
+      new Repeat(field, new Chars(",")),
+      new Repeat(new Chars("\n\r"))
     );
 
     foam.core.Detachable detach = this;
@@ -55,7 +56,7 @@ public class CSVParser
 
         Object[] headers = (Object[]) ps.value();
 
-        while ( ! detached && ps.valid() ) {
+        while ( ! detached_ && ps.valid() ) {
           ps = csvRow.parse(ps, px);
           if ( ps == null ) break;
           Object[] values = (Object[]) ps.value();

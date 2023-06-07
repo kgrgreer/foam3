@@ -29,12 +29,13 @@ foam.CLASS({
   axioms: [
     {
       installInClass: function(cls) {
-        var Element, FObject = foam.core.FObject, Str = foam.String;
+        var Element;
+        var FObject = foam.core.FObject;
+        var Str     = foam.String;
+
         cls.createView = function(spec, args, self, ctx, disableWarning) {
           if ( ! Element ) Element = foam.u2.Element;
-          if ( FObject.isInstance(ctx) ) {
-            ctx = ctx.__subContext__;
-          }
+          if ( FObject.isInstance(ctx) ) ctx = ctx.__subContext__;
 
           if ( ! spec || Str.isInstance(spec) ) {
             if ( args ) {
@@ -72,7 +73,7 @@ foam.CLASS({
               if ( ! cls ) {
                 foam.assert(false, 'ViewSpec specifies unknown class: ', spec.class);
               }
-              ret = cls.create(spec, ctx).copyFrom(args || {});
+              ret = cls.create({ ...spec, ...(args || {})}, ctx);
             }
 
             if ( spec.children ) {
@@ -110,10 +111,20 @@ foam.CLASS({
         return value;
       }
     ],
-    ['view', { class: 'foam.u2.view.MapView' }],
-    [ 'adapt', function(_, spec, prop) {
-      return foam.String.isInstance(spec) ? { class: spec } : spec ;
-    } ],
+    {
+      name: 'view',
+      value: { class: 'foam.u2.view.MapView' }
+    },
+    {
+      name: 'adapt',
+      value: function(_, spec, prop) {
+        if ( foam.String.isInstance(spec) ) {
+          spec = spec.trim();
+          return spec.startsWith('{') ? JSON.parse(spec) : { class: spec };
+        }
+        return spec;
+      }
+    },
     [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
     [ 'displayWidth', 80 ]
     /*

@@ -24,6 +24,10 @@ foam.ENUM({
     {
       name: 'DELETED',
       label: 'Deleted'
+    },
+    {
+      name: 'DISABLED',
+      label: 'Disabled'
     }
   ]
 });

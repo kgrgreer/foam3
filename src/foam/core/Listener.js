@@ -29,7 +29,9 @@
       // long-form
       {
         name: 'onClear',
-        isFramed: true,
+        isMerged: true, // optional, could also be isFramed: or isIdled:
+        delay: 160,
+        on: [ 'this.propertyChange.prop1', 'data.propChange' ], // optional
         code: function() { ... }
       }
     ]
@@ -42,6 +44,12 @@
   to so you would need to do something like:
     <pre>alarm.ring.sub(sprinker.onAlarm.bind(sprinkler));</pre>
   But listeners are pre-bound.
+<p>
+  If on: is specified, each listed topic is subscribed to and the listener
+  is called whenever an event is fired. If the first part of the topic is
+  either 'this' or '', then the subscription is on 'this', otherwise it is
+  on this[firstWord], for example, 'data.propertyChange' would listen to
+  the 'propertyChange' topic on this.data.
 */
 // TODO(kgr): Add SUPER support.
 foam.CLASS({
@@ -56,7 +64,13 @@ foam.CLASS({
   properties: [
     { class: 'Boolean', name: 'isFramed',   value: false },
     { class: 'Boolean', name: 'isMerged',   value: false },
-    { class: 'Int',     name: 'mergeDelay', value: 16, units: 'ms' },
+    { class: 'Boolean', name: 'isIdled',    value: false },
+    { class: 'Int',     name: 'delay',      value: 16, units: 'ms' },
+    // legacy support, aliases to 'delay'
+    { class: 'Int',     name: 'mergeDelay', value: 16,
+      getter: function() { return this.delay; },
+      setter: function(v) { this.delay = v; }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.core.Argument',
@@ -68,6 +82,15 @@ foam.CLASS({
             type: 'Detachable'
           })
         ];
+      }
+    },
+    {
+      class:  'StringArray',
+      name: 'on',
+      adapt: function(_, v, prop) {
+        if ( Array.isArray(v) )
+          return v;
+        return v.split(',');
       }
     }
   ],
@@ -82,26 +105,28 @@ foam.CLASS({
           foam.core.Listener.isInstance(superAxiom),
         'Attempt to override non-listener', this.name);
 
-      var name       = this.name;
-      var code       = this.override_(proto, foam.Function.setName(this.code, name), superAxiom);
-      var isMerged   = this.isMerged;
-      var isFramed   = this.isFramed;
-      var mergeDelay = this.mergeDelay;
+      var name     = this.name;
+      var code     = this.override_(proto, foam.Function.setName(this.code, name), superAxiom);
+      var isMerged = this.isMerged;
+      var isIdled  = this.isIdled;
+      var isFramed = this.isFramed;
+      var delay    = this.delay;
 
-      Object.defineProperty(proto, name, {
+      var obj = Object.defineProperty(proto, name, {
         get: function listenerGetter() {
           if ( this.cls_.prototype === this ) return code;
 
           if ( ! this.hasOwnPrivate_(name) ) {
             var self = this;
-            var l = function(sub) {
-              // Is it possible to detect stale subscriptions?
-              // ie. after an object has been detached.
-              return code.apply(self, arguments);
+            var l = function() {
+              // Don't deliver stale notifications after an object has been detached.
+              if ( ! self.isDetached() ) return code.apply(self, arguments);
             };
 
             if ( isMerged ) {
-              l = this.__context__.merged(l, mergeDelay);
+              l = this.__context__.merged(l, delay);
+            } else if ( isIdled ) {
+              l = this.__context__.idled(l, delay);
             } else if ( isFramed ) {
               l = this.__context__.framed(l);
             }
@@ -113,6 +138,21 @@ foam.CLASS({
         configurable: true,
         enumerable: false
       });
+    },
+    function initObject(obj) {
+      if ( this.on.length > 0 ) {
+        var listener = obj[this.name];
+        for ( var i = 0 ; i < this.on.length ; i++ ) {
+          var o       = this.on[i].split('.');
+          var prop    = o.shift();
+          var topic   = o;
+          var subject = prop === 'this' || ! prop ? obj : obj[prop];
+          if ( subject ) {
+            var sub = subject.sub.apply(subject, topic.concat(listener));
+            if ( obj !== subject ) obj.onDetach(sub);
+          }
+        }
+      }
     }
   ]
 });
@@ -135,8 +175,8 @@ foam.CLASS({
         }
 
         return foam.core.Listener.isInstance(o) ?
-            o :
-            foam.core.Listener.create(o) ;
+          o :
+          foam.core.Listener.create(o) ;
       }
     }
   ]

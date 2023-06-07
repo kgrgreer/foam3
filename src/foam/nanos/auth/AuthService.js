@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'AuthService',
 
+  skeleton: true,
+
   documentation: `
     An AuthService is a service that handles authentication (who are you?) as
     well as authorization (do you have the right to access this?). The methods
@@ -275,6 +277,22 @@ foam.INTERFACE({
         {
           name: 'x',
           type: 'Context'
+        }
+      ]
+    },
+    {
+      name: 'isUserAnonymous',
+      documentation: 'Is the current user anonymous user',
+      async: true,
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'userId',
+          type: 'Long'
         }
       ]
     }

@@ -21,6 +21,18 @@ foam.CLASS({
       name: 'name'
     },
     {
+      class: 'String',
+      name: 'pom',
+      value: 'pom',
+      documentation: 'Name of POM file to provide to foam.js loader (minus .js extension).'
+    },
+    {
+      class: 'String',
+      name: 'foamUrl',
+      value: '../../../../foam3/src/foam.js',
+      documentation: 'Location of FOAM for development when not using liveScriptBundler'
+    },
+    {
       documentation: 'Set at startup in bootscript.',
       class: 'String',
       name: 'version',

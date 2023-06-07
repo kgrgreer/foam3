@@ -131,6 +131,10 @@ public class Outputter
     writer_.append(value.name());
   }
 
+  public void outputProperties(FObject obj) {
+    outputProperties_(obj);
+  }
+
   protected void outputProperties_(FObject obj) {
     // output properties
     ClassInfo info = obj.getClassInfo();
@@ -157,6 +161,7 @@ public class Outputter
   protected void outputProperty_(FObject obj, PropertyInfo prop) {
     if ( mode_ == OutputterMode.NETWORK && prop.getNetworkTransient() ) return;
     if ( mode_ == OutputterMode.STORAGE && prop.getStorageTransient() ) return;
+    if ( mode_ == OutputterMode.EXTERNAL && prop.getExternalTransient() ) return;
     if ( ! outputDefaultValues_ && ! prop.isSet(obj) ) return;
 
     Object value = prop.get(obj);
@@ -171,7 +176,11 @@ public class Outputter
     if ( value instanceof Object[] ) {
       outputArrayProperty((Object[]) value, prop);
     } else if ( value instanceof FObject ) {
-      outputFObjectProperty((FObject) value, prop);
+      if ( value instanceof OutputXML ) {
+        ((OutputXML) value).outputXML(this);
+      } else {
+        outputFObjectProperty((FObject) value, prop);
+      }
     } else {
       outputPrimitiveProperty(value, prop);
     }
@@ -236,6 +245,11 @@ public class Outputter
 
   public Outputter setOutputShortNames(boolean outputShortNames) {
     outputShortNames_ = outputShortNames;
+    return this;
+  }
+
+  public Outputter setOutputDefaultValues(boolean outputDefaultValues) {
+    outputDefaultValues_ = outputDefaultValues;
     return this;
   }
 

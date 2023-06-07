@@ -201,7 +201,7 @@ foam.CLASS({
       // if this index can sort, it's up to our tail to sub-sort
       // TODO: the following code breaks things, fix. KGR
       if ( false /*foam.util.equals(order.orderPrimaryProperty, this.prop)*/ ) {
-        // If the subestimate is less than sort cost (N*lg(N) for a dummy size of 1000)
+        // If the sub-estimate is less than sort cost (N*lg(N) for a dummy size of 1000)
         return 9965 >
           this.tail.estimate(1000, this.NullSink.create(), 0, 0, order.orderTail())
       }
@@ -225,9 +225,9 @@ foam.CLASS({
           size * Math.log(size) / Math.log(2);
       }
 
-      var self = this;
-      predicate = predicate ? predicate.clone() : null;
-      var property = this.prop;
+      var self      = this;
+      predicate     = predicate ? predicate.clone() : null;
+      var property  = this.prop;
       // TODO: validate this assumption:
       var nodeCount = Math.floor(size * 0.25); // tree node count will be a quarter the total item count
 
@@ -350,20 +350,20 @@ foam.CLASS({
 
     function put(newValue) {
       this.root = this.root.putKeyValue(
-          this.index.prop.f(newValue),
-          newValue,
-          this.index.compare,
-          this.index.dedup,
-          this.selectCount > 0);
+        this.index.prop.f(newValue),
+        newValue,
+        this.index.compare,
+        this.index.dedup,
+        this.selectCount > 0);
     },
 
     function remove(value) {
       this.root = this.root.removeKeyValue(
-          this.index.prop.f(value),
-          value,
-          this.index.compare,
-          this.selectCount > 0,
-          this.index.nullNode);
+        this.index.prop.f(value),
+        value,
+        this.index.compare,
+        this.selectCount > 0,
+        this.index.nullNode);
     },
 
     function get(key) {

@@ -17,7 +17,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.ControllerMode',
-    'foam.u2.detail.SectionedDetailPropertyView'
+    'foam.u2.PropertyBorder'
   ],
 
   messages: [
@@ -65,8 +65,8 @@ foam.CLASS({
   methods: [
     function addBody() {
       return this.E()
-        .startContext({ controllerMode: this.ControllerMode.EDIT })
-          .tag(this.SectionedDetailPropertyView, {
+        .startContext({ controllerMode: this.ControllerMode.EDIT, data: this.data })
+          .tag(this.PropertyBorder, {
             prop: this.property,
             data$: this.data$
           })

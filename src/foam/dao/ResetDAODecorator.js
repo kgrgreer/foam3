@@ -22,7 +22,7 @@ foam.CLASS({
     {
       name: 'put_',
       code: function(x, obj) {
-        this.delegate.put_(x, obj).then((obj) => {
+        return this.delegate.put_(x, obj).then((obj) => {
           if ( this.daoKey ) {
             var dao = this.__subContext__[this.daoKey];
             dao.cmd(foam.dao.DAO.PURGE_CMD);

@@ -251,23 +251,25 @@ foam.CLASS({
       javaCode: `
       var pm = PM.create(x, true, CapabilityPayloadDAO.getOwnClassInfo().getId(), "put");
 
-      recordCapabilityPayload(x, obj.fclone());
-
+      var payload = (CapabilityPayload) obj.fclone();
       try {
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 
         List leaves = new ArrayList<>();
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), true, true, leaves);
+        List grantPath = crunchService.retrieveCapabilityPath(x, receivingCapPayload.getId(), false, true, leaves);
         processCapabilityList(x, grantPath, leaves, capabilityDataObjects);
 
-        var ret =  find_(x, receivingCapPayload.getId());
+        var ret = (CapabilityPayload) find_(x, receivingCapPayload.getId());
+        // Update payload validation errors after processing the capability payload data
+        payload.setCapabilityValidationErrors(ret.getCapabilityValidationErrors());
         return ret;
       } catch(Throwable t) {
         pm.error(x, t.getMessage());
         throw t;
       } finally {
+        recordCapabilityPayload(x, payload);
         pm.log(x);
       }
       `
@@ -295,7 +297,7 @@ foam.CLASS({
                 (FObject) capabilityDataObjects.get(cap.getName());
             }
 
-            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunctionDirectly(x, cap.getId(), dataObj);
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
             getLogger().debug("Updated capability", cap.getName(), cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
           } else if ( item instanceof List ) {
             processCapabilityList(x, (List) item, null, capabilityDataObjects);
@@ -314,33 +316,6 @@ foam.CLASS({
             }
           }
         }
-
-        // Update all leaf nodes with data already saved above which will trigger dependent UCJ updates
-        if ( leaves != null ) {
-          for (Object leaf : leaves) {
-            if ( leaf instanceof Capability ) {
-              Capability cap = (Capability) leaf;
-              UserCapabilityJunction ucj = crunchService.getJunction(x, cap.getId());
-              ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), ucj.getData(), null);
-            }
-          }
-        }
-      `
-    },
-    {
-      name: 'recordCapabilityPayload',
-      args: 'Context outerX, FObject obj',
-      javaCode: `
-        ((Agency) getX().get("threadPool")).submit(outerX, x -> {
-          try {
-            CapabilityPayloadRecord record = new CapabilityPayloadRecord.Builder(x)
-              .setCapabilityPayload((CapabilityPayload) obj)
-              .build();
-            ((DAO) x.get("capabilityPayloadRecordDAO")).inX(x).put(record);
-          } catch ( Throwable t ) {
-            getLogger().warning("Failed to save record", obj, t);
-          }
-        }, "Save CapabilityPayloadRecord");
       `
     },
     {

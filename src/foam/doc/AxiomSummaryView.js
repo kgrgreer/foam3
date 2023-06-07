@@ -8,15 +8,18 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomSummaryView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.doc.Axiom',
     'foam.doc.AxiomTableView',
     'foam.doc.dao.AxiomDAO',
     'foam.mlang.sink.Count',
   ],
+
   implements: [
     'foam.mlang.Expressions',
   ],
+
   properties: [
     {
       class: 'String',
@@ -36,8 +39,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'title',
-    },
+    }
   ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -63,6 +67,6 @@ foam.CLASS({
               end()
           })
       }, this.daoSlot(dao, this.Count.create())))
-    },
-  ],
+    }
+  ]
 });

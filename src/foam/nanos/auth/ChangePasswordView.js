@@ -4,6 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+//TODO: Maybe have this and emailVerificationView extend a common view/css
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'ChangePasswordView',
@@ -12,66 +13,77 @@ foam.CLASS({
   documentation: 'renders a password change model',
 
   imports: [
+    'loginView?',
     'stack',
     'theme',
     'user'
   ],
 
-  requires: [ 'foam.u2.stack.StackBlock' ],
+  requires: [
+    'foam.u2.borders.StatusPageBorder',
+    'foam.u2.detail.SectionView',
+    'foam.u2.stack.StackBlock'
+  ],
 
+  messages: [
+    { name: 'BACK_LABEL', message: 'Back to'}
+  ],
   css: `
     ^ {
-      margin-bottom: 24px
+      height: 100%;
     }
-    ^top-bar {
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+    ^flex {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      gap: 1rem;
+      padding: 2.4rem 3.2rem;
+    }
+    ^flex^popup {
+      gap: 3rem;
+      padding: 5rem 0 0 0;
+    }
+    ^sectionView{
       width: 100%;
-      height: 12vh;
-      border-bottom: solid 1px #e2e2e3;
+      display: flex;
+      justify-content: center;
     }
-    ^top-bar img {
-      height: 8vh;
-      padding-top: 2vh;
-      display: block;
-      margin: 0 auto;
+    ^title {
+      text-align:center;
     }
-    ^content {
-      padding-top: 4vh;
-      margin: 0 auto;
+    ^popup ^subTitle,^popup ^sectionView > *{
+      width: 75%;
     }
-    ^content-horizontal {
-      width: 90%;
-    }
-    ^content-vertical {
-      width: 30vw;
-    }
-    ^section {
-      margin-bottom: 10%;
-    }
-    /* subtitle */
-    /* using nested CSS selector to give a higher sepcificy and prevent being overriden  */
-    ^ ^section .subtitle {
-      color: /*%GREY2%*/ #9ba1a6;
-    }
-    ^link {
-      color: /*%PRIMARY3%*/ #604aff;
-      cursor: pointer;
+    ^subTitle {
+      padding: 0 15px;
       text-align: center;
-      padding-top: 1.5vh;
     }
-    ^ .foam-u2-layout-Cols > .foam-u2-ActionView {
-      width: 100%;
+    ^ .foam-u2-detail-SectionView .foam-u2-detail-SectionView-actionDiv {
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    ^ form {
+      margin-bottom: 0;
+    }
+    /* mobile */
+    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 786px ) {
+      ^popup ^subTitle,^popup ^sectionView > * {
+        width: 50%;
+      }
+      ^subTitle {
+        padding: 0;
+      }
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
+      ^popup  ^subTitle,^popup ^sectionView > * {
+        width: 25%;
+      }
     }
   `,
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'showHeader',
-      documentation: `This property toggles the view from having a top bar displayed.`,
-      value: true,
-      hidden: true
-    },
     {
       class: 'Boolean',
       name: 'isHorizontal',
@@ -95,50 +107,65 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: this.modelOf,
-      name: 'model',
+      name: 'data',
       documentation: 'instance of password model used for this view',
       factory: function() {
         return foam.lookup(this.modelOf)
           .create({ isHorizontal: this.isHorizontal }, this);
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'popup',
+      value: true
     }
   ],
 
   methods: [
     function render() {
       const self = this;
-      const logo = this.theme.largeLogo || this.theme.logo;
-
       this.addClass()
-        // header
-        .callIf(this.showHeader, function() {
-          this.start().addClass(self.myClass('top-bar'))
-            .start('img').attr('src', logo).end()
-          .end();
-        })
-        // body
-        .start()
-          .addClass(this.myClass('content'))
-          .callIfElse(this.isHorizontal, function() {
-            this.addClass(self.myClass('content-horizontal'));
-          }, function() {
-            this.addClass(self.myClass('content-vertical'));
-          })
-          // section
-          .start().addClass(this.myClass('section'))
-            .start(this.MODEL).end()
+        .start(this.popup ? this.StatusPageBorder : '', { showBack: false })
+          .start()
+            .enableClass(self.myClass('popup'), this.popup$)
+            .addClass(this.myClass('flex'))
+            .callIf(this.data.TITLE, function() {
+              this.start().addClass(self.myClass('title'), 'h400').add(self.data.TITLE).end();
+            })
+            .callIf(this.data.INSTRUCTION, function() {
+              this.start().addClass(self.myClass('subTitle'), 'p').add(self.data.INSTRUCTION).end();
+            })
+            .start(this.SectionView, {
+              nodeName: 'form',
+              data$: this.data$,
+              sectionName: 'resetPasswordSection',
+              showTitle: false
+            })
+              .addClass(this.myClass('sectionView'))
+            .end()
+            .callIf(this.popup, function() {
+              let label = self.stack?.stack_[self.stack.pos - 1]?.breadcrumbTitle
+              this.tag(self.BACK,
+                { label: self.BACK_LABEL + ' ' +  (label || (self.theme?.appName ?? 'home')) }
+              );
+            })
           .end()
-          // link
-          .callIf(this.model.hasBackLink, function() {
-            this.start().addClass(self.myClass('link'))
-              .add(self.model.REDIRECTION_TO)
-              .on('click', function() {
-                self.stack.push(self.StackBlock.create({ view: { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, parent: self }));
-              })
-            .end();
-          })
         .end();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'back',
+      buttonStyle: 'TEXT',
+      code: function(X) {
+        if ( X.stack.pos > 0 ) {
+          X.stack.back();
+        } else {
+          X.pushMenu('', true);
+        }
+      }
     }
   ]
 });

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'UserPropertyAvailabilityView',
   extends: 'foam.u2.View',
 
-  documentation: 
+  documentation:
     'A TextField view that supports availability checks on specified User model property values (ie. Username/Email).',
 
   implements: [
@@ -103,12 +103,11 @@ foam.CLASS({
           .addClass(this.myClass('input'))
           .attr('name', this.fromPropertyName + 'Input')
           .on('blur', this.checkAvailability )
-          .on('keypress', (e) => {
+          .on('keyup', (e) => {
             if ( this.restrictedCharacters && ! this.restrictedCharacters.test(e.key) ) {
               e.preventDefault();
             }
-            this.isAvailable = true;
-            this.showIcon = false;
+            this.checkAvailability();
           })
         .end()
       .end();

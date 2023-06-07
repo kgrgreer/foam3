@@ -39,7 +39,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.BaseWizardlet',
+      of: 'foam.u2.wizard.wizardlet.BaseWizardlet',
       name: 'wizardlets',
       documentation: 'wizardlets for capable payloads',
       postSet: function(_, n) {

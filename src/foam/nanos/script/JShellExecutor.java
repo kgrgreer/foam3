@@ -23,6 +23,7 @@ import jdk.jshell.execution.DirectExecutionControl;
 import jdk.jshell.spi.ExecutionControl;
 import jdk.jshell.spi.ExecutionControlProvider;
 import jdk.jshell.spi.ExecutionEnv;
+import javax.script.ScriptException;
 
 public class JShellExecutor {
   public static final Object[] X_HOLDER = new X[1];
@@ -40,12 +41,27 @@ public class JShellExecutor {
     return OBJECT_HOLDER[0];
   }
 
-  public String execute(X x, JShell jShell, String script) throws IOException {
-    BufferedReader rdr = new BufferedReader(new StringReader(script));
+  // extracted because IOException is thrown in a way that doesn't make it
+  // easy to have one try-catch block.
+  private List<String> readScript(String script) throws IOException { 
     List<String> l1 = new ArrayList<String>();
+    // nullcheck on script to prevent IOException in loop
+    try ( BufferedReader rdr = new BufferedReader(new StringReader(script != null ? script : "")) ) { 
+      for ( String line = rdr.readLine() ; line != null ; line = rdr.readLine() ) {
+        l1.add(line);
+      }
+    }
+    return l1;
+  }
 
-    for ( String line = rdr.readLine() ; line != null ; line = rdr.readLine() ) {
-      l1.add(line);
+  public String execute(X x, JShell jShell, String script, boolean rethrow) throws ScriptException {
+    List<String> l1;
+    try {
+      l1 = readScript(script);
+    } catch(IOException e) {
+      // we're using a StringReader. it should be impossible for
+      // this to happen while readScript() is running
+      throw new IllegalStateException("Unexpected IOException reading script",e); 
     }
 
     List<String> instructionList = new InstructionPresentation(jShell).parseToInstruction(l1);
@@ -54,6 +70,10 @@ public class JShellExecutor {
     try {
       print = console.runEvalInstruction();
     } catch (Exception e) {
+      if ( rethrow ) {
+        throw new ScriptException(e);
+      }
+
       Logger logger = (Logger) x.get("logger");
       if ( logger != null ) {
         logger = foam.nanos.logger.StdoutLogger.instance();
@@ -61,6 +81,16 @@ public class JShellExecutor {
       logger.error(this.getClass().getSimpleName(), "execute", e);
     }
     return print;
+  }
+
+  public String execute(X x, JShell jShell, String script) {
+    try {
+      return execute(x, jShell, script, false);
+    } catch (ScriptException e) {
+      // code execution should not end up here
+      // as we've asked for no rethrows
+      throw new IllegalStateException("execute() rethrew exception when asked not to", e);
+    }
   }
 
   public JShell createJShell(PrintStream ps) {

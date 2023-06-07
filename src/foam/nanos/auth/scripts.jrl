@@ -83,3 +83,45 @@ p({
   "lastModifiedBy": 1348,
   "lastModified": 1630513288696
 })
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Add Region Alternative Name",
+  code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.Region;
+    import java.util.Arrays;
+
+    regionDAO = (DAO) x.get("regionDAO");
+
+    regions = ((ArraySink) regionDAO.select(new ArraySink())).getArray();
+
+    for (region : regions) {
+      region = region.fclone();
+      alternateNameList = new ArrayList(Arrays.asList(region.getAlternativeNames()));
+      
+      // specify new format
+      alternateName = region.getCode().replace("-", "|");
+
+      if ( region.getIsoCode().equals(alternateName) 
+        || region.getName().equalsIgnoreCase(alternateName) 
+        || alternateNameList.contains(alternateName)
+         ) {
+         continue;
+       }
+
+      alternateNameList.add(alternateName);
+      region.setAlternativeNames(alternateNameList.toArray(new String[alternateNameList.size()]));
+      try {
+        region = regionDAO.put(region);
+        print("successfully added alternate name: " + alternateName + " to region: " + region.getCode());
+      } catch(Exception e) {
+        print("failed to add an alternate name: " + alternateName + " to region: " + region.getCode());
+      }
+    }
+
+    print("done");
+  
+  """
+})

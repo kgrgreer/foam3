@@ -81,8 +81,12 @@ foam.CLASS({
     'crunchController',
     'crunchService',
     'menuDAO',
+    'pushMenu?',
     'registerElement',
-    'theme'
+    'subject',
+    'theme',
+    'window',
+    'themeDomainDAO'
   ],
 
   messages: [
@@ -186,6 +190,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'themeDomain',
+      expression: function(themeDomainDAO, window) {
+        return themeDomainDAO
+          .find(this.window.location.hostname);
+      }
+    },
+    {
       name: 'visibleCategoryDAO',
       class: 'foam.dao.DAOProperty',
       documentation: `
@@ -248,8 +259,13 @@ foam.CLASS({
         .start('p').addClasses(['p-lg', this.myClass('label-subtitle')])
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
-        .add(this.slot(function(junctions, featuredCapabilities){
-          return self.renderFeatured();
+        .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
+          var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
+            return ret?.getCapabilities(self.ctrl.__subContext__).dao.select();
+          });
+          if ( themeCaps?.array?.length != 0 ) return self.renderFeatured(themeCaps.array);
+          var featured = await this.featuredCapabilities.select();
+          return self.renderFeatured(featured.array);
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
@@ -273,11 +289,9 @@ foam.CLASS({
         .end();
     },
 
-    function renderFeatured() { // Featured Capabilities in carousel view
+    function renderFeatured(arr) { // Featured Capabilities in carousel view
       var self = this;
       var spot = self.E();
-      this.featuredCapabilities.select().then(result => {
-        var arr = result.array;
         self.totalNumCards = arr.length;
         self.featureCardArray = [];
         for ( let i = 0 ; i < self.totalNumCards ; i++ ) { // build featured cards as elements
@@ -330,7 +344,6 @@ foam.CLASS({
         self.onDetach(() => {
           window.removeEventListener('resize', checkCardsOverflow);
         });
-      });
       return spot;
     },
 
@@ -464,14 +477,21 @@ foam.CLASS({
             this.IN('featured', this.Capability.KEYWORDS)
           )).select())
         .then(async sink => {
-          if ( sink.array.length == 1 ) {
+          if ( sink.array.length !== 1 )
+            return;
+
             let cap = sink.array[0];
             let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
             if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
               || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
-            this.openWizard(cap, false);
-          }
+            let x = this.ctrl.__subContext__;
+            let capa = await this.crunchService.updateJunction(x, cap.id, null, this.CapabilityJunctionStatus.GRANTED);
+
+            if ( capa.status != this.CapabilityJunctionStatus.GRANTED )
+              this.openWizard(cap, false);
+            else
+              this.window.location.reload();
         })
     },
     async function openWizard(cap, showToast) {
@@ -509,6 +529,8 @@ foam.CLASS({
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        // Push default menu if menu changes
+        this.pushMenu?.('');
       }
     }
   ]

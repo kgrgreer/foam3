@@ -45,7 +45,12 @@ foam.CLASS({
       value: ''
     }
   ],
+
   methods: [
+    {
+      name: 'toSummary',
+      code: function() { return this.toString(); }
+    },
     {
       name: 'toString',
       code: function() {
@@ -54,6 +59,6 @@ foam.CLASS({
       javaCode: `
         return "".equals(getVariant()) ? getCode() : getCode() + "-" + getVariant();
       `
-    },
+    }
   ]
 });

@@ -1,5 +1,17 @@
 <title>Modular Wizard Documentation</title>
 
+<h1>THIS DOCUMENTATION IS OUT OF DATE</h1>
+
+I've decided to preserve this documentation because it provides potentially
+useful context about how the wizard was develeoped.
+
+When reading this documentation, be aware of the following:
+
+- StepWizardController logic was moved to IncrementalWizardController
+- all wizard controllers are meant to extend WizardController now
+- ScrollingStepWizardView has not been tested any time recently so far as I'm aware
+- IncrementalStepWizardView is sometimes called "the sidebar wizard" by other devs
+
 <h1>Wizardlet Models</h1>
 
 <h2>Wizardlet</h2>
@@ -15,7 +27,7 @@ The `of` property may also be null to indicate that this wizardlet doesn't have
 any data to enter. (although, the wizardlet may still appear if the `sections`
 property is overridden to display a custom view)
 
-<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="methods" of="foam.u2.wizard.Wizardlet" />
+<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="methods" of="foam.u2.wizard.wizardlet.Wizardlet" />
 
 <h2>WizardletSection</h2>
 
@@ -26,7 +38,7 @@ allows adding custom views to a wizardlet independently from the data model.
 The MinMaxCapabilityWizardlet is an example where a custom WizardletSection is
 used to display a selection of choices.
 
-<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="properties" of="foam.u2.wizard.WizardletSection" />
+<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="properties" of="foam.u2.wizard.wizardlet.WizardletSection" />
 
 <h1>Wizards</h1>
 

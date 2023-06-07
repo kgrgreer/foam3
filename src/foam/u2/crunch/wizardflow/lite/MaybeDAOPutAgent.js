@@ -24,7 +24,7 @@ foam.CLASS({
   methods: [
     function execute() {
       var p = Promise.resolve();
-      if ( this.intercept.daoKey && this.submitted ) {
+      if ( this.intercept?.daoKey && this.submitted ) {
         p = p.then(() =>
           this.__subContext__[this.intercept.daoKey].put(this.capable)
           .then(returnCapable => {

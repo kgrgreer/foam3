@@ -29,6 +29,10 @@ foam.CLASS({
     'data'
   ],
 
+  messages: [
+    { name: 'GENERAL_ERROR', message: 'Network Error, please check your connection and try again.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -138,7 +142,6 @@ foam.CLASS({
           options.body = this.payload;
         }
       }
-
       var request = new Request(
         ( this.protocol ? ( this.protocol + '://' ) : '' ) +
         this.hostname +
@@ -146,7 +149,7 @@ foam.CLASS({
         this.path,
         options);
 
-      return fetch(request).then(function(resp) {
+      return fetch(request).then(resp => {
         var resp = this.HTTPResponse.create({
           resp: resp,
           responseType: this.responseType
@@ -157,8 +160,9 @@ foam.CLASS({
         // Use Promise.reject so crappy debuggers don't pause here
         // throw resp;
         return Promise.reject(resp);
-      }.bind(this));
+      });
     },
+
     function addContentHeaders() {
       // Specify Content-Type header when it can be deduced.
       if ( ! this.headers['Content-Type'] ) {

@@ -14,9 +14,18 @@ foam.CLASS({
   javaImports: [
     'foam.core.Agency',
     'foam.dao.DAO',
-    'foam.nanos.logger.Loggers'
+    'foam.nanos.logger.Loggers',
+    'java.util.HashMap',
   ],
 
+  properties: [
+    {
+      name: 'agents',
+      class: 'Map',
+      javaFactory: `return new HashMap();`
+    },
+  ],
+  
   methods: [
     {
       name: 'put_',
@@ -27,18 +36,27 @@ foam.CLASS({
       MedusaHealth nu = (MedusaHealth) obj;
       MedusaHealth old = (MedusaHealth) getDelegate().find_(x, nu.getId());
       nu = (MedusaHealth) getDelegate().put_(x, nu);
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+
       ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(nu.getId());
       if ( config != null && // May have recieved a base Health object.
+           ! config.getId().equals(myConfig.getId()) && 
            ( old == null ||
              old.getStatus() != nu.getStatus() ||
              old.getMedusaStatus() != nu.getMedusaStatus() ||
              old.getBootTime() != nu.getBootTime() ||
              nu.getMedusaStatus() != config.getStatus() ||
-             nu.getIsPrimary() != config.getIsPrimary() ) ) { 
-        ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+             nu.getIsPrimary() != config.getIsPrimary() ) ) {
+
+        ClusterConfigMonitorAgent agent = (ClusterConfigMonitorAgent) getAgents().get(config.getId());
+        if ( agent == null ) {
+          agent = new ClusterConfigMonitorAgent(x, config.getId());
+          getAgents().put(config.getId(), agent);
+        }
         Agency agency = (Agency) x.get(support.getThreadPoolName());
-        Loggers.logger(x, this).info("agency", "ClusterConfigMonitorAgent", nu.getId());
-        agency.submit(x, new ClusterConfigMonitorAgent(x, nu.getId()), this.getClass().getSimpleName());
+        // Loggers.logger(x, this).debug("agency", "ClusterConfigMonitorAgent", config.getId());
+        agency.submit(x, agent, this.getClass().getSimpleName());
       }
       return nu;
       `

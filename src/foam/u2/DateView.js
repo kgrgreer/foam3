@@ -20,8 +20,8 @@ foam.CLASS({
   ],
 
   css: `
-    ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); }
-    ^ { width: fit-content; }
+    ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); margin-left: -8px; }
+    ^ { width: 100%; }
   `,
 
   messages: [
@@ -69,7 +69,14 @@ foam.CLASS({
 
       function updateData() {
         var value = slot.get();
-        self.data = value ? Date.parse(value) : undefined;
+
+        var date;
+        if ( value ) {
+          date = Date.parse(value);
+          if ( isNaN(date) ) date = undefined;
+        }
+
+        self.data = date;
       }
 
       if ( this.onKey ) {

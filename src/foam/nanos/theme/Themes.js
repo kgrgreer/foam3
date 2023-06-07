@@ -10,14 +10,12 @@ foam.CLASS({
 
   documentation: `Support methods for Theme`,
 
-  axioms: [ foam.pattern.Singleton.create() ],
-
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   requires: [
-    'foam.nanos.theme.ThemeDomain',
+    'foam.nanos.theme.ThemeDomain'
   ],
 
   imports: [
@@ -34,6 +32,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'foam.util.Arrays',
     'javax.servlet.http.HttpServletRequest',
     'org.eclipse.jetty.server.Request'
   ],
@@ -47,12 +46,7 @@ Later themes:
 3. user`,
       name: 'findTheme',
       type: 'foam.nanos.theme.Theme',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       code: async function(x) {
         var theme;
         var themeDomain;
@@ -109,9 +103,8 @@ Later themes:
             group = await group.parent$find;
           }
 
-          if ( !! defaultMenu && theme && ! theme.defaultMenu) {
-            theme.defaultMenu = defaultMenu;
-            theme.logoRedirect = defaultMenu;
+          if ( !! defaultMenu ) {
+            theme.defaultMenu = defaultMenu.concat(theme.defaultMenu);
           }
 
           var userTheme = await user.theme$find;
@@ -163,6 +156,9 @@ Later themes:
           // if ( theme == null ) {
           //   logger.debug("Themes", "Theme not found", td.getTheme());
           // }
+          if ( theme != null ) {
+            theme = (Theme) theme.fclone();
+          }
         }
       }
 
@@ -178,7 +174,10 @@ Later themes:
               MLang.EQ(Theme.ENABLED, true)
             )
           );
-          if ( theme != null ) break;
+          if ( theme != null ) {
+            theme = (Theme) theme.fclone();
+            break;
+          }
 
           var pos = spid.lastIndexOf(".");
           spid = spid.substring(0, pos > 0 ? pos : 0);
@@ -186,7 +185,7 @@ Later themes:
       }
 
       if ( theme == null ) {
-        logger.debug("Themes", "fallback");
+        // logger.debug("Themes", "fallback");
         theme = (Theme) themeDAO.find(
           MLang.AND(
             MLang.EQ(Theme.NAME, "foam")
@@ -194,13 +193,16 @@ Later themes:
         if ( theme == null ) {
           theme = new Theme.Builder(x).setName("foam").setAppName("FOAM").build();
         }
+        if ( theme != null ) {
+          theme = (Theme) theme.fclone();
+        }
       }
 
       // Merge the theme with group and user themes
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
-        var defaultMenu = group != null ? group.getDefaultMenu() : "";
+        String[] defaultMenu = group != null ? group.getDefaultMenu() : null;
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null && ! SafetyUtil.equals(theme, groupTheme) ) {
@@ -211,9 +213,9 @@ Later themes:
         }
 
         // Use default menu from user group if present
-        if ( ! SafetyUtil.isEmpty(defaultMenu) ) {
-          theme.setDefaultMenu(defaultMenu);
-          theme.setLogoRedirect(defaultMenu);
+        if ( defaultMenu != null && defaultMenu.length != 0 ) {
+          String[] bothDefaults = Arrays.append(defaultMenu, theme.getDefaultMenu());
+          theme.setDefaultMenu(bothDefaults);
         }
 
         Theme userTheme = user.findTheme(x);

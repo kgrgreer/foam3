@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'theme?',
     'localeDAO'
   ],
 
@@ -57,11 +58,20 @@ foam.CLASS({
       // TODO: this should be moved to the server's getTranslations() method
       this.loadLanguageLocales().then(() => {
         if ( this.hasVariant() ) {
-          this.loadVariantLocales().then(() => this.initLatch.resolve());
+          return this.loadVariantLocales().then(() => {
+            if ( this.theme ) {
+              let pArr = [];
+              pArr.push(this.loadTheme());
+              pArr.push(this.loadVariantTheme());
+              return pArr;
+            }
+          });
         } else {
-          this.initLatch.resolve();
+          if ( this.theme ) {
+            return this.loadTheme();
+          }
         }
-      });
+      }).then(() => { this.initLatch.resolve(); });
     },
 
     function maybeReload() {
@@ -84,6 +94,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, ''),
           this.EQ(this.Locale.VARIANT, ''))).select(this.addLocale.bind(this));
     },
 
@@ -91,6 +102,7 @@ foam.CLASS({
       return this.localeDAO.where(
         this.AND(
           this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, ''),
           this.EQ(this.Locale.VARIANT, this.variant))).select(this.addLocale.bind(this));
     },
 
@@ -116,6 +128,19 @@ foam.CLASS({
         this.translation.pub(locale, source, txt, defaultText);
         return txt || defaultText;
       }
+    },
+    function loadTheme() {
+      return this.localeDAO.where(
+        this.AND(
+          this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, this.theme.id))).select(this.addLocale.bind(this));
+    },
+    function loadVariantTheme() {
+      return this.localeDAO.where(
+        this.AND(
+          this.EQ(this.Locale.LOCALE,  this.locale),
+          this.EQ(this.Locale.THEME_ID, this.theme.id),
+          this.EQ(this.Locale.VARIANT, this.variant))).select(this.addLocale.bind(this));
     }
   ]
 });

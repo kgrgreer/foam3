@@ -27,6 +27,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'FObjectArray',
+      of: 'foam.nanos.boot.NSpec',
+      name: 'extraServices'
+    },
+    {
       class: 'Boolean',
       name: 'authenticate',
       value: true
@@ -67,7 +72,15 @@ foam.CLASS({
             package:    'foam.nanos.client',
             name:       'Client',
             exports:    [],
-            properties: []
+            constants:  { eagerClients_: [] },
+            properties: [
+            ],
+            methods: [
+              function init() {
+                // Wake up any eager clients
+                this.EAGER_CLIENTS_.forEach(c => this[c]);
+              }
+            ]
           };
 
           var references = [];
@@ -104,19 +117,29 @@ foam.CLASS({
             query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
           }
 
+          let nspec = foam.nanos.boot.NSpec;
+
           self.nSpecDAO.where(query).select(
-            foam.mlang.Expressions.create().PROJECTION(foam.nanos.boot.NSpec.NAME, foam.nanos.boot.NSpec.CLIENT))
+            self.PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
             .then(p => {
-              foam.dao.ArrayDAO.create({array: p.array})
+              foam.dao.ArrayDAO.create({array: p.array.concat(self.extraServices)})
               .select({
                 put: function(spec) {
                   if ( spec.client ) {
                     var serviceName = spec.name.substring(spec.name.lastIndexOf('.') + 1);
                     client.exports.push(serviceName);
 
-                    var json = JSON.parse(spec.client);
+                    var json;
+                    try {
+                      json = JSON.parse(spec.client);
+                    } catch (err) {
+                      self.error('invalid nspec.client', spec.client, err);
+                    }
 
-                    references = references.concat(foam.json.references(self.__context__, json));
+                    if ( ! spec.lazyClient )
+                      client.constants.eagerClients_.push(spec.name);
+
+                    //references = references.concat(foam.json.references(self.__context__, json));
 
                     client.properties.push({
                       name: spec.name,
@@ -128,8 +151,7 @@ foam.CLASS({
                           return null;
                         }
                         var defaults = {
-                          serviceName: 'service/' + spec.name,
-                          retryBoxMaxAttempts: 0
+                          serviceName: 'service/' + spec.name
                         };
                         if ( cls == foam.dao.EasyDAO ) {
                           defaults.cache              = true;

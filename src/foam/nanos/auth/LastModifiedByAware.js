@@ -36,6 +36,7 @@ foam.INTERFACE({
  * There wasn't a way in which User could implement LastModifiedByAware and the
  * LastModifiedAware interface to have a reference property without doing this refinement
  */
+
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'UserLastModifiedByRefinement',

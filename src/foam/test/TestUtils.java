@@ -7,8 +7,8 @@
 package foam.test;
 
 import foam.core.ClassInfo;
-import foam.core.X;
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.dao.ProxyDAO;
@@ -19,6 +19,7 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.session.Session;
 import foam.util.Auth;
+
 /**
  * Helper methods to make writing tests easier.
  */
@@ -31,8 +32,9 @@ public class TestUtils {
    * @return A subcontext with the given DAO replaced with an MDAO of the same type.
    */
   public static X mockDAO(X x, String daoName) {
-    DAO dao = (DAO) x.get(daoName);
-    ClassInfo of = dao.getOf();
+    DAO       dao = (DAO) x.get(daoName);
+    ClassInfo of  = dao.getOf();
+
     return x.put(daoName, new MDAO(of));
   }
 
@@ -100,7 +102,7 @@ public class TestUtils {
 
   public static X createTestContext(X x, String spid) {
     x = createAuthMockDAO(x);
-    DAO userDAO = (DAO) x.get("userDAO");
+    DAO userDAO  = (DAO) x.get("userDAO");
     DAO groupDAO = (DAO) x.get("groupDAO");
 
     Group group = new Group.Builder(x)
@@ -111,6 +113,7 @@ public class TestUtils {
     Group admin_group = new Group.Builder(x)
       .setId("test_admin_group")
       .build();
+
     admin_group = (Group) groupDAO.put(admin_group);
     Auth.applyPermissionToGroup(x, admin_group.getId(), "*");
 
@@ -126,66 +129,6 @@ public class TestUtils {
     adminUser.setId(1);
     adminUser = (User) userDAO.put(adminUser);
 
-    return Auth.sudo(x, adminUser, admin_group);
-  }
-
-  /**
-   * Executes the function you give it in a try/catch block and checks if an exception was thrown. Will return true if:
-   *   1. an exception was thrown, AND
-   *   2. the exception matches the 'exceptionType' argument, AND
-   *   3. the exception message matches the 'expectedExceptionMessage' argument.
-   * Meant to be called like this:
-   * <pre>
-   *   test(
-   *     TestUtils.testThrows(
-   *       () -> doSomethingIllegal(a, b, c),
-   *       "Permission denied.",
-   *       AuthorizationException.class
-   *     ),
-   *     "Should throw an 'AuthorizationException' when you try to do something illegal."
-   *   );
-   * </pre>
-   * @param fn
-   * @param expectedExceptionMessage
-   * @param exceptionType
-   * @return
-   */
-  public static boolean testThrows(
-      Runnable fn,
-      String expectedExceptionMessage,
-      Class exceptionType
-  ) {
-    boolean wasCorrectExceptionType = false;
-    boolean threw = false;
-    String returnedMessage = "";
-    Throwable throwable = null;
-    try {
-      fn.run();
-    } catch (Throwable t) {
-      wasCorrectExceptionType = exceptionType.isInstance(t);
-      threw = true;
-      returnedMessage = t.getMessage();
-      if ( foam.core.FOAMException.class.isInstance(t) ) {
-        returnedMessage = ((foam.core.FOAMException) t).getTranslation();
-      }
-      if ( ! wasCorrectExceptionType ) {
-        System.out.println("Exception type mismatch.");
-        System.out.println("EXPECTED: \""+exceptionType.getName()+"\"");
-        System.out.println("ACTUAL  : \""+t.getClass().getName()+"\"");
-        t.printStackTrace();
-        throw t;
-      }
-    }
-    if ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
-         ! returnedMessage.equals(expectedExceptionMessage) ) {
-      System.out.println("Error message was not correct.");
-      System.out.println("EXPECTED: \"" + expectedExceptionMessage + "\"");
-      System.out.println("ACTUAL  : \"" + returnedMessage + "\"");
-    }
-    return wasCorrectExceptionType &&
-      threw &&
-      ( foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) ||
-        ( ! foam.util.SafetyUtil.isEmpty(expectedExceptionMessage) &&
-          returnedMessage.equals(expectedExceptionMessage) ) );
+    return Auth.sudo(x, adminUser);
   }
 }

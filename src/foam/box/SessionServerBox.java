@@ -19,7 +19,9 @@ import foam.nanos.auth.User;
 import foam.nanos.boot.Boot;
 import foam.nanos.boot.NSpec;
 import foam.nanos.logger.Logger;
-import foam.nanos.logger.PrefixLogger;
+import foam.nanos.logger.Loggers;
+import foam.nanos.om.OMLogger;
+import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import org.eclipse.jetty.server.Request;
@@ -40,23 +42,28 @@ public class SessionServerBox
 {
   protected boolean authenticate_;
 
+  public SessionServerBox() {
+  }
+
   public SessionServerBox(X x, Box delegate, boolean authenticate) {
     super(x, delegate);
     authenticate_ = authenticate;
   }
 
   public void send(Message msg) {
-    NSpec  spec   = getX().get(NSpec.class);
-    Logger logger = new PrefixLogger(new Object[] {
-        this.getClass().getSimpleName(),
-        spec.getName()
-      }, (Logger) getX().get("logger"));
-    DAO     sessionDAO = (DAO) getX().get("localSessionDAO");
+    send(getX(), getDelegate(), authenticate_, msg);
+  }
+
+  public void send(X x, Box delegate, boolean authenticate, Message msg) {
+    NSpec   spec       = x.get(NSpec.class);
+    Logger  logger     = Loggers.logger(x, this, spec.getName());
+    DAO     sessionDAO = (DAO) x.get("localSessionDAO");
     Session session    = null;
-    String   sessionID = null;
+    String  sessionID  = null;
+    PM      pm         = PM.create(x, "SessionServerBox", spec.getName());
 
     try {
-      HttpServletRequest req = getX().get(HttpServletRequest.class);
+      HttpServletRequest req = x.get(HttpServletRequest.class);
       if ( req != null ) {
         String authorization = req.getHeader("Authorization");
         if ( SafetyUtil.isEmpty(authorization) ) {
@@ -70,12 +77,12 @@ public class SessionServerBox
               if ( st.hasMoreTokens() ) {
                 sessionID = st.nextToken();
               } else {
-                logger.warning("send", "Authorization: "+authType+" token not found.");
+                logger.warning("send", "Authorization: " + authType + " token not found.");
                 msg.replyWithException(new IllegalArgumentException("Authorization: "+authType+ " token not found."));
                 return;
               }
             } else {
-              logger.warning("send", "Authorization: "+authType+" not supported.");
+              logger.warning("send", "Authorization: " + authType + " not supported.");
               msg.replyWithException(new IllegalArgumentException("Authorization: "+authType+ " not supported."));
               return;
             }
@@ -91,13 +98,13 @@ public class SessionServerBox
         sessionID = (String) msg.getAttributes().get("sessionId");
       }
 
-      if ( sessionID == null && authenticate_ ) {
+      if ( sessionID == null && authenticate ) {
         msg.replyWithException(new IllegalArgumentException("sessionId required for authenticated services"));
         return;
       }
 
       // test and use non-clustered sessions
-      DAO internalSessionDAO = (DAO) getX().get("localInternalSessionDAO");
+      DAO internalSessionDAO = (DAO) x.get("localInternalSessionDAO");
       if ( internalSessionDAO != null ) {
         session = (Session) internalSessionDAO.find(sessionID);
         if ( session != null ) {
@@ -110,15 +117,16 @@ public class SessionServerBox
       }
 
       if ( session == null ) {
-        session = new Session((X) getX().get(Boot.ROOT));
+        session = new Session((X) x.get(Boot.ROOT));
         session.setId(sessionID == null ? "anonymous" : sessionID);
         session = (Session) sessionDAO.put(session);
       }
+
       if ( req != null ) {
         // if req == null it means that we're being accessed via webSockets
         try {
-          session.validateRemoteHost(getX());
-          String remoteIp = foam.net.IPSupport.instance().getRemoteIp(getX());
+          session.validateRemoteHost(x);
+          String remoteIp = foam.net.IPSupport.instance().getRemoteIp(x);
           if ( SafetyUtil.isEmpty(session.getRemoteHost()) ||
                ! SafetyUtil.equals(session.getRemoteHost(), remoteIp) ) {
             session.setRemoteHost(remoteIp);
@@ -129,7 +137,7 @@ public class SessionServerBox
           // Session.validateRemoteHost tests for both a change in IP and
           // restricted IPs.
           if ( e.getMessage().equals("Restricted IP") ) {
-            logger.warning(e.getMessage(), foam.net.IPSupport.instance().getRemoteIp(getX()));
+            logger.warning(e.getMessage(), foam.net.IPSupport.instance().getRemoteIp(x));
             msg.replyWithException(new AuthenticationException("Access denied"));
           } else {
             // If an existing session is reused with a different remote host then
@@ -142,7 +150,7 @@ public class SessionServerBox
             // to sign back in when the remote host changes, we reduce the attack
             // surface for session hijacking. Session hijacking is still possible,
             // but only if the user is on the same remote host.
-            logger.warning("Remote host for session ", sessionID, " changed from ", session.getRemoteHost(), " to ", foam.net.IPSupport.instance().getRemoteIp(getX()), ". Deleting session and forcing the user to sign in again.");
+            logger.warning("Remote host for session ", sessionID, " changed from ", session.getRemoteHost(), " to ", foam.net.IPSupport.instance().getRemoteIp(x), ". Deleting session and forcing the user to sign in again.");
             msg.replyWithException(new AuthenticationException("IP address changed. Your session was deleted to keep your account secure. Please sign in again to verify your identity."));
           }
           return;
@@ -151,7 +159,7 @@ public class SessionServerBox
 
       // If this service has been configured to require authentication, then
       // throw an error if there's no user in the context.
-      if ( authenticate_ && session.getUserId() == 0 ) {
+      if ( authenticate && session.getUserId() == 0 ) {
         msg.replyWithException(new AuthenticationException());
         return;
       }
@@ -161,7 +169,7 @@ public class SessionServerBox
         session.setContext(session.getContext().put("localLocalSettingDAO", localLocalSettingDAO));
       }
 
-      X effectiveContext = session.applyTo(getX());
+      X effectiveContext = session.applyTo(x);
 
       // Make context available to thread-local XLocator
       XLocator.set(effectiveContext);
@@ -180,20 +188,21 @@ public class SessionServerBox
 
       // Sub context might have service override for the delegate
       if ( effectiveContext instanceof SubX ) {
-        ((Skeleton) getDelegate()).setDelegateObject(
-          effectiveContext.get(getX().get(NSpec.class).getId()));
+        ((Skeleton) delegate).setDelegateObject(
+          effectiveContext.get(x.get(NSpec.class).getId()));
       }
 
       msg.getLocalAttributes().put("x", effectiveContext);
-      getDelegate().send(msg);
+      pm.log(x);
+      delegate.send(msg);
     } catch (Throwable t) {
       logger.warning(t.getMessage());
       if ( t instanceof NullPointerException) {
         logger.error(t);
       }
       msg.replyWithException(t);
-
-      AppConfig appConfig = (AppConfig) getX().get("appConfig");
+      pm.error(x, t);
+      AppConfig appConfig = (AppConfig) x.get("appConfig");
       if ( Mode.TEST == appConfig.getMode() )
         throw t;
     } finally {

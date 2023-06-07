@@ -20,8 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'filterController',
-    'memento'
+    'filterController'
   ],
 
   requires: [
@@ -73,7 +72,7 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
     }
   `,
 
@@ -163,49 +162,23 @@ foam.CLASS({
         .end();
 
       this.isInit = true;
-
-      if ( this.memento && this.memento.head.length != 0 ) {
-        var predicate = this.getPredicateFromMemento();
-        if ( predicate ) {
-          this.filterController.setExistingPredicate(0, this.property.name, predicate.partialEval());
-        }
-      }
-
+      // Load filters on render instead of open
+      // Temp fix till filterController can be refactored to not depend on Search
+      if ( this.firstTime_ )
+        this.initView();
       this.isFiltering();
       this.isInit = false;
-      this.checkPresetPredicate();
-    },
-
-    function getPredicateFromMemento() {
-      if ( this.memento && this.memento.head.length > 0 ) {
-        var predicate = this.queryParser.parseString(this.memento.head);
-        if ( predicate ) {
-          return predicate.partialEval();
-        }
-      }
-    },
-    function checkPresetPredicate() {
-      if ( this.preSetPredicate != null ) {
-        this.switchActive();
-      }
     }
   ],
 
   listeners: [
-    function switchActive() {
-      this.active = ! this.active;
-      this.iconPath = this.active ? 'images/expand-less.svg' : 'images/expand-more.svg';
-
-      // View is not active. Does not require creation
-      if ( ! this.active ) return;
-      // View has been instantiated before. Does not require creation
-      if ( ! this.firstTime_ ) return;
-
-      this.container_.tag(this.searchView, {
-        property: this.property,
-        dao$: this.dao$
-      }, this.view_$);
-
+    function initView() {
+      if ( this.firstTime_ ) {
+        this.container_.tag(this.searchView, {
+          property: this.property,
+          dao$: this.dao$
+        }, this.view_$);
+      }
       // Restore the search view using an existing predicate for that view
       // This requires that every search view implements restoreFromPredicate
       var existingPredicate = this.filterController.getExistingPredicate(this.criteria, this.property);
@@ -229,17 +202,21 @@ foam.CLASS({
 
       this.onDetach(this.view_$.dot('predicate').sub(this.isFiltering));
     },
+    function switchActive() {
+      this.active = ! this.active;
+      this.iconPath = this.active ? 'images/expand-less.svg' : 'images/expand-more.svg';
+
+      // View is not active. Does not require creation
+      if ( ! this.active ) return;
+      // View has been instantiated before. Does not require creation
+      if ( ! this.firstTime_ ) return;
+      this.initView();
+    },
 
     function isFiltering() {
       if ( ! this.isInit ) {
-        if ( ! this.view_ || ! this.memento )
+        if ( ! this.view_ )
           return;
-
-        var pred;
-        if ( Object.keys(this.view_.predicate).length > 0 && ! foam.mlang.predicate.True.isInstance(this.view_.predicate) )
-          pred =  this.view_.predicate.toMQL && this.view_.predicate.toMQL();
-
-        this.memento.head = pred ? pred : '';
       }
 
       // Since the existing predicates are lazy loaded (on opening the view),

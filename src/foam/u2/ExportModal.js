@@ -18,15 +18,67 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'EXPORT', message: 'Export' },
+    { name: 'EXPORT',        message: 'Export' },
     { name: 'DATA_TYPE_MSG', message: 'Data Type' },
-    { name: 'RESPONSE', message: 'Response' }
+    { name: 'RESPONSE',      message: 'Response' }
   ],
 
   requires: [
-    'foam.u2.ModalHeader',
-    'foam.u2.layout.Cols'
+    'foam.u2.layout.Cols',
+    'foam.u2.ModalHeader'
   ],
+
+  css: `
+    ^{
+      width: 448px;
+      margin: auto;
+      padding-bottom: 24px;
+    }
+    ^ .property-dataType {
+      margin-right: 24px;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      border-radius: 0;
+      padding: 6px 10px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      background-color:$white;
+      outline: none;
+      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
+      -webkit-appearance: none;
+    }
+    ^ .foam-u2-ModalHeader {
+      border-bottom: none;
+    }
+    ^ .foam-u2-tag-Select:hover {
+      cursor: pointer;
+    }
+    ^ .foam-u2-tag-Select:focus {
+      border: solid 1px #59A5D5;
+    }
+    ^ .label{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.1rem;
+      line-height: 14px;
+      color: #000000;
+      margin: 10px 0px 0px 24px;
+    }
+    ^ .note {
+      height: 150px;
+      width: 398px;
+      margin-left: 24px;
+    }
+    ^buttons {
+      padding: 12px 12px 0px 24px;
+      position: relative;
+      top: 10;
+    }
+
+    ^ .foam-u2-ActionView-primary {
+      margin: 12px;
+    }
+  `,
 
   properties: [
     {
@@ -40,7 +92,7 @@ foam.CLASS({
           },
           placeholder: 'Select'
         }, X);
-      },
+      }
     },
     {
       name: 'isDataTypeSelected',
@@ -86,54 +138,6 @@ foam.CLASS({
     'exportDriver'
   ],
 
-  css: `
-    ^{
-      width: 448px;
-      margin: auto;
-      padding-bottom: 24px;
-    }
-    ^ .property-dataType {
-      margin-right: 24px;
-    }
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      border-radius: 0;
-      padding: 6px 10px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none;
-      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
-      -webkit-appearance: none;
-    }
-    ^ .foam-u2-ModalHeader {
-      border-bottom: none;
-    }
-    ^ .foam-u2-tag-Select:hover {
-      cursor: pointer;
-    }
-    ^ .foam-u2-tag-Select:focus {
-      border: solid 1px #59A5D5;
-    }
-    ^ .label{
-      color: #000000;
-      margin: 10px 0px 0px 24px;
-    }
-    ^ .note {
-      height: 150px;
-      width: 398px;
-      margin-left: 24px;
-    }
-    ^buttons {
-      padding: 12px 12px 0px 24px;
-      position: relative;
-      top: 10;
-    }
-
-    ^ .foam-u2-ActionView-primary {
-      margin: 12px;
-    }
-  `,
-
   methods: [
     function render() {
       var self = this;
@@ -146,18 +150,18 @@ foam.CLASS({
         self.exportDriverRegistryDAO.find(self.dataType).then(function(val) {
           if ( ! val ) {
             self.exportDriverReg = self.unknownExportDriverRegistry;
-            self.exportDriver = undefined;
+            self.exportDriver    = undefined;
           } else {
             self.exportDriverReg = val;
-            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();           
+            self.exportDriver    = foam.lookup(self.exportDriverReg.driverName).create();
           }
         });
       });
 
       self.exportDriverReg$.sub(function() {
-        self.isConvertAvailable =  self.exportDriverReg.isConvertible;
+        self.isConvertAvailable  =  self.exportDriverReg.isConvertible;
         self.isDownloadAvailable = self.exportDriverReg.isDownloadable;
-        self.isOpenAvailable = self.exportDriverReg.isOpenable;
+        self.isOpenAvailable     = self.exportDriverReg.isOpenable;
       });
 
       this
@@ -172,7 +176,7 @@ foam.CLASS({
           .add(this.slot(function (exportDriver) {
             return this.E()
               .show(exportDriver && exportDriver.cls_.getAxiomsByClass(foam.core.Property).some(p => ! p.hidden))
-              .add(exportDriver);
+              .start({class: 'foam.u2.detail.MDDetailView', data: exportDriver}).style({'margin-left': '-22px'}).end();
           }))
           .start().show(this.isDataTypeSelected$)
             .start().addClasses(['p-legal-light', 'label']).style({'padding-top': '14px'}).add(this.RESPONSE).end()
@@ -254,14 +258,17 @@ foam.CLASS({
           }
 
           if ( href.length > 524288 ) {
-            self.note = result;
-            alert('Results exceed maximum download size.\nPlease cut and paste response data.');
-          } else {
-            link.setAttribute('href', href);
-            link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
-            document.body.appendChild(link);
-            link.click();
+            var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
+            href = URL.createObjectURL(blob);
           }
+          link.setAttribute('href', href);
+          link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
+          document.body.appendChild(link);
+          link.click();
+
+          // Cleanup data blob and link
+          if ( blob ) URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
         }).finally(() => {
           if ( this.exportAllColumns )
             this.filteredTableColumns = filteredColumnsCopy;
@@ -293,5 +300,4 @@ foam.CLASS({
       }
     }
   ]
-
 });

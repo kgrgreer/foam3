@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.MDAO',
+    'foam.dao.Subscription',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.List',
@@ -144,12 +145,32 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        ArraySink capablePayloadsToArraySink = new ArraySink.Builder(x)
-          .setArray(Arrays.asList(getCapable().getCapablePayloads()))
-          .build();
+        var decoratedSink = decorateSink(x, sink, skip, limit, order, predicate);
+        var sub = new Subscription();
 
-        return capablePayloadsToArraySink;
-      `
+        for ( var payload : getCapable().getCapablePayloads() ) {
+          if ( sub.getDetached() ) break;
+          decoratedSink.put(payload, sub);
+        }
+
+        return sink;
+      `,
+      code: async function (x, sink, skip, limit, order, predicate) {
+        var resultSink = sink || this.ArraySink.create({ of: this.of });
+        sink = this.decorateSink_(resultSink, skip, limit, order, predicate);
+
+        var detached = false;
+        var sub = foam.core.FObject.create();
+        sub.onDetach(function() { detached = true; });
+
+        for ( const payload of this.capable.capablePayloads ) {
+          if ( detached ) break;
+          sink.put(payload, sub);
+        }
+
+        sink.eof();
+        return sink;
+      }
     },
     {
       name: 'ifFoundElseIfNotFound_',
@@ -175,7 +196,9 @@ foam.CLASS({
       code: function () {
         // A publish on propertyChange isn't enough here; slots won't update if
         //   the object is identical.
-        this.capable.capablePayloads = [ ...this.capable.capablePayloads ];
+        var temp = [ ...this.capable.capablePayloads ];
+        this.capable.capablePayloads = [];
+        this.capable.capablePayloads.push(...temp);
       }
     }
   ]

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DAONSpecMenu',
-  extends: 'foam.nanos.menu.Menu',
+  extends: 'foam.nanos.menu.PseudoMenu',
 
   documentation: 'Psedo-menu to display all DAO NSpecs as sub-menus.',
 
@@ -15,7 +15,6 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOControllerConfig',
-    'foam.dao.ArrayDAO',
     'foam.dao.PromisedDAO',
     'foam.nanos.controller.Memento',
     'foam.nanos.menu.LinkMenu',
@@ -37,22 +36,16 @@ foam.CLASS({
             this.EQ(foam.nanos.boot.NSpec.SERVE,     true)
           )).select((spec) => {
             var menu = this.Menu.create({
-              id:      'admin.data' + this.Memento.SEPARATOR + spec.id,
+              id:      'admin.data/' + spec.id,
               label:   foam.String.labelize(spec.name),
               parent:  this.id,
-              handler: this.LinkMenu.create({link: '#admin.data' + this.Memento.SEPARATOR + spec.id})
+              handler: this.LinkMenu.create({link: '#admin.data/' + spec.id})
             });
             aDAO.put(menu);
         }).then(() => pDAO.promise.resolve(aDAO));
 
         return pDAO;
       }
-    },
-    {
-      name: 'children',
-      // Use getter instead of factory to have higher precedence
-      // than than 'children' factory from relationship
-      getter: function() { return this.children_; }
     }
   ]
 });

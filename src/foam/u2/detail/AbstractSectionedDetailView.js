@@ -48,20 +48,34 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'hideActions'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.Property',
       name: 'propertyWhitelist',
       documentation: `
         If this array is not empty, only the properties listed in it will be
         included in the detail view.
+
+        NOTE: Setting propertyWhitelist is almost like creating a transient section, thus the order property for all 
+        properties in this list is overriden to be in the order they appear in the array/object.
+        If the order needs to be changed it can be overriden like any other property property but it would be in reference to 
+        this new order added to this whitelist.
       `,
       factory: null,
-      adapt: function(_, newValue) {
-        if ( Array.isArray(newValue) ) return newValue;
+      adapt: function(o, newValue, p) {
+        if ( Array.isArray(newValue) ) {
+          let arr = foam.core.FObjectArray.ADAPT.value.call(this, o, newValue, p);
+          return arr.map((a, idx) => {
+            return a.clone().copyFrom({ order: idx });
+          });
+        }
         if ( typeof newValue !== 'object' ) throw new Error('You must set propertyWhitelist to an array of properties or a map from names to overrides encoded as an object.');
-        return Object.entries(newValue).reduce((acc, [propertyName, overrides]) => {
+        return Object.entries(newValue).reduce((acc, [propertyName, overrides], idx) => {
           var axiom = this.of.getAxiomByName(propertyName);
-          if ( axiom ) acc.push(axiom.clone().copyFrom(overrides));
+          if ( axiom ) acc.push(axiom.clone().copyFrom({ order: idx }).copyFrom(overrides));
           return acc;
         }, []);
       },
@@ -81,15 +95,15 @@ foam.CLASS({
       of: 'foam.layout.Section',
       name: 'sections',
       factory: null,
-      expression: function(of) {
+      expression: function(of, useSections, propertyWhitelist) {
         if ( ! of ) return [];
 
         sections = of.getAxiomsByClass(this.SectionAxiom)
         // Why not Section.AXIOM.ORDER on next line?
         .sort((a, b) => a.order - b.order)
         .reduce((map, a) => {
-          if ( this.useSections.length ) {
-            if ( this.useSections.includes(a.name) ) {
+          if ( useSections.length ) {
+            if ( useSections.includes(a.name) ) {
               map.push(this.Section.create().fromSectionAxiom(a, of));
             }
           } else {
@@ -106,7 +120,7 @@ foam.CLASS({
             return map;
           }, {});
 
-        if ( ! this.useSections.length ) {
+        if ( ! useSections.length ) {
           var unusedProperties = of.getAxiomsByClass(this.Property)
               .filter((p) => ! usedAxioms[p.name])
               .filter((p) => ! p.hidden);
@@ -121,18 +135,18 @@ foam.CLASS({
           }
         }
 
-        if ( this.propertyWhitelist ) {
+        if ( propertyWhitelist ) {
           sections = sections
-            .map((s) => {
+            .map(s => {
               s.properties = s.properties.reduce((acc, sectionProp) => {
-                var prop = this.propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
+                var prop = propertyWhitelist.find(whitelistProp => whitelistProp.name === sectionProp.name);
                 if ( prop ) acc.push(prop);
                 return acc;
-              }, []);
+              }, []).sort((a, b) => a.order - b.order);
               return s;
             })
-            .filter((s) => {
-              return s.properties.length > 0 || s.actions.length > 0;
+            .filter(s => {
+              return s.properties.length > 0 || ( ! this.hideActions && s.actions.length > 0 );
             });
         }
 
@@ -141,7 +155,7 @@ foam.CLASS({
         // For example, the visibility value could be a function, which means
         // it could be hidden under certain conditions and visible otherwise.
         sections = sections.filter(s => {
-          return s.actions.length > 0 ||
+          return ( ! this.hideActions && s.actions.length > 0 ) ||
             s.properties.some(p => {
               var visVal = this.controllerMode.getVisibilityValue(p);
               return visVal !== foam.u2.DisplayMode.HIDDEN && visVal !== 'HIDDEN';

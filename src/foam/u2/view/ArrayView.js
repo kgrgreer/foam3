@@ -123,7 +123,6 @@ foam.CLASS({
       actions: [
         {
           name: 'remove',
-          label: '',
           isAvailable: function(enableRemoving, mode) {
             return enableRemoving && mode === foam.u2.DisplayMode.RW;
           },
@@ -141,14 +140,20 @@ foam.CLASS({
       flex: 1;
       max-width: 100%;
     }
-    ^addButton {
-      border: 1.5px dashed /*%GREY4%*/ #DADDE2;
+    ^addButton.foam-u2-ActionView {
+      border: 1.5px dashed $grey300;
       justify-content: flex-start;
       text-align: left;
       width: 100%;
     }
     ^value-view-container {
       gap: 4px;
+    }
+    .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
+      margin: 5px 0px;
+    }
+    .foam-u2-CitationView-row {
+      font-size: 1.4rem;
     }
   `,
 
@@ -158,7 +163,7 @@ foam.CLASS({
       var self = this;
 
       this.onDetach(this.data$.sub(() => { if ( ! this.feedback_ ) this.data2_ = this.data; }));
-      this.data2_ = this.data;
+      this.data2_ = foam.Array.isInstance(this.data) && this.data;
       this.addClass();
 
       this
@@ -176,6 +181,7 @@ foam.CLASS({
                         .addClass(self.myClass('value-view'))
                       .end()
                       .tag(self.Row.REMOVE, {
+                        label: '',
                         // icon: '/images/remove-circle.svg',
                         // encode data as an embedded data URL of the SVG
                         // because then the GUI updates without flickering
@@ -189,12 +195,15 @@ foam.CLASS({
               });
         }))
         .startContext({ data: this })
-          .start(this.ADD_ROW, {
-            themeIcon: 'plus',
-            icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%2317d90e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E",
-            buttonStyle: 'TERTIARY'
-          }).addClass(this.myClass('addButton')).end()
+          .add(this.slot(this.addAction))
         .endContext();
+    },
+    function addAction() {
+      return this.E().start(this.ADD_ROW, {
+        themeIcon: 'plus',
+        icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%2317d90e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E",
+        buttonStyle: 'TERTIARY'
+      }).addClass(this.myClass('addButton')).end();
     }
   ],
 

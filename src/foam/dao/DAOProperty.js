@@ -39,6 +39,38 @@ foam.CLASS({
       name: 'javaInfoType',
       flags: ['java'],
       value: 'foam.core.AbstractDAOPropertyPropertyInfo'
+    },
+    {
+      name: 'adapt',
+      value: function(o, v, prop) {
+        if ( ! v ) return;
+        if ( foam.String.isInstance(v) && this.__subContext__ ) {
+          // First, try to find in context
+          let result = this.__subContext__[v];
+          if ( result ) return result;
+
+          // Second, treat like dotted path and follow path from context
+          const path = v.split('.');
+          result = this.__subContext__;
+
+          for ( const part of path ) {
+            // Return 'undefined' as soon as the path is broken
+            if ( ! result[part] ) return;
+
+            result = result[part];
+          }
+
+          return result;
+        }
+        if ( foam.Array.isInstance(v) && v.length ) {
+          var dao = new foam.dao.MDAO.create({of: v[0].cls})
+
+          v.forEach(i => dao.put(i));
+
+          return dao;
+        }
+        return foam.core.FObjectProperty.ADAPT.value.call(this, o, v, prop);
+      }
     }
   ],
 
@@ -51,7 +83,7 @@ foam.CLASS({
 
       Object.defineProperty(proto, name + '$proxy', {
         get: function daoProxyGetter() {
-          var proxy = prop.ProxyDAO.create({delegate: this[name]}, this[name]);
+          var proxy = prop.ProxyDAO.create({ delegate: this[name] }, this[name]);
           this[name + '$proxy'] = proxy;
 
           this.sub('propertyChange', name, function(_, __, ___, s) {

@@ -96,7 +96,9 @@ foam.CLASS({
         ApprovalRequest request = (ApprovalRequest) req.fclone();
         request.clearId();
         request.setApprover(userId);
-        getApprovalRequestDAO().inX(x).put(request);
+    // NOTE: Explicit use of system context as ApprovalRequests can be
+        // triggered by normal user UI actions.
+        getApprovalRequestDAO().inX(getX()).put(request);
       `
     },
     {
@@ -115,8 +117,17 @@ foam.CLASS({
       javaCode:`
       Logger logger = (Logger) x.get("logger");
 
+      ApprovalRequest req = (ApprovalRequest) request.fclone();
+      Subject subject = (Subject) x.get("subject");
+      if ( subject != null &&
+           subject.getUser() != null &&
+           ! ApprovalRequest.CREATED_FOR.isSet(req) ) {
+        req.setCreatedFor(subject.getUser().getId());
+        req.setCreatedForAgent(subject.getRealUser().getId());
+      }
+
       if ( getIsTrackingRequestSent() ) {
-        ApprovalRequest trackingRequest = (ApprovalRequest) request.fclone();
+        ApprovalRequest trackingRequest = (ApprovalRequest) req;
         trackingRequest.setIsTrackingRequest(true);
 
         sendSingleRequest(x, trackingRequest, trackingRequest.getCreatedBy());
@@ -125,7 +136,7 @@ foam.CLASS({
       }
 
       for ( int i = 0; i < approverIds.size(); i++ ) {
-        sendSingleRequest(x, request, approverIds.get(i));
+        sendSingleRequest(x, req, approverIds.get(i));
       }
       `
     },
@@ -176,11 +187,15 @@ foam.CLASS({
       DAO approvalRequestDAO = getApprovalRequestDAO();
       DAO dao = (DAO) x.get(getDaoKey());
 
-      FObject currentObjectInDAO = (FObject) dao.find(String.valueOf(obj.getProperty("id")));
+      FObject currentObjectInDAO = null;
+      Object id = obj.getProperty("id");
+      if ( id != null ) {
+        currentObjectInDAO = (FObject) dao.find(String.valueOf(id));
+      }
       Predicate checkerPredicate = approvableAwareObj.getCheckerPredicate();
 
       if ( checkerPredicate != null && ! checkerPredicate.f(obj) ){
-        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && currentObjectInDAO == null ){
+        if ( lifecycleObj.getLifecycleState() == LifecycleState.PENDING && currentObjectInDAO == null ) {
           lifecycleObj.setLifecycleState(LifecycleState.ACTIVE);
         }
         return super.put_(x,obj);

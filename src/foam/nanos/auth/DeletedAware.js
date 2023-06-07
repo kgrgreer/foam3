@@ -28,6 +28,7 @@ foam.INTERFACE({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'DeletedAwareDummy',

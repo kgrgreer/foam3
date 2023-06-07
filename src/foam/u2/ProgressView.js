@@ -20,22 +20,51 @@ foam.CLASS({
   name: 'ProgressView',
   extends: 'foam.u2.View',
 
+  cssTokens: [
+    {
+      name: 'progressColor',
+      value: '$primary400'
+    },
+    {
+      name: 'trackColor',
+      value: '$grey100'
+    }
+  ],
   css: `
     ^ {
-      width: 183px;
+      width: 100%;
+      -webkit-appearance: none;
+      height: 2px;
+    }
+    ^::-webkit-progress-bar {
+      background-color: $trackColor;
+      border-radius: 25px;
+    }
+    ^::-webkit-progress-value {
+      background-color: $progressColor;
+      transition: all 0.2s ease;
     }
   `,
 
   properties: [
-    [ 'nodeName', 'progress' ]
+    [ 'nodeName', 'progress' ],
+    {
+      name: 'max',
+      value: 100
+    },
+    {
+      name: 'data'
+    },
   ],
 
   methods: [
     function render() {
-      this.
-        addClass(this.myClass()).
-        attrs({max: 100}).
-        attrSlot().follow(this.data$);
+      this
+        .addClass()
+        .call(function() {
+          this.attrSlot('max').follow(this.max$);
+          this.attrSlot().follow(this.data$);
+        });
     }
   ]
 });

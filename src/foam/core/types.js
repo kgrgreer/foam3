@@ -106,6 +106,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.core',
   name: 'FormattedString',
@@ -382,6 +383,15 @@ foam.CLASS({
       function() {}
     ],
     [
+      'adapt',
+      function(o, n, prop) {
+        // if boolean, return a function that returns the same boolean
+        // Useful for overriding functions with no-op in jrls and JSON
+        if ( ( foam.Undefined.isInstance(n) || foam.Null.isInstance(n) ) && foam.Boolean.isInstance(n) ) { return () => n }
+        return n;
+      }
+    ],
+    [
       'assertValue',
       function(value, prop) {
         foam.assert(typeof value === 'function', prop.name, 'Cannot set to non function type.');
@@ -527,11 +537,17 @@ foam.CLASS({
         for ( var i = 0 ; i < v.length ; i++ ) {
           if ( typeof v[i] !== 'string' ) {
             if ( ! copy ) copy = v.slice();
-            copy[i] = '' + v[i];
+            copy[i] = prop.adaptArrayElement.call(this, v[i], prop);
           }
         }
 
         return copy || v;
+      }
+    ],
+    [
+      'adaptArrayElement',
+      function(o, prop) {
+        return String(o);
       }
     ],
     [
@@ -567,13 +583,17 @@ foam.CLASS({
     [
       'adapt',
       function(_, v) {
-        if ( v && v.class == '__Class__' )
+        if ( v && v.class === '__Class__' )
           return v.forClass_;
         return v;
       }
     ],
     [ 'type', 'Class' ],
-    [ 'displayWidth', 80 ]
+    [ 'displayWidth', 80 ],
+    [ 'cloneProperty', function(value, cloneMap, _, obj) {
+        cloneMap[this.name] = obj.instance_[this.name];
+      }
+    ]
   ],
 
   methods: [
@@ -590,7 +610,7 @@ foam.CLASS({
         if ( foam.String.isInstance(value) ) {
           var cls = this.__context__.maybeLookup(value);
           if ( ! cls ) { // if the model is not available, it will be set on each get()
-            console.error(`Property '${name}' of type '${this.model_.name}' was set to '${value}', which isn't a valid class.`);
+            console.error(`Property '${name}' of type '${this.model_.name}' was set to '${value}', which isn't a valid class (yet).`);
             return null;
           }
           return cls;
@@ -599,20 +619,9 @@ foam.CLASS({
       };
 
       var get = desc.get;
-      desc.get = function() {
-        return adapt.call(this, get.call(this));
-      };
+      desc.get = function() { return adapt.call(this, get.call(this)); };
 
       Object.defineProperty(proto, name, desc);
-
-      Object.defineProperty(proto, name + '$cls', {
-        get: function classGetter() {
-          console.warn("Deprecated use of 'cls.$cls'. Just use 'cls' instead.");
-          return typeof this[name] !== 'string' ? this[name] :
-            this.__context__.maybeLookup(this[name]);
-        },
-        configurable: true
-      });
     }
   ]
 });
@@ -707,6 +716,17 @@ foam.CLASS({
       documentation: `
         The name of the property of a model that contains the denomination String.
       `
+    },
+    {
+      name: 'unitPropValueToString',
+      value: async function(x, val, unitPropName) {
+        if ( unitPropName ) {
+          const unitProp = await x.currencyDAO.find(unitPropName);
+          if ( unitProp )
+            return unitProp.format(val);
+        }
+        return val;
+      }
     }
   ]
 });
@@ -803,7 +823,9 @@ foam.CLASS({
     },
     {
       name: 'type',
-      factory: function() { return this.of.id; }
+      factory: function() {
+        return this.of.id;
+      }
     },
     {
       name: 'fromJSON',
@@ -819,6 +841,12 @@ foam.CLASS({
 
         var type = foam.lookup(prop.type);
 
+        // Example: type = Predicate and v=foam.mlang.predicate.True
+        if ( type.isSubClass(v) ) {
+          console.warn('Invalid setting of property to class rather than instance for ', prop.name, 'of type', type.id);
+          return v.create();
+        }
+
         return type.isInstance(v) ?
           v :
           ( v.class ?
@@ -833,6 +861,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function xinitObject(obj) {
       var s1, s2;
@@ -945,7 +974,6 @@ foam.CLASS({
         }
         var ret = of ? of.ID.value : null;
 
-
         if ( ! of ) {
           console.warn('Of not found for: ' + this.name);
           console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name);
@@ -1010,6 +1038,12 @@ foam.CLASS({
       class: 'I18NString',
       name: 'label',
       expression: function(name) { return foam.String.labelize(name); }
+    },
+    {
+      name: 'labelFormatter',
+      value: function(_, prop) {
+        this.add(prop.label$);
+      }
     },
     { class: 'String', name: 'shortName' }
   ]

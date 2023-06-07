@@ -36,14 +36,14 @@ public class AuthWebAgent
 {
   public final static String SESSION_ID = "sessionId";
 
-  protected String permission_;
+  protected String           permission_;
   protected SendErrorHandler sendErrorHandler_;
 
   public AuthWebAgent() {}
 
   public AuthWebAgent(String permission, WebAgent delegate, SendErrorHandler sendErrorHandler) {
     setDelegate(delegate);
-    permission_ = permission;
+    permission_       = permission;
     sendErrorHandler_ = sendErrorHandler;
   }
 
@@ -110,7 +110,8 @@ public class AuthWebAgent
 
     // instance parameters
     Session             session      = null;
-   try {
+
+    try {
       if ( ! SafetyUtil.isEmpty(authHeader) ) {
         StringTokenizer st = new StringTokenizer(authHeader);
         if ( st.hasMoreTokens() ) {
@@ -121,8 +122,8 @@ public class AuthWebAgent
             // wget --header="Authorization: Bearer 8b4529d8-636f-a880-d0f2-637650397a71" \
             //     http://localhost:8080/service/memory
             //
-            String token = st.nextToken();
-            Session tmp = null;
+            String  token = st.nextToken();
+            Session tmp   = null;
 
             // test and use non-clustered sessions
             DAO internalSessionDAO = (DAO) x.get("localInternalSessionDAO");
@@ -150,7 +151,7 @@ public class AuthWebAgent
                 X effectiveContext = session.applyTo(x);
                 // Make context available to thread-local XLocator
                 XLocator.set(effectiveContext);
-                session.setContext(effectiveContext);
+                session.setContext(effectiveContext); // XXX: Looks very wrong!!!
                 return session;
               } catch( foam.core.ValidationException e ) {
                 logger.debug(e.getMessage(), foam.net.IPSupport.instance().getRemoteIp(x));
@@ -242,8 +243,7 @@ public class AuthWebAgent
           session = (Session) sessionDAO.put(session);
         }
         User user = ((Subject) session.getContext().get("subject")).getUser();
-        if ( user != null &&
-             SafetyUtil.isEmpty(email) ) {
+        if ( user != null && SafetyUtil.isEmpty(email) ) {
           return session;
         }
 
@@ -252,6 +252,10 @@ public class AuthWebAgent
           .put(HttpServletResponse.class, resp), email, password);
 
         if ( user != null ) {
+          // Make sure session has the correct context after login
+          session.setUserId(user.getId());
+          session.setContext(session.applyTo(session.getContext()));
+
           if ( ! SafetyUtil.isEmpty(actAs) ) {
             AgentAuthService agentService = (AgentAuthService) x.get("agentAuth");
             DAO localUserDAO = (DAO) x.get("localUserDAO");

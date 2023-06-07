@@ -47,8 +47,8 @@ if let oldValue = oldValue as? foam_dao_AbstractDAO {
     },
     {
       name: 'of',
-      factory: function() {
-        return this.delegate.of;
+      expression: function(delegate) {
+        return delegate.of;
       },
       swiftExpressionArgs: ['delegate$of'],
       swiftExpression: 'return delegate$of as! ClassInfo',
@@ -132,15 +132,12 @@ foam.CLASS({
     {
       class: 'Proxy',
       of: 'foam.dao.Sink',
-      name: 'delegate',
+      name: 'delegate'
     },
     {
       name: 'innerSub',
       type: 'foam.core.Detachable',
-      postSet: function(_, s) {
-        if (s) this.onDetach(s);
-      },
-      swiftPostSet: 'if let s = newValue { onDetach(s) }',
+      swiftPostSet: 'if let s = newValue { onDetach(s) }'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -183,7 +180,13 @@ if oldValue != nil {
       },
       swiftCode: 'delegate.reset(self)',
     },
+
+    function detach() {
+      if ( this.innerSub ) this.innerSub.detach();
+      this.SUPER();
+    }
   ],
+
   listeners: [
     {
       name: 'update',
@@ -195,6 +198,25 @@ if oldValue != nil {
           this.dao.delegate.listen_(this.__context__, this, this.predicate);
         this.reset();
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.dao',
+  name: 'PromisedDetachable',
+
+  properties: [
+    { name: 'promise', factory: function() { return this.Latch.create(); } }
+  ],
+
+  methods: [
+    function detach() {
+      this.promise.then(p => {
+        p.detach();
+        this.promise = null;
+      });
     }
   ]
 });
@@ -220,20 +242,9 @@ foam.CLASS({
       name: 'listen_',
       flags: ['js'],
       code: function(x, sink, predicate) {
-        // TODO(adamvy): Temporary hack to fix regression.  listen_
-        // didn't used to have a declared return type, as such it
-        // would return void when Promised, but a detachable when not.
-        //
-        // This sort of worked in that ProxyListener and others
-        // wouldn't throw an exception when undefined was returned,
-        // but will throw if a Promise is return.
-        //
-        // To fix this we should automagically return a
-        // PromisedDetachable as .detach() can be async since it has
-        // no return value.
-        this.promise.then(function(dao) {
-          dao.listen_(x, sink, predicate);
-        });
+        return foam.dao.PromisedDetachable.create({promise: this.promise.then(dao => {
+          return dao.listen_(x, sink, predicate);
+        })});
       }
     }
   ]
@@ -244,6 +255,8 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'LocalStorageDAO',
   extends: 'foam.dao.ArrayDAO',
+
+  flags: [],
 
   properties: [
     {

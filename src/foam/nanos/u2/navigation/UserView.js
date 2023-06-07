@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'View user name and user nav settings',
 
   imports: [
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -69,7 +69,7 @@ foam.CLASS({
       float: right;
       z-index: 10001;
       width: 215px;
-      background: white;
+      background: $white;
       box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
       top: 65px;
       right: 0px;
@@ -79,7 +79,7 @@ foam.CLASS({
       padding-left: 50px;
       font-size: 1.4rem;
       font-weight: 300;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       line-height: 25px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {
@@ -89,7 +89,7 @@ foam.CLASS({
       color: #c82e2e;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
-      background-color: /*%PRIMARY3%*/ #406dea;
+      background-color: $primary400;
       cursor: pointer;
     }
     ^ .foam-nanos-menu-SubMenuView-inner::before {
@@ -122,12 +122,13 @@ foam.CLASS({
             }));
           })
           .start('h1')
-            .add( this.user$.dot('firstName') ).addClass(this.myClass('user-name'))
+            .add( this.subject.user$.dot('firstName') ).addClass(this.myClass('user-name'))
           .end()
           .start()
             .addClass(this.myClass('carrot'))
           .end()
         .end();
-    }
+    },
+    function otherViews() {}
   ]
 });

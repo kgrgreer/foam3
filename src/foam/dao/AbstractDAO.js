@@ -232,7 +232,7 @@ throw new UnsupportedOperationException();
         return this.listen_(this.__context__, sink, undefined);
       },
       swiftCode: 'return try listen_(__context__, sink)',
-      javaCode: `this.listen_(this.getX(), sink, predicate);`,
+      javaCode: 'this.listen_(this.getX(), sink, predicate);',
     },
 
     /**
@@ -518,7 +518,7 @@ return this.find_(this.getX(), id);
         return undefined;
       },
       javaCode: `
-// TODO
+// null return indicates cmd not handled.
 return null;
       `,
     },
@@ -592,7 +592,14 @@ if ( ( skip > 0 ) && ( skip < AbstractDAO.MAX_SAFE_INTEGER ) ) {
 }
 
 if ( order != null ) {
-  sink = new OrderedSink(order, null, sink);
+  var innerSink = sink;
+  while ( innerSink instanceof ProxySink ) {
+    innerSink = ((ProxySink) innerSink).getDelegate();
+  }
+
+  if ( ! ( innerSink instanceof foam.mlang.sink.Count ) ) {
+    sink = new OrderedSink(order, null, sink);
+  }
 }
 
 if ( predicate != null && predicate.partialEval() != null && ! ( predicate instanceof foam.mlang.predicate.True) ) {
@@ -658,7 +665,11 @@ protected void onPut(foam.core.FObject obj) {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.put(obj);
+    try {
+      s.put(obj);
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onPut", t);
+    }
   }
 }
 
@@ -667,7 +678,11 @@ protected void onRemove(foam.core.FObject obj) {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.remove(obj);
+    try {
+      s.remove(obj);
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onRemove", t);
+    }
   }
 }
 
@@ -676,7 +691,11 @@ protected void onReset() {
 
   while ( iter.hasNext() ) {
     DAOListener s = iter.next();
-    s.reset();
+    try {
+      s.reset();
+    } catch (Throwable t) {
+      foam.nanos.logger.StdoutLogger.instance().warning(getOf().getId(), "onReset", t);
+    }
   }
 }
 

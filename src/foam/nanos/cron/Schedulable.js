@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.cron',
   name: 'Schedulable',
   extends: 'foam.nanos.cron.Cron',
@@ -21,10 +21,48 @@
   ],
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.Subject'
+    'foam.nanos.auth.Subject',
+    'java.util.Date'
+  ],
+
+  requires: [
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.script.ScriptEvent'
+  ],
+
+  sections: [
+    {
+      name: '_defaultSection',
+      order: 1,
+      permissionRequired: true
+    },
+    {
+      name: 'scriptEvents',
+      order: 2,
+      permissionRequired: true
+    },
+    {
+      name: 'summary',
+      title: 'Summary',
+      order: 3
+    },
+    {
+      name: 'scheduling',
+      title: 'Details',
+      order: 4
+    },
+    {
+      name: 'history',
+      title: 'History',
+      order: 5
+    }
   ],
 
   properties: [
@@ -38,11 +76,61 @@
       value: 'schedulableEventDAO'
     },
     {
-      name: 'schedule',
+      name: 'scheduledTime',
+      storageTransient: false
+    },
+    {
+      class: 'FObjectProperty',
       of: 'foam.nanos.cron.Schedule',
-      view: {
-        class: 'foam.u2.view.FObjectView',
-        of: 'foam.nanos.cron.SimpleIntervalSchedule'
+      name: 'schedule',
+      label: '',
+      section: 'scheduling',
+      postSet: function(_, v) {
+        if ( ! v ) return;
+        this.frequency = v.frequency;
+        this.startDate = v.startDate;
+        this.endsOn = v.endsOn;
+      },
+      factory: function() {
+        var ret = foam.nanos.cron.SimpleIntervalSchedule.create();
+        this.SCHEDULE.postSet(null, ret);
+        return ret;
+      },
+      view: function (_, X) {
+        return {
+          class: 'foam.nanos.cron.SimpleIntervalScheduleView',
+          data$: X.data.schedule$
+        }
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredEventDAO',
+      section: 'history',
+      label: '',
+      documentation: 'Show a table view of all historic scheduled events',
+      factory: function() {
+        if ( ! this.eventDaoKey ) return null;
+
+        const E = foam.mlang.ExpressionsSingleton.create({});
+        var idPredicate = E.EQ(this.ScriptEvent.OWNER, this.id);
+        return this.__subContext__[this.eventDaoKey].where(idPredicate);
+      },
+      view: function(_, X) {
+        var dao = X.data.filteredEventDAO;
+        return {
+          class: 'foam.comics.v2.DAOBrowserView',
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            summaryView: {
+              class: 'foam.u2.table.TableView',
+              columns: [ 'lastRun' ],
+              editColumnsEnabled: false,
+              disableUserSelection: true
+            }
+          }
+        };
       }
     },
     {
@@ -51,8 +139,73 @@
     },
     {
       class: 'FObjectProperty',
-      of: 'FObject',
       name: 'objectToSchedule'
+    },
+    {
+      class: 'String',
+      name: 'name',
+      section: 'summary',
+      createVisibility: 'HIDDEN',
+      gridColumns: 4,
+      order: 1,
+      factory: function() {
+        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
+      }
+    },
+    {
+      class: 'Date',
+      name: 'nextScheduledDate',
+      section: 'summary',
+      createVisibility: 'HIDDEN',
+      gridColumns: 4,
+      order: 2,
+      javaFactory: `
+        Date d = getSchedule().getNextScheduledTime(getX(), new Date());
+        return d != null ? d : null;
+      `
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifeCycleState',
+      label: 'Status',
+      section: 'summary',
+      createVisibility: 'HIDDEN',
+      gridColumns: 4,
+      order: 3,
+      factory: function() {
+        var nextScheduledDate_ = this.nextScheduledDate;
+        if ( ! nextScheduledDate_ && this.endsOn < new Date() ) {
+          return foam.nanos.auth.LifecycleState.DISABLED;
+        } else if ( ! nextScheduledDate_ ) {
+          return foam.nanos.auth.LifecycleState.PENDING;
+        }
+        return foam.nanos.auth.LifecycleState.ACTIVE;
+      }
+    },
+    {
+      name: 'lastRun',
+      label: 'Last Occurrence'
+    },
+    {
+      class: 'Enum',
+      of: 'foam.time.TimeUnit',
+      name: 'frequency',
+      createVisibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      class: 'Date',
+      name: 'startDate',
+      label: 'Start On',
+      createVisibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      class: 'Date',
+      name: 'endsOn',
+      visibility: 'HIDDEN',
+      transient: true
     }
   ],
 
@@ -60,13 +213,22 @@
     {
       name: 'runScript',
       javaCode: `
-        // TODO: simple submit itself to the threadpool agency which will call 'execute'
+        ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
       `
     },
     {
       name: 'execute',
       javaCode: `
-        // TODO: submitting the entry to the dao
+        try {
+          ((DAO) x.get(getObjectDAOKey())).put(getObjectToSchedule());
+        } catch (Exception e){
+          ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("Failed to execute schedulable event")
+            .setSeverity(foam.log.LogLevel.ERROR)
+            .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+            .setNote(getId() + " " + e.getMessage())
+            .build());
+        }
       `
     },
     {
@@ -119,4 +281,4 @@
       `
     }
   ]
- });
+});

@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOUpdateView',
   extends: 'foam.u2.View',
+  mixins: ['foam.u2.memento.Memorable'],
 
   topics: [
     'finished',
@@ -53,7 +54,6 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.controller.Memento',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Grid',
@@ -62,15 +62,15 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'currentControllerMode',
     'currentMenu?',
-    'memento',
+    'setControllerMode',
     'stack',
     'translationService'
   ],
 
   exports: [
-    'controllerMode',
-    'currentMemento_ as memento'
+    'controllerMode'
   ],
 
   messages: [
@@ -164,22 +164,8 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
+      this.setControllerMode('edit');
 
-      if ( this.memento ) {
-        this.currentMemento_ = this.memento;
-        var counter = 0;
-        // counter < 2 is as at this point we need to skip 2 memento
-        // head of first one will be DAOSummaryView mode
-        // and second will be the id for the view
-        while ( counter < 2 ) {
-          if ( ! this.currentMemento_.tail ) {
-            this.currentMemento_.tail = this.Memento.create();
-          }
-          this.currentMemento_ = this.currentMemento_.tail;
-          counter++;
-        }
-        this.memento.head = 'edit';
-      }
 
       this
         .addClass(this.myClass())

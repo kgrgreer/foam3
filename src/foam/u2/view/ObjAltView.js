@@ -8,10 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ObjAltView',
   extends: 'foam.u2.View',
-
-  imports: [ 'memento' ],
-
-  exports: ['currentMemento_ as memento'],
+  mixins: ['foam.u2.memento.Memorable'],
 
   requires: [ 'foam.u2.view.RadioView' ],
 
@@ -40,17 +37,18 @@ foam.CLASS({
           X.createSubContext({controllerMode: foam.u2.ControllerMode.EDIT})
         );
       },
-      postSet: function() {
-        if ( ! this.memento || ! this.memento.tail )
-          return;
-
-        var view = this.views.find(v => v[0] === this.selectedView);
+      postSet: function(_, n) {
+        var view = this.views.find(v => v[0] === n);
         if ( view ) {
-          this.memento.head = view[1];
+          this.selectedViewLabel = view[1];
         } else {
-          this.memento.head = '';
+          this.selectedViewLabel = null;
         }
       }
+    },
+    {
+      name: 'selectedViewLabel',
+      memorable: true
     },
     {
       name: 'data'
@@ -63,13 +61,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create();
-        this.currentMemento_ = this.memento.tail;
-      }
-
-      if ( this.memento && this.memento.head.length != 0 ) {
-        var view = this.views.find(v => v[1] === this.memento.head);
+      if ( this.selectedViewLabel ) {
+        var view = this.views.find(v => v[1] === this.selectedViewLabel);
         if ( view ) {
           this.selectedView = view[0];
         } else {

@@ -64,7 +64,7 @@ public class PreventPrivilegeEscalationTest
     } catch (Throwable e) {
       logger_.error(e);
       e.printStackTrace();
-      test(false, "An unexpected exception was thrown. Some tests might not have been executed. "+e.getMessage());
+      test(false, "An unexpected exception was thrown. Some tests might not have been executed. "+e.getClass().getName()+" "+e.getMessage());
     }
   }
 
@@ -77,7 +77,7 @@ public class PreventPrivilegeEscalationTest
     String groupId = generateId();
     testGroup = new Group.Builder(x)
       .setId(groupId)
-      .setParent("basicUser")
+      .setParent("anonymous")
       .build();
 
     groupDAO.where(foam.mlang.MLang.EQ(Group.ID, groupId)).removeAll();
@@ -225,7 +225,7 @@ public class PreventPrivilegeEscalationTest
     try {
       // Try to update the group.
       g = (Group) g.fclone();
-      g.setParent("basicUser");
+      g.setParent("anonymous");
       g = (Group) groupDAO.inX(userContext).put(g);
 
       // If the put didn't throw, then this test failed.
@@ -285,6 +285,7 @@ public class PreventPrivilegeEscalationTest
       .setEmail("ppet+admin@example.com")
       .setUserName("ppet+admin")
       .setDesiredPassword("!@#$ppet1234")
+      .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
       .build();
 
     // Create a test user.
@@ -322,22 +323,24 @@ public class PreventPrivilegeEscalationTest
 
     // Create a user for the test user to put.
     User u = new User.Builder(x)
-      .setGroup("basicUser")
+      .setGroup("anonymous")
       .setSpid(spid_)
       .setEmail("ppet1+admin@example.com")
       .setUserName("ppet1+admin")
       .setFirstName("ppet")
       .setLastName("ppet")
       .setDesiredPassword("!@#$ppet1234")
+      .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
       .build();
 
     // Create a test user.
     List permissionIds = new ArrayList();
-    permissionIds.add("group.update.basicUser");
+    permissionIds.add("group.update.anonymous");
     permissionIds.add("user.update.*");
+    permissionIds.add("paymentcode.create");
     X userContext = generateTestUser(x, permissionIds);
 
-    // Create a user in the basicUser group.
+    // Create a user in the anonymous group.
     User u1 = (User) userDAO.inX(userContext).put(u);
     User u2 = null;
     try {
@@ -357,8 +360,8 @@ public class PreventPrivilegeEscalationTest
         print("Error message mismatch. Actual was: " + e.getMessage());
       }
     } finally {
-      userDAO.remove(u1);
-      userDAO.remove(u2);
+      bareUserDAO.remove(u1);
+      bareUserDAO.remove(u2);
       cleanUp(x);
     }
   }

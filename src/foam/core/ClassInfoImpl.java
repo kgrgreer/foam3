@@ -32,7 +32,7 @@ public class ClassInfoImpl
     return this;
   }
 
-      public int compareTo(Object obj) {
+  public int compareTo(Object obj) {
     return getId().compareTo(((ClassInfo)obj).getId());
   }
 
@@ -51,7 +51,7 @@ public class ClassInfoImpl
       java.lang.reflect.Method m;
 
       try {
-        c = Class.forName(getId()).getSuperclass();
+        c = getObjClass().getSuperclass();
         m = c.getMethod("getOwnClassInfo");
 
         parent_ = (ClassInfo)m.invoke(null);

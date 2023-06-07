@@ -36,7 +36,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'foam.nanos.auth.TimeZone',
+      of: 'foam.time.TimeZone',
       name: 'timezone',
       required: true
     }

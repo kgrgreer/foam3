@@ -21,17 +21,16 @@ p({
   import foam.mlang.MLang;
   alarmConfigDAO = x.get("alarmConfigDAO");
   monitorReportDAO = x.get("monitoringReportDAO");
-  alarms = alarmConfigDAO.select().getArray();
+  alarms = alarmConfigDAO.where(MLang.EQ(AlarmConfig.ENABLED, true)).select().getArray();
   for ( alarm : alarms ) {
     if ( alarm.getManual() ) {
       continue;
     }
-    MonitoringReport report = (MonitoringReport) monitorReportDAO.find(MLang.EQ(MonitoringReport.NAME, alarm.getName()));
-    if ( report == null ) {
-      report = new MonitoringReport();
-      report.setName(alarm.getName());  
-    }
-    monitorReportDAO.put(report.fclone());
+
+    report = new MonitoringReport();
+    report.setName(alarm.getName());
+
+    monitorReportDAO.put(report);
   }
   print(\"done\");
   """

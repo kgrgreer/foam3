@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.medusa',
   name: 'ElectoralService',
 
+  skeleton: true,
+
   documentation: `Coordinate a single primary medusa mediator. When a quorum of mediators are ONLINE, initiate a vote to determine the primary.`,
 
   methods: [
@@ -44,7 +46,7 @@ foam.INTERFACE({
       ]
     },
     {
-      documentation: 'Called by the party runing the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started earlier then we abandon our election.',
+      documentation: 'Called by the party running the election, requesting us to vote. A vote is simply a random number. Highest number wins. The caller also sends when they started the election. If we are also in ELECTION state, but the other party started earlier then we abandon our election.',
       name: 'vote',
       type: 'Long',
       async: true,
@@ -55,17 +57,24 @@ foam.INTERFACE({
         },
         {
           name: 'time',
-          type: 'Long'
+          type: 'Long',
+          units: 'ns'
         }
       ]
     },
     {
+      documentation: 'Called by the party running the election to declare a winner.',
       name: 'report',
       async: true,
       args: [
         {
           name: 'winnerId',
           type: 'String'
+        },
+        {
+          name: 'time',
+          type: 'Long',
+          units: 'ns'
         }
       ]
     }

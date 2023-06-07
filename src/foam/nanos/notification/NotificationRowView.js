@@ -14,7 +14,7 @@
       'foam.nanos.auth.User',
       'foam.nanos.notification.NotificationCitationView',
       'foam.u2.view.OverlayActionListView',
-      'foam.u2.dialog.Popup'
+      'foam.u2.dialog.StyledModal'
     ],
 
     imports: [
@@ -22,7 +22,7 @@
       'notificationDAO',
       'notify',
       'stack',
-      'user',
+      'subject',
       'userDAO',
       'ctrl'
     ],
@@ -38,35 +38,24 @@
 
     css: `
       ^ {
-        position: relative;
-        padding: 8px;
-        margin-right: 32px;
+        background:$white;
+        border: solid 1px #e7eaec;
+        border-radius: 3px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        min-height: 50px;
+        padding: 8px 16px;
       }
-      ^ .foam-u2-view-OverlayActionListView {
-        position: absolute;
-        top: 20px;
-        right: 8px;
-      }
-      ^ i {
-        margin-top: 5px;
-      }
-      ^ .msg {
-        font-size: 1.2rem;
-        word-wrap: break-word;
-        line-height: 1.4;
-        width: 414px;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
+      ^msg {
         display: -webkit-box;
-        text-overflow: ellipsis;
-        margin-right: 16px;
+        color: $black;
         overflow: hidden;
-        color: /*%BLACK%*/ #1e1f21;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
-      ^ .msg.fully-visible {
-        display: block;
-      }
-      ^ .notificationDiv {
+      ^notificationDiv {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -74,16 +63,22 @@
     `,
 
     properties: [
-      'of',
+      {
+        name: 'of',
+        factory: function() {
+          return this.data.cls_;
+        }
+      },
       'optionsBtn_',
       'optionPopup_'
     ],
 
     messages: [
-      { name:'MARK_AS_READ_MSG', message: 'Successfully marked as read' },
-      { name:'FAILED_MARK_AS_READ_MSG', message: 'Failed to mark as read' },
-      { name:'MARK_AS_UNREAD_MSG', message: 'Successfully marked as unread' },
-      { name:'FAILED_MARK_AS_UNREAD_MSG', message: 'Failed to mark as unread' }
+      { name: 'MARK_AS_READ_MSG',          message: 'Successfully marked as read' },
+      { name: 'FAILED_MARK_AS_READ_MSG',   message: 'Failed to mark as read' },
+      { name: 'MARK_AS_UNREAD_MSG',        message: 'Successfully marked as unread' },
+      { name: 'FAILED_MARK_AS_UNREAD_MSG', message: 'Failed to mark as unread' },
+      { name: 'NOTIFICATION_MSG',          message: 'Notification' }
     ],
 
     methods: [
@@ -91,19 +86,19 @@
         var self = this;
         this
           .addClass(this.myClass())
-          .start().addClass('notificationDiv')
-            .on('dblclick', function() {
-              self.ctrl.add(self.Popup.create().tag({
-                class: 'foam.nanos.notification.NotificationMessageModal',
-                data: self.data
-              }));
+          .start().addClass(this.myClass('notificationDiv'))
+            .on('click', () => {
+              this.openModal();
             })
-            .tag(this.NotificationCitationView, {
-              of: this.data.cls_,
+            .start(this.NotificationCitationView, {
+              of:   this.of,
               data: this.data
             })
+              .addClass('p', this.myClass('msg'))
+            .end()
             .tag(this.OverlayActionListView, {
               data: [
+                this.SHOW_DETAILS,
                 this.MARK_AS_READ,
                 this.MARK_AS_UNREAD,
                 this.HIDE_NOTIFICATION_TYPE,
@@ -119,7 +114,24 @@
       }
     ],
 
+    listeners: [
+      function openModal() {
+        //TODO: Mark as read?
+        this.ctrl.add(this.StyledModal.create({ title: this.NOTIFICATION_MSG }).tag({
+          class: 'foam.nanos.notification.NotificationMessageModal',
+          data: this.data,
+          of: this.of
+        }));
+      }
+    ],
+
     actions: [
+      {
+        name: 'showDetails',
+        code: function(X) {
+          X.rowView.openModal();
+        }
+      },
       {
         name: 'removeNotification',
         code: function(X) {
@@ -136,20 +148,19 @@
       function hideNotificationType(X) {
         var self = X.rowView;
 
-        if ( self.user.disabledTopics.includes(self.data.notificationType) ) {
+        if ( self.subject.user.disabledTopics.includes(self.data.notificationType) ) {
           self.notify('Disabled already exists for this notification something went wrong.', '', self.LogLevel.ERROR, true);
           return;
         }
 
-        var userClone = self.user.clone();
+        var userClone = self.subject.user.clone();
 
         // check if disabledTopic already exists
         userClone.disabledTopics.push(self.data.notificationType);
         self.userDAO.put(userClone).then(user => {
           self.finished.pub();
-          self.user = user;
+          self.subject.user = user;
           X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
-
         }).catch(e => {
           self.throwError.pub(e);
 
@@ -162,7 +173,7 @@
           } else {
             this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
           }
-        })
+        });
       },
       {
         name: 'markAsRead',

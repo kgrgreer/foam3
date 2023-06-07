@@ -20,9 +20,9 @@ foam.CLASS({
   name: 'GroupAutocompleteSearchView',
   extends: 'foam.u2.View',
 
-  documentation: 'Uses a TextField with autocomplete driven by a list. This ' +
-      'depends on the browser\'s native support for the input.list ' +
-      'attribute, which is also polyfilled by Polymer.',
+  documentation: `Uses a TextField with autocomplete driven by a list. This
+    depends on the browser\'s native support for the input.list
+    attribute, which is also polyfilled by Polymer.`,
 
   requires: [
     'foam.mlang.predicate.True',
@@ -36,10 +36,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'split',
-      documentation: 'Set this to a string, and group values will be split ' +
-          'on it. This can be used to split a comma-separated string into ' +
-          'its component parts.',
-      value: ''
+      documentation: `Set this to a string, and group values will be split
+        on it. This can be used to split a comma-separated string into
+        its component parts.`
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -70,8 +69,7 @@ foam.CLASS({
     },
     {
       name: 'name',
-      documentation: 'All SearchViews require a name. Defaults to the ' +
-          'property name.',
+      documentation: 'All SearchViews require a name. Defaults to the property name.',
       expression: function(property) {
         return property.name;
       }

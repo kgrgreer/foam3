@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'subject',
     'blobService',
     'notify'
   ],
@@ -48,7 +48,7 @@ foam.CLASS({
       min-width: 700px;
       max-width: 275px;
       height: 40px;
-      background-color: #ffffff;
+      background-color:$white;
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 5px;
@@ -79,7 +79,7 @@ foam.CLASS({
       font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
     ^ .boxless-for-drag-drop {
       border: dashed 4px #a4b3b8;
@@ -255,7 +255,7 @@ foam.CLASS({
       }
 
       this.data = this.File.create({
-        owner: this.user.id,
+        owner: this.subject.user.id,
         filename: file.name,
         filesize: file.size,
         mimeType: file.type,

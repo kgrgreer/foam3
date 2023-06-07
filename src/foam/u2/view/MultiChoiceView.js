@@ -43,7 +43,7 @@ foam.CLASS({
       justify-content:flex-start;
     }
     ^flexer > * {
-      margin: 4px;
+      padding: 4px;
     }
   `,
 

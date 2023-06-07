@@ -20,7 +20,6 @@ foam.CLASS({
     'localUserDAO',
     'tokenDAO',
     'DAO htmlDocDAO',
-    'Logger logger'
   ],
 
   javaImports: [
@@ -28,18 +27,16 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.mlang.MLang',
     'foam.nanos.auth.HtmlDoc',
-    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'java.util.HashMap'
   ],
 
   methods: [
     {
       name: 'emailDoc',
-      javaCode:
-      `
-      try{
+      javaCode: `
+      try {
         DAO htmlDocDAO = (DAO) getHtmlDocDAO();
         htmlDocDAO = htmlDocDAO.where(MLang.EQ(HtmlDoc.NAME, docName));
         ArraySink listSink = (ArraySink) htmlDocDAO.orderBy(new foam.mlang.order.Desc(HtmlDoc.ID)).limit(1).select(new ArraySink());
@@ -47,18 +44,19 @@ foam.CLASS({
 
         EmailMessage message = new EmailMessage();
         message.setTo(new String[] { user.getEmail() });
-
+        message.setUser(user.getId());
         HashMap<String, Object> args = new HashMap<>();
         args.put("doc", doc.getBody());
         args.put("templateSource", this.getClass().getName());
-
-        EmailsUtility.sendEmailFromTemplate(getX(), user, message, "docEmail", args);
+        args.put("template", "docEmail");
+        message.setTemplateArguments(args);
+        ((DAO) getX().get("emailMessageDAO")).put(message);
         return true;
       } catch(Throwable t){
-        ((Logger) getLogger()).error("Error retrieving Terms and Conditions.", t);
+        Loggers.logger(getX(), this).error("Document not found", docName, t);
       }
       return false;
-
        `
-    },]
+    }
+  ]
 });

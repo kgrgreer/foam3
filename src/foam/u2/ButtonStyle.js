@@ -13,6 +13,7 @@ foam.ENUM({
     { name: 'PRIMARY' },
     { name: 'SECONDARY' },
     { name: 'TERTIARY' },
+    { name: 'TEXT' },
     { name: 'LINK' }
   ]
 });

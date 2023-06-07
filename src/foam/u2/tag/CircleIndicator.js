@@ -26,7 +26,7 @@ foam.CLASS({
       text-align: center;
       display: inline-flex;
       overflow: hidden;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
     }
     ^ > img {
@@ -70,6 +70,10 @@ foam.CLASS({
       class: 'Int',
       value: 30
     },
+    {
+      name: 'padding',
+      class: 'String'
+    },
 
     // State
     {
@@ -105,6 +109,7 @@ foam.CLASS({
           'font-size': this.size * 0.65,
           'color': this.textColor$,
           'border': this.borderThickness + 'px solid',
+          'padding': this.padding,
           'cursor': this.ExpressionSlot.create({
             obj: this,
             code: function (clickable) {

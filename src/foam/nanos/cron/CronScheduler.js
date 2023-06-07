@@ -36,6 +36,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.NanoService',
+    'foam.nanos.medusa.ClusterConfigSupport',
+    'foam.nanos.medusa.ReplayingInfo',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date',
     'java.util.Timer'
@@ -74,6 +76,7 @@ foam.CLASS({
       documentation: 'NanoService implementation.',
       name: 'start',
       javaCode: `
+      Loggers.logger(getX(), this).info("start");
       Timer timer = new Timer(this.getClass().getSimpleName());
       timer.schedule(
         new AgencyTimerTask(getX(), this),
@@ -101,6 +104,18 @@ foam.CLASS({
       javaCode: `
     final Logger logger = Loggers.logger(x, this);
     try {
+      // Wait until Medusa Replay is complete
+      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      if ( replaying != null &&
+           replaying.getReplaying() ) {
+        logger.debug("execute", "replaying");
+        Timer timer = new Timer(this.getClass().getSimpleName());
+        timer.schedule(
+          new AgencyTimerTask(x, this),
+          getInitialTimerDelay());
+        return;
+      }
+
       logger.info("initialize", "cronjobs", "start");
       // copy all entries to from cronjob to localCronDAO for execution
       final DAO cronDAO = (DAO) getX().get(getCronDAO());
@@ -119,8 +134,7 @@ foam.CLASS({
       logger.info("initialize", "cronjobs", "complete");
 
       while ( true ) {
-        foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-       if ( getEnabled() ) {
+        if ( getEnabled() ) {
           Date now = new Date();
           cronJobDAO.where(
                          MLang.AND(
@@ -138,8 +152,7 @@ foam.CLASS({
                              public void put(Object obj, Detachable sub) {
                                Cron cron = (Cron) ((FObject) obj).fclone();
                                try {
-                                 if ( support == null ||
-                                      support.cronEnabled(x, cron.getClusterable()) ) {
+                                 if ( cron.canRun(x) ) {
                                    cron.setStatus(ScriptStatus.SCHEDULED);
                                    cronJobDAO.put_(x, cron);
                                  }

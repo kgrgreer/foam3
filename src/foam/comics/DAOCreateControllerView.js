@@ -78,11 +78,6 @@ foam.CLASS({
     }
   ],
 
-  reactions: [
-    [ 'data', 'finished', 'onFinished' ],
-    [ 'data', 'throwError', 'onThrowError' ],
-  ],
-
   methods: [
     function render() {
       this
@@ -131,12 +126,24 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onFinished() {
-      this.stack.back();
+    {
+      name: 'onFinished',
+      on: [
+        'data.finished'
+      ],
+      code: function() {
+        this.stack.back();
+      }
     },
-    function onThrowError() {
-      var self = this;
-      self.notify(self.data.exception.message, '', self.LogLevel.ERROR, true);
-    }
+    {
+      name: 'onThrowError',
+      on: [
+        'data.throwError'
+      ],
+      code: function() {
+        var self = this;
+        self.notify(self.data.exception.message, '', self.LogLevel.ERROR, true);
+      }
+    },
   ]
 });

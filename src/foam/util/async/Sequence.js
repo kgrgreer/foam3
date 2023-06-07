@@ -9,12 +9,20 @@ foam.CLASS({
   name: 'Sequence',
   extends: 'foam.core.Fluent',
 
+  documentation: `
+    Sequence creates and executes ContextAgents in the order specified, passing
+    each ContextAgent's export context to the subsequent ContextAgent.
+    If method execute() of the ContextAgent returns a context explicitly, then
+    this will be used instead of the export context.
+  `,
+
   implements: [
     'foam.core.ContextAgent',
     'foam.mlang.Expressions'
   ],
 
   requires: [
+    'foam.core.ContextAgent',
     'foam.core.NullAgent'
   ],
 
@@ -29,20 +37,62 @@ foam.CLASS({
       of: 'FObject'
     },
     {
+      class: 'FObjectProperty',
+      name: 'errorAgent'
+    },
+    {
       name: 'halted_',
       class: 'Boolean'
+    },
+    {
+      name: 'paused_',
+      class: 'Boolean'
+    },
+    {
+      class: 'Int',
+      name: 'insertPosition_'
+    },
+    {
+      class: 'Duration',
+      name: 'timeout',
+      documentation: `amount of time before a warning is displayed for an unresolved promise`,
+      value: 1000
     }
   ],
 
   methods: [
     // Sequence DSL
 
+    function tag(spec, args) {
+      if ( ! spec ) {
+        throw new Error(
+          'Undefined argument in call to .tag: ' +
+          foam.json.stringify({
+            flow: this.cls_.name,
+            after: this.contextAgentSpecs.length > 0
+              ? this.contextAgentSpecs[this.contextAgentSpecs.length - 1]
+              : null
+          })
+        );
+      }
+      let name = typeof spec.getImpliedId === 'function'
+        ? spec.getImpliedId(args) : foam.uuid.randomGUID();
+      return this.addAs(name, spec, args);
+    },
+
     function add(spec, args) {
       return this.addAs(spec.name, spec, args);
     },
+
+    function start (spec, args) {
+      const ins = spec.create(args, this.__subContext__);
+      ins.parent = this;
+      return ins;
+    },
+
     function addAs(name, spec, args) {
       this.contextAgentSpecs$push(this.Step.create({
-        name: name,
+        name: name || spec.class?.split('.').slice(-1)[0],
         spec: spec,
         args: args
       }));
@@ -62,7 +112,7 @@ foam.CLASS({
       this.contextAgentSpecs = [
         ...firstHalf,
         this.Step.create({
-          name: spec.name,
+          name: spec.name || spec.class?.split('.').slice(-1)[0],
           spec: spec,
           args: args
         }),
@@ -132,36 +182,90 @@ foam.CLASS({
 
     // Launching a sequence
 
-    function execute() {
+    async function execute() {
       let i = 0;
-      let nextStep = x => {
-        if ( i >= this.contextAgentSpecs.length ) return Promise.resolve(x);
-        if ( this.halted_ ) return Promise.resolve(x);
+      let nextStep = async x => {
+        if ( i >= this.contextAgentSpecs.length ) return x;
+        await this.waitForUnpause();
+        if ( this.halted_ ) return x;
         let seqspec = this.contextAgentSpecs[i++];
+        let contextAgent;
         var spec = seqspec.spec;
         var args = seqspec.args;
+        var argumentX = undefined;
         // Note: logic copied from ViewSpec; maybe this should be in stdlib
-        if ( spec.create ) {
+        if ( this.ContextAgent.isInstance(spec) ) {
+          argumentX = x;
+          contextAgent = spec.copyFrom(args);
+        } else if ( spec.create ) {
           contextAgent = spec.create(args, x);
         } else {
           var cls = foam.core.FObject.isSubClass(spec.class)
-            ? spec.class : ctx.lookup(spec.class);
+            ? spec.class : this.__subContext__.lookup(spec.class);
           if ( ! cls ) foam.assert(false,
             'Argument to Sequence.add specifies unknown class: ', spec.class);
           contextAgent = cls.create(spec, x).copyFrom(args || {});
         }
+
+        // Setup a timeout to warn about unresolved promises
+        const stepResolvedTimeout = setTimeout(() => {
+          console.warn(
+            `context agent still pending after ${this.timeout}ms; ` +
+            `open the object for helpful details.`,
+            seqspec
+          );
+        }, this.timeout)
+
         // Call the context agent and pass its exports to the next one
-        return contextAgent.execute().then(
-          () => nextStep(contextAgent.__subContext__));
+        let newX;
+        try {
+          this.insertPosition_ = i;
+          newX = await contextAgent.execute(argumentX);
+          if ( ! (newX || contextAgent.__subContext__).sequence ) {
+            console.error('sequence is missing from export context', contextAgent)
+          }
+        } catch (e) {
+          console.error(`sequence:`, seqspec, e);
+          this.paused_ = true;
+          if ( this.errorAgent ) {
+            newX = await this.errorAgent.execute(x.createSubContext({
+              exception: e
+            }));
+          }
+        }
+        if ( argumentX && ! newX ) {
+          console.error(
+            '%cA ContextAgent in a Sequence is misbehaving%c\n%s',
+            'color:red;font-size:20px', '',
+            'A ContextAgent was already instantiated when passed to the sequence, so it was passed an explicit context. However, it did not return a context even though its export context is not valid for this scenario',
+            contextAgent
+          );
+        }
+        clearTimeout(stepResolvedTimeout);
+        return await nextStep(newX || contextAgent.__subContext__);
       };
-      return nextStep(this.__subContext__)
+      return await nextStep(this.__subContext__)
     },
 
     // Sequence runtime commands
 
     function endSequence() {
       this.halted_ = true;
+      this.paused_ = false;
     },
+
+    function waitForUnpause() {
+      if ( ! this.paused_ ) return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        const detachable = foam.core.FObject.create();
+        detachable.onDetach(this.paused_$.sub(() => {
+          if ( ! this.paused_ ) {
+            detachable.detach();
+            resolve();
+          }
+        }));
+      });
+    }
   ],
 
   classes: [

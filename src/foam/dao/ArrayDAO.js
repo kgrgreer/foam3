@@ -58,16 +58,18 @@ foam.CLASS({
       return Promise.resolve(obj);
     },
 
+    // written by OpenAI
     function remove_(x, obj) {
       for ( var i = 0 ; i < this.array.length ; i++ ) {
-        if ( foam.util.equals(obj.id, this.array[i].id) ) {
-          var o2 = this.array.splice(i, 1)[0];
-          this.on.remove.pub(o2);
+        if ( obj.ID.compare(obj, this.array[i]) === 0 ) {
+          this.array.splice(i, 1);
           break;
         }
       }
 
-      return Promise.resolve();
+      this.on.remove.pub(obj);
+
+      return Promise.resolve(obj);
     },
 
     function select_(x, sink, skip, limit, order, predicate) {
@@ -99,7 +101,7 @@ foam.CLASS({
       skip = skip || 0;
       limit = foam.Number.isInstance(limit) ? limit : Number.MAX_VALUE;
 
-      for ( var i = 0; i < this.array.length && limit > 0; i++ ) {
+      for ( var i = 0 ; i < this.array.length && limit > 0 ; i++ ) {
         if ( predicate.f(this.array[i]) ) {
           if ( skip > 0 ) {
             skip--;

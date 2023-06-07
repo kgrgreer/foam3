@@ -7,11 +7,13 @@
 package foam.nanos.dig;
 
 import foam.core.*;
+import foam.dao.DAO;
 import foam.nanos.dig.drivers.*;
+import foam.nanos.dig.format.*;
 import foam.nanos.dig.exception.*;
 import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
-import foam.nanos.logger.PrefixLogger;
+import foam.nanos.logger.Loggers;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import java.io.PrintWriter;
@@ -27,24 +29,29 @@ public class DigWebAgent extends ContextAwareSupport
     HttpServletResponse resp    = x.get(HttpServletResponse.class);
     HttpParameters      p       = x.get(HttpParameters.class);
     Command             command = (Command) p.get(Command.class);
-    Format              format  = (Format) p.get(Format.class);
-    Logger              logger  = (Logger) x.get("logger");
+    String              format  = p.getParameter("format");
+    Logger              logger  = Loggers.logger(x, this);
     String              daoName = p.getParameter("dao");
-    PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format.getName());
+    PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format);
 
-    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
-    logger.debug("data", p.get("data")
-    );
-
+    logger.debug("command", command, "daoName", daoName, "data", p.get("data"));
     try {
       // Find the operation
-      DigFormatDriver driver = DigFormatDriverFactory.create(getX(), format);
-
-      if ( driver == null ) {
+      DAO digFormatDAO = (DAO) x.get("digFormatDAO");
+      DigFormat digFormat = (DigFormat) digFormatDAO.find(format != null ? format.toUpperCase() : null);
+      if ( digFormat == null ) {
         DigErrorMessage error = new ParsingErrorException("UnsupportedFormat");
         DigUtil.outputException(x, error, format);
         return;
       }
+      
+      DigFormatDriver driver = (DigFormatDriver) x.get(digFormat.getDriverNSpec());
+      if ( driver == null ) {
+        DigErrorMessage error = new ParsingErrorException("FormatDriverNotFound");
+        DigUtil.outputException(x, error, format);
+        return;
+      }
+      logger.debug("driver", digFormat.getDriverNSpec());
 
       if ( SafetyUtil.isEmpty(daoName) ) {
         DigErrorMessage error = new DAORequiredException();

@@ -15,9 +15,11 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.logger.StdoutLogger',
-    'foam.util.SafetyUtil'
+    'foam.nanos.logger.Loggers',
+    'foam.util.SafetyUtil',
+    'java.util.Map'
   ],
 
   methods: [
@@ -26,31 +28,29 @@ foam.CLASS({
       type: 'foam.nanos.notification.email.EmailMessage',
       documentation: 'application of template args to emailTemplate and then onto the emailMessage',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
-      if ( logger == null ) {
-        logger = StdoutLogger.instance();
-      }
-      if ( templateArgs == null ) {
+      Logger logger = Loggers.logger(x, this);
+
+      String templateName = (String)templateArgs.get("template");
+      if ( SafetyUtil.isEmpty(templateName) ) {
+        // logger.debug("Template undefined");
         return emailMessage;
       }
-      String templateName = (String)templateArgs.get("template");
-      if ( SafetyUtil.isEmpty(templateName) ) return emailMessage;
 
       String locale = (String) templateArgs.get("locale");
 
       // STEP 1) Find EmailTemplate
-      EmailTemplate emailTemplateObj = EmailTemplateSupport.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
-      if ( emailTemplateObj == null ) {
-        logger.error(this.getClass().getSimpleName(), "EmailTemplate not found", templateName, group);
+      EmailTemplate emailTemplate = EmailTemplateSupport.findTemplate(x, templateName, group, locale, emailMessage.getSpid(), templateArgs);
+      if ( emailTemplate == null ) {
+        logger.info("WARN,EmailTemplate not found", templateName, group);
         return emailMessage;
       }
 
       // STEP 2) Apply Template to emailMessage
       try {
-        if ( emailTemplateObj.getEnabled() )
-          emailMessage = emailTemplateObj.apply(x, group, emailMessage, templateArgs);
-      } catch (Exception e) {
-        logger.error(new NoSuchFieldException("@EmailTemplateApplyEmailPropertyService: emailTemplate.apply has failed. emailTemplate = {id:" + templateName + ", group:" + group + "}" + e.getMessage()), e);
+        if ( emailTemplate.getEnabled() )
+          emailMessage = emailTemplate.apply(x, group, emailMessage, templateArgs);
+      } catch (RuntimeException e) {
+        logger.info("ERROR,EmailTemplate apply failed", templateName, "group", group, e.getMessage(), e);
       }
       return emailMessage;
       `

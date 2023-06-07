@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'SectionedDetailPropertyView',
   extends: 'foam.u2.View',
 
-  documentation: 'View for one property of a SectionedDetailView.',
+  documentation: 'DEPRECATED: View for one property of a SectionedDetailView.',
 
   css: `
     ^ {
@@ -75,7 +75,7 @@ foam.CLASS({
     ^error .foam-u2-view-RichChoiceView-selection-view,
     ^error .foam-u2-view-RichChoiceView-clear-btn
     {
-      border-color: /*%DESTRUCTIVE3%*/ #d9170e;
+      border-color: $destructive400;
     }
 
     /*
@@ -84,74 +84,13 @@ foam.CLASS({
       encode these changes in the actual foam files
     */
 
-
     ^ .foam-u2-view-date-DateTimePicker {
       cursor: pointer;
-    }
-
-    ^ .foam-u2-view-RichChoiceView {
-      display: flex;
-    }
-
-    ^ .foam-u2-view-RichChoiceView-chevron {
-      content: '▾';
-      padding-left: 0px;
-      font-size: 1.6rem;
-      color: #8D9090;
-    }
-
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      width: 100%;
-      border-radius: 3px;
-      background-color: #ffffff;
-      box-sizing: border-box;
-      -webkit-appearance: none;
-      cursor: pointer;
-      font-size: 1.4rem;
-    }
-
-    ^ .foam-u2-view-RichChoiceView .search {
-      padding: 8px 16px;
-      font-size: 1.4rem;
-      border-bottom: 1px solid #f4f4f9;
     }
 
     ^ .foam-u2-detail-SectionedDetailPropertyView .property-filter {
       font-size: 1.4rem;
       padding-left: 16px;
-    }
-
-    ^ .foam-u2-view-RichChoiceView .search input {
-      border-bottom: none;
-    }
-
-    ^ .foam-u2-view-RichChoiceView .search img {
-      top: 8px;
-    }
-
-    ^ .foam-u2-view-RichChoiceView-heading {
-      border-bottom: 1px solid #f4f4f9;
-      line-height: 24px;
-      font-size: 1.4rem;
-      color: #333;
-      font-weight: 900;
-      padding: 6px 16px;
-    }
-
-    ^ .foam-u2-view-RichChoiceView-container {
-      z-index: 1000;
-    }
-
-    ^ .DefaultRowView-row {
-      background: white;
-      padding: 8px 16px;
-      font-size: 1.2rem;
-      color: #424242;
-    }
-
-    ^ .DefaultRowView-row:hover {
-      background: #f4f4f9;
-      cursor: pointer;
     }
 
     ^ .foam-u2-CheckBox-label {
@@ -191,6 +130,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      console.warn('Deprecated: Use foam.u2.PropertyBorder instead');
       var self = this;
       this.SUPER();
 

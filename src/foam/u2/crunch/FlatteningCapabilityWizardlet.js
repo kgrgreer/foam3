@@ -89,7 +89,11 @@ foam.CLASS({
       flags: ['web'],
       transient: true,
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.WizardletSection',
+      of: 'foam.u2.wizard.wizardlet.WizardletSection',
+      // Override BaseWizardlet preSet
+      preSet: function (_, val) {
+        return val;
+      },
       factory: function () {
         var sections = foam.u2.detail.AbstractSectionedDetailView.create({
           of: this.of,
@@ -158,6 +162,9 @@ foam.CLASS({
         }
         return s;
       }
+    },
+    function getPrerequisiteAvailabilitySlot(){
+      return this.isAvailable$;
     }
   ]
 });

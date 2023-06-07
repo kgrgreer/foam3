@@ -24,21 +24,21 @@ foam.CLASS({
 
   css: `
     /*hide default input*/
-    ^ input[type='radio']{
+    ^ input[type='radio'] {
       padding: 0px !important;
       -webkit-appearance: none;
       appearance: none;
       border: none;
       vertical-align: middle;
     }
-    ^ input[type='radio']+ label{
+    ^ input[type='radio']+ label {
       position: relative;
       display: flex;
       cursor: pointer;
       align-items: center;
     }
     ^ .choice {
-      margin-bottom: 16px;
+      font-size: 1.6rem;
       white-space: nowrap;
     }
     ^horizontal-radio {
@@ -46,16 +46,17 @@ foam.CLASS({
       align-items: center;
       display: flex;
       flex-wrap: wrap;
+      gap: 12px;
     }
-    ^ span{
+    ^ span {
       vertical-align: middle;
     }
-    ^radio-outer{
+    ^radio-outer {
       margin-right: 0.4em;
       border-radius: 50%;
     }
     /* Focus */
-    ^ input[type='radio']:focus + label > ^radio-outer > .radio{
+    ^ input[type='radio']:focus + label > ^radio-outer > .radio {
       filter: drop-shadow( 0px 0px 1px rgba(0, 0, 0, .5));
     }
   `,
@@ -103,18 +104,17 @@ foam.CLASS({
   listeners: [
     function onChoicesUpdate() {
       var self = this;
-      var id;
-      var index = 0;
 
       this.removeAllChildren();
 
-      this.add(this.choices.map(c => {
+      this.choices.forEach(c => {
         var isChecked = self.slot(function(data) { return data == c[0]; });
-        return this.E('div').
+        var id    = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
+        self.start('div').
           addClass('p-md').
           addClass('choice').
             callIf(this.columns != -1, function() { this.style({'flex-basis': (100 / self.columns) + '%'}) }).
-          start('input').
+          start('input', {id: id}).
             attrs({
               type: 'radio',
               name: self.getAttribute('name') + self.$UID,
@@ -122,20 +122,19 @@ foam.CLASS({
               checked: isChecked,
               disabled: self.isDisabled$
             }).
-            setID(id = self.NEXT_ID()).
             on('change', function(evt) { self.data = c[0]; }).
           end().
           start('label').
             attrs({for: id}).
             start().
-              addClass(this.myClass('radio-outer')).
-              add(this.RadioButton.create({ isSelected$: isChecked, isDisabled$: self.isDisabled$ })).
+              addClass(self.myClass('radio-outer')).
+              add(self.RadioButton.create({ isSelected$: isChecked, isDisabled$: self.isDisabled$ })).
             end().
             start('span').
               add(c[1]).
             end().
           end();
-      }));
+      });
     }
   ]
 });

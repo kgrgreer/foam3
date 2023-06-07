@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'org.apache.http.client.methods.CloseableHttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
@@ -27,8 +28,6 @@ foam.CLASS({
     {
       name: 'sendNotification',
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
-
         if ( foam.util.SafetyUtil.isEmpty(notification.getSlackWebhook()) )
           return;
 
@@ -43,7 +42,7 @@ foam.CLASS({
         httpPost.addHeader("Content-type", "application/json");
         
         // Add the slack message to the post
-        StringEntity params = new StringEntity("{\\"text\\" : \\"" + slackMessage + "\\"}", "UTF-8");
+        StringEntity params = new StringEntity(getSpid() +" Alarm: "+slackMessage , "UTF-8");
         params.setContentType("application/json");
         httpPost.setEntity(params);
         
@@ -51,9 +50,9 @@ foam.CLASS({
           CloseableHttpResponse response =  HttpClients.createDefault().execute(httpPost);
             
           if ( response.getStatusLine().getStatusCode() != 200 )
-            logger.warning("Could not post to Slack; error code - " + response.getStatusLine().getStatusCode());
+            Loggers.logger(x, this).warning("Failed posting to Slack", response.getStatusLine().getStatusCode());
         } catch (Throwable t) {
-          logger.error("Error sending slack message: ", t);
+          Loggers.logger(x, this).error(t);
         }
       `
     }

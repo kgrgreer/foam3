@@ -10,7 +10,9 @@ import java.util.List;
 
 /** Provides runtime information about a Class. **/
 // KGR: Why is this mutable?
-public interface ClassInfo extends java.lang.Comparable {
+public interface ClassInfo
+  extends java.lang.Comparable
+{
   String      getId();
   ClassInfo   setId(String id);
 

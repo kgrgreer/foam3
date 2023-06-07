@@ -24,9 +24,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      background-color: white;
+      background-color: $white;
       border-bottom: 1px solid #e9e9e9;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       padding: 0;
     }
 
@@ -65,7 +65,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-search-GroupBySearchView .foam-u2-tag-Select > option {
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -138,7 +138,7 @@ foam.CLASS({
       if ( predicate )
         this.checkbox.data = true;
     },
-    
+
     function getPredicateFromMemento() {
       if ( this.memento && this.memento.head.length > 0 ) {
         var predicate = this.queryParser.parseString(this.memento.head);
@@ -175,7 +175,7 @@ foam.CLASS({
             var pred;
             if ( Object.keys(self.view_.predicate).length > 0 && ! foam.mlang.predicate.True.isInstance(self.view_.predicate) )
               pred = self.view_.predicate.toMQL && self.view_.predicate.toMQL();
-    
+
             if ( pred ) {
               self.memento.head = pred ? pred : '';
             } else {

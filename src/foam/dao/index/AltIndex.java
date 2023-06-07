@@ -43,7 +43,11 @@ public class AltIndex
       }
     };
 
-    delegates_.get(0).planSelect(sa[0], sink, 0, Long.MAX_VALUE, null, null).select(sa[0], sink, 0, Long.MAX_VALUE, null, null);
+    try {
+      delegates_.get(0).planSelect(sa[0], sink, 0, Long.MAX_VALUE, null, null).select(sa[0], sink, 0, Long.MAX_VALUE, null, null);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
 
     return sa;
   }
@@ -66,7 +70,11 @@ public class AltIndex
     Object[] s = toObjectArray(state);
 
     for ( int i = 0 ; i < delegates_.size() ; i++ )
-      s[i] = delegates_.get(i).put(s[i], value);
+      try {
+        s[i] = delegates_.get(i).put(s[i], value);
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
 
     return s;
   }
@@ -76,7 +84,11 @@ public class AltIndex
     Object[] s = toObjectArray(state);
 
     for ( int i = 0 ; i < delegates_.size() ; i++ )
-      s[i] = delegates_.get(i).remove(s[i], value);
+      try {
+        s[i] = delegates_.get(i).remove(s[i], value);
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
 
     return s;
   }
@@ -85,7 +97,11 @@ public class AltIndex
     Object[] s = toObjectArray(null);
 
     for ( int i = 0 ; i < delegates_.size() ; i++ )
-      s[i] = delegates_.get(i).removeAll();
+      try {
+        s[i] = delegates_.get(i).removeAll();
+      } catch (Throwable t) {
+        t.printStackTrace();
+      }
 
     return s;
   }
@@ -98,7 +114,7 @@ public class AltIndex
     FindPlan bestPlan  = NoPlan.instance();
     Object   bestState = null;
 
-    for ( int i = 0 ; i < delegates_.size() ; i++ ) {
+    for ( int i = 0 ; i < delegates_.size() && i < s.length ; i++ ) {
       FindPlan plan = delegates_.get(i).planFind(s[i], key);
 
       // only return the smallest cost plan
@@ -115,19 +131,12 @@ public class AltIndex
   public SelectPlan planSelect(Object state, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     if ( state == null ) return NotFoundPlan.instance();
 
-    Object[]   s                 = (Object[]) state;
-    SelectPlan bestPlan          = NoPlan.instance();
-    Object     bestState         = null;
-    Predicate  originalPredicate = null;
+    Object[]   s         = (Object[]) state;
+    SelectPlan bestPlan  = NoPlan.instance();
+    Object     bestState = null;
 
-    for ( int i = 0 ; i < delegates_.size() ; i++ ) {
-      // To keep the original predicate, because in our next operation the predicate could be changed.
-      if ( predicate != null ) {
-        // not safe to move to shallowClone()
-        originalPredicate = (Predicate) ((FObject) predicate).deepClone();
-      }
-
-      SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, originalPredicate);
+    for ( int i = 0 ; i < delegates_.size() && i < s.length ; i++ ) {
+      SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, predicate);
 
       if ( plan.cost() < bestPlan.cost() ) {
         bestPlan  = plan;

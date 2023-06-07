@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.wizard.debug',
   name: 'DebugWAO',
-  extends: 'foam.u2.wizard.ProxyWAO',
+  extends: 'foam.u2.wizard.wao.ProxyWAO',
   flags: ['web'],
 
   topics: ['waoEvent'],

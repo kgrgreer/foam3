@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.foamlink',
   name: 'FoamlinkNodeModelFileFetcher',
+  flags: ['node'],
   properties: [
     'root',
     'foamlinkData_'

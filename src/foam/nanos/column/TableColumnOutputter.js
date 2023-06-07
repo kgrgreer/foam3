@@ -14,9 +14,17 @@ foam.CLASS({
     'java.util.StringJoiner',
     'org.apache.commons.lang.ArrayUtils',
     'org.apache.commons.lang3.StringUtils'
-  ], 
+  ],
 
   documentation: 'Class for returning 2d-array ( ie table ) for array of values ',
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'sheetsCompatibleDates',
+      value: true
+    }
+  ],
 
   methods: [
     {
@@ -43,20 +51,21 @@ foam.CLASS({
             }
             return ( val / 100 ).toString();
           }
-          if ( foam.core.Date.isInstance(prop) ) {
-            return val.toLocaleDateString(foam.locale);
-          }
           if ( foam.core.DateTime.isInstance(prop) ) {
-            return val.toString().substring(0, 24);
+            return this.dateTimeToString(val);
+          }
+          if ( foam.core.Date.isInstance(prop) ) {
+            return this.dateToString(val);
           }
           if ( foam.core.Time.isInstance(prop) ) {
-            return val.toString().substring(0, 8);
+            return this.timeToString(val);
           }
           return await this.valueToString(val);
         }
-        return ''; 
+        return '';
       }
     },
+
     async function valueToString(val) {
       if ( val.toSummary ) {
         if ( val.toSummary() instanceof Promise )
@@ -65,6 +74,25 @@ foam.CLASS({
       }
       return val.toString();
     },
+
+    function dateToString(d) {
+      return this.sheetsCompatibleDates ?
+        d.toLocaleDateString('en-us') :
+        d.toLocaleDateString(foam.locale) ;
+    },
+
+    function timeToString(d) {
+      return this.sheetsCompatibleDates ?
+        d.toLocaleTimeString('en-us') :
+        d.toString().substring(0, 8) ;
+    },
+
+    function dateTimeToString(dt) {
+      return this.sheetsCompatibleDates ?
+        dt.toLocaleDateString('en-us') + ' ' + dt.toLocaleTimeString('en-us') :
+        dt.toString() ;
+    },
+
     {
       name: 'arrayOfValuesToArrayOfStrings',
       code: async function(x, props, values, lengthOfPrimaryPropsRequested, addUnitPropValueToStr) {
@@ -155,7 +183,7 @@ foam.CLASS({
       javaType: 'java.util.List<java.util.List<Object>>',
       javaCode: `
         java.util.List<java.util.List<Object>> result = new ArrayList<>();
-      
+
         java.util.List<Object> columnHeaders = new ArrayList<>();
 
         for ( int i = 0 ; i < metadata.length ; i++ ) {

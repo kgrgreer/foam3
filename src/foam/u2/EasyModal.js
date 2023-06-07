@@ -66,17 +66,17 @@ foam.CLASS({
     {
       type: 'Function',
       name: 'onConfirm',
-      documentation: 'Will be called on an OK-button click. When set, the ' +
-          'dialog has two buttons. When not set (the default), only one ' +
-          'button, which has the $$DOC{ref:".confirmLabel"} ("OK") and ' +
-          'closes the dialog.',
+      documentation: `Will be called on an OK-button click. When set, the
+          dialog has two buttons. When not set (the default), only one
+          button, which has the $$DOC{ref:".confirmLabel"} ("OK") and
+          closes the dialog.`,
       value: null
     },
     {
       name: 'buttons',
-      documentation: 'Usually gets constructed automatically based on the ' +
-          'above configuration, but you can set this manually to get fully ' +
-          'custom dialog behavior.',
+      documentation: `Usually gets constructed automatically based on the
+          above configuration, but you can set this manually to get fully
+          custom dialog behavior.`,
       factory: function() {
         // Two buttons when onConfirm is provided, one otherwise.
         if ( this.onConfirm ) {

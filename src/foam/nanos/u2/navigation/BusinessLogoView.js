@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'currentMenu',
+    'pushDefaultMenu',
     'theme'
   ],
 
@@ -65,7 +65,7 @@ foam.CLASS({
       height: 40px;
       margin: 5px;
       border-radius: 50%;
-      background: white;
+      background: $white;
     }
   `,
 
@@ -78,16 +78,8 @@ foam.CLASS({
             class: 'foam.u2.tag.Image',
             data$: this.theme$.dot('logo')
           })
-          .on('click', this.goToDefault)
+          .on('click', this.pushDefaultMenu)
         .end();
-    }
-  ],
-
-  listeners: [
-    function goToDefault() {
-      if ( this.group ) {
-        this.currentMenu = this.group.defaultMenu;
-      }
     }
   ]
 });

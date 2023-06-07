@@ -26,6 +26,20 @@ foam.CLASS({
     'foam.nanos.alarming.AlarmConfig'
   ],
 
+  constants: [
+    {
+      type: 'ThreadLocal',
+      name: 'local__',
+      javaValue: `
+        new ThreadLocal() {
+          protected Object initialValue() {
+            return new int[] { 0 };
+          }
+        }
+      `
+    }
+  ],
+
   ids: [ 'key', 'name', 'startTime' ],
 
   properties: [
@@ -69,8 +83,12 @@ foam.CLASS({
     {
       name: 'enableCandlestick',
       class: 'Boolean',
-      value: false,
       documentation: 'Whether to create a candlestick for this PM.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enableLogging',
+      documentation: 'If enabled, information is output to stderr to aid with tracing. Is taken from PMFactory.'
     }
   ],
 
@@ -78,7 +96,15 @@ foam.CLASS({
     {
       name: 'init_',
       javaCode: `
-      getStartTime();
+        if ( getEnableLogging() ) {
+          int[] countPtr = (int[]) local__.get();
+          countPtr[0]++;
+          int count = countPtr[0];
+          System.err.printf("thread:%5d depth:%3d %s %s:%s", Thread.currentThread().getId(), count, " ".repeat(count), getKey(), getName());
+          System.err.println();
+        }
+
+        getStartTime();
       `
     },
     {
@@ -91,6 +117,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( getEnableLogging() ) {
+          int[] countPtr = (int[]) local__.get();
+          countPtr[0]--;
+        }
+
         if ( x == null ) return;
         if ( getIsError() ) return;
         if ( getEndTime() == 0L ) {
@@ -130,6 +161,11 @@ foam.CLASS({
         { name: 'args', type: 'Object...' }
       ],
       javaCode: `
+        if ( getEnableLogging() ) {
+          int[] countPtr = (int[]) local__.get();
+          countPtr[0]--;
+        }
+
         setIsError(true);
         setEndTime(System.currentTimeMillis());
         StringBuilder sb = new StringBuilder();

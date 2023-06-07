@@ -12,25 +12,21 @@ foam.INTERFACE({
 
   methods: [
     {
+      documentation: 'Request DaggerService to reset/reconfigure itself based on the supplied DaggerBootstrap',
+      name: 'reconfigure',
+      args: 'Context x, foam.nanos.medusa.DaggerBootstrap bootstrap',
+      type: 'foam.nanos.medusa.DaggerBootstrap'
+    },
+    {
       documentation: `Initial hash to prime the system.`,
       name: 'getBootstrapHash',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x, int index',
       type: 'String'
     },
     {
       documentation: `Return the next available index and the two index/hash pairs used to calculate the next index hash.`,
       name: 'getNextLinks',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'foam.nanos.medusa.DaggerLinks'
     },
     {
@@ -147,6 +143,11 @@ foam.INTERFACE({
         }
       ],
       type: 'Long'
-    }
+    },
+    {
+      documentation: 'Indexes with values equal to or less than minIndex are involved in bootstrapping and should not be deleted.',
+      name: 'getMinIndex',
+      type: 'Long'
+    },
   ]
 });

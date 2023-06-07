@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.core.internal',
   name: 'ContextMultipleInheritence',
-  
+
   exports: [
     'createSubContext'
   ],
@@ -24,7 +24,7 @@ foam.CLASS({
 
           var exports = obj.cls_.getAxiomsByClass(foam.core.Export);
 
-          if ( ( ! exports ) || ( ! exports.length ) ) return X;
+          if ( ! exports || ! exports.length ) return X;
 
           opt_args = exports[0].getExportMap.call(obj);
         }
@@ -35,12 +35,15 @@ foam.CLASS({
   ]
 });
 
+
 foam.SCRIPT({
   package: 'foam.core',
   name: 'ContextMultipleInheritenceScript',
+
   requires: [
     'foam.core.internal.ContextMultipleInheritence',
   ],
+
   code: function() {
     var tmp = foam.core.internal.ContextMultipleInheritence.create();
     tmp.setPrivate_('__context__', foam.__context__);

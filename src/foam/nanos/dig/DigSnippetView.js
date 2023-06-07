@@ -9,13 +9,15 @@ foam.CLASS({
   name: 'DigSnippetView',
   extends: 'foam.u2.View',
   documentation: 'View used to show snippets of select API calls.',
+
+  requires: [
+    'foam.doc.CodeTabs',
+    'foam.u2.Tab'
+  ],
+
   imports: [
     'appConfig',
     'user'
-  ],
-  requires: [
-    'foam.doc.CodeTabs',
-    'foam.u2.Tab',
   ],
 
   css: `
@@ -105,14 +107,14 @@ foam.CLASS({
 
                 start(self.Tab, {label: 'URL'}).
                  add(self.slot(function(data) {
-                    var u = url.replace(/\/$/,'') + data;
+                   var u = data;
                     return this.E().
                       start('pre').
                         addClass('code').
                         start('a').
                           add(u).
                             attrs({
-                              href: u,
+                              href: data,
                               target: '_blank',
                             }).
                         end().
@@ -128,14 +130,14 @@ foam.CLASS({
 
                         ( `
                           curl -X GET \\
-  '${url.replace(/\/$/,'') + data}' \\
+  '${data}' \\
   -u '${user.email}' \\
   -H 'accept: application/json1' \\
   -H 'cache-control: no-cache' \\
   -H 'content-type: application/json' \\
                       `.trim()) : ( `
                           curl -X POST \\
-  '${url.replace(/\/$/,'') + '/service/dig?dao=' + dao}' \\
+  '${data}' \\
   -u '${user.email}' \\
   -H 'accept: application/json1' \\
   -H 'cache-control: no-cache' \\
@@ -187,7 +189,7 @@ foam.CLASS({
                         end().
                       end().
 
-            end()
+            end();
           })
       })
       )

@@ -25,7 +25,7 @@ foam.CLASS({
           this.pushMenu(menu);
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
-        parent: X, id: menu.id, shouldResetBreadcrumbs: true }));
+        parent: X, id: menu.id, shouldResetBreadcrumbs: true, breadcrumbTitle$: menu.label$ }));
     }
   ]
 });

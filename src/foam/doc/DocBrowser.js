@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// foam.doc.DocBrowser.create({}, ctrl.__subContext__).write(document);
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'DocBorder',
@@ -31,7 +33,7 @@ foam.CLASS({
     }
     ^title { padding: 6px; align-content: center; background: #c8e2f9; }
     ^info { float: right; font-size: smaller; }
-    ^content { padding: 6px; min-width: 220px; height: 100%; background: white; }
+    ^content { padding: 6px; min-width: 220px; height: 100%; background:$white; }
   `,
 
   properties: [
@@ -107,6 +109,7 @@ foam.CLASS({
     },
     {
       name: 'name',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj, axiom) {
         if ( obj.type === foam.core.Requires ) {
           this.tag(obj.ClassLink, {data: obj.axiom.path, showPackage: true});
@@ -149,7 +152,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.add(value);
       }
-    },
+    }
   ]
 });
 
@@ -410,6 +413,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.doc',
   name: 'DocBrowser',
@@ -425,7 +429,7 @@ foam.CLASS({
     'foam.doc.UMLDiagram'
   ],
 
-  imports: [ 'document' ],
+  imports: [ 'document', 'params' ],
 
   exports: [
     'as data',
@@ -452,9 +456,10 @@ foam.CLASS({
     {
       name: 'MODEL_COMPARATOR',
       factory: function() {
-        return foam.compare.compound([foam.core.Model.PACKAGE, foam.core.Model.NAME]).compare;
-      },
-    },
+        var c = foam.compare.compound([foam.core.Model.PACKAGE, foam.core.Model.NAME]);
+        return c.compare.bind(c);
+      }
+    }
   ],
 
   properties: [
@@ -463,15 +468,7 @@ foam.CLASS({
       name: 'path',
       width: 80,
       factory: function() {
-        var path = 'foam.core.Property';
-
-        // TODO: this should be made generic and added to Window
-        this.document.location.search.substring(1).split('&').forEach(function(s) {
-          s = s.split('=');
-          if ( s[0] === 'path' ) path = s[1];
-        });
-
-        return path;
+        return this.params.path || 'foam.core.Property';
       }
     },
     {
@@ -538,6 +535,8 @@ foam.CLASS({
     function render() {
       for ( var key in foam.UNUSED ) foam.lookup(key);
       this.SUPER();
+
+      var classListData =  Object.values(foam.USED).filter(e => { return e != undefined; }).sort(this.MODEL_COMPARATOR);
       this.
         addClass(this.myClass()).
         tag(this.PATH, {displayWidth: 80}).
@@ -568,7 +567,7 @@ foam.CLASS({
             end().
             start('td').
               style({'vertical-align': 'top'}).
-              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: Object.values(foam.USED).filter((e) => {e != undefined }).sort(this.MODEL_COMPARATOR)}).
+              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
             end().
             start('td').
               style({'vertical-align': 'top'}).
@@ -665,11 +664,6 @@ foam.CLASS({
   name: 'UMLDiagram',
   extends: 'foam.u2.Element',
 
-  imports: [
-    'browserPath' ,
-    'conventionalUML'
-  ],
-
   requires: [
     'foam.doc.ClassLink',
     'foam.doc.DocBorder',
@@ -678,6 +672,11 @@ foam.CLASS({
     'foam.graphics.Label',
     'foam.graphics.Transform',
     'foam.u2.PopupView'
+  ],
+
+  imports: [
+    'browserPath' ,
+    'conventionalUML'
   ],
 
   exports: [ 'as data' ],

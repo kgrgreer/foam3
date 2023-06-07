@@ -7,7 +7,9 @@
 foam.CLASS({
   package: 'foam.nanos.demo.relationship',
   name: 'Student',
+
   ids: [ 'studentId' ],
+
   properties: [
     {
       class: 'String',

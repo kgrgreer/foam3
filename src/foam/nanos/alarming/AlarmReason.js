@@ -10,6 +10,7 @@ foam.ENUM({
 
   values: [
     { name: 'UNSPECIFIED', label: 'Unspecified' },
+    { name: 'UNIDENTIFIED', label: 'Unidentified' },
     { name: 'CONGESTION', label: 'Congestion' },
     { name: 'CREDENTIALS', label: 'Invalid credentials' },
     { name: 'TIMEOUT', label: 'Request timed out' },
@@ -17,6 +18,8 @@ foam.ENUM({
     { name: 'TRANSACTION', label: 'Transaction has been in an unexpected state for too long' },
     { name: 'NSF', label: 'Not sufficient funds' },
     { name: 'UNSUPPORTED', label: 'Unsupported request' },
-    { name: 'CONFIGURATION', label: 'Invalid Configuration' }
+    { name: 'CONFIGURATION', label: 'Invalid Configuration' },
+    { name: 'CONTROLCHECK', label: 'Check expected count vs. actual' },
+    { name: 'THRESHOLD', label: 'Checks if a threshold is exceeded' }
   ]
 });

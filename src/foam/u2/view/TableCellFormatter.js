@@ -63,12 +63,21 @@ foam.CLASS({
           f: function(value, obj, axiom) {
             this.add(value);
           }
-        })
+        });
+      },
+      // Allows formatters to decide if they are projectionSafe or not
+      postSet: function(_,n) {
+        if ( 'projectionSafe' in n ) this.projectionSafe = n.projectionSafe;
       }
     },
     {
       class: 'Int',
       name: 'tableWidth'
+    },
+    {
+      class: 'Boolean',
+      name: 'projectionSafe',
+      value: true
     },
     {
       class: 'String',
@@ -79,7 +88,6 @@ foam.CLASS({
     }
   ]
 });
-
 
 foam.CLASS({
   package: 'foam.u2.view',
@@ -128,7 +136,8 @@ foam.CLASS({
        type: 'Int',
        name: 'tableWidth',
        value: 130
-    }
+    },
+    ['projectionSafe', false]
   ]
 });
 
@@ -251,7 +260,8 @@ foam.CLASS({
           }
         }));
       }
-    }
+    },
+    ['projectionSafe', false]
   ]
 });
 
@@ -261,11 +271,55 @@ foam.CLASS({
   name: 'ReferenceToSummaryCellFormatter',
   implements: ['foam.u2.view.Formatter'],
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'projectionSafe'
+    }
+  ],
+
   methods: [
     function format(e, value, obj, axiom) {
       try {
         obj[axiom.name + '$find'].then(o => e.add(o.toSummary()), r => e.add(value));
       } catch (x) {
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'YesNoTableCellFormatter',
+  implements: ['foam.u2.view.Formatter'],
+  documentation: `Shows 'Y'/'N' for boolean props`,
+
+  methods: [
+    function format(e, value, obj, axiom) {
+      e.start()
+        .call(function() {
+          if ( value ) { e.style({color: 'green'}); }
+        })
+        .add(value ? ' Y' : '-')
+      .end();
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'BooleanTableCellFormatterRefinement',
+  refines: 'foam.core.Boolean',
+
+  properties: [
+    {
+      class: 'foam.u2.view.TableCellFormatter',
+      name: 'tableCellFormatter',
+      value: function(value) {
+        this.tag({
+          class: 'foam.u2.CheckBox',
+          data: value
+        });
       }
     }
   ]
@@ -365,14 +419,17 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'DurationTableCellFormatterRefinement',
   refines: 'foam.core.Duration',
-
+  imports: [
+    'returnExpandedCSS'
+  ],
   properties: [
     {
       class: 'foam.u2.view.TableCellFormatter',
       name: 'tableCellFormatter',
       value: function(value) {
         let formatted = foam.core.Duration.duration(value);
-        this.add(formatted || '0ms');
+        let negative = value < 0;
+        this.add(formatted || '0ms').style({ color: negative ? this.__subContext__.returnExpandedCSS('$destructive500') : 'inherit' });
       }
     }
   ]

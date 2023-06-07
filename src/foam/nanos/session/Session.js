@@ -15,16 +15,18 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
     'foam.core.OrX',
+    'foam.core.X',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
+    'foam.log.LogLevel',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Subject',
     'foam.nanos.boot.NSpec',
     'foam.nanos.crunch.ServerCrunchService',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
     'foam.nanos.theme.Theme',
@@ -35,7 +37,8 @@ foam.CLASS({
     'java.util.Random',
     'java.util.UUID',
     'javax.servlet.http.HttpServletRequest',
-    'org.eclipse.jetty.server.Request'
+    'org.eclipse.jetty.server.Request',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -68,7 +71,7 @@ foam.CLASS({
       },
       required: true,
       updateVisibility: 'RO',
-      storageOptional: true
+      storageTransient: true
     },
     {
       class: 'Reference',
@@ -87,22 +90,22 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
-      includeInDigest: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      storageOptional: true
     },
     {
       class: 'DateTime',
@@ -122,9 +125,7 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['ttl'],
-          predicateFactory: function(e) {
-            return e.GTE(foam.nanos.session.Session.TTL, 0);
-          },
+          query: 'ttl>=0',
           errorString: 'TTL must be 0 or greater.'
         }
       ]
@@ -190,13 +191,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
   ],
 
   methods: [
-    // Disable cloneing and freezing so that Sessions can be mutated while
-    // in the SessionDAO.
-    {
-      name: 'fclone',
-      type: 'foam.core.FObject',
-      javaCode: 'return this;'
-    },
+    // Disable freezing so that Sessions can be mutated while
+    // in the SessionDAO. Do not disable cloning else sessions
+    // are not saved/clustered.
     {
       name: 'freeze',
       type: 'foam.core.FObject',
@@ -246,12 +243,10 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       // Do not allow IP to change if not in whitelist
       if ( ! SafetyUtil.isEmpty(getRemoteHost()) &&
            ! SafetyUtil.equals(getRemoteHost(), remoteIp) ) {
-        ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "IP change detected", getRemoteHost(), remoteIp, getUserId());
+        User user = findUserId(x);
+        ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, "Session", "IP change detected", (user != null ? user.getLegalName() : ""), null, getRemoteHost()+" -> "+remoteIp, LogLevel.WARN, null));
         throw new foam.core.ValidationException("IP changed");
       }
-
-      ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "Restricted IP address not allowed", getRemoteHost(), remoteIp, getUserId());
-      throw new foam.core.ValidationException("Restricted IP");
       `
     },
     {
@@ -267,11 +262,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       javaCode: `
       Subject subject = new Subject.Builder(x).setUser(null).build();
         return x
-          .put(Session.class, this)
-          .put("spid", null)
-          .put("subject", subject)
-          .put("group", null)
-          .put("twoFactorSuccess", false);
+          .put(Session.class,      this)
+          .put("spid",             null)
+          .put("subject",          subject)
+          .put("group",            null)
+          .put("twoFactorSuccess", false)
+          .put("ip",               null)
+          .put("userAgent",        null);
       `
     },
     {
@@ -320,22 +317,24 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         return rtn;
       }
 
-      // Validate
-      validate(x);
-
       X rtn = getApplyContext();
+
+      validate(x);
 
       DAO localUserDAO  = (DAO) x.get("localUserDAO");
       DAO localGroupDAO = (DAO) x.get("localGroupDAO");
       AuthService auth  = (AuthService) x.get("auth");
-      User user         = (User) localUserDAO.find(getUserId());
-      User agent        = (User) localUserDAO.find(getAgentId());
-      User subjectUser = null;
+      User user         = getUserId() == 0 ? null : (User) localUserDAO.find(getUserId());
+      if ( getUserId() > 0 ) checkUserEnabled(x, user);
+      User agent        = getAgentId() == 0 ? null : (User) localUserDAO.find(getAgentId());
+      if ( getAgentId() > 0 ) checkUserEnabled(x, agent);
+
+      User subjectUser  = null;
       User subjectAgent = null;
       if ( rtn != null ) {
         Subject subject = (Subject) rtn.get("subject");
         if ( subject != null ) {
-          subjectUser = subject.getUser();
+          subjectUser  = subject.getUser();
           subjectAgent = subject.getRealUser();
         }
       }
@@ -352,6 +351,14 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         PM pm = PM.create(x, "Session", "applyTo", "create");
 
+        // create a temp session with the user/agent from the old session context to check if it was an anonymous session
+        // and set the wasAnonymous boolean accordingly
+        boolean wasAnonymous = false;
+        if ( subjectUser != null ) {
+          ServiceProvider sp = (ServiceProvider) subjectUser.findSpid(x);
+          wasAnonymous = sp != null && sp.getAnonymousUser() == subjectUser.getId();
+        }
+
         rtn = new OrX(reset(x));
 
         // Support hierarchical SPID context
@@ -361,27 +368,27 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         }
 
         Subject subject = null;
-        if ( user != null ||
-             agent != null ) {
+        if ( user != null || agent != null ) {
           subject = new Subject();
           subject.setUser(agent);
           subject.setUser(user);
           rtn = rtn
             .put("subject", subject)
-            .put("spid", subject.getUser().getSpid());
+            .put("spid",    subject.getUser().getSpid());
         }
 
-        rtn = rtn
+        // if the context was anonymous, do not reuse outdated entries
+        rtn = ! wasAnonymous ? rtn
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
-          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY));
+          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY))
+          : rtn.put(ServerCrunchService.CACHE_KEY, null);
 
         // We need to do this after the user and agent have been put since
         // 'getCurrentGroup' depends on them being in the context.
         Group group = auth.getCurrentGroup(rtn);
 
         if ( group != null ) {
-          rtn = rtn
-            .put("group", group);
+          rtn = rtn.put("group", group);
         }
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(rtn);
         rtn = rtn.put("theme", theme);
@@ -410,6 +417,13 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             foam.nanos.logger.Loggers.logger(rtn, true)
           ));
 
+        // Record IP and UserAgent in the context
+        var req = x.get(HttpServletRequest.class);
+        if ( req != null ) {
+          rtn = rtn.put("ip",        foam.net.IPSupport.instance().getRemoteIp(rtn));
+          rtn = rtn.put("userAgent", req.getHeader("User-Agent"));
+        }
+
         // Cache the context changes of applyTo
         setApplyContext(((OrX) rtn).getX());
         pm.log(x);
@@ -421,48 +435,37 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
     },
     {
       name: 'validate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaCode: `
         if ( getUserId() < 0 ) {
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getUserId() > 0 ) {
-          checkUserEnabled(x, getUserId());
-        }
-
-        if ( getUserId() != getAgentId() ) {
-          if ( getAgentId() < 0  ) {
-            throw new IllegalStateException("Agent id is invalid.");
-          }
-
-          if ( getAgentId() > 0 ) {
-            checkUserEnabled(x, getAgentId());
-          }
+        if ( getAgentId() < 0 && getUserId() != getAgentId() ) {
+          throw new IllegalStateException("Agent id is invalid.");
         }
       `
     },
     {
       name: 'checkUserEnabled',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'userId', type: 'Long' }
-      ],
+      args: 'Context x, User user',
       javaCode: `
-        User user = (User) ((DAO) x.get("localUserDAO")).find(userId);
-
         if ( user == null ) {
-          ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
-          throw new foam.nanos.auth.UserNotFoundException();
-        }
-        if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
-          ((Logger) x.get("logger")).warning("Session", "User not active", userId);
+          Loggers.logger(x, this).warning("User not found", user.getId());
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
-        if ( ! user.getEnabled() ) {
+        if ( user instanceof LifecycleAware &&
+            ((LifecycleAware)user).getLifecycleState() == LifecycleState.DELETED ) {
+          Loggers.logger(x, this).warning("User deleted", user.getId());
+          throw new foam.nanos.auth.UserNotFoundException();
+        }
+
+        // Testing 'id' allows internal session setup, used for capability checks,
+        // for users in any state.
+        if ( ! user.getEnabled() &&
+             ! SafetyUtil.isEmpty(getId()) ) {
+          Loggers.logger(x, this).warning("User disabled", user.getId());
           throw new foam.nanos.auth.AccountDisabledException();
         }
       `

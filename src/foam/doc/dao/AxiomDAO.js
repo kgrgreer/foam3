@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.doc.dao',
   name: 'AxiomDAO',
   extends: 'foam.dao.PromisedDAO',
+
   requires: [
     'foam.core.Method',
     'foam.core.Property',
@@ -15,23 +16,24 @@ foam.CLASS({
     'foam.dao.QuickSink',
     'foam.doc.MethodAxiom',
     'foam.doc.PropertyAxiom',
-    'foam.doc.dao.PropertyPermissionCheckDecorator',
+    'foam.doc.dao.PropertyPermissionCheckDecorator'
   ],
+
   properties: [
     {
       name: 'of',
-      value: 'foam.doc.Axiom',
+      value: 'foam.doc.Axiom'
     },
     {
-      name: 'modelIds',
+      name: 'modelIds'
     },
     {
       name: 'delegate',
-      expression: function(of) { 
+      expression: function(of) {
         return this.PropertyPermissionCheckDecorator.create({
           delegate: this.ArrayDAO.create({ of: of })
         });
-      },
+      }
     },
     {
       name: 'promise',
@@ -42,9 +44,10 @@ foam.CLASS({
         })).then(function() {
           return delegate;
         })
-      },
-    },
+      }
+    }
   ],
+
   methods: [
     function putCls_(m) {
       var ps = [];
@@ -67,7 +70,6 @@ foam.CLASS({
         m = foam.lookup(m.model_.extends);
       }
       return Promise.all(ps);
-    },
-  ],
+    }
+  ]
 });
-

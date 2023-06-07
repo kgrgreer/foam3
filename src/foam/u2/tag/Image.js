@@ -33,6 +33,10 @@ foam.CLASS({
     }
   `,
 
+  constants: {
+    CACHE: {}
+  },
+
   properties: [
     {
       class: 'GlyphProperty',
@@ -47,7 +51,7 @@ foam.CLASS({
       attribute: true
     },
     ['alpha', 1.0],
-    { 
+    {
       class: 'String',
       name: 'role'
     },
@@ -58,6 +62,18 @@ foam.CLASS({
   ],
 
   methods: [
+    function requestWithCache(data) {
+      if ( ! this.CACHE[data] ) {
+        this.CACHE[data] = new Promise(resolve => {
+          this.HTTPRequest.create({method: 'GET', path: data}).send().then(resp => {
+            resp.resp.text().then(t => resolve(t));
+          } );
+        });
+      }
+
+      return this.CACHE[data];
+    },
+
     function render() {
       this
         .addClass(this.myClass())
@@ -67,28 +83,28 @@ foam.CLASS({
             return this.E().start(this.HTMLView, { data: indicator })
               .attrs({ role: this.role })
               .end();
-          } else if ( this.embedSVG && data?.endsWith('svg') ) {
-            var req = this.HTTPRequest.create({
-              method: 'GET',
-              path: data,
-              cache: true
-            });
-            var res = req.send().then(payload => payload.resp.text());
-            return this.E()
-              .start(this.HTMLView, { data: res })
-                .attrs({ role: this.role })
-              .end()
-          } else {
-            return this.E()
-              .start('img')
-                .attrs({ src: data, role: this.role })
-                .style({
-                  height:  displayHeight,
-                  width:   displayWidth,
-                  opacity: alpha
-                })
-              .end();
           }
+
+          if ( this.embedSVG && data?.endsWith('svg') ) {
+            var e = this.E();
+            this.requestWithCache(data).then(data => {
+              e.start(this.HTMLView, { data: data })
+                .attrs({ role: this.role })
+              .end();
+            });
+
+            return e;
+          }
+          if ( ! data) return null;
+          return this.E()
+            .start('img')
+              .attrs({ src: data, role: this.role })
+              .style({
+                height:  displayHeight,
+                width:   displayWidth,
+                opacity: alpha
+              })
+            .end();
         }));
     }
   ]
@@ -99,8 +115,8 @@ foam.SCRIPT({
   package: 'foam.u2.tag',
   name: 'ImageScript',
   requires: [
-    'foam.u2.U2ContextScript',
     'foam.u2.tag.Image',
+    'foam.u2.U2ContextScript'
   ],
   flags: ['web'],
   code: function() {

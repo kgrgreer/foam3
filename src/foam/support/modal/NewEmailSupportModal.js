@@ -28,7 +28,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'supportEmailDAO',
-    'user',
+    'subject'
   ],
 
   exports:[
@@ -56,7 +56,7 @@ foam.CLASS({
       width: 448px;
       height: 231px;
       border-radius: 2px;
-      background-color: #ffffff;
+      background-color: $white;
     }
     ^ .Rectangle-7 {
       float: left;
@@ -89,7 +89,7 @@ foam.CLASS({
       color: #ffffff;
     }
     ^ .div {
-      margin-top: 40px; 
+      margin-top: 40px;
     }
     ^ .div2 {
       padding: 20px;
@@ -105,10 +105,6 @@ foam.CLASS({
       {
         class: 'String',
         name: 'email'
-      },
-      {
-        class: 'Long',
-        name: 'id'
       },
       {
         class: 'String',
@@ -149,7 +145,7 @@ foam.CLASS({
           .end()
         .end();
       }
-    ], 
+    ],
 
     actions: [
       {
@@ -172,7 +168,7 @@ foam.CLASS({
                   connectedTime: new Date()
                 });
                 // save support email details in journal
-                self.user.supportEmails.put(email);
+                self.subject.user.supportEmails.put(email);
                 self.ctrl.add(foam.u2.dialog.Popup.create().tag({ class: 'foam.support.modal.NewEmailSupportConfirmationModal' }));
                 X.closeDialog();
               } else {

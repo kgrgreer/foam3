@@ -15,7 +15,10 @@ foam.CLASS({
     'foam.u2.ListCreateController'
   ],
 
-  imports: [ 'user' ,'createLabel'],
+  imports: [
+    'subject',
+    'createLabel'
+  ],
 
   exports: [ 'hideSummary' ],
 
@@ -38,7 +41,7 @@ foam.CLASS({
     }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
-      background: /*%GREY4%*/ #e7eaec;
+      background: $grey300;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;
@@ -83,7 +86,7 @@ foam.CLASS({
       .end()
       .tag({
         class: 'foam.u2.ListCreateController',
-        dao: this.user.tickets,
+        dao: this.subject.user.tickets,
         detailView: this.TicketDetailView,
         summaryView: this.TicketTableView,
         createDetailView: this.CreateTicketView,
@@ -115,7 +118,7 @@ foam.CLASS({
             .start({
               selection$: this.selection$,
               class: 'foam.u2.view.ScrollTableView',
-              data: this.user.tickets,
+              data: this.subject.user.tickets,
             }).addClass(this.myClass('table')).end();
         }
       ]

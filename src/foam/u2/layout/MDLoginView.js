@@ -34,7 +34,7 @@ foam.CLASS({
       display: grid;
       position: relative;
       top: -52px;
-      color: /*%GREY1%*/ #5e6061;
+      color: $grey700;
     }
 
     ^ .link {
@@ -76,11 +76,11 @@ foam.CLASS({
       padding: 3rem;
       top: -10rem;
       position: relative;
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       margin: auto;
       box-shadow: 0px 0px 30px 0px #b7b7b7;
       border-radius: 30px;
-      color: /*%GREY1%*/ #5e6061;
+      color: $grey700;
     }
 
     ^ .background-container {
@@ -93,7 +93,7 @@ foam.CLASS({
     }
 
     ^ .home-logo {
-      background-color: /*%GREY5%*/ #f5f7fa;
+      background-color: $grey50;
       padding: 3rem;
       border-radius: 50%;
       margin-bottom: 13rem;

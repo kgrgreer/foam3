@@ -20,6 +20,8 @@ foam.INTERFACE({
     'foam.core.Validator',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.EasyDAO',
+    'foam.dao.ProxyDAO',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -69,30 +71,19 @@ foam.INTERFACE({
             { name: 'capabilityId', type: 'String' }
           ],
           body: `
-          CrunchService crunchService = (CrunchService) x.get("crunchService");
-
-          var oldCapabilityIds = getCapabilityIds();
-
-          List<String> oldCapabilityIdsList = new ArrayList<>();
-
-          for ( int i = 0; i < oldCapabilityIds.length; i++ ){
-            oldCapabilityIdsList.add(oldCapabilityIds[i]);
-          }
-
-          if ( ! oldCapabilityIdsList.contains(capabilityId) ){
-            oldCapabilityIdsList.add(capabilityId);
-          }
-
           if ( ! hasRequirement(x, capabilityId) ) {
-            setCapabilityIds(
-              oldCapabilityIdsList.toArray(new String[0])
-            );
+            var size = getCapabilityIds().length;
+            var capabilityIds = new String[size + 1];
+            System.arraycopy(getCapabilityIds(), 0, capabilityIds, 0, size);
+            capabilityIds[size] = capabilityId;
+
+            setCapabilityIds(capabilityIds);
           }
           `
         }));
         cls.methods.push(foam.java.Method.create({
           name: 'hasRequirement',
-          documentation: 'Checks if the capble opbject has a capability, does not verify it',
+          documentation: 'Checks if the capble object has a capability, does not verify it',
           type: 'Boolean',
           visibility: 'default',
           args: [
@@ -188,15 +179,19 @@ foam.INTERFACE({
               .setOf(CapabilityJunctionPayload.getOwnClassInfo())
               .build();
 
-            x = x.put("capablePayloadDAO", capablePayloadDAO);
+            ProxyDAO proxyDAO = new ProxyDAO(x);
+            x = x.put("capablePayloadDAO", proxyDAO);
 
-            // TODO: Look into why rulerdao acts sketchy here and if it can replace CapablePayloadStatusDAO
-            DAO CapablePayloadStatusDAO = new CapablePayloadStatusDAO.Builder(x)
-              .setDelegate(capablePayloadDAO)
+            capablePayloadDAO = new EasyDAO.Builder(x)
+              .setAuthorize(false)
+              .setInnerDAO(capablePayloadDAO)
+              .setName("capablePayloadDAO")
               .setOf(CapabilityJunctionPayload.getOwnClassInfo())
               .build();
+            
+            proxyDAO.setDelegate(capablePayloadDAO);
 
-            return CapablePayloadStatusDAO;
+            return capablePayloadDAO;
           `
         }));
       }

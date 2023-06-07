@@ -30,19 +30,19 @@ foam.CLASS({
       padding: 8px 24px;
       padding-right: 48px;
       cursor: pointer;
-      background: white;
+      background:$white;
       color: black;
-      border-left: solid 1px /*%GREY5%*/ #f5f7fa;
-      border-right: solid 1px /*%GREY5%*/ #f5f7fa;
+      border-left: solid 1px $grey50;
+      border-right: solid 1px $grey50;
     }
     ^inner div:last-child {
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
     }
     ^inner div:hover {
-      background: /*%PRIMARY5%*/ #e5f1fc !important;
-      border-left: solid 1px /*%PRIMARY5%*/ #e5f1fc;
-      border-right: solid 1px /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50 !important;
+      border-left: solid 1px $primary50;
+      border-right: solid 1px $primary50;
     }
   `,
 

@@ -19,7 +19,6 @@ foam.CLASS({
   package: 'foam.u2.search',
   name: 'TextSearchView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.parse.QueryParser',
@@ -96,33 +95,33 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onKey'
+    },
+    {
+      class: 'String',
+      name: 'searchData'
     }
   ],
 
   methods: [
     function render() {
-      this.initMemento();
       this
         .addClass(this.myClass())
-        .tag(this.viewSpec, {
+        .start(this.viewSpec, {
           alwaysFloatLabel: true,
           label$: this.label$,
           ariaLabel$: this.label$,
           onKey: this.onKey,
           mode$: this.mode$
-        }, this.view$);
-
+        }, this.view$)
+          .attrs({ name: this.name$ })
+        .end();
       this.view.data$.sub(this.updateValue);
 
-      if ( this.memento && this.memento.head.length != 0  ) {
-        this.view.data = this.memento.head;
+      if ( this.searchData ) {
+        this.view.data = this.searchData;
       }
 
       this.updateValue();
-
-      if ( this.memento && this.memento.head ) {
-        this.view.data = this.memento.head;
-      }
     },
 
     function clear() {
@@ -137,15 +136,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 500,
       code: function() {
-        var value = this.view.data;
-
-        if ( this.memento ) {
-          if ( value ) {
-            this.memento.head = value;
-          } else {
-            this.memento.head = '';
-          }
-        }
+        var value = this.searchData = this.view.data;
 
         this.predicate = ! value ?
           this.True.create() :

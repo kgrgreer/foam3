@@ -74,7 +74,7 @@ public class ScanPlan
   @Override
   public void select(Object state, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     if ( state_ == null ) return;
-    // Use the stale_, skip_, limit_, order_, predicate_... which we have already pre-processed.
+    // Use the state_, skip_, limit_, order_, predicate_... which we have already pre-processed.
     ((TreeNode) state).select((TreeNode) state_, sink, skip_, limit_, order_, predicate_, tail_, reverse_);
   }
 

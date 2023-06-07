@@ -33,12 +33,14 @@ foam.CLASS({
   javaImports: [
     'foam.blob.BlobService',
     'foam.blob.Blob',
+    'foam.blob.FileBlob',
     'foam.blob.InputStreamBlob',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
     'java.io.*',
     'java.util.Base64'
@@ -143,6 +145,7 @@ foam.CLASS({
         return window.location.origin + '/service/httpFileService/' + id + '?sessionId=' + this.sessionID;
       }
     },
+
     {
       class: 'String',
       name: 'image',
@@ -173,7 +176,8 @@ foam.CLASS({
         if ( dataIsSet_ ) return data_;
 
         if ( ! SafetyUtil.isEmpty(this.getDataString()) ) {
-          String          encodedString = this.getDataString().split(",")[1];
+          String[]        s             = this.getDataString().split(",");
+          String          encodedString = s.length != 2 ? "" : s[1];
           byte[]          decodedBytes  = Base64.getDecoder().decode(encodedString);
           InputStream     is            = new ByteArrayInputStream(decodedBytes);
           InputStreamBlob blob          = new foam.blob.InputStreamBlob(is, decodedBytes.length);
@@ -184,6 +188,8 @@ foam.CLASS({
         return null;
       `,
       getter: function() {
+        if ( this.instance_.data ) return this.instance_.data;
+
         if ( this.dataString ) {
           let b64Data = this.dataString.split(',')[1];
           const b64toBlob = (b64Data, contentType = this.mimeType, sliceSize = 512) => {
@@ -204,10 +210,10 @@ foam.CLASS({
             return new Blob(byteArrays, { type: contentType });
           }
 
-          this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
+          return this.BlobBlob.create({ blob: b64toBlob(b64Data) });
         }
 
-        return this.instance_.data || null;
+        return null;
       },
       /**
        * When we export this as the CSV, we are trying to create a new object if this property is undefined.
@@ -228,7 +234,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      hidden: true,
+      visibility: 'RO',
       storageTransient: true,
       section: 'systemInformation',
       javaFactory: `
@@ -260,6 +266,14 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+        if (
+          ! ( ( user != null && SafetyUtil.equals(this.getOwner(), user.getId()) ) ||
+              auth.check(x, "file.read." + this.getId()) )
+         ) {
+          throw new AuthorizationException();
+        }
       `
     },
     {
@@ -303,12 +317,35 @@ foam.CLASS({
         }
         return "";
       `
+    },
+    {
+      name: 'inputStream',
+      args: 'Context x',
+      javaType: 'java.io.InputStream',
+      javaCode: `
+      Blob blob = getData();
+      if ( blob != null ) {
+        return ((InputStreamBlob)blob).getInputStream();
+      } else {
+        BlobService blobStore = (BlobService) x.get("blobStore");
+        blob = blobStore.find(getId());
+        if ( blob != null ) {
+          try {
+            return new java.io.FileInputStream(((FileBlob) blob).getFile());
+          } catch (java.io.FileNotFoundException e) {
+            // nop
+          }
+        }
+      }
+      Loggers.logger(x, this).warning("data not found", getFilename(), getId());
+      return null;
+      `
     }
   ],
 
   actions: [
     {
-      name: 'download',
+      name: 'view',
       code: function(a, X) {
         // TODO: Add logging for who has downloaded files etc.
         var blob = this.data;
@@ -318,6 +355,22 @@ foam.CLASS({
           var url = this.address;
           window.open(url);
         }
+      }
+    },
+    {
+      name: 'download',
+      code: function(a, X) {
+        // TODO: Add logging for who has downloaded files etc.
+        var url = this.address;
+        if ( foam.blob.BlobBlob.isInstance(this.data) ) {
+          url = URL.createObjectURL(this.data.blob);
+        }
+        var link = document.createElement('a');
+        link.setAttribute("href", url);
+        link.setAttribute("download", this.filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     },
     {

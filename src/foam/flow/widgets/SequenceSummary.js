@@ -31,13 +31,19 @@ foam.CLASS({
     {
       name: 'method',
       class: 'String'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'sequence'
     }
   ],
 
   methods: [
     function render() {
-      var instance = this.of.create(null, this.__subContext__);
-      var sequence = instance[this.method]();
+      var sequence = this.sequence || (() => {
+        var instance = this.of.create(null, this.__subContext__);
+        return instance[this.method]();
+      })()
 
       var self = this;
       this
@@ -56,7 +62,7 @@ foam.CLASS({
                   this.addClass(self.myClass('nullAgent'))
                     .add('This agent was removed from a parent sequence.');
                 }, function () {
-                  this.add(step.spec.model_.documentation)
+                  this.add(self.getCls_(step.spec).model_.documentation)
                 })
                 .callIf(step.args, function () {
                   var views = self.viewsFor_(step.args);
@@ -70,7 +76,7 @@ foam.CLASS({
                         .start('td').add(k).end()
                         .start('td')
                           .callIfElse(views[k] == null, function () {
-                            this.add(step.args(k));
+                            this.add(step.args[k]);
                           }, function () {
                             this
                               .startContext({ data: step.args[k] })
@@ -96,6 +102,10 @@ foam.CLASS({
         views[k] = null;
       }
       return views;
+    },
+    function getCls_(spec) {
+      if ( spec.create ) return spec;
+      return this.__subContext__.lookup(spec.class);
     }
   ],
 });

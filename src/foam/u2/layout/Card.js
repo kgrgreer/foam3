@@ -18,7 +18,7 @@ foam.CLASS({
       border-radius: 6px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       border: solid 1px #e7eaec;
-      background-color: #ffffff;
+      background-color: $white;
     }
   `,
 

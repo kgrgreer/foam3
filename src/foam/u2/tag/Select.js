@@ -24,7 +24,7 @@ foam.CLASS({
       -moz-appearance: none;
       -webkit-appearance: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat;
-      background-position: right 0.25em top 50%, 0 0;
+      background-position: right 0.5em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;
@@ -84,41 +84,31 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.setChildren(this.slot(function(choices, placeholder, header, data) {
-        var cs = [];
-
+      this.react(function(choices, placeholder, header, data) {
         if ( header ) {
-          cs.push(self.E('optgroup').attrs({ label: header }))
+          this.start('optgroup').attrs({ label: header });
         }
 
         if ( placeholder ) {
-          cs.push(self.E('option').attrs({
+          this.start('option').attrs({
             value: -1,
             selected: self.data === -1
-          }).addClass('truncate-ellipsis').add(placeholder));
+          }).addClass('truncate-ellipsis').add(placeholder);
         }
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
-          var c = choices[i];
-          let value = c[1];
+          var c          = choices[i];
+          let value      = c[1];
           var isSelected = data == i;
-          let e = self.E('option').attrs({
+          self.start('option').attrs({
             value: i,
             selected: isSelected,
             disabled: ! isSelected && self.disabledData$.map(function(a) {
               return a.some(o => foam.util.equals(o, value));
             })
-          }).translate(value + '.name', value)
-          if ( value.toString().indexOf('  ') !== -1 ) {
-            // Hack to display spaces as nbsp's
-            e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));
-          }
-
-          cs.push(e);
+          }).translate(value + '.name', value);
         }
-
-        return cs;
-      }));
+      });
     },
 
     function updateMode_(mode) {

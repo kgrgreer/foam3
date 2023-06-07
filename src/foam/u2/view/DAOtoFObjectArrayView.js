@@ -16,8 +16,6 @@ foam.CLASS({
     'foam.dao.ArrayDAO'
   ],
 
-  exports: [ 'stack' ],
-
   css: `
     ^ .foam-u2-stack-StackView {
       height: auto;
@@ -25,13 +23,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      name: 'stack',
-      view: { class: 'foam.u2.stack.StackView', showActions: false },
-      factory: function() {
-        return this.Stack.create();
-      }
-    },
     {
       class: 'foam.u2.ViewSpec',
       name: 'daoView',

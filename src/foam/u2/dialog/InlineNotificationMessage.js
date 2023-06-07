@@ -23,27 +23,27 @@
   values: [
     {
       name: 'DEFAULT',
-      color: '/*%PRIMARY3%*/ #406DEA',
+      color: '$primary400',
       glyph: 'checkmark'
     },
     {
       name: 'ERROR',
-      color: '/*%DESTRUCTIVE3%*/ #A61414',
+      color: '$destructive400',
       glyph: 'exclamation'
     },
     {
       name: 'WARN',
-      color: '/*%WARNING3%*/ #EEDC00',
+      color: '$warn400',
       glyph: 'exclamation'
     },
     {
       name: 'SUCCESS',
-      color: ' /*%APPROVAL3%*/ #117A41',
+      color: '$success400',
       glyph: 'checkmark'
     },
     {
       name: 'UNSTYLED',
-      color: ' /*%WHITE%*/ #FFFFFF'
+      color: '$white'
     }
   ]
 });
@@ -87,15 +87,15 @@ foam.CLASS({
     },
     {
       name: 'accentColor',
-      factory: function() {
-        return this.type && this.returnExpandedCSS(this.type.color);
+      expression: function(type) {
+        return (this.type && foam.CSS.returnTokenValue(this.type.color, this.cls_, this.__subContext__)) || '#FFFFFF';
       },
       documentation: 'Border color for the view and icon background. Defaults to type color'
     },
     {
       name: 'iconColor',
       factory: function() {
-        return this.returnExpandedCSS(this.type.background) || '#FFFFFF';
+        return (this.type && foam.CSS.returnTokenValue(this.type.background, this.cls_, this.__subContext__)) || '#FFFFFF';
       },
       documentation: 'Icon color. Defaults to type background or white'
     },

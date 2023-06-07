@@ -8,6 +8,16 @@ foam.CLASS({
   name: 'DayOfWeekView',
   extends: 'foam.u2.view.MultiChoiceView',
 
+  requires: [
+    'foam.time.DayOfWeek'
+  ],
+
+  css: `
+    ^flexer > div {
+      width: fit-content !important;
+    }
+  `,
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -16,7 +26,7 @@ foam.CLASS({
     },
     {
       name: 'maxSelected',
-      value: 5
+      value: 7
     },
     {
       name: 'showMinMaxHelper',
@@ -24,13 +34,13 @@ foam.CLASS({
     },
     {
       name: 'numberColumns',
-      value: 0
+      value: 7
     }
   ],
   methods: [
     function init() {
       this.SUPER();
-      this.choices = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri'];
+      this.choices = this.DayOfWeek.VALUES.map(v => [v, v.shortName]);
     }
   ]
 });

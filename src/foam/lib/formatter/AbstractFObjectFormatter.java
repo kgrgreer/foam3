@@ -36,6 +36,8 @@ public abstract class AbstractFObjectFormatter
 
   public void setX(X x) {
     x_ = x;
+    // Could be a different user, so need to clear the old propertyMap
+    propertyMap_.clear();
   }
 
   public X getX() {
@@ -70,12 +72,12 @@ public abstract class AbstractFObjectFormatter
     return maybeOutputDelta(oldFObject, newFObject, null, null);
   }
 
+  public int compare(PropertyInfo prop, FObject oldFObject, FObject newFObject) {
+    return prop.compare(oldFObject, newFObject);
+  }
+
   protected synchronized List getProperties(PropertyInfo parentProp, ClassInfo info) {
     String of = info.getObjClass().getName();
-
-    if ( propertyMap_.containsKey(of) && propertyMap_.get(of).isEmpty() ) {
-      propertyMap_.remove(of);
-    }
 
     if ( ! propertyMap_.containsKey(of) ) {
       List<PropertyInfo> filteredAxioms = new ArrayList<>();
@@ -95,6 +97,7 @@ public abstract class AbstractFObjectFormatter
 
   public void setPropertyPredicate(PropertyPredicate p) {
     propertyPredicate_ = p;
+    propertyMap_.clear();
   }
 
   public String toString() {

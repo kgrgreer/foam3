@@ -47,7 +47,7 @@ foam.CLASS({
       this.SUPER();
 
       this.updateMax();
-      this.data.listen({reset: this.updateMax, put: this.updateMax});
+      this.onDetach(this.data.listen({reset: this.updateMax, put: this.updateMax}));
     }
   ],
 

@@ -13,7 +13,22 @@ foam.INTERFACE({
       name: 'start',
       javaThrows: [
         'java.lang.Exception'
-      ]
+      ],
+      javaCode: `
+        // nop
+      `
+    },
+    {
+      name: 'stop',
+      javaCode: `
+        // nop
+      `
+    },
+    {
+      name: 'reload',
+      javaCode: `
+        // nop
+      `
     }
   ]
 });

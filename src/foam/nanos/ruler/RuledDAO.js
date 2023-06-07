@@ -14,6 +14,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
+    'foam.dao.ArraySink',
     'static foam.mlang.MLang.*'
   ],
 
@@ -37,9 +38,9 @@ foam.CLASS({
       name: 'cmd_',
       javaCode: `
         if ( obj instanceof FindRuledCommand ) {
-          // NOTE: use array to collect the first matching object since plain
-          // object re-assignment from within AbstractSink doesn't compile.
-          Object[] result = { null };
+          var isSelectCmd = obj instanceof SelectRuledCommand;
+
+          var sink = new ArraySink();
           getDelegate()
             .where(EQ(Ruled.RULE_GROUP, ((FindRuledCommand) obj).getRuleGroup()))
             .orderBy(DESC(Ruled.PRIORITY))
@@ -47,13 +48,17 @@ foam.CLASS({
               @Override
               public void put(Object o, Detachable s) {
                 if ( ((Ruled) o).f(x) ) {
-                  result[0] = o;
-                  s.detach();
+                  sink.put(o, s);
+                  if ( ! isSelectCmd ) s.detach();
                 }
               }
             });
-          return result[0];
+
+          return isSelectCmd ? sink
+                  : sink.getArray().isEmpty() ? null
+                  : sink.getArray().get(0);
         }
+
         return getDelegate().cmd_(x, obj);
       `
     }

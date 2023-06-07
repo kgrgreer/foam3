@@ -73,7 +73,10 @@ foam.CLASS({
     },
     {
       class: 'Class',
-      name: 'of'
+      name: 'of',
+      factory: function() {
+        return this.data.cls_;
+      }
     },
     {
       class: 'Boolean',
@@ -160,12 +163,35 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'detailView',
       value: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'Map',
+      name: 'defaultValues',
+      documentation: `
+        A map of classes to default values. Useful when using FObjectView with
+        a small number of classes with little overlap in their properties.
+        
+        Example:
+        {
+          'com.example.PaddleStrategy': {
+            distanceFromBoat: 1,
+            surfaceArea: 20
+          },
+          'com.example.MotorStrategy': {
+            rpm: 3400
+          }
+        }
+      `
     }
   ],
 
   methods: [
+    function fromProperty(prop) {
+      this.of = prop.of;
+    },
+
     function updateChoices() {
-      if ( this.of == null ) {
+      if ( this.of == null || this.of.id == 'foam.core.FObject' ) {
         this.choices = [];
         this.choicesLoaded.resolve();
         return;
@@ -202,6 +228,7 @@ foam.CLASS({
         }).catch(err => console.warn(err));
       } else {
         this.choices = this.choicesFallback(this.of);
+        this.choicesLoaded.resolve();
       }
     },
 
@@ -215,7 +242,11 @@ foam.CLASS({
       var classToData = (c) => {
         if ( ! c ) return undefined;
         var m = c && this.__context__.maybeLookup(c);
-        return m.create(this.data ? this.copyOldData(this.data) : null, this);
+        const o = m.create(this.data ? this.copyOldData(this.data) : null, this);
+        if ( this.defaultValues.hasOwnProperty(m.id) ) {
+          o.copyFrom(this.defaultValues[m.id]);
+        }
+        return o;
       };
 
       this.dataWasProvided_ = !! this.data;
@@ -243,7 +274,7 @@ foam.CLASS({
       if ( ! this.data && ! this.objectClass && this.choices.length && ! this.hasOwnProperty('placeholder') ) this.objectClass = this.choices[0][0];
 
       this.
-        start(this.OBJECT_CLASS).
+        start(this.OBJECT_CLASS, { data$: this.objectClass$ }).
           // If we were using a DetailView, this would be done for us, but since
           // we aren't, we need to connect the 'visibility' property ourself.
           show(this.OBJECT_CLASS.createVisibilityFor(foam.core.SimpleSlot.create({ value: this }), this.controllerMode$).map(function(m) {

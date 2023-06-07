@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.core.ProxySlot',
     'foam.core.SimpleSlot',
     'foam.layout.Section',
-    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.PropertyBorder',
     'foam.u2.DisplayMode',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Grid',
@@ -30,8 +30,12 @@ foam.CLASS({
     }
 
     .subtitle {
-      color: /*%GREY2%*/ #6B778C;
+      color: $grey500;
       margin-bottom: 16px;
+    }
+
+    ^actionDiv {
+      justify-content: end;
     }
   `,
 
@@ -110,15 +114,17 @@ foam.CLASS({
       var self = this;
       self.SUPER();
 
+      if ( this.section )
+        this.shown$ = this.section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$);
+
       self
         .addClass(self.myClass())
         .callIf(self.section, function() {
           self.addClass(self.myClass(self.section.name))
         })
-        .add(self.slot(function(section, showTitle, section$title, section$subTitle) {
-          if ( ! section ) return;
+        .add(self.slot(function(section, showTitle, section$title, section$subTitle, shown) {
+          if ( ! section || ! shown ) return;
           return self.Rows.create()
-            .show(section.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
             .callIf(showTitle && section$title, function() {
               if ( foam.Function.isInstance(self.section.title) ) {
                 const slot$ = foam.core.ExpressionSlot.create({
@@ -127,10 +133,10 @@ foam.CLASS({
                   code: section.title
                 });
                 if ( slot$.value ) {
-                  this.start().add(slot$.value.toUpperCase()).addClasses(['h500', self.myClass('section-title')]).end();
+                  this.start().add(slot$.value.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
                 }
               } else {
-                this.start('h5').add(section.title.toUpperCase()).addClasses(['h500', self.myClass('section-title')]).end();
+                this.start('h5').add(section.title.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
               }
             })
             .callIf(section$subTitle, function() {
@@ -141,10 +147,10 @@ foam.CLASS({
                   code: section.subTitle
                 });
                 if ( slot$.value ) {
-                  this.start().addClasses(['p', 'subtitle']).add(slot$.value).end();
+                  this.start().addClass('p', 'subtitle').add(slot$.value).end();
                 }
               } else {
-                this.start().addClasses(['p', 'subtitle']).add(section.subTitle).end();
+                this.start().addClass('p', 'subtitle').add(section.subTitle).end();
               }
             })
             .add(this.slot(function(loadLatch) {
@@ -162,12 +168,16 @@ foam.CLASS({
                       }
                     }
                   }
+                  var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode != self.DisplayMode.HIDDEN);
                   this.start(self.GUnit, { columns: p.gridColumns })
-                    .show(p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode !== self.DisplayMode.HIDDEN))
-                    .tag(self.SectionedDetailPropertyView, {
-                      prop: p,
-                      data$: self.data$
-                    })
+                    .show(shown$)
+                    .add(shown$.map(shown => {
+                      return shown ? self.PropertyBorder.create({
+                        prop: p,
+                        data$: self.data$
+                      }) :
+                      self.E();
+                    }))
                   .end();
                 });
               }
@@ -175,9 +185,9 @@ foam.CLASS({
               return view;
             }))
             .start(self.Cols)
+              .addClass(self.myClass('actionDiv'))
               .style({
-                'justify-content': 'end',
-                'margin-top': section.actions.length ? '4vh' : 'initial'
+                'margin-top': section.actions.length ? '16px' : 'initial'
               })
               .forEach(section.actions, function(a) {
                 this.add(a);

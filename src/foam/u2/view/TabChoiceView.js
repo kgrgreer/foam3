@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'TabChoiceView',
   extends: 'foam.u2.view.ChoiceView',
-  mixins: ['foam.nanos.controller.MementoMixin'],
+  mixins: ['foam.u2.memento.Memorable'],
 
   documentation: `
     A choice view that outputs user-specified tabs
@@ -28,9 +28,9 @@ foam.CLASS({
     }
 
     ^ [type=radio]:checked ~ label {
-      border-bottom: solid 3px /*%PRIMARY3%*/ #406dea;
+      border-bottom: solid 3px $primary400;
       font-weight: bold;
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
 
     ^ label {
@@ -39,9 +39,21 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      name: 'choice',
+      factory: function() { return this.choices[0]; },
+    },
+    {
+      name: 'cannedQuery',
+      shortName: 'query',
+      memorable: true,
+      factory: function() { return this.choice[1]; }
+    }
+  ],
+
   methods: [
     function render() {
-      this.initMemento();
       this.addClass();
 
       // If no item is selected, and data has not been provided, select the 0th
@@ -49,9 +61,6 @@ foam.CLASS({
       if ( ! this.data && ! this.index ) {
         this.index = 0;
       }
-
-      if ( ! this.memento.head ) 
-        this.memento.head = this.choices[this.index][1];
 
       if ( this.dao ) this.onDAOUpdate();
       this.choices$.sub(this.onChoicesUpdate);
@@ -66,7 +75,7 @@ foam.CLASS({
       this.removeAllChildren();
 
       this.add(this.choices.map(function(c) {
-        if ( this.memento.head == c[1] )
+        if ( this.cannedQuery == c[1] )
           this.data = c[0];
         return this.E('div').
           addClass(this.myClass('item')).
@@ -76,10 +85,12 @@ foam.CLASS({
               name: this.id,
               checked: self.slot(function (data) { return data === c[0]; })
             }).
-            setID(id = self.NEXT_ID()).
-            on('change', function(evt) {
+            call(function() {
+              id = this.id || ( this.id = this.$UID );
+            }).
+            on('change', function() {
               self.data = c[0];
-              self.memento.head = c[1];
+              self.cannedQuery = c[1];
             }).
           end().
           start('label').

@@ -48,7 +48,7 @@ foam.CLASS({
       width: 64px;
       height: 30px;
 
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      border: 1px solid $grey400;
       border-right: none;
       border-radius: 3px 0 0 3px;
     }
@@ -62,9 +62,13 @@ foam.CLASS({
       flex: 1;
       height: 30px;
 
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
+      font-size: 1.4rem;
+
+      border: 1px solid $grey400;
       border-left: none;
       border-radius: 0 3px 3px 0;
+
+      width: 100%;
     }
   `,
 
@@ -144,7 +148,7 @@ foam.CLASS({
               .end()
             .endContext();
           }
-          return self.E().start('p').addClass(self.myClass('label-currency'))
+          return self.E().start('div').addClass(self.myClass('label-currency'))
             .add(self.getDisplayValue())
             .end();
         }));

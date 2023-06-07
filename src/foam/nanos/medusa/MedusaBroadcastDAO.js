@@ -9,27 +9,42 @@ foam.CLASS({
   name: 'MedusaBroadcastDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Broadcast MedusaEntries.`,
+  documentation: `Broadcast MedusaEntry to Mediators.`,
 
   javaImports: [
-    'foam.core.Agency',
-    'foam.core.ContextAgent',
+    'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.ArraySink',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.DOP',
-    'static foam.mlang.MLang.COUNT',
-    'static foam.mlang.MLang.EQ',
-    'foam.mlang.sink.Count',
-    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.om.OMLogger',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.Map'
+    'java.util.Map',
+    'java.util.concurrent.atomic.AtomicLong'
   ],
   
+  javaCode: `
+    protected AtomicLong inFlight_ = new AtomicLong();
+  `,
+
+  constants: [
+    {
+      documentation: 'return inFlight_ count.',
+      name: 'IN_FLIGHT_CMD',
+      type: 'String',
+      value: 'IN_FLIGHT_CMD',
+    }
+  ],
+
   properties: [
     {
       name: 'serviceName',
@@ -39,33 +54,48 @@ foam.CLASS({
       `
     },
     {
-      // TODO: clear on ClusterConfig DAO updates
+      name: 'maxRetryAttempts',
+      class: 'Int',
+      value: 4
+    },
+    {
       name: 'clients',
       class: 'Map',
       javaFactory: 'return new HashMap();'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      name: 'logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          this.getServiceName()
-        }, (Logger) getX().get("logger"));
+      name: 'queues',
+      class: 'Map',
+      javaFactory: 'return new HashMap();'
+    }
+  ],
+
+  methods: [
+    {
+      documentation: 'listen and clear client and queue caches on cluster changes',
+      name: 'init_',
+      javaCode: `
+      DAO dao = (DAO) getX().get("clusterConfigDAO");
+      dao.listen( new AbstractSink() {
+        @Override
+        public void put(Object obj, Detachable sub) {
+          ClusterConfig config = (ClusterConfig) obj;
+          if ( config.getType() == MedusaType.NODE ) {
+            synchronized ( this ) {
+              ((Logger) getX().get("logger")).info("MedusaBroadcastDAO,listener,purge");
+              MedusaBroadcastDAO.CLIENTS.clear(this);
+              MedusaBroadcastDAO.QUEUES.clear(this);
+            }
+          }
+        }
+      }, null);
       `
     },
-  ],
-  
-  methods: [
     {
       name: 'put_',
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
-      // getLogger().debug("put", entry.getIndex());
+      // Loggers.logger(x, this).debug("put", entry.getIndex());
 
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
@@ -97,7 +127,15 @@ foam.CLASS({
       documentation: 'Using assembly line, write to all online mediators in zone 0 and same realm,region',
       name: 'cmd_',
       javaCode: `
-      return submit(x, obj, DOP.CMD);
+      if ( IN_FLIGHT_CMD.equals(obj) ) {
+        return inFlight_.get();
+      }
+      Object cmd = getDelegate().cmd_(x, obj);
+      if ( ! DAO.PURGE_CMD.equals(obj) ) {
+        submit(x, obj, DOP.CMD);
+        return cmd;
+      }
+      return cmd;
       `
     },
     {
@@ -119,48 +157,62 @@ foam.CLASS({
       ],
       type: 'Object',
       javaCode: `
-    try {
-      // getLogger().debug("submit", dop.getLabel(), obj.getClass().getSimpleName());
+      final Logger logger = Loggers.logger(x, this);
+      // logger.debug("submit", dop.getLabel(), obj.getClass().getSimpleName());
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
-      Agency agency = (Agency) x.get(support.getThreadPoolName());
       for ( ClusterConfig config : support.getBroadcastMediators() ) {
-        // getLogger().debug("submit", "job", config.getId(), dop.getLabel(), "assembly");
-        agency.submit(x, new ContextAgent() {
-          public void execute(X x) {
-            getLogger().debug("agency", "execute", config.getId());
-             try {
-              DAO dao = (DAO) getClients().get(config.getId());
-              if ( dao == null ) {
-                  dao = support.getBroadcastClientDAO(x, getServiceName(), myConfig, config);
-                  // dao = new RetryClientSinkDAO.Builder(x)
-                  //         .setName(getServiceName())
-                  //         .setDelegate(dao)
-                  //         .setMaxRetryAttempts(support.getMaxRetryAttempts())
-                  //         .setMaxRetryDelay(support.getMaxRetryDelay())
-                  //         .build();
-                getClients().put(config.getId(), dao);
-              }
+        String id = config.getId();
+        // logger.debug("submit", "job", id, dop.getLabel(), "assembly");
+        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
+        if ( queue == null ) {
+          synchronized ( id.intern() ) {
+            queue = (AssemblyLine) getQueues().get(id);
+            if ( queue == null ) {
+              // Create one AssemblyLine per mediator 
+              // To be replaced by SAF (Store and Forward)
 
-              if ( DOP.PUT == dop ) {
-                dao.put_(x, (FObject) obj);
-              } else if ( DOP.CMD == dop ) {
-                dao.cmd_(x, obj);
-              }
-            } catch ( Throwable t ) {
-              getLogger().error("agency", "execute", config.getId(), t);
+              // TODO: Using Sync rather than Async, as Async has the ability
+              // to consume the threadpool with a Retry client.
+              // Throughput testing does not show a difference between
+              // Sync and Async.
+              // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+              queue = new SyncAssemblyLine(x);
+              getQueues().put(id, queue);
+
+              // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+              DAO dao = new RetryClientSinkDAO.Builder(x)
+               .setName(config.getId())
+               .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+               .setMaxRetryAttempts(getMaxRetryAttempts())
+               .setMaxRetryDelay(support.getMaxRetryDelay())
+               .build();
+              getClients().put(id, dao);
             }
           }
-        }, this.getClass().getSimpleName());
+        }
+        inFlight_.getAndIncrement();
+        queue.enqueue(new AbstractAssembly() {
+          public void executeJob() {
+            try {
+              if ( DOP.PUT == dop ) {
+                ((DAO) getClients().get(id)).put_(x, (FObject) obj);
+              } else if ( DOP.CMD == dop ) {
+                ((DAO) getClients().get(id)).cmd_(x, obj);
+              }
+            } catch ( Throwable t ) {
+              logger.error("assembly", id, t);
+            } finally {
+              inFlight_.getAndDecrement();
+              ((OMLogger) x.get("OMLogger")).log("medusa:broadcast:node-mediator");
+            }
+          }
+        });
       }
       return obj;
-    } catch (Throwable t) {
-      getLogger().error(t.getMessage(), t);
-      throw t;
+    `
     }
-      `
-    }
-   ]
+  ]
 });

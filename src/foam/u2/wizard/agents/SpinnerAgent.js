@@ -1,0 +1,74 @@
+/**
+ * @license
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+foam.CLASS({
+  package: 'foam.u2.wizard.agents',
+  name: 'SpinnerAgent',
+  documentation: `
+    Displays and exports a loading spinner to prevent a user from reloading the
+    page when data is still being saved after the wizard closes.
+  `,
+
+  implements: [
+    'foam.core.ContextAgent'
+  ],
+
+  imports: [
+    'ctrl'
+  ],
+
+  exports: [
+    'as spinnerAgent'
+  ],
+
+  requires: [
+    'foam.u2.LoadingSpinner',
+    'foam.u2.dialog.Popup'
+  ],
+  properties: [
+    {
+      name: 'pushLast',
+      class: 'Boolean'
+    }
+  ],
+  methods: [
+    async function execute() {
+      var popup = this.Popup.create({
+        closeable: false,
+        isStyled: false,
+        onClose: this.pushLast ? () => {
+          ctrl.__subContext__.pushMenu(ctrl.__subContext__.lastMenuLaunched);
+        } : undefined
+      })
+        .tag(this.LoadingSpinner, { size: 56 });
+      this.ctrl.add(popup);
+      this.onDetach(popup.close.bind(popup));
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.wizard.agents',
+  name: 'DetachSpinnerAgent',
+  flags: ['web'],
+  documentation: `
+    Removes a loading spinner created by SpinnerAgent.
+  `,
+
+  imports: [
+    'spinnerAgent?'
+  ],
+
+  implements: [
+    'foam.core.ContextAgent'
+  ],
+
+  methods: [
+    async function execute() {
+      this.spinnerAgent && this.spinnerAgent.detach();
+    }
+  ]
+});

@@ -48,8 +48,7 @@ foam.CLASS({
     {
       name: 'placeholder',
       attribute: true,
-      documentation: 'Ignored when $$DOC{ref:".showLabel"} is true, but used ' +
-          'as an inline placeholder when it\'s false.',
+      documentation: "Ignored when .showLabel is true, but used as an inline placeholder when it's false.",
       factory: function() { return this.label; }
     },
     {

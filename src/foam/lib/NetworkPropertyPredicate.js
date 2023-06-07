@@ -12,10 +12,7 @@
     methods: [
       {
         name: 'propertyPredicateCheck',
-        javaCode: `
-  return ! prop.getNetworkTransient();
-  `
+        javaCode: 'return ! prop.getNetworkTransient();'
       }
     ]
   });
-    

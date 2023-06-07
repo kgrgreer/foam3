@@ -103,7 +103,7 @@ public class UserCapabilityUpdateInterceptDAO extends ProxyDAO {
           getLogger().debug("Update intercepted", temp);
 
           User sourceUser = (User) ((DAO)x.get("bareUserDAO")).find(ucj.getSourceId());
-          User effectiveUser = null;
+          User effectiveUser = sourceUser;
           if ( ucj instanceof AgentCapabilityJunction) {
               effectiveUser = (User) ((DAO)x.get("bareUserDAO")).find(((AgentCapabilityJunction)ucj).getEffectiveUser());
           } 

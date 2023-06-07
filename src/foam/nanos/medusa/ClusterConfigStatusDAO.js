@@ -17,7 +17,10 @@ foam.CLASS({
   documentation: `Monitor the ClusterConfig status and on mediator quorum change, call election, and on node quorum change, re-bucket nodes.`,
 
   javaImports: [
+    'foam.core.Agency',
     'foam.core.AgencyTimerTask',
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
@@ -25,6 +28,9 @@ foam.CLASS({
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.HashMap',
@@ -58,18 +64,29 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Logger logger = Loggers.logger(x, this);
-      ClusterConfig nu = (ClusterConfig) obj;
-      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+    final Logger logger = Loggers.logger(x, this);
+    ClusterConfig nu = (ClusterConfig) obj;
+
+
       ClusterConfig old = (ClusterConfig) find_(x, nu.getId());
+      final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       Boolean hadQuorum = support.hasQuorum(x);
       nu = (ClusterConfig) getDelegate().put_(x, nu);
-      support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      Boolean hasQuorum = support.hasQuorum(x);
 
+    // Synchronized to handle symultaneous mediator ONLINE events.
+    // 1st event, mediator count 1, quorum false
+    // 2nd event, mediator count 2, quorum true
+    // when interleaved, 1st event can report last with quorum false
+    // which causes a ready/online mediator to go offline.
+    // This is best effort, as don't want the above delegate.put
+    // under lock.
+    synchronized ( this ) {
+
+      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       if ( old != null &&
            old.getStatus() != nu.getStatus() ) {
+
+        Boolean hasQuorum = support.hasQuorum(x);
         logger.info(nu.getName(), old.getStatus(), "->", nu.getStatus(), "quorum", hadQuorum, "->", hasQuorum);
 
         if ( support.canVote(x, myConfig) ) {
@@ -81,7 +98,10 @@ foam.CLASS({
               electoralService.dissolve(x);
             } else if ( ! hadQuorum && hasQuorum ) {
               logger.warning("mediator quorum acquired");
-              electoralService.dissolve(x);
+              if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
+                // This event can arrive after election has completed.
+                electoralService.dissolve(x);
+              }
             } else if ( hasQuorum ) {
               try {
                 support.getPrimary(x);
@@ -91,19 +111,18 @@ foam.CLASS({
                 }
               } catch (PrimaryNotFoundException e) {
                 if ( electoralService.getState() == ElectoralServiceState.DISMISSED ) {
-                  logger.warning("No Primary detected", "cycling ONLINE->OFFLINE->ONLINE");
-                  myConfig = (ClusterConfig) myConfig.fclone();
-                  myConfig.setStatus(Status.OFFLINE);
-                  DAO dao = (DAO) x.get("localClusterConfigDAO");
-                  myConfig = (ClusterConfig) dao.put(myConfig).fclone();
-                  myConfig.setStatus(Status.ONLINE);
-                  dao.put(myConfig);
+                  logger.error("No Primary detected", "manually cycle ONLINE->OFFLINE->ONLINE");
                 } else {
                   logger.warning("No Primary detected", "dissolving");
                   electoralService.dissolve(x);
                 }
               } catch (MultiplePrimariesException e) {
-                logger.warning("Mulitiple Primaries detected", "dissolving");
+                logger.warning("Multiple Primaries detected", "dissolving");
+                if ( myConfig.getIsPrimary() ) {
+                  ClusterConfig cfg = (ClusterConfig) myConfig.fclone();
+                  cfg.setIsPrimary(false);
+                  getDelegate().put_(x, cfg);
+                }
                 electoralService.dissolve(x);
               }
             }
@@ -149,11 +168,43 @@ foam.CLASS({
 
         if ( myConfig.getType() == MedusaType.MEDIATOR &&
              nu.getType() == MedusaType.NODE ) {
+
+          // Node going offline
+          if ( myConfig.getStatus() == Status.ONLINE &&
+               old.getStatus() == Status.ONLINE &&
+               nu.getStatus() == Status.OFFLINE ) {
+
+            Agency agency = (Agency) x.get(support.getThreadPoolName());
+            // Have all nodes in bucket purge storageTransient cache.
+            // when buckets are automatically assigned, the config
+            // has a bucket value of 0 (zero).
+            // Options: walk and find the bucket the node is in,
+            // or purge all nodes. Purging all nodes for now
+            List<Set> buckets = support.getNodeBuckets();
+            for ( Set<String> bucket : buckets ) {
+              for ( String bid : bucket ) {
+                final String id = bid;
+                agency.submit(x, new ContextAgent() {
+                  public void execute(X x) {
+                    logger.info("ClusterConfigStatusDAO", "node", id, "purge");
+                    try {
+                      DAO dao = support.getBroadcastClientDAO(x, "medusaNodeDAO", myConfig, support.getConfig(x, id));
+                      dao.cmd_(x, DAO.PURGE_CMD);
+                    } catch ( Throwable t ) {
+                      logger.error("ClusterConfigStatusDAO", "node", id, "purge", t);
+                    }
+                  }
+                }, "ClusterConfigStatusDAO-node-purge");
+              }
+            }
+          }
+
           bucketNodes(x);
         }
       }
 
       return nu;
+    }
       `
     },
     {
@@ -226,6 +277,11 @@ foam.CLASS({
           Loggers.logger(x, this).warning("Multiple Primaries detected");
           ElectoralService electoral = (ElectoralService) x.get("electoralService");
           electoral.dissolve(x);
+          if ( config.getIsPrimary() ) {
+            config = (ClusterConfig) config.fclone();
+            config.setIsPrimary(false);
+            getDelegate().put_(x, config);
+          }
         } catch (PrimaryNotFoundException e) {
           if ( support.hasQuorum(x) ) {
             Loggers.logger(x, this).warning("No Primary detected");

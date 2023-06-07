@@ -84,7 +84,7 @@ foam.CLASS({
   methods: [
     function init() {
        this.SUPER();
-       this.onDetach(this.crunchService.sub('updateJunction', this.daoUpdate));
+       this.onDetach(this.crunchService.sub('updateJunctionTopic', this.daoUpdate));
        this.daoUpdate();
     },
 

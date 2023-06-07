@@ -39,6 +39,7 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.HashSet',
     'java.util.List',
+    'static foam.mlang.MLang.EQ'
   ],
 
   documentation: `The User represents a person or entity with the ability
@@ -162,18 +163,14 @@ foam.CLASS({
       validationPredicates: [
         {
           args: ['userName', 'type'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(foam.nanos.auth.User.TYPE, 'User'),
-              e.NEQ(foam.nanos.auth.User.USER_NAME, '')
-            );
-          },
+          query: 'type!="User"||userName!=""',
           errorMessage: 'USERNAME_REQUIRED'
         }
       ],
       order: 20,
       gridColumns: 6,
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      trim:true
     },
     {
       class: 'Boolean',
@@ -229,7 +226,8 @@ foam.CLASS({
       order: 70,
       gridColumns: 6,
       includeInDigest: true,
-      containsPII: true
+      containsPII: true,
+      trim:true
    },
     {
       class: 'String',
@@ -240,7 +238,8 @@ foam.CLASS({
       gridColumns: 6,
       includeInDigest: true,
       containsPII: true,
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      trim:true
     },
     {
       class: 'String',
@@ -251,7 +250,8 @@ foam.CLASS({
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      containsPII: true
+      containsPII: true,
+      trim:true
     },
     {
       class: 'String',
@@ -263,7 +263,8 @@ foam.CLASS({
       gridColumns: 6,
       includeInDigest: false,
       containsPII: true,
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      trim:true
     },
     {
       class: 'Date',
@@ -331,7 +332,6 @@ foam.CLASS({
       name: 'emailVerified',
       includeInDigest: false,
       documentation: 'Determines whether the email address of the User is valid.',
-      writePermissionRequired: true,
       section: 'userInformation',
       order: 160,
       gridColumns: 6,
@@ -686,7 +686,16 @@ foam.CLASS({
         }
         return set;
       `
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.userfeedback.UserFeedback',
+      name: 'userFeedback',
+      storageTransient: true,
+      visibility: 'HIDDEN',
+      externalTransient: true,
+      columnPermissionRequired: true
+    },
   ],
 
   methods: [
@@ -847,20 +856,10 @@ foam.CLASS({
           throw new AuthenticationException("User disabled");
         }
 
-        // check if user login enabled
-        if ( ! this.getLoginEnabled() ) {
-          throw new AuthenticationException("Login disabled");
-        }
-
         // fetch context from session and check two factor success if enabled.
         Session session = x.get(Session.class);
         if ( session == null ) {
           throw new AuthenticationException("No session exists.");
-        }
-
-        // check for two-factor authentication
-        if ( this.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
-          throw new AuthenticationException("User requires two-factor authentication");
         }
 
         if ( this instanceof LifecycleAware && ((LifecycleAware) this).getLifecycleState() != LifecycleState.ACTIVE ) {

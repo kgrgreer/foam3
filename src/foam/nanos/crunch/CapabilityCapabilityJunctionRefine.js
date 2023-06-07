@@ -13,17 +13,44 @@ foam.CLASS({
     Refine capabilitycapabilityjunction to add tablecellformatters for source and target id
   `,
 
+  implements: [
+    {
+      path: 'foam.mlang.Expressions',
+      flags: ['js']
+    }
+  ],
+
   properties: [
+    {
+      class: 'Int',
+      name: 'priority'
+    },
     {
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
       name: 'sourceId',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.__subSubContext__.capabilityDAO
-          .find(value)
-          .then((capability) => this.add(capability.name))
-          .catch((error) => {
-            this.add(value);
+      label: 'Top Level Capability',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Capability',
+              dao: X.capabilityDAO
+            }
+          ]
+        };
+      },
+      projectionSafe: false,
+      tableCellFormatter: function(value, obj, _) {
+        this.__subContext__.capabilityDAO
+          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
+          .then(async result => {
+            let name = await result?.array?.[0]?.toSummary();
+            this.add(name || value)
           });
       },
       menuKeys: ['admin.capabilities']
@@ -32,12 +59,28 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
       name: 'targetId',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.__subSubContext__.capabilityDAO
-          .find(value)
-          .then((capability) => this.add(capability.name || capability.id))
-          .catch((error) => {
-            this.add(value);
+      label: 'Dependent',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Capability',
+              dao: X.capabilityDAO
+            }
+          ]
+        };
+      },
+      projectionSafe: false,
+      tableCellFormatter: function(value, obj, _) {
+        this.__subContext__.capabilityDAO
+          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
+          .then(async result => {
+            let name = await result?.array?.[0]?.toSummary();
+            this.add(name || value)
           });
       },
       menuKeys: ['admin.capabilities']

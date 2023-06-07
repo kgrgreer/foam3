@@ -9,6 +9,8 @@ package foam.lib.json;
 import foam.core.ClassInfo;
 import foam.core.PropertyInfo;
 import foam.lib.parse.*;
+import foam.parse.NewlineParser;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
@@ -35,7 +37,7 @@ public class ModelParserFactory {
 
   public static Parser buildInstance_(ClassInfo info) {
     List     properties      = info.getAxiomsByClass(PropertyInfo.class);
-    Parser[] propertyParsers = new Parser[properties.size() + 1];
+    Parser[] propertyParsers = new Parser[properties.size() + 2];
     Iterator iter            = properties.iterator();
     int      i               = 0;
 
@@ -47,8 +49,13 @@ public class ModelParserFactory {
     // Prevents failure to parse if unknown property found
     propertyParsers[i] = new UnknownPropertyParser();
 
+    Parser commentParser = CommentParser.create();
+    propertyParsers[i+1] = commentParser;
+
     return new Repeat0(
-      new Seq0(Whitespace.instance(), new Alt(propertyParsers)),
-      Literal.create(","));
+      new Seq0( new Optional(commentParser),
+        Whitespace.instance(), new Alt(propertyParsers)),
+      Literal.create(",")
+    );
   }
 }

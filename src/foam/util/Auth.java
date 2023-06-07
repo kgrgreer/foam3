@@ -11,6 +11,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.GroupPermissionJunction;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
 
@@ -27,14 +28,7 @@ public class Auth {
     @param user user to be applied(logged in) to context and session.
   */
   public static X sudo(X x, User user) {
-    if ( user == null ) throw new RuntimeException("Unknown user");
-
-    Session session = new Session();
-    session.setUserId(user.getId());
-    X y = session.applyTo(x);
-    session.setContext(y);
-    y = y.put(Session.class, session);
-    return y;
+    return sudo(x, user, null);
   }
 
   /**
@@ -58,42 +52,23 @@ public class Auth {
   }
 
   /**
-  Applies provided user into session, context and applies the group provided.
-  @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
-  @param group Group that the context will be applying its permission list from
-  */
-  public static X sudo(X x, User user, Group group) {
-    x = sudo(x, user);
-    x = x.put("group", group);
-    return x;
-  }
-
-  /**
     Applies user acting as another user within the context provided. user and realuser of context' subject would be typically different.
     @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
     @param realUser User that will be acting as the @param user. References realUser within context' subject.
    */
   public static X sudo(X x, User user, User realUser) {
-    Session session = new Session.Builder(x)
-      .setUserId(user.getId())
-      .setAgentId(realUser.getId())
-      .build();
-    session.setContext(session.applyTo(session.getContext()));
-    x = x.put(Session.class, session);
-    return x;
-  }
+    if ( user == null ) throw new RuntimeException("Unknown user");
+    boolean hasAgent = realUser != null && user.getId() != realUser.getId();
 
-  /**
-    Applies user acting as another user within the context provided. Applies provided
-    group to the session. Flexible use of permissioning (AgentJunction between user and realUser isn't required.)
-    @param user User that will be the "user" within context' subject (You can think of it as the main user of the session)
-    @param realUser User that will be acting as the @param user. References realUser within context' subject.
-    @param group Group the context will be applying its permission list from.
-   */
-  public static X sudo(X x, User user, User realUser, Group group) {
-    x = sudo(x, user, realUser);
-    x = x.put("group", group);
-    return x;
+    Session session = new Session();
+    session.setUserId(user.getId());
+    if ( hasAgent ) session.setAgentId(realUser.getId());
+
+    X y = session.applyTo(x);
+    session.setContext(y);
+    y = y.put(Session.class, session);
+
+    return y;
   }
 
   /**

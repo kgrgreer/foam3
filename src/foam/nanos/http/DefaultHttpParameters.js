@@ -37,9 +37,10 @@ foam.CLASS({
     },
     {
       name: 'format',
-      class: 'Enum',
-      of: 'foam.nanos.http.Format',
-      value: 'JSON',
+      class: 'Reference',
+      of: 'foam.nanos.dig.format.DigFormat',
+      targetDAOKey: 'digFormatDAO',
+      value: 'JSON'
     },
     {
       name: 'values_',
@@ -189,6 +190,6 @@ foam.CLASS({
     this.getValues_().put(name, value);
   }
 `
-    },
+    }
   ]
 });

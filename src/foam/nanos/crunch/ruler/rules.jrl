@@ -37,6 +37,32 @@ p({
 })
 
 p({
+  class: 'foam.nanos.ruler.Rule',
+  id: 'foam.nanos.crunch.invoke-edit-behaviour',
+  name: 'Invoke Edit Behaviour on Granted->Granted',
+  priority: 940,
+  ruleGroup: 'ucjDAO',
+  daoKey: 'userCapabilityJunctionDAO',
+  operation: 1,
+  after: false,
+  enabled: true,
+  action: {
+    class: 'foam.nanos.crunch.ruler.InvokeEditBehaviourRuleAction'
+  },
+  lifecycleState: 1,
+  predicate: {
+    class: 'foam.mlang.predicate.And',
+    args: [
+      { class: 'foam.nanos.crunch.predicate.DataChanged' },
+      {
+        class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+        query: 'o.status==foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+      }
+    ]
+  }
+})
+
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-1-create",
   "name":"Validate UCJ Data On Create",
@@ -116,11 +142,11 @@ p({
             ]
           }
         ],
-        "documentation":"""
+        "documentation": `
           When the ucj status is in a renewable state its data should be validated only when the data has changed
           OR if it is a reput ( i.e., old is also EXPIRED ) so that the ucj won't be re-granted right after
           changing to EXPIRED
-        """
+        `
       },
       {
         "class":"foam.mlang.predicate.And",
@@ -256,5 +282,82 @@ p({
   "documentation":"""
     On update of a UCJ where the status of the ucj has changed, find the dependent capabilities of this ucj that the 
     user has a junction with, and reput them in order to update the status appropriately
+  """
+})
+
+// rule to be re-ran if a non-core ucj rule moves the ucj to APPROVED status
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-2-after",
+  "name":"Set UCJ Status On Put - after",
+  "priority":800,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.SetUCJStatusOnPut"},
+  "lifecycleState":1,
+  "documentation":"""
+  If status change to APPROVED, go through the setUcjStatus again
+  so it can be transitioned to GRANTED without having to do an explicit reput to the ucjDAO
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-3-after",
+  "name":"Configure UCJ Expiry On Granted - after",
+  "priority":700,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted"},
+  "lifecycleState":1,
+  "documentation":"""
+  Check if ucj has been set to granted after going through other non-ucjDAO rules and configure
+  the expiry if needed
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-4-after",
+  "name":"Save UCJ Data On Granted - after",
+  "priority":600,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"},
+  "lifecycleState":1,
+  "documentation":"""
+  Check if ucj has been set to granted after going through other non-ucjDAO rules and save the
+  ucj data if needed
+  """
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-crunch2-after",
+  "name":"Reput Dependents Rule - after",
+  "priority":1,
+  "ruleGroup":"ucjDAOAfter",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "action":{"class":"foam.nanos.crunch.ReputDependentUCJs"},
+  "lifecycleState":1,
+  "documentation":"""
+  try to reput dependent ucjs again after status change to approved and subsequently to granted
   """
 })

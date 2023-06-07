@@ -15,10 +15,12 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
+    'foam.mlang.predicate.Predicate',
+    'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.DuplicateEmailException',
     'foam.nanos.theme.Theme',
-    'java.util.List',
+    'foam.nanos.theme.Themes',
     'static foam.mlang.MLang.*'
   ],
 
@@ -26,19 +28,33 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) x.get("localUserUserDAO");
-        Sink sink = new ArraySink();
-        sink = userDAO
-          .where(OR(
+        DAO userDAO = ((DAO) x.get("localUserUserDAO")).where(
+          OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
-            EQ(User.USER_NAME, identifier)))
-          .limit(2).select(sink);
+            EQ(User.USER_NAME, identifier)));
 
-        List list = ((ArraySink) sink).getArray();
-        if ( list.size() != 1 ) {
-          return null;
+        // Here, we check to see if there exists one and only one user under the given identifier
+        // under the theme spid. If so, simply return the user.
+        // If there is more then one user, it is wrong and we return null
+        String themeSpid = ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid();
+        Predicate spidPredicate = EQ(User.SPID, themeSpid);
+        long userCount = ((Count) userDAO.where(spidPredicate).select(new Count())).getValue();
+        if ( userCount > 1 ) {
+          var duplicateEmailException = new DuplicateEmailException();
+          duplicateEmailException.setExceptionMessage("Please enter username");
+          throw duplicateEmailException;
         }
-        return (User) list.get(0);
+        if ( userCount == 1 ) return (User) userDAO.find(spidPredicate);
+        
+        // Here, we check if there is a user under the given identifier under the superspid since the
+        // localuseruserdao given here should be filtered by spid == themeSpid || spid == superspid and we did not
+        // find a user under the theme spid.
+        // this check is needed to fix the issue where having two users under the same identifier belonging to different spids
+        // where one of those spid is a superspid results in the system mistaking it as a duplicate user due to the filter on
+        // localuseruserdao. So we check each case separately
+        userCount = ((Count) userDAO.select(new Count())).getValue();
+        if ( userCount != 1 ) return null;
+        return (User) userDAO.find(TRUE);
       `
     }
   ]

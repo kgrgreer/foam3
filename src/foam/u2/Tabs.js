@@ -23,7 +23,18 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    { class: 'String',  name: 'label' },
+    {
+      name: 'label',
+      documentation: 'Label for current tab, can be simple string or any U2 Element/ViewSpec'
+    },
+    {
+      class: 'String',
+      name: 'mementoLabel',
+      documentation: 'String that is stored in memento when tab is selected',
+      factory: function() {
+        return foam.String.isInstance(this.label) ? this.label : null;
+      }
+    },
     { class: 'Boolean', name: 'selected' }
   ]
 });
@@ -51,7 +62,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^tab.selected {
-      border-bottom: 3px solid /*%PRIMARY3%*/ #406dea;
+      border-bottom: 3px solid $primary400;
     }
   `
 });
@@ -60,11 +71,29 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Tabs',
   extends: 'foam.u2.UnstyledTabs',
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabActiveColor',
+      value: '$primary700'
+    },
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabInactiveColor',
+      value: '$primary700'
+    },
+    {
+      name: 'tabActiveBackground',
+      value: '$primary50'
+    }
+  ],
+
   css: `
     ^tabRow {
-      background-color: /*%WHITE%*/ white;
+      background-color: $white;
       border-radius: 4px 4px 0 0;
-      border-bottom: 1px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 1px solid $grey100;
       display: flex;
       gap: 12px 24px;
       padding: 12px;
@@ -75,19 +104,89 @@ foam.CLASS({
       align-items: center;
       background: none;
       border-radius: 4px;
-      color: /*%GREY1%*/ #494F59;
+      color: $tabInactiveColor;
       display: flex;
       justify-content: center;
       padding: 7px 12px;
     }
     ^tab:hover {
-      background: /*%PRIMARY5%*/ #C6D2FF;
+      background: $tabActiveBackground;
       cursor: pointer;
     }
     ^tab.selected {
-      background: /*%PRIMARY5%*/ #C6D2FF;
-      color: /*%PRIMARY1%*/ #202341;
+      background: $tabActiveBackground;
+      color: $tabActiveColor;
       font-weight: 600;
+    }
+  `
+});
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'SegmentedTabs',
+  extends: 'foam.u2.UnstyledTabs',
+
+  cssTokens: [
+    {
+      class: 'foam.u2.ColorToken',
+      name: 'tabPrimaryColor',
+      value: '$primary300'
+    }
+  ],
+
+  css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      gap: 3.2rem;
+      --tabRow-padding: 0.8rem;
+      --tabRow-radius: 1.6rem;
+    }
+    ^content{
+      flex: 1;
+      display: flex;
+    }
+    /* hacky as U2 add() adds an extra div, remove with U3 */
+    ^content > * {
+      flex: 1;
+      position: relative;
+      width: 100%;
+    }
+    ^tabRow {
+      flex: 0 0 auto;
+      border-radius: var(--tabRow-radius, 0.4rem);
+      border: 1px solid $grey100;
+      gap: 8px;
+      padding: var(--tabRow-padding, 0.4rem);
+      white-space: nowrap;
+      background-color: $white;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+      align-self: center;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(100px, 1fr);
+      width: 100%;
+      overflow: auto;
+    }
+    ^tab {
+      border-radius: 3px;
+      align-items: center;
+      background: none;
+      border-radius: max(calc(var(--tabRow-radius, 0.4rem) - var(--tabRow-padding, 0.4rem)), 0.2rem);
+      color: $tabPrimaryColor;
+      display: flex;
+      justify-content: center;
+      padding: 8px 12px;
+      flex: 1 1 0;
+    }
+    ^tab:hover {
+      background: $tabPrimaryColor$hover;
+      color: $tabPrimaryColor$foreground;
+      cursor: pointer;
+    }
+    ^tab.selected {
+      color: $tabPrimaryColor$foreground;
+      background-color: $tabPrimaryColor;
     }
   `
 });

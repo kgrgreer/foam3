@@ -8,10 +8,12 @@ foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'CachedAuthServiceProxy',
   extends: 'foam.nanos.auth.ProxyAuthService',
+
   documentation: `
     An auth service decorator that caches permission checks. The cache gets
     invalidated whenever the imported user's group changes.
   `,
+
   imports: [
     'capabilityDAO',
     'group',
@@ -19,12 +21,14 @@ foam.CLASS({
     'userCapabilityJunctionDAO',
     'loginSuccess?'
   ],
+
   properties: [
     {
       class: 'Map',
       name: 'cache'
-    },
+    }
   ],
+
   methods: [
     function init() {
       this.onDetach(this.group$.sub(this.resetCache));
@@ -32,7 +36,7 @@ foam.CLASS({
       if ( this.loginSuccess$ ) {
         this.onDetach(this.loginSuccess$.sub(this.resetCache));
       }
-      this.onDetach(this.userCapabilityJunctionDAO.on.sub(
+      this.loginSuccess && this.onDetach(this.userCapabilityJunctionDAO.on.sub(
         (sub, _on, event, ucj) => {
           if ( event !== 'put' && event !== 'remove' ) return;
           this.capabilityDAO.find(ucj.targetId).then(cap => {
@@ -45,8 +49,9 @@ foam.CLASS({
     function check(x, p) {
       if ( ! this.cache[p] ) this.cache[p] = this.delegate.check(x, p);
       return this.cache[p];
-    },
+    }
   ],
+
   listeners: [
     function resetCache() {
       this.cache = {};

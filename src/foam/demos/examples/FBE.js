@@ -170,55 +170,63 @@ foam.CLASS({
               tag('div', {}, this.dom$).
             end();
 
-            this.onload.sub(this.run.bind(this));
-            this.onDetach(this.data.code$.sub(this.run.bind(this)));
+            this.runListener();
+            this.onDetach(this.data.code$.sub(this.runListener));
         }
       ],
 
       actions: [
-        function run() {
-          var self = this;
-          this.dom.removeAllChildren();
-          var scope = {
-            E: function(opt_nodeName) {
-              return self.Element.create({nodeName: opt_nodeName});
-            },
-            log: function() {
-              var args = [];
-              for ( var i = 0 ; i < arguments.length ; i++ ) {
-                if ( i ) args.push(' ');
-                if ( arguments[i] == false )
-                  args.push('false');
-                else
-                  args.push(arguments[i]);
+        function run() { this.runListener(); }
+      ],
+
+      listeners: [
+        {
+          name: 'runListener',
+          isFramed: true,
+          code: function() {
+            var self = this;
+            this.dom.removeAllChildren();
+            var scope = {
+              E: function(opt_nodeName) {
+                return self.Element.create({nodeName: opt_nodeName});
+              },
+              log: function() {
+                var args = [];
+                for ( var i = 0 ; i < arguments.length ; i++ ) {
+                  if ( i ) args.push(' ');
+                  if ( arguments[i] == false )
+                    args.push('false');
+                  else
+                    args.push(arguments[i]);
+                }
+
+                self.dom.add.apply(self.dom, args);
+                self.dom.br();
+              },
+              print: function() {
+                console.log('deprecated use of print(). Use log() instead.');
+                self.dom.add.apply(self.dom, arguments);
+                self.dom.br();
+              },
+              add: function() {
+                return self.dom.add.apply(self.dom, arguments);
+              },
+              start: function() {
+                return self.dom.start.apply(self.dom, arguments);
+              },
+              tag: function() {
+                return self.dom.start.apply(self.dom, arguments);
               }
+            };
 
-              self.dom.add.apply(self.dom, args);
-              self.dom.br();
-            },
-            print: function() {
-              console.log('deprecated use of print(). Use log() isntead.');
-              self.dom.add.apply(self.dom, arguments);
-              self.dom.br();
-            },
-            add: function() {
-              return self.dom.add.apply(self.dom, arguments);
-            },
-            start: function() {
-              return self.dom.start.apply(self.dom, arguments);
-            },
-            tag: function() {
-              return self.dom.start.apply(self.dom, arguments);
-            }
-          };
-
-          with ( scope ) {
-            with ( this.globalScope ) {
-              try {
-                eval(self.data.code);
-              } catch (x) {
-                self.data.error = true;
-                scope.log(x.toString());
+            with ( scope ) {
+              with ( this.globalScope ) {
+                try {
+                  eval(self.data.code);
+                } catch (x) {
+                  self.data.error = true;
+                  scope.log(x.toString());
+                }
               }
             }
           }
@@ -347,13 +355,14 @@ foam.CLASS({
       var self = this;
 
       async function load(section) {
-        self.testData += await fetch(section).then(response => response.text())
+        self.testData += await fetch(section).then(response => response.text()).catch(x => { debugger; });
       }
+      await load('u2all');
       await load('u2');
-      await load('faq');
-      await load('validation');
-      await load('examples');
-      await load('dao');
+//      await load('faq');
+//      await load('validation');
+//      await load('examples');
+//      await load('dao');
 
       this.
         addClass(this.myClass()).

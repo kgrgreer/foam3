@@ -18,6 +18,8 @@
     "lint": "jshint -c .jshintrc  ./src/ && jscs -c .jscsrc ./src/"
   },
   "dependencies": {
-    "ace-builds": "^1.4.3"
+    "ace-builds": "^1.4.3",
+    "container-query-polyfill": "^1.0.2",
+    "xmldom": "^0.6.0"
   }
 }

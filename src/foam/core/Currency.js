@@ -107,6 +107,13 @@
         the number when the currency is displayed.
       `,
       required: true
+    },
+    {
+      class: 'Boolean',
+      name: 'insertDelimiter',
+      documentation: `Determines whether to insert the 'delimiter'
+        between groups of three numerals`,
+      value: true
     }
   ],
 
@@ -160,7 +167,12 @@
         var delimiter = this.translationService.getTranslation(foam.locale, 'Currency.delimiter', this.delimiter);
         var decimal = this.translationService.getTranslation(foam.locale, 'Currency.decimalCharacter', this.decimalCharacter)
 
-        formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) || '0';
+        if ( this.insertDelimiter ) {
+          formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) || '0';
+        } else {
+          formatted += beforeDecimal || '0';
+        }
+
         if ( this.precision > 0 ) {
           formatted += decimal;
           formatted += amount.substring(amount.length - this.precision);
@@ -223,9 +235,13 @@
           foam.nanos.logger.Loggers.logger(x, this).debug(e);
         }
 
-        formatted += beforeDecimal.length() > 0 ?
-          beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", delimiter) :
-          "0";
+        if ( getInsertDelimiter() ) {
+          formatted += beforeDecimal.length() > 0 ?
+            beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", delimiter) :
+            "0";
+        } else {
+          formatted += beforeDecimal.length() > 0 ? beforeDecimal : "0";
+        }
 
         if ( this.getPrecision() > 0 ) {
           formatted += decimalCharacter;
@@ -250,7 +266,7 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return (amount/Math.pow(2, this.precision)).toFixed(this.precision);
+        return (amount/Math.pow(10, this.precision)).toFixed(this.precision);
       },
       args: [
         {

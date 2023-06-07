@@ -23,42 +23,43 @@ foam.CLASS({
       value: `
         ^ {
           min-width: 64px;
-          height: /*%INPUTHEIGHT%*/ 34px;
-          padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-          padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
+          height: $inputHeight;
+          font-size: 1.4rem;
+          padding-left: $inputHorizontalPadding;
+          padding-right: $inputHorizontalPadding;
           border: 1px solid;
-          border-radius: 3px;
-          color: /*%BLACK%*/ #1e1f21;
-          background-color: white;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          border-radius: $inputBorderRadius;
+          color: $black;
+          background-color:$white;
+          border-color: $grey400;
           width: 100%;
         }
 
         ^:hover {
-          border-color: /*%GREY2%*/ #9ba1a6;
+          border-color: $grey500;
         }
 
         ^:hover::placeholder,
         ^:hover:-ms-input-placeholder,
         ^:hover::-ms-input-placeholder {
-          color: /*%GREY2%*/ #9ba1a6;
+          color: $grey500;
         }
 
         ^:focus {
           outline: none;
-          border-color: /*%PRIMARY3%*/ #406dea;
+          border-color: $primary400;
         }
 
         ^:disabled {
-          color: /*%GREY1%*/ #5e6061;
-          background-color: /*%GREY5%*/ #f5f7fa;
-          border-color: /*%GREY3%*/ #cbcfd4;
+          color: $grey700;
+          background-color: $grey50;
+          border-color: $grey400;
         }
 
         ^.error {
-          color: /*%DESTRUCTIVE3%*/ #d9170e;
-          background-color: /*%DESTRUCTIVE5%*/ #fbedec;
-          border-color: /*%DESTRUCTIVE3%*/ #d9170e;
+          color: $destructive400;
+          background-color: $destructive50;
+          border-color: $destructive400;
         }
       `,
     },

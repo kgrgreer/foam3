@@ -55,6 +55,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hideIfEmpty',
+      value: true,
       documentation: 'This section will be hidden if there are no items in it if this is set to true.'
     },
     {
@@ -66,6 +67,16 @@ foam.CLASS({
       class: 'String',
       name: 'heading',
       documentation: 'The heading text for this section.'
+    },
+    {
+      class: 'Int',
+      name: 'choicesLimit'
+    },
+    {
+      class: 'Boolean',
+      name: 'refineInput_',
+      value: true,
+      documentation: 'If choicesLimit set, the flag is an indicator to show that more items could be populated.'
     }
   ]
 });
@@ -77,7 +88,9 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.view.RichChoiceViewI18NComparator'
+    'foam.u2.CitationView',
+    'foam.u2.view.RichChoiceViewI18NComparator',
+    'foam.u2.md.OverlayDropdown'
   ],
 
   documentation: `
@@ -120,7 +133,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'window'
+    'window', 'ctrl?'
   ],
 
   exports: [
@@ -135,12 +148,16 @@ foam.CLASS({
     {
       name: 'CLEAR_SELECTION',
       message: 'Clear'
+    },
+    {
+      name: 'MORE_CHOICES',
+      message: 'Refine search to see more results'
     }
   ],
 
   css: `
     ^ {
-      display: inline-block;
+      display: flex;
       position: relative;
     }
 
@@ -149,24 +166,26 @@ foam.CLASS({
     }
 
     ^container {
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      transform: translateY(100%);
-      background: white;
-      border: 1px solid /*%GREY3%*/ #cbcfd4;
-      max-height: 378px;
+      background: $white;
+      border: 1px solid $grey400;
+      max-height: min(400px, 40vh);
       overflow-y: auto;
       box-sizing: border-box;
       width: 100%;
       min-width: fit-content;
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      z-index: 1000;
     }
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      padding: 1px 2px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      line-height: 2.4rem;
+      font-size: 1.4rem;
+      color: #333;
+      padding: 6px 16px;
     }
 
     ^selection-view {
@@ -174,23 +193,28 @@ foam.CLASS({
       align-items: center;
       justify-content: space-between;
       width: 100%;
+      position: relative;
+      height: $inputHeight;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      border: 1px solid $grey400;
+      color: $black;
+      background-color: $white;
+      min-width: 120px;
 
-      height: /*%INPUTHEIGHT%*/ 34px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      border: 1px solid;
-      border-radius: 3px;
-      color: /*%BLACK%*/ #1e1f21;
-      background-color: white;
-      border-color: /*%GREY3%*/ #cbcfd4;
-      box-sizing: border-box;
-      cursor: default;
-      min-width: 94px;
+      width: 100%;
+      border-radius: 4px;
+      -webkit-appearance: none;
+      cursor: pointer;
+      font-size: 1.4rem;
+
+      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
+      background-position: right 0.5em top 50%
     }
 
     ^selection-view:hover,
     ^selection-view:hover ^clear-btn {
-      border-color: /*%GREY2%*/ #9ba1a6;
+      border-color: $grey500;
     }
 
     ^:focus {
@@ -199,12 +223,7 @@ foam.CLASS({
 
     ^:focus ^selection-view,
     ^:focus ^selection-view ^clear-btn {
-      border-color: /*%PRIMARY3%*/ #406dea;
-    }
-
-    ^chevron::before {
-      content: '▾';
-      padding-left: 4px;
+      border-color: $primary400;
     }
 
     ^custom-selection-view {
@@ -212,26 +231,29 @@ foam.CLASS({
       overflow: hidden;
     }
 
-    ^ .search .property-filter_ {
+    ^search .property-filter_ {
       width: 100%;
     }
 
-    ^ .search input {
+    ^search input {
+      border-bottom: none;
       width: 100%;
       border: none;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
     }
 
-    ^ .search img {
+    ^search img {
+      top: 8px;
       width: 15px;
       margin-left: 8px;
     }
 
-    ^ .search {
+    ^search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
+      padding: 0rem 1.6rem;
     }
 
     ^ .disabled {
@@ -246,22 +268,27 @@ foam.CLASS({
       display: flex;
       align-items: center;
       border-left: 1px;
-      padding-left: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      padding-right: /*%INPUTHORIZONTALPADDING%*/ 8px;
-      height: /*%INPUTHEIGHT%*/ 34px;
+      padding-left: $inputHorizontalPadding;
+      padding-right: $inputHorizontalPadding;
+      height: $inputHeight;
       border-left: 1px solid;
-      border-color: /*%GREY3%*/ #cbcfd4;
+      border-color: $grey400;
       margin-left: 12px;
       padding-left: 16px;
     }
 
     ^clear-btn:hover {
-      color: /*%DESTRUCTIVE3%*/ #d9170e;
+      color: $destructive400;
       cursor: pointer;
+    }
+
+    ^moreChoices {
+      padding: 8px 16px;
     }
   `,
 
   properties: [
+    'prop',
     {
       class: 'String',
       name: 'name',
@@ -275,7 +302,7 @@ foam.CLASS({
         instantiated with an object from the DAO as the 'data' property.
       `,
       factory: function() {
-        return this.DefaultRowView;
+        return this.CitationView;
       }
     },
     {
@@ -339,7 +366,7 @@ foam.CLASS({
       `,
     },
     {
-      class: 'FObjectProperty',
+      class: 'Class',
       name: 'of',
       documentation: 'The model stored in the DAO. Used intenrally.',
       expression: function(sections) {
@@ -378,6 +405,10 @@ foam.CLASS({
           else {
             section.filteredDAO = section.dao;
           }
+          if ( section.choicesLimit )
+            section.filteredDAO.select(this.COUNT()).then( v => {
+                section.refineInput_ = v.value > section.choicesLimit;
+            });
         });
       }
     },
@@ -425,7 +456,26 @@ foam.CLASS({
       factory: function() {
         return this.RichChoiceViewI18NComparator.create();
       }
-    }
+    },
+    {
+      name: 'idProperty',
+      class: 'String',
+      value: 'id'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.u2.Element',
+      name: 'dropdown_',
+      factory: function() {
+        return this.OverlayDropdown.create({
+          closeOnLeave: false,
+          styled: false,
+          parentEdgePadding: '4',
+          lockToParentWidth: true
+        });
+      }
+    },
+    'selectionEl_'
   ],
 
   methods: [
@@ -445,159 +495,155 @@ foam.CLASS({
       this.onDetach(this.data$.sub(this.onDataUpdate));
       this.onDataUpdate();
 
-      // Set up an event listener on the window so we can close the dropdown
-      // when the user clicks somewhere else.
-      var containerU2Element;
-      const fn = async function(evt) {
-        // This prevents a console error when opening the dropdown.
-        if ( containerU2Element === undefined ) return;
+      this.onDetach(() => this.dropdown_.remove());
 
-        var selfDOMElement = await self.el();
-        var containerDOMElement = await containerU2Element.el();
-
-        // If an ancestor U2 Element was removed but didn't properly detach us,
-        // then the DOM elements will be removed but the listener will still be
-        // in place. Here we detect such a situation and remove the listener if
-        // it arises, preventing a memory leak.
-        if ( selfDOMElement == null || containerDOMElement == null ) {
-          self.window.removeEventListener('click', fn);
-          return;
-        }
-
-        var selfRect = selfDOMElement.getClientRects()[0];
-        var containerRect = containerDOMElement.getClientRects()[0];
-
-        // This prevents a console error when making a selection.
-        if ( containerRect === undefined ) return;
-
-        if (
-          ! (
-              evt.clientX >= selfRect.x &&
-              evt.clientX <= selfRect.x + selfRect.width &&
-              evt.clientY >= selfRect.y &&
-              evt.clientY <= containerRect.y + containerRect.height
-            )
-        ) {
-          self.isOpen_ = false;
-        }
-      };
-      this.window.addEventListener('click', fn);
-      this.onDetach(() => this.window.removeEventListener('click', fn));
+      self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
+        if ( ! hasBeenOpenedYet_ ) return this.E();
+        return this.E()
+          .addClass(self.myClass('container'))
+          .add(self.search$.map(searchEnabled => {
+            if ( ! searchEnabled ) return null;
+            return this.E()
+              .start()
+                .start('img')
+                  .attrs({ src: 'images/ic-search.svg' })
+                .end()
+                .startContext({ data: self })
+                  .addClass(self.myClass('search'))
+                  .add(self.FILTER_.clone().copyFrom({ view: {
+                    class: 'foam.u2.view.TextField',
+                    placeholder: this.searchPlaceholder,
+                    onKey: true
+                  } }))
+                .endContext()
+              .end();
+          }))
+          .add(self.slot(function(sections) {
+            var promiseArray = [];
+            sections.forEach(function(section) {
+              promiseArray.push(section.dao.select(self.COUNT()));
+            });
+            return Promise.all(promiseArray).then(resp => {
+              var index = 0;
+              return this.E().forEach(sections, function(section) {
+                this.addClass(self.myClass('setAbove'))
+                  .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
+                    .addClass(self.myClass('heading'))
+                    .translate(section.heading$)
+                  .end()
+                  .start()
+                    .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
+                      return this.E()
+                        .start(self.rowView, { data: obj })
+                          .enableClass('disabled', section.disabled)
+                          .callIf(! section.disabled, function() {
+                            this.on('click', () => {
+                              self.onSelect(obj);
+                              self.dropdown_.close();
+                            });
+                          })
+                        .end();
+                    }, false, self.comparator)
+                  .end()
+                  .callIf(section.choicesLimit, function() {
+                    this.start()
+                      .addClass(self.myClass('moreChoices'))
+                      .add(section.refineInput_$.map(v => v ? self.MORE_CHOICES : ''))
+                    .end();
+                  });
+                  index++;
+              });
+            });
+          }))
+          .add(this.slot(self.addAction));
+      }));
 
       this
-        .add(this.slot(function(mode, fullObject_) {
-          if ( mode !== foam.u2.DisplayMode.RO ) {
+        .add(this.slot(function(mode) {
+          if ( mode !== foam.u2.DisplayMode.RO && mode !== foam.u2.DisplayMode.HIDDEN ) {
+            if ( self.ctrl ) {
+              self.ctrl.add(this.dropdown_);
+            } else {
+              this.dropdown_.write();
+            }
             return self.E()
               .attrs({
                 name: this.name,
                 tabindex: 0
               })
               .addClass(this.myClass())
-              .start()
+              .start('', {}, this.selectionEl_$)
                 .addClasses([this.myClass('selection-view'), 'p'])
                 .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
-                .on('click', function() {
+                .on('click', function(e) {
+                  var x = e.clientX || this.getBoundingClientRect().x;
+                  var y = e.clientY || this.getBoundingClientRect().y;
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.isOpen_ = ! self.isOpen_;
+                    self.dropdown_.parentEl = self.selectionEl_.el_();
+                    self.dropdown_.open(x, y);
                   }
+                  e.preventDefault();
+                  e.stopPropagation();
                 })
                 .start()
                   .addClass(this.myClass('custom-selection-view'))
-                  .add(this.slot((data) => {
-                    return this.E().tag(self.selectionView, {
-                      data: data,
-                      fullObject$: this.fullObject_$,
+                  .tag(self.selectionView, {
+                      data$: self.data$,
+                      fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
-                    });
-                  }))
-                .end()
-                .start()
-                  .addClass(this.myClass('chevron'))
+                    })
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
                   return this.E()
                     .addClass(self.myClass('clear-btn'))
                     .on('click', self.clearSelection)
-                    .add(self.CLEAR_SELECTION)
+                    .add(self.CLEAR_SELECTION);
                 }))
-              .end()
-              .add(this.slot(function(hasBeenOpenedYet_) {
-                if ( ! hasBeenOpenedYet_ ) return this.E();
-                return this.E()
-                  .addClass(self.myClass('container'))
-                  .call(function() { containerU2Element = this; })
-                  .show(self.isOpen_$)
-                  .add(self.search$.map((searchEnabled) => {
-                    if ( ! searchEnabled ) return null;
-                    return this.E()
-                      .start()
-                        .start('img')
-                          .attrs({ src: 'images/ic-search.svg' })
-                        .end()
-                        .startContext({ data: self })
-                          .addClass('search')
-                          .add(self.FILTER_.clone().copyFrom({ view: {
-                            class: 'foam.u2.view.TextField',
-                            placeholder: this.searchPlaceholder,
-                            onKey: true
-                          } }))
-                        .endContext()
-                      .end();
-                  }))
-                  .add(self.slot(function(sections) {
-                    var promiseArray = [];
-                    sections.forEach(function(section) {
-                      promiseArray.push(section.dao.select(self.COUNT()));
-                    });
-                    return Promise.all(promiseArray).then((resp) => {
-                      var index = 0;
-                      return this.E().forEach(sections, function(section) {
-                        this.addClass(self.myClass('setAbove'))
-                          .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                            .addClasses([self.myClass('heading'), 'p-legal'])
-                            .translate(section.heading, section.heading)
-                          .end()
-                          .start()
-                            .select(section.filteredDAO$proxy, obj => {
-                              return this.E()
-                                .start(self.rowView, { data: obj })
-                                  .enableClass('disabled', section.disabled)
-                                  .callIf(! section.disabled, function() {
-                                    this.on('click', () => {
-                                      self.fullObject_ = obj;
-                                      self.data = obj.id;
-                                      self.isOpen_ = false;
-                                    });
-                                  })
-                                .end();
-                            }, false, self.comparator)
-                          .end();
-                          index++;
-                      });
-                    });
-                  }))
-                  .add(this.slot(function(action, actionData) {
-                    if ( action && actionData) {
-                      return this.E()
-                        .start(self.DefaultActionView, { action: action, data: actionData })
-                          .addClasses([self.myClass('action'), 'p-legal-light'])
-                        .end();
-                    }
-                    if ( action ) {
-                      return this.E()
-                        .start(self.DefaultActionView, { action: action })
-                          .addClass(self.myClass('action'))
-                        .end();
-                    }
-                  }));
-              }))
+              .end();
           } else {
-            return self.E().add(fullObject_ ? fullObject_.toSummary() : '');
+            return self.E()
+              .addClass(this.myClass())
+                .start()
+                  .addClass(this.myClass('custom-selection-view'))
+                  .tag(self.selectionView, {
+                    mode$: self.mode$,
+                    fullObject$: self.fullObject_$,
+                    defaultSelectionPrompt$: self.choosePlaceholder$
+                  })
+                .end();
           }
-        }))
+        }));
     },
 
+    function onSelect(obj) {
+      this.fullObject_ = obj;
+      this.data = obj[this.idProperty];
+      this.isOpen_ = false;
+    },
+
+    function addAction(action, actionData) {
+      var self = this;
+      if ( action && actionData ) {
+        return this.E()
+          .start(self.DefaultActionView, { action: action, data: actionData })
+          .on('click', () => {
+            self.dropdown_.close();
+          })
+          .addClass(self.myClass('action'))
+          .end();
+      }
+      if ( action ) {
+        return this.E()
+          .start(self.DefaultActionView, { action: action })
+          .on('click', () => {
+                self.dropdown_.close();
+              })
+          .addClass(self.myClass('action'))
+          .end();
+      }
+    },
     function updateMode_(mode) {
       if ( mode !== foam.u2.DisplayMode.RW ) {
         this.isOpen_ = false;
@@ -607,6 +653,9 @@ foam.CLASS({
     function fromProperty(property) {
       this.SUPER(property);
       this.prop = property;
+      if ( ! this.choosePlaceholder && prop.placeholder ) {
+        this.choosePlaceholder = prop.placeholder;
+      }
     }
   ],
 
@@ -619,9 +668,19 @@ foam.CLASS({
           return;
         }
         this.sections.forEach(section => {
+          if ( this.of ) {
+            section.dao.where(
+              this.EQ(this.of.getAxiomByName(this.idProperty), this.data)
+            ).select().then(result => {
+              if ( result.array.length > 0 ) this.fullObject_ = result.array[0];
+            }).catch( e => console.warn(e));
+            return;
+          }
+          // majority of cases will fall into above code,
+          // but incase a section is defined without a proper dao
           section.dao.find(this.data).then(result => {
             if ( result ) this.fullObject_ = result;
-          });
+          }).catch( e => console.warn(e));
         });
       }
     },
@@ -642,37 +701,6 @@ foam.CLASS({
   ],
 
   classes: [
-    {
-      name: 'DefaultRowView',
-      extends: 'foam.u2.View',
-
-      documentation: `
-        This is the view that gets rendered for each item in the list.
-      `,
-
-      css: `
-        ^row {
-          background: white;
-          padding: 1px 2px;
-        }
-
-        ^row:hover {
-          background: #f4f4f9;
-          cursor: pointer;
-        }
-      `,
-
-      methods: [
-        function render() {
-          var summary = this.data.toSummary();
-          return this
-            .start()
-              .addClasses([this.myClass('row'), 'p-legal-light'])
-              .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
-            .end();
-        }
-      ]
-    },
     {
       name: 'DefaultSelectionView',
       extends: 'foam.u2.Element',
@@ -716,19 +744,21 @@ foam.CLASS({
 
       methods: [
         function render() {
-
           this.style({
             'overflow': 'hidden',
             'white-space': 'nowrap',
             'text-overflow': 'ellipsis'
           });
 
-          if ( this.fullObject ) {
-            var summary = this.fullObject.toSummary();
-            return this.translate(summary, summary);
-          }
-
-          return this.add(this.defaultSelectionPrompt);
+          this.add(this.slot(function(fullObject) {
+            let summary;
+            if ( fullObject ) {
+              summary = fullObject.toSummary();
+            } else {
+              summary = this.defaultSelectionPrompt;
+            }
+            return summary;
+          }));
         }
       ]
     },
@@ -746,14 +776,14 @@ foam.CLASS({
         ^ {
           border: 0;
           border-top: 1px solid #f4f4f9;
-          color: /*%PRIMARY3%*/ #406dea;
+          color: $primary400;
           display: flex;
           justify-content: flex-start;
           width: 100%;
         }
 
         ^:hover {
-          color: /*%PRIMARY2%*/ #144794;
+          color: $primary500;
           cursor: pointer;
         }
 

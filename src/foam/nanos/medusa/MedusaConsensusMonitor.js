@@ -24,8 +24,11 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
-    'foam.nanos.alarming.Alarm',
+    'foam.log.LogLevel',
+    'static foam.mlang.MLang.GTE',
+    'static foam.mlang.MLang.MAX',
+    'foam.mlang.sink.Max',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
@@ -34,25 +37,33 @@ foam.CLASS({
     'java.util.Timer'
   ],
 
+  constants: [
+    {
+      name: 'EVENT_NAME',
+      type: 'String',
+      value: 'Medusa Consensus'
+    }
+  ],
+
   properties: [
     {
       name: 'timerInterval',
       class: 'Long',
       units: 'ms',
-      value: 30000
+      value: 60000
     },
     {
       name: 'initialTimerDelay',
       class: 'Long',
       units: 'ms',
-      value: 60000
+      value: 300000 // 5 minutes
     },
     {
       documentation: 'A second replay on the same index will not occur until at least minReplayInterval has past',
       name: 'minReplayInterval',
       class: 'Long',
       units: 'ms',
-      value: 360000
+      value: 300000 // 5 minutes
     },
     {
       name: 'medusaDAO',
@@ -73,18 +84,16 @@ foam.CLASS({
       networkTransient: true
     },
     {
-      name: 'lastReplay',
-      class: 'Long',
-      units: 'ms',
-      visibility: 'HIDDEN',
-      networkTransient: true
-    },
-    {
       documentation: 'Store reference to timer so it can be cancelled, and agent restarted.',
       name: 'timer',
       class: 'Object',
       visibility: 'HIDDEN',
       networkTransient: true
+    },
+    {
+      name: 'eventRecord',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.er.EventRecord'
     }
   ],
 
@@ -102,86 +111,110 @@ foam.CLASS({
         getInitialTimerDelay(),
         getTimerInterval()
       );
+      setEventRecord(new EventRecord(getX(), this, EVENT_NAME));
       `
     },
     {
-      // NOTE: this keeps running if promoter exits.
+      name: 'stop',
+      javaCode: `
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        Loggers.logger(getX(), this).info("stop");
+        timer.cancel();
+        clearTimer();
+      }
+      `
+    },
+    {
       documentation: 'Monitor for consensus stalls',
       name: 'execute',
       args: 'Context x',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
+      // logger.info("execute");
       PM pm = PM.create(x, this.getClass().getSimpleName());
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+      DaggerService dagger = (DaggerService) x.get("daggerService");
+      EventRecord er = getEventRecord();
 
       try {
-        DAO alarmDAO = (DAO) x.get("alarmDAO");
-        String alarmName = "Medusa Consensus";
-        Alarm alarm = new Alarm(alarmName);
-        alarm = (Alarm) alarmDAO.find(alarm);
-
-        if ( getLastIndex() == 0L ||
-             getLastIndex() != replaying.getIndex() ) {
-          logger.debug("execute", "skip", getLastIndex(), replaying.getIndex());
+        // First invocation
+        if ( getLastIndex() == 0L ) {
           setLastIndex(replaying.getIndex());
           setLastIndexSince(System.currentTimeMillis());
-          setLastReplay(0L);
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
-          }
           return;
         }
 
-        DAO medusaDAO = (DAO) x.get(getMedusaDAO());
-        Long nextIndex = replaying.getIndex() + 1;
-        MedusaEntry next = (MedusaEntry) medusaDAO.find(nextIndex);
-        if ( next == null ) {
-          return;
-        }
-        if ( next.getPromoted() ) {
-          setLastIndex(nextIndex);
+        // Movement
+        if ( getLastIndex() != replaying.getIndex() ) {
+          // logger.debug("skip", getLastIndex(), replaying.getIndex());
+          setLastIndex(replaying.getIndex());
           setLastIndexSince(System.currentTimeMillis());
-          setLastReplay(0L);
-          if ( alarm != null &&
-               alarm.getIsActive() ) {
-            alarm = (Alarm) alarm.fclone();
-            alarm.setIsActive(false);
-            alarmDAO.put(alarm);
+          if ( er.getSeverity() == LogLevel.WARN ) {
+            er.setSeverity(LogLevel.INFO);
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+            er.clearId();
+            setEventRecord(er);
           }
           return;
         }
 
-        // not null, not promoted, and in this state for at least a timer cycle
-        logger.warning("no consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "on", next.toSummary(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", new java.util.Date(getLastIndexSince()));
-
-        if ( alarm == null ) {
-          alarm = new Alarm(alarmName, true);
-          alarm.setClusterable(false);
-        } else {
-          alarm = (Alarm) alarm.fclone();
+        // Idle
+        if ( replaying.getIndex() == dagger.getGlobalIndex(x) ) {
+          setLastIndex(replaying.getIndex());
+          setLastIndexSince(System.currentTimeMillis());
+          if ( er.getSeverity() == LogLevel.WARN ) {
+            er.setSeverity(LogLevel.INFO);
+            er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+            er.clearId();
+            setEventRecord(er);
+          }
+          return;
         }
-        alarm.setIsActive(true);
-        alarm.setNote("No Consensus: "+next.toSummary());
-        alarm = (Alarm) alarmDAO.put(alarm);
 
-        if ( getLastReplay() == 0L ||
-             System.currentTimeMillis() - getLastReplay() >= getMinReplayInterval() ) {
-          logger.info("request replay");
-          final ReplayRequestCmd cmd = new ReplayRequestCmd();
-          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(next.getIndex()).build());
-          Agency agency = (Agency) x.get(support.getThreadPoolName());
-          agency.submit(x,
-            new ContextAgent() {
-              public void execute(X x) {
-                ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
-              }
-            }, this.getClass().getSimpleName()
-          );
-          setLastReplay(System.currentTimeMillis());
+        // TOOD: getMinReplayInterval has to be adjusted based on count.
+        // Nodes with multiple mediator requests are constrained on memory and
+        // 1m records might take 10 minutes to read and send.
+        // note bootstrap entries are promoted with zero count.
+        long delta = System.currentTimeMillis() - getLastIndexSince();
+        if ( delta >= getMinReplayInterval() ) {
+
+          DAO medusaDAO = (DAO) x.get(getMedusaDAO());
+          Long nextIndex = replaying.getIndex() + 1;
+          MedusaEntry next = (MedusaEntry) medusaDAO.find(nextIndex);
+          if ( next != null ) {
+            logger.warning("stalled", next.toSummary(), "consensus", next.getConsensusCount(), "of", support.getNodeQuorum(), "nodes", Arrays.toString(next.getConsensusNodes()), "since", new java.util.Date(getLastIndexSince()));
+            if ( er.getSeverity() == LogLevel.INFO ) {
+              er.setSeverity(LogLevel.WARN);
+              er.setMessage("Stalled: "+next.toSummary());
+              er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+              er.clearId();
+              setEventRecord(er);
+            }
+          } else {
+            logger.warning("stalled", getLastIndex(), "since", new java.util.Date(getLastIndexSince()));
+            if ( er.getSeverity() == LogLevel.INFO ) {
+              er.setSeverity(LogLevel.WARN);
+              er.setMessage("Stalled: "+nextIndex);
+              er = (EventRecord) ((DAO) x.get("eventRecordDAO")).put(er).fclone();
+              er.clearId();
+              setEventRecord(er);
+            }
+          }
+
+          logger.info("stalled,request replay");
+          ReplayRequestCmd cmd = new ReplayRequestCmd();
+          // request parents as well to handle 'parent not found' scenario
+          long min = replaying.getIndex();
+          if ( next != null ) {
+            min = Math.min(next.getIndex(), Math.min(next.getIndex1(), next.getIndex2()));
+          }
+          cmd.setDetails(new ReplayDetailsCmd.Builder(x).setMinIndex(min).build());
+          setLastIndexSince(System.currentTimeMillis());
+          ((DAO) x.get("localClusterConfigDAO")).cmd(cmd);
+        } else {
+          logger.info("potentially stalled,waiting", getMinReplayInterval() - delta);
         }
       } catch (Throwable t) {
         logger.warning(t.getMessage(), t);

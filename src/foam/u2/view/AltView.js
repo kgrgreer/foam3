@@ -8,18 +8,13 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'AltView',
   extends: 'foam.u2.View',
+  mixins: ['foam.u2.memento.Memorable'],
 
-  documentation: "Provides the ability to switch between multiple views for data set" +
-  "Takes a views property which should be the value of an array containing arrays that contain desired views, and label." +
-  "Ex. views: [[ { class: 'foam.u2.view.TableView' }, 'Table' ]]",
-
-  imports: [ 'memento' ],
+  documentation: `Provides the ability to switch between multiple views for a data set.
+    Takes a views property which should be the value of an array containing arrays that contain desired views, and label.
+    Ex. views: [[ { class: 'foam.u2.view.TableView' }, 'Table' ]]`,
 
   requires: [ 'foam.u2.view.RadioView' ],
-
-  exports: [
-    'currentMemento_ as memento'
-  ],
 
   css: `
     ^ { margin: auto; width: 100%; }
@@ -87,7 +82,11 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data'
     },
-    'currentMemento_'
+    {
+      class: 'String',
+      name: 'selectedViewLabel',
+      memorable: true
+    }
   ],
 
   methods: [
@@ -95,28 +94,16 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      if ( this.memento ) {
-        this.currentMemento_$ = this.memento.tail$;
-
-        if ( ! this.memento.tail ) {
-          this.memento.tail = foam.nanos.controller.Memento.create();
-        }
-      }
-
-      if ( this.currentMemento_ ) {
-        if ( ! this.currentMemento_.tail ) {
-          this.currentMemento_.tail = foam.nanos.controller.Memento.create();
-        }
-      }
-
-      if ( this.memento && this.memento.head.length != 0 ) {
-        var viewSelectedWithMemento = this.views.find(v => foam.Array.isInstance(v) && v[1] == this.memento.head);
+      if ( this.selectedViewLabel ) {
+        var viewSelectedWithMemento = this.views.find(v => foam.Array.isInstance(v) && v[1] == this.selectedViewLabel);
         if ( viewSelectedWithMemento ) {
           this.selectedView = viewSelectedWithMemento[1];
         } else {
-          this.memento.head = '';
+          this.selectedViewLabel = '';
         }
       }
+
+//     var data = self.data$proxy;
 
       this.addClass()
       this.startContext({data: this})
@@ -126,7 +113,7 @@ foam.CLASS({
       .endContext()
       .start('div')
         .add(this.selectedView$.map(function(v) {
-          return self.E().tag(v, {data: self.data$proxy});
+          return self.E().tag(v, {data: self.data});
         }))
       .end();
 
@@ -138,13 +125,9 @@ foam.CLASS({
 
   actions: [
     function setMementoWithSelectedView() {
-      if ( ! this.memento )
-        return;
+      if ( ! this.memento_ ) return;
       var view = this.views.find(v => v[0] == this.selectedView);
-      if ( view )
-        this.memento.head = view[1];
-      else
-        this.memento.head = '';
+      this.selectedViewLabel = view ? view[1] : '';
     }
   ]
 });

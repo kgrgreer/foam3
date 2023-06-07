@@ -21,6 +21,14 @@ foam.CLASS({
     'foam.nanos.medusa.ClusterableMixin'
   ],
 
+  javaImports: [
+    'foam.core.X',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
+    'foam.util.SafetyUtil',
+    'java.util.HashMap',
+    'java.util.Map'
+  ],
+
   tableColumns: [
     'created',
     'subject',
@@ -40,21 +48,55 @@ foam.CLASS({
       order: 20
     },
     {
+      name: 'attachmentInformation',
+      title: 'Attachments',
+      order: 30
+    },
+    {
       name: 'systemInformation',
       help: 'Properties that are used internally by the system.',
-      order: 30,
+      order: 40,
       permissionRequired: true
     },
   ],
 
+  javaCode: `
+  public EmailMessage(X x, Long userId, Map args) {
+    setX(x);
+    setUser(userId);
+    setTemplateArguments(args);
+  }
+  /**
+   * constructor for EmailsUtility migration
+   * @Deprecated
+   */
+  public EmailMessage(X x, Long userId, String template, Map args) {
+    setX(x);
+    setUser(userId);
+    if ( ! SafetyUtil.isEmpty(template) ) {
+      if ( args == null ) {
+        args = new HashMap();
+      }
+      args.put("template", template);
+    }
+    setTemplateArguments(args);
+  }
+  `,
+
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       includeInDigest: true,
       section: 'emailInformation',
       order: 10,
       gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      visibility: 'HIDDEN'
     },
     {
       class: 'DateTime',
@@ -128,6 +170,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.nanos.notification.email.Status',
       name: 'status',
+      value: 'DRAFT',
       includeInDigest: false,
       section: 'emailInformation',
       order: 100,
@@ -142,10 +185,34 @@ foam.CLASS({
       view: {
         class: 'foam.u2.MultiView',
         views: [
-          { class: 'foam.u2.IFrameHTMLView' },
+          { class: 'foam.u2.IFrameHTMLView', resizable: true },
           { class: 'foam.u2.tag.TextArea', rows: 30, cols: 130 }
         ]
       }
+    },
+    {
+      class: 'Map',
+      name: 'templateArguments',
+      storageTransient: true,
+      section: 'templateInformation',
+      order: 10,
+      view: { class: 'foam.u2.view.MapView' }
+    },
+    {
+      class: 'StringArray',
+      name: 'attachments',
+      visibility: 'RO',
+      section: 'attachmentInformation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value && value.length || 0);
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'sentDate',
+      visibility: 'RO',
+      section: 'emailInformation',
+      order: '115'
     },
     {
       class: 'Reference',
@@ -168,33 +235,14 @@ foam.CLASS({
       includeInDigest: true,
     },
     {
-      class: 'Map',
-      name: 'templateArguments',
-      includeInDigest: true,
-      section: 'templateInformation',
-      order: 10,
-      view: { class: 'foam.u2.view.MapView' }
-    },
-    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      includeInDigest: true,
       tableWidth: 120,
       section: 'systemInformation',
       order: 10,
-      writePermissionRequired: true,
-      documentation: `
-        Need to override getter to return "" because its trying to
-        return null (probably as a result of moving order of files
-        in nanos), which breaks tests
-      `,
-      javaGetter: `
-        if ( ! spidIsSet_ ) {
-          return "";
-        }
-        return spid_;
-      `
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',

@@ -21,40 +21,46 @@ foam.ENUM({
 
   values: [
     {
-      name: 'UNKNOWN',
-      label: 'Unknown',
-      color: '/*%GREY1%*/ #5A5A5A',
-      background: '/*%GREY5%*/ #EF0F2',
+      name: 'DRAFT',
+      label: 'Draft',
+      color: '$grey700',
+      background: '$grey50',
     },
     {
       name: 'UNSENT',
       label: 'Unsent',
-      color: '/*%GREY1%*/ #5A5A5A',
-      background: '/*%GREY5%*/ #EF0F2',
+      color: '$grey700',
+      background: '$grey50',
     },
     {
       name: 'SENT',
       label: 'Sent',
-      color: '/*%APPROVAL1%*/ #04612E',
-      background: '/*%APPROVAL5%*/ #EEF7ED',
+      color: '$success700',
+      background: '$success50',
     },
     {
       name: 'FAILED',
       label: 'Failed',
-      color: '/*%DESTRUCTIVE2%*/ #A61414',
-      background: '/*%DESTRUCTIVE5%*/ #FFE9E7',
+      color: '$destructive500',
+      background: '$destructive50',
     },
     {
       name: 'BOUNCED',
       label: 'Bounced',
-      color: '/*%WARNING2%*/ #D57D11',
-      background: '/*%WARNING5%*/ #FFF4DE',
+      color: '$warn500',
+      background: '$warn700',
     },
     {
       name: 'RECEIVED',
       label: 'Received',
-      color: '/*%APPROVAL1%*/ #04612E',
-      background: '/*%APPROVAL5%*/ #EEF7ED',
+      color: '$blue500',
+      background: '$grey50',
+    },
+    {
+      name: 'PROCESSED',
+      label: 'Processed',
+      color: '$success700',
+      background: '$success50',
     }
   ]
 });

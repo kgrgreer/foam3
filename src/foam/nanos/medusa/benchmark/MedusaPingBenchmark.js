@@ -131,7 +131,11 @@ foam.CLASS({
        throw new RuntimeException("Client not found "+index);
       }
       PM pm = new PM(this.getClass().getSimpleName(), cfg.getId(), "ping");
-      client.cmd(PingDAO.PING);
+      PingCmd cmd = new PingCmd();
+      cmd.setDestination(cfg.getId());
+      cmd.setStart(System.currentTimeMillis());
+      cmd = (PingCmd) client.cmd(cmd);
+      cmd.setEnd(System.currentTimeMillis());
       pm.log(x);
       `
     }

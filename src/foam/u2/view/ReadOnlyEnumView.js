@@ -48,8 +48,8 @@ foam.CLASS({
     function render() {
       var data = this.data;
       this.SUPER();
-      var color = this.returnExpandedCSS(this.data.color);
-      var background = this.returnExpandedCSS(this.data.background);
+      var color = this.resolveColor(this.data.color);
+      var background = this.resolveColor(this.data.background);
       var isPill = this.isFancy(this.data.VALUES);
       this
         .enableClass(this.myClass('pill'), isPill)
@@ -81,6 +81,11 @@ foam.CLASS({
           if ( value.color || value.background ) { return true; }
         }
       })
+    },
+    function resolveColor(token) {
+      if ( token.startsWith('$') )
+        return foam.CSS.returnTokenValue(token, this.cls_, this.__context__);
+      return this.returnExpandedCSS(token);
     }
   ]
 });

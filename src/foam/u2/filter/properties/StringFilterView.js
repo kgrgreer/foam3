@@ -36,7 +36,7 @@ foam.CLASS({
 
       border-radius: 3px;
       border: solid 1px #cbcfd4;
-      background-color: #ffffff;
+      background-color: $white;
 
       background-image: url(images/ic-search.svg);
       background-repeat: no-repeat;
@@ -128,8 +128,8 @@ foam.CLASS({
       postSet: function(_, n) {
         this.isOverLimit = false;
 
-        var pred = this.search && this.search.trim().length > 0 
-          ? this.STARTS_WITH(this.property, this.search) 
+        var pred = this.search && this.search.trim().length > 0
+          ? this.STARTS_WITH(this.property, this.search)
           : this.TRUE;
 
         this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {
@@ -214,7 +214,7 @@ foam.CLASS({
           })
           .end()
           .start()
-            .addClasses(['p-semibold', this.myClass('label-limit')])
+            .addClass('p-semibold', this.myClass('label-limit'))
             .show(this.isOverLimit$)
             .add(this.LABEL_LIMIT_REACHED)
           .end()
@@ -279,9 +279,12 @@ foam.CLASS({
     },
 
     function getLabelWithCount(option) {
-      if ( ! this.countByContents[option] ) console.error('String mismatch: ', option);
-      var value = this.countByContents[option].value;
-      if ( value > 1 ) return `[${this.countByContents[option].value}] ${option ? option : this.LABEL_EMPTY}`;
+      if ( ! this.countByContents[option] ) {
+        console.error('String mismatch: ', option);
+      } else {
+        let value = this.countByContents[option].value;
+        if ( value > 1 ) return `[${this.countByContents[option].value}] ${option ? option : this.LABEL_EMPTY}`;
+      }
       return option;
     },
 
@@ -309,8 +312,8 @@ foam.CLASS({
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
-        var pred = this.search && this.search.trim().length > 0 
-          ? this.STARTS_WITH(this.property, this.search) 
+        var pred = this.search && this.search.trim().length > 0
+          ? this.STARTS_WITH(this.property, this.search)
           : this.TRUE;
 
         this.dao.where(pred).select(this.GROUP_BY(this.property, this.COUNT(), 21)).then((results) => {

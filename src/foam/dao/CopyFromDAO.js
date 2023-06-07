@@ -19,12 +19,12 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.dao.ArraySink',
+    'foam.dao.*',
     'foam.mlang.order.Desc',
     'foam.mlang.order.ThenBy',
-    'foam.mlang.predicate.Predicate'
+    'foam.mlang.predicate.Predicate',
+    'foam.mlang.sink.Count',
+    'static foam.core.ContextAware.maybeContextualize'
   ],
 
   classes: [
@@ -59,7 +59,7 @@ foam.CLASS({
             try {
               innerObject = (FObject) obj;
               outerObject = (FObject) getOf().newInstance();
-              outerObject = outerObject.copyFrom(innerObject);
+              outerObject = outerObject.copyFrom(maybeContextualize(ctx, innerObject));
             } catch ( Exception ex ) {
               throw new RuntimeException("Cannot adapt: " + ex.getMessage(), ex);
             }
@@ -149,7 +149,7 @@ foam.CLASS({
         try {
           delegateObject = (FObject) obj;
           ofObject = (FObject) getOf().newInstance();
-          ofObject = ofObject.copyFrom(delegateObject);
+          ofObject = ofObject.copyFrom(maybeContextualize(ctx, delegateObject));
         } catch ( Exception ex ) {
           throw new RuntimeException("Cannot adapt from delegate: " + ex.getMessage(), ex);
         }
@@ -263,6 +263,9 @@ foam.CLASS({
               .setDelegate(sink != null ? sink : new ArraySink())
               .setOf(this.getOf())
               .build();
+
+            // There is a case when we need the decorated sink even when the inner most sink is count
+            // e.g, when we need to apply predicate after the adapt: AdapterSink -> PredicatedSink -> CountSink
             getDelegate().select_(x, decoratedSink, skip, limit, adaptOrder(order), adaptPredicate(predicate));
             return sink;
         `

@@ -46,4 +46,24 @@ public class ErrorReportingNodePStream
     }
     return result;
   }
+
+  public String getErrorLine() {
+    var lines = "";
+    try {
+      lines = root_.substring(tail());
+    } catch (StringIndexOutOfBoundsException e) {
+      // TODO:
+    }
+    int nextLinePos = lines.indexOf('\n');
+    int lastLinePos = 0;
+    int lineNumber  = 1;
+
+    while ( nextLinePos > -1 ) {
+      lastLinePos = nextLinePos;
+      nextLinePos = lines.indexOf('\n', nextLinePos + 1);
+      lineNumber += 1;
+    }
+
+    return "Line: " + lineNumber + ", Col: " + lines.substring(lastLinePos).length();
+  }
 }

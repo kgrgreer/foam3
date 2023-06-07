@@ -11,9 +11,14 @@ foam.CLASS({
 
   documentation: 'Draw a clock. One of the first ever FOAM programs created in 2011.',
 
-  implements: [ 'com.google.misc.Colors' ],
-
   requires: [ 'foam.graphics.Circle' ],
+
+  constants: {
+     RED:    '#EA4335',
+     GREEN:  '#34A853',
+     BLUE:   '#4285F4',
+     YELLOW: '#FBBC05'
+  },
 
   properties: [
     [ 'radius',   100 ],

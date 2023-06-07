@@ -30,11 +30,11 @@ foam.CLASS({
   css: `
     ^ {
       margin-top: 15pt;
-      border: 3pt solid /*%DESTRUCTIVE3%*/ #C00;
+      border: 3pt solid $destructive400;
       border-radius: 6px;
     }
     ^title {
-      background-color: /*%DESTRUCTIVE3%*/ #C00;
+      background-color: $destructive400;
       color: #FFF;
       padding: 2pt 8pt;
     }
@@ -49,7 +49,7 @@ foam.CLASS({
     {
       name: 'wizardlet',
       class: 'FObjectProperty',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     },
     {
       name: 'reloadCount',

@@ -12,7 +12,9 @@ foam.INTERFACE({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'Creation date'
+      documentation: 'Creation date',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     }
   ]
 });

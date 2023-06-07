@@ -7,22 +7,9 @@
 foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'MementoMixin',
-
-  imports: ['memento?'],
-
-  exports: ['currentMemento_ as memento'],
-
-  properties: ['currentMemento_'],
-
+  description: ' DEPRECATED: Remove when memnto migration is complete',
   methods: [
     function initMemento() {
-      if ( this.memento ) {
-        if ( ! this.memento.tail )
-          this.memento.tail = foam.nanos.controller.Memento.create();
-        this.currentMemento_ = this.memento.tail;
-      } else {
-        this.currentMemento_ = foam.nanos.controller.Memento.create();
-      }
     }
   ]
 });

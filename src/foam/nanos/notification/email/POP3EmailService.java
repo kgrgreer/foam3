@@ -5,7 +5,7 @@ import foam.core.ContextAwareSupport;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
-import foam.support.model.Ticket;
+// import foam.support.model.Ticket;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -39,10 +39,10 @@ public class POP3EmailService
       Folder emailFolder = store.getFolder("INBOX");
       emailFolder.open(Folder.READ_ONLY);
       Message[] messages = emailFolder.getMessages();
-              
+
       IMAPFolder imapfolder = (IMAPFolder) emailFolder;
       System.out.println("messages.length---" + messages.length);
-        
+
       for ( int i = 0 ; i < messages.length ; i++ ) {
         Message message = messages[i];
         long emailId = imapfolder.getUID(message);
@@ -51,13 +51,13 @@ public class POP3EmailService
         // by setting the ticket emailId to the emailId from the imapfolder.getUID() method.
         // and putting to  TicketDAO
 
-        try{ 
-          ArraySink sink = (ArraySink) ticketDAO.where(EQ(Ticket.EMAIL_ID, emailId)).select(new ArraySink());
-          List ticketList = sink.getArray();
-          System.out.println(ticketList); 
-        } catch ( Throwable e ) {
-         
-        }
+        // try{
+        //   ArraySink sink = (ArraySink) ticketDAO.where(EQ(Ticket.EMAIL_ID, emailId)).select(new ArraySink());
+        //   List ticketList = sink.getArray();
+        //   System.out.println(ticketList);
+        // } catch ( Throwable e ) {
+
+        // }
 
         System.out.println(emailId);
       }
@@ -110,7 +110,7 @@ public class POP3EmailService
         System.out.println("inbox not found");
         System.exit(0);
       }
-      folder.open(folder.READ_WRITE);    
+      folder.open(folder.READ_WRITE);
 
       Message[] messages = folder.getMessages();
       for ( int i = 0, n = messages.length ; i < n ; i++ ) {
@@ -133,7 +133,7 @@ public class POP3EmailService
           Message message = messages[i];
           date = message.getSentDate();
           String from = InternetAddress.toString(message.getFrom());
-      
+
           if ( from != null ) {
             System.out.println("From: " + from);
           }
@@ -190,7 +190,7 @@ public class POP3EmailService
     // TODO: remove test credentials
     fetch("pop.gmail.com", "pop3", "pat.dev.test1@gmail.com", "Choose123");
   }
-  
+
   public String sendEmail(String requestor,String subject,String body) {
     String host = "pop.gmail.com";// change accordingly
     String username = "pat.dev.test1@gmail.com";// change accordingly
@@ -213,7 +213,7 @@ public class POP3EmailService
 
       // Create a default MimeMessage object.
       Message message = new MimeMessage(session);
-	
+
       // Set From: header field of the header.
       message.setFrom(new InternetAddress("pat.dev.test1@gmail.com"));
 

@@ -4,7 +4,7 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'Rule',
   extends: 'foam.nanos.ruler.Ruled',
@@ -25,20 +25,28 @@
     'userDAO?'
   ],
 
+  requires: [
+    'foam.mlang.predicate.True'
+  ],
+
   javaImports: [
     'foam.core.DirectAgency',
     'foam.dao.DAO',
+    'foam.mlang.predicate.FScriptPredicate',
     'foam.mlang.predicate.MQLExpr',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Logger',
+    'foam.nanos.om.OMLogger',
+    'foam.nanos.pm.PM',
+    'java.util.Collection',
+    'java.util.Date',
     'foam.util.retry.RetryStrategy',
     'foam.util.retry.SimpleRetryStrategy',
-    'java.util.Collection',
-    'java.util.Date'
+    'foam.util.SafetyUtil'
   ],
 
   tableColumns: [
@@ -105,9 +113,11 @@
       section: 'basicInfo'
     },
     {
-      class: 'String',
+      class: 'Reference',
       name: 'daoKey',
-      label: 'DAO Key',
+      of: 'foam.nanos.boot.NSpec',
+      targetDAOKey: 'nSpecDAO',
+      label: 'DAO',
       documentation: 'dao name that the rule is applied on.',
       readPermissionRequired: true,
       writePermissionRequired: true,
@@ -139,8 +149,8 @@
       name: 'after',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      documentation: 'Defines if the rule needs to be applied before or after operation is completed'+
-      'E.g. on dao.put: before object was stored in a dao or after.'
+      documentation: `Defines if the rule needs to be applied before or after operation is completed
+      E.g. on dao.put: before object was stored in a dao or after.`
     },
     {
       class: 'Boolean',
@@ -150,13 +160,13 @@
       writePermissionRequired: true,
       documentation: 'Defines if the rule is async. Async rule always runs after DAO put/remove, the after flag on the rule will be ignored.'
     },
-    'predicate',
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.ruler.RuleAction',
       name: 'action',
       view: { class: 'foam.u2.view.JSONTextView' },
-      documentation: 'The action to be executed if predicates returns true for passed object.'
+      documentation: 'The action to be executed if predicates returns true for passed object.',
+      javaCloneProperty: 'set(dest, get(source));'
     },
     {
       name: 'enabled',
@@ -208,6 +218,7 @@
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -223,6 +234,7 @@
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -245,6 +257,7 @@
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -260,6 +273,7 @@
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -336,10 +350,9 @@
         }
       ],
       javaCode: `
-        if ( ! getEnabled() ) return false;
-
+        ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()));
         try {
-          if ( getPredicate() instanceof MQLExpr ) {
+          if ( getPredicate() instanceof MQLExpr || getPredicate() instanceof FScriptPredicate ) {
             RulerData data = new RulerData();
             Subject subject = (Subject) x.get("subject");
             data.setN(obj);
@@ -391,7 +404,13 @@
         }
       ],
       javaCode: `
-        getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        PM pm = PM.create(x, this.getClass(), getDaoKey(), getId());
+        try {
+          ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()), "Action");
+          getAction().applyAction(x, obj, oldObj, ruler, rule, agency);
+        } finally {
+          pm.log(x);
+        }
         try {
           ruler.saveHistory(this, obj);
         } catch ( Exception e ) { /* Ignored */ }
@@ -423,6 +442,7 @@
       ],
       javaCode: `
         try {
+          ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()), "AsyncAction");
           apply(x, obj, oldObj, ruler, rule, new DirectAgency());
         } catch ( Exception e ) {
           var strategy = getMaxRetry() > 0 ?
@@ -430,6 +450,7 @@
             (RetryStrategy) x.get("ruleRetryStrategy");
 
           new RetryManager(strategy, rule.getName()).submit(x, userX -> {
+            ((OMLogger) x.get("OMLogger")).log("Rule", (SafetyUtil.isEmpty(getName()) ? getId() : getName()), "AsyncActionRetry");
             apply(x, obj, oldObj, ruler, rule, new DirectAgency());
           });
         }
@@ -438,8 +459,8 @@
     {
       name: 'updateRule',
       type: 'foam.nanos.ruler.Rule',
-      documentation: 'since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.' +
-      'the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.',
+      documentation: `since rules are stored as lists in the RulerDAO we use listeners to update them whenever ruleDAO is updated.
+      the method provides logic for modifying already stored rule. If not overridden, the incoming rule will be stored in the list as it is.`,
       args: [
         {
           name: 'rule',

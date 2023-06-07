@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.i18n',
   name: 'Locale',
 
-  ids: ['locale', 'variant', 'source'],
+  ids: ['locale', 'variant', 'source', 'themeId'],
 
   implements: [
     'foam.nanos.auth.LastModifiedAware',
@@ -89,6 +89,12 @@ foam.CLASS({
           }
         }.bind(this));
       }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.theme.Theme',
+      name: 'themeId',
+      documentation: 'Making locales themeAware'
     }
   ]
 });

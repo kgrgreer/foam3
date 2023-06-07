@@ -17,8 +17,7 @@ configuration for contacting the primary node.`,
   ],
 
   implements: [
-    'foam.core.ContextAware',
-    'foam.nanos.NanoService'
+    'foam.core.ContextAware'
   ],
 
   javaImports: [
@@ -41,6 +40,7 @@ configuration for contacting the primary node.`,
     'foam.nanos.alarming.Alarm',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.medusa.ElectoralService',
     'foam.nanos.medusa.ElectoralServiceState',
     'foam.nanos.pm.PM',
@@ -119,109 +119,42 @@ configuration for contacting the primary node.`,
       value: 'medusaThreadPool'
     },
     {
-      name: 'clients',
-      class: 'Map',
-      visibility: 'HIDDEN',
-      javaFactory: 'return new java.util.HashMap();'
-    },
-    {
       name: 'mdaos',
       class: 'Map',
       javaFactory: 'return new HashMap();',
       visibility: 'HIDDEN'
     },
-    {
-      documentation: 'see ClusterConfigSupportDAO',
-      name: 'mediatorCount',
-      class: 'Int',
+   {
+      name: 'nodeBuckets',
+      class: 'List',
       visibility: 'RO',
       javaFactory: `
-      ClusterConfig config = getConfig(getX(), getConfigId());
-      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.ZONE, Math.max(0, config.getZone() -1)),
-            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.REALM, config.getRealm()),
-            EQ(ClusterConfig.REGION, config.getRegion())
-          ))
-        .select(COUNT());
-      getLogger().info("mediatorCount", ((Long)count.getValue()).intValue());
-      return ((Long)count.getValue()).intValue();
+      return new ArrayList();
       `
     },
     {
-      name: 'mediatorQuorum',
-      class: 'Int',
-      visibility: 'RO',
-      javaFactory: `
-      return (int) Math.floor(getMediatorCount() / 2) + 1;
-      `
-    },
-    {
-      documentation: 'Are at least half+1 of the expected mediators in zone 0 online?',
-      name: 'hasMediatorQuorum',
+      name: 'shutdown',
       class: 'Boolean',
-      visibility: 'RO',
-      javaFactory: `
-      ClusterConfig config = getConfig(getX(), getConfigId());
-      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.ZONE, 0L),
-            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-            EQ(ClusterConfig.ENABLED, true),
-            EQ(ClusterConfig.STATUS, Status.ONLINE),
-            EQ(ClusterConfig.REALM, config.getRealm()),
-            EQ(ClusterConfig.REGION, config.getRegion())
-          ))
-        .select(COUNT());
-      boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
-      getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
-      return result;
-      `
+      value: false,
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
-      name: 'nodeRedundancy',
-      class: 'Int',
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
-      int c = getNodeCount();
-      // maximize groups for small test/staging clusters - sacrifice HA
-      if ( c < 4 ) return 0;
-      if ( c < 9 ) return 1;
-      return 2;
-      `
-    },
-    {
-      // NOTE: replace all the quorum logic with a plug in quorum strategy
-      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
-      name: 'nodeQuorum',
-      class: 'Int',
-      visibility: 'RO',
-      javaFactory: `
-      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
-      getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
-      return quorum;
-      `
-    },
-    {
-      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
-      name: 'nodeGroups',
-      class: 'Int',
-      visibility: 'RO',
-      javaFactory: `
-      int c = getNodeCount();
-      int bucketSize = 1 + getNodeRedundancy();
-      int groups = (int) Math.max(1, Math.floor( c / (double) bucketSize ));
-      return groups;
+        return Loggers.logger(getX(), this);
       `
     },
     {
       name: 'nodeCount',
       class: 'Int',
-      visibility: 'RO',
       javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeCount");
       ClusterConfig config = getConfig(getX(), getConfigId());
       Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
         .where(
@@ -234,67 +167,21 @@ configuration for contacting the primary node.`,
             EQ(ClusterConfig.ACCESS_MODE, AccessMode.RW)
           ))
         .select(COUNT());
+      pm.log(getX());
       return (int) count.getValue();
       `
     },
     {
-      name: 'replayNodes',
-      class: 'List',
-      visibility: 'RO',
+      // NOTE: replace all the quorum logic with a plug in quorum strategy
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
+      name: 'nodeQuorum',
+      class: 'Int',
       javaFactory: `
-      ClusterConfig config = getConfig(getX(), getConfigId());
-      return (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
-        .where(
-          AND(
-            EQ(ClusterConfig.ZONE, 0L),
-            EQ(ClusterConfig.REALM, config.getRealm()),
-            EQ(ClusterConfig.REGION, config.getRegion()),
-            EQ(ClusterConfig.TYPE, MedusaType.NODE),
-            EQ(ClusterConfig.ENABLED, true)
-          ))
-        .select(new ArraySink())).getArray();
-      `
-    },
-    {
-      name: 'nodeBuckets',
-      class: 'List',
-      visibility: 'RO',
-      javaFactory: `
-      return new ArrayList();
-      `
-    },
-    {
-      documentation: 'Are sufficient nodes enabled and online? Require a quorum count of buckets and a quorum count of nodes in each bucket',
-      name: 'hasNodeQuorum',
-      class: 'Boolean',
-      visibility: 'RO',
-      javaFactory: `
-      ClusterConfig myConfig = getConfig(getX(), getConfigId());
-      if ( myConfig.getType() == MedusaType.NODE ) {
-        return true;
-      }
-
-      int minNodesInBucket = getNodeQuorum();
-
-      List<Set<String>> buckets = getNodeBuckets();
-      for ( int i = 0; i < buckets.size(); i++ ) {
-        Set<String> bucket = buckets.get(i);
-        // Need at least minNodesInBucket in ONLINE state for Quorum.
-        int online = 0;
-        for ( String id : bucket ) {
-          ClusterConfig config = getConfig(getX(), id);
-          if ( config.getStatus() == Status.ONLINE ) {
-            online += 1;
-          }
-        }
-        if ( online < minNodesInBucket ) {
-           getLogger().warning("hasNodeQuorum", "false", "insufficient ONLINE nodes in bucket", i, "size", bucket.size(), "online", online, "threshold", minNodesInBucket);
-          outputBuckets(getX());
-          return false;
-        }
-      }
-      getLogger().debug("hasNodeQuorum", "true");
-      return true;
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
+      int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+      // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+      pm.log(getX());
+      return quorum;
       `
     },
     {
@@ -302,8 +189,8 @@ configuration for contacting the primary node.`,
       name: 'broadcastMediators',
       class: 'FObjectArray',
       of: 'foam.nanos.medusa.ClusterConfig',
-      visibility: 'HIDDEN',
       javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getBroascastMediators");
       ClusterConfig myConfig = getConfig(getX(), getConfigId());
       long zone = myConfig.getZone() + 1;
       if ( myConfig.getType() == MedusaType.NODE ) {
@@ -326,16 +213,88 @@ configuration for contacting the primary node.`,
         .select(new ArraySink())).getArray();
       ClusterConfig[] configs = new ClusterConfig[arr.size()];
       arr.toArray(configs);
+      pm.log(getX());
       return configs;
       `
     },
     {
-      documentation: 'Primary Mediators in Non-Active Regions to broadcast to. See ClusterConfigStatusDAO',
-      name: 'broadcastNARegionMediators',
+      documentation: 'Mediators to broadcast to',
+      name: 'sfBroadcastMediators',
       class: 'FObjectArray',
       of: 'foam.nanos.medusa.ClusterConfig',
-      visibility: 'HIDDEN',
       javaFactory: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getSfBroascastMediators");
+      ClusterConfig myConfig = getConfig(getX(), getConfigId());
+
+      if ( myConfig.getType() == MedusaType.NODE ) return new ClusterConfig[0];
+
+      long zone = myConfig.getZone();
+      List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            OR(
+              EQ(ClusterConfig.ZONE, zone),
+              EQ(ClusterConfig.ZONE, zone+1)
+            ),
+            OR(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.TYPE, MedusaType.NERF)
+            ),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.REGION, myConfig.getRegion()),
+            EQ(ClusterConfig.REALM, myConfig.getRealm())
+          )
+        )
+        .select(new ArraySink())).getArray();
+      ClusterConfig[] configs = new ClusterConfig[arr.size()];
+      arr.toArray(configs);
+      pm.log(getX());
+      return configs;
+      `
+    }
+  ],
+
+  methods: [
+    {
+      documentation: 'Any active region in realm.',
+      name: 'getActiveRegion',
+      type: 'foam.nanos.medusa.ClusterConfig',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getActiveRegion");
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      DAO clusterConfigDAO = (DAO) getX().get("clusterConfigDAO");
+      List<ClusterConfig> configs = ((ArraySink) clusterConfigDAO
+        .where(
+          AND(
+            EQ(ClusterConfig.REGION_STATUS, RegionStatus.ACTIVE),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            OR(
+              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+              EQ(ClusterConfig.TYPE, MedusaType.NERF)
+            ),
+            EQ(ClusterConfig.STATUS, Status.ONLINE),
+            EQ(ClusterConfig.ENABLED, true)
+          ))
+        // send to outermost zone.
+        .orderBy(foam.mlang.MLang.DESC(ClusterConfig.ZONE))
+//        .orderBy(ClusterConfig.IS_PRIMARY)
+        .select(new ArraySink())).getArray();
+      pm.log(getX());
+      if ( configs.size() > 0 ) {
+        // TODO: random or round-robin.
+        // Ordered by IS_PRIMARY if any are.
+        return configs.get(0);
+      } else {
+        throw new RuntimeException("Active Region not found.");
+      }
+      `
+    },
+    {
+      documentation: 'Primary Mediators in Non-Active Regions to broadcast to. See ClusterConfigStatusDAO',
+      name: 'getBroadcastNARegionMediators',
+      type: 'foam.nanos.medusa.ClusterConfig[]',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getBroascastNAMediators");
       ClusterConfig myConfig = getConfig(getX(), getConfigId());
       List<ClusterConfig> arr = (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
         .where(
@@ -353,16 +312,69 @@ configuration for contacting the primary node.`,
         .select(new ArraySink())).getArray();
       ClusterConfig[] configs = new ClusterConfig[arr.size()];
       arr.toArray(configs);
+      pm.log(getX());
       return configs;
       `
     },
     {
+      documentation: 'see ClusterConfigSupportDAO',
+      name: 'getMediatorCount',
+      type: 'Integer',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getMediatorCount");
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, Math.max(0, config.getZone() -1)),
+            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            EQ(ClusterConfig.REGION, config.getRegion())
+          ))
+        .select(COUNT());
+      // getLogger().debug("mediatorCount", ((Long)count.getValue()).intValue());
+      pm.log(getX());
+      return ((Long)count.getValue()).intValue();
+      `
+    },
+    {
+      name: 'getMediatorQuorum',
+      type: 'Integer',
+      javaCode: `
+      return (int) Math.floor(getMediatorCount() / 2) + 1;
+      `
+    },
+    {
+      documentation: 'Are at least half+1 of the expected mediators in zone 0 online?',
+      name: 'getHasMediatorQuorum',
+      type: 'Boolean',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getHasMediatorQuorum");
+      ClusterConfig config = getConfig(getX(), getConfigId());
+      Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
+        .where(
+          AND(
+            EQ(ClusterConfig.ZONE, 0L),
+            EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
+            EQ(ClusterConfig.ENABLED, true),
+            EQ(ClusterConfig.STATUS, Status.ONLINE),
+            EQ(ClusterConfig.REALM, config.getRealm()),
+            EQ(ClusterConfig.REGION, config.getRegion())
+          ))
+        .select(COUNT());
+      boolean result = ((Long)count.getValue()).intValue() >= getMediatorQuorum();
+      getLogger().info("hasMediatorQuorum", "count", ((Long)count.getValue()).intValue(), "quorum", getMediatorQuorum(), result);
+      pm.log(getX());
+      return result;
+      `
+    },
+    {
       documentation: 'Any active region in realm.',
-      name: 'nextZone',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ClusterConfig',
-      visibility: 'RO',
-      javaFactory: `
+      name: 'getNextZone',
+      type: 'foam.nanos.medusa.ClusterConfig',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNextZone");
       ClusterConfig config = getConfig(getX(), getConfigId());
       long zone = config.getZone();
       while ( zone > 0 ) {
@@ -391,19 +403,19 @@ configuration for contacting the primary node.`,
           for ( ClusterConfig c : configs ) {
             getLogger().info("nextZone", "other", c.getId(), c.getZone(), c.getIsPrimary());
           }
+          pm.log(getX());
           return cfg;
         }
       }
+      pm.error(getX());
       throw new RuntimeException("Next Zone not found.");
       `
     },
     {
       documentation: 'determine the next server to route request to.',
-      name: 'nextServer',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ClusterConfig',
-      visibility: 'RO',
-      javaFactory: `
+      name: 'getNextServer',
+      type: 'foam.nanos.medusa.ClusterConfig',
+      javaCode: `
       ClusterConfig config = getConfig(getX(), getConfigId());
 
       // standby region -> active region
@@ -430,76 +442,112 @@ configuration for contacting the primary node.`,
       `
     },
     {
-      documentation: 'Any active region in realm.',
-      name: 'activeRegion',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.medusa.ClusterConfig',
-      visibility: 'RO',
-      javaFactory: `
+      name: 'getNodeRedundancy',
+      type: 'Integer',
+      javaCode: `
+      int c = getNodeCount();
+      if ( c < 3 ) return 0; // size 2 test cluster - sacrifice HA
+      if ( c < 6 ) return 1; 
+      if ( c < 12 ) return 2; // 6 -> 2 buckets of 3, 9 -> 3 buckets of 3
+      return 3;
+      `
+    },
+    // {
+    //   // NOTE: replace all the quorum logic with a plug in quorum strategy
+    //   documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
+    //   name: 'getNodeQuorum',
+    //   type: 'Integer',
+    //   javaCode: `
+    //   PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeQuorum");
+    //   int quorum = (int) Math.floor((getNodeCount() / getNodeGroups()) / 2) + 1;
+    //   // getLogger().info("nodeQuorum", "nodes", getNodeCount(), "buckets", getNodeGroups(), "quorum", quorum);
+    //   pm.log(getX());
+    //   return quorum;
+    //   `
+    // },
+    {
+      documentation: `Nodes are organized by groups or buckets. Updates are writting to each member of a bucket.  Quorum is quorum of a group or bucket.`,
+      name: 'getNodeGroups',
+      type: 'Integer',
+      javaCode: `
+      int c = getNodeCount();
+      int bucketSize = 1 + getNodeRedundancy();
+      int groups = (int) Math.max(1, Math.floor( c / (double) bucketSize ));
+      return groups;
+      `
+    },
+    // {
+    //   name: 'getNodeCount',
+    //   type: 'Integer',
+    //   javaCode: `
+    //   PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getNodeCount");
+    //   ClusterConfig config = getConfig(getX(), getConfigId());
+    //   Count count = (Count) ((DAO) getX().get("localClusterConfigDAO"))
+    //     .where(
+    //       AND(
+    //         EQ(ClusterConfig.ZONE, 0L),
+    //         EQ(ClusterConfig.REALM, config.getRealm()),
+    //         EQ(ClusterConfig.REGION, config.getRegion()),
+    //         EQ(ClusterConfig.TYPE, MedusaType.NODE),
+    //         EQ(ClusterConfig.ENABLED, true),
+    //         EQ(ClusterConfig.ACCESS_MODE, AccessMode.RW)
+    //       ))
+    //     .select(COUNT());
+    //   pm.log(getX());
+    //   return (int) count.getValue();
+    //   `
+    // },
+    {
+      documentation: 'Are sufficient nodes enabled and online? Require a quorum count of buckets and a quorum count of nodes in each bucket',
+      name: 'getHasNodeQuorum',
+      type: 'Boolean',
+      javaCode: `
+      PM pm = PM.create(getX(), this.getClass().getSimpleName(), "getHasNodeQuorum");
+      ClusterConfig myConfig = getConfig(getX(), getConfigId());
+      if ( myConfig.getType() == MedusaType.NODE ) {
+        return true;
+      }
+
+      int minNodesInBucket = getNodeQuorum();
+
+      List<Set<String>> buckets = getNodeBuckets();
+      for ( int i = 0; i < buckets.size(); i++ ) {
+        Set<String> bucket = buckets.get(i);
+        // Need at least minNodesInBucket in ONLINE state for Quorum.
+        int online = 0;
+        for ( String id : bucket ) {
+          ClusterConfig config = getConfig(getX(), id);
+          if ( config.getStatus() == Status.ONLINE ) {
+            online += 1;
+          }
+        }
+        if ( online < minNodesInBucket ) {
+           getLogger().warning("hasNodeQuorum", "false", "insufficient ONLINE nodes in bucket", i, "size", bucket.size(), "online", online, "threshold", minNodesInBucket);
+          outputBuckets(getX());
+          pm.log(getX());
+          return false;
+        }
+      }
+      getLogger().debug("hasNodeQuorum", "true");
+      pm.log(getX());
+      return true;
+      `
+    },
+    {
+      name: 'getReplayNodes',
+      type: 'List',
+      javaCode: `
       ClusterConfig config = getConfig(getX(), getConfigId());
-      DAO clusterConfigDAO = (DAO) getX().get("clusterConfigDAO");
-      List<ClusterConfig> configs = ((ArraySink) clusterConfigDAO
+      return (ArrayList) ((ArraySink) ((DAO) getX().get("localClusterConfigDAO"))
         .where(
           AND(
-            EQ(ClusterConfig.REGION_STATUS, RegionStatus.ACTIVE),
+            EQ(ClusterConfig.ZONE, 0L),
             EQ(ClusterConfig.REALM, config.getRealm()),
-            OR(
-              EQ(ClusterConfig.TYPE, MedusaType.MEDIATOR),
-              EQ(ClusterConfig.TYPE, MedusaType.NERF)
-            ),
-            EQ(ClusterConfig.STATUS, Status.ONLINE),
+            EQ(ClusterConfig.REGION, config.getRegion()),
+            EQ(ClusterConfig.TYPE, MedusaType.NODE),
             EQ(ClusterConfig.ENABLED, true)
           ))
-        // send to outermost zone.
-        .orderBy(foam.mlang.MLang.DESC(ClusterConfig.ZONE))
-//        .orderBy(ClusterConfig.IS_PRIMARY)
         .select(new ArraySink())).getArray();
-      if ( configs.size() > 0 ) {
-        // TODO: random or round-robin.
-        // Ordered by IS_PRIMARY if any are.
-        return configs.get(0);
-      } else {
-        throw new RuntimeException("Active Region not found.");
-      }
-      `
-    },
-    {
-      name: 'shutdown',
-      class: 'Boolean',
-      value: false,
-      visibility: 'HIDDEN',
-      transient: true
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
-    },
-  ],
-
-  methods: [
-    {
-      documentation: 'Start as a NanoService',
-      name: 'start',
-      javaCode: `
-      ReplayingInfo replaying = (ReplayingInfo) getX().get("replayingInfo");
-      DAO dao = (DAO) getX().get("localClusterConfigDAO");
-      ClusterConfig myConfig = (ClusterConfig) dao.find(getConfigId());
-      if ( myConfig != null ) {
-        myConfig = (ClusterConfig) myConfig.fclone();
-        myConfig.setReplayingInfo(replaying);
-        dao.put(myConfig);
-      } else {
-        throw new foam.core.FOAMException("ClusterConfig not found: "+getConfigId());
-      }
       `
     },
     {
@@ -526,6 +574,9 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getSocketClientBox");
       try {
+        if ( receiveClusterConfig.getId() == getConfigId() ) {
+          throw new RuntimeException("SocketClientBox to self");
+        }
         String address = receiveClusterConfig.getId();
         DAO hostDAO = (DAO) x.get("hostDAO");
         Host host = (Host) hostDAO.find(address);
@@ -620,12 +671,12 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getConfig");
       try {
-      ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
-      if ( config != null ) {
-        return (ClusterConfig) config.fclone();
-      }
-      getLogger().error("ClusterConfig not found:", id);
-      throw new RuntimeException("ClusterConfig not found: "+id);
+        ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(id);
+        if ( config != null ) {
+          return (ClusterConfig) config.fclone();
+        }
+        getLogger().error("ClusterConfig not found:", id);
+        throw new RuntimeException("ClusterConfig not found: "+id);
       } finally {
         pm.log(x);
       }
@@ -900,12 +951,12 @@ configuration for contacting the primary node.`,
             return dao;
           }
         }
+        getLogger().error("mdao", serviceName, key, "not found");
       } catch (Throwable t) {
         getLogger().error("mdao", serviceName, key, t.getMessage(), t);
       } finally {
         pm.log(x);
       }
-      ((DAO) x.get("alarmDAO")).put(new Alarm("Medusa MDAO not found: "+serviceName));
       throw new IllegalArgumentException("MDAO not found: "+serviceName);
       `
     },

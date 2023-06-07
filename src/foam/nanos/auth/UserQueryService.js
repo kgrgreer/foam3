@@ -7,6 +7,9 @@
 foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'UserQueryService',
+
+  skeleton: true,
+
   documentation: `
     Can be used to query types of users which can vary in meaning across different applications.
     In a simple app the approvers can just be everyone in a specific Approver group or the user's own group.

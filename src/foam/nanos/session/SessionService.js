@@ -8,6 +8,8 @@ foam.INTERFACE({
   package: 'foam.nanos.session',
   name: 'SessionService',
 
+  skeleton: true,
+
   documentation: `
     A service that can be used to create sessions for users. The idea behind
     this service was to create an alternative to letting users access sessionDAO

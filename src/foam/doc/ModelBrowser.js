@@ -21,47 +21,9 @@ foam.CLASS({
     'foam.nanos.boot.NSpec'
   ],
 
-  imports: [ 'nSpecDAO' ],
+  imports: [ 'nSpecDAO', 'params' ],
 
-  exports: [ 'conventionalUML' ],
-
-
-  properties: [
-    [ 'conventionalUML', false ],
-    {
-      class: 'Map',
-      name: 'allowedModels',
-      adapt: function(_,models) {
-        if ( foam.Array.isInstance(models) ) {
-          var map = {};
-          models.forEach((m) => map[m.id] = true);
-        }
-        return models;
-      }
-    },
-    {
-      name: 'modelDAO',
-      expression: function(nSpecDAO,allowedModels) {
-        var self = this;
-        var dao = self.ArrayDAO.create({ of: self.Model })
-        return self.PromisedDAO.create({
-          promise: nSpecDAO.select().then(function(a) {
-            return Promise.all(
-              a.array.map(function(nspec) {
-                return self.parseClientModel(nspec)
-              }).filter(function(cls) {
-                return cls && (allowedModels == undefined || ( Object.keys(allowedModels).length && Object.values(allowedModels).some( e => e == true) ) ? !!allowedModels[cls.id] : true );
-              }).map(function(cls) {
-                return dao.put(cls.model_);
-              })
-            )
-          }).then(function() {
-            return dao;
-          })
-        })
-      },
-    },
-  ],
+  exports: [ 'conventionalUML', 'path as browserPath' ],
 
   css: `
     ^ {
@@ -91,6 +53,56 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'String',
+      name: 'path',
+      width: 80,
+      factory: function() {
+        return this.params.path || 'foam.core.Property';
+      }
+    },
+    [ 'conventionalUML', false ],
+    {
+      class: 'Map',
+      name: 'allowedModels',
+      adapt: function(_,models) {
+        if ( foam.Array.isInstance(models) ) {
+          var map = {};
+          models.forEach((m) => map[m.id] = true);
+        }
+        return models;
+      }
+    },
+    {
+      name: 'modelDAO',
+      expression: function(nSpecDAO,allowedModels) {
+        var self = this;
+        var dao = self.ArrayDAO.create({of: self.Model});
+        Object.keys(foam.USED).forEach(m => {try { dao.put(foam.lookup(m).model_); } catch(x) {}});
+//        Object.keys(foam.UNUSED).forEach(m => dao.put(foam.lookup(m).model_));
+        return dao;
+        /*
+        return self.PromisedDAO.create({
+          promise: nSpecDAO.select().then(function(a) {
+            return Promise.all(
+              a.array.map(function(nspec) {
+                return self.parseClientModel(nspec)
+              }).filter(function(cls) {
+                return cls && (allowedModels == undefined || ( Object.keys(allowedModels).length && Object.values(allowedModels).some( e => e == true) ) ? !!allowedModels[cls.id] : true );
+              }).map(function(cls) {
+                return dao.put(cls.model_);
+              })
+            );
+          }).then(function() {
+            return dao;
+          })
+        })
+        */
+      }
+    }
+  ],
+
   methods: [
     function render() {
       this.SUPER();
@@ -99,14 +111,19 @@ foam.CLASS({
       this.start().addClass(this.myClass())
         .start('h2').add('Model Browser').end()
         .start().add(this.PRINT_PAGE).end()
-        .select(this.modelDAO, function(model) {
-          var cls = foam.lookup(model.id);
+        .select(this.modelDAO.limit(10), function(model) {
+          try {
+          console.log('ModelBrowser:', model.id);
+          var cls = foam.maybeLookup(model.id);
           return self.E().
-              start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
-                add('Model ' + model).
-              end().
-              start(self.UMLDiagram, { data: cls }).end().
-              start(self.SimpleClassView, { data: cls }).end()
+            start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
+              add('Model ' + model).
+            end().
+            start(self.UMLDiagram, { data: cls }).end().
+            start(self.SimpleClassView, { data: cls }).end();
+          } catch (x) {
+            console.log('Error: ', x);
+          }
         })
       .end();
     },

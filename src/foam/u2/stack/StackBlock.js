@@ -12,6 +12,10 @@ foam.CLASS({
   documentation: `Represents a single block in the stack,
   can be used to push views to the stack and keep track of information about any view in the stack`,
 
+  topics: [
+    'removed'
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -40,6 +44,9 @@ foam.CLASS({
       name: 'popup',
       documentation: `Used by DesktopStackView to determine if view should be wrapped in a popup, 
                       takes in arguments that are passed onto the Popup`
+    },
+    {
+      name: 'currentMemento'
     }
   ]
 

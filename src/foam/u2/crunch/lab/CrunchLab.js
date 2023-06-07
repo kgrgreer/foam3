@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'foam.u2.memento.Memorable'
   ],
 
   css: `
@@ -39,6 +40,10 @@ foam.CLASS({
     'userCapabilityJunctionDAO'
   ],
 
+  exports: [
+    'sequenceReferenceDAO'
+  ],
+
   requires: [
     'foam.dao.PromisedDAO',
     'foam.graph.GraphBuilder',
@@ -49,7 +54,8 @@ foam.CLASS({
     'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.crunch.lab.CapabilityGraphNodeView',
-    'foam.u2.detail.SectionedDetailPropertyView',
+    'foam.u2.borders.SideViewBorder',
+    'foam.u2.PropertyBorder',
     'foam.u2.view.RichChoiceSummaryIdRowView',
     'foam.u2.svg.TreeGraph',
     'foam.u2.svg.graph.DAGView',
@@ -110,12 +116,55 @@ foam.CLASS({
       },
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredCapabilityDAO',
+      hidden: true,
+      expression: function (showAllCapabilities, effectiveUser, crunchUser) {
+        if ( crunchUser == 0 || showAllCapabilities) return this.capabilityDAO;
+        let predicate = effectiveUser ?
+            this.AND(
+              this.EQ(this.AgentCapabilityJunction.SOURCE_ID, crunchUser),
+              this.EQ(this.AgentCapabilityJunction.EFFECTIVE_USER, effectiveUser)
+            ) :
+            this.EQ(this.UserCapabilityJunction.SOURCE_ID, crunchUser);
+        return this.PromisedDAO.create({
+          of: 'foam.nanos.crunch.Capability',
+          promise: this.userCapabilityJunctionDAO.where(predicate)
+            .select(this.MAP(this.UserCapabilityJunction.TARGET_ID))
+            .then((sink) => {
+              let capabilities = sink.delegate.array ? sink.delegate.array : [];
+              return this.capabilityDAO.where(
+                this.IN(this.Capability.ID, capabilities.flat())
+              );
+            })
+        });
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'featuredCapabilityDAO',
+      hidden: true,
+      expression: function (filteredCapabilityDAO) {
+        return filteredCapabilityDAO.where(this.CONTAINS(this.Capability.KEYWORDS, "featured"))
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'otherCapabilityDAO',
+      hidden: true,
+      expression: function (filteredCapabilityDAO) {
+        return filteredCapabilityDAO.where(this.NOT(this.CONTAINS(this.Capability.KEYWORDS, "featured")))
+      }
+    },
+    {
       class: 'Reference',
       name: 'rootCapability',
       of: 'foam.nanos.crunch.Capability',
+      memorable: 'true',
       help: `Root capability reference used to populate graph.
           Graph renders prerequisites downward of the selected capabilty.`,
       view: function(_, X) {
+        const self = X.data;
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
@@ -123,27 +172,12 @@ foam.CLASS({
           rowView: { class: 'foam.u2.view.RichChoiceSummaryIdRowView' },
           sections: [
             {
-              heading: 'Capabilities',
-              dao$: X.data.slot(function(showAllCapabilities, effectiveUser, crunchUser) {
-                if ( crunchUser == 0 || showAllCapabilities) return this.capabilityDAO;
-                let predicate = effectiveUser ?
-                    this.AND(
-                      this.EQ(this.AgentCapabilityJunction.SOURCE_ID, crunchUser),
-                      this.EQ(this.AgentCapabilityJunction.EFFECTIVE_USER, effectiveUser)
-                    ) :
-                    this.EQ(this.UserCapabilityJunction.SOURCE_ID, crunchUser);
-                return this.PromisedDAO.create({
-                  of: 'foam.nanos.crunch.Capability',
-                  promise: this.userCapabilityJunctionDAO.where(predicate)
-                    .select(this.MAP(this.UserCapabilityJunction.TARGET_ID))
-                    .then((sink) => {
-                      let capabilities = sink.delegate.array ? sink.delegate.array : [];
-                      return this.capabilityDAO.where(
-                        this.IN(this.Capability.ID, capabilities.flat())
-                      );
-                    })
-                });
-              })
+              heading: 'Store Capabilities',
+              dao$: self.featuredCapabilityDAO$
+            },
+            {
+              heading: 'Other Capabilities',
+              dao$: self.otherCapabilityDAO$
             }
           ]
         };
@@ -170,7 +204,23 @@ foam.CLASS({
       class: 'String',
       value: 'prerequisites'
     },
-    'currentMemento_'
+    { class: 'Boolean', name: 'sideVisible' },
+    { class: 'foam.u2.ViewSpec', name: 'sideView' },
+    'currentMemento_',
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'sequenceReferenceDAO',
+      factory: function () {
+        return this.createSequenceReferenceDAO_();
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'capabilityExperimentView',
+      value: {
+        class: 'foam.u2.crunch.lab.CapabilityExperimentView'
+      }
+    }
   ],
 
   methods: [
@@ -181,23 +231,30 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('h2').add(this.cls_.name).end()
-        .start(this.Tabs)
-          .start(this.Tab, {
-            label: this.ALL_TAB,
-            selected: true,
-          })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
-            .start().style({ display: 'block' }).add(this.getGraphSlot()).end()
-          .end()
-          .start(this.Tab, {
-            label: this.UCJ_TAB,
-          })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.ROOT_CAPABILITY })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.CRUNCH_USER })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.EFFECTIVE_USER })
-            .tag(this.SectionedDetailPropertyView, { data: this, prop: this.SHOW_ALL_CAPABILITIES })
-            .start().style({ display: 'block' }).add(this.getGraphSlot(true)).end()
+        .start(this.SideViewBorder, {
+          sideVisible$: this.sideVisible$,
+          sideView$: this.sideView$
+        })
+          .start('h2').add(this.cls_.name).end()
+          .start(this.Tabs)
+            .start(this.Tab, {
+              label: this.ALL_TAB,
+              selected: true,
+            })
+              .tag(this.ROOT_CAPABILITY.__, { data: this })
+              .start().style({ display: 'block' }).add(this.getGraphSlot()).end()
+            .end()
+            .start(this.Tab, {
+              label: this.UCJ_TAB,
+            })
+              .startContext({ data: this })
+                .tag(this.ROOT_CAPABILITY.__)
+                .tag(this.CRUNCH_USER.__)
+                .tag(this.EFFECTIVE_USER.__)
+                .tag(this.SHOW_ALL_CAPABILITIES.__)
+              .endContext()
+              .start().style({ display: 'block' }).add(this.getGraphSlot(true)).end()
+            .end()
           .end()
         .end()
         ;
@@ -262,13 +319,39 @@ foam.CLASS({
               .tag(self.DAGView, {
                 gridPlacement: placementPlan,
                 graph: graph,
-                nodeView: this.CapabilityGraphNodeView,
+                nodeView: {
+                  class: this.CapabilityGraphNodeView.id,
+                  capabilityClickedListener: self.capabilityClicked,
+                  ucjClickedListener: self.ucjClicked
+                },
                 cellSize: [200, 200],
                 zoom: 0.7
               })
               ;
           });
       });
+    },
+    function createSequenceReferenceDAO_() {
+      const dao = foam.dao.MDAO.create({
+        of: 'foam.u2.crunch.lab.SequenceReference'
+      });
+
+      const values = [
+        { class: 'foam.u2.crunch.lab.ServiceMethodSequenceReference',
+          label: 'Transient Wizard',
+          service: 'crunchController',
+          method: 'createTransientWizardSequence' },
+        { class: 'foam.u2.crunch.lab.ServiceMethodSequenceReference',
+          label: 'User-Capability Wizard',
+          service: 'crunchController',
+          method: 'createWizardSequence' }
+      ]
+      
+      values.
+        map(v => foam.json.parse(v, undefined, this.__subContext__)).
+        forEach(obj => dao.put(obj));
+
+      return dao;
     }
   ],
 
@@ -276,6 +359,20 @@ foam.CLASS({
     function mementoChange() {
       var m = this.currentMemento_;
       if ( m && this.rootCapability != m.head ) this.rootCapability = m.head;
+    },
+    function capabilityClicked(capability) {
+      this.sideView = {
+        ...this.capabilityExperimentView,
+        data: capability
+      }
+      this.sideVisible = true;
+    },
+    function ucjClicked(ucj) {
+      this.sideView = {
+        class: 'foam.u2.detail.TabbedDetailView',
+        data: ucj
+      }
+      this.sideVisible = true;
     }
   ]
 });

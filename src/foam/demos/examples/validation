@@ -1,4 +1,36 @@
-## Validation
+## Validation2
+
+##  Type Validation
+Standard FOAM Property types have built-in validation.
+--
+foam.CLASS({
+  name: 'PropertyValidationTest',
+
+  properties: [
+    { class: 'String', name: 'required', required: true },
+    { class: 'String', name: 'minLength', minLength: 3 },
+    { class: 'String', name: 'maxLength', maxLength: 5 },
+    { class: 'String', name: 'minMaxLength', minLength: 3, maxLength: 5 },
+    { class: 'Int', name: 'min', min: 1, autoValidate: true },
+    { class: 'Int', name: 'max', max: 10, autoValidate: true },
+    { class: 'Int', name: 'minMax', min: 1, max: 10, autoValidate: true },
+    { class: 'Date', name: 'date' },
+    { class: 'DateTime', name: 'dateTime' },
+    { class: 'Time', name: 'time' },
+    { class: 'Byte', name: 'byte', autoValidate: true },
+    { class: 'Short', name: 'short', autoValidate: true },
+//    { class: 'Long', name: '' },
+//    { class: 'Float', name: '' },
+//    { class: 'Double', name: '' },
+    { class: 'EMail', name: 'email' },
+//    { class: 'PhoneNumber', name: 'phoneNumber' }, // TODO: has REGEX problem
+    { class: 'URL', name: 'url' },
+    { class: 'Website', name: 'website' },
+//    { class: '', name: '' },
+]
+});
+var t = PropertyValidationTest.create();
+add(foam.u2.detail.SectionedDetailView.create({data: t}));
 
 ##  AssertValue
 The simplest form of validation is to specify an assertValue property on a property.
@@ -26,26 +58,39 @@ foam.CLASS({
         if ( age < this.age ) throw 'Age can not go backwards.';
       }
     }
+    /*
+    {
+      class: 'Int',
+      name: 'age',
+      minValue: 0,
+      maValue: 130
+    },
+    {
+      class: 'String',
+      name: 'password',
+      required: true,
+      minLength: 5
+    }*/
   ]
 });
 
 var t = Test.create();
 
-try { t.p1 = 'too short'; } catch (x) { print(x); }
-print(t.p1);
+try { t.p1 = 'too short'; } catch (x) { log(x); }
+log(t.p1);
 t.p1 = 'not too short';
-print(t.p1);
+log(t.p1);
 
-try { t.age = -1; } catch (x) { print(x); }
-print(t.age);
-try { t.age = 5; } catch (x) { print(x); }
-print(t.age);
-try { t.age = 4; } catch (x) { print(x); }
-print(t.age);
-try { t.age = 10; } catch (x) { print(x); }
-print(t.age);
-try { t.age = 200; } catch (x) { print(x); }
-print(t.age);
+try { t.age = -1; } catch (x) { log(x); }
+log(t.age);
+try { t.age = 5; } catch (x) { log(x); }
+log(t.age);
+try { t.age = 4; } catch (x) { log(x); }
+log(t.age);
+try { t.age = 10; } catch (x) { log(x); }
+log(t.age);
+try { t.age = 200; } catch (x) { log(x); }
+log(t.age);
 
 ##  validateObj
 The limitation of assertValue, is that it only lets you perform validations involving a single value.
@@ -65,7 +110,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'passengerName',
-      required: true
+      required: true,
+      minLength: 5,
+      maxLength: 20
     },
     {
       class: 'EMail',
@@ -84,7 +131,8 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'departureDate'
+      name: 'departureDate',
+      required: true
     },
     {
       class: 'Date',
@@ -100,23 +148,62 @@ foam.CLASS({
 
 var f = Flight.create();
 function validateFlight() {
-  print('Errors: ', f.errors_);
+  if ( f.errors_ ) {
+    log('Errors: ', (f.errors_ || []).map(e => e[1]).join(', '));
+  } else {
+    log('No Errors');
+  }
 }
 
 f.departureDate = new Date('2021/04/14');
 validateFlight();
 
+f.passengerName = 'John Doe';
+log('Validation 1');
+validateFlight();
+
+f.email = 'john@doe.com';
+log('Validation 2');
+validateFlight();
+
 f.returnFlight = true;
+log('Validation 3');
 validateFlight();
 
 f.returnDate = new Date('2021/04/13');
+log('Validation 4');
 validateFlight();
 
 f.returnDate = new Date('2021/04/15');
+log('Validation 5');
 validateFlight();
 
 ##  Validation Errors in GUI
 --
 var f = Flight.create();
-add(f);
+// add(f);
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
+
+## ValidationPredicates
+--
+foam.CLASS({
+  name: 'ValidationPredicatesTest',
+  messages: [
+    { name: 'FIRST_NAME_REQUIRED', message: 'First name required' },
+    { name: 'LAST_NAME_REQUIRED', message: 'Last name required' },
+    { name: 'PHONE_NUMBER_REQUIRED', message: 'Phone number required' },
+    { name: 'ADDRESS_REQUIRED', message: 'Address required' }
+  ],
+  properties: [
+    {
+      class: 'Int',
+      name: 'age',
+      validationPredicates: [
+        args: [ 'age' ],
+        query: 'age>=18&&age<=25',
+        errorString: 'Age must be between 18 and 25'
+        // errorMessage:
+      ]
+    }
+  ]
+});

@@ -14,7 +14,8 @@
   `,
 
   imports: [
-    'wizardSubject'
+    'wizardSubject',
+    'subject'
   ],
 
   exports: [
@@ -25,12 +26,14 @@
     'foam.nanos.crunch.ui.ApprovableUserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.UserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.CapableWAO',
+    'foam.u2.wizard.wao.SplitWAO',
+    'foam.u2.wizard.data.UserCapabilityJunctionSaver'
   ],
 
   enums: [
     {
       name: 'WAOSetting',
-      values: ['UCJ', 'CAPABLE', 'APPROVAL']
+      values: ['UCJ', 'CAPABLE', 'APPROVAL', 'UCJ_SIMPLE']
     }
   ],
 
@@ -50,11 +53,15 @@
     function getWAO() {
       switch ( this.waoSetting ) {
         case this.WAOSetting.UCJ:
-          return this.UserCapabilityJunctionWAO.create({ subject: this.wizardSubject }, this.__context__);
+          return this.UserCapabilityJunctionWAO.create({ subject: this.wizardSubject || this.subject }, this.__context__);
         case this.WAOSetting.CAPABLE:
           return this.CapableWAO.create({}, this.__context__);
         case this.WAOSetting.APPROVAL:
-          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.wizardSubject });
+          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.wizardSubject || this.subject});
+        case this.WAOSetting.UCJ_SIMPLE:
+          return this.SplitWAO.create({
+            saver: this.UserCapabilityJunctionSaver.create()
+          });
         default:
           throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
       }

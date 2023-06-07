@@ -11,12 +11,19 @@ foam.CLASS({
 
   css: `
     iframe {
-      border: 1px solid /*%GREY4%*/;
+      border: 1px solid $grey300;
       padding: 8px;
       max-width: 100%;
       box-sizing: border-box;
     }
+    ^resize {
+      resize: both;
+    }
   `,
+
+  properties: [
+    'resizable'
+  ],
 
   methods: [    
     function render() {
@@ -25,6 +32,7 @@ foam.CLASS({
 
       this.start('iframe')
         .attrs({ srcdoc: this.data })
+        .enableClass(this.myClass('resize'), this.resizable$)
         .on('load', evt => this.resizeIFrame(evt.target))
       .end();
     },
@@ -36,13 +44,10 @@ foam.CLASS({
 
       // set iframe dimensions according to the document / its content
       el.style.height = Math.max(
-        el.contentDocument.documentElement.offsetHeight,
-        el.contentDocument.body.firstElementChild.offsetHeight
+        el.contentDocument.documentElement.scrollHeight,
+        el.contentDocument.body.firstElementChild.scrollHeight
       );
-      el.style.width = Math.max(
-        el.contentDocument.documentElement.offsetWidth,
-        el.contentDocument.body.firstElementChild.offsetWidth
-      );
+      el.style.width = "100%";
     }
   ]
 });

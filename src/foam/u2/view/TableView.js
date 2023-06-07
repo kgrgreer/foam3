@@ -20,14 +20,14 @@ foam.CLASS({
     }
 
     ^tr {
-      background: /*%WHITE%*/ white;
+      background: $white;
       display: flex;
       height: 48px;
       justify-content: space-between;
     }
 
     ^tbody > ^tr:hover {
-      background: /*%GREY5%*/ #f5f7fa;
+      background: $grey50;
       border-radius: 4px;
       cursor: pointer;
     }
@@ -40,7 +40,7 @@ foam.CLASS({
     }
 
     ^thead > ^tr {
-      border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
+      border-bottom: 2px solid $grey300;
       box-sizing: border-box;
       border-radius: 4px 4px 0 0;
     }
@@ -49,7 +49,7 @@ foam.CLASS({
     ^th {
       align-self: center;
       box-sizing: border-box;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
       display: block;
       overflow: hidden;
       padding-left: 16px;
@@ -70,7 +70,7 @@ foam.CLASS({
      * OTHER
      */
     ^selected {
-      background: /*%PRIMARY5%*/ #e5f1fc;
+      background: $primary50;
     }
 
     ^noselect {

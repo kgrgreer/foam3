@@ -29,19 +29,21 @@ foam.CLASS({
     'foam.nanos.crunch.MinMaxCapability',
     'foam.nanos.crunch.ui.CapableWAO',
     'foam.nanos.crunch.ui.PrerequisiteAwareWizardlet',
-    'foam.u2.wizard.ProxyWAO'
+    'foam.u2.wizard.wao.NullWAO',
+    'foam.u2.wizard.wao.ProxyWAO'
   ],
 
   properties: [
     {
       name: 'wizardlets',
       class: 'FObjectArray',
-      of: 'foam.u2.wizard.Wizardlet'
+      of: 'foam.u2.wizard.wizardlet.Wizardlet'
     }
   ],
 
   methods: [
     async function execute() {
+      if ( ! this.capabilities ) return;
       this.wizardlets = await this.parseArrayToWizardlets(this.capabilities);
     },
     async function parseArrayToWizardlets(array, parent) {
@@ -105,10 +107,11 @@ foam.CLASS({
         var wao = wizardlet.wao;
         while ( this.ProxyWAO.isInstance(wao) ) {
           // If there's already something at the end, don't replace it
-          if ( wao.delegate && ! this.ProxyWAO.isInstance(wao.delegate) ) break;
-          if ( ! wao.delegate ) {
+          if ( ! wao.delegate || this.NullWAO.isInstance(wao.delegate) ) {
             wao.delegate = this.getWAO();
+            break;
           }
+          wao = wao.delegate;
         }
 
         return wizardlet;

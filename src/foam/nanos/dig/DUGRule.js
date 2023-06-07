@@ -64,6 +64,13 @@ foam.CLASS({
           throw new AuthorizationException("You do not have permission to create a rule on the specified dao.");
         }
       `
+    },
+    {
+        name: 'evaluateBearerToken',
+        type: 'String',
+        javaCode: `
+        return getBearerToken();
+        `
     }
   ],
 
@@ -83,12 +90,9 @@ foam.CLASS({
       tableWidth: 250
     },
     {
-      class: 'Reference',
       name: 'daoKey',
-      of: 'foam.nanos.boot.NSpec',
       label: 'DAO',
       section: 'dugInfo',
-      tableWidth: 150,
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
@@ -107,7 +111,8 @@ foam.CLASS({
             }
           ]
         };
-      }
+      },
+      tableWidth: 150
     },
     {
       class: 'String',

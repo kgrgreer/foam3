@@ -11,6 +11,8 @@ import java.util.List;
 import jdk.jshell.JShell;
 import jdk.jshell.SourceCodeAnalysis;
 
+import foam.util.SafetyUtil;
+
 /**
  * Parse the code and return a list of instruction
  *
@@ -24,16 +26,21 @@ public class InstructionPresentation {
   }
 
   public List<String> parseToInstruction(List<String> scripts) {
-    int i = 0;
     String codeToParse = "";
-    while ( i < scripts.size() ) {
-      codeToParse += scripts.get(i);
-      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis().analyzeCompletion(codeToParse);
-      if ( info.completeness().isComplete() ) {
+    for (String line : scripts) {
+      // if line is entirely empty, skip it
+      // (works around NPE thrown during script execution,
+      // unsure of actual cause)
+      if (SafetyUtil.isEmpty(line)) continue;
+
+      codeToParse += line + "\n";
+      SourceCodeAnalysis.CompletionInfo info = jShell.sourceCodeAnalysis()
+        .analyzeCompletion(codeToParse);
+      if ( info.completeness()
+        .isComplete() ) {
         listInstruction.add(codeToParse);
         codeToParse = "";
       }
-      i++;
     }
     return listInstruction;
   }

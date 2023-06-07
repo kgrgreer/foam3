@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO: Investigate if we can autoclose on scroll
+
 foam.CLASS({
   package: 'foam.u2.md',
   name: 'OverlayDropdown',
@@ -15,9 +17,9 @@ foam.CLASS({
     'as dropdown'
   ],
 
-  documentation: 'A popup overlay that grows from the top-right corner of ' +
-      'its container. Useful for e.g. "..." overflow menus in action bars. ' +
-      'Just $$DOC{ref:".add"} things to this container.',
+  documentation: `A popup overlay that grows from the top-right corner of
+    its container. Useful for e.g. "..." overflow menus in action bars.
+    Just $$DOC{ref:".add"} things to this container.`,
 
   css: `
     ^overlay {
@@ -26,20 +28,23 @@ foam.CLASS({
     }
 
     ^ {
-      background-color: /*%WHITE%*/ #ffffff;
-      border: 1px solid /*%GREY4%*/ #DADDE2;
-      box-sizing: border-box;
-      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
-      border-radius: 4px;
       display: block;
-      font-size: 1.4rem;
-      font-weight: 400;
       overflow-x: hidden;
       overflow-y: hidden;
       position: absolute;
-      padding: 8px;
       z-index: 1010;
-      transform: translate(-100%, 8px);
+      max-width: 90%;
+    }
+
+    ^styled{
+      background-color: $white;
+      border: 1px solid $grey300;
+      box-sizing: border-box;
+      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+      font-size: 1.4rem;
+      font-weight: 400;
+      padding: 8px;
     }
 
     ^open {
@@ -82,7 +87,10 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'x'
+      name: 'left'
+    },
+    {
+      name: 'right'
     },
     {
       name: 'top'
@@ -90,7 +98,28 @@ foam.CLASS({
     {
       name: 'bottom'
     },
-    'parentEl'
+    'parentEl',
+    {
+      class: 'Boolean',
+      name: 'closeOnLeave',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'styled',
+      value: true
+    },
+    {
+      class: 'Int',
+      name: 'parentEdgePadding',
+      documentation: `When set, the dropdown will stick itself to the parentEl's edge`,
+      value: -1
+    },
+    {
+      class: 'Boolean',
+      name: 'lockToParentWidth'
+    },
+    'ro_'
   ],
 
   methods: [
@@ -106,32 +135,63 @@ foam.CLASS({
     },
 
     function open(x, y) {
-      var domRect       = this.parentEl.getBoundingClientRect();
-      var screenHeight  = this.window.innerHeight;
-      var scrollY       = this.window.scrollY;
-      if ( domRect.top - scrollY < screenHeight / 2 ) {
-        this.top = y; this.bottom = 'auto';
-      } else {
-        this.top = 'auto'; this.bottom = screenHeight - y;
-      }
-      this.x = x;
+      this.setPosition(x, y);
+      this.ro_?.observe(this.parentEl);
       this.opened = true;
-      window.addEventListener('resize', this.onResize);
+      this.window.addEventListener('resize', this.onResize);
+    },
+
+    function setPosition(x, y) {
+      var screenWidth  = this.window.innerWidth;
+      var domRect      = this.parentEl.getBoundingClientRect();
+      var screenHeight = this.window.innerHeight;
+      var scrollY      = this.window.scrollY;
+      var parentCheck  = this.parentEdgePadding > -1;
+      if ( domRect.top - scrollY < screenHeight / 2 ) {
+        this.top = parentCheck ? domRect.bottom + this.parentEdgePadding : y; 
+        this.bottom = 'auto';
+      } else {
+        this.top = 'auto'; 
+        this.bottom = parentCheck ? 
+          screenHeight - domRect.top + this.parentEdgePadding : screenHeight - y;
+      }
+      if ( domRect.left > 3 * (screenWidth / 4) ) {
+        this.left = 'auto';
+        this.right = parentCheck ? screenWidth - domRect.right : screenWidth - x + 10;
+      } else if (domRect.left < 75) {
+        this.left = parentCheck ? domRect.left : x + 10;
+        this.right = 'auto';
+      } else {
+        this.left = parentCheck ? domRect.left : x - 75;
+        this.right = 'auto';
+      }
     },
 
     function close() {
       this.opened = false;
+      this.ro_?.unobserve(this.parentEl);
     },
 
     function render() {
       this.addToSelf_ = true;
       this.addClass(this.myClass('container'));
       var view = this;
+      let fn = () => {
+        if ( ! this.parentEl ) return;
+        this.ro_ = new ResizeObserver(() => {
+          if ( this.lockToParentWidth ) {
+            this.dropdownE_.el_().style.width = this.parentEl.getBoundingClientRect().width;
+          }
+          this.setPosition();
+        });
+        this.onDetach(() => { this.ro_?.disconnect(); })
+      }
+      this.parentEl$.sub(fn);
+      fn();
 
       this.addClass(this.slot(function(opened) {
         this.shown = opened;
       }, this.opened$));
-
       this.start('dropdown-overlay')
         .addClass(this.myClass('overlay'))
         .show(this.opened$)
@@ -144,14 +204,19 @@ foam.CLASS({
       .end();
 
       this.dropdownE_.addClass(this.myClass())
+        .enableClass(this.myClass('styled'), this.styled$)
         .show(this.opened$)
         .style({
           top: this.top$,
-          left: this.x$,
+          left: this.left$,
+          right: this.right$,
           bottom: this.bottom$
         })
-        .on('mouseenter', this.onMouseEnter)
-        .on('mouseleave', this.onMouseLeave)
+        .callIf(this.closeOnLeave, function() {
+          this
+          .on('mouseenter', this.onMouseEnter)
+          .on('mouseleave', this.onMouseLeave)
+        })
         .on('keydown', this.onKeyDown)
         .on('click', this.onClick);
 
@@ -181,7 +246,7 @@ foam.CLASS({
       console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
       // If mouse moves to a nested dropdown, do not close the parent dropdown
-      if ( e.toElement?.nodeName == 'DROPDOWN' ) return;
+      if ( e.toElement?.nodeName == 'DROPDOWN' || ! this.closeOnLeave ) return;
       this.timer = setTimeout(() => { this.close(); }, 500);
     },
 
@@ -195,7 +260,7 @@ foam.CLASS({
 
     function onResize() {
       this.close();
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
     }
   ]
 });

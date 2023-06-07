@@ -13,10 +13,12 @@ foam.CLASS({
   imports: [
     'group',
     'pushMenu',
-    'theme'
+    'theme',
+    'displayWidth'
   ],
 
   requires: [
+    'foam.u2.layout.DisplayWidth',
     'foam.u2.tag.Image'
   ],
 
@@ -27,21 +29,44 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ img, ^ svg {
+      height: 25px;
       max-height: 40px;
-      height: 27px;
+      /* remove and override any image styling to preserve aspect ratio */
+      width: unset;
     }
   `,
 
+  properties: [
+    {
+      name: 'isDesktop'
+    }
+  ],
+
   methods: [
     function render() {
+      this.handleDisplayWidth();
+      this.displayWidth$.sub(this.handleDisplayWidth);
       this
         .addClass(this.myClass())
         .start(this.Image, {
-          data$: this.slot(function(theme$largeLogoEnabled, theme$logo, theme$largeLogo) {
-            return theme$largeLogoEnabled ? theme$largeLogo : theme$logo;
-          })
+          data$: this.slot(function(theme$shouldResizeLogo, theme$topNavLogo, theme$largeLogoEnabled, isDesktop) {
+            if ( theme$shouldResizeLogo && theme$largeLogoEnabled && ! isDesktop ) {
+              return this.theme.logo;
+            }
+            return theme$topNavLogo;
+          }),
+          embedSVG: true
         })
         .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'handleDisplayWidth',
+      code: function() {
+        this.isDesktop = this.displayWidth.ordinal > this.DisplayWidth.SM.ordinal;
+      }
     }
   ]
 });

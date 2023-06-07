@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DAOConfigSummaryView',
   extends: 'foam.u2.Controller',
+  mixins: ['foam.u2.memento.Memorable'],
 
   documentation: 'Data Management UI for browsing all DAOs.',
 
@@ -82,7 +83,6 @@ foam.CLASS({
     {
       name: 'BackBorder',
       extends: 'foam.u2.Element',
-      mixins: ['foam.nanos.controller.MementoMixin'],
 
       imports: [ 'stack' ],
 
@@ -112,8 +112,6 @@ foam.CLASS({
         function render() {
           this.SUPER();
 
-          this.initMemento();
-
           this.
             start(this.BreadcrumbView).addClass(this.myClass('nav')).end().
             tag(this.inner);
@@ -134,7 +132,7 @@ foam.CLASS({
       width: 220px;
     }
     ^dao {
-      color: #555;
+      color: $grey500;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -146,8 +144,8 @@ foam.CLASS({
       vertical-align: baseline;
     }
     ^header {
-      background: /*%BLACK%*/ #1e1f21;
-      color: white;
+      background: $grey700;
+      color:$white;
       font-weight: 800;
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
@@ -160,17 +158,14 @@ foam.CLASS({
     'foam.comics.BrowserView',
     'foam.comics.v2.DAOBrowseControllerView',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.controller.Memento',
     'foam.u2.stack.StackBlock'
   ],
 
   implements: [ 'foam.mlang.Expressions' ],
 
-  imports: [ 'memento', 'nSpecDAO', 'stack' ],
-
-
-  exports: [
-    'currentMemento_ as memento'
+  imports: [
+    'nSpecDAO',
+    'stack'
   ],
 
   messages: [
@@ -204,9 +199,17 @@ foam.CLASS({
       }
     },
     {
-      name: 'currentMemento_'
+      name: 'currentDAO',
+      shortName: 'route',
+      memorable: true,
+      postSet: function(o, n) {
+        if ( o == n || ! this.viewDidRender ) return;
+        if ( o && this.stack.pos >= 1 ) this.stack.back();
+        this.mementoChange();
+      }
     },
-    ['viewTitle', 'Data Management']
+    ['viewTitle', 'Data Management'],
+    ['viewDidRender', false]
   ],
 
   methods: [
@@ -216,9 +219,6 @@ foam.CLASS({
       var self          = this;
       var currentLetter = '';
       var section;
-
-      if ( self.memento )
-        this.currentMemento_$ = self.memento.tail$;
 
       this.addClass().
       start().
@@ -286,10 +286,7 @@ foam.CLASS({
               .add(label)
               .attrs({title: spec.description})
               .on('click', function() {
-                if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), replaceHistoryState : false });
-                  self.memento.tail$.set(tail);
-                }
+                self.currentDAO = spec.id;
               });
 
               self.search$.sub(function() {
@@ -312,35 +309,27 @@ foam.CLASS({
               });
         });
       });
-
-      if ( this.memento ) {
-        this.onDetach(this.memento.tail$.sub(this.mementoChange));
-      }
-      this.mementoChange(true);
+      this.mementoChange();
+      this.viewDidRender = true;
     }
   ],
 
   listeners: [
-    function mementoChange(isInitializing) {
-      var m = this.memento;
-
-      if ( ! m || ! m.tail || m.tail.head.length == 0 ) {
-        if ( ! isInitializing && ! m.tail ) this.stack.back();
-        return;
-      }
+    function mementoChange() {
+      if ( ! this.currentDAO ) return;
       var x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
-      this.stack.push(this.StackBlock.create({ 
+      this.stack.push(this.StackBlock.create({
         view: {
           class: this.BackBorder,
-          title: m.tail.head,
+          title: this.currentDAO,
           inner: {
             class: 'foam.u2.view.AltView',
-            data: this.__context__[m.tail.head],
+            data: this.__context__[this.currentDAO],
             views: [
               [
                 {

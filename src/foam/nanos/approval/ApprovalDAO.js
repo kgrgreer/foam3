@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.dao.Operation',
+    'foam.util.Auth',
     'foam.util.SafetyUtil',
 
     'static foam.mlang.MLang.*'
@@ -93,20 +94,47 @@ foam.CLASS({
       javaCode: `
         String daoKey = request.getServerDaoKey() != null && ! SafetyUtil.isEmpty(request.getServerDaoKey()) ? request.getServerDaoKey() : request.getDaoKey();
         DAO dao = (DAO) x.get(daoKey);
-        FObject found = dao.find(request.getObjId()).fclone();
+        FObject obj = dao.find(request.getObjId()).fclone();
 
         DAO userDAO = (DAO) x.get("localUserDAO");
+        User initiatingAgent = null;
+        if ( ((ApprovalRequest) request).getCreatedForAgent() != 0 ) {
+          initiatingAgent = (User) userDAO.find(((ApprovalRequest) request).getCreatedForAgent());
+        }
+
         User initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedBy());
         if ( ((ApprovalRequest) request).getCreatedFor() != 0 ) {
           initiatingUser = (User) userDAO.find(((ApprovalRequest) request).getCreatedFor());
         }
-        Subject subject = new Subject.Builder(x).setUser(initiatingUser).build();
-        X initiatingUserX = x.put("subject", subject);
+
+        if ( initiatingAgent == null ) {
+          initiatingAgent = initiatingUser;
+        }
+
+        X initiatingUserX = Auth.sudo(x, initiatingUser, initiatingAgent);
+
+        User realUser = ((Subject) x.get("subject")).getRealUser();
+        User user = ((Subject) x.get("subject")).getUser();
+        Subject initiatingUserSubject = (Subject) initiatingUserX.get("subject");
+        // NOTE: subject is not setup if sudo user is system/admin
+        if ( initiatingUserSubject.getRealUser() == null ) {
+          initiatingUserSubject.setUser(realUser);
+          if ( realUser != user ) {
+            initiatingUserSubject.setUser(user);
+          }
+        } else {
+          initiatingUserSubject.getUserPath().add(realUser);
+          if ( realUser != user ) {
+            initiatingUserSubject.getUserPath().add(user);
+          }
+        }
+
+        initiatingUserX = initiatingUserX.put(ApprovalRequest.class, request);
 
         if ( ((ApprovalRequest) request).getOperation() == Operation.REMOVE ) {
-          dao.inX(initiatingUserX).remove(found);
+          dao.inX(initiatingUserX).remove(obj);
         } else {
-          dao.inX(initiatingUserX).put(found);
+          dao.inX(initiatingUserX).put(obj);
         }
       `
     },

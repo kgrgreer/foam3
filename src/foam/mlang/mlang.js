@@ -169,6 +169,7 @@ foam.CLASS({
   name: 'ExprProperty',
   extends: 'FObjectProperty',
 
+  flags: [],
   documentation: 'Property for Expr values.',
 
   properties: [
@@ -206,7 +207,7 @@ foam.CLASS({
         return o;
       }
       if ( o.class && this.__context__.maybeLookup(o.class) ) {
-        return this.adaptValue(this.__context__.lookup(o.class).create(o, this));
+        return this.adaptValue(this.__context__.lookup(o.class).create(o, this.__subContext__));
       }
       if ( foam.core.FObject.isSubClass(o) ) {
         return foam.mlang.Constant.create({ value: o });
@@ -222,6 +223,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'ExprArrayProperty',
   extends: 'FObjectArray',
+
+  flags: [],
+
   requires: [
     'foam.mlang.ExprProperty'
   ],
@@ -247,6 +251,9 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'SinkProperty',
   extends: 'FObjectProperty',
+
+  flags: [],
+
   properties: [
     {
       name: 'type',
@@ -323,15 +330,19 @@ foam.CLASS({
   name: 'PredicateProperty',
   extends: 'FObjectProperty',
 
+  flags: [],
+
   documentation: 'Property for Predicate values.',
 
   properties: [
-    ['type', 'foam.mlang.predicate.Predicate'],
+    [ 'type', 'foam.mlang.predicate.Predicate' ],
     {
       name: 'adapt',
-      value: function(_, o) {
-        if ( typeof o === 'function' && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
-        return o;
+      value: function(_, o, prop) {
+        if ( foam.Function.isInstance(o) && ! o.f ) return foam.mlang.predicate.Func.create({ fn: o });
+
+        const OLD_ADAPT = foam.core.FObjectProperty.ADAPT.value;
+        return OLD_ADAPT.call(this, null, o, prop);
       }
     }
   ]
@@ -342,6 +353,8 @@ foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'PredicateArray',
   extends: 'FObjectArray',
+
+  flags: [],
 
   documentation: 'Property for storing arrays of Predicates.',
 
@@ -600,12 +613,14 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Absolute',
+
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
       name: 'delegate'
     }
   ],
+
   methods: [
     {
       name: 'f',
@@ -616,9 +631,11 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Mux',
+
   properties: [
     {
 //      class: 'foam.mlang.ExprProperty',
@@ -646,9 +663,11 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Partition',
+
   properties: [
     {
       name: 'arg1'
@@ -698,6 +717,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'Binary',
@@ -724,8 +744,11 @@ foam.CLASS({
       adapt: function(old, nu, prop) {
         var value = prop.adaptValue(nu);
         var arg1 = this.arg1;
-        if ( foam.mlang.Constant.isInstance(value) && arg1 && arg1.adapt )
-          value.value = this.arg1.adapt.call(null, old, value.value, arg1);
+        if ( foam.mlang.Constant.isInstance(value) && arg1 && arg1.adapt ) {
+          var value = this.arg1.adapt.call(null, old, value.value, arg1);
+          if ( value !== value.value ) return foam.mlang.Constant.create({value: value});
+          return nu;
+        }
 
         return value;
       },
@@ -756,11 +779,13 @@ foam.CLASS({
       name: 'toString',
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' +
-            this.arg1.toString() + ', ' +
-            this.arg2.toString() + ')';
+            (this.arg1 && this.arg1.toString() || 'NA') + ', ' +
+            (this.arg2 && this.arg2.toString() || 'NA') + ')';
       },
       javaCode: `
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), getArg1().toString(), getArg2().toString());
+        String arg1 = getArg1() != null ? getArg1().toString() : "NA";
+        String arg2 = getArg2() != null ? getArg2().toString() : "NA";
+        return String.format("%s(%s, %s)", getClass().getSimpleName(), arg1, arg2);
       `
     },
     {
@@ -777,6 +802,34 @@ getArg2().prepareStatement(stmt);`
     },
     function arg2ToMQL() {
       return this.arg2 && this.arg2.toMQL ? this.arg2.toMQL() : this.arg2;
+    },
+    {
+      name: 'partialEval',
+      code: function partialEval() {
+        if ( ! this.arg1?.partialEval || ! this.arg2?.partialEval ) return this;
+
+        var newArg1 = this.arg1.partialEval();
+        var newArg2 = this.arg2.partialEval();
+
+        if ( this.arg1 === newArg1 && this.arg2 === newArg2 ) return this;
+        return this.cls_.create({arg1: newArg1, arg2: newArg2});
+      },
+      javaCode: `
+        var newArg1 = getArg1().partialEval();
+        var newArg2 = getArg2().partialEval();
+
+        if ( getArg1() == newArg1 && getArg2() == newArg2 )
+          return this;
+
+        try {
+          var nu = (Binary) getClass().getDeclaredConstructor().newInstance();
+          nu.setArg1(newArg1);
+          nu.setArg2(newArg2);
+          return nu;
+        } catch ( Throwable e ) {
+          return this;
+        }
+      `
     }
   ]
 });
@@ -882,12 +935,12 @@ for arg in args {
 }
 return false
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-        + '  if ( getArgs()[i].f(obj) ) return true;\n'
-        + '}\n'
-        + 'return false;\n'
-    },
-
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+          if ( getArgs()[i].f(obj) ) return true;
+        }
+        return false;
+    `
+  },
     {
       name: 'createStatement',
       type: 'String',
@@ -946,8 +999,9 @@ return stmt.toString();`
       javaCode:
         `java.util.List<Predicate> args = new java.util.ArrayList<>();
 boolean update = false;
-for ( int i = 0; i < this.args_.length; i++ ) {
-  Predicate arg = this.args_[i];
+
+for ( int i = 0 ; i < this.args_.length ; i++ ) {
+  Predicate arg    = this.args_[i];
   Predicate newArg = this.args_[i].partialEval();
   if ( newArg == foam.mlang.MLang.TRUE ) return foam.mlang.MLang.TRUE;
   if ( newArg instanceof Or ) {
@@ -964,7 +1018,8 @@ for ( int i = 0; i < this.args_.length; i++ ) {
     }
   }
 }
-if ( args.size() == 0 ) return foam.mlang.MLang.TRUE;
+
+if ( args.size() == 0 ) return foam.mlang.MLang.FALSE;
 if ( args.size() == 1 ) return args.get(0);
 if ( update ) {
   Predicate newArgs[] = new Predicate[args.size()];
@@ -1042,10 +1097,10 @@ for arg in args {
 }
 return true
 `,
-      javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
-                + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
-                + '}\n'
-                + 'return true;'
+      javaCode: `for ( int i = 0 ; i < getArgs().length ; i++ ) {
+                  if ( ! getArgs()[i].f(obj) ) return false;
+                }
+                return true;`
     },
 
     {
@@ -1114,8 +1169,8 @@ for ( int i = 0 ; i < this.args_.length ; i++ ) {
   if ( newArg == foam.mlang.MLang.FALSE ) return foam.mlang.MLang.FALSE;
   if ( newArg instanceof And ) {
     if ( args == null ) args = new java.util.ArrayList<>();
-    for ( int j = 0 ; j < ( ( (And) newArg ).args_.length ) ; j++ ) {
-      args.add(( (And) newArg ).args_[j]);
+    for ( int j = 0 ; j < (((And) newArg).args_.length ) ; j++ ) {
+      args.add(((And) newArg).args_[j]);
     }
     update = true;
   } else {
@@ -1141,7 +1196,6 @@ if ( update ) {
 }
 return this;`
     },
-
 
     function toIndex(tail, depth) {
       /** Builds the ideal index for this predicate. The indexes will be chained
@@ -1269,7 +1323,7 @@ return this;`
       var mqlStringsArr = [];
       for ( var a in this.args ) {
         if ( ! this.args[a].toMQL )
-          throw new Error( 'Predicate\'s argument does not support toMQL' );
+          throw new Error('Predicate\'s argument does not support toMQL');
         var mql = this.args[a].toMQL();
         if ( mql )
           mqlStringsArr.push(mql);
@@ -1435,7 +1489,8 @@ if ( arg1 instanceof String[] ) {
       return true;
   }
 }
-return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );`
+return ( arg1 instanceof String && ((String) arg1).toUpperCase().startsWith(arg2) );
+`
     },
     {
       name: 'createStatement',
@@ -1506,21 +1561,18 @@ foam.CLASS({
   properties: [
     {
       name: 'arg2',
-      postSet: function() {
-        this.valueSet_ = null;
-      },
       adapt: function(old, nu, prop) {
         var value = prop.adaptValue(nu);
-        var arg1 = this.arg1;
+        var arg1  = this.arg1;
 
         // Adapt constant array elements when:
         // (1) Value is a constant (array);
         // (2) Value is truthy (empty arrays can be serialized as undefined);
         // (3) Arg1 has an adapt().
-        if ( foam.mlang.Constant.isInstance(value) && value.value &&
-             arg1 && arg1.adapt ) {
+        if ( foam.mlang.Constant.isInstance(value) && value.value && arg1 && arg1.adapt ) {
+          value = value.clone();
           var arrayValue = value.value;
-          for ( var i = 0; i < arrayValue.length; i++ ) {
+          for ( var i = 0 ; i < arrayValue.length ; i++ ) {
             arrayValue[i] = arg1.adapt.call(null, old && old[i], arrayValue[i], arg1);
           }
         }
@@ -1543,9 +1595,21 @@ foam.CLASS({
       `
     },
     {
-      // TODO: simpler to make an expression
       name: 'valueSet_',
-      hidden: true
+      documentation: 'arg2 as a JS hash for faster execution',
+      transient: true,
+      hidden: true,
+      expression: function(arg2) {
+        // only called when arg2 is a Constant
+        var rhs = arg2.value;
+        var set = {};
+        for ( var i = 0 ; i < rhs.length ; i++ ) {
+          var s = rhs[i];
+          if ( this.upperCase_ ) s = s.toString().toUpperCase();
+          set[s] = true;
+        }
+        return set;
+      }
     }
   ],
 
@@ -1604,7 +1668,7 @@ foam.CLASS({
   javaImports: [
     'foam.mlang.ArrayConstant',
     'foam.mlang.Constant',
-    'java.util.List',
+    'java.util.List'
   ],
 
   properties: [
@@ -1643,21 +1707,9 @@ foam.CLASS({
         // particular with multi part id support.So this code path is
         // disabled for now.
 
-
         // If arg2 is a constant array, we use valueSet for it.
-        if ( this.Constant.isInstance(this.arg2) ) {
-          if ( ! this.valueSet_ ) {
-            var set = {};
-            for ( var i = 0 ; i < rhs.length ; i++ ) {
-              var s = rhs[i];
-              if ( this.upperCase_ ) s = s.toString().toUpperCase();
-              set[s] = true;
-            }
-            this.valueSet_ = set;
-          }
-
+        if ( this.Constant.isInstance(this.arg2) )
           return !! this.valueSet_[lhs];
-        }
 
         return rhs ? rhs.indexOf(lhs) !== -1 : false;
       },
@@ -1695,7 +1747,7 @@ return false
     }
   } else if ( rhs instanceof Object[] ) {
     // Checks if rhs array contains the lhs object
-    Object[] values = (Object[])rhs;
+    Object[] values = (Object[]) rhs;
 
     for ( int i = 0 ; i < values.length ; i++ ) {
       if ( ( ( (Comparable) lhs ).compareTo( (Comparable) values[i] ) ) == 0 ) {
@@ -1726,10 +1778,10 @@ return false
         if ( ! value )
           return this.FALSE;
 
-        if ( foam.Array.isInstance(value) && value.length == 1 ) return this.Eq.create({
-          arg1: this.arg1,
-          arg2: value[0]
-        });
+        if ( foam.Array.isInstance(value) ) {
+          if ( value.length == 0 ) return this.FALSE;
+          if ( value.length == 1 ) return this.Eq.create({arg1: this.arg1, arg2: value[0]});
+        }
 
         return this;
       },
@@ -1777,6 +1829,10 @@ foam.CLASS({
 
   documentation: 'Predicate returns true iff arg1 is a substring of arg2, or if arg2 is an array, is an element of arg2, case insensitive.',
 
+  properties: [
+    [ 'upperCase_', true ]
+  ],
+
   methods: [
     function f(o) {
       var lhs = this.arg1.f(o);
@@ -1785,20 +1841,12 @@ foam.CLASS({
       if ( lhs.toUpperCase ) lhs = lhs.toString().toUpperCase();
 
       // If arg2 is a constant array, we use valueSet for it.
-      if ( foam.mlang.Constant.isInstance(this.arg2) ) {
-        if ( ! this.valueSet_ ) {
-          var set = {};
-          for ( var i = 0 ; i < rhs.length ; i++ ) {
-            set[rhs[i].toString().toUpperCase()] = true;
-          }
-          this.valueSet_ = set;
-        }
-
+      if ( foam.mlang.Constant.isInstance(this.arg2) )
         return !! this.valueSet_[lhs];
-      } else {
-        if ( ! rhs ) return false;
-        return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
-      }
+
+      if ( ! rhs ) return false;
+
+      return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
     }
   ]
 });
@@ -1811,6 +1859,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'An Expression which always returns the same constant value.',
+/*
+  axioms: [
+    foam.pattern.Multiton.create({property: 'value'})
+  ],
+  */
 
   properties: [
     {
@@ -1823,7 +1876,7 @@ foam.CLASS({
     {
       type: 'FObject',
       name: 'fclone',
-      javaCode: 'return this;'
+      javaCode: 'return this;',
     },
     {
       name: 'f',
@@ -1844,13 +1897,13 @@ foam.CLASS({
       return typeof x === 'number' ? '' + x :
         typeof x === 'string' ? '"' + x + '"' :
         Array.isArray(x) ? '[' + x.map(this.toString_.bind(this)).join(', ') + ']' :
-        x && (x).toString();
+        x && x.toString?.();
     },
 
     {
       name: 'toString',
       code: function() { return this.toString_(this.value); },
-      javaCode: 'return getValue() == null ? "null" : getValue().toString();'
+      javaCode: 'return getValue() == null ? null : getValue().toString();'
     },
 
     // TODO(adamvy): Re-enable when we can parse this in java more correctly.
@@ -2473,6 +2526,11 @@ foam.CLASS({
   implements: [ 'foam.core.Serializable' ],
 
   documentation: 'Predicate which checks if objects are instances of the specified class.',
+  javaCode: `
+public IsInstanceOf(foam.core.ClassInfo targetClass) {
+      setTargetClass(targetClass);
+    }
+  `,
 
   properties: [
     {
@@ -2483,6 +2541,11 @@ foam.CLASS({
         class: 'foam.u2.view.StrategizerChoiceView',
         desiredModelId: 'foam.Class'
       }
+    },
+    {
+      class: 'FObjectProperty',
+      javaType: 'foam.mlang.Expr',
+      name: 'propExpr'
     }
   ],
 
@@ -2494,13 +2557,18 @@ foam.CLASS({
     },
     {
       name: 'f',
-      code: function f(obj) { return this.targetClass.isInstance(obj); },
-      javaCode: 'return getTargetClass().isInstance(obj);'
+      code: function f(obj) { return this.propExpr == null || this.propExpr == undefined ? this.targetClass.isInstance(obj) : this.targetClass.isInstance(this.propExpr.f(obj)); },
+      javaCode: 'return getPropExpr() == null ? getTargetClass().isInstance(obj) : getTargetClass().isInstance(getPropExpr().f(obj));'
     },
-
-    function toString() {
-      return foam.String.constantize(this.cls_.name) +
-          '(' + this.targetClass.id + ')';
+    {
+      name: 'toString',
+      code: function toString() {
+        return foam.String.constantize(this.cls_.name) +
+            '(' + this.targetClass.id + ')';
+      },
+      javaCode: `
+        return getClass().getSimpleName() + "(" + getTargetClass().getId() + ")";
+      `
     }
   ]
 });
@@ -2640,7 +2708,7 @@ while ( i.hasNext() ) {
       s = ((String) prop.f(obj));
     }
 
-    if ( s.toUpperCase().contains(arg1) ) return true;
+    if ( s != null && s.toUpperCase().contains(arg1) ) return true;
   } catch (Throwable t) {}
 }
 
@@ -2669,6 +2737,9 @@ return false;`
       name: 'toString',
       code: function() { return 'Keyword(' + this.arg1.toString() + ')'; },
       javaCode: 'return "Keyword(" + getArg1().toString() + ")";'
+    },
+    function toMQL() {
+      // no-op
     }
   ]
 });
@@ -3124,31 +3195,33 @@ foam.CLASS({
     },
     {
       name: 'values',
-      factory: function() { return {}; }
+      class: 'Map',
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.HashMap();'
     }
   ],
 
   methods: [
-    function putInGroup_(key, obj) {
-      var group = this.groups.hasOwnProperty(key) && this.groups[key];
-      if ( ! group ) {
-        group = this.arg2.clone();
-        this.groups[key] = group;
-        this.groupKeys.push(key);
-      }
-      group.put(obj);
-    },
-
-    function put(obj, sub) {
-      var value = this.expr.f(obj);
-      if ( Array.isArray(value) ) {
-        throw 'Unique doesn\'t Array values.';
-      } else {
-        if ( ! this.values.hasOwnProperty(value) ) {
-          this.values[value] = obj;
-          this.delegate.put(obj);
+    {
+      name: 'put',
+      code: function put(obj, sub) {
+        var value = this.expr.f(obj);
+        if ( Array.isArray(value) ) {
+          throw 'Unique does not support Array values.';
+        } else {
+          if ( ! this.values.hasOwnProperty(value) ) {
+            this.values[value] = obj;
+            this.delegate.put(obj);
+          }
         }
+      },
+      javaCode: `
+      var value = getExpr().f(obj);
+      if ( ! getValues().containsKey(value) ) {
+        getValues().put(value, null);
+        getDelegate().put(obj, sub);
       }
+      `
     },
 
     function eof() { },
@@ -3355,6 +3428,7 @@ foam.CLASS({
   name: 'CustomComparator',
   implements: [ 'foam.mlang.order.Comparator' ],
 
+  flags: [],
   // TODO: rename FunctionComparator
 
   documentation: 'A function to Comparator adapter.',
@@ -3490,11 +3564,11 @@ foam.CLASS({
         if !hasOwnProperty("value") || FOAM_utils.compare(value, arg1.f(obj)) < 0 {
           value = arg1.f(obj);
         }
-`,
-      javaCode: 'if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {\n' +
-      '      setValue(getArg1().f(obj));\n' +
-      '    }'
-    },
+      `,
+      javaCode: `if ( getValue() == null || ((Comparable)getArg1().f(obj)).compareTo(getValue()) > 0 ) {
+            setValue(getArg1().f(obj));
+          }`
+    }
   ]
 });
 
@@ -3593,7 +3667,7 @@ foam.CLASS({
 setCount(getCount() + 1);
 setValue((getValue() + ((Number)this.getArg1().f(obj)).doubleValue()) / getCount());
       `,
-    },
+    }
   ]
 });
 
@@ -3771,7 +3845,7 @@ foam.CLASS({
     {
       name: 'f',
       code: function(obj) {
-        return this.targetClass.id == obj.cls_.id;
+        return obj && this.targetClass.id == obj.cls_.id;
       },
       javaCode: `
         return getTargetClass().getObjClass() == obj.getClass();
@@ -3788,6 +3862,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'Expressions',
+
+  flags: [],
 
   documentation: 'Convenience mix-in for requiring all mlangs.',
 
@@ -3822,6 +3898,7 @@ foam.CLASS({
     'foam.mlang.predicate.Or',
     'foam.mlang.predicate.RegExp',
     'foam.mlang.predicate.IsClassOf',
+    'foam.mlang.IsValid',
     'foam.mlang.predicate.IsInstanceOf',
     'foam.mlang.predicate.StartsWith',
     'foam.mlang.predicate.StartsWithIC',
@@ -3854,7 +3931,7 @@ foam.CLASS({
     {
       name: 'TRUE',
       factory: function() { return foam.mlang.predicate.True.create() }
-    },
+    }
   ],
 
   methods: [
@@ -3935,7 +4012,16 @@ foam.CLASS({
     function INSTANCE_OF(cls) { return this.IsInstanceOf.create({ targetClass: cls }); },
     function CLASS_OF(cls) { return this.IsClassOf.create({ targetClass: cls }); },
     function MQL(mql) { return this.MQLExpr.create({query: mql}); },
-    function STRING_LENGTH(a) { return this._unary_("StringLength", a); }
+    function STRING_LENGTH(a) { return this._unary_("StringLength", a); },
+    function IS_VALID(o) { return this.IsValid.create({arg1: o}); },
+    function YEARS(p) { return foam.mlang.Years.create({arg1: p}); },
+    function MONTHS(d) { return foam.mlang.Months.create({arg1: d}); },
+    function MONTH(d) { return foam.mlang.Month.create({numberOfMonths: d}); },
+    function DAYS(d) { return foam.mlang.Days.create({arg1: d}); },
+    function DAY(d) { return foam.mlang.Day.create({numberOfDays: d}); },
+    function HOURS(d) { return foam.mlang.Hours.create({arg1: d}); },
+    function MINUTES(d) { return foam.mlang.Minutes.create({arg1: d}); },
+    function NOW() { return foam.mlang.CurrentTime.create(); }
   ]
 });
 
@@ -3945,6 +4031,8 @@ foam.CLASS({
   name: 'ExpressionsSingleton',
   extends: 'foam.mlang.Expressions',
 
+  flags: [],
+
   documentation: 'A convenience object which provides access to all mlangs.',
   // TODO: why is this needed? Why not just make Expressions a Singleton?
 
@@ -3952,7 +4040,6 @@ foam.CLASS({
     foam.pattern.Singleton.create()
   ]
 });
-
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
@@ -3976,7 +4063,7 @@ foam.CLASS({
       name: 'f',
       code: function(o) {
         var v1 = this.arg1.f(o);
-        return v1.toString().match(this.regExp);
+        return v1.toString().match(this.regExp) !== null;
       },
       javaCode: `
         return getRegExp().matcher(getArg1().f(obj).toString()).matches();
@@ -3998,7 +4085,6 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.lib.parse.PStream',
     'foam.lib.parse.ParserContext',
-    'foam.lib.parse.ParserContext',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',
     'foam.mlang.Constant',
@@ -4007,29 +4093,23 @@ foam.CLASS({
     'java.util.concurrent.ConcurrentHashMap'
   ],
 
-  axioms: [
-    foam.pattern.Multiton.create({property: 'query'}),
-    {
-      name: 'javaExtras',
-      buildJavaClass: function(cls) {
-        cls.extras.push(
-          `
-  protected final static Map map__ = new ConcurrentHashMap();
-  public static MQLExpr create(String query) {
-    MQLExpr p = (MQLExpr) map__.get(query);
+  javaCode: `
+    protected final static Map map__ = new ConcurrentHashMap();
+    public static MQLExpr create(String query) {
+      MQLExpr p = (MQLExpr) map__.get(query);
 
-    if ( p == null ) {
-      p = new MQLExpr();
-      p.setQuery(query);
-      map__.put(query, p);
-    }
-
-    return p;
-  }
- `
-        );
+      if ( p == null ) {
+        p = new MQLExpr();
+        p.setQuery(query);
+        map__.put(query, p);
       }
+
+      return p;
     }
+ `,
+
+  axioms: [
+    foam.pattern.Multiton.create({property: 'query'})
   ],
 
   properties: [
@@ -4087,6 +4167,7 @@ foam.CLASS({
         sps.setString(getQuery());
         PStream ps = sps;
         ParserContext x = new ParserContextImpl();
+        x.set("X", getX());
         ps = parser.parse(ps, x);
         if (ps == null)
           return new False();
@@ -4101,6 +4182,105 @@ foam.CLASS({
       },
       javaCode: `
         return "(" + getQuery() + ")";
+      `
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'FScript',
+  extends: 'foam.mlang.AbstractExpr',
+
+  javaImports: [
+    'foam.lib.parse.PStream',
+    'foam.lib.parse.ParserContext',
+    'foam.lib.parse.ParserContextImpl',
+    'foam.lib.parse.StringPStream',
+    'foam.parse.FScriptParser',
+    'foam.core.PropertyInfo'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'query'
+    },
+    {
+      class: 'Object',
+      name: 'prop',
+      javaType: 'PropertyInfo'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        var pred = foam.parse.FScriptParser.create({of: o.cls_, thisValue: this.prop}).parseString(this.query);
+        return pred ? pred.partialEval().f(o) : false;
+      },
+      javaCode: `
+      FScriptParser parser;
+      if ( getProp() != null ) parser = new FScriptParser(getProp());
+      else parser = new FScriptParser(((foam.core.FObject) obj).getClassInfo());
+      StringPStream sps = new StringPStream();
+      sps.setString(getQuery());
+      PStream ps = sps;
+      ParserContext x = new ParserContextImpl();
+      ps = parser.parse(ps, x);
+      if (ps == null)
+        return null;
+
+      return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
+      `
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'FScriptPredicate',
+  extends: 'foam.mlang.predicate.AbstractPredicate',
+
+  documentation: `
+    Use FScript as an mlang predicate rather than an mlang expression.
+    This makes it possible to use FScript with interfaces that expect
+    a predicate. If the underlying expression does not return a boolean
+    the result is a casting error.
+  `,
+
+  javaImports: [
+    'foam.core.PropertyInfo'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'query'
+    },
+    {
+      class: 'Object',
+      name: 'prop',
+      javaType: 'PropertyInfo'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        return foam.mlang.predicate.FScript.create({
+          query: this.query,
+          prop: this.prop
+        }).f(o);
+      },
+      javaCode: `
+        var fScriptExpr = new FScript();
+        fScriptExpr.setQuery(getQuery());
+        fScriptExpr.setProp(getProp());
+        return (boolean) fScriptExpr.f(obj);
       `
     }
   ]
@@ -4167,13 +4347,13 @@ foam.CLASS({
     {
       name: 'f',
       code: function(o) {
-        return this.specialization(o.model_);
+        return this.specialization(o.model_).f(o);
       },
       javaCode: `
         if ( ! ( obj instanceof FObject ) )
           return false;
 
-        return specialization(((FObject)obj).getClassInfo());
+        return specialization(((FObject)obj).getClassInfo()).f(obj);
       `
     },
     {
@@ -4258,9 +4438,11 @@ foam.CLASS({
   package: 'foam.mlang',
   name: 'CurrentTime',
   extends: 'foam.mlang.AbstractExpr',
+
   axioms: [
     { class: 'foam.pattern.Singleton' }
   ],
+
   methods: [
     {
       name: 'f',
@@ -4299,6 +4481,72 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'TemplateString',
+  extends: 'foam.mlang.AbstractExpr',
+  javaImports: [
+    'foam.lib.parse.*',
+    'foam.core.AbstractStringPropertyInfo',
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'java.util.ArrayList'
+  ],
+  properties: [
+    {
+      class: 'String',
+      name: 'string',
+      documentation: "TODO"
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.lib.parse.Parser',
+      name: 'parser',
+      documentation: `the syntax for a JSON is "fieldname": value. The grammar finds all the occurrences of fieldnames in
+        a JSON formatted string and replaces them with alternative field name provided in the map`,
+      javaFactory: `
+      return new Seq1(0,
+       new Repeat(
+         new Seq1(1, new Until(Literal.create("{{")), new Repeat(new foam.lib.parse.Not(Literal.create("}}"), AnyChar.instance()))
+         ), Literal.create("}}"), 1),
+       Literal.create("}}"),
+       new Optional(new Repeat(AnyChar.instance()))
+     );
+      `
+    }
+  ],
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+      var fobj = (FObject) obj;
+      var templparse = getParser();
+      StringPStream ps = new StringPStream();
+      ps.setString(getString());
+      var psRet = ps.apply(templparse, null);
+      if ( psRet == null ) return null;
+      var axiomsArr = (Object[]) psRet.value();
+      var axioms = new ArrayList<PropertyInfo>();
+      for ( Object a : axiomsArr ) {
+        Object[] arr = (Object[]) a;
+        StringBuilder sb = new StringBuilder();
+        for ( Object num: arr ) {
+          sb.append(num);
+        }
+        var p = (PropertyInfo) fobj.getClassInfo().getAxiomByName(sb.toString());
+        if ( p == null || !( p instanceof AbstractStringPropertyInfo ) ) return null;
+        axioms.add((PropertyInfo)fobj.getClassInfo().getAxiomByName(sb.toString()));
+      }
+      String ret = getString();
+      for ( PropertyInfo prop : axioms ) {
+        ret = ret.replace("{{"+prop.getName()+"}}", (String) prop.f(obj));
+      }
+
+      return ret;
+      `
+    }
+  ]
+});
 
 foam.CLASS({
   package: 'foam.mlang',
@@ -4320,21 +4568,24 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.mlang',
   name: 'IsValid',
-  extends: 'foam.mlang.AbstractExpr',
+  extends: 'foam.mlang.predicate.Unary',
+  implements: [ 'foam.core.Serializable' ],
   javaImports: [
     'foam.core.XLocator'
   ],
+
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
       name: 'arg1'
     }
   ],
+
   methods: [
     {
       name: 'f',
       code: function(o) {
-        return this.arg1.f(o).errors_ ? false : true;
+        return this.arg1.f(o) == undefined || this.arg1.f(o).errors_ ? false : true;
       },
       javaCode: `
 try {
@@ -4470,6 +4721,7 @@ foam.CLASS({
   documentation: 'Formula base-class',
 
   javaImports: [
+    'foam.mlang.Expr',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -4478,6 +4730,10 @@ foam.CLASS({
     {
       class: 'foam.mlang.ExprArrayProperty',
       name: 'args'
+    },
+    {
+      class: 'Boolean',
+      name: 'rounding'
     }
   ],
 
@@ -4485,9 +4741,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        Double result = null;
+      Double result = null;
+      try {
         for ( int i = 0; i < getArgs().length; i++) {
           var current = getArgs()[i].f(obj);
+          if ( current == null ) {
+            return null;
+          }
           if ( current instanceof Number ) {
             var oldResult = result;
             var value = ((Number) current).doubleValue();
@@ -4500,12 +4760,24 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        if ( result == null )
+          return null;
+        return getRounding() ? Math.round(result) : result;
+      } catch (Throwable t) {
+        foam.nanos.logger.Logger logger = foam.nanos.logger.StdoutLogger.instance();
+        logger.warning("Formula,f,result", result, this.toString(), t);
+        for ( int i = 0; i < getArgs().length; i++) {
+          logger.warning("Formula,f,arg", i, "arg", getArgs()[i]);
+          var current = getArgs()[i].f(obj);
+          logger.warning("Formula,f,arg", i, "current", current);
+        }
+        throw new RuntimeException(t);
+      }
       `,
       code: function(o) {
         var result = null;
         for ( var i = 0; i < this.args.length; i++ ) {
-          var current = this.args[i].f(o);
+          var current = typeof this.args[i] === 'number' ? this.args[i] : this.args[i].f(o);
           if ( typeof current === 'number' ) {
             var oldResult = result;
             result = result === null ? current : this.reduce(result, current);
@@ -4516,7 +4788,7 @@ foam.CLASS({
             }
           }
         }
-        return result;
+        return this.rounding ? Math.round(result) : result;
       }
     },
     {
@@ -4532,22 +4804,47 @@ foam.CLASS({
       name: 'partialEval',
       type: 'foam.mlang.Expr',
       javaCode: `
-        List<Double> list = new ArrayList<>();
+        if ( getArgs().length == 0 ) return this;
+        if ( getArgs().length == 1 ) return getArgs()[0].partialEval();
+
+        List<Double> valList = new ArrayList<>();
+        List<Expr>   argList = new ArrayList<>();
         for ( var arg : getArgs() ) {
           arg = arg.partialEval();
           if ( arg instanceof Constant ) {
             var value = ((Number) arg.f(this)).doubleValue();
-            list.add(value);
+            valList.add(value);
+          } else {
+            argList.add(arg);
           }
         }
 
-        if ( list.size() == getArgs().length ) {
-          var result = list.stream().reduce(this::reduce).get();
-          if ( Double.isFinite(result) ) {
-            return new Constant(result);
-          }
+        var result = valList.stream().reduce(this::reduce);
+        if ( result.isPresent() ) {
+          var value = result.get();
+
+          // Early return if the reduce result is Infinity or NaN since continue
+          // performing arithmetic operations on Infinity or NaN will still
+          // yield Infinity or NaN.
+          if ( ! Double.isFinite(value) ) return new Constant(value);
+
+          // Return reduce result as a constant if no un-resolvable args
+          if ( argList.isEmpty() ) return new Constant(getRounding() ? Math.round(value) : value);
+
+          // There are un-resolvable args so adding reduce result as constant.
+          // Eg. Add(1,2,3, prop1, 4,5) will become Add(prop1, 15).
+          argList.add(new Constant(value));
         }
-        return this;
+
+        // Construct new formula with partially evaled arg list
+        try {
+          var nu = (Formula) getClass().getDeclaredConstructor().newInstance();
+          nu.setRounding(getRounding());
+          nu.setArgs(argList.toArray(new Expr[argList.size()]));
+          return nu;
+        } catch (Throwable e) {
+          return this;
+        }
       `
     },
     {
@@ -4558,7 +4855,8 @@ foam.CLASS({
         sb.append(getClass().getSimpleName()).append('(');
         for ( int i = 0; i < getArgs().length; i++ ) {
           if ( i > 0 ) sb.append(", ");
-          sb.append(getArgs()[i].toString());
+          Object arg = getArgs()[i];
+          sb.append(arg != null ? arg.toString() : "null");
         }
         sb.append(')');
         return sb.toString();
@@ -4672,6 +4970,452 @@ foam.CLASS({
   ]
 });
 
-// TODO(braden): We removed Expr.pipe(). That may still be useful to bring back,
-// probably with a different name. It doesn't mean the same as DAO.pipe().
-// remove eof()
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'If',
+  extends: 'foam.mlang.AbstractExpr',
+
+  properties: [
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      javaFactory: 'return foam.mlang.MLang.TRUE;'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'trueExpr'
+    },
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'falseExpr'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      javaCode: `
+        var expr = getPredicate().f(obj) ? getTrueExpr() : getFalseExpr();
+        return expr.f(obj);
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      javaCode: 'return "If(predicate:" + getPredicate() + ", trueExpr:" + getTrueExpr() + ", falseExpr:" + getFalseExpr() + ")";',
+      code: function() {
+        return
+        'If(predicate:' + (this.predicate && this.predicate.toString() || 'NA') +
+          ', trueExpr:' + (this.trueExpr && this.trueExpr.toString() || 'NA') +
+          ', falseExpr:' + (this.falseExpr && this.falseExpr.toString() || 'NA') +
+          ')';
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Month',
+  extends: 'foam.mlang.AbstractExpr',
+
+  documentation: `Returns the first day of the month. The property numberOfMonths allows specify how many month ahead
+                    of behind we want the date to be. For example new Month() returns the first day of the current month.
+                    new Month(-1) returns the first day of the previous month`,
+
+  implements: [
+    'foam.core.Serializable'
+  ],
+
+  javaImports:[
+    'java.util.Calendar'
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'numberOfMonths',
+      value: 0
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function() {
+        var date = new Date();
+        if ( date.getMonath() + numberOfMonths > 12 ) date.setYear(date.getYear()+ Math.floor((date.getMonth()+ numberOfMonths)/12));
+        if ( date.getMonth() + numberOfMonths < 0 ) date.setYear(date.getYear()-1-Math.floor((date.getMonth()- numberOfMonths)/12));
+        date.setMonth(date.getMonth()+numberOfMonths);
+        date.setDate(1);
+        date.setHours(0);
+        date.setMinutes(0);
+        return date;
+      },
+      javaCode: `
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, getNumberOfMonths());
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        return cal.getTime();
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() {
+        return 'Month(\'' + this.numberOfMonths + '\')';
+      },
+      javaCode: ' return "Month(\'" + getNumberOfMonths() + "\')"; '
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Day',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: `Returns the first minute of the day. The property numberOfDays allows specify how many days ahead
+                      of behind we want the date to be. For example new Day() returns the first minute of 'today'.
+                      new Day(-1) returns the first minute of yesterday`,
+
+  javaImports:[
+    'java.util.Calendar'
+  ],
+
+  implements: [
+    'foam.core.Serializable'
+  ],
+
+  properties: [
+    {
+      class: 'Int',
+      name: 'numberOfDays',
+      value: 0
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function() {
+        var date = new Date();
+        date.setMonth(date.getDay()+numberOfDays);
+        date.setDate(1);
+        date.setHours(0);
+        date.setMinutes(0);
+        return date
+      },
+      javaCode: `
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, getNumberOfDays());
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        return cal.getTime();
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() {
+        return 'Day(\'' + this.numberOfDays + '\')';
+      },
+      javaCode: ' return "Day(\'" + getNumberOfDays() + "\')"; '
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Years',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of years since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+  javaImports:[
+    'java.time.LocalDate',
+    'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var from = this.arg1.f(obj).getUTCFullYear();
+        var now = new Date().getUTCFullYear();
+        var years = now - from;
+        if ( from > now ) {
+          years = from - now;
+        }
+        return years;
+      },
+      javaCode: `
+        LocalDate d = LocalDate.ofInstant(((Date) getArg1().f(obj)).toInstant(), ZoneId.systemDefault());
+        return ChronoUnit.YEARS.between(d, LocalDate.now());
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() { return 'YEARS(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "YEARS(\'" + getArg1() + "\')"; '
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Months',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of months since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+  javaImports:[
+    'java.time.LocalDate',
+    'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var from = this.arg1.f(obj);
+        var now = new Date(Date.now());
+        if ( from > now ) {
+          now = from;
+          from = new Date(Date.now());
+        }
+        var monthDiff = now.getMonth() - from.getMonth();
+        var yearDiff = now.getYear() - from.getYear();
+
+        var months = monthDiff + yearDiff * 12
+        return months;
+      },
+      javaCode: `
+        LocalDate d = LocalDate.ofInstant(((Date) getArg1().f(obj)).toInstant(), ZoneId.systemDefault());
+        return ChronoUnit.MONTHS.between(d, LocalDate.now());
+     `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() { return 'MONTHS(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "MONTHS(\'" + getArg1() + "\')"; '
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Days',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of calendar days since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+  javaImports:[
+    'java.time.LocalDate',
+    'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var millisecondsPerDay = 24 * 60 * 60 * 1000;
+        var from = this.arg1.f(obj);
+        var now = new Date(Date.now());
+        from.setMinutes(from.getMinutes() - from.getTimezoneOffset());
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+        var days = Math.floor(Math.abs(now - from) / millisecondsPerDay);
+        return days;
+      },
+      javaCode: `
+        LocalDate d = LocalDate.ofInstant(((Date) getArg1().f(obj)).toInstant(), ZoneId.systemDefault());
+        return ChronoUnit.DAYS.between(d, LocalDate.now());
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() { return 'DAYS(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "DAYS(\'" + getArg1() + "\')"; '
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Hours',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of full hours since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+  javaImports:[
+    'java.time.LocalDateTime',
+    'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var millisecondsPerHour = 60 * 60 * 1000;
+        var from = this.arg1.f(obj);
+        var now = new Date(Date.now());
+        from.setMinutes(from.getMinutes() - from.getTimezoneOffset());
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+        var hours = Math.floor(Math.abs(now - from) / millisecondsPerHour);
+        return hours;
+      },
+      javaCode: `
+        LocalDateTime d = LocalDateTime.ofInstant(((Date) getArg1().f(obj)).toInstant(), ZoneId.systemDefault());
+        return ChronoUnit.HOURS.between(d, LocalDateTime.now());
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() { return 'HOURS(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "HOURS(\'" + getArg1() + "\')"; '
+    }
+  ]
+});
+foam.CLASS({
+  package: 'foam.mlang',
+  name: 'Minutes',
+  extends: 'foam.mlang.AbstractExpr',
+  documentation: 'Return the number of minutes since the specified date.',
+
+/*
+  implements: [
+    'foam.core.Serializable'
+  ],
+  */
+
+  javaImports:[
+    'java.time.LocalDateTime',
+    'java.time.ZoneId',
+    'java.time.temporal.ChronoUnit',
+    'java.util.Date'
+  ],
+
+  properties: [
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'arg1'
+    }
+  ],
+
+  methods: [
+    {
+      type: 'FObject',
+      name: 'fclone',
+      javaCode: 'return this;'
+    },
+    {
+      name: 'f',
+      code: function f(obj) {
+        var millisecondsPerMinute = 60 * 1000;
+        var from = this.arg1.f(obj);
+        var now = new Date(Date.now());
+        from.setMinutes(from.getMinutes() - from.getTimezoneOffset());
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+        var minutes = Math.floor(Math.abs(now - from) / millisecondsPerMinute);
+        return minutes;
+      },
+      javaCode: `
+        LocalDateTime d = LocalDateTime.ofInstant(((Date) getArg1().f(obj)).toInstant(), ZoneId.systemDefault());
+        return ChronoUnit.MINUTES.between(d, LocalDateTime.now());
+      `
+    },
+    {
+      name: 'toString',
+      type: 'String',
+      code: function() { return 'MINUTES(\'' + this.arg1.toString() + '\')'; },
+      javaCode: ' return "MINUTES(\'" + getArg1() + "\')"; '
+    }
+  ]
+});

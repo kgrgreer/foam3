@@ -22,9 +22,9 @@ and waits on a response.`,
     'foam.dao.RemoveSink',
     'foam.lib.json.JSONParser',
     'foam.log.LogLevel',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.er.EventRecord',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
@@ -41,20 +41,6 @@ and waits on a response.`,
       name: 'medusaEntryDAO',
       class: 'String',
       value: 'medusaEntryMediatorDAO'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName(),
-          getNSpec().getName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -98,7 +84,7 @@ and waits on a response.`,
       javaCode: `
       if ( ! ( DOP.PUT == dop ||
                DOP.REMOVE == dop ) ) {
-        getLogger().warning("update", "Unsupported operation", dop.getLabel());
+        Loggers.logger(x, this).warning("update", "Unsupported operation", dop.getLabel());
         throw new UnsupportedOperationException(dop.getLabel());
       }
       if ( obj instanceof Clusterable &&
@@ -132,12 +118,20 @@ and waits on a response.`,
           if ( id != null ) {
             old = getDelegate().find_(x, id);
           }
-          String data = entrySupport.data(x, nu, old, dop);
-          String transientData = entrySupport.transientData(x, nu, old, dop);
+          String data = null;
+          String transientData = null;
+          try {
+            data = entrySupport.data(x, nu, old, dop);
+            transientData = entrySupport.transientData(x, nu, old, dop);
+          } catch (RuntimeException e) {
+            // Generally ClassCastExceptions2
+            Loggers.logger(x, this).error("update", dop, e.getMessage(), "creating data", "new", obj.getClass().getName(), "id", id, "old", (old == null) ? "null" : old.getClass().getName());
+            throw e;
+          }
           if ( SafetyUtil.isEmpty(data) &&
                SafetyUtil.isEmpty(transientData) ) {
             // No delta.
-            // getLogger().debug("update", dop, nu.getClass().getSimpleName(), id, "no delta", "return");
+            // Loggers.logger(x, this).debug("update", dop, "No delta detected", nu.getClass().getSimpleName(), id);
             return nu;
           }
 
@@ -150,22 +144,20 @@ and waits on a response.`,
           entry.setCreated(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
 
           entry = (MedusaEntry) ((DAO) x.get(getMedusaEntryDAO())).put_(getX(), entry);
-          PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
-          registry.wait(x, (Long) entry.getId());
-          pmWait.log(x);
-
+          if ( ((Long) entry.getId()).longValue() != 0L ) {
+            PM pmWait = PM.create(x, this.getClass().getSimpleName(), "wait");
+            registry.wait(x, (Long) entry.getId());
+            pmWait.log(x);
+          } else {
+            // entry.id will be 0 (unassigned) when the primary detects no change.
+            // Loggers.logger(x, this).debug("update", dop, "No delta detected on Primary", nu.getClass().getSimpleName(), id);
+          }
           id = entry.getObjectId();
           nu = getDelegate().find_(x, id);
 
           if ( nu == null ) {
-            getLogger().error("update", dop, entry.toSummary(), "find", id, "null");
-            Alarm alarm = new Alarm();
-            alarm.setClusterable(false);
-            alarm.setSeverity(LogLevel.ERROR);
-            alarm.setName("MedusaAdapter failed to update");
-            alarm.setNote(obj.getClass().getName()+" "+id);
-            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-            throw new MedusaException("Failed to update");
+            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry not found, failed to update", entry.toSummary(), LogLevel.ERROR, null));
+            throw new MedusaException("MedusaEntry not found, failed to update");
           }
           return nu;
         } else { // if ( DOP.REMOVE == dop ) {
@@ -180,13 +172,7 @@ and waits on a response.`,
           registry.wait(x, (Long) entry.getId());
 
           if ( getDelegate().find_(x, id) != null ) {
-            getLogger().error("update", dop, entry.toSummary(), "remove", id, "not deleted");
-            Alarm alarm = new Alarm();
-            alarm.setClusterable(false);
-            alarm.setSeverity(LogLevel.ERROR);
-            alarm.setName("MedusaAdapter failed to remove");
-            alarm.setNote(obj.getClass().getName()+" "+id);
-            alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry not found, failed to delete", entry.toSummary(), LogLevel.ERROR, null));
             throw new MedusaException("Failed to delete");
           }
           return result;
@@ -196,7 +182,7 @@ and waits on a response.`,
         throw e;
      } catch (Throwable t) {
         pm.error(x, t);
-        getLogger().error("put", t.getMessage(), t);
+        Loggers.logger(x, this).error("put", t.getMessage(), t);
         throw t;
       } finally {
         pm.log(x);

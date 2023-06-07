@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.util.filesystem',
   name: 'FileWalker',
 
-  topics: ['files', 'directoryStart', 'directoryEnd', 'error'],
+  topics: ['files', 'directoryStart', 'directoryEnd', 'error', 'skip'],
 
   documentation: `
     This FileWalker goes through items in a directory recursively
@@ -38,7 +38,8 @@ foam.CLASS({
         in a directory before it can move deeper.
       `
     },
-    'nodejs_'
+    'nodejs_',
+    ['skipNext', false]
   ],
 
   methods: [
@@ -46,6 +47,9 @@ foam.CLASS({
       this.nodejs_ = {};
       this.require_('path');
       this.require_('fs');
+      this.skip.sub(() => {
+        this.skipNext = true;
+      })
     },
     function require_(name, asName) {
       Object.defineProperty(this.nodejs_, asName || name, {
@@ -81,6 +85,7 @@ foam.CLASS({
                   name: file,
                   fullPath: fullPath,
                   stats: stats,
+                  path: path
                 }
               } catch (e) {
                 console.warn('Failed to stat file: ' + fullPath);
@@ -101,6 +106,13 @@ foam.CLASS({
           case 'BFS':
             self.directoryStart.pub(path);
             self.files.pub(filesMessage);
+            // 'pub' is known to occur synchronously, so skipNext must
+            // have been set by a listener within the call above
+            if ( self.skipNext ) {
+              self.skipNext = false;
+              resolve();
+              break;
+            }
             Promise.all(directoriesToWalk.map(
               (fullPath) => self.walk(fullPath, depth + 1)
             )).then(() => {

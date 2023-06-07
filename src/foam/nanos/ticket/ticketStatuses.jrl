@@ -7,6 +7,13 @@ p({
 
 p({
   "class":"foam.nanos.ticket.TicketStatus",
+  "id":"EXPIRED",
+  "label":"Expired",
+  "ordinal":95
+})
+
+p({
+  "class":"foam.nanos.ticket.TicketStatus",
   "id":"CLOSED",
   "label":"Closed",
   "ordinal":99

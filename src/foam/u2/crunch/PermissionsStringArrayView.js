@@ -16,6 +16,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'granted',
       tableWidth: 70,
+      projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         var cb = foam.u2.CheckBox.create({data: value}, this);
         this.onDetach(cb.data$.sub (()=> {

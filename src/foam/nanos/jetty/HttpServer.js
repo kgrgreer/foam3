@@ -9,7 +9,8 @@ foam.CLASS({
   name: 'HttpServer',
 
   implements: [
-    'foam.nanos.NanoService'
+    'foam.nanos.NanoService',
+    'foam.nanos.boot.NSpecAware'
   ],
 
   javaImports: [
@@ -37,6 +38,7 @@ foam.CLASS({
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
@@ -64,6 +66,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enableHttps'
+    },
+    {
+      class: 'Boolean',
+      name: 'enableMTLS',
+      documentation: 'Enable mTLS on this server connection'
     },
     {
       name: 'keystoreFileName',
@@ -144,7 +151,7 @@ foam.CLASS({
       try {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -271,7 +278,19 @@ foam.CLASS({
         });
 
         addJettyShutdownHook(server);
-        server.setHandler(handler);
+
+        // Install GzipHandler to transparently gzip .js, .svg and .html files
+        GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.addIncludedMimeTypes(
+          "application/javascript",
+          "image/svg+xml",
+          "text/html"
+        );
+        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
+        gzipHandler.setCompressionLevel(9);
+        gzipHandler.setHandler(handler);
+        server.setHandler(gzipHandler);
 
         this.configHttps(server);
 
@@ -326,7 +345,7 @@ foam.CLASS({
       if ( this.getEnableHttps() ) {
         int port = getPort();
         try {
-          port = Port.get(getX(), "http");
+          port = Port.get(getX(), (String) getNSpec().getId());
         } catch (IllegalArgumentException e) {
           port = getPort();
         }
@@ -389,9 +408,11 @@ foam.CLASS({
           sslContextFactory.setKeyStore(keyStore);
           sslContextFactory.setKeyStorePassword(this.getKeystorePassword());
           // NOTE: Enabling these will fail self-signed certificate use.
-          // sslContextFactory.setWantClientAuth(true);
-          // sslContextFactory.setNeedClientAuth(true);
-
+          if ( getEnableMTLS() ) {
+            sslContextFactory.setWantClientAuth(true);
+            sslContextFactory.setNeedClientAuth(true);  
+          }
+          
           getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),

@@ -167,9 +167,10 @@ public class HttpParametersWebAgent
     parameters.set(Command.class, command);
 
     Format format = Format.JSON;
+    String f = null;
     resp.setContentType("text/html");
     if ( req.getParameter("format") != null && ! "".equals(req.getParameter("format").trim()) ) {
-      String f = req.getParameter("format");
+      f = req.getParameter("format");
       switch ( f.toUpperCase() ) {
         case "XML":
           format = Format.XML;
@@ -197,7 +198,7 @@ public class HttpParametersWebAgent
       String[] formats = accept.split(";");
       int i;
       for ( i = 0 ; i < formats.length; i++ ) {
-        String f = formats[i].trim();
+        f = formats[i].trim();
 
         if ( f.contains("application/json") ) {
           format = Format.JSON;
@@ -220,15 +221,19 @@ public class HttpParametersWebAgent
           break;
         }
       }
+
+      // Set the format string to the name
+      f = format.getName();
+      
     //   if ( i == formats.length ) {
     //     logger.debug("accept/format could not be determined, default to JSON.");
     //   }
     // } else {
     //   logger.debug("accept/format could not be determined, default to JSON.");
     }
-    parameters.set("format", format);
+    parameters.set("format", f);
     parameters.set(Format.class, format);
-
+    
     // logger.debug("parameters", parameters);
     x = x.put(HttpParameters.class, parameters);
     getDelegate().execute(x);

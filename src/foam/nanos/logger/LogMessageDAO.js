@@ -30,7 +30,13 @@ foam.CLASS({
     {
       name: 'hostname',
       class: 'String',
-      javaFactory: 'return System.getProperty("hostname", "localhost");'
+      javaFactory: `
+      String hostname = System.getProperty("hostname", "localhost");
+      if ( "localhost".equals(hostname) ) {
+        hostname = System.getProperty("user.name");
+      }
+      return hostname;
+      `
     }
   ],
 

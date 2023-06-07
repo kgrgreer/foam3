@@ -11,24 +11,40 @@ foam.CLASS({
 
   documentation: 'View for formatting cents into dollars.',
 
-  css: '^:read-only { border: none; background: rgba(0,0,0,0); }',
-
   properties: [
     ['precision', 2],
-    ['trimZeros', false]
+    ['trimZeros', false],
+    ['onKey', true],
+    {
+      class: 'Reference',
+      name: 'currency',
+      of: 'foam.core.Currency',
+      value: 'CAD'
+    },
+    'curr_',
+    ['hideSymbol', true]
   ],
 
   methods: [
-    function dataToText(val) {
-      return this.SUPER(val / 100);
+    async function render() {
+      let sup = this.SUPER;
+      let self = this;
+      this.curr_ = await this.currency$find;
+      sup.call(self);
     },
 
     function textToData(text) {
-      return Math.round(this.SUPER(text) * 100);
+      const delim = new RegExp((this.curr_?.delimiter ?? ','), 'g');
+      let plainText = text.replace(delim, '')
+      plainText = 
+        ! this.hideSymbol && this.curr_.symbol && plainText.startsWith(this.curr_.symbol) ?
+        plainText.substring(1) :
+        plainText;
+      return Math.round(this.SUPER(plainText) * 100);
     },
 
     function formatNumber(val) {
-      return val.toFixed(2);
+      return this.curr_ ? this.curr_.format(val, true, this.hideSymbol) : val.toFixed(2);
     },
 
     function link() {

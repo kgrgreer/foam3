@@ -62,6 +62,10 @@ foam.LIB({
       // Increment number of objects created of this class.
       this.count_++;
 
+      // Can use the following code from console to determine number of instances of each type of object created
+      // Object.keys(foam.USED).forEach(k => { try { var m = foam.maybeLookup(k); console.log(m.id, m.count_); } catch (x) {} });
+
+
       // Properties have their values stored in instance_ instead
       // of on the object directly. This lets us defineProperty on
       // the object itself so that we can add extra behaviour
@@ -160,7 +164,6 @@ foam.LIB({
 
         this.axiomMap_[a.name] = a;
       }
-
 
       for ( var i = 0 ; i < axs.length ; i++ ) {
         var a = axs[i];
@@ -312,7 +315,7 @@ foam.LIB({
       return this.private_.initAgentsCache;
     },
 
-    // NOP, is replaced if debug.js is loaded
+    // TODO: remove or fix when validation updated
     function validate() { },
 
     function toString() { return this.name + 'Class'; },
@@ -502,14 +505,6 @@ foam.CLASS({
 
     function clearPrivate_(name) {
       if ( this.private_ ) this.private_[name] = undefined;
-    },
-
-    function validate() {
-      var as = this.cls_.getAxioms();
-      for ( var i = 0 ; i < as.length ; i++ ) {
-        var a = as[i];
-        a.validateInstance && a.validateInstance(this);
-      }
     },
 
     /************************************************
@@ -744,30 +739,44 @@ foam.CLASS({
       this.pub('propertyChange', prop.name, slot);
     },
 
+    function dynamic(m /* either a map or a function */) {
+      return this.onDetach(foam.core.DynamicFunction.create(
+        foam.Function.isInstance(m) ?
+          { code: m, obj: this } :
+          {
+            code: m.code,
+            obj:  this,
+            self: m.self || this,
+            pre:  m.pre  || function() {},
+            post: m.post || function() {}
+          }
+        ));
+    },
+
     function slot(obj /*, argList if obj is a function */) {
       /**
        * Creates a Slot for an Axiom.
        */
       if ( typeof obj === 'function' ) {
-        return foam.core.ExpressionSlot.create(
+        return this.onDetach(foam.core.ExpressionSlot.create(
           arguments.length === 1 ?
             { code: obj, obj: this } :
             {
               code: obj,
               obj: this,
               args: Array.prototype.slice.call(arguments, 1)
-            });
+            }));
       }
 
       if ( foam.Array.isInstance(obj) ) {
-        return foam.core.ExpressionSlot.create({
+        return this.onDetach(foam.core.ExpressionSlot.create({
           obj: this,
           args: obj[0].map(this.slot.bind(this)),
-          code: obj[1],
-        });
+          code: obj[1]
+        }));
       }
 
-      // Special case: listenable pseudo-prooperties
+      // Special case: listenable pseudo-properties
       if ( obj.includes('$') && this[obj + '$'] ) {
         return this[obj + '$'];
       }
@@ -782,7 +791,7 @@ foam.CLASS({
       }
 
       var slot = axiom.toSlot(this);
-      if ( split >= 0 ) slot = slot.dot(obj.slice(split + 1));
+      if ( slot && split >= 0 ) slot = slot.dot(obj.slice(split + 1));
 
       return slot;
     },
@@ -916,7 +925,7 @@ foam.CLASS({
         if ( this.instance_[key] === undefined ) continue; // Skip previously cleared keys.
 
         var value = this[key];
-        this.cls_.getAxiomByName(key).cloneProperty(value, m, opt_X);
+        this.cls_.getAxiomByName(key).cloneProperty(value, m, opt_X, this);
       }
       return this.cls_.create(m, opt_X || this.__context__);
     },
@@ -927,7 +936,7 @@ foam.CLASS({
       for ( var key in this.instance_ ) {
         if ( this.instance_[key] === undefined ) continue; // Skip previously cleared keys.
 
-        var value = this[key];
+        var value = this.instance_[key];
         m[key] = value;
       }
       return this.cls_.create(m, opt_X || this.__context__);
@@ -959,12 +968,23 @@ foam.CLASS({
       if ( o.__proto__ === Object.prototype || ! o.__proto__ ) {
         for ( var key in o ) {
           var name = key.endsWith('$') ?
-              key.substring(0, key.length - 1) :
-              key ;
+            key.substring(0, key.length - 1) :
+            key ;
 
           var a = this.cls_.getAxiomByName(name);
-          if ( a && foam.core.Property.isInstance(a) ) {
-            this[key] = o[key];
+          if ( a ) {
+            if ( foam.core.Property.isInstance(a) ) {
+              this[key] = o[key];
+            } else if ( foam.core.Import.isInstance(a) ) {
+              var slot = foam.core.ConstantSlot.create({ value: o[key] });
+
+              Object.defineProperty(this, key + '$', {
+                get: function() { return slot; },
+                configurable: true,
+                enumerable: false
+              });
+            }
+            //|| foam.core.Requires.isInstance(a) )) {
           } else if ( opt_warn ) {
             this.unknownArg(key, o[key]);
           }
@@ -1000,6 +1020,12 @@ foam.CLASS({
           var name = props[i].name;
           var otherProp = o.cls_.getAxiomByName(name);
           if ( otherProp && foam.core.Property.isInstance(otherProp) ) {
+            // Don't copy the value if the property expressions are same
+            if ( props[i].expression && props[i].expression === otherProp.expression ) continue;
+
+            // Don't copy the value if the property default values are the same
+            if ( o.hasDefaultValue(name) && props[i].value === otherProp.value && ! otherProp.expression ) continue;
+
             if ( ! props[i].copyValueFrom || ! props[i].copyValueFrom(this, o) )
               this[name] = o[name];
           }
@@ -1025,9 +1051,7 @@ foam.CLASS({
     },
 
     function toSummary() {
-      var prop = this.cls_.getAxiomsByClass(foam.core.String)
-        .find(p => !p.hidden);
-      return prop ? prop.f(this) : this.toString();
+      return this.id;
     },
 
     function dot(name) {

@@ -5,15 +5,15 @@
  */
 
 foam.CLASS({
-  name: 'FOAMException',
   package: 'foam.core',
-  implements: [ 'foam.core.Exception' ],
+  name: 'FOAMException',
+  implements: ['foam.core.Exception'],
   javaExtends: 'RuntimeException',
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
   imports: [
-    'translationService'
+    'translationService?'
   ],
 
   javaImports: [
@@ -73,7 +73,8 @@ foam.CLASS({
       factory: function() { return this.cls_.id; },
       javaFactory: 'return this.getClass().getName();',
       externalTransient: true,
-      storageTransient: true
+      storageTransient: true,
+      visibility: 'RO'
     },
     {
       name: 'exceptionMessage',
@@ -93,7 +94,14 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Override title of notification messages',
+      name: 'title',
+      class: 'String',
+      visibility: 'RO'
+    },
+    {
       name: 'errorCode',
+      aliases: ['code'],
       class: 'String',
       visibility: 'RO'
     },
@@ -102,6 +110,12 @@ foam.CLASS({
       class: 'String',
       javaFactory: 'return System.getProperty("hostname", "localhost");',
       visibilty: 'RO'
+    },
+    {
+      name: 'isClientException',
+      class: 'Boolean',
+      value: false,
+      hidden: true
     }
   ],
 
@@ -111,6 +125,7 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
+        if ( ! this.translationService ) return msg;
         var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
         let m = this.getTemplateValues();
         for ( let [key, value] of m.entries() ) {
@@ -178,16 +193,17 @@ foam.CLASS({
       Map map = new HashMap();
       List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo prop : props ) {
-        if ( prop.isSet(this) ) {
-          Object value = null;
-          if ( "message".equals(prop.getName()) ) {
-            value = message_;
-          } else {
-            value = prop.get(this);
+        Object value = null;
+        if ( "message".equals(prop.getName()) ) {
+          value = message_;
+          if ( value == null ) {
+            value = "";
           }
-          if ( value != null ) {
-            map.put(prop.getName(), String.valueOf(value));
-          }
+        } else if ( prop.isSet(this) ) {
+          value = prop.get(this);
+        }
+        if ( value != null ) {
+          map.put(prop.getName(), String.valueOf(value));
         }
       }
       return map;
@@ -219,6 +235,21 @@ foam.CLASS({
       sb.append(getMessage());
       return sb.toString();
       `
+    },
+    {
+      name: 'getClientRethrowException',
+      documentation:
+      `If an exception is intended to go to the client, this
+      returns an exception object; it returns null otherwise.
+
+      Note that the exception returned by this property is the
+      one that should be re-thrown. This is particularly useful
+      for CompoundException where the CompoundException itself
+      is not intended to be re-thrown but any of its child
+      exceptions might be.`,
+      type: 'RuntimeException',
+      visibility: 'public',
+      javaCode: 'return getIsClientException() ? this : null;'
     }
   ]
 });

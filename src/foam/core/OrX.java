@@ -36,6 +36,10 @@ public class OrX
     return new OrX(parent_, getX().put(name, value == null ? NULL : value));
   }
 
+  public X putFactory(Object name, XFactory factory) {
+    return new OrX(parent_, getX().putFactory(name, factory));
+  }
+
   public <T> T get(Class<T> key) {
     return (T) get(this, key);
   }

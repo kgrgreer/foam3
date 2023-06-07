@@ -17,7 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'subject',
     'blobService',
     'notify'
   ],
@@ -78,17 +78,17 @@ foam.CLASS({
       font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: /*%PRIMARY3%*/ #406dea;
+      color: $primary400;
     }
     ^ .uploadRestriction {
       margin-top: 9px;
       font-size: 1rem;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: /*%BLACK%*/ #1e1f21;
+      color: $black;
     }
     ^ .box-for-drag-drop {
-      border: dashed 4px /*%GREY5%*/ #f5f7fa;
+      border: dashed 4px $grey50;
       background:white;
       height: 100px;
       padding: 10px 10px;
@@ -246,7 +246,7 @@ foam.CLASS({
         return;
       }
       this.ProfilePictureImage= this.File.create({
-        owner: this.user.id,
+        owner: this.subject.user.id,
         filename: file.name,
         filesize: file.size,
         mimeType: file.type,
