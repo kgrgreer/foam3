@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
+    'foam.nanos.controller.Fonts',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -537,6 +538,7 @@ foam.CLASS({
 
 
       self.AppStyles.create();
+      self.Fonts.create();
 
       self.addMacroLayout();
     },

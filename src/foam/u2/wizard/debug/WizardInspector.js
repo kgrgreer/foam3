@@ -15,6 +15,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.controller.AppStyles',
+    'foam.nanos.controller.Fonts',
     'foam.u2.DetailPropertyView',
     'foam.u2.borders.Block'
   ],
@@ -68,6 +69,7 @@ foam.CLASS({
       const self = this;
       const wizardController = self.wizardController;
       self.AppStyles.create();
+      self.Fonts.create();
       this
         .addClass(this.myClass())
         .start('h1').add(wizardController.title || 'Untitled Wizard').end()
