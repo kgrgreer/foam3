@@ -123,7 +123,7 @@ foam.CLASS({
           .add(this.slot(function(isRenewable) {
             return isRenewable ? this.E()
               .start()
-                .addClasses(['p-xs', style.myClass('renewable-description')])
+                .addClass('p-xs', style.myClass('renewable-description'))
                 .add(self.RENEW_DATA_LABEL)
               .end() : null;
           }))

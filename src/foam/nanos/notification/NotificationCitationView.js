@@ -15,7 +15,6 @@ foam.CLASS({
 
   css: `
     ^created {
-      font-size: 1.1rem;
       color: $grey500;
     }
     ^description {
@@ -47,7 +46,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().addClass(this.myClass('created'))
+          .start().addClass(['p-legal-light', this.myClass('created')])
             .add(this.created$)
           .end()
           .start().addClass('p', this.myClass('description'))

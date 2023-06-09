@@ -32,10 +32,6 @@ foam.CLASS({
     ^ .label1 {
       width: 338px;
       height: 16px;
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: center;
@@ -57,10 +53,6 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
@@ -71,10 +63,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #59a5d5;
       float: right;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
@@ -112,13 +100,13 @@ foam.CLASS({
           title: 'Delete Email'
         }))
         .start().addClass('div2')
-          .start().addClass('label1')
+          .start().addClass('p-legal', 'label1')
             .add(this.titlelabel)
           .end()
           .start().addClass('div')
-          .start(this.CLOSE_MODAL).addClass('Rectangle-7')
+          .start(this.CLOSE_MODAL).addClass('p', 'Rectangle-7')
           .end()
-          .start(this.DELETE_BUTTON).addClass('Rectangle-8')
+          .start(this.DELETE_BUTTON).addClass('p', 'Rectangle-8')
           .end()
         .end();
       }

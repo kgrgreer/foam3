@@ -45,19 +45,14 @@ foam.CLASS({
     }
     ^ h1{
       opacity: 0.6;
-      font-size: 2.0rem;
       font-weight: 300;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
       display: inline-block;
     }
     ^ h2{
       width: 150px;
-      font-size: 1.4rem;
       font-weight: 300;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       display: inline-block;
@@ -66,9 +61,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-size: 1.4rem;
       line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
       cursor: pointer;
@@ -92,8 +85,6 @@ foam.CLASS({
     ^ .status-Text{
       width: 90px;
       height: 14px;
-      font-size: 1.2rem;
-      letter-spacing: 0.2px;
       text-align: left;
       color: #a4b3b8;
       margin-left: 20px;
@@ -112,15 +103,13 @@ foam.CLASS({
       margin-left: 20px;
     }
     ^ .checkbox > input {
-      width: 14px;
-      height: 14px;
+      width: 1.4rem;
+      height: 1.4rem;
       border-radius: 2px;
       background-color: $white;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-size: 1.2rem;
-      font-weight: normal;
       display: inline-block;
       letter-spacing: 0.2px;
       margin-left: 20px;
@@ -161,26 +150,26 @@ foam.CLASS({
           .start().addClass('Container')
             .start('h1')
               .add(this.NotificationPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('personalProfile-Text', 'h400')
             .end()
             .start()
               .addClass('checkbox')
               .call(this.addNotifCheckBoxes, [self])
             .end()
-            .start(this.UPDATE_NOTIFS_TAB).addClass('update-BTN').end()
+            .start(this.UPDATE_NOTIFS_TAB).addClass('p', 'update-BTN').end()
           .end()
 
           // Notification settings for email
           .start().addClass('Container')
             .start('h1')
               .add(this.EmailPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('personalProfile-Text', 'h400')
             .end()
             .start()
               .addClass('checkbox')
               .call(this.addEmailCheckBoxes, [self])
             .end()
-            .start(this.UPDATE_NOTIFS_EMAIL).addClass('update-BTN').end()
+            .start(this.UPDATE_NOTIFS_EMAIL).addClass('p', 'update-BTN').end()
           .end()
 
         .end();
@@ -210,7 +199,7 @@ foam.CLASS({
                     checked: ! self.subject.user.disabledTopics.includes(key)
                   })
                 .end()
-                .start().addClass('checkBox-Text').add(key).end();
+                .start().addClass('p-legal-light', 'checkBox-Text').add(key).end();
             }
           }
       });

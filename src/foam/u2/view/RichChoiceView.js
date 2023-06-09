@@ -180,10 +180,8 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 1.2rem;
       font-weight: 900;
       line-height: 2.4rem;
-      font-size: 1.4rem;
       color: #333;
       padding: 6px 16px;
     }
@@ -206,7 +204,6 @@ foam.CLASS({
       border-radius: 4px;
       -webkit-appearance: none;
       cursor: pointer;
-      font-size: 1.4rem;
 
       background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
       background-position: right 0.5em top 50%
@@ -573,7 +570,7 @@ foam.CLASS({
               })
               .addClass(this.myClass())
               .start('', {}, this.selectionEl_$)
-                .addClasses([this.myClass('selection-view'), 'p'])
+                .addClass(this.myClass('selection-view'), 'p')
                 .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
                 .on('click', function(e) {
                   var x = e.clientX || this.getBoundingClientRect().x;

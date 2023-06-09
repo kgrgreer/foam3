@@ -25,26 +25,9 @@ foam.CLASS({
     ^ {
       height: 260px;
     }
-    ^ .title {
-      margin-left: 20px;
-      width: 198px;
-      height: 40px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #ffffff;
-    }
     ^ .label1 {
       width: 395px;
       height: 16px;
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
@@ -53,34 +36,11 @@ foam.CLASS({
       margin-left:20px;
       margin-bottom: 79px;
     }
-    ^ .Mask {
-      width: 600px;
-      height: 180px;
-      border-radius: 2px;
-      background-color: #ffffff;
-    }
-    ^ .Rectangle-13 {
-      width: 448px;
-      height: 40px;
-      background-color: $black;
-    }
-    ^ .input {
-      margin-top: 15px;
-      margin-bottom: 79px;
-      width: 408px;
-      height: 40px;
-      background-color: $white;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-    }
     ^ .Rectangle-8 {
       width: 135px;
       height: 40px;
       border-radius: 2px;
       background-color: #59a5d5;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
@@ -102,9 +62,9 @@ foam.CLASS({
         .tag(this.ModalHeader.create({
           title: 'New Email'
         }))
-        .start().add(this.titlelabel).addClass('label1')
+        .start().add(this.titlelabel).addClass('p-legal-light', 'label1')
           .end()
-          .start(this.CLOSE_MODAL).addClass('Rectangle-8')
+          .start(this.CLOSE_MODAL).addClass('p', 'Rectangle-8')
           .end()
         .end();
       }

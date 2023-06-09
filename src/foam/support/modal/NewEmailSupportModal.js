@@ -39,25 +39,6 @@ foam.CLASS({
     ^ {
       height: 240px;
     }
-    ^ .title {
-      margin-left: 20px;
-      width: 198px;
-      height: 40px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #ffffff;
-    }
-    ^ .Mask {
-      width: 448px;
-      height: 231px;
-      border-radius: 2px;
-      background-color: $white;
-    }
     ^ .Rectangle-7 {
       float: left;
       width: 135px;
@@ -65,10 +46,6 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
@@ -79,10 +56,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #59a5d5;
       float: right;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
@@ -135,7 +108,7 @@ foam.CLASS({
               .add(this.titlelabel)
           .end()
           .start(this.EMAIL).addClass('input-wide').end()
-          .start().addClass('div')
+          .start().addClass('p', 'div')
             .start(this.CLOSE_MODAL).addClass('Rectangle-7')
             .end()
             .startContext({ data : this })

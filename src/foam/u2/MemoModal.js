@@ -87,7 +87,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('main'))
           .start()
-            .addClasses(['h500', this.myClass('title')])
+            .addClass('h500', this.myClass('title'))
             .add(this.title)
           .end()
           .startContext({ data: this, controllerMode: this.ControllerMode.EDIT })

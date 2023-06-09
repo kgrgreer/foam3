@@ -31,13 +31,6 @@ foam.CLASS({
 
   exports: [ 'as data' ],
 
-  css: `
-    ^dropdown span, ^dropdown svg {
-      font-size: 1.4rem;
-      font-weight: 500;
-    }
-  `,
-
   properties: [
     'optionsBtn_',
     'supportedLanguages',
@@ -95,7 +88,7 @@ foam.CLASS({
           obj:         self,
           buttonStyle: 'UNSTYLED'
         })
-          .addClass(this.myClass('dropdown'))
+          .addClass('p', this.myClass('dropdown'))
         .end()
       .end();
     },

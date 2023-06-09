@@ -42,8 +42,6 @@ foam.CLASS({
       box-sizing: border-box;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       border-radius: 4px;
-      font-size: 1.4rem;
-      font-weight: 400;
       padding: 8px;
     }
 
@@ -205,6 +203,7 @@ foam.CLASS({
 
       this.dropdownE_.addClass(this.myClass())
         .enableClass(this.myClass('styled'), this.styled$)
+        .addClass('p')
         .show(this.opened$)
         .style({
           top: this.top$,

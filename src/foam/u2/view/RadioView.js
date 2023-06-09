@@ -38,7 +38,6 @@ foam.CLASS({
       align-items: center;
     }
     ^ .choice {
-      font-size: 1.6rem;
       white-space: nowrap;
     }
     ^horizontal-radio {

@@ -62,8 +62,6 @@ foam.CLASS({
       flex: 1;
       height: 30px;
 
-      font-size: 1.4rem;
-
       border: 1px solid $grey400;
       border-left: none;
       border-radius: 0 3px 3px 0;
@@ -144,7 +142,7 @@ foam.CLASS({
               .end()
             .end()
             .startContext({ data: self })
-              .start(self.VALUE_STRING).addClass(self.myClass('container-input'))
+              .start(self.VALUE_STRING).addClass('p', self.myClass('container-input'))
               .end()
             .endContext();
           }

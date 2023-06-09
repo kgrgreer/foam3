@@ -95,7 +95,6 @@ foam.CLASS({
         color: #444;
         display: block;
         float: left;
-        font-size: 1.3rem;
         padding-left: 6px;
         padding-top: 6px;
         text-align: right;
@@ -114,7 +113,6 @@ foam.CLASS({
       }
       ^units  {
         color: #444;
-        font-size: 1.2rem;
         padding: 4px;
         text-align: right;
       }
@@ -154,7 +152,7 @@ foam.CLASS({
       this.onDataChange();
 
       this.addClass().
-          start('td').addClass(this.myClass('label')).add(prop.label).end().
+          start('td').addClass('p-label', this.myClass('label')).add(prop.label).end().
           start('td').
             addClass(this.myClass('switch')).
             enableClass('reactive', this.reactive$).
@@ -170,7 +168,7 @@ foam.CLASS({
                       focus() :
                     prop ;
               }),
-            prop.units && this.E('span').addClass(this.myClass('units')).add(' ', prop.units)).
+            prop.units && this.E('span').addClass('p-legal-light', this.myClass('units')).add(' ', prop.units)).
           end();
     },
 

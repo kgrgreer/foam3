@@ -60,11 +60,6 @@ foam.CLASS({
     }
     ^ .label{
       height: 16px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
       color: $black;
@@ -97,11 +92,7 @@ foam.CLASS({
       width: 186px;
       height: 20px;
       opacity: 0.6;
-      font-size: 2.0rem;
       font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
       color: $black;
@@ -125,11 +116,6 @@ foam.CLASS({
       width: 165px;
       height: 35px;
       z-index: 10000
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
       color: $black;
@@ -141,8 +127,6 @@ foam.CLASS({
       color: white;
       display: inline-block;
       text-align: center;
-      font-size: 1rem;
-      line-height: 20px;
     }
     ^ .Submit-as{
       float: left;
@@ -214,12 +198,12 @@ foam.CLASS({
           .end()
         .end()
 
-        .start().addClass('New-ticket').add('New Ticket #', this.ticketCount$).end()
+        .start().addClass('h400', 'New-ticket').add('New Ticket #', this.ticketCount$).end()
 
         .start().addClass('bg2')
         .start()
           .start().addClass('rname')
-            .start().addClass('label')
+            .start().addClass('p-light', 'label')
               .add('Requestor Name')
             .end()
             .start()
@@ -227,7 +211,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('remail')
-            .start().addClass('label')
+            .start().addClass('p-light', 'label')
               .add('Requestor Email (optional)')
             .end()
             .start()
@@ -235,13 +219,13 @@ foam.CLASS({
             .end()
           .end()
         .end()
-          .start().addClass('label')
+          .start().addClass('p-light', 'label')
             .add('Subject')
           .end()
           .start()
             .tag(this.EMAIL_SUBJECT)
           .end()
-          .start().addClass('label')
+          .start().addClass('p-light', 'label')
             .add('Description')
           .end()
           .start()
@@ -305,7 +289,7 @@ foam.CLASS({
         });
 
         // add items
-        this.submitAsPopUp.addClass('popUpDropDown')
+        this.submitAsPopUp.addClass('p-legal-light', 'popUpDropDown')
           .add(this.slot(function (status) {
             var statuses = ['New', 'Pending', 'Open', 'Updated', 'Solved'].filter(function (status) {
               return status !== self.status;
@@ -315,7 +299,7 @@ foam.CLASS({
               this
                 .start('div')
                 .start().add('Submit as').addClass('Submit-as').end()
-                .start().addClass(status).addClass('status').add(status).end()
+                .start().addClass(status).addClass('p-xs', 'status').add(status).end()
                 .on('click', function () {
                   self.status = status;
                   self.submitAsPopUp.close();

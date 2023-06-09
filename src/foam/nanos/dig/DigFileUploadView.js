@@ -76,8 +76,6 @@ foam.CLASS({
     }
     ^ .uploadDescription {
       margin-top: 9px;
-      font-size: 1.4rem;
-      font-weight: 300;
       letter-spacing: 0.2px;
       color: $primary400;
     }

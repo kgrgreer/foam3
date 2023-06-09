@@ -38,9 +38,6 @@ foam.CLASS({
     ^ .Reset-Password{
       width: 225;
       height: 30px;
-      font-size: 3rem;
-      font-weight: bold;
-      line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
       color: $black;
@@ -55,8 +52,6 @@ foam.CLASS({
     ^ .success-Text{
       width: 450px;
       height: 16px;
-      font-size: 1.4rem;
-      font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
       color: $black;
@@ -93,9 +88,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().addClass('Reset-Password').add('Reset Password').end()
+          .start().addClass('p', 'Reset-Password').add('Reset Password').end()
           .start().addClass('Message-Container')
-            .start().addClass('success-Text').add(this.Instructions).end()
+            .start().addClass('p-light', 'success-Text').add(this.Instructions).end()
             .start().addClass('Back-Button')
               .add('Back to Sign In')
               .on('click', function() {

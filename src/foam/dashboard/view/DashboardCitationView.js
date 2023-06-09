@@ -41,11 +41,11 @@ foam.CLASS({
         })
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('id'))
+          .addClass('p', this.myClass('id'))
           .add(this.data['id'])
         .end()
         .start()
-          .addClass(this.myClass('value'))
+          .addClass('p')
           .add(this.data['value'])
         .end()
     },
@@ -70,14 +70,6 @@ foam.CLASS({
     }
 
     ^id {
-      font-weight: 300;
-      font-size: 1.3rem;
-      color: gray;
-    }
-
-    ^value {
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
+      color: $grey400;
   `
 });

@@ -20,7 +20,6 @@ foam.CLASS({
       border-bottom-left-radius: 5px;
       border-bottom-right-radius: 5px;
       box-shadow: 0px 0px 67px -15px rgba(0,0,0,0.75);
-      font-weight: 300;
       position: absolute;
       top: 65px;
       width: 240px;
@@ -55,7 +54,7 @@ foam.CLASS({
       menu.children.orderBy(foam.nanos.menu.Menu.ORDER).select({
         put: function(menu) {
           if ( ! menu.handler ) return;
-          self.start('div').call(function() {
+          self.start('div').addClass('p-light').call(function() {
             var e = this;
             this
               .on('click', function() {

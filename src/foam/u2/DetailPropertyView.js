@@ -72,7 +72,7 @@ foam.CLASS({
             }).
             add(
               prop,
-              prop.units && this.E('span').addClasses(['p-legal-light', 'foam-u2-PropertyView-units']).add(' ', prop.units)).
+              prop.units && this.E('span').addClass('p-legal-light', 'foam-u2-PropertyView-units').add(' ', prop.units)).
             end();
           })
       }));

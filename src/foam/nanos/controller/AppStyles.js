@@ -94,10 +94,31 @@ foam.CLASS({
       line-height: 1.29;
       margin: 0;
     }
+    .h700{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      margin: 0;
+    }
     .p{
       font-style: normal;
       font-weight: normal;
       font-size: 1.4rem;
+      line-height: 1.71;
+      margin: 0;
+    }
+    .p-light{
+      font-style: normal;
+      font-weight: 300;
+      font-size: 1.4rem;
+      line-height: 1.71;
+      margin: 0;
+    }
+    .p-sm{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.2rem;
       line-height: 1.71;
       margin: 0;
     }
@@ -126,10 +147,10 @@ foam.CLASS({
       font-size: 2.4rem;
       font-style: normal;
       font-weight: normal;
-      line-height: 1.78;
       margin: 0;
     }
     .p-semiBold{
+      line-height: 1.78;
       font-size: 1.4rem;
       font-style: normal;
       font-weight: 600;
@@ -163,6 +184,14 @@ foam.CLASS({
       font-size: 1.2rem;
       line-height: 1.17;
       margin: 0;
+    }
+
+    .enum-label {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: normal;
+      line-height: 2.1em;
+      text-align: center;
     }
 
     /* SHADOWS */

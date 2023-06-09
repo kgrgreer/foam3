@@ -20,13 +20,8 @@ foam.CLASS({
       border: 1px solid;
       display: inline-flex;
       justify-content: space-around;
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: normal;
-      line-height: 2.1em;
       min-width: 88px;
       padding: 0 12px;
-      text-align: center;
       width: -webkit-max-content;
       width: -moz-max-content;
     }
@@ -53,6 +48,7 @@ foam.CLASS({
       var isPill = this.isFancy(this.data.VALUES);
       this
         .enableClass(this.myClass('pill'), isPill)
+        .addClass('enum-label')
         .addClass(this.myClass())
         .style({
           'background-color': background,

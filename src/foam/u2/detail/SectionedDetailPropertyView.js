@@ -88,11 +88,6 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^ .foam-u2-detail-SectionedDetailPropertyView .property-filter {
-      font-size: 1.4rem;
-      padding-left: 16px;
-    }
-
     ^ .foam-u2-CheckBox-label {
       word-break: break-word;
       white-space: normal;

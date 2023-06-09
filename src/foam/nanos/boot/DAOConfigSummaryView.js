@@ -224,7 +224,8 @@ foam.CLASS({
       start().
         style({ 'height': '56px'}).
         start().
-          style({ 'font-size': '2.6rem', 'width': 'fit-content', 'float': 'left', 'padding-top': '10px' }).
+          addClass('p-xl').
+          style({ 'width': 'fit-content', 'float': 'left', 'padding-top': '10px' }).
           add('Data Management').
         end()
         .start()

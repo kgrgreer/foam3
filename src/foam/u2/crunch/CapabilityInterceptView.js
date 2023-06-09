@@ -86,16 +86,11 @@ foam.CLASS({
     }
     ^label-title {
       margin: 0;
-
-      font-size: 3.2rem;
-      font-weight: bold;
       letter-spacing: 1;
     }
     ^label-subtitle {
       margin: 0;
       margin-top: 8px;
-
-      font-size: 1.6rem;
       color: #5e6061;
     }
     ^label-subtitle:last-child {
@@ -103,8 +98,6 @@ foam.CLASS({
     }
     ^label-cap {
       margin: 0;
-      font-weight: bold;
-      font-size: 1.2rem;
     }
     ^detail-container .foam-u2-crunch-Style-mode-circle {
       width: 100%;
@@ -136,14 +129,14 @@ foam.CLASS({
           .endContext()
         .end()
         .start().addClass(this.myClass('container-title'))
-          .start('p').addClass(this.myClass('label-title')).add(this.TITLE).end()
+          .start('p').addClass('h200', this.myClass('label-title')).add(this.TITLE).end()
           .start()
-            .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_1).end()
-            .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_2).end()
+            .start('p').addClass('p-md', this.myClass('label-subtitle')).add(this.SUBTITLE_1).end()
+            .start('p').addClass('p-md', this.myClass('label-subtitle')).add(this.SUBTITLE_2).end()
           .end()
         .end()
         .start().addClass(this.myClass('main-section'))
-          .start('p').addClass(this.myClass('label-cap')).add(this.LABEL_CAP_LIST).end()
+          .start('p').addClass('p-label', this.myClass('label-cap')).add(this.LABEL_CAP_LIST).end()
           .start(this.Rows)
             .addClass(this.myClass('detail-container'))
             .add(this.slot(function(data$capabilityOptions) {

@@ -384,6 +384,7 @@ foam.CLASS({
 
       this.
         addClass(this.myClass()).
+        addClass('p').
         addClass(this.myClass(this.of.id.replace(/\./g, '-'))).
         start().
           addClass(this.myClass('thead')).

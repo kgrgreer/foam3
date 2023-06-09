@@ -37,10 +37,6 @@ foam.CLASS({
       min-width: 250px;
     }
 
-    ^ input {
-      font-size: medium;
-    }
-
     ^ .foam-u2-tag-Input {
       width: 100%;
     }

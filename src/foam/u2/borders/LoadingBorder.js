@@ -116,7 +116,7 @@ foam.CLASS({
               .addClass(this.myClass('container'))
               .tag(this.LoadingSpinner, { size: 32 })
               .start()
-                .addClasses(['p-xl', this.myClass('message')])
+                .addClass('p-xl', this.myClass('message'))
                 .add(this.MESSAGE)
               .end()
             .end() : this.E();

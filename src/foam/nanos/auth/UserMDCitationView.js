@@ -22,7 +22,6 @@ foam.CLASS({
     }
 
     ^ .name {
-//      font-size: 3rem;
       font-weight: 500;
     }
     ^ .img-container img {

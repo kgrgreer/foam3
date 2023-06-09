@@ -16,15 +16,5 @@ foam.CLASS({
       height: 100%;
       padding: 0;
     }
-
-    ^id {
-      font-size: 1.5rem;
-      font-weight: 400;
-    }
-
-    ^value {
-      font-size: 1.5rem;
-      font-weight: 400;
-    }
   `
 });

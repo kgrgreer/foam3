@@ -77,15 +77,11 @@ foam.CLASS({
     ^ .foam-nanos-menu-SubMenuView-inner > div {
       height: 40px;
       padding-left: 50px;
-      font-size: 1.4rem;
-      font-weight: 300;
       color: $black;
-      line-height: 25px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:last-child {
       background-color: #f6f9f9;
       box-shadow: 0 -1px 0 0 #e9e9e9;
-      font-size: 1.4rem;
       color: #c82e2e;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {

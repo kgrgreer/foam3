@@ -21,16 +21,6 @@ foam.CLASS({
       background: #f4f4f9;
       cursor: pointer;
     }
-
-    ^company {
-      font-size: 1.2rem;
-      color: #424242;
-    }
-
-    ^name {
-      color: #999;
-      font-size: 1rem;
-    }
   `,
 
   properties: [
@@ -48,7 +38,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start()
-            .addClass(this.myClass('key'))
+            .addClass('p-legal-light')
             .add(this.data.key)
           .end()
         .end();

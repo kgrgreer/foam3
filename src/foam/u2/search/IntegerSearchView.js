@@ -154,7 +154,6 @@ foam.CLASS({
       border-radius: 2px;
       border: 1px solid #dce0e7;
       color: $black;
-      font-size: 1.4rem;
       height: 40px;
       padding: 0 14px 0 21px;
       width: 92px;

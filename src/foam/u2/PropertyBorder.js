@@ -62,13 +62,11 @@
     ^errorText {
       display: flex;
       align-items: center;
-      line-height: 1.25;
       /*
         Have to use this style here since nanos uses CSS resets to
         set 1 rem = 10px instead of the default 16px
         May cause weird styling outside nanos
       */
-      font-size: 1.2rem;
       min-height: 1.25em;
       justify-content: flex-start;
       gap: 0.2rem;
@@ -190,7 +188,7 @@
            * Potential improvement area: this approach makes it slightly harder to understand why
            * submit action may be unavilable for long/tabbed  forms
            */
-          addClass(this.myClass('errorText')).
+          addClass('p-legal-light', this.myClass('errorText')).
           enableClass(this.myClass('colorText'), colorSlot).
            show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
           // Using the line below we can reserve error text space instead of shifting layouts

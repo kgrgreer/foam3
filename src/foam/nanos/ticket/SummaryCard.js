@@ -28,13 +28,10 @@ foam.CLASS({
       position: relative;
       top: 35;
       left: 10;
-      font-size: 1.2rem;
-      font-weight: normal;
       padding: 3px 7px;
       display: inline;
     }
     ^ .count {
-      font-size: 3rem;
       font-weight: 300;
       line-height: 1;
       position: relative;
@@ -53,11 +50,10 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-          .start().addClass('count').add(this.count$).end()
+          .start().addClass('h200', 'count').add(this.count$).end()
           .start()
             .addClass(this.status)
-            .addClass('label')
-            .addClass('special-status-tag')
+            .addClass('p-legal-light', 'label', 'special-status-tag')
             .add(this.status)
           .end()
         .end();

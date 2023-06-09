@@ -47,7 +47,7 @@ foam.CLASS({
 
     this
       .addClass(this.myClass())
-      .start().addClasses(['h300', this.myClass('title')]).add(this.title).end();
+      .start().addClass('h300', this.myClass('title')).add(this.title).end();
     }
   ]
 });

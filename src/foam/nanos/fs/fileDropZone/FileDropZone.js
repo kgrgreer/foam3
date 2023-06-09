@@ -71,7 +71,6 @@ foam.CLASS({
       justify-content: center;
     }
     ^caption {
-      font-size: 1rem;
       color: #525455;
     }
     ^browse-container{
@@ -215,11 +214,11 @@ foam.CLASS({
         .start().addClass(this.myClass('caption-container'))
         .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
           .start()
-            .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
-            .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.getSupportedTypes(true)).end()
           .end()
           .start()
-            .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
           .end()
         .end()
       .end()

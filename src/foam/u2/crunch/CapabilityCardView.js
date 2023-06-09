@@ -108,11 +108,11 @@ foam.CLASS({
         .end()
         .start().style({ 'flex': 1 })
           .start('p')
-            .addClasses(['h500', this.myClass('card-title')])
+            .addClass('h500', this.myClass('card-title'))
             .translate(self.data.id + '.' + self.data.cls_.NAME.name, self.data.name)
           .end()
           .start('p')
-            .addClasses(['p-legal-light', style.myClass('card-subtitle')])
+            .addClass('p-legal-light', style.myClass('card-subtitle'))
             .translate(self.data.id + '.' + self.data.cls_.DESCRIPTION.name, self.data.description)
           .end()
         .end()
@@ -132,7 +132,7 @@ foam.CLASS({
           .add(this.slot(function(isRenewable) {
             return isRenewable ? this.E()
               .start()
-                .addClasses(['p-xs', style.myClass('renewable-description')])
+                .addClass('p-xs', style.myClass('renewable-description'))
                 .add(self.RENEW_DATA_LABEL)
               .end() : null;
           }))

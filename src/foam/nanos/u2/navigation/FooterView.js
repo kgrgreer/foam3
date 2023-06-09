@@ -38,9 +38,6 @@ foam.CLASS({
       align-items: center;
       justify-content: space-between;
     }
-    ^ div {
-      font-size:14px;
-    }
     ^ .mode {
       display: inline-block;
     }
@@ -59,12 +56,7 @@ foam.CLASS({
     ^ .mode {
       background: transparent;
       opacity: 0.6;
-      font-size: 1.4rem;
       font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.2px;
       color: #272727;
       width: auto !important;
       padding: 0 10px !important;
@@ -91,7 +83,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start('div').addClass('col').addClass('mini-links')
+        .start('div').addClass('p', 'col').addClass('mini-links')
           .tag(this.GO_TO, {
             label$: this.appConfig.urlLabel$,
             buttonStyle: 'UNSTYLED'
@@ -109,7 +101,7 @@ foam.CLASS({
           .add('|')
           .start().addClass('mode').add(this.appConfig.mode$.map(function(m) { return m.label; }), ' version: ', this.appConfig.version$).end()
         .end()
-        .start('div').addClass('col').addClass('copyright-label')
+        .start('div').addClass('p', 'col').addClass('copyright-label')
           .start('p').add(this.appConfig.copyright$.map(function(str) {
             str = str.replace(/@\{(\w+)\}/g, function() {
               var date = new Date();
