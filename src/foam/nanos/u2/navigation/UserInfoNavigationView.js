@@ -120,7 +120,10 @@ foam.CLASS({
 
   documentation: '',
 
-  imports: [ 'subject' ],
+  imports: [
+    'ctrl',
+    'subject'
+  ],
 
   css: `
     ^name-container {
@@ -144,16 +147,22 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass('label-container'))
-        .add(this.slot( subject$user => {
-        if ( ! this.subject.user ) return;
-        return this.E().addClass(self.myClass('name-container'))
-            .start('span')
-              .addClass('p-label')
-              .add(this.subject.user.toSummary())
-            .end();
+        .add(this.slot(async function(subject$user) {
+          if ( ! this.subject.user ) return;
+          if ( ! subject$user.firstName ) {
+            ctrl.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
+          }
+          return this.E().addClass(self.myClass('name-container'))
+              .start('span')
+                .addClass('p-label')
+                .add(this.subject.user.toSummary())
+              .end();
         }))
-        .add(this.slot( (subject$realUser, subject$user) => {
+        .add(this.slot(async function(subject$realUser, subject$user) {
           if ( ! this.subject.realUser || this.subject.user.id == this.subject.realUser.id ) return;
+          if ( ! subject$realUser.firstName ) {
+            ctrl.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
+          }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
                 .addClass('p-legal-light')
