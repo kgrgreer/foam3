@@ -21,8 +21,8 @@ foam.CLASS({
   ],
 
   javaCode: `
-    private static final Timer TIMER = new Timer();
-    private static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
+    protected static final Timer TIMER = new Timer("Agency Scheduler");
+    protected static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
 
     public void schedule(X x, ContextAgent agent, String key, long delay) {
       if ( delay <= 0 ) {
@@ -36,14 +36,11 @@ foam.CLASS({
       if ( ! TASK_QUEUE.containsKey(key) ) {
         var task = new TimerTask() {
           public void run() {
-            X oldX = ((ProxyX) XLocator.get()).getX();
-            XLocator.set(x);
+            Loggers.logger(x, this).debug("schedule", key, delay);
             try {
-              agent.execute(x);
+              submit(x, agent, key);
             } catch ( java.lang.Exception e ) {
               Loggers.logger(x, this).error("schedule", "failed", key, e);
-            } finally {
-              XLocator.set(oldX);
             }
             TASK_QUEUE.remove(key);
           }
