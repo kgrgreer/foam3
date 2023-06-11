@@ -11,13 +11,15 @@ foam.CLASS({
   extends: 'foam.u2.View',
   documentation: `
     Combined AppLogo, VerticalMenu and account Navigation Components
-    Can be used as the only navigation component or in conjuction with a topbar 
+    Can be used as the only navigation component or in conjuction with a topbar
   `,
 
   imports: [
     'currentMenu',
     'menuDAO',
-    'pushMenu'
+    'pushMenu',
+    'isMenuOpen?',
+    'displayWidth?'
   ],
 
   requires: [
@@ -155,7 +157,7 @@ foam.CLASS({
             }
           })
             .addClass(this.myClass('menuList'))
-            
+
           .end()
         .end();
     },
@@ -166,6 +168,8 @@ foam.CLASS({
     },
     function openMenu(menu, hasChildren) {
       if ( menu.handler ) {
+        if ( ! hasChildren && this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal )
+          this.isMenuOpen = false;
         this.pushMenu(menu, true);
       }
     }
