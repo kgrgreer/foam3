@@ -109,7 +109,6 @@ foam.CLASS({
       color: #5a5a5a
     }
     ^ .label-up {
-      font-size: 1.5rem;
       font-weight: unset;
       top: 0;
     }

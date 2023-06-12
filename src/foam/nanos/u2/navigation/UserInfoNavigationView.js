@@ -136,10 +136,6 @@ foam.CLASS({
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    ^agentName{
-      font-weight: 400;
-      font-size: 1.1rem;
-    }
     ^label-container {
       display: flex;
       flex-direction: column;
@@ -169,8 +165,7 @@ foam.CLASS({
           }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
-                .addClass(this.myClass('agentName'))
-                .addClass('p')
+                .addClass('p-legal-light', this.myClass('agentName'))
                 .add( this.subject.realUser.toSummary() )
               .end();
         }));

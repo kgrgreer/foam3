@@ -113,6 +113,7 @@ foam.CLASS({
 
         this
           .start().addClass('validation-error')
+            .addClass('md-text-xxs')
             .addClass(this.slot(function(isInvalid) { return isInvalid ? 'error-msg' : ''; }, this.isInvalid$))
             .add(errorSlot.map((s) => {
               self.isInvalid = s !== null && s !== '';
@@ -199,7 +200,6 @@ foam.CLASS({
       color: #5a5a5a
     }
     ^ .label-up {
-      font-size: 1.5rem;
       font-weight: unset;
       top: 0;
     }
@@ -233,7 +233,6 @@ foam.CLASS({
       transition: opacity .5s;
     }
     ^ .error-msg {
-      font-size: 1.5rem;
       opacity: 1;
 //      transition: opacity 3s;
     }

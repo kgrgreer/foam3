@@ -37,7 +37,6 @@ foam.CLASS({
     }
 //    TODO: move to calendar
     ^ .foam-u2-property-MDCalendar-heading {
-      font-size: 1.5rem;
       padding-bottom: 1rem;
     }
     ^ .foam-u2-Dialog {

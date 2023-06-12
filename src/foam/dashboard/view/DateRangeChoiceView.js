@@ -14,7 +14,6 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       border: none;
-      font-size: 1.3rem;
       color: gray;
       padding: 0;
     }
@@ -60,6 +59,7 @@ foam.CLASS({
     function render() {
       var self = this;
       this.addClass()
+        .addClass('p')
         .start(this.QUALIFIER)
         .end();
     }
