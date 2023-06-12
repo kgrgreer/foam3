@@ -244,8 +244,9 @@ foam.CLASS({
               .enableClass('selection-made', self.index$.map((index) => index !== -1))
             .end();
         }
-
-        return self.E().translate(self.text + ".name", self.text);
+        return self.text ?
+          self.E().translate(self.text + ".name", self.text) :
+          self.E().add(self.text$);
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);
