@@ -249,7 +249,8 @@ foam.CLASS({
         }
 
         return self.E().add(self.text$.map(t => {
-          return t ? self.translationService.getTranslation(foam.locale, t + '.name', t) : '';
+          return t && self.translationService ?
+            self.translationService.getTranslation(foam.locale, t + '.name', t) : '';
         }));
       }));
 
