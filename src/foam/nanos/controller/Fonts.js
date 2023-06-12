@@ -195,6 +195,23 @@ foam.CLASS({
       margin: 0;
     }
 
+    ^ .headerTitle {
+      font-size: 2.4rem;
+      font-weight: 900;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+    }
+    .tite-light{
+      font-size: 2.0rem;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1;
+      letter-spacing: 0.3px;
+    }
+
     .enum-label {
       font-size: 1rem;
       font-weight: 500;
@@ -258,6 +275,54 @@ foam.CLASS({
     /* desktop */
     @media only screen and (min-width: 960px) {
       .large-title { font-size: 8.4rem; }
+    }
+
+    .md-button {
+      font-size: 3.5rem;
+    }
+    .md-title {
+      font-weight: 500;
+      font-size: 3.5rem;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+    .md-title-sm {
+      font-size: 3rem;
+      font-weight: bold;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+    .md-text {
+      font-size: 3rem;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: normal;
+    }
+    .md-text-light {
+      font-size: 3rem;
+      font-weight: 300;
+      line-height: normal;
+      letter-spacing: normal;
+    }
+    .md-text-sm {
+      font-size: 2.5rem;
+      font-weight: 300;
+    }
+    .md-text-sm-bold {
+      font-size: 2.5rem;
+      font-weight: 500;
+    }
+    .md-text-xs {
+      font-size: 2rem;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: normal;
+    }
+    .md-text-xs-bold {
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: normal;
+      letter-spacing: normal;
     }
   `
 });

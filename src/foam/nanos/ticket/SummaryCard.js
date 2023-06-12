@@ -32,9 +32,6 @@ foam.CLASS({
       display: inline;
     }
     ^ .count {
-      font-size: 3rem;
-      font-weight: 300;
-      line-height: 1;
       position: relative;
       top: 20;
       left: 20;
@@ -51,7 +48,7 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-          .start().addClass('count').add(this.count$).end()
+          .start().addClass('md-text-light', 'count').add(this.count$).end()
           .start()
             .addClass(this.status)
             .addClass('p-label-light', 'label')

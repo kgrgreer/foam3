@@ -40,9 +40,6 @@ foam.CLASS({
       font-size: 1.5rem;
       padding-bottom: 1rem;
     }
-    ^ span button {
-      font-size: 2rem;
-    }
     ^ .foam-u2-Dialog {
       background-color: unset;
     }

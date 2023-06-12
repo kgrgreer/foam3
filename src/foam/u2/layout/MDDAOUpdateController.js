@@ -134,7 +134,7 @@ foam.CLASS({
             })
           .endContext();
         this
-          .start().addClass('main-container')
+          .start().addClass('md-text-sm', 'main-container')
             .tag(this.detailView, { data: this.data })
             .add(this.DELETE)
           .end()
@@ -146,9 +146,7 @@ foam.CLASS({
       width: -webkit-fill-available;
       height: 6rem;
       color: #2e2379;
-      font-weight: 400;
       margin: 2rem 4rem;
-      font-size: 2.5rem;
       bottom: 0;
       background-color: unset;
       border: 2px solid red!important;

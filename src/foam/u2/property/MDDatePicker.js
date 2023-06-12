@@ -187,7 +187,7 @@ foam.CLASS({
       documentation: 'Element for the header portion, used by the Dialog.',
       factory: function() {
         var header = this.E()
-            .addClass(this.myClass('header'))
+            .addClass('md-text-sm-bold', this.myClass('header'))
             .addClass('foam-u2-md-toolbar-colors');
         header.start()
             .addClass(this.myClass('header-year'))
@@ -196,7 +196,7 @@ foam.CLASS({
             .end();
 
         header.start()
-            .addClass(this.myClass('header-date'))
+            .addClass('md-text-sm', this.myClass('header-date'))
             .enableClass(this.myClass('selected'), this.showYears_$, true /* negate */)
             .add(this.slot(function(day, month, date) {
               return this.DAY_NAMES[day] + ', ' + this.MONTH_NAMES[month] +
@@ -243,7 +243,7 @@ foam.CLASS({
         for ( var i = 1900 ; i <= 2100 ; i++ ) {
           years.start('span')
             .setID(this.id + '-year-' + i)
-            .addClass(this.myClass('years-year'))
+            .addClass('md-text-sm-bold', this.myClass('years-year'))
             .add('' + i)
             .enableClass(this.myClass('selected'), this.slot(function(index, viewYear) {
               return index === viewYear;
@@ -424,9 +424,7 @@ foam.CLASS({
 
     ^header {
       cursor: pointer;
-      font-size: 2.5rem;
       padding: 12px 16px;
-      font-weight: 500;
     }
     ^header div {
       opacity: 0.8;
@@ -436,10 +434,6 @@ foam.CLASS({
     }
     ^header-year {
       margin: 8px 0;
-    }
-    ^header-date {
-      font-size: 2.4rem;
-      font-weight: bolder;
     }
 
     ^body {
@@ -496,8 +490,6 @@ foam.CLASS({
     }
     ^years-year^selected {
       color: #3e50b4;
-      font-size: 2.4rem;
-      font-weight: bold;
     }
   `
 });

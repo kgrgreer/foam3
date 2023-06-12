@@ -30,8 +30,6 @@ foam.CLASS({
     }
     ^title {
       margin: 24px;
-      font-size: 2.4rem;
-      font-weight: 900;
     }
     ^options {
       display: flex;
@@ -122,7 +120,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass(this.myClass('title'))
+          .addClass('headerTitle')
           .attr('name', this.myClass('title'))
           .translate(this.classification + '.title', this.title)
         .end()

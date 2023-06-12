@@ -40,8 +40,6 @@ foam.CLASS({
 
     ^ .action-button {
       border-radius: 10px;
-      font-size: 2.0rem;
-      font-weight: bold;
       padding: 5px;
       width: 100px;
     }
@@ -82,7 +80,7 @@ foam.CLASS({
               return this.E()
                 .startContext({ controllerMode: 'EDIT' })
                   .start().addClass('choicePosition')
-                    .start('button').addClass('action-button').add('<').on('click', () => {
+                    .start('button').addClass('h400', 'action-button').add('<').on('click', () => {
                       this.currentIndex -= 1;
                     })
                     .attrs({
@@ -94,7 +92,7 @@ foam.CLASS({
                       choices: self.visibleSections.map((s, i) => [i, s.title]),
                       data$: self.currentIndex$
                     }).addClass('tag-Select')
-                    .start('button').addClass('action-button').add('>').on('click', () => {
+                    .start('button').addClass('h400', 'action-button').add('>').on('click', () => {
                       this.currentIndex += 1;
                     })
                     .attrs({

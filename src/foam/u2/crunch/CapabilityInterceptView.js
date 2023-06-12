@@ -86,10 +86,6 @@ foam.CLASS({
     }
     ^label-title {
       margin: 0;
-
-      font-size: 3.2rem;
-      font-weight: bold;
-      letter-spacing: 1;
     }
     ^label-subtitle {
       margin: 0;
@@ -134,7 +130,7 @@ foam.CLASS({
           .endContext()
         .end()
         .start().addClass(this.myClass('container-title'))
-          .start('p').addClass(this.myClass('label-title')).add(this.TITLE).end()
+          .start('p').addClass('h100', this.myClass('label-title')).add(this.TITLE).end()
           .start()
             .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_1).end()
             .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_2).end()

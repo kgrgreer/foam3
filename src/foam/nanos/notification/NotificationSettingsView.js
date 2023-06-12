@@ -45,10 +45,6 @@ foam.CLASS({
     }
     ^ h1{
       opacity: 0.6;
-      font-size: 2.0rem;
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
       display: inline-block;
@@ -141,7 +137,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start('h1')
               .add(this.NotificationPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('title-light', 'personalProfile-Text')
             .end()
             .start()
               .addClass('checkbox')
@@ -154,7 +150,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start('h1')
               .add(this.EmailPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('title-light', 'personalProfile-Text')
             .end()
             .start()
               .addClass('checkbox')

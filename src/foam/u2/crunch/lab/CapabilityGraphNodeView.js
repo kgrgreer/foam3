@@ -43,9 +43,6 @@ foam.CLASS({
       margin-bottom: 8px;
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     }
-    ^segment.title {
-      font-size: 2.0rem;
-    }
     ^segment.tiny {
       font-size: 0.9rem;
       width: inherit;
@@ -104,7 +101,7 @@ foam.CLASS({
             });
           })
           .start()
-            .addClass(this.myClass('segment')).addClass('title')
+            .addClass('p-lg', this.myClass('segment')).addClass('title')
             .add(foam.String.labelize(capability.name))
           .end()
           .start('button')

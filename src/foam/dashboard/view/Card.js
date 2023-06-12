@@ -89,11 +89,9 @@ foam.CLASS({
       padding-right: 16px;
       padding-top: 20px;
       padding-bottom: 20px;
-      font-weight: 500;
       height: 20px;
       display: flex;
       align-items: center;
-      font-size: 1.7rem;
       justify-content: space-between;
     }
   `,
@@ -117,7 +115,7 @@ foam.CLASS({
         }).
         addClass(this.myClass()).
         start('div').
-        addClass(this.myClass('header')).
+        addClass('h500', this.myClass('header')).
         show(!!this.data.label || !!this.data.configView).
         start().
           style({ float: 'left' }).

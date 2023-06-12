@@ -30,7 +30,6 @@ foam.CLASS({
 
     ^ .center-footer {
       text-align: center;
-      font-size: 2rem;
       display: grid;
       position: relative;
       top: -52px;
@@ -46,7 +45,6 @@ foam.CLASS({
     ^ .foam-u2-ActionView-login {
       margin: auto;
       padding: 2rem;
-      font-size: 2.5rem;
       position: relative;
       bottom: -2rem;
       width: 90%;
@@ -56,13 +54,8 @@ foam.CLASS({
       box-shadow: 0 0px 5px 4px #2e2379;
     }
 
-    ^ .foam-u2-detail-SectionedDetailPropertyView m3 {
-      font-size: 2rem;
-    }
-
     ^ .foam-u2-detail-SectionedDetailPropertyView input {
         height: 4rem;
-        font-size: 2rem;
         border: none;
         border-bottom: 1px solid black;
       }
@@ -71,7 +64,6 @@ foam.CLASS({
     }
 
     ^ .content-form {
-      font-size: 2rem;
       width: 75%;
       padding: 3rem;
       top: -10rem;
@@ -184,12 +176,12 @@ foam.CLASS({
           .start('div').addClass('home-logo').start('div').addClass('home-img').addClass('material-icons').add('home').end().end()
         .end();
       this.start('div')
-        .start().addClass('title-top').add('Login').end()
+        .start().addClass('title-top', 'md-text-sm').add('Login').end()
         .startContext({ data: this })
-          .addClass('content-form').tag(this.MODEL).br()
+          .addClass('content-form', 'md-text-xs').tag(this.MODEL).br()
         .endContext()
       .end();
-      this.start().addClass('center-footer')
+      this.start().addClass('md-text-xs', 'center-footer')
         .start('span').add(this.model.FOOTER_TXT).end()
         .start('span').addClass('link')
           .add(this.model.FOOTER_LINK)

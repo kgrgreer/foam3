@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^ { padding: 10px !important; font-size: 1.8rem; }
+    ^ { padding: 10px !important; }
     ^ .elapsed { margin-top: 10px; }
     ^ .label { display: inline-block; width: 130px; }
     ^ .foam-u2-ActionView { width: 332px !important; margin-top: 16px !important; }
@@ -74,7 +74,7 @@ foam.CLASS({
 
     function render() {
       this.
-        addClass(this.myClass()).
+        addClass('p-lg', this.myClass()).
         start('row').start('span').addClass('label').add('Elapsed Time:').end().add(this.PROGRESS).end().
         start('row').addClass('elapsed').add(this.elapsedTime$.map(function(t) { return t.toFixed(1); })).end().
         start('row').start('span').addClass('label').add('Duration:').end().add(this.DURATION).end().

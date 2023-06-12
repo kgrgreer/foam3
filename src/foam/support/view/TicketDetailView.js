@@ -89,12 +89,6 @@ foam.CLASS({
     ^ .title {
       width: auto;
       height: 20px;
-      font-size: 2.0rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
       float:left;
@@ -168,7 +162,7 @@ foam.CLASS({
         .end()
         .start().addClass('header')
           .start()
-            .start().addClass('title').add(this.data.subject + "...").end()
+            .start().addClass('title-light', 'title').add(this.data.subject + "...").end()
             .start().addClass('generic-status').addClass(this.status).add(this.status).end()
           .end()
           .start().addClass('p-label-light', 'subtitle')

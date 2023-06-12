@@ -48,12 +48,6 @@ foam.CLASS({
     ^ .title {
       width: 208px;
       height: 40px;
-      font-size: 3.5rem;
-      font-weight: 600;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.14;
-      letter-spacing: normal;
       color: #1e1f21;
     }
   `,
@@ -114,7 +108,7 @@ foam.CLASS({
       return this.E()
         .addClass('notifs')
         .start()
-          .add('Notifications').addClass('title')
+          .add('Notifications').addClass('h100', 'title')
         .end()
         .start('div').add(this.UNREAD).end()
         .add(this.NOTIFICATIONS);

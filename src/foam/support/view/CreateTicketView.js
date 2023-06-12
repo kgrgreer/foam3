@@ -91,12 +91,6 @@ foam.CLASS({
       width: 186px;
       height: 20px;
       opacity: 0.6;
-      font-size: 2.0rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
     }
@@ -202,7 +196,7 @@ foam.CLASS({
           .end()
         .end()
 
-        .start().addClass('New-ticket').add('New Ticket #', this.ticketCount$).end()
+        .start().addClass('title-light', 'New-ticket').add('New Ticket #', this.ticketCount$).end()
 
         .start().addClass('bg2')
         .start()

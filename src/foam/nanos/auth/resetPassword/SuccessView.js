@@ -38,10 +38,6 @@ foam.CLASS({
     ^ .Reset-Password{
       width: 225;
       height: 30px;
-      font-size: 3rem;
-      font-weight: bold;
-      line-height: 1;
-      letter-spacing: 0.5px;
       text-align: left;
       color: $black;
       margin-top: 20px;
@@ -90,7 +86,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().addClass('Reset-Password').add('Reset Password').end()
+          .start().addClass('md-title-sm', 'Reset-Password').add('Reset Password').end()
           .start().addClass('Message-Container')
             .start().addClass('p-light', 'success-Text').add(this.Instructions).end()
             .start().addClass('Back-Button')

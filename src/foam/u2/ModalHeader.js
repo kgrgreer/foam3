@@ -31,10 +31,6 @@ foam.CLASS({
       border-bottom: solid 1px #CBCFD4;
     }
     ^title{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2.4rem;
-      line-height: 28px;
       color: #000000;
       margin: 0;
       flex: none;
@@ -52,7 +48,7 @@ foam.CLASS({
 
     this
       .addClass(this.myClass())
-      .start().addClass(this.myClass('title')).add(this.title).end();
+      .start().addClass('h300', this.myClass('title')).add(this.title).end();
     }
   ]
 });
