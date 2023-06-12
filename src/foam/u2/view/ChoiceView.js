@@ -22,10 +22,7 @@ foam.CLASS({
 
   implements: [ 'foam.mlang.Expressions' ],
 
-  imports: [
-    'translationService?',
-    'warn'
-  ],
+  imports: [ 'warn' ],
 
   documentation: `
     Wraps a tag that represents a singular choice. That is,
