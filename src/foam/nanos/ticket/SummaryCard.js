@@ -28,8 +28,6 @@ foam.CLASS({
       position: relative;
       top: 35;
       left: 10;
-      font-size: 1.2rem;
-      font-weight: normal;
       padding: 3px 7px;
       display: inline;
     }
@@ -56,7 +54,7 @@ foam.CLASS({
           .start().addClass('count').add(this.count$).end()
           .start()
             .addClass(this.status)
-            .addClass('label')
+            .addClass('p-label-light', 'label')
             .addClass('special-status-tag')
             .add(this.status)
           .end()

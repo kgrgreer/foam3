@@ -34,7 +34,6 @@ foam.CLASS({
 
   css: `
     ^helpTextRow {
-      font-size: 14pt;
       padding: 8pt 0;
     }
     ^flexer {
@@ -233,7 +232,7 @@ foam.CLASS({
               this
               .start(foam.u2.layout.Rows)
                 .start()
-                  .addClass(self.myClass('helpTextRow'))
+                  .addClass('p-lg', self.myClass('helpTextRow'))
                   .add(self.helpText_)
                 .end()
               .end();

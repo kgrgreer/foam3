@@ -61,13 +61,7 @@ foam.CLASS({
     }
 
     ^calendar_table tbody > tr > th {
-      font-size: 1rem;
       color: #5e6061;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.5;
-      letter-spacing: normal;
     }
   `,
 
@@ -102,7 +96,7 @@ foam.CLASS({
     function render() {
       var self = this;
       this.startContext({ data: this.data }).
-        addClass(this.myClass('calendar_table')).
+        addClass('p-xs', 'lighter', this.myClass('calendar_table')).
         add(this.slot(function(data) {
           data = data || new Date();
 

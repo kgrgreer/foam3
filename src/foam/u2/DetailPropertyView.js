@@ -38,7 +38,6 @@ foam.CLASS({
     }
     .foam-u2-PropertyView-units  {
       color: #444;
-      font-size: 1.2rem;
       padding: 4px;
       text-align: right;
     }
@@ -75,7 +74,7 @@ foam.CLASS({
             }).
             add(
               prop,
-              prop.units && this.E('span').addClass('foam-u2-PropertyView-units').add(' ', prop.units)).
+              prop.units && this.E('span').addClass('p-legal-light', 'foam-u2-PropertyView-units').add(' ', prop.units)).
             end();
           })
       }));

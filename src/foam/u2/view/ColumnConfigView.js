@@ -633,12 +633,11 @@ foam.CLASS({
               .show(this.data.hasSubProperties)
               .style({
                 'vertical-align': 'middle',
-                'font-weight':    'bold',
                 'visibility':     'visible',
-                'font-size':      '16px',
                 'float':          'right',
                 'transform':      this.data.expanded$.map(function(c) { return c ? 'rotate(180deg)' : 'rotate(90deg)'; })
               })
+              .addClass('h500')
               .on('click', this.toggleExpanded)
               .add('\u2303')
             .end()

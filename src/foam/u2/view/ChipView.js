@@ -27,9 +27,6 @@ foam.CLASS({
     }
 
     ^ .label {
-      font-size: 1.2rem;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: #ffffff;
       padding: 8px 15px 6px 10px;
@@ -70,7 +67,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('p')
-            .addClass('label')
+            .addClass('p-label-light', 'label')
             .add(this.data)
             .startContext({ data: this })
               .add(this.REMOVE_SELF)

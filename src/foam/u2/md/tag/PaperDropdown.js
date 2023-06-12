@@ -22,14 +22,10 @@ foam.CLASS({
 
   css: `
     ^unrolled paper-item {
-      font-size: 1.2rem;
       min-height: 36px;
     }
     ^label {
       color: #737373;
-      font-size: 1.2rem;
-      font-weight: 400;
-      line-height: 18px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -77,14 +73,14 @@ foam.CLASS({
 
       if ( this.unrolled ) {
         this.addClass(this.myClass('unrolled'));
-        this.start('div').addClass(this.myClass('label')).add(this.label$).end();
+        this.start('div').addClass('p-label', this.myClass('label')).add(this.label$).end();
       }
 
       var listbox;
       this.add(this.slot(function(choices, unrolled) {
         listbox = this.E('paper-listbox').addClass('dropdown-content');
         for ( var i = 0; i < choices.length; i++ ) {
-          listbox.start('paper-item')
+          listbox.start('p-legal-light', 'paper-item')
               .attrs({ name: i })
               .add(choices[i][1])
           .end();
@@ -94,7 +90,7 @@ foam.CLASS({
         // filled. That prevents janky jumping around in the UI.
         var extras = Math.max(0, this.size - choices.length);
         for ( var i = 0; i < extras; i++ ) {
-          listbox.start('paper-item').end();
+          listbox.start('p-legal-light', 'paper-item').end();
         }
 
         // Polymer doesn't notice when the selected entry's label has changed.

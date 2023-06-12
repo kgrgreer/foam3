@@ -63,12 +63,6 @@ foam.CLASS({
       width: 165px;
       height: 35px;
       z-index: 10000
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
     }
@@ -113,12 +107,6 @@ foam.CLASS({
     }
     ^ .subtitle {
       opacity: 0.7;
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       padding-top: 10px;
@@ -183,7 +171,7 @@ foam.CLASS({
             .start().addClass('title').add(this.data.subject + "...").end()
             .start().addClass('generic-status').addClass(this.status).add(this.status).end()
           .end()
-          .start().addClass('subtitle')
+          .start().addClass('p-label-light', 'subtitle')
             .add("#", this.data.id, ' ', foam.Date.formatDate(this.data.createdAt, false), ' | ', this.data.requestorName, " <", this.data.requestorEmail, ">", "  |  Via support@mintchip.ca")
           .end()
         .end()
@@ -273,7 +261,7 @@ foam.CLASS({
 
             return this.E().forEach(statuses, function (status) {
               this
-                .start('div')
+                .start('div').addClass('p-label-light')
                 .start().add('Submit as').addClass('Submit-as').end()
                 .start().addClass(status).addClass('status').add(status).end()
                 .on('click', function () {

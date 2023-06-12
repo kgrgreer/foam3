@@ -103,8 +103,6 @@ foam.CLASS({
     }
     ^label-cap {
       margin: 0;
-      font-weight: bold;
-      font-size: 1.2rem;
     }
     ^detail-container .foam-u2-crunch-Style-mode-circle {
       width: 100%;
@@ -143,7 +141,7 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass(this.myClass('main-section'))
-          .start('p').addClass(this.myClass('label-cap')).add(this.LABEL_CAP_LIST).end()
+          .start('p').addClass('p-label', this.myClass('label-cap')).add(this.LABEL_CAP_LIST).end()
           .start(this.Rows)
             .addClass(this.myClass('detail-container'))
             .add(this.slot(function(data$capabilityOptions) {

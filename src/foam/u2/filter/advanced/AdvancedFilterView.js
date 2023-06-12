@@ -156,7 +156,6 @@ foam.CLASS({
 
     ^label-results {
       margin: 0;
-      font-size: 1.2rem;
       padding: 0 8px;
       flex: 1;
       align-self: center;
@@ -240,7 +239,7 @@ foam.CLASS({
             .endContext();
         }))
         .start().addClass(this.myClass('container-footer'))
-          .start('p').addClass(this.myClass('label-results'))
+          .start('p').addClass('p-label-light', this.myClass('label-results'))
             .add(this.resultLabel$)
           .end()
           .startContext({ data: this })

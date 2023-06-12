@@ -40,9 +40,6 @@ foam.CLASS({
       text-align: center;
       margin-bottom: 2.4rem;
     }
-    ^wizardletSub {
-      font-size: 1.6rem;
-    }
   `,
 
   properties: [
@@ -87,7 +84,7 @@ foam.CLASS({
         .add(this.slot(function (data$currentWizardlet) {
           return data$currentWizardlet.subTitle ?
             this.E().start()
-              .addClass(self.myClass('wizardletTitle'), 'p', self.myClass('wizardletSub'))
+              .addClass(self.myClass('wizardletTitle'), 'p-md')
               .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: data$currentWizardlet.subTitle }))
             .end() : null
         }))

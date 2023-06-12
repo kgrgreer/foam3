@@ -84,17 +84,6 @@ foam.CLASS({
       margin-right: 20px;
       position: relative;
     }
-    ^ .status-Text{
-      width: 90px;
-      height: 14px;
-      font-size: 1.2rem;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #a4b3b8;
-      margin-left: 20px;
-      margin-right: 770px;
-      display: inline-block;
-    }
     ^ .personalProfile-Text{
       margin-top:20px;
       height: 20px;
@@ -114,10 +103,6 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-size: 1.2rem;
-      font-weight: normal;
-      display: inline-block;
-      letter-spacing: 0.2px;
       margin-left: 20px;
       color: $black;
       padding-bottom: 10px;
@@ -205,7 +190,7 @@ foam.CLASS({
                     checked: ! self.subject.user.disabledTopics.includes(key)
                   })
                 .end()
-                .start().addClass('checkBox-Text').add(key).end();
+                .start().addClass('p-legal-light', 'checkBox-Text').add(key).end();
             }
           }
       });
@@ -233,7 +218,7 @@ foam.CLASS({
                   name: 'notifsEmail',
                   value: key,
                   checked: ! self.subject.user.disabledTopicsEmail.includes(key)
-                }).end().start().addClass('checkBox-Text').add(key).end();
+                }).end().start().addClass('p-legal-light', 'checkBox-Text').add(key).end();
             }
           }
       });

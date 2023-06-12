@@ -22,14 +22,8 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    ^company {
-      font-size: 1.2rem;
-      color: #424242;
-    }
-
-    ^name {
+    ^key {
       color: #999;
-      font-size: 1rem;
     }
   `,
 
@@ -48,7 +42,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start()
-            .addClass(this.myClass('key'))
+            .addClass('p-xs', this.myClass('key'))
             .add(this.data.key)
           .end()
         .end();

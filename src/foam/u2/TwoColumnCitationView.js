@@ -17,7 +17,6 @@ foam.CLASS({
       flex-direction: column;
       justify-content: space-between;
       padding: 0.8rem 0.2rem;
-      font-size: 1.2rem;
       border-bottom: 0.05rem solid #80808020;
       gap: 0.64rem;
       color: #6F6F6F;
@@ -46,7 +45,7 @@ foam.CLASS({
   methods: [
     function render() {
       this
-        .addClass(this.myClass())
+        .addClass('p-legal-light', this.myClass())
         .start().addClass(this.myClass('row-1'))
           .start().addClass(this.myClass('row-1-section-1'))
             .start().addClass(this.myClass('primary')).add("field 1").end()

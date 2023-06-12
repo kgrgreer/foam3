@@ -55,12 +55,6 @@ foam.CLASS({
       padding-left:10px;
     }
     ^ .Public-Reply {
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       border: none;
@@ -69,12 +63,6 @@ foam.CLASS({
       top: -25;
     }
     ^ .Internal-Note {
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       border: none;
@@ -124,8 +112,8 @@ foam.CLASS({
         .start().addClass('firstdiv')
           .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person').end()
           .nbsp().nbsp().nbsp().nbsp().nbsp()
-          .start(this.PUBLIC_REPLY).addClass('Public-Reply').enableClass('border', this.variant$.map(function(a){ return !a; })).end()
-          .start(this.INTERNAL_NOTE).addClass('Internal-Note').enableClass('border', this.variant$).end()
+          .start(this.PUBLIC_REPLY).addClass('p-legal-light', 'Public-Reply').enableClass('border', this.variant$.map(function(a){ return !a; })).end()
+          .start(this.INTERNAL_NOTE).addClass('p-legal-light', 'Internal-Note').enableClass('border', this.variant$).end()
         .end()
       .endContext()
       .start(this.MESSAGE).addClass('Rectangle').enableClass('background-color', this.variant$).end();

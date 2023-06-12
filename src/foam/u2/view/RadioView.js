@@ -38,7 +38,6 @@ foam.CLASS({
       align-items: center;
     }
     ^ .choice {
-      font-size: 1.6rem;
       white-space: nowrap;
     }
     ^horizontal-radio {
@@ -111,7 +110,7 @@ foam.CLASS({
         var isChecked = self.slot(function(data) { return data == c[0]; });
         var id    = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
         self.start('div').
-          addClass('choice').
+          addClass('p-md', 'choice').
             callIf(this.columns != -1, function() { this.style({'flex-basis': (100 / self.columns) + '%'}) }).
           start('input', {id: id}).
             attrs({

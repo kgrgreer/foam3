@@ -32,12 +32,6 @@ foam.CLASS({
     ^ .label1 {
       width: 338px;
       height: 16px;
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: center;
       color: $black;
       padding-left: 40px;
@@ -100,7 +94,7 @@ foam.CLASS({
           title: 'Delete Email'
         }))
         .start().addClass('div2')
-          .start().addClass('label1')
+          .start().addClass('p-label-light', 'label1')
             .add(this.titlelabel)
           .end()
           .start().addClass('div')

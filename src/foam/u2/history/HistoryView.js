@@ -25,7 +25,6 @@ foam.CLASS({
       vertical-align: top;
       border-radius: 2px;
       overflow: auto;
-      font-size: 1.2rem;
       padding-left: 20px;
       padding-right: 20px;
       z-index: 0;
@@ -72,7 +71,7 @@ foam.CLASS({
       var view = this;
 
       this
-        .addClass(this.myClass())
+        .addClass('p-legal-light', this.myClass())
         .start('h2').add(this.title).end()
         .select(view.data.orderBy(this.DESC(this.HistoryRecord.TIMESTAMP)), function(record) {
           return this.E().start('div')

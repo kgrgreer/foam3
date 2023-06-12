@@ -773,7 +773,6 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: $primary400;
           display: flex;
-          font-size: 1.2rem;
           justify-content: flex-start;
           text-align: left;
           width: 100%;

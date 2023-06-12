@@ -170,14 +170,14 @@ foam.CLASS({
       font-style: normal;
       font-weight: 600;
       font-size: 1.2rem;
-      line-height: 1.17;
+      line-height: 1.33;
       margin: 0;
     }
     .p-label-light {
       font-style: normal;
       font-weight: normal;
       font-size: 1.2rem;
-      line-height: 1.43;
+      line-height: 1.33;
       margin: 0;
     }
     .p-label-lg {
@@ -238,6 +238,11 @@ foam.CLASS({
 
     .bolder {
       font-weight: 900;
+    }
+
+    .dao-title {
+      font-size: 3.6rem;
+      font-weight: 600;
     }
 
     /* mobile */
