@@ -79,9 +79,6 @@ foam.CLASS({
     }
     ^ .uploadRestriction {
       margin-top: 9px;
-      font-size: 1rem;
-      font-weight: 300;
-      letter-spacing: 0.2px;
       color: $black;
     }
     ^ .box-for-drag-drop {
@@ -181,7 +178,7 @@ foam.CLASS({
           .end()
           .start().addClass('uploadDescContainer').hide(this.uploadHidden)
             .start().add(this.UploadDesc).addClass('p-light', 'uploadDescription').end()
-            .start().add(this.UploadRestrict).addClass('uploadRestriction').end()
+            .start().add(this.UploadRestrict).addClass('p-xs', 'uploadRestriction').end()
           .end()
         .end();
     }

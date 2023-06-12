@@ -123,8 +123,6 @@ foam.CLASS({
       color: white;
       display: inline-block;
       text-align: center;
-      font-size: 1rem;
-      line-height: 20px;
     }
     ^ .Submit-as{
       float: left;
@@ -297,7 +295,7 @@ foam.CLASS({
               this
                 .start('div').addClass('p-label-light')
                 .start().add('Submit as').addClass('Submit-as').end()
-                .start().addClass(status).addClass('status').add(status).end()
+                .start().addClass(status).addClass('p-xs', 'status').add(status).end()
                 .on('click', function () {
                   self.status = status;
                   self.submitAsPopUp.close();

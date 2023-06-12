@@ -41,12 +41,7 @@ foam.CLASS({
       padding-right: 0px;
     }
     ^ .date {
-      font-size: 1rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 0.8;
-      letter-spacing: 0.2px;
       text-align: left;
       color: #a4b3b8;
       padding: 14px 14px 0 0;
@@ -111,7 +106,7 @@ foam.CLASS({
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
                 .start().add(this.requestName$).addClass('p-label', 'company-name').end()
-                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
+                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('p-xs', 'date').end()
                 .callIf(this.message.type == 'Internal', function(){
                   this.start().addClass('p-label-light', 'internal-status')
                     .add('Internal Note')

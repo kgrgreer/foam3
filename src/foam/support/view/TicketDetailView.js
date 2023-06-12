@@ -79,7 +79,6 @@ foam.CLASS({
       display: inline-block;
       text-align: center;
       padding-top: 4px;
-      font-size: 1rem;
     }
     ^ .header {
       text-align: left;
@@ -257,7 +256,7 @@ foam.CLASS({
               this
                 .start('div').addClass('p-label-light')
                 .start().add('Submit as').addClass('Submit-as').end()
-                .start().addClass(status).addClass('status').add(status).end()
+                .start().addClass(status).addClass('p-xs', 'status').add(status).end()
                 .on('click', function () {
                   self.data.status = status;
                   self.submitAsPopUp.close();

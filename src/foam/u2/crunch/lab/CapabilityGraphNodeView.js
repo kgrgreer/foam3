@@ -44,7 +44,6 @@ foam.CLASS({
       box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     }
     ^segment.tiny {
-      font-size: 0.9rem;
       width: inherit;
     }
   `,
@@ -105,7 +104,7 @@ foam.CLASS({
             .add(foam.String.labelize(capability.name))
           .end()
           .start('button')
-            .addClass(this.myClass('segment')).addClass('tiny')
+            .addClass(this.myClass('segment')).addClass('p-xs', 'tiny')
             .add(capability.id)
             .on('click', function() {
               self.capabilityClickedListener(capability);

@@ -30,7 +30,6 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
       padding: 0.2rem;
-      font-size: 1rem;
     }
     ^row-1-section-2{
       display: flex;
@@ -54,7 +53,7 @@ foam.CLASS({
             .add("field 2")
           .end()
         .end()
-        .start().addClass(this.myClass('row-2'))
+        .start().addClass('p-xs', this.myClass('row-2'))
           .start().addClass(this.myClass('row-2-section-1'))
             .add("field 3")
           .end()
