@@ -22,7 +22,10 @@ foam.CLASS({
 
   implements: [ 'foam.mlang.Expressions' ],
 
-  imports: [ 'warn' ],
+  imports: [
+    'translationService?',
+    'warn'
+  ],
 
   documentation: `
     Wraps a tag that represents a singular choice. That is,
@@ -244,9 +247,10 @@ foam.CLASS({
               .enableClass('selection-made', self.index$.map((index) => index !== -1))
             .end();
         }
-        return self.text ?
-          self.E().translate(self.text + ".name", self.text) :
-          self.E().add(self.text$);
+
+        return self.E().add(self.text$.map(t => {
+          return t ? self.translationService.getTranslation(foam.locale, t + '.name', t) : '';
+        }));
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);
