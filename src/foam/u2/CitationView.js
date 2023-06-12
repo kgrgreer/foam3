@@ -14,10 +14,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^row {
-      font-size: 1.2rem;
-    }
-
     ^rw {
       background: $white;
       padding: 8px 16px;
@@ -72,7 +68,7 @@ foam.CLASS({
       this.SUPER();
       this.updateSummary();
       this
-        .addClass(this.myClass('row'))
+        .addClass('p-legal-light')
         .enableClass(this.myClass('rw'), this.mode$.map(m => m === foam.u2.DisplayMode.RW))
         .add(this.summary$);
     },

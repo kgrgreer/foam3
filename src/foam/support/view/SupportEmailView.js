@@ -35,12 +35,6 @@ foam.CLASS({
       background-color: #59a5d5;
       margin-top: 30px;
       margin-right: 600px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
       position: relative;
@@ -63,12 +57,6 @@ foam.CLASS({
       width: 100%;
       height: 20px;
       opacity: 0.6;
-      font-size: 2.0rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
       padding-left: 10px;
@@ -93,12 +81,6 @@ foam.CLASS({
     ^ .No-support-email-con {
       width: 183px;
       height: 16px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       margin-left: 389px;
@@ -136,7 +118,7 @@ foam.CLASS({
       .start().addClass('Rectangle-11-Copy')
         .start().addClass('title1')
           .start()
-            .add(this.title).addClass('title')
+            .add(this.title).addClass('h200', 'lighter', 'title')
           .end()
           .start().addClass('align').end()
           .start({
@@ -147,10 +129,10 @@ foam.CLASS({
           }).hide(this.emptyDAO$).end()
           .start().addClass('input-container-half').show(this.emptyDAO$)
             .start()
-              .add(this.noSupportEmail).addClass('No-support-email-con')
+              .add(this.noSupportEmail).addClass('p-light', 'No-support-email-con')
             .end()
           .end()
-          .start().addClass('btn-mid')
+          .start().addClass('p', 'btn-mid')
             .start(this.NEW_EMAIL).end()
           .end()
         .end()

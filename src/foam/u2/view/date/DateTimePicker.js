@@ -173,7 +173,6 @@ foam.CLASS({
     ^ .date-display-box {
       height: 36px;
       width: 100%;
-      font-size: 1.4rem;
       background-color: $white;
       border: 1px solid #cbcfd4;
       border-radius: 3px;

@@ -60,12 +60,6 @@ foam.CLASS({
     }
     ^ .label{
       height: 16px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       margin: 0px;
@@ -219,7 +213,7 @@ foam.CLASS({
         .start().addClass('bg2')
         .start()
           .start().addClass('rname')
-            .start().addClass('label')
+            .start().addClass('p-light', 'label')
               .add('Requestor Name')
             .end()
             .start()
@@ -227,7 +221,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('remail')
-            .start().addClass('label')
+            .start().addClass('p-light', 'label')
               .add('Requestor Email (optional)')
             .end()
             .start()
@@ -235,13 +229,13 @@ foam.CLASS({
             .end()
           .end()
         .end()
-          .start().addClass('label')
+          .start().addClass('p-light', 'label')
             .add('Subject')
           .end()
           .start()
             .tag(this.EMAIL_SUBJECT)
           .end()
-          .start().addClass('label')
+          .start().addClass('p-light', 'label')
             .add('Description')
           .end()
           .start()

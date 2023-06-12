@@ -55,9 +55,6 @@ foam.CLASS({
     }
     ^ h2{
       width: 150px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       display: inline-block;
@@ -66,9 +63,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-size: 1.4rem;
       line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
       cursor: pointer;

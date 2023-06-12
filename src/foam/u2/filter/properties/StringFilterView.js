@@ -34,8 +34,6 @@ foam.CLASS({
       width: 100%;
       height: 36px;
 
-      font-size: 1.4rem;
-
       border-radius: 3px;
       border: solid 1px #cbcfd4;
       background-color: $white;

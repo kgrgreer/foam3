@@ -55,9 +55,6 @@ foam.CLASS({
     ^ .success-Text{
       width: 450px;
       height: 16px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       margin-top: 15px;
@@ -95,7 +92,7 @@ foam.CLASS({
         .start()
           .start().addClass('Reset-Password').add('Reset Password').end()
           .start().addClass('Message-Container')
-            .start().addClass('success-Text').add(this.Instructions).end()
+            .start().addClass('p-light', 'success-Text').add(this.Instructions).end()
             .start().addClass('Back-Button')
               .add('Back to Sign In')
               .on('click', function() {

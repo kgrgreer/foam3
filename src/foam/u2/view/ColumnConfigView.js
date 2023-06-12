@@ -540,8 +540,6 @@ foam.CLASS({
   }
   ^some-padding {
     text-align: left;
-    font-size: 1.4rem;
-    line-height: 24px;
     padding: 4px 16px;
     display: flex;
     align-items: center;
@@ -589,7 +587,7 @@ foam.CLASS({
       this
         .on('click', this.toggleExpanded)
           .start()
-            .addClass(this.myClass('some-padding'))
+            .addClass('p', this.myClass('some-padding'))
             .style({
               'padding-left': self.data.level * 16 + 8 + 'px',
               'padding-right': '8px'

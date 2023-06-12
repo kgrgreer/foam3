@@ -40,9 +40,6 @@ foam.CLASS({
         padding: 8px 24px;
         animation-name: fade;
         animation-duration: 5s;
-        font-size: 1.4rem;
-        line-height: 1.33;
-        letter-spacing: 0.2px;
         border-radius: 3px;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
         background: #e2f2dd;
@@ -82,10 +79,6 @@ foam.CLASS({
         letter-spacing: normal;
       }
       ^description {
-        font-size: 1.4rem;
-        font-weight: normal;
-        line-height: 1.43;
-        letter-spacing: normal;
         color: #19402e;
         margin-left: 36px;
       }
@@ -171,7 +164,7 @@ foam.CLASS({
         }
         this
           .addClass(this.myClass())
-          .start().addClass(this.myClass('inner'))
+          .start().addClass('p', this.myClass('inner'))
             .enableClass(this.myClass('error-background'), this.type == this.LogLevel.ERROR)
             .enableClass(this.myClass('warning-background'), this.type == this.LogLevel.WARN)
             .start('div').addClass(this.myClass('banner'))
@@ -193,7 +186,7 @@ foam.CLASS({
                   console.log(self.message);
                 })
               .end()
-              .start().addClass(this.myClass('description'))
+              .start().addClass('p', this.myClass('description'))
                 .enableClass(this.myClass('error-content'), this.type == this.LogLevel.ERROR)
                 .enableClass(this.myClass('warning-content'), this.type == this.LogLevel.WARN)
                 .callIfElse(foam.String.isInstance(this.description), function() {

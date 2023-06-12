@@ -145,6 +145,13 @@ foam.CLASS({
       line-height: 1.71;
       margin: 0;
     }
+    .p-light{
+      font-style: normal;
+      font-weight: 300;
+      font-size: 1.4rem;
+      line-height: 1.71;
+      margin: 0;
+    }
     .p-legal{
       font-style: normal;
       font-weight: 500;
@@ -159,11 +166,32 @@ foam.CLASS({
       line-height: 1.17;
       margin: 0;
     }
-    .p-label{
+    .p-label {
       font-style: normal;
       font-weight: 600;
       font-size: 1.2rem;
       line-height: 1.17;
+      margin: 0;
+    }
+    .p-label-light {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.2rem;
+      line-height: 1.43;
+      margin: 0;
+    }
+    .p-label-lg {
+      font-style: normal;
+      font-weight: 600;
+      font-size: 1.4rem;
+      line-height: 1.43;
+      margin: 0;
+    }
+    .p-label-lg-light {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.4rem;
+      line-height: 1.43;
       margin: 0;
     }
 
@@ -202,6 +230,14 @@ foam.CLASS({
       text-align: center;
       font-weight: bold;
       font-size: 2.8rem;
+    }
+
+    .lighter {
+      font-weight: 300;
+    }
+
+    .bolder {
+      font-weight: 900;
     }
 
     /* mobile */

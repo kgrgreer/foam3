@@ -24,7 +24,6 @@ foam.CLASS({
         ^ {
           min-width: 64px;
           height: $inputHeight;
-          font-size: 1.4rem;
           padding-left: $inputHorizontalPadding;
           padding-right: $inputHorizontalPadding;
           border: 1px solid;

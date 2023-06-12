@@ -60,7 +60,7 @@ foam.CLASS({
         .end()
         .start()
           .call(function() { content = this; })
-          .addClass(this.myClass('inner'))
+          .addClass('p-light', this.myClass('inner'))
         .end();
 
       this.content = content;

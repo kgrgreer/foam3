@@ -75,9 +75,6 @@ foam.CLASS({
     }
     ^ .uploadDescription {
       margin-top: 9px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      letter-spacing: 0.2px;
       color: $primary400;
     }
     ^ .uploadRestriction {
@@ -183,7 +180,7 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('uploadDescContainer').hide(this.uploadHidden)
-            .start().add(this.UploadDesc).addClass('uploadDescription').end()
+            .start().add(this.UploadDesc).addClass('p-light', 'uploadDescription').end()
             .start().add(this.UploadRestrict).addClass('uploadRestriction').end()
           .end()
         .end();
