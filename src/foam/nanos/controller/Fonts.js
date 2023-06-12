@@ -324,5 +324,11 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: normal;
     }
+    .md-text-xxs {
+      font-size: 1.6rem;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: normal;
+    }
   `
 });

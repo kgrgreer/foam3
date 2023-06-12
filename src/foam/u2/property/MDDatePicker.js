@@ -212,7 +212,7 @@ foam.CLASS({
       name: 'bodyE',
       documentation: 'Element for the body portion, used by the Dialog.',
       factory: function() {
-        var body = this.E().addClass(this.myClass('body'));
+        var body = this.E().addClass('md-text-xxs', this.myClass('body'));
         body.startContext({data: this}).start('span')
           .addClass(this.myClass('switcher'))
           .addClass(this.myClass('switcher-left'))
@@ -438,7 +438,6 @@ foam.CLASS({
 
     ^body {
       cursor: pointer;
-      font-size: 1.6rem;
       height: 40rem;
       width: 100%;
       overflow: hidden;

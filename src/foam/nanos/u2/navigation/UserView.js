@@ -41,7 +41,6 @@ foam.CLASS({
       position: relative;
     }
     ^ h1 {
-      font-size: 1.6rem;
       font-weight: 100;
     }
     ^carrot {
@@ -119,7 +118,7 @@ foam.CLASS({
             }));
           })
           .start('h1')
-            .add( this.subject.user$.dot('firstName') ).addClass(this.myClass('user-name'))
+            .add( this.subject.user$.dot('firstName') ).addClass('p-md', this.myClass('user-name'))
           .end()
           .start()
             .addClass(this.myClass('carrot'))

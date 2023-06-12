@@ -53,8 +53,6 @@ foam.CLASS({
     ^label-subtitle {
       margin: 0;
       margin-bottom: 24px;
-      font-size: 1.6rem;
-      font-weight: 300;
     }
 
     ^container-advanced {
@@ -212,7 +210,7 @@ foam.CLASS({
         .add(this.filterController.slot(function(previewCriterias) {
           var keys = Object.keys(previewCriterias);
           return self.E().addClass(self.myClass('container-advanced'))
-            .start('p').addClass(self.myClass('label-subtitle'))
+            .start('p').addClass('p-md', 'lighter', self.myClass('label-subtitle'))
               .add(self.LABEL_INSTRUCTION)
             .end()
             .forEach(keys, function(key, index) {

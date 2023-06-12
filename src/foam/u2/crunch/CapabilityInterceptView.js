@@ -91,7 +91,6 @@ foam.CLASS({
       margin: 0;
       margin-top: 8px;
 
-      font-size: 1.6rem;
       color: #5e6061;
     }
     ^label-subtitle:last-child {
@@ -132,6 +131,7 @@ foam.CLASS({
         .start().addClass(this.myClass('container-title'))
           .start('p').addClass('h100', this.myClass('label-title')).add(this.TITLE).end()
           .start()
+            .addClass('p-md')
             .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_1).end()
             .start('p').addClass(this.myClass('label-subtitle')).add(this.SUBTITLE_2).end()
           .end()
