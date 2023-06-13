@@ -17,37 +17,38 @@ foam.CLASS({
 
 
       this.add(this.dynamic(function(a, b) {
-        this.add('Test A+B a:', a, ', b:', b).br();
+        this.add('Dynamic Test A+B a:', a, ', b:', b).br();
       }));
 
       this.add(function(a, b) {
-        this.add('Test A+B a:', a, ', b:', b).br();
+        this.add('Function Test A+B a:', a, ', b:', b).br();
       });
 
       this.add(function(a) {
         this.add('TEST A: ', a).br();
       });
 
-      this.add(function(a) {
-        if ( a === 'show' ) this.add('SHOW').br();
-      });
+      this.add('Show (if a == "show"): ').add(function(a) {
+        if ( a === 'show' ) this.add('SHOWING');
+      }).br();
 
       this.add(function(b) {
         this.add('TEST B: ', b).br();
       });
 
-      this.add('OL:').start('ol').
+      this.add('Dynamic OL:').start('ol').
         add(this.dynamic(function(b) {
           b.split(',').forEach(i => this.start('li').add(i).end());
         })).
       end();
 
-      this.add('OL:').start('ol').
+      this.add('Function OL:').start('ol').
         add(function(b) {
           b.split(',').forEach(i => this.start('li').add(i).end());
         }).
       end();
 
+      this.b$.sub(() => { console.log('****', this.b$.get(), this.b); });
       this.add('select:').tag(foam.u2.tag.Select, {choices$: this.b$.map(b => b.split(',')) });
 
       this.add('END').br();
