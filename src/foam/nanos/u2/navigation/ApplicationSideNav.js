@@ -168,6 +168,7 @@ foam.CLASS({
     },
     function openMenu(menu, hasChildren) {
       if ( menu.handler ) {
+      // When menu is opened close it if window size is small(e.g. phone or tablet) and there are no sub menus
         if ( ! hasChildren && this.displayWidth?.ordinal <= foam.u2.layout.DisplayWidth.MD.ordinal )
           this.isMenuOpen = false;
         this.pushMenu(menu, true);
