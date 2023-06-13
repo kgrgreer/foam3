@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import static foam.mlang.MLang.*;
+import static foam.nanos.auth.LifecycleState.ACTIVE;
 import static foam.nanos.crunch.CapabilityJunctionStatus.*;
 
 
@@ -379,6 +380,7 @@ public class ServerCrunchService
     }
 
     Predicate targetPredicate = EQ(UserCapabilityJunction.TARGET_ID, capabilityId);
+    Predicate lifecycleStateActive = EQ(UserCapabilityJunction.LIFECYCLE_STATE, ACTIVE);
     try {
       DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
@@ -386,7 +388,7 @@ public class ServerCrunchService
 
       // Check if a ucj implies the subject.realUser has this permission in relation to the user
       var ucj = (UserCapabilityJunction)
-        userCapabilityJunctionDAO.find(AND(associationPredicate,targetPredicate));
+        userCapabilityJunctionDAO.find(AND(lifecycleStateActive, associationPredicate, targetPredicate));
       if ( ucj == null ) {
         ucj = buildAssociatedUCJ(x, capabilityId, (Subject) x.get("subject"));
       } else {
