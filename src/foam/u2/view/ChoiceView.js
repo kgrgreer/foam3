@@ -226,7 +226,7 @@ foam.CLASS({
 
       this.onDAOUpdate();
 
-      this.add(this.slot(function(mode) {
+      this.add(this.slot(function(mode, text) {
         if ( mode !== foam.u2.DisplayMode.RO ) {
           return self.E()
             .start(self.selectSpec, {
@@ -245,7 +245,7 @@ foam.CLASS({
             .end();
         }
 
-        return self.E().translate(self.text + ".name", self.text);
+        return text ? self.E().translate(text + '.name', text) : '';
       }));
 
       this.dao$proxy.on.sub(this.onDAOUpdate);
