@@ -183,7 +183,8 @@ foam.CLASS({
         if ( success ) {
           this.ctrl.add(this.NotificationMessage.create({
             message: this.SUCCESS_MSG,
-            type: this.LogLevel.INFO
+            type: this.LogLevel.INFO,
+            transient: true
           }));
           this.emailVerificationService.pub('emailVerified');
         } else {
