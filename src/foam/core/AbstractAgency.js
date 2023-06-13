@@ -30,19 +30,26 @@ foam.CLASS({
         return;
       }
 
+      var logger = Loggers.logger(x, this, "schedule");
+
       // Do not re-schedule existing task with the same key. Subsequent attempts
       // to schedule the same task/key are ignored until the task is executed
       // and removed from the queue.
       if ( ! TASK_QUEUE.containsKey(key) ) {
         var task = new TimerTask() {
           public void run() {
-            Loggers.logger(x, this).debug("schedule", key, delay);
-            try {
-              submit(x, agent, key);
-            } catch ( java.lang.Exception e ) {
-              Loggers.logger(x, this).error("schedule", "failed", key, e);
-            }
-            TASK_QUEUE.remove(key);
+            logger.debug("running", key, delay);
+            submit(x,
+              (x) -> {
+                try {
+                  agent.execute(x);
+                } catch ( Throwable t ) {
+                  logger.error("failed", key, t);
+                } finally {
+                  TASK_QUEUE.remove(key);
+                }
+              }
+              , key);
           }
         };
         TASK_QUEUE.put(key, task);
