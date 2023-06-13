@@ -35,26 +35,30 @@ foam.CLASS({
       // Do not re-schedule existing task with the same key. Subsequent attempts
       // to schedule the same task/key are ignored until the task is executed
       // and removed from the queue.
-      if ( ! TASK_QUEUE.containsKey(key) ) {
-        var task = new TimerTask() {
-          public void run() {
-            logger.debug("running", key, delay);
-            submit(x,
-              (x) -> {
-                try {
-                  agent.execute(x);
-                } catch ( Throwable t ) {
-                  logger.error("failed", key, t);
-                } finally {
-                  TASK_QUEUE.remove(key);
-                }
-              }
-              , key);
-          }
-        };
-        TASK_QUEUE.put(key, task);
-        TIMER.schedule(task, delay);
+      if ( TASK_QUEUE.containsKey(key) ) {
+        logger.info("ignored re-scheduling existing task", key);
+        return;
       }
+
+      // Schedule new task to execute the agent
+      var task = new TimerTask() {
+        public void run() {
+          logger.debug("running", key, delay);
+          submit(x,
+            (x) -> {
+              try {
+                agent.execute(x);
+              } catch ( Throwable t ) {
+                logger.error("failed", key, t);
+              } finally {
+                TASK_QUEUE.remove(key);
+              }
+            }
+            , key);
+        }
+      };
+      TASK_QUEUE.put(key, task);
+      TIMER.schedule(task, delay);
     }
   `
 });
