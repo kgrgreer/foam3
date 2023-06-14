@@ -487,6 +487,24 @@ foam.LIB({
   name: 'foam.debug',
 
   methods: [
+    function getAxiomsByClass(cls, opt_f) {
+      var as = [];
+      for ( var i in { ...foam.USED, ...foam.UNUSED } ) {
+        try {
+          m = foam.maybeLookup(i);
+          if ( m ) {
+            m.getAxiomsByClass(cls).forEach(a => {
+              if ( ! opt_f || opt_f(a, m, i) ) {
+                as.push([i, a.name]);
+              }
+            });
+          }
+        } catch (x) {}
+      }
+
+      return as;
+    },
+
     function showCreates() {
       var lastCounts_ = this.lastCounts_ || ( this.lastCounts_ = {} );
 
