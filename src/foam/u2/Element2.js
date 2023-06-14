@@ -178,7 +178,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    'fn',
+    'fn', // a foam.core.DynamicFunction
     {
       name: 'element_',
       factory: function() { return this.document.createDocumentFragment(); }
@@ -198,10 +198,10 @@ foam.CLASS({
         this.childNodes.forEach(n => {
           nextSibling = n.element_.nextSibling;
           n.element_.remove();
-//          n.element_.parentNode.removeChild(n.element_);
         });
         this.childNodes = [];
         this.element_   = undefined;
+        this.add(''); // needed to preserve proper location in DOM
       };
 
       this.fn.post = () => {
