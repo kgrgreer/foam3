@@ -47,6 +47,34 @@ foam.CLASS({
     ['nodeName', 'select'],
     {
       name: 'choices',
+      documentation: `Array of [value, text] choices. You can pass in just
+          an array of strings, which are expanded to [str, str]. Can also
+          be a map, which results in [key, value] pairs listed in
+          enumeration order.`,
+      adapt: function(old, nu) {
+        if ( typeof nu === 'object' && ! Array.isArray(nu) ) {
+          var out = [];
+          for ( var key in nu ) {
+            if ( nu.hasOwnProperty(key) ) out.push([ key, nu[key] ]);
+          }
+          if ( this.dynamicSize ) {
+            this.size = Math.min(out.length, this.maxSize);
+          }
+          return out;
+        }
+
+        nu = foam.Array.shallowClone(nu);
+
+        // Upgrade single values to [value, value].
+        for ( var i = 0 ; i < nu.length ; i++ ) {
+          if ( ! Array.isArray(nu[i]) ) {
+            nu[i] = [ nu[i], nu[i] ];
+          }
+        }
+
+        if ( this.dynamicSize ) this.size = Math.min(nu.length, this.maxSize);
+        return nu;
+      },
       factory: function() {
         return [];
       }
@@ -84,7 +112,7 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.react(function(choices, placeholder, header, data) {
+      this.add(this.dynamic(function(choices, placeholder, header, data) {
         if ( header ) {
           this.start('optgroup').attrs({ label: header });
         }
@@ -100,7 +128,7 @@ foam.CLASS({
           var c          = choices[i];
           let value      = c[1];
           var isSelected = data == i;
-          self.start('option').attrs({
+          this.start('option').attrs({
             value: i,
             selected: isSelected,
             disabled: ! isSelected && self.disabledData$.map(function(a) {
@@ -108,7 +136,7 @@ foam.CLASS({
             })
           }).translate(value + '.name', value);
         }
-      });
+      }));
     },
 
     function updateMode_(mode) {
