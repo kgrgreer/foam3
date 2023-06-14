@@ -15,26 +15,33 @@ foam.CLASS({
         post: function()     { console.log('post-react'); }
       });
 
-
-      this.add(this.dynamic(function(a, b) {
+      this.start().add(this.dynamic(function(a, b) {
         this.add('Dynamic Test A+B a:', a, ', b:', b).br();
-      }));
+      })).end();
 
-      this.add(function(a, b) {
+      this.tag('hr');
+
+      this.start().add(function(a, b) {
         this.add('Function Test A+B a:', a, ', b:', b).br();
-      });
+      }).end();
 
-      this.add(function(a) {
+      this.tag('hr');
+
+      this.start().add(function(a) {
         this.add('TEST A: ', a).br();
-      });
+      }).end();
 
-      this.add('Show (if a == "show"): ').add(function(a) {
-        if ( a === 'show' ) this.add('SHOWING');
-      }).br();
-
-      this.add(function(b) {
+      this.start().add(function(b) {
         this.add('TEST B: ', b).br();
-      });
+      }).end();
+
+      this.tag('hr');
+
+      this.start().add('Show (if a == "show"): ').add(function(a) {
+        if ( a === 'show' ) this.add('SHOWING');
+      }).end().br();
+
+      this.tag('hr');
 
       this.add('Dynamic OL:').start('ol').
         add(this.dynamic(function(b) {
@@ -47,6 +54,8 @@ foam.CLASS({
           b.split(',').forEach(i => this.start('li').add(i).end());
         }).
       end();
+
+      this.tag('hr');
 
       this.b$.sub(() => { console.log('****', this.b$.get(), this.b); });
       this.add('select:').tag(foam.u2.tag.Select, {choices$: this.b$.map(b => b.split(',')) });
