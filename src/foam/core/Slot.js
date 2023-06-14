@@ -585,7 +585,7 @@ foam.CLASS({
   name: 'DynamicFunction',
   extends: 'foam.core.ExpressionSlot',
 
-  documentation: 'self is this when code is called, but obj is source of expression arguments',
+  documentation: 'self is "this" when code is called, but obj is source of expression arguments',
 
   properties: [
     {
@@ -594,14 +594,17 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'seqNo'
+      name: 'seqNo',
+      documentation: 'An incrementing value which increases everytime "code" is called. Used to create a changing value.'
     },
     {
       name: 'pre',
+      documentation: 'Called before "code" is called.',
       value: function() {}
     },
     {
       name: 'post',
+      documentation: 'Called after "code" is called.',
       value: function() {}
     },
     {
@@ -622,6 +625,11 @@ foam.CLASS({
       window.requestAnimationFrame(() => this.value);
     },
     function subToArgs_(args) {
+      // Overrides implementation in ExpressionSlot
+      // Difference is an Expression only computes updated value if someone
+      // has done a get() on the Slot, so is pull-based, but a DynamicFunction
+      // always updates, even if nobody is get()-ing the value. This makes
+      // it suitable as a kind of compound listener.
       const subs = args.map(a => a && a.sub(this.invalidate));
 
       if ( ! this.cleanup_ ) {
@@ -640,7 +648,11 @@ foam.CLASS({
     {
       name: 'invalidate',
       isFramed: true,
-      code: function invalidate() { this.clearProperty('value'); this.value; }
+      code: function invalidate() {
+        // Overrides implementation in ExpressionSlot, but also calls this.value
+        this.clearProperty('value');
+        this.value;
+      }
     }
   ]
 });
