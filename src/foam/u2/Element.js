@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'Entity',
@@ -333,7 +335,11 @@ foam.CLASS({
     },
     function onRemoveChild(child, index) {
       if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
+        var c = this.el_().childNodes;
+        // Can happen of adjacent text nodes are merged
+        if ( c.length > index ) {
+          c[index].remove();
+        }
       } else {
         child.remove();
       }
@@ -1535,14 +1541,20 @@ foam.CLASS({
 
       /* Add Children to this Element. */
       var es = [];
-      var Y = this.__subSubContext__;
-
+      // var Y = this.__subSubContext__;
+      var Y = parentNode.__subSubContext__;
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var c = cs[i];
 
         // Remove null values
         if ( c === undefined || c === null ) {
           // nop
+        } else if ( foam.Function.isInstance(c) ) {
+          this.add_([(parentNode.__context__.data || parentNode).dynamic({code: c, self: this})], parentNode);
+        } else if ( foam.core.DynamicFunction.isInstance(c) ) {
+          //this.add('TODO DYNAMIC FUNCTION');
+          c.pre  = () => { this.removeAllChildren(); };
+          c.self = this;
         } else if ( c.toE ) {
           var e = c.toE(null, Y);
           if ( foam.core.Slot.isInstance(e) ) {
@@ -1565,8 +1577,6 @@ foam.CLASS({
           }
         } else if ( c.then ) {
           this.add(this.PromiseSlot.create({ promise: c }));
-        } else if ( typeof c === 'function' ) {
-          console.warn('Unsupported use of add(function).');
         } else {
           // String or Number
           es.push(c);
@@ -1606,6 +1616,7 @@ foam.CLASS({
       while ( cs.length ) {
         this.removeChild(cs[0]);
       }
+      this.el_().innerHTML = '';
       return this;
     },
 
