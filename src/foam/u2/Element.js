@@ -1616,7 +1616,8 @@ foam.CLASS({
       while ( cs.length ) {
         this.removeChild(cs[0]);
       }
-      this.el_().innerHTML = '';
+      var e = this.el_();
+      if ( e ) e.innerHTML = '';
       return this;
     },
 
