@@ -7,6 +7,16 @@
 foam.POM({
   name: "nanos",
   version: 3,
+  licenses: [
+    `
+    Copyright 2023 The FOAM Authors. All Rights Reserved.
+    http://www.apache.org/licenses/LICENSE-2.0
+    `,
+    `
+    Copyright 2016 Google Inc. All Rights Reserved.
+    http://www.apache.org/licenses/LICENSE-2.0
+    `
+  ],
   projects: [
     { name: "medusa/pom"}
   ],

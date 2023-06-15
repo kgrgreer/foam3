@@ -8,6 +8,16 @@ foam.POM({
   name: "foam",
   version: 3,
   excludes: [ 'DatastoreDAO.java' ],
+  licenses: [
+    `
+    Copyright 2023 The FOAM Authors. All Rights Reserved.
+    http://www.apache.org/licenses/LICENSE-2.0
+    `,
+    `
+    Copyright 2016 Google Inc. All Rights Reserved.
+    http://www.apache.org/licenses/LICENSE-2.0
+    `
+  ],
   files: [
     { name: "foam/core/lib",                                          flags: "js" },
     { name: "foam/core/stdlib",                                       flags: "js" },
