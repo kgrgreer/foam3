@@ -337,13 +337,15 @@
       isFramed: true,
       documentation: 'Ensure page size is always atleast as large as the displayedRowCount_',
       code: function () {
+        let old = this.pageSize_;
         if ( this.displayedRowCount_ && this.displayedRowCount_ != this.pageSize_ ) {
           if (  this.pageSize < this.displayedRowCount_) {
             this.pageSize_ = this.displayedRowCount_;
           } else {
             this.pageSize_ = this.pageSize;
           }
-          this.refresh();
+          if ( old != this.pageSize_ )
+            this.refresh();
         }
       }
     },
