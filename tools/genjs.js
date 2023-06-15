@@ -20,7 +20,7 @@ require('../src/foam_node.js');
 
 var [argv, X, flags] = require('./processArgs.js')(
   '',
-  { version: '', license: '', pom: 'pom' },
+  { version: '', pom: 'pom' },
   { debug: true, java: false, web: true, genjava: false }
 );
 
@@ -43,12 +43,37 @@ loaded.forEach(l => {
 });
 
 try {
+  var licenses = {};
+  function addLicense(l) {
+    l = l.split('\n').map(l => l.trim()).join('\n');
+    licenses[l] = true;
+  }
+
+  foam.poms.forEach(pom => {
+    pom = pom.pom;
+    if ( foam.String.isInstance(pom.licenses) ) {
+      addLicense(pom.licenses);
+    } else if ( foam.Array.isInstance(pom.licenses) ) {
+      pom.licenses.forEach(addLicense);
+    }
+  });
+  var a = Object.keys(licenses);
+  var license = '';
+  if ( a.length == 1 ) {
+    license = '\nCopyright:\n';
+  } else if ( a.length ) {
+    license = '\nPortions Copyright:\n';
+  }
+  license += a.join('');
+
+  license = license.split('\n').map(l => '// ' + l).join('\n');
+
   var code = uglify_.minify(
     files,
     {
       compress: false,
       mangle:   false,
-      output:   { preamble: `// Generated: ${new Date()}\n//\n${X.license}\nvar foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` }
+      output:   { preamble: `// Generated: ${new Date()}\n\n${license}\nvar foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` }
     }).code;
 
   // Remove most Java and Swift Code
