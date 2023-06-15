@@ -210,7 +210,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: normal;
     }
-    .tite-light{
+    .title-light{
       font-size: 2.0rem;
       font-weight: 300;
       font-style: normal;
