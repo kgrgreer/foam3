@@ -28,6 +28,7 @@ public class RuleEngine extends ContextAwareSupport {
   private Map<String, Object>      results_          = new HashMap<>();
   private Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
   private X                        userX_;
+  private CompoundContextAgency    asyncAgency_      = new CompoundContextAgency();
 
   public RuleEngine(X x, X systemX, DAO delegate) {
     setX(systemX);
@@ -80,6 +81,12 @@ public class RuleEngine extends ContextAwareSupport {
       } finally {
         pm.log(x_);
       }
+    }
+
+    if ( asyncAgency_.getAgents().size() > 0 ) {
+      // TODO: make a better description which includes objectID and ruleGroupID
+      String desc = "Async rule group";
+      ((Agency) getX().get("ruleThreadPool")).submit(userX_, asyncAgency_,  desc);
     }
 
     try {
@@ -180,7 +187,7 @@ public class RuleEngine extends ContextAwareSupport {
   }
 
   private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
-    ((Agency) getX().get("ruleThreadPool")).submit(userX_, new ContextAgent() {
+    asyncAgency_.submit(userX_, new ContextAgent() {
         @Override
         public void execute(X x) {
           if ( stops_.get() ) return;
