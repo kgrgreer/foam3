@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'Ruled',
   abstract: true,
@@ -53,7 +53,6 @@
       javaFactory: `
         return foam.mlang.MLang.TRUE;
       `,
-      view: { class: 'foam.u2.view.JSONTextView' },
       tableCellFormatter: function(value) {
         this.add(value.toString());
       }
