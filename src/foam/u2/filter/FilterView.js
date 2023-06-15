@@ -120,7 +120,6 @@ foam.CLASS({
     }
 
     ^link-mode {
-      font-size: 1.4rem;
       margin-left: 16px;
       cursor: pointer;
     }

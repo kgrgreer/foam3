@@ -34,12 +34,6 @@ foam.CLASS({
     ^ .company-name {
       margin-right: 10px;
       float: left;
-      font-size: 1.2rem;
-      font-weight: bold;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       padding-left: 20px;
@@ -47,24 +41,13 @@ foam.CLASS({
       padding-right: 0px;
     }
     ^ .date {
-      font-size: 1rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
       line-height: 0.8;
-      letter-spacing: 0.2px;
       text-align: left;
       color: #a4b3b8;
       padding: 14px 14px 0 0;
       display: inline-block;
     }
     ^ .text {
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       margin-left:20px;
@@ -98,8 +81,6 @@ foam.CLASS({
       border-radius: 100px;
       background-color: #1cc2b7;
       color: white;
-      font-size: 1.2rem;
-      line-height: 1.2;
     }
   `,
 
@@ -124,15 +105,15 @@ foam.CLASS({
             .start().addClass('spaceline')
               .start({ class:'foam.u2.tag.Image', data:'images/person.svg' }).addClass('person')
               .start()
-                .start().add(this.requestName$).addClass('company-name').end()
-                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('date').end()
+                .start().add(this.requestName$).addClass('p-label', 'company-name').end()
+                .start().add(foam.Date.formatDate(this.message.dateCreated, false)).addClass('p-xs', 'date').end()
                 .callIf(this.message.type == 'Internal', function(){
-                  this.start().addClass('internal-status')
+                  this.start().addClass('p-label-light', 'internal-status')
                     .add('Internal Note')
                   .end()
                 })
               .end()
-              .start().add(this.message.message).addClass('text').end()
+              .start().add(this.message.message).addClass('p-legal-light', 'text').end()
           .end()
         .end();
     }

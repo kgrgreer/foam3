@@ -63,15 +63,15 @@ foam.CLASS({
       var self = this;
       this.addClass()
       this.start('label')
-        .addClass('label')
+        .addClass('md-text-xs-bold', 'label')
         .addClass(this.slot(function(data) {
           return (typeof data != 'undefined' && data !== '' ) ? 'label-up' : '';
         }, this.data$))
         .add(this.label$)
         .end();
       this
-        .start('div').addClass('value').add(this.text$).end()
-        .start('div').addClass('down-arrow').addClass('material-icons')
+        .start('div').addClass('md-text-xs', 'value').add(this.text$).end()
+        .start('div').addClass('md-text', 'down-arrow').addClass('material-icons')
           .add(this.slot(function(isHidden) {
             return self.popup && ! isHidden ? 'expand_less' : 'expand_more';
           }, this.popup$.dot('isHidden')))
@@ -106,12 +106,9 @@ foam.CLASS({
       transition: font-size 0.5s, top 0.5s;
       top: 20%;
       position: relative;
-      font-size: 2rem;
-      font-weight: 500;
       color: #5a5a5a
     }
     ^ .label-up {
-      font-size: 1.5rem;
       font-weight: unset;
       top: 0;
     }
@@ -119,14 +116,12 @@ foam.CLASS({
     ^ .value {
       flex-grow: 1;
       border-bottom: 2px solid #888;
-      font-size: 2rem;
       position: absolute;
       bottom: 0;
       width: 92%;
     }
     ^ .down-arrow {
       font-weight: 800;
-      font-size: 3rem;
       float: right;
       top: 1rem;
       position: relative;

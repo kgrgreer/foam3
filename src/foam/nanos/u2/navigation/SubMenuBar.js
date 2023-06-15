@@ -30,7 +30,6 @@ foam.CLASS({
     }
     ^ ul{
       margin-top: 20px;
-      font-size: 1.3rem;
       list-style-type: none;
     }
     ^ li{
@@ -56,6 +55,7 @@ foam.CLASS({
           .addClass(this.myClass())
             .start()
               .start('ul')
+                .addClass('p')
                 .forEach(this.filterSubMenus(menus, parent), function(i){
                   this.start('li')
                     .add(i.label)

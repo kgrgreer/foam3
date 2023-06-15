@@ -56,9 +56,6 @@ foam.CLASS({
     ^actionBar > .foam-u2-ActionView + .foam-u2-ActionView {
       margin-left: 0px;
     }
-    .foam-u2-view-DAOListWithCreateView-value-view.foam-u2-CitationView-row.foam-u2-CitationView-rw {
-      font-size: 1.4rem;
-    }
   `,
 
   classes: [

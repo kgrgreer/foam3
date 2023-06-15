@@ -25,7 +25,6 @@ foam.CLASS({
       background: #999;
       box-shadow: 3px 3px 6px 0 gray;
       color: white;
-      font-size: 1.8rem;
       opacity: 0.9;
       position: absolute;
       box-sizing: border-box;
@@ -72,7 +71,7 @@ foam.CLASS({
         write();
 
       this.
-        addClass(this.myClass()).
+        addClass('p-lg', this.myClass()).
         style({
           padding: this.padding + 'px',
           left:    this.x + 'px',

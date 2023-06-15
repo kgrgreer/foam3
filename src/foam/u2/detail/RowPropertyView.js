@@ -29,8 +29,6 @@ foam.CLASS({
     ^ > .note {
       white-space: pre;
       padding: 2rem 0rem;
-      font-size: 1.2rem;
-      font-weight: 600;
       padding-left: 6rem;
     }
   `,

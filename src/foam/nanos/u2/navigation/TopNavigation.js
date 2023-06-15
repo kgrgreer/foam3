@@ -93,9 +93,6 @@ foam.CLASS({
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      line-height: 1.25;
-      letter-spacing: 0.3px;
       width: 100%;
       height: calc(100% - 5px); /* Compensate for 5px padding-top of topnav */
     }
@@ -126,7 +123,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .addClass('welcome-label')
+          .addClass('p-md', 'welcome-label')
           .hide(this.loginSuccess$)
           .add(this.GREETING)
         .end()

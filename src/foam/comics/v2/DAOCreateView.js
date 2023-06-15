@@ -32,11 +32,6 @@ foam.CLASS({
       align-self: flex-start;
     }
 
-    ^account-name {
-      font-size: 3.6rem;
-      font-weight: 600;
-    }
-
     ^create-view-container {
       margin: auto;
     }
@@ -167,7 +162,7 @@ foam.CLASS({
                 .start(self.Cols).style({ 'align-items': 'center' })
                   .start()
                     .add(self.slot('config$createTitle'))
-                    .addClass(this.myClass('account-name'))
+                    .addClass('dao-title')
                   .end()
                   .startContext({ data: self }).tag(self.SAVE, { buttonStyle: foam.u2.ButtonStyle.PRIMARY }).endContext()
                 .end()

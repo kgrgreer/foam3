@@ -136,14 +136,6 @@ foam.CLASS({
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    ^userName {
-      font-weight: 600;
-      font-size: 1.2rem;
-    }
-    ^agentName{
-      font-weight: 400;
-      font-size: 1.1rem;
-    }
     ^label-container {
       display: flex;
       flex-direction: column;
@@ -162,8 +154,7 @@ foam.CLASS({
           }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
-                .addClass(this.myClass('userName'))
-                .addClass('p')
+                .addClass('p-label')
                 .add(this.subject.user.toSummary())
               .end();
         }))
@@ -174,8 +165,7 @@ foam.CLASS({
           }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
-                .addClass(this.myClass('agentName'))
-                .addClass('p')
+                .addClass('p-legal-light', this.myClass('agentName'))
                 .add( this.subject.realUser.toSummary() )
               .end();
         }));

@@ -29,8 +29,6 @@ foam.CLASS({
       width: 100%;
       height: 36px;
 
-      font-size: 1.4rem;
-
       border-radius: 3px;
       border: solid 1px #cbcfd4;
       background-color: $white;
@@ -49,10 +47,6 @@ foam.CLASS({
 
     ^label-section {
       padding: 0 16px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      line-height: 1.33;
-      letter-spacing: normal;
       color: #1e1f21;
     }
 
@@ -182,7 +176,7 @@ foam.CLASS({
             var element = this.E();
             if ( selectedOptions.length <= 0 ) return element;
             return element
-              .start('p').addClass(self.myClass('label-section'))
+              .start('p').addClass('p-label', self.myClass('label-section'))
                 .add(self.LABEL_SELECTED)
               .end()
               .call(function() {

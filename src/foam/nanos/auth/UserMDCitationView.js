@@ -21,10 +21,6 @@ foam.CLASS({
       display: flex;
     }
 
-    ^ .name {
-//      font-size: 3rem;
-      font-weight: 500;
-    }
     ^ .img-container img {
       height: 7rem;
     }
@@ -51,7 +47,7 @@ foam.CLASS({
         this.add(this.MDProfileImageView.create({ src: this.data.profilePicture || 'images/ic-placeholder.png' }))
         .start().addClass('info-container')
           .start()
-            .addClass('name')
+            .addClass('md-title', 'name')
             .add(this.data.legalName)
           .end()
           .start()

@@ -80,7 +80,7 @@ foam.CLASS({
       this.addClass();
 
       this.start()
-          .addClass(this.myClass('heading'))
+          .addClass('md-text-xs', this.myClass('heading'))
           .start('span')
               .addClass(this.myClass('heading-month'))
               .add(this.MONTH_NAMES[this.month] + ' ' + this.year)
@@ -154,7 +154,6 @@ foam.CLASS({
     ^heading {
       align-items: center;
       display: flex;
-      font-size: 2rem;
       height: 48px;
       justify-content: center;
     }

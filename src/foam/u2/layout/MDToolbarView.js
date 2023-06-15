@@ -24,7 +24,7 @@ foam.CLASS({
       this
         .start('toolbar')
           .start('div').add(this.leftAction$).addClass('left').end()
-          .start('div').show(this.title$).tag(this.title$).addClass('title').end()
+          .start('div').show(this.title$).tag(this.title$).addClass('md-title', 'title').end()
           .start('div').add(this.rightAction$).addClass('right').end()
         .end();
     }

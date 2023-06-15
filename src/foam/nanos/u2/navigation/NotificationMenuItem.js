@@ -53,7 +53,6 @@ foam.CLASS({
       border-radius: 50%;
       color: $white;
       display: flex;
-      font-size: 0.8rem;
       height: 15px;
       justify-content: center;
       position: absolute;
@@ -127,7 +126,7 @@ foam.CLASS({
         .end()
         .endContext()
         .start()
-          .addClass('dot')
+          .addClass('p-xxs', 'dot')
           .add(this.countUnread$.map(v => v > 9 ? '9+' : v ))
           .show(this.slot(function(showCountUnread, showText) { return showCountUnread && ! showText; }))
         .end()

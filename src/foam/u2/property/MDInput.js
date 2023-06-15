@@ -98,7 +98,7 @@ foam.CLASS({
       var self = this;
       this
         .start('label')
-          .addClass('label')
+          .addClass('md-text-xs-bold', 'label')
           .addClass(this.slot(function(data, focused) {
             return (typeof data != 'undefined' && data !== '') ||
               focused || this.placeholder !== '' ? 'label-up' : '';
@@ -113,6 +113,7 @@ foam.CLASS({
 
         this
           .start().addClass('validation-error')
+            .addClass('md-text-xxs')
             .addClass(this.slot(function(isInvalid) { return isInvalid ? 'error-msg' : ''; }, this.isInvalid$))
             .add(errorSlot.map((s) => {
               self.isInvalid = s !== null && s !== '';
@@ -124,6 +125,7 @@ foam.CLASS({
     function inputE() {
       var self = this;
       var input = this.start('input')
+        .addClass('md-text-xs')
         .attrs({
           type: this.type,
           onKey: this.onKey,
@@ -195,12 +197,9 @@ foam.CLASS({
       transition: font-size 0.5s, top 0.5s;
       top: 20%;
       position: relative;
-      font-size: 2rem;
-      font-weight: 500;
       color: #5a5a5a
     }
     ^ .label-up {
-      font-size: 1.5rem;
       font-weight: unset;
       top: 0;
     }
@@ -216,7 +215,6 @@ foam.CLASS({
       border-left: none;
       border-top: none;
       border-right: none;
-      font-size: 2rem;
       resize: none;
       bottom: 0;
       position: absolute;
@@ -235,7 +233,6 @@ foam.CLASS({
       transition: opacity .5s;
     }
     ^ .error-msg {
-      font-size: 1.5rem;
       opacity: 1;
 //      transition: opacity 3s;
     }

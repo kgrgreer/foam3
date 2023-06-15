@@ -20,11 +20,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^date_time_picker input,
-    ^date_time_picker select {
-      font-size: inherit;
-    }
-
     ^next_btn, ^prev_btn {
       display: inline-block;
       width: 31px;
@@ -59,7 +54,6 @@ foam.CLASS({
     .time-of-day {
       display: block;
       justify-content: center;
-      font-size: medium;
     }
 
     ^ .colon {
@@ -92,7 +86,6 @@ foam.CLASS({
       border: none;
       color: white;
       display: inline-block;
-      font-size: large;
     }
 
     ^ .arrow-left {
@@ -173,7 +166,6 @@ foam.CLASS({
     ^ .date-display-box {
       height: 36px;
       width: 100%;
-      font-size: 1.4rem;
       background-color: $white;
       border: 1px solid #cbcfd4;
       border-radius: 3px;
@@ -329,7 +321,7 @@ foam.CLASS({
                 .on('click', function() { self.year--; })
               .end()
               .start(this.YEAR, {type: ''})
-                .addClass('year-number')
+                .addClass('p-lg', 'year-number')
               .end()
               .start('img')
                 .attrs({ src: '/images/arrow-right-white.svg' })
@@ -376,20 +368,20 @@ foam.CLASS({
             .end()
 
             .start()
-              .addClass('time-of-day')
+              .addClass('p-md', 'time-of-day')
               .show(this.showTimeOfDay$)
               .start(this.ChoiceView, {
                 choices: zeroLeadingNumArray(1, 12),
                 data$: this.hour12$
                 })
                 .on('click', this.updateDate)
-                .addClass('time-of-day')
+                .addClass('p-md', 'time-of-day')
                 .attrs({ size: 2, maxlength: 2 })
               .end().
               start()
                 .add(':')
                 .addClass('colon')
-                .addClass('time-of-day')
+                .addClass('p-md', 'time-of-day')
               .end()
               .start(this.ChoiceView, {
                 choices: zeroLeadingNumArray(0, 59),
@@ -397,12 +389,12 @@ foam.CLASS({
                 })
                 .on('click', this.updateDate)
                 .attrs({ size: 2, maxlength: 2 })
-                .addClass('time-of-day')
+                .addClass('p-md', 'time-of-day')
               .end()
               .start()
                 .add(this.PERIOD)
                 .on('click', this.updateDate)
-                .addClass('time-of-day')
+                .addClass('p-md', 'time-of-day')
               .end()
             .end()
           .end()

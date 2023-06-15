@@ -36,7 +36,6 @@ foam.CLASS({
     ^ .foam-u2-TextField {
       width: 100%;
       height: 36px;
-      font-size: 1.4rem;
       border-radius: 3px;
       border: solid 1px #cbcfd4;
       background-color: $white;
@@ -59,19 +58,11 @@ foam.CLASS({
 
     ^label-section {
       padding: 0 16px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      line-height: 1.33;
-      letter-spacing: normal;
       color: #1e1f21;
     }
 
     ^label-loading {
       padding: 0 16px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      line-height: 1.33;
-      letter-spacing: normal;
       color: #1e1f21;
       text-align: center;
     }
@@ -284,7 +275,7 @@ foam.CLASS({
           var element = this.E();
           if ( isLoading || selectedOptions.length <= 0 ) return element;
           return element
-          .start('p').addClass(self.myClass('label-section'))
+          .start('p').addClass('p-label', self.myClass('label-section'))
             .add(self.LABEL_SELECTED)
           .end()
           .call(function() {
@@ -306,13 +297,13 @@ foam.CLASS({
           var element = this.E();
           if ( isLoading ) {
             return element
-              .start('p').addClass(self.myClass('label-loading'))
+              .start('p').addClass('p-label', self.myClass('label-loading'))
                 .add(self.LABEL_LOADING)
               .end();
           }
           if ( filteredOptions.length === 0 ) {
             return element
-              .start('p').addClass(self.myClass('label-loading'))
+              .start('p').addClass('p-label', self.myClass('label-loading'))
                 .add(self.LABEL_NO_OPTIONS)
               .end();
           }

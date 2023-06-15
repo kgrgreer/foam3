@@ -180,10 +180,6 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 1.2rem;
-      font-weight: 900;
-      line-height: 24px;
-      font-size: 1.4rem;
       color: #333;
       padding: 6px 16px;
     }
@@ -206,7 +202,6 @@ foam.CLASS({
       border-radius: 4px;
       -webkit-appearance: none;
       cursor: pointer;
-      font-size: 1.4rem;
 
       background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
       background-position: right 0.5em top 50%
@@ -528,7 +523,7 @@ foam.CLASS({
               return this.E().forEach(sections, function(section) {
                 this.addClass(self.myClass('setAbove'))
                   .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                    .addClass(self.myClass('heading'))
+                    .addClass('p', 'bolder', self.myClass('heading'))
                     .translate(section.heading$)
                   .end()
                   .start()
@@ -778,7 +773,6 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: $primary400;
           display: flex;
-          font-size: 1.2rem;
           justify-content: flex-start;
           text-align: left;
           width: 100%;

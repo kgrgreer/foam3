@@ -105,8 +105,6 @@ foam.CLASS({
     }
 
     ^label-title {
-      font-weight: 900;
-      font-size: 3.2rem;
       margin: 24px 16px;
       margin-bottom: 8px;
     }
@@ -115,7 +113,6 @@ foam.CLASS({
       margin: 16px;
       margin-top: 0;
       color: #9ba1a6;
-      font-size: 1.8rem;
     }
 
     ^category {
@@ -256,10 +253,10 @@ foam.CLASS({
 
       self
         .addClass(self.myClass())
-        .start('p').addClass(this.myClass('label-title'))
+        .start('p').addClass('h100', this.myClass('label-title'))
           .add(this.TITLE)
         .end()
-        .start('p').addClass(this.myClass('label-subtitle'))
+        .start('p').addClass('p-lg', this.myClass('label-subtitle'))
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {

@@ -64,6 +64,7 @@ foam.CLASS({
       .addClass(this.slot(function(isMenuOpen) {
         return isMenuOpen ? 'menuOpen' : 'menuClosed';
       }, this.isMenuOpen$))
+      .addClass('md-text-xs')
       .startContext({data: this})
          .tag({
            class: 'foam.u2.layout.MDToolbarView',
@@ -78,7 +79,7 @@ foam.CLASS({
         .start()
           .startContext({ data: this })
             .start()
-              .add(this.MENU_SEARCH)
+              .add('md-text', this.MENU_SEARCH)
               .addClass('foam-u2-search-TextSearchView')
             .end()
           .endContext()
@@ -133,7 +134,6 @@ foam.CLASS({
     }
     ^ input[type="search"] {
       height: 7rem;
-      font-size: 3rem;
     }
 
     ^ .side-nav-view {
@@ -186,10 +186,6 @@ foam.CLASS({
     ^ .foam-u2-view-TreeViewRow-label-icon {
       display: none;
     }
-
-    ^ toolbar .right .foam-u2-ActionView {
-        font-size: 2rem;
-      }
 
     ^ .img-container img {
       width: 5rem;

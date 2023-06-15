@@ -22,10 +22,8 @@ foam.CLASS({
     }
     ^placeholder.foam-u2-TextField {
       bottom: 0;
-      font-size: 1.4rem;
       inline-size: fit-content;
       left: 0;
-      letter-spacing: normal;
       opacity: 0.7;
       pointer-events: none;
       position: absolute;

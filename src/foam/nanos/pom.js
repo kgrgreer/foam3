@@ -23,6 +23,7 @@ foam.POM({
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
     { name: "controller/AppStyles",                                                       flags: "web" },
+    { name: "controller/Fonts",                                                           flags: "web" },
     { name: "logger/DAOLogger",                                                           flags: "js|java" },
     { name: "logger/Logger",                                                              flags: "js|java" },
     { name: "logger/LoggingDAO",                                                          flags: "js|java" },

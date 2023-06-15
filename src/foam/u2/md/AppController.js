@@ -57,8 +57,6 @@ foam.CLASS({
     }
     ^ toolbar .title {
       padding-left: 4rem;
-      font-weight: 500;
-      font-size: 3.5rem;
       width: 100%;
     }
     ^ toolbar .foam-u2-ActionView {

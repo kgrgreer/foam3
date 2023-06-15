@@ -48,8 +48,6 @@ foam.CLASS({
 
     ^label-property {
       margin: 0;
-      font-size: 1.4rem;
-      line-height: 1.43;
       color: #5e6061;
       flex: 1;
       overflow: hidden;
@@ -148,7 +146,7 @@ foam.CLASS({
         .start().addClass(this.myClass('container-property'))
           .enableClass(this.myClass('container-property-active'), this.active$)
           .on('click', this.switchActive)
-          .start('p').addClass(this.myClass('label-property'))
+          .start('p').addClass('p-label-lg', this.myClass('label-property'))
             .add(`${this.property.label}: `)
             .add(this.labelFiltering$)
           .end()

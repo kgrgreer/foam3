@@ -152,9 +152,6 @@ foam.CLASS({
     .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
       margin: 5px 0px;
     }
-    .foam-u2-CitationView-row {
-      font-size: 1.4rem;
-    }
   `,
 
   methods: [
@@ -171,6 +168,7 @@ foam.CLASS({
           var data = data2_;
           return self.E()
             .start(self.Rows)
+              .addClass('p')
               .forEach(data || [], function(e, i) {
                 var row = self.Row.create({ index: i, value: e });
                 this
