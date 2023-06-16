@@ -227,6 +227,51 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.core',
+  name: 'ClientExports',
+  documentation: 'Axiom for storing export specification in Class if it is used as a client side service. Unlike most Axioms, doesn\'t modify the Class, but is just used to store information.',
+  properties: [
+    [ 'name', 'clientExports' ],
+    {
+      class: 'StringArray',
+      name: 'exportSpec',
+      adaptArrayElement: function(o) {
+        var a = o.split(' ');
+        switch ( a.length ) {
+          case 1:
+            return `${a[0]} as ${a[0]}`;
+
+          case 2:
+            return undefined;
+
+          case 3:
+            foam.assert(
+              a[1] === 'as',
+              'Invalid export syntax: key [as value] | as value');
+            return a;
+
+          default:
+            foam.assert(false,
+              'Invalid export syntax: key [as value] | as value');
+        }
+      },
+      adapt: function(_, v, prop) {
+        if ( ! Array.isArray(v) ) return v;
+
+        var copy;
+        for ( var i = 0 ; i < v.length ; i++ ) {
+          if ( ! copy ) copy = v.slice();
+          copy[i] = prop.adaptArrayElement.call(this, v[i], prop);
+        }
+
+        return (copy || v).filter(v => !! v);
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
   refines: 'foam.core.Model',
   package: 'foam.core',
   name: 'ImportExportModelRefine',
@@ -290,6 +335,12 @@ foam.CLASS({
         }
 
         return foam.core.Export.create(o);
+      }
+    },
+    {
+      name: 'clientExports',
+      postSet: function(_, n) {
+        this.axioms_.push(foam.core.ClientExports.create({exportSpec: n}));
       }
     }
   ]
