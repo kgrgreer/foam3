@@ -107,7 +107,9 @@ try {
   // Put each Model on its own line
   code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
-  fs_.writeFileSync(version ? `foam-bin-${version}.js` : 'foam-bin.js', code);
+  var filename = version ? `foam-bin-${version}.js` : 'foam-bin.js';
+  console.log('GENJS: Writing', filename);
+  fs_.writeFileSync(filename, code);
 } catch (x) {
   console.log('ERROR (JSBUILD):', x);
 }
