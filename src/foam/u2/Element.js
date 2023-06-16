@@ -1478,13 +1478,26 @@ foam.CLASS({
       */
 
       if ( slot ) slot.set(c);
+      if ( c.content ) {
+        let temp = c.parentNode;
+        c = c.content;
+        c.setPrivate_('contentParent_', temp);
+      }
       return c;
     },
 
     function end() {
       /* Return this Element's parent. Used to terminate a start(). */
+      if ( this.getPrivate_('contentParent_') )
+       return this.getPrivate_('contentParent_');
       return this.parentNode;
     },
+
+    // Potentially add this to allow for edits to parent inside elements with content$
+    // function addToParent(fn) {
+    //   (this.getPrivate_('contentParent_') || ).call(fn);
+    //   return this;
+    // },
 
     function translate(source, opt_default) {
       var translationService = this.translationService;
@@ -1509,11 +1522,7 @@ foam.CLASS({
     },
 
     function add() {
-      if ( this.content ) {
-        this.content.add_(arguments, this);
-      } else {
-        this.add_(arguments, this);
-      }
+      this.add_(arguments, this);
       return this;
     },
 

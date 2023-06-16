@@ -619,3 +619,100 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  name: 'ContextSwitchBorder',
+  extends: 'foam.u2.Element',
+
+  documentation: `
+    An unstyled border. Intended for use as a default value for
+    border properties.
+  `,
+
+  // exports: ['controllerMode', 'notCM'],
+  properties: [
+    {
+      name: 'controllerMode',
+      value: foam.u2.ControllerMode.VIEW
+    }
+  ],
+
+  methods: [
+    function render() {
+      this
+      .start()
+      .startContext({ controllerMode: foam.u2.ControllerMode.EDIT, data: this })
+      .add('Added from Border')
+      .add(this.CONTROLLER_MODE.__)
+      .call(function() { console.log('*******Border', this.controllerMode, this.__context__.controllerMode, this.__subSubContext__.controllerMode)})
+      .endContext()
+      .startContext({ controllerMode: this.controllerMode$ })
+      .start('', {}, this.content$)
+        .addClass('content')
+      .end()
+      .add('content after content$')
+      .endContext()
+      .end();
+    }
+  ]
+});
+
+
+
+foam.CLASS({
+  name: 'ContextSwitchBorderTest',
+  extends: 'foam.u2.View',
+  documentation: '',
+  css: ``,
+  exports: ['controllerMode'],
+  properties: [
+    {
+      class: 'String',
+      name: 'test'
+    },
+    {
+      class: 'Boolean',
+      name:'hideBorder'
+    },
+    {
+      class: 'Boolean',
+      name:'hideContent',
+    }
+  ],
+  methods: [
+    function render() {
+      var self = this;
+      this.start(ContextSwitchBorder, {
+        extras: function() {
+          this
+            .hide(self.hideBorder$)
+            .addClass('someClass')
+            .startContext({ controllerMode: foam.u2.ControllerMode.EDIT, data: this })
+            .add('Added from extras')
+            .add(this.CONTROLLER_MODE.__)
+            .startContext({ data: self })
+              .add(self.HIDE_CONTENT.__)
+            .endContext()
+            .call(function() { console.log('*******Extras', this.controllerMode, this.__context__.controllerMode, this.__subSubContext__.controllerMode)})
+            .endContext()
+        }
+      })
+      .hide(this.hideContent$)
+      .call(function() { console.log('*******1', this.__context__.controllerMode, this.__subSubContext__.controllerMode)})
+      .startContext({ data: this })
+        .call(function() { console.log('*******2',  this.__context__.controllerMode, this.__subSubContext__.controllerMode)})
+        .add(this.TEST.__)
+        .tag(this.TEST.__)
+        .start()
+          .call(function() { console.log('*******3', this.__context__.controllerMode, this.__subSubContext__.controllerMode)})
+          .add(this.TEST.__)
+        .end()
+        .endContext()
+      .end()
+      .add('some text outside the border')
+      .startContext({ data: this })
+      .add(this.HIDE_BORDER.__)
+      .endContext();
+    }
+  ]
+});

@@ -1150,13 +1150,19 @@ foam.CLASS({
         this.addChild_(c, this);
       }*/
       this.add(c);
-
+      if ( c.content ) {
+        let temp = c.parentNode;
+        c = c.content;
+        c.setPrivate_('contentParent_', temp);
+      }
       if ( slot ) slot.set(c);
       return c;
     },
 
     function end() {
       /* Return this Element's parent. Used to terminate a start(). */
+      if ( this.getPrivate_('contentParent_') )
+       return this.getPrivate_('contentParent_');
       return this.parentNode;
     },
 
@@ -1183,10 +1189,10 @@ foam.CLASS({
     },
 
     function add() {
-      if ( this.content ) {
-        this.content.add(arguments, this);
-        return this;
-      }
+      // if ( this.content ) {
+      //   this.content.add_(arguments, this);
+      //   return this;
+      // }
       return this.add_(arguments, this);
     },
 
