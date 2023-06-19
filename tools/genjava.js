@@ -17,7 +17,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
-    journaldir:    './target/journals2/',
+    journaldir:    './target/journals/',
     libdir:        './build/lib',
     outdir:        '/build/src/java',
     pom:           'pom'
@@ -156,7 +156,19 @@ function loadLibs(pom) {
   });
 }
 
-if ( X.buildlib && ! fs_.existsSync(X.libdir) ) fs_.mkdirSync(X.libdir, {recursive: true});
+
+// TODO: move to common library
+function ensureDir(dir) {
+  if ( ! fs.existsSync(dir) ) {
+    console.log('Creating directory', dir);
+    fs.mkdirSync(dir, {recursive: true});
+  }
+}
+
+
+if ( X.buildlib      ) ensureDir(X.libdir);
+if ( X.buildjournals ) ensureDir(X.journaldir);
+
 
 function addJournal(fn) {
   X.journalFiles.push(fn);
@@ -200,7 +212,7 @@ console.log(`GENJAVA: Found ${found} java files.`);
 
 //console.log(X.javaFiles);
 fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
-fs_.writeFileSync('journalFiles', X.journalFiles.join('\n') + '\n');
+fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
 if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
