@@ -307,7 +307,7 @@ foam.CLASS({
 
     ^text{
       background: none;
-      border: 1px solid $buttonPrimaryColor;
+      border: 1px solid transparent;
       color: $buttonPrimaryColor;
     }
 
