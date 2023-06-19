@@ -239,12 +239,13 @@ foam.CLASS({
         return d ? d.cls_.id : '';
       }
 
-      var classToData = (c) => {
+      var classToData = c => {
         if ( ! c ) return undefined;
         var m = c && this.__context__.maybeLookup(c);
         const o = m.create(this.data ? this.copyOldData(this.data) : null, this);
         if ( this.defaultValues.hasOwnProperty(m.id) ) {
-          o.copyFrom(this.defaultValues[m.id]);
+          let copyData = m.create(this.defaultValues[m.id]);
+          o.copyFrom(copyData);
         }
         return o;
       };
