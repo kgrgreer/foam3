@@ -39,11 +39,13 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.approval.CustomViewReferenceApprovable',
-    'foam.u2.stack.StackBlock'
+    'foam.nanos.auth.LifecycleState',
+    'foam.u2.dialog.Popup',
+    'foam.u2.stack.StackBlock',
+    'net.nanopay.admin.model.AccountStatus'
   ],
 
   imports: [
@@ -54,7 +56,8 @@ foam.CLASS({
     'notify',
     'stack',
     'subject',
-    'translationService'
+    'translationService',
+    'userDAO'
   ],
 
   searchColumns: [
@@ -869,6 +872,16 @@ foam.CLASS({
            (self.status == foam.nanos.approval.ApprovalStatus.APPROVED && self.operation == foam.nanos.dao.Operation.REMOVE) ) {
              console.warn('Object is inaccessible')
              return;
+        }
+
+        // Disabled users are not authorized to access their ucjs
+        let createdFor = await this.userDAO.find(this.createdFor);
+        if (
+          createdFor.lifecycleState === this.LifecycleState.DISABLED ||
+          createdFor.status === this.AccountStatus.DISABLED || ! createdFor.enabled
+        ) {
+          this.notify('User is disabled', '', this.LogLevel.ERROR, true);
+          return;
         }
 
         var daoKey = self.refDaoKey;
