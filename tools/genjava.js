@@ -39,6 +39,13 @@ X.journalOutput = {};
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
+// If genjava is disabled, then override foam.loadFiles so that the POM
+// structure is loaded but .js files aren't.
+if ( ! flags.genjava ) {
+  foam.loadFiles = function() {};
+}
+
+
 // Promote all UNUSED Models to USED
 // 2 passes in case interfaces generated new classes in 1st pass
 for ( var i = 0 ; i < 2 ; i++ )
