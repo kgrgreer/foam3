@@ -1045,6 +1045,8 @@ foam.POM({
     { name: "foam/time/Hours",                                        flags: "js|java" },
     { name: "foam/time/TimeZone",                                     flags: "js|java" },
     { name: "foam/time/DayOfWeek",                                    flags: "js|java" },
+    { name: "foam/time/MonthOfYear",                                  flags: "js|java" },
+    { name: "foam/time/MonthOfYearView",                              flags: "js" },
     { name: "foam/time/TimeUnit",                                     flags: "js|java" },
     { name: "foam/u2/table/TableComponentView",                       flags: "web" },
     { name: "foam/u2/table/TableView",                                flags: "web" },
