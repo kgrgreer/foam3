@@ -380,7 +380,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'assignedTo',
-      value: 0,
       section: 'infoSection',
       postSet: function(_, n) {
         if ( n != 0 ) {
@@ -630,14 +629,11 @@ foam.CLASS({
       },
       code: function(X) {
         var assignedTicket = this.clone();
-        // assignedTicket.assignedTo = X.subject.user.id;
-        this.assignedTo = X.subject.user.id;
+        assignedTicket.assignedTo = X.subject.user.id;
 
-        this.ticketDAO.put(this).then(req => {
-          // this.copyFrom(req);
+        this.ticketDAO.put(assignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
-          // this.assignedTo = req.assignedTo;
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
           if (
@@ -659,16 +655,12 @@ foam.CLASS({
         return (subject.user.id === assignedTo) && (status === 'OPEN');
       },
       code: function(X) {
-        // var unassignedTicket = this.clone();
-        // unassignedTicket.clearProperty('assignedTo');
-        // this.clearProperty('assignedTo');
-        this.assignedTo = undefined;
+        var unassignedTicket = this.clone();
+        unassignedTicket.assignedTo = 0;
 
-        this.ticketDAO.put(this).then(req => {
-          // this.copyFrom(req);
+        this.ticketDAO.put(unassignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
-          // this.assignedTo = req.assignedTo;
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
           if (
