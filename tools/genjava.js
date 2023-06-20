@@ -212,7 +212,9 @@ console.log(`GENJAVA: Found ${found} java files.`);
 
 //console.log(X.javaFiles);
 fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
-fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
+
+// REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
+// fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
 if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
