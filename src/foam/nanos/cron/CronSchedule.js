@@ -13,7 +13,7 @@ foam.CLASS({
 
   documentation: `
     Schedule for periodic tasks.
-    * time of day - hour, minute, second
+    * time of day - hours, minute, second
     * months of year
     * days of month
     * week of month
@@ -27,14 +27,18 @@ foam.CLASS({
     'static foam.mlang.MLang.OR',
     'foam.nanos.logger.Loggers',
     'foam.time.TimeZone',
+    'foam.util.SafetyUtil',
     'java.time.*',
     'java.time.temporal.*',
     'java.util.Date'
   ],
 
   requires: [
-    'foam.time.DayOfWeek',
-    'foam.u2.ControllerMode'
+    'foam.time.DayOfWeek'
+  ],
+
+  messages: [
+    { name: 'INVALID_HOURS', message: 'Comma seperated list of hours'}
   ],
 
   properties: [
@@ -68,12 +72,26 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'hour',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( val > -1 && ! hoursIsSet_ ) {
+        setHours(String.valueOf(val));
+      }
+      `
+    },
+    {
+      class: 'String',
+      name: 'hours',
       order: 3,
-      value: -1,
-      min: -1,
-      max: 23,
-      documentation: `Hour to execute script.
-          Ranges from 0 - 23. -1 for wildcard`
+      validationPredicates: [
+        {
+          args: ['hours'],
+          query: 'hours~/[0-9,]/',
+          errorMessage: 'INVALID_HOURS'
+        }
+      ],
+      documentation: 'comma seperated hours',
     },
     {
       class: 'FObjectArray',
@@ -104,7 +122,7 @@ foam.CLASS({
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( this.ControllerMode.EDIT )
+        if ( this.controllerMode == foam.u2.ControllerMode.EDIT )
           return foam.u2.DisplayMode.RW;
         return foam.u2.DisplayMode.RO;
       }
@@ -120,24 +138,24 @@ foam.CLASS({
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( this.ControllerMode.EDIT )
+        if ( this.controllerMode == foam.u2.ControllerMode.EDIT )
           return foam.u2.DisplayMode.RW;
         return foam.u2.DisplayMode.RO;
       }
     },
     {
       class: 'Array',
-      of: 'Long',
+      of: 'Int',
       name: 'daysOfMonth',
       order: 6,
-      javaFactory: 'return new Long[] {};',
+      javaFactory: 'return new Integer[] {};',
       javaPreSet: 'java.util.Arrays.sort(val);',
       view: { class: 'foam.u2.view.DayOfMonthView' },
       visibility: function(daysOfWeek, weekOfMonth) {
         if ( weekOfMonth > 0 ||
              daysOfWeek.length > 0 )
           return foam.u2.DisplayMode.HIDDEN;
-        if ( this.ControllerMode.EDIT )
+        if ( this.controllerMode == foam.u2.ControllerMode.EDIT )
           return foam.u2.DisplayMode.RW;
         else
           return foam.u2.DisplayMode.RO;
@@ -162,12 +180,8 @@ foam.CLASS({
       var time = last;
 
       // test if component needs to be bumped to the next hour, minute,...
-      if ( getHour() > -1 ) {
-        if ( time.getHour() >= getHour() &&
-             ! time.isAfter(last) ) {
-          time = time.plusDays(1);
-        }
-        time = time.withHour(getHour());
+      if ( ! SafetyUtil.isEmpty(getHours()) ) {
+        time = getNextHour(x, zone, last, time);
       }
       if ( getMinute() > -1 ) {
         if ( time.getMinute() >= getMinute() &&
@@ -218,6 +232,53 @@ foam.CLASS({
       `
     },
     {
+      name: 'getNextHour',
+      args: 'X x, ZoneId zone, LocalDateTime last, LocalDateTime time',
+      javaType: 'java.time.LocalDateTime',
+      javaCode: `
+      boolean adjusted = false;
+      String[] hours = getHours().split(",");
+      for ( String h : hours ) {
+        if ( SafetyUtil.isEmpty(h) ) continue;
+        int hour = 0;
+        try {
+          hour = Integer.parseInt(h);
+          if ( hour < 0 || hour > 23 ) {
+            throw new NumberFormatException();
+          }
+        } catch (NumberFormatException e) {
+          Loggers.logger(x, this).warning("Invalid hour", h);
+          throw new RuntimeException("Invalid hour "+h);
+        }
+        if ( hour == time.getHour() &&
+             time.isAfter(last) ) {
+          adjusted = true;
+          break;
+        }
+        // schedule change to earlier in day
+        if ( hour < time.getHour() ) {
+          LocalDateTime temp = time.with(ChronoField.HOUR_OF_DAY, hour);
+          if ( temp.isAfter(last) ) {
+            time = temp;
+            adjusted = true;
+            break;
+          }
+        }
+
+        if ( hour > time.getHour() ) {
+          time = time.withHour(hour);
+          adjusted = true;
+          break;
+        }
+      }
+      if ( ! adjusted ) {
+        // bump day
+        time = time.plusDays(1).withHour(Integer.parseInt(hours[0]));
+      }
+      return time;
+      `
+    },
+    {
       name: 'getNextMonthOfYear',
       args: 'X x, ZoneId zone, LocalDateTime last, LocalDateTime time',
       javaType: 'java.time.LocalDateTime',
@@ -263,7 +324,7 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( Object d : getDaysOfMonth() ) {
-          long day = ((Long)d).longValue();
+          long day = ((Integer)d).longValue();
           if ( day == time.getDayOfMonth() &&
                time.isAfter(last) ) {
             adjusted = true;
