@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "timezoneDAO",
+  "name": "timeZoneDAO",
   "description": "A DAO which contains information about timezones in countries.",
   "serve": true,
   "serviceScript": """

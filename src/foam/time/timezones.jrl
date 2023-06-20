@@ -27,6 +27,7 @@ p({"class": "foam.time.TimeZone", "countryId": "CA", "id": "America/Fort_Nelson"
 p({"class": "foam.time.TimeZone", "countryId": "CA", "id": "America/Vancouver", "displayName": "Pacific - BC (most areas)"})
 p({"class": "foam.time.TimeZone", "countryId": "CA", "id": "America/Whitehorse", "displayName": "Pacific - Yukon (east)"})
 p({"class": "foam.time.TimeZone", "countryId": "CA", "id": "America/Dawson", "displayName": "Pacific - Yukon (west)"})
+p({"class": "foam.time.TimeZone", "countryId": "CI", "id": "Africa/Abidjan", "displayName": "Africa/Abidjan (UTC/GMT)"})
 
 p({"class": "foam.time.TimeZone", "countryId": "US", "id": "America/New_York", "displayName": "Eastern (most areas)"})
 p({"class": "foam.time.TimeZone", "countryId": "US", "id": "America/Detroit", "displayName": "Eastern - MI (most areas)"})
