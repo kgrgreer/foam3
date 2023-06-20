@@ -193,9 +193,6 @@ foam.CLASS({
       ^fullscreen ^bodyWrapper {
         width: 56%;
       }
-      ^dynamicFooter {
-        padding: 2rem 0;
-      }
       ^inner-title {
         text-align: center;
         font-size: 2.4rem;
@@ -215,7 +212,7 @@ foam.CLASS({
         gap: 2rem;
       }
     }
-    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
+    @media only screen and (min-width: 1440px) {
       ^:not(^fullscreen) ^inner {
         width: 35vw;
       }
