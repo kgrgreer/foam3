@@ -2288,9 +2288,8 @@ foam.CLASS({
         // this.fs_.writeFileSync("/tmp/" + of + ".new", this.fs_.readFileSync(outfile).toString());
 
         this.fs_.writeFileSync(outfile, javaSource);
-
-        X.javaFiles.push(outfile);
       }
+      X.javaFiles.push(outfile);
     },
 
     function outputJavaClass(X, outdir, javaClass) {
