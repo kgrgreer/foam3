@@ -193,9 +193,6 @@ foam.CLASS({
       ^fullscreen ^bodyWrapper {
         width: 56%;
       }
-      ^dynamicFooter {
-        padding: 2rem 0;
-      }
       ^inner-title {
         text-align: center;
         font-size: 2.4rem;
