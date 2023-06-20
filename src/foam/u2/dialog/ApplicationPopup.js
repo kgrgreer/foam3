@@ -212,7 +212,7 @@ foam.CLASS({
         gap: 2rem;
       }
     }
-    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
+    @media only screen and (min-width: 1440px) {
       ^:not(^fullscreen) ^inner {
         width: 35vw;
       }
