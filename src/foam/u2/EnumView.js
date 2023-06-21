@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.view.ChoiceView',
 
   imports: [
-    'auth'
+    'auth?'
   ],
 
   properties: [
@@ -53,7 +53,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      if ( this.permissioned ) {
+      if ( this.permissioned && this.auth ) {
         this.permissionedChoices();
       }
     },
