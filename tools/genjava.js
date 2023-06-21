@@ -15,7 +15,10 @@
 console.log('[GENJAVA] Starting');
 
 const startTime = Date.now();
-var path_       = require('path');
+
+const fs_   = require('fs');
+const exec_ = require('child_process');
+const path_ = require('path');
 
 require('../src/foam_node.js');
 
@@ -75,10 +78,24 @@ console.log(`END GENJAVA: ${jCount}/${mCount} models processed, ${X.javaFiles.le
 // console.log(X.javaFiles);
 // console.log(foam.poms);
 
-const fs_   = require('fs');
-const exec_ = require('child_process');
 
 var found = 0;
+
+
+function writeFileIfUpdated(file, txt) {
+  if ( ! ( fs_.existsSync(file) && (fs_.readFileSync(file).toString() === txt))) {
+    fs_.writeFileSync(file, txt);
+    return true;
+  }
+
+  return false;
+}
+
+
+function execSync(cmd, options) {
+  console.log('\x1b[0;32mExec: ' + cmd + '\x1b[0;0m');
+  return exec_.execSync(cmd, options);
+}
 
 
 function verbose() {
@@ -180,7 +197,6 @@ function buildLibs() {
   //  ensureDir(X.libdir);
   var pom = foam.poms[0].pom;
 
-  console.log('[GENJAVA] Building pom.xml with', X.javaDependencies.length, 'dependencies.');
   var dependencies = X.javaDependencies.map(d => {
     var a = d[0].split(' ');
     var [groupId, artifactId, version] = a[0].split(':');
@@ -195,8 +211,7 @@ function buildLibs() {
     `;
   }).join('');
 
-  fs_.writeFileSync('pom.xml',
-  `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -210,7 +225,14 @@ function buildLibs() {
     </properties>
 
     <dependencies>${dependencies}</dependencies>
-  </project>`.replaceAll(/^  /gm, ''));
+  </project>\n`.replaceAll(/^  /gm, '');
+
+  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
+    console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib2')}`);
+  } else {
+    console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
+  }
 }
 
 
@@ -221,10 +243,16 @@ function javac() {
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
 
   console.log('[GENJAVA] Compiling:', cmd);
-  exec_.exec(cmd, [], (error, stdout, stderr) => {
+  try {
+    exec_.execSync(cmd, {stdio: 'inherit'});
+  } catch(x) {
+    process.exit(1);
+  }
+  /*
+  , (error, stdout, stderr) => {
     console.log('[GENJAVA] Finished Compiling');
     console.log(stdout);
     console.log(stderr);
@@ -233,6 +261,7 @@ function javac() {
       process.exit(1);
     }
   });
+  */
 
   console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
   // console.log(X.journalFiles);
