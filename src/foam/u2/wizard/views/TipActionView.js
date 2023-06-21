@@ -24,21 +24,46 @@ foam.CLASS({
     }
   ],
 
+  cssTokens: [
+    {
+      name: 'tipActionColor',
+      value: '$buttonPrimaryColor'
+    },
+    {
+      name: 'buttonPrimaryLightColor',
+      value: function(e) { return e.FROM_HUE(e.TOKEN('$tipActionColor'), 41, 90) }
+    }
+  ],
+
   css: `
     ^ {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
       gap: 0.4rem;
     }
     ^helptext {
       text-align: center;
     }
+    ^tipAction.foam-u2-ActionView-text{
+      color: $tipActionColor;
+    }
+    ^tipAction.foam-u2-ActionView-text svg { fill: $tipActionColor; }
+
+    ^tipAction.foam-u2-ActionView-text:hover:not(:disabled) {
+      background-color: $buttonPrimaryLightColor;
+    }
+
+    ^tipAction.foam-u2-ActionView-text:active:not(:disabled) {
+      background-color: $buttonPrimaryLightColor;
+      border-color: $tipActionColor;
+    }
+
   `,
 
   methods: [
-    function render () {
-      const x = this.__subContext__;
-
+    function render() {
       this
         .enableClass('foam-u2-ActionView-unavailable',
           this.action.createIsAvailable$(this.__context__, this.data), true)
@@ -47,10 +72,14 @@ foam.CLASS({
           .addClass(this.myClass('helptext'))
           .add(this.text$)
         .end()
-        .tag(this.ActionView, {
+        .start(this.ActionView, {
           action: this.action,
-          data$: this.data$
+          size: 'SMALL',
+          data$: this.data$,
+          buttonStyle: 'TEXT'
         })
+          .addClass(this.myClass('tipAction'))
+        .end();
     }
   ]
 });

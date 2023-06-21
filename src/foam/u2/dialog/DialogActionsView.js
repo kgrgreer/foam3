@@ -13,9 +13,8 @@ foam.CLASS({
     ^actions {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.8rem;
       margin: 0;
-      padding: 1.2rem 0 2.4rem 0;
     }
     ^actions > * {
       flex-grow: 1;

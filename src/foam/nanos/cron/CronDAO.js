@@ -13,8 +13,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.util.SafetyUtil'
+    'foam.nanos.logger.Loggers'
   ],
 
   properties: [
@@ -30,17 +29,25 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Cron cron = (Cron) getDelegate().put_(x, obj);
+      Cron cron = (Cron) obj;
+      cron.clearReattemptRequested();
+      cron.clearReattempts();
+      try {
+        cron.setScheduledTime(cron.getNextScheduledTime(x));
+      } catch (Throwable t) {
+        if ( cron.getEnabled() ) {
+          Loggers.logger(x, this).error("Failed calculating NextScheduledTime", cron.getId(), t.getMessage());
+          throw new RuntimeException(t);
+        } else {
+          Loggers.logger(x, this).debug("Failed calculating NextScheduledTime", cron.getId(), t.getMessage());
+        }
+      }
       if ( cron.getEnabled() ) {
-        Cron job = (Cron) cron.fclone();
-        job.clearReattemptRequested();
-        job.clearReattempts();
-        job.setScheduledTime(job.getNextScheduledTime(x));
-        ((DAO) x.get(getCronJobDAO())).put_(x, job);
+        ((DAO) x.get(getCronJobDAO())).put_(x, cron);
       } else {
         ((DAO) x.get(getCronJobDAO())).remove_(x, cron);
       }
-      return cron;
+      return getDelegate().put_(x, cron);
       `
     },
     {
