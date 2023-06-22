@@ -403,6 +403,7 @@ function startNanos(nanos_dir) {
     if ( PROFILER ) {
 
     } else if ( DEBUG ) {
+      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`
     }
 
     if ( WEB_PORT ) {
