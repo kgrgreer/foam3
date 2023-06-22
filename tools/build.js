@@ -293,6 +293,7 @@ task(function deployJournals(directory) {
 
 task(function cleanLib() {
   rmfile('pom.xml');
+  emptyDir('./target/lib');
   genJava();
 });
 
@@ -338,8 +339,8 @@ task(function genJava() {
 
 
 task(function buildJava() {
-  copyLib();
   genJava();
+  copyLib();
 });
 
 
