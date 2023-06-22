@@ -4,10 +4,23 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-console.log('START GENJAVA');
+// FOAM Java related build tool. Builds:
+//     - generates .java files from .js models
+//     - copies .jrl files into /target/journals
+//     - TODO: copy .flow files into /target/documents
+//     - create /target/javaFiles file containing list of modified or static .java files
+//     - build pom.xml from accumulated javaDependencies
+//     - call maven to update dependencies if pom.xml updated
+//     - call javac to compile files in javaFiles
+//     - create a Maven pom.xml file with accumulated POM javaDependencies information
+
+console.log('[GENJAVA] Starting');
 
 const startTime = Date.now();
-var path_       = require('path');
+
+const fs_   = require('fs');
+const exec_ = require('child_process');
+const path_ = require('path');
 
 require('../src/foam_node.js');
 
@@ -23,19 +36,20 @@ var [argv, X, flags] = require('./processArgs.js')(
     pom:           'pom'
   },
   {
-    buildlib:      false,
+    buildlib:      false, // generate Maven pom.xml
     buildjournals: false,
     genjava:       true,
-    java:          true,
+//    java:          true, // ?? Not used?
     javac:         false,
     verbose:       false
   }
 );
 
-X.outdir        = path_.resolve(path_.normalize(X.outdir));
-X.javaFiles     = [];
-X.journalFiles  = [];
-X.journalOutput = {};
+X.outdir           = path_.resolve(path_.normalize(X.outdir));
+X.javaFiles        = [];
+X.journalFiles     = [];
+X.journalOutput    = {};
+X.javaDependencies = [];
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
@@ -63,15 +77,27 @@ for ( var key in foam.USED ) try {
 
 console.log(`END GENJAVA: ${jCount}/${mCount} models processed, ${X.javaFiles.length} Java files created in ${Math.round((Date.now()-startTime)/1000)}s.`);
 
-if ( ! flags.javac ) return;
-
 // console.log(X.javaFiles);
 // console.log(foam.poms);
 
-const fs_   = require('fs');
-const exec_ = require('child_process');
 
 var found = 0;
+
+
+function writeFileIfUpdated(file, txt) {
+  if ( ! ( fs_.existsSync(file) && (fs_.readFileSync(file).toString() === txt))) {
+    fs_.writeFileSync(file, txt);
+    return true;
+  }
+
+  return false;
+}
+
+
+function execSync(cmd, options) {
+  console.log('\x1b[0;32mExec: ' + cmd + '\x1b[0;0m');
+  return exec_.execSync(cmd, options);
+}
 
 
 function verbose() {
@@ -123,51 +149,18 @@ function processDir(pom, location, skipIfHasPOM) {
   });
 }
 
-var http_ = require('http');
-
-function download(url, dest, cb) {
-  var file    = fs_.createWriteStream(dest);
-  var request = http_.get(url, function(response) {
-    response.pipe(file);
-    file.on('finish', function() {
-      file.close(cb);  // close() is async, call cb after close completes.
-    });
-  }).on('error', function(err) { // Handle errors
-    fs_.unlink(dest); // Delete the file async. (But we don't check the result)
-    cb && cb(err.message);
-  });
-};
-
 function loadLibs(pom) {
-  // To be useful, it would also need to download the library's POM and then download
-  // it's dependendencies. Better to let Maven do that.
-  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => {
-    var a   = d.split(':');
-    var filename =  a[1] + '-' + a[2] + '.jar';
-    var url = X.repo + a[0].replaceAll('.', '/') + '/' + a[1] + '/' + a[2] + '/' + filename;
-    console.log('[GENJAVA] Downloading', url);
-    download(url, X.libdir + '/' + filename, e => {
-      if ( e ) {
-        console.log('[GENJAVA] Error Downloading', filename);
-      } else {
-        console.log('[GENJAVA] Downloaded', filename);
-      }
-    });
-  });
+  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => X.javaDependencies.push([d, pom.path]));
 }
 
 
 // TODO: move to common library
 function ensureDir(dir) {
-  if ( ! fs.existsSync(dir) ) {
+  if ( ! fs_.existsSync(dir) ) {
     console.log('Creating directory', dir);
-    fs.mkdirSync(dir, {recursive: true});
+    fs_.mkdirSync(dir, {recursive: true});
   }
 }
-
-
-if ( X.buildlib      ) ensureDir(X.libdir);
-if ( X.buildjournals ) ensureDir(X.journaldir);
 
 
 function addJournal(fn) {
@@ -183,7 +176,10 @@ function addJournal(fn) {
   X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
 }
 
+
 function outputJournals() {
+  ensureDir(X.journaldir);
+
   if ( ! flags.buildjournals ) return;
 
   if ( fs_.existsSync(X.journaldir) ) {
@@ -198,42 +194,100 @@ function outputJournals() {
 }
 
 
-var seen = {};
-function processPOM(pom) {
-  if ( seen[pom.location] ) return;
-  if ( X.buildlib ) loadLibs(pom);
-  seen[pom.location] = true;
-  verbose('GENJAVA: Scanning POM for java files:', pom.location);
-  processDir(pom, pom.location || '/', false);
+function buildLibs() {
+  // Build Maven file
+  //  ensureDir(X.libdir);
+  var pom = foam.poms[0].pom;
+
+  var dependencies = X.javaDependencies.map(d => {
+    var a = d[0].split(' ');
+    var [groupId, artifactId, version] = a[0].split(':');
+
+   return `
+      <!-- Source: ${d[1]} -->
+      <dependency>
+        <groupId>${groupId}</groupId>
+        <artifactId>${artifactId}</artifactId>
+        <version>${version}</version>
+      </dependency>
+    `;
+  }).join('');
+
+  var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>${pom.vendorId}</groupId>
+    <artifactId>${pom.name}</artifactId>
+    <version>${pom.version}</version>
+
+    <properties>
+      <maven.compiler.source>1.7</maven.compiler.source>
+      <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
+    <dependencies>${dependencies}</dependencies>
+  </project>\n`.replaceAll(/^  /gm, '');
+
+  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
+    console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib2')}`);
+  } else {
+    console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
+  }
 }
 
-foam.poms.forEach(processPOM);
-console.log(`GENJAVA: Found ${found} java files.`);
 
-// Only overwrite javaFiles when genjava:true
-if ( flags.genjava )
-  fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
+function javac() {// Only overwrite javaFiles when genjava:true
+  if ( flags.genjava )
+    fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
 
-// REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
-// fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
+  // REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
+  // fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
-if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
+  if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-var cmd = `time javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
 
-console.log('GENJAVA Compiling:', cmd);
-exec_.exec(cmd, [], (error, stdout, stderr) => {
-  console.log('GENJAVA Finished Compiling');
-  console.log(stdout);
-  console.log(stderr);
-  if ( error ) {
-    console.log(error);
+  console.log('[GENJAVA] Compiling:', cmd);
+  try {
+    exec_.execSync(cmd, {stdio: 'inherit'});
+  } catch(x) {
     process.exit(1);
   }
-});
+  /*
+  , (error, stdout, stderr) => {
+    console.log('[GENJAVA] Finished Compiling');
+    console.log(stdout);
+    console.log(stderr);
+    if ( error ) {
+      console.log(error);
+      process.exit(1);
+    }
+  });
+  */
 
-console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
-// console.log(X.journalFiles);
+  console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
+  // console.log(X.journalFiles);
+}
 
-outputJournals();
-// console.log('************ PROCESS', process.env);
+
+function processPOMs() {
+  var seen = {};
+  function processPOM(pom) {
+    if ( seen[pom.location] ) return;
+    loadLibs(pom);
+    seen[pom.location] = true;
+    verbose('[GENJAVA] Scanning POM for java files:', pom.location);
+    processDir(pom, pom.location || '/', false);
+  }
+
+  foam.poms.forEach(processPOM);
+  console.log(`[GENJAVA] Found ${found} java files.`);
+}
+
+
+if ( flags.javac || flags.buildlib || flags.buildjournals ) processPOMs();
+if ( flags.buildlib )                                       buildLibs();
+if ( flags.javac )                                          javac();
+if ( flags.buildjournals )                                  outputJournals();

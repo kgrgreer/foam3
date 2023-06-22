@@ -64,7 +64,7 @@ abstract class AbstractX
   }
 
   public Object create(String clsName, Map<String, Object> args) {
-    return ((FacetManager)get("facetManager")).create(clsName, args, this);
+    return ((FacetManager) get("facetManager")).create(clsName, args, this);
   }
 
   public X cd(String path) {

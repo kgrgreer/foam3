@@ -25,6 +25,10 @@ foam.CLASS({
       name: 'supportPhone'
     },
     {
+      class: 'URL',
+      name: 'supportLink'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'personalSupportUser'
