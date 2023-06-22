@@ -238,7 +238,8 @@ function buildLibs() {
 }
 
 
-function javac() {// Only overwrite javaFiles when genjava:true
+function javac() {
+  // Only overwrite javaFiles when genjava:true
   if ( flags.genjava )
     fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
 
