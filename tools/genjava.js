@@ -9,6 +9,8 @@
 //     - copies .jrl files into /target/journals
 //     - TODO: copy .flow files into /target/documents
 //     - create /target/javaFiles file containing list of modified or static .java files
+//     - build pom.xml from accumulated javaDependencies
+//     - call maven to update dependencies if pom.xml updated
 //     - call javac to compile files in javaFiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 
