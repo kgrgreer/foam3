@@ -211,6 +211,7 @@ foam.CLASS({
         const capable = foam.nanos.crunch.lite.BaseCapable.create();
         x = x || this.__subContext__;
         x = x.createSubContext({ capable });
+        debugger
         return this.createWizardSequence('no-capability-id', x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
@@ -218,7 +219,7 @@ foam.CLASS({
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
-          .remove('AutoSaveWizardletsAgent')
+          // .remove('AutoSaveWizardletsAgent')
           .remove('SaveAllAgent')
           .remove('LoadWizardletsAgent')
           .remove('WizardStateAgent') // does not make sense in transient wizards
