@@ -332,9 +332,8 @@ task(function genJava() {
   if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
   if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
-  var buildJournals = DELETE_RUNTIME_JOURNALS ? ',buildJournals' : '';
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose${buildJournals} -outdir=./build/src/java ${buildJournals} -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose -outdir=./build/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
@@ -768,17 +767,14 @@ task(function all() {
 
   setupDirs();
 
-  if ( ! RESTART_ONLY ) {
-    deployDocuments();
-    deployJournals();
-  }
-
   if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE ) {
     packageFOAM();
   }
 
   if ( ! RESTART_ONLY ) {
     buildJava();
+    deployDocuments();
+    deployJournals();
 
     if ( RUN_JAR ) {
       buildJar();
