@@ -330,7 +330,8 @@ task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
   if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
-  if ( JOURNAL_CONFIG ) pom += ',' + `./deployment/${JOURNAL_CONFIG}/pom`;
+  if ( JOURNAL_CONFIG )
+    JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
   var buildJournals = DELETE_RUNTIME_JOURNALS ? ',buildJournals' : '';
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
   execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose${buildJournals} -outdir=./build/src/java ${buildJournals} -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
@@ -529,8 +530,7 @@ var
   INSTANCE                  = 'localhost',
   IS_MAC                    = process.platform === 'darwin',
   IS_LINUX                  = process.platform === 'linux',
-  JOURNAL_CONFIG            = 'u',
-  JOURNAL_SPECIFIED         = false,
+  JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
   POM                       = 'pom',
@@ -646,7 +646,6 @@ const ARGS = {
     args => {
 //      POM = POM ? POM + ',' args : args;
       JOURNAL_CONFIG = args;
-      JOURNAL_SPECIFIED = true;
       // TODO: handle GRADLE_CONFIG elsewhere
     } ],
   k: [ 'Package up a deployment tarball.',
