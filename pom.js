@@ -7,6 +7,7 @@
 foam.POM({
     name: "foam-full",
     version: 3,
+    excludes: ['node_modules'],
     projects: [
         { name: "src/pom" },
         { name: 'src/foam/demos/u2/AllViews' },
