@@ -231,7 +231,7 @@ function buildLibs() {
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib2')}`);
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib')}`);
   } else {
     console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }

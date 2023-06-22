@@ -474,7 +474,7 @@ task(function versions() {
 task(function setupDirs() {
   ensureDir(`${PROJECT_HOME}/.foam`);
   ensureDir(NANOPAY_HOME);
-  ensureDir('./target/lib2');
+  ensureDir('./target/lib');
   ensureDir(`${NANOPAY_HOME}/lib`);
   ensureDir(`${NANOPAY_HOME}/bin`);
   ensureDir(`${NANOPAY_HOME}/etc`);
