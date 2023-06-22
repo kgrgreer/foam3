@@ -192,6 +192,7 @@ foam.CLASS({
       }
       ^fullscreen ^bodyWrapper {
         width: min(100rem, 100%);
+      }
       ^inner-title {
         text-align: center;
         font-size: 2.4rem;
