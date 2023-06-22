@@ -207,9 +207,9 @@ function buildLibs() {
 
     // Detect libs version conflict
     var lib = groupId + ':' + artifactId;
-    versions[lib] = [...(versions[lib] || []), { v: a, path: d[1] }];
+    versions[lib] = [...(versions[lib] || []), { v: a[0], path: d[1] }];
     // mark as conflicted if a different version found
-    if ( versions[lib].length == 2 && versions[lib][0].v === a ) delete versions[lib][1];
+    if ( versions[lib].length == 2 && versions[lib][0].v === a[0] ) versions[lib].pop();
     if ( versions[lib].length == 2 ) conflicts.push(lib);
 
     return `
@@ -224,7 +224,7 @@ function buildLibs() {
 
   // Print versions conflict info and abort
   if ( conflicts.length > 0 ) {
-    console.log('[GENJAVA] Detected libs version conflicts:');
+    console.log('[GENJAVA] Detected libs version conflict:');
     var info = '';
     conflicts.forEach(c => {
       info += '\t' + c + '\n' +
