@@ -199,11 +199,20 @@ function buildLibs() {
   //  ensureDir(X.libdir);
   var pom = foam.poms[0].pom;
 
+  var versions     = {};
+  var conflicts    = [];
   var dependencies = X.javaDependencies.map(d => {
     var a = d[0].split(' ');
     var [groupId, artifactId, version] = a[0].split(':');
 
-   return `
+    // Detect libs version conflict
+    var lib = groupId + ':' + artifactId;
+    versions[lib] = [...(versions[lib] || []), { v: a, path: d[1] }];
+    // mark as conflicted if a different version found
+    if ( versions[lib].length == 2 && versions[lib][0].v === a ) delete versions[lib][1];
+    if ( versions[lib].length == 2 ) conflicts.push(lib);
+
+    return `
       <!-- Source: ${d[1]} -->
       <dependency>
         <groupId>${groupId}</groupId>
@@ -212,6 +221,18 @@ function buildLibs() {
       </dependency>
     `;
   }).join('');
+
+  // Print versions conflict info and abort
+  if ( conflicts.length > 0 ) {
+    console.log('[GENJAVA] Detected libs version conflicts:');
+    var info = '';
+    conflicts.forEach(c => {
+      info += '\t' + c + '\n' +
+        versions[c].map(d => '\t\t' + d['v'] + ' at ' + d['path']).join('\n') + '\n';
+    });
+    console.log(info);
+    throw new Error('Abort GENJAVA due to library versions conflict detected.');
+  }
 
   var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
