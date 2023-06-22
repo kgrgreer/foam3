@@ -188,10 +188,10 @@ foam.CLASS({
         padding: 12px;
       }
       ^:not(^fullscreen) ^inner {
-        width: 65vw;
+        width: min(50rem, 100%);
       }
       ^fullscreen ^bodyWrapper {
-        width: 56%;
+        width: min(100rem, 100%);
       }
       ^inner-title {
         text-align: center;
@@ -210,14 +210,6 @@ foam.CLASS({
       ^bodyWrapper{
         padding: 2.4rem 4rem;
         gap: 2rem;
-      }
-    }
-    @media only screen and (min-width: 1440px) {
-      ^:not(^fullscreen) ^inner {
-        width: 35vw;
-      }
-      ^fullscreen ^bodyWrapper {
-        width: 36%;
       }
     }
   `,
