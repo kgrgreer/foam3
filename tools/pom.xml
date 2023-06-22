@@ -18,6 +18,7 @@
         <maven>3.9.2</maven>
     </prerequisites>
 
+    <!-- static pom.xml is deprecated in favor of the dynamically generated pom.xml file from build.js -->
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
