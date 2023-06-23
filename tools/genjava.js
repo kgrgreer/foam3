@@ -135,7 +135,7 @@ function processDir(pom, location, skipIfHasPOM) {
     if ( f.isDirectory() && ! f.name.startsWith('.') ) {
       if ( f.name.indexOf('android') != -1 ) return;
       if ( f.name.indexOf('examples') != -1 ) return;
-        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+      if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
     } else if ( f.name.endsWith('.java') ) {
       if ( ! isExcluded(pom, fn) ) {
         verbose('\t\tjava source:', fn);
