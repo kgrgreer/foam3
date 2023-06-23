@@ -147,7 +147,7 @@
         addClass().
         show(visibilitySlot).
         add(this.slot(function(prop$reserveLabelSpace, prop$label){
-          let el = this.E().addClass(this.myClass('label'), 'p-semiBold');
+          let el = this.E().addClass(this.myClass('label'), this.myClass('label' + '-' + prop.name), 'p-semiBold');
           return prop$label ?
             el.call(prop.labelFormatter, [data, prop]) :
             ( prop$reserveLabelSpace ? el : undefined )
