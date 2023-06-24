@@ -15,7 +15,11 @@ of .java source files.
 
 ### name
 
+### vendorId
+
 ### version
+
+### licenses
 
 ### excludes
 
@@ -42,6 +46,10 @@ A predicate can be supplied which should return true if the file is to be loaded
 This is useful for conditionally loading polyfills or for implementing logic more complex
 can be specified with & and | alone.
 
+### javaDependencies
+
+A list of Java Maven library dependencies.
+
 ### JSLib
 
 Like adding a JSLib Axiom. Is read by foam.nanos.servlet.VirtualHostRoutingServlet.
@@ -51,8 +59,13 @@ Like adding a JSLib Axiom. Is read by foam.nanos.servlet.VirtualHostRoutingServl
 
 ```javascript
 foam.POM({
-  name: "acme.app",
+  name: "acmeapp",
+  vendorId: 'com.acme",
   version: '3.1.1',
+  licenses: `
+    [2023] Acme Corporation
+    All Rights Reserved.
+  `,
   excludes: [
     'Something.java'
   ],
@@ -64,6 +77,10 @@ foam.POM({
   projects: [
     { name: 'acme/src/somepackage/pom' },
     { name: 'acme/src/someotherpackage/pom' },
+  ],
+  javaDependencies: [
+    'commons-net:commons-net:3.6',
+    'xerces:xercesImpl:2.12.0'
   ],
   JSLibs: [
     'https://cdn.somecompany.com/link/v2/stable/lib.js'
