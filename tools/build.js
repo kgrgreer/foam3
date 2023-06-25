@@ -293,6 +293,7 @@ task(function deployJournals(directory) {
 
 task(function cleanLib() {
   rmfile('pom.xml');
+  emptyDir('./target/lib');
   genJava();
 });
 
@@ -330,16 +331,16 @@ task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
   if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
-  if ( JOURNAL_CONFIG ) pom += ',' + `./deployment/${JOURNAL_CONFIG}/pom`;
-  var buildJournals = DELETE_RUNTIME_JOURNALS ? ',buildJournals' : '';
+  if ( JOURNAL_CONFIG )
+    JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose${buildJournals} -outdir=./build/src/java ${buildJournals} -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose -outdir=./build/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
 task(function buildJava() {
-  copyLib();
   genJava();
+  copyLib();
 });
 
 
@@ -402,6 +403,7 @@ function startNanos(nanos_dir) {
     if ( PROFILER ) {
 
     } else if ( DEBUG ) {
+      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`
     }
 
     if ( WEB_PORT ) {
@@ -472,7 +474,7 @@ task(function versions() {
 task(function setupDirs() {
   ensureDir(`${PROJECT_HOME}/.foam`);
   ensureDir(NANOPAY_HOME);
-  ensureDir('./target/lib2');
+  ensureDir('./target/lib');
   ensureDir(`${NANOPAY_HOME}/lib`);
   ensureDir(`${NANOPAY_HOME}/bin`);
   ensureDir(`${NANOPAY_HOME}/etc`);
@@ -529,8 +531,7 @@ var
   INSTANCE                  = 'localhost',
   IS_MAC                    = process.platform === 'darwin',
   IS_LINUX                  = process.platform === 'linux',
-  JOURNAL_CONFIG            = 'u',
-  JOURNAL_SPECIFIED         = false,
+  JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
   POM                       = 'pom',
@@ -646,7 +647,6 @@ const ARGS = {
     args => {
 //      POM = POM ? POM + ',' args : args;
       JOURNAL_CONFIG = args;
-      JOURNAL_SPECIFIED = true;
       // TODO: handle GRADLE_CONFIG elsewhere
     } ],
   k: [ 'Package up a deployment tarball.',
@@ -768,17 +768,14 @@ task(function all() {
 
   setupDirs();
 
-  if ( ! RESTART_ONLY ) {
-    deployDocuments();
-    deployJournals();
-  }
-
   if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE ) {
     packageFOAM();
   }
 
   if ( ! RESTART_ONLY ) {
     buildJava();
+    deployDocuments();
+    deployJournals();
 
     if ( RUN_JAR ) {
       buildJar();

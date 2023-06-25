@@ -135,7 +135,7 @@ function processDir(pom, location, skipIfHasPOM) {
     if ( f.isDirectory() && ! f.name.startsWith('.') ) {
       if ( f.name.indexOf('android') != -1 ) return;
       if ( f.name.indexOf('examples') != -1 ) return;
-        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+      if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
     } else if ( f.name.endsWith('.java') ) {
       if ( ! isExcluded(pom, fn) ) {
         verbose('\t\tjava source:', fn);
@@ -199,11 +199,20 @@ function buildLibs() {
   //  ensureDir(X.libdir);
   var pom = foam.poms[0].pom;
 
+  var versions     = {};
+  var conflicts    = [];
   var dependencies = X.javaDependencies.map(d => {
     var a = d[0].split(' ');
     var [groupId, artifactId, version] = a[0].split(':');
 
-   return `
+    // Detect libs version conflict
+    var lib = groupId + ':' + artifactId;
+    versions[lib] = [...(versions[lib] || []), { id: a[0], loc: d[1] }];
+    // mark as conflicted if a different version found
+    if ( versions[lib].length == 2 && versions[lib][0].id === a[0] ) versions[lib].pop();
+    if ( versions[lib].length == 2 ) conflicts.push(lib);
+
+    return `
       <!-- Source: ${d[1]} -->
       <dependency>
         <groupId>${groupId}</groupId>
@@ -213,11 +222,23 @@ function buildLibs() {
     `;
   }).join('');
 
+  // Print versions conflict info and abort
+  if ( conflicts.length > 0 ) {
+    console.log('[GENJAVA] Detected libs version conflict:');
+    var info = '';
+    conflicts.forEach(c => {
+      info += '\t' + c + '\n' +
+        versions[c].map(d => '\t\t' + d['id'] + ' at ' + d['loc']).join('\n') + '\n';
+    });
+    console.log(info);
+    throw new Error('Abort GENJAVA due to library versions conflict detected.');
+  }
+
   var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>${pom.vendorId}</groupId>
+    <groupId>${pom.vendorId || pom.name}</groupId>
     <artifactId>${pom.name}</artifactId>
     <version>${pom.version}</version>
 
@@ -231,7 +252,7 @@ function buildLibs() {
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib2')}`);
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib')}`);
   } else {
     console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }
@@ -239,9 +260,12 @@ function buildLibs() {
 
 
 function javac() {
-  //console.log(X.javaFiles);
-  fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
-  fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
+  // Only overwrite javaFiles when genjava:true
+  if ( flags.genjava )
+    fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
+
+  // REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
+  // fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 

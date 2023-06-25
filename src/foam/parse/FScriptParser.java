@@ -6,7 +6,6 @@
 
 package foam.parse;
 
-import com.sun.codemodel.JForEach;
 import foam.core.*;
 import foam.lib.json.Whitespace;
 import foam.lib.parse.*;
