@@ -40,7 +40,7 @@ foam.POM({
       'org.bouncycastle:bcprov-jdk15on:1.67',
       'org.eclipse.jetty:jetty-server:9.4.51.v20230217',
       'org.eclipse.jetty:jetty-util:9.4.51.v20230217',
-      'org.eclipse.jetty:jetty-maven-plugin:9.4.51.v20230217',
+      'org.eclipse.jetty.websocket:websocket-server:9.4.51.v20230217',
       'org.java-websocket:Java-WebSocket:1.5.0',
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
