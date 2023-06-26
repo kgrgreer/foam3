@@ -279,6 +279,7 @@ foam.CLASS({
         if ( ! wizardlet.isVisible ) continue;
 
         if (
+          wizardlet.isAvailable &&
           wizardlet.sections.length > 0 &&
           wizardlet.sections[p.sectionIndex].isAvailable
         ) return p;
