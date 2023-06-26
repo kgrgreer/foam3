@@ -31,7 +31,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     journaldir:    './target/journals/',
-    libdir:        './build/lib',
+    libdir:        './target/lib',
     outdir:        '/build/src/java',
     pom:           'pom'
   },
