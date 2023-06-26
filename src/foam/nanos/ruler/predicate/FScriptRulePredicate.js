@@ -40,8 +40,8 @@ foam.CLASS({
       FObject olObj = (FObject) x.get("OLD");
       FObject newObj = (FObject) x.get("NEW");
       RulerData data = new RulerData();
-      data.setN(olObj);
-      data.setO(newObj);
+      data.setO(olObj);
+      data.setN(newObj);
       data.setUser(subject.getUser());
       data.setRealUser(subject.getRealUser());
       data.setSpid(subject.getUser().getSpid());

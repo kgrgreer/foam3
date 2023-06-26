@@ -281,7 +281,7 @@ foam.CLASS({
   methods: [
     function format(e, value, obj, axiom) {
       try {
-        obj[axiom.name + '$find'].then(o => e.add(o.toSummary()), r => e.add(value));
+        obj[axiom.name + '$find'].then(o => e.add(o && o?.toSummary() || value), r => e.add(value));
       } catch (x) {
       }
     }

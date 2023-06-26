@@ -202,15 +202,29 @@ function buildLibs() {
   var versions     = {};
   var conflicts    = [];
   var dependencies = X.javaDependencies.map(d => {
-    var a = d[0].split(' ');
-    var [groupId, artifactId, version] = a[0].split(':');
+    var [id, ...excludes] = d[0].split(' ');
+    var [groupId, artifactId, version] = id.split(':');
 
     // Detect libs version conflict
     var lib = groupId + ':' + artifactId;
-    versions[lib] = [...(versions[lib] || []), { id: a[0], loc: d[1] }];
+    versions[lib] = [...(versions[lib] || []), { id, loc: d[1] }];
     // mark as conflicted if a different version found
-    if ( versions[lib].length == 2 && versions[lib][0].id === a[0] ) versions[lib].pop();
+    if ( versions[lib].length == 2 && versions[lib][0].id === id ) versions[lib].pop();
     if ( versions[lib].length == 2 ) conflicts.push(lib);
+
+    // Dependency exclusions
+    var exclusions = '';
+    excludes.forEach(e => {
+      if ( e.startsWith('-') ) {
+        const [groupId, artifactId] = e.slice(1).split(':');
+        exclusions += `
+          <exclusion>
+            <groupId>${groupId}</groupId>
+            <artifactId>${artifactId || '*'}</artifactId>
+          </exclusion>
+        `;
+      }
+    });
 
     return `
       <!-- Source: ${d[1]} -->
@@ -218,6 +232,7 @@ function buildLibs() {
         <groupId>${groupId}</groupId>
         <artifactId>${artifactId}</artifactId>
         <version>${version}</version>
+        <exclusions>${exclusions}</exclusions>
       </dependency>
     `;
   }).join('');

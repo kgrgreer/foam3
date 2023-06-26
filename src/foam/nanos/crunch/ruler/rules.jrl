@@ -56,7 +56,7 @@ p({
       { class: 'foam.nanos.crunch.predicate.DataChanged' },
       {
         class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
-        query: 'o.status==foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+        query: 'n.status==foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
       }
     ]
   }
