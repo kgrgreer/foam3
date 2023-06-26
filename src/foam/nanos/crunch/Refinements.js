@@ -31,10 +31,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       projectionSafe: false,
-      tableCellFormatter: {
-        class: 'foam.u2.view.ReferencePropertyCellFormatter',
-        propName: 'legalName'
-      }
+      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
     },
     {
       name: 'lastModifiedByAgent',
@@ -44,10 +41,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       projectionSafe: false,
-      tableCellFormatter: {
-        class: 'foam.u2.view.ReferencePropertyCellFormatter',
-        propName: 'legalName'
-      }
+      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
     }
   ]
 });
