@@ -290,6 +290,30 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2.view',
+  name: 'ReferencePropertyCellFormatter',
+  implements: ['foam.u2.view.Formatter'],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'propName',
+      value: 'id',
+      documentation: 'Property on the reference object for display in tableview cell'
+    }
+  ],
+
+  methods: [
+    function format(e, value, obj, axiom) {
+      obj[axiom.name + '$find']?.then(
+        o => e.add(o && o[this.propName] || value),
+        r => e.add(value)
+      );
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
   name: 'YesNoTableCellFormatter',
   implements: ['foam.u2.view.Formatter'],
   documentation: `Shows 'Y'/'N' for boolean props`,
