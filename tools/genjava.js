@@ -85,12 +85,11 @@ var found = 0;
 
 
 function writeFileIfUpdated(file, txt) {
-  if ( ! ( fs_.existsSync(file) && (fs_.readFileSync(file).toString() === txt))) {
-    fs_.writeFileSync(file, txt);
-    return true;
-  }
+  if ( fs_.existsSync(file) && ( fs_.readFileSync(file).toString() === txt ) )
+    return false;
 
-  return false;
+  fs_.writeFileSync(file, txt);
+  return true;
 }
 
 
