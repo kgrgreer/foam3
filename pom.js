@@ -21,6 +21,7 @@ foam.POM({
       'com.google.apis:google-api-services-drive:v3-rev72-1.22.0',
       'com.google.apis:google-api-services-sheets:v4-rev567-1.22.0',
       'com.google.oauth-client:google-oauth-client-jetty:1.22.0 -org.mortbay.jetty',
+      'com.plaid:plaid-java:9.10.0',
       'com.twilio.sdk:twilio:7.50.1',
       'com.twilio.sdk:twilio:7.50.1',
       'commons-codec:commons-codec:1.15',
