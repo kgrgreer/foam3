@@ -21,16 +21,13 @@ foam.POM({
       'com.google.apis:google-api-services-drive:v3-rev72-1.22.0',
       'com.google.apis:google-api-services-sheets:v4-rev567-1.22.0',
       'com.google.oauth-client:google-oauth-client-jetty:1.22.0 -org.mortbay.jetty',
-      'com.plaid:plaid-java:9.10.0',
-      'com.twilio.sdk:twilio:7.50.1',
       'com.twilio.sdk:twilio:7.50.1',
       'commons-codec:commons-codec:1.15',
       'commons-io:commons-io:2.13.0',
       'commons-lang:commons-lang:2.6',
       'commons-net:commons-net:3.6',
-      'io.methvin:directory-watcher:0.9.10',
+      'io.methvin:directory-watcher:0.9.10', // Used by LiveScriptBundler?
       'javax.json:javax.json-api:1.0',
-      'javax.mail:javax.mail-api:1.6.2',
       'javax.mail:javax.mail-api:1.6.2',
       'javax.mail:mail:1.4.7',
       'javax.servlet:javax.servlet-api:3.1.0',
@@ -50,12 +47,8 @@ foam.POM({
       'org.eclipse.jetty:jetty-util:9.4.51.v20230217',
       'org.eclipse.jetty.websocket:websocket-server:9.4.51.v20230217',
       'org.java-websocket:Java-WebSocket:1.5.0',
-      'org.java-websocket:Java-WebSocket:1.5.0',
-      'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
-      'org.mongodb:mongodb-driver:3.4.2',
-      'org.postgresql:postgresql:42.3.8',
       'org.postgresql:postgresql:42.3.8'
     ]
 });
