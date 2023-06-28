@@ -56,12 +56,11 @@
 //  7. -XcleanLib will cause pom.xml to be regenerated and maven to be rerun
 //
 // TODO:
-//   - move to FOAM
 //   - rename NANOPAY to PROJECT
 //   - merge build and target
 //   - should genjs extract version from POM?
-//   - extract common code to a library
-//   - support tasks: in POM
+//   - extract common build .js library code to a library
+//   - support "tasks:" in POM
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
 
@@ -76,6 +75,9 @@ var PROJECT;
 // Short-form of PROJECT.version
 var VERSION;
 
+// These are different for an unknown historic reason and should be merged.
+// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -293,7 +295,7 @@ task(function deployJournals(directory) {
 
 task(function cleanLib() {
   rmfile('pom.xml');
-  emptyDir('./target/lib');
+  emptyDir(TARGET_DIR + '/lib');
   genJava();
 });
 
@@ -304,19 +306,19 @@ task(function clean() {
     emptyDir(`${NANOPAY_HOME}/lib`);
   }
 
-  emptyDir('./build');
-  emptyDir('./target/journals'); // Don't remove whole directory to avoid removing java libs under ./target/lib
+  emptyDir(BUILD_DIR);
+  emptyDir(TARGET_DIR + '/journals'); // Don't remove whole directory to avoid removing java libs under ./target/lib
   // TODO: convert to Node to make Windows compatible
   execSync('rm -f foam-bin-*.js');
 });
 
 
 task(function copyLib() {
-  copyDir('./target/lib', path.join(NANOPAY_HOME, 'lib'));
+  copyDir(TARGET_DIR + '/lib', path.join(NANOPAY_HOME, 'lib'));
 });
 
 task(function genJS() {
-  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=verbose -pom=${POM}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
   // execSync(`node ./foam3/tools/genjs.js -pom=${POM}`, { stdio: 'inherit' });
 });
 
@@ -330,11 +332,15 @@ task(function packageFOAM() {
 task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
-  if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
+
+  if ( DISABLE_LIVESCRIPTBUNDLER )
+    pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
+
   if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
+
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose -outdir=./build/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
@@ -348,8 +354,8 @@ task(function buildJava() {
 task(function buildJar() {
   versions();
 
-  fs.writeFileSync('./target/MANIFEST.MF', manifest());
-  execSync(`jar cfm ./target/lib/${PROJECT.name}-${VERSION}.jar ./target/MANIFEST.MF -C ./target/classes . -C ./build/classes/java/main .`);
+  fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
+  execSync(`jar cfm ${TARGET_DIR}/lib/${PROJECT.name}-${VERSION}.jar ${TARGET_DIR}/MANIFEST.MF -C ${TARGET_DIR}/classes . -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -357,7 +363,7 @@ task(function buildJar() {
 task(function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
-  execSync(`tar -a -cf ./target/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../target lib`);
+  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../target lib`);
 });
 
 
@@ -381,7 +387,7 @@ task(function deleteRuntimeLogs() {
 task(function deployToHome() {
   copyDir('./deploy/bin', path.join(NANOPAY_HOME, 'bin'));
   copyDir('./deploy/etc', path.join(NANOPAY_HOME, 'etc'));
-  copyDir('./target/lib', path.join(NANOPAY_HOME, 'lib'));
+  copyDir(TARGET_DIR + '/lib', path.join(NANOPAY_HOME, 'lib'));
 });
 
 
@@ -474,7 +480,7 @@ task(function versions() {
 task(function setupDirs() {
   ensureDir(`${PROJECT_HOME}/.foam`);
   ensureDir(NANOPAY_HOME);
-  ensureDir('./target/lib');
+  ensureDir(TARGET_DIR + '/lib');
   ensureDir(`${NANOPAY_HOME}/lib`);
   ensureDir(`${NANOPAY_HOME}/bin`);
   ensureDir(`${NANOPAY_HOME}/etc`);
