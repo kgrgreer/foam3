@@ -426,10 +426,8 @@ function startNanos(nanos_dir) {
       } else if ( BENCHMARK ) {
       }
     } else if ( DAEMONIZE ) {
-      /*
-      nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
-      echo $! > "$NANOS_PIDFILE"
-      */
+      var proc = spawn(`java -cp ${CLASSPATH} foam.nanos.boot.Boot`);
+      writeToPidFile(proc.pid);
     } else {
       //             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
 
@@ -499,15 +497,34 @@ function buildEnv(m) {
   });
 }
 
-
-function exec(s) {
-  /** Export environment variables befor calling execSync. **/
+function exportEnvs() {
+  /** Export environment variables. **/
   Object.keys(ENV).forEach(k => {
     var v = globalThis[k];
     exportEnv(k, v);
   });
+}
 
-  return execSync(s, { stdio: 'inherit' })
+function exec(s) {
+  exportEnvs();
+  return execSync(s, { stdio: 'inherit' });
+}
+
+function spawn(s) {
+  exportEnvs();
+
+  console.log('Spawn: ', s);
+  var [cmd, ...args] = s.split(' ');
+  return child_process.spawn(cmd, args, { stdio: 'ignore' });
+}
+
+function writeToPidFile(pid) {
+  fs.writeFileSync(NANOS_PIDFILE, pid.toString());
+}
+
+function readFromPidFile() {
+  if ( fs.existsSync(NANOS_PIDFILE) )
+    return fs.readFileSync(NANOS_PIDFILE).toString().trim();
 }
 
 
@@ -724,24 +741,38 @@ const ARGS = {
 
 
 function statusNanos() {
-  if ( ! fs.existsSync(NANOS_PIDFILE) ) {
+  var pid = readFromPidFile();
+  if ( ! pid ) {
     info('NANOS not running.');
-  } else if ( execSync(`kill -9 $(cat "${NANOS_PIDFILE}") &>/dev/null`) ) {
-    info('NANOS running.');
   } else {
-    rmfile(NANOS_PIDFILE);
-    error('Stale PID file.');
+    try {
+      execSync(`kill -0 ${pid} &>/dev/null`);
+      info('NANOS running.');
+    } catch (e) {
+      rmfile(NANOS_PIDFILE);
+      error('Stale PID file.');
+    }
   }
 }
 
 
 function stopNanos() {
   console.log('Stopping Nanos server...');
+
+  var pid = readFromPidFile();
   try {
-    execSync('killall -SIGTERM nanos', { stdio: 'ignore' });
+    if ( pid ) {
+      execSync(`kill -9 ${pid} &>/dev/null`);
+      rmfile(NANOS_PIDFILE);
+    } else {
+      execSync('killall -SIGTERM nanos', { stdio: 'ignore' });
+    }
     console.log('Nanos server stopped successfully.');
-  } catch (error) {
-    // console.error('Error occurred while stopping Nanos server:', error);
+  } catch (e) {
+    if ( STOP_ONLY ) {
+      console.log(e);
+      error('Error occurred while stopping Nanos server.');
+    }
   }
 
   deleteRuntimeJournals();
