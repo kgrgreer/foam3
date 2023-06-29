@@ -18,7 +18,8 @@ foam.CLASS({
     'java.util.*',
     'foam.nanos.logger.LogLevelFilterLogger',
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.IN'
   ],
   constants: [
     {
@@ -84,16 +85,15 @@ foam.CLASS({
         String testSuite = config != null ? config.getTestSuite() : null;
 
         DAO testDAO = (DAO) x.get("testDAO");
+        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ){
+          String t = System.getProperty("foam.tests");
+          testDAO = testDAO.where(IN(Test.ID, t.split(",")));
+        }
+
         ArraySink tests = testSuite == null ?
           (ArraySink) testDAO.select(new ArraySink()) :
           (ArraySink) testDAO.where(foam.mlang.MLang.EQ(Test.TEST_SUITE, testSuite)).select(new ArraySink());
         List testArray = tests.getArray();
-
-        List<String> selectedTests = null;
-        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ){
-          String t = System.getProperty("foam.tests");
-          selectedTests = Arrays.asList(t.split(","));
-        }
 
         for ( int i = 0; i < testArray.size(); i ++ ) {
           Test test = (Test) testArray.get(i);
@@ -102,20 +102,12 @@ foam.CLASS({
             continue;
           }
 
-          if ( selectedTests != null ) {
-            if ( selectedTests.contains(test.getId()) ) {
-              runTests(x, test);
-            } else {
-              continue;
-            }
-          } else {
-            runTests(x, test);
-          }
+          runTests(x, test);
         }
 
         System.out.println("DONE RUNNING " + testArray.size() + " TESTS");
-        System.out.println("TEST SUITE: " + (testSuite == null ? "full" : 
-                                             testSuite.isEmpty() ? "main" : 
+        System.out.println("TEST SUITE: " + (testSuite == null ? "full" :
+                                             testSuite.isEmpty() ? "main" :
                                              testSuite));
 
         printBold(GREEN_COLOR + " " +  "PASSED: " + Integer.toString(getPassedTests()) + " " + RESET_COLOR);
@@ -153,7 +145,7 @@ foam.CLASS({
         if ( test.getLanguage() == Language.BEANSHELL ||
              test.getLanguage() == Language.JSHELL ) {
           runServerSideTest(x, test);
-        } else { 
+        } else {
           // TODO: Run client side tests in a headless browser.
         }
       `
