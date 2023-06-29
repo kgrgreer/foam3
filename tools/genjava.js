@@ -8,10 +8,10 @@
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
 //     - TODO: copy .flow files into /target/documents
-//     - create /target/javaFiles file containing list of modified or static .java files
+//     - create /target/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated
-//     - call javac to compile files in javaFiles
+//     - call javac to compile files in javacfiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 
 console.log('[GENJAVA] Starting');
@@ -31,7 +31,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     builddir:      './target',
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
-    outdir:        './build/src/java',
+    outdir:        '', // default value set below
     pom:           'pom'
   },
   {
@@ -43,7 +43,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   }
 );
 
-X.outdir           = path_.resolve(path_.normalize(X.outdir));
+X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
 X.javaFiles        = [];
 X.journalFiles     = [];
 X.journalOutput    = {};
@@ -277,14 +277,14 @@ function buildLibs() {
 function javac() {
   // Only overwrite javaFiles when genjava:true
   if ( flags.genjava )
-    fs_.writeFileSync(X.builddir + '/javaFiles', X.javaFiles.join('\n') + '\n');
+    fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
   // REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
   // fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javaFiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javacfiles`;
 
   console.log('[GENJAVA] Compiling:', cmd);
   try {

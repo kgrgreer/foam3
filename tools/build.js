@@ -9,10 +9,10 @@
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
 //     - TODO: copy .flow files into /target/documents
-//     - create /target/javaFiles file containing list of modified or static .java files
+//     - create /target/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated
-//     - call javac to compile files in javaFiles
+//     - call javac to compile files in javacfiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 //
 // Directory Structure:
@@ -32,7 +32,7 @@
 //     /documents    - All .flow documents are copied here by genJava
 //     /journals     - All journal.0 files created by genJava
 //     /package      - Designation for .tar.gz files
-//     /javaFiles    - A list of all java files to be compiled by javac, created by genJava
+//     /javacfiles   - A list of all java files to be compiled by javac, created by genJava
 //     /lib          - 3rd party java .jar library files created by gradle (or maven)
 //   /opt/<pom.name>
 //     /bin
@@ -76,8 +76,8 @@ var PROJECT;
 var VERSION;
 
 // These are different for an unknown historic reason and should be merged.
-// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+// var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -294,6 +294,7 @@ task(function deployJournals(directory) {
 
 
 task(function cleanLib() {
+  // A standalone task, not called by any others. Execute with -XcleanLib if desired.
   rmfile('pom.xml');
   emptyDir(TARGET_DIR + '/lib');
   genJava();
@@ -340,7 +341,7 @@ task(function genJava() {
     JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
 
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,verbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
@@ -575,8 +576,6 @@ function setenv() {
   if ( TEST || BENCHMARK ) {
     rmdir(NANOPAY_HOME)
   }
-
-  setupDirs();
 
   /*
   if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 && $BENCHMARK -ne 1 ]]; then
