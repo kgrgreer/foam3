@@ -226,10 +226,12 @@ function error(msg) {
 
 function manifest() {
   versions();
+  var jars = execSync('find ./target/lib -type f -name "*.jar"').toString()
+              .replaceAll('./target/lib/', '  ').trim();
   var m = `
 Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
-Class-Path: *
+Class-Path: ${jars}
 Implementation-Title: ${PROJECT.name}
 Implementation-Version: ${VERSION}
 Specification-Version: ${NANOPAY_REVISION}
@@ -349,7 +351,7 @@ task(function buildJar() {
   versions();
 
   fs.writeFileSync('./target/MANIFEST.MF', manifest());
-  execSync(`jar cfm ./target/lib/${PROJECT.name}-${VERSION}.jar ./target/MANIFEST.MF -C ./target/classes . -C ./build/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ./target/MANIFEST.MF -C ./build/classes/java/main .`);
 });
 
 
@@ -415,19 +417,28 @@ function startNanos(nanos_dir) {
     CLASSPATH = 'target/lib/*:build/classes/java/main';
 
     if ( TEST || BENCHMARK ) {
+      JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
+      if ( TEST ) {
+        MESSAGE = 'Running tests...';
+        JAVA_OPTS += ' -Dfoam.main=testRunnerScript';
+        if ( TESTS ) JAVA_OPTS += ' -Dfoam.tests=' + TESTS;
+      } else if ( BENCHMARK ) {
+        MESSAGE = 'Running benchmarks...';
+        JAVA_OPTS += ' -Dfoam.main=benchmarkRunnerScript';
+        if ( BENCHMARKS ) JAVA_OPTS += ' -Dfoam.benchmarks=' + BENCHMARKS;
+      }
     }
 
     info('JAVA_OPTS:' + JAVA_OPTS);
     info(MESSAGE);
 
     if ( TEST || BENCHMARK ) {
-      if ( TEST ) {
-      } else if ( BENCHMARK ) {
-      }
+      exec(`java -jar ${JAR_OUT}`);
     } else if ( DAEMONIZE ) {
       var proc = spawn(`java -cp ${CLASSPATH} foam.nanos.boot.Boot`);
       writeToPidFile(proc.pid);
+      console.log('Nanos started successfully');
     } else {
       //             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
 
@@ -436,8 +447,6 @@ function startNanos(nanos_dir) {
        exec(`java -cp "${CLASSPATH}" foam.nanos.boot.Boot`);
     }
   }
-
-  console.log('Nanos started successfully');
 }
 
 
@@ -561,6 +570,7 @@ var
   RUN_USER                  = '',
   STOP_ONLY                 = false,
   TEST                      = false,
+  TESTS                     = '',
   WEB_PORT                  = null,
   FOAM_REVISION,
   NANOPAY_REVISION
@@ -577,6 +587,7 @@ buildEnv({
   JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
   JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
   LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
+  JAR_OUT:           () => `${NANOPAY_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
   NANOS_PIDFILE:     '/tmp/nanos.pid',
   PROJECT_HOME:      process.cwd()
 });
@@ -808,11 +819,9 @@ task(function all() {
     deployDocuments();
     deployJournals();
 
-    if ( RUN_JAR ) {
-      buildJar();
-    }
     // ???: Why is this?
     if ( RUN_JAR || TEST || BENCHMARK ) {
+      buildJar();
       deployToHome();
     }
   }
