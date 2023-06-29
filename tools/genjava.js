@@ -267,7 +267,7 @@ function buildLibs() {
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib')}`);
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`);
   } else {
     console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }
@@ -284,7 +284,7 @@ function javac() {
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javaFiles`;
 
   console.log('[GENJAVA] Compiling:', cmd);
   try {
