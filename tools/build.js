@@ -333,6 +333,7 @@ task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
   if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
+  if ( TEST ) pom += ',./deployment/test/pom';
   if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
