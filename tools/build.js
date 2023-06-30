@@ -63,6 +63,9 @@
 //   - support "tasks:" in POM
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
+//
+// diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
+// ln -s /Volumes/RAM_DISK /Users/kgr/NANOPAY/build2
 
 const child_process = require('child_process');
 const fs            = require('fs');
@@ -76,8 +79,8 @@ var PROJECT;
 var VERSION;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-// var BUILD_DIR  = './build', TARGET_DIR = './target';
+// var BUILD_DIR  = './build3', TARGET_DIR = './build3';
+var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -393,7 +396,7 @@ task(function deployToHome() {
 
 
 // Function to start Nanos
-function startNanos(nanos_dir) {
+task(function startNanos(nanos_dir) {
   if ( RUN_JAR ) {
     var OPT_ARGS = ``;
 
@@ -419,7 +422,7 @@ function startNanos(nanos_dir) {
 
     JAVA_OPTS += ` -Dnanos.webroot=${PWD}`;
 
-    CLASSPATH = 'target/lib/*:build/classes/java/main';
+    CLASSPATH = `${TARGET_DIR}/lib/*:${BUILD_DIR}/classes/java/main`;
 
     if ( TEST || BENCHMARK ) {
 
@@ -447,7 +450,7 @@ function startNanos(nanos_dir) {
   }
 
   console.log('Nanos started successfully');
-}
+});
 
 
 task(function getNanopayGitHash() {
