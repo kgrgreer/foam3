@@ -351,7 +351,7 @@ task(function buildJar() {
   versions();
 
   fs.writeFileSync('./target/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ./target/MANIFEST.MF -C ./build/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ./target/MANIFEST.MF -C ${NANOPAY_HOME} journals documents -C ./build/classes/java/main .`);
 });
 
 
@@ -417,6 +417,7 @@ function startNanos(nanos_dir) {
     CLASSPATH = 'target/lib/*:build/classes/java/main';
 
     if ( TEST || BENCHMARK ) {
+      JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
       if ( TEST ) {
@@ -581,7 +582,7 @@ buildEnv({
   NANOPAY_ROOT:      () => ( TEST || BENCHMARK ) ? '/tmp' : '/opt',
   NANOPAY_HOME:      () => NANOPAY_ROOT + ( ( INSTANCE !== 'localhost' ) ? `/${PROJECT.name}_` + INSTANCE : `/${PROJECT.name}`),
   DOCUMENT_HOME:     () => `${NANOPAY_HOME}/documents`,
-  DOCUMENT_OUT:      () => `${NANOPAY_HOME}/target/documents`,
+  DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`,
   JAVA_OPTS:         '',
   JAVA_TOOL_OPTIONS: () => JAVA_OPTS,
   JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
