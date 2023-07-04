@@ -418,6 +418,7 @@ function startNanos(nanos_dir) {
     CLASSPATH = 'target/lib/*:build/classes/java/main';
 
     if ( TEST || BENCHMARK ) {
+      JAVA_OPTS += ' -enableassertions';
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
@@ -542,6 +543,7 @@ function readFromPidFile() {
 var
   PWD                       = process.cwd(),
   BENCHMARK                 = false,
+  BENCHMARKS                = '',
   BUILD_ONLY                = false,
   CLEAN_BUILD               = false,
   CLUSTER                   = false,
@@ -637,7 +639,7 @@ function setenv() {
 
 const ARGS = {
   b: [ 'run all benchmarks.',
-    () => MODE = 'BENCHMARK' ],
+    () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
     args => { ARGS.b(); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
@@ -705,9 +707,8 @@ const ARGS = {
     () => { TEST = true; MODE = 'test'; DELETE_RUNTIME_JOURNALS = true; } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
-      TEST  = true;
+      ARGS.t();
       TESTS = args;
-      DELETE_RUNTIME_JOURNALS = true;
     } ],
   u: [ 'Run from jar. Intented for Production deployments.',
     () => RUN_JAR = true ],
