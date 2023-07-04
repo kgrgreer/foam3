@@ -11,6 +11,9 @@ foam.CLASS({
   methods: [
     function emit(m0) {
       m0.emit(this);
+    },
+    function toString() {
+      return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')';
     }
   ]
 });
@@ -28,10 +31,10 @@ foam.CLASS({
     function execute(m0) {
       dst.set(m0, src);
       m0.r15 += 16;
-    },
+    }/*,
     function toString() {
       return `MOV(${this.src}, ${this.dst})`;
-    }
+    }*/
   ]
 });
 
@@ -48,10 +51,10 @@ foam.CLASS({
     function execute(m0) {
       dst.set(m0, dst.get() + this.amt);
       m0.r15 += 16;
-    },
+    }/*,
     function toString() {
       return `ADD(${this.src}, ${this.amt})`;
-    }
+    }*/
   ]
 });
 
@@ -110,6 +113,7 @@ LABEL('START');
  B('START');
       `
     },
+    // r0-r3 functions can use without saving
     { class: 'Int', name: 'r0' },
     { class: 'Int', name: 'r1' },
     { class: 'Int', name: 'r2' },
@@ -122,10 +126,10 @@ LABEL('START');
     { class: 'Int', name: 'r9' },
     { class: 'Int', name: 'r10' },
     { class: 'Int', name: 'r11' },
-    { class: 'Int', name: 'r12', shortName: 'IP' },
-    { class: 'Int', name: 'r13', shortName: 'SP' },
-    { class: 'Int', name: 'r14', shortName: 'LR' },
-    { class: 'Int', name: 'r15', shortName: 'PC' },
+    { class: 'Int', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
+    { class: 'Int', name: 'r13', shortName: 'SP' }, // Stack Pointer
+    { class: 'Int', name: 'r14', shortName: 'LR' }, // Link Register
+    { class: 'Int', name: 'r15', shortName: 'PC' }, // Program Counter
     // CPSR
   ],
 
