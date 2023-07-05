@@ -19,6 +19,10 @@ foam.CLASS({
 });
 
 
+[
+  [ 'MOV', 16, [ 'dst', 'src' ], function () { dst.set(this.m0, src); } ]
+];
+
 foam.CLASS({
   package: 'foam.demos.m0',
   name: 'MOV',
@@ -122,10 +126,10 @@ LABEL('START');
     { class: 'Int', name: 'r5' },
     { class: 'Int', name: 'r6' },
     { class: 'Int', name: 'r7' },
-    { class: 'Int', name: 'r8' },
-    { class: 'Int', name: 'r9' },
-    { class: 'Int', name: 'r10' },
-    { class: 'Int', name: 'r11' },
+    { class: 'Int', name: 'r8' },  // Unavailable on thumb
+    { class: 'Int', name: 'r9' },  // Unavailable on thumb
+    { class: 'Int', name: 'r10' }, // Unavailable on thumb
+    { class: 'Int', name: 'r11' }, // Unavailable on thumb
     { class: 'Int', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
     { class: 'Int', name: 'r13', shortName: 'SP' }, // Stack Pointer
     { class: 'Int', name: 'r14', shortName: 'LR' }, // Link Register
