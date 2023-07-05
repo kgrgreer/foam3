@@ -8,9 +8,13 @@ foam.CLASS({
   package: 'foam.demos.m0',
   name: 'Instruction',
 
+  imports: [
+    'm0'
+  ],
+
   methods: [
-    function emit(m0) {
-      m0.emit(this);
+    function emit() {
+      this.m0.emit(this);
     },
     function toString() {
       return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')';
@@ -32,9 +36,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function execute(m0) {
-      dst.set(m0, src);
-      m0.r15 += 16;
+    function execute() {
+      dst.set(this.m0, src);
+      this.m0.r15 += 16;
     }/*,
     function toString() {
       return `MOV(${this.src}, ${this.dst})`;
@@ -52,9 +56,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function execute(m0) {
-      dst.set(m0, dst.get() + this.amt);
-      m0.r15 += 16;
+    function execute() {
+      dst.set(this.m0, dst.get() + this.amt);
+      this.m0.r15 += 16;
     }/*,
     function toString() {
       return `ADD(${this.src}, ${this.amt})`;
@@ -72,8 +76,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function execute(m0) {
-      m0.ip = this.addr;
+    function execute() {
+      this.m0.ip = this.addr;
     },
     function toString() {
       return `B(${this.addr})`;
@@ -92,6 +96,10 @@ foam.CLASS({
     'foam.demos.m0.B',
     'foam.demos.m0.MOV'
   ],
+
+  exports: [
+    'as m0'
+  ]
 
   properties: [
     {
@@ -169,7 +177,7 @@ LABEL('START');
     },
 
     function MOV(r, n) {
-      this.MOV.create({dst: r, src: n}).emit(this);
+      this.MOV.create({dst: r, src: n}).emit();
     },
 
     function ADD(r, n) {
@@ -183,7 +191,7 @@ LABEL('START');
     },
 
     function B(l) {
-      // this.B.create({addr: a}).emit(this);
+      // this.B.create({addr: a}).emit();
       this.r15 = l;
     }
   ],
@@ -197,7 +205,7 @@ LABEL('START');
     function run() {
       this.ip = 0;
       while ( true ) {
-        this.mem[this.ip].execute(this);
+        this.mem[this.ip].execute();
       }
     }
   ]
