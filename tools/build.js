@@ -488,17 +488,22 @@ task(function versions() {
 
 
 task(function setupDirs() {
-  ensureDir(`${PROJECT_HOME}/.foam`);
-  ensureDir(NANOPAY_HOME);
-  ensureDir(TARGET_DIR + '/lib');
-  ensureDir(`${NANOPAY_HOME}/lib`);
-  ensureDir(`${NANOPAY_HOME}/bin`);
-  ensureDir(`${NANOPAY_HOME}/etc`);
-  ensureDir(LOG_HOME);
-  ensureDir(JOURNAL_OUT);
-  ensureDir(JOURNAL_HOME);
-  ensureDir(DOCUMENT_HOME);
-  ensureDir(DOCUMENT_OUT);
+  try {
+    ensureDir(`${PROJECT_HOME}/.foam`);
+    ensureDir(NANOPAY_HOME);
+    ensureDir(TARGET_DIR + '/lib');
+    ensureDir(`${NANOPAY_HOME}/lib`);
+    ensureDir(`${NANOPAY_HOME}/bin`);
+    ensureDir(`${NANOPAY_HOME}/etc`);
+    ensureDir(LOG_HOME);
+    ensureDir(JOURNAL_OUT);
+    ensureDir(JOURNAL_HOME);
+    ensureDir(DOCUMENT_HOME);
+    ensureDir(DOCUMENT_OUT);
+  } catch ( e ) {
+    console.log(e);
+    error(`Directory is not writable! Please run 'sudo chown -R $USER ${NANOPAY_ROOT}' first.`);
+  }
 });
 
 
@@ -609,19 +614,6 @@ function setenv() {
     JAVA_OPTS += ' -enableassertions';
   }
 
-  /*
-  if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 && $BENCHMARK -ne 1 ]]; then
-      error "$NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
-      quit 1
-  fi
-
-  PID_FILE="nanos.pid"
-  if [[ ! -z "$INSTANCE" ]]; then
-      PID_FILE="nanos_${INSTANCE}.pid"
-  fi
-  export NANOS_PIDFILE="/tmp/${PID_FILE}"
-
-  */
   JAVA_OPTS += ` -DNANOPAY_HOME=${NANOPAY_HOME}`;
   JAVA_OPTS += ` -DJOURNAL_HOME=${JOURNAL_HOME}`;
   JAVA_OPTS += ` -DDOCUMENT_HOME=${DOCUMENT_HOME}`;
