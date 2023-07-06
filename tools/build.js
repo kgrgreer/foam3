@@ -425,7 +425,6 @@ task(function startNanos(nanos_dir) {
     CLASSPATH = `${TARGET_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
     if ( TEST || BENCHMARK ) {
-      JAVA_OPTS += ' -enableassertions';
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
@@ -606,7 +605,8 @@ buildEnv({
 
 function setenv() {
   if ( TEST || BENCHMARK ) {
-    rmdir(NANOPAY_HOME)
+    rmdir(NANOPAY_HOME);
+    JAVA_OPTS += ' -enableassertions';
   }
 
   /*
@@ -633,10 +633,6 @@ function setenv() {
     elif [[ $IS_LINUX -eq 1 ]]; then
       JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
     fi
-  fi
-
-  if [ "$MODE" == "TEST" ] || [ "$MODE" == "BENCHMARK" ]; then
-      JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
   fi
   */
 }
