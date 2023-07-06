@@ -8,10 +8,10 @@
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
 //     - TODO: copy .flow files into /target/documents
-//     - create /target/javaFiles file containing list of modified or static .java files
+//     - create /target/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated
-//     - call javac to compile files in javaFiles
+//     - call javac to compile files in javacfiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 
 console.log('[GENJAVA] Starting');
@@ -28,30 +28,31 @@ var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
     d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
+    builddir:      './target',
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
-    journaldir:    './target/journals/',
-    libdir:        './target/lib',
-    outdir:        '/build/src/java',
+    outdir:        '', // default value set below
     pom:           'pom'
   },
   {
     buildlib:      false, // generate Maven pom.xml
-    buildjournals: false,
-    genjava:       true,
-//    java:          true, // ?? Not used?
-    javac:         false,
-    verbose:       false
+    buildjournals: false, // generate journal.0 files
+    genjava:       true,  // generate .java source from model files
+    javac:         false, // compile generated and static .java files
+    verbose:       false  // print extra status information
   }
 );
 
-X.outdir           = path_.resolve(path_.normalize(X.outdir));
+X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
 X.javaFiles        = [];
 X.journalFiles     = [];
 X.journalOutput    = {};
 X.javaDependencies = [];
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
+
+X.journaldir = X.builddir + '/journals/';
+X.libdir     = X.builddir + '/lib';
 
 // If genjava is disabled, then override foam.loadFiles so that the POM
 // structure is loaded but .js files aren't.
@@ -266,7 +267,7 @@ function buildLibs() {
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), 'target/lib')}`);
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`);
   } else {
     console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }
@@ -276,14 +277,14 @@ function buildLibs() {
 function javac() {
   // Only overwrite javaFiles when genjava:true
   if ( flags.genjava )
-    fs_.writeFileSync('./target/javaFiles', X.javaFiles.join('\n') + '\n');
+    fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
   // REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
   // fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:./target/lib/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @target/javaFiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javacfiles`;
 
   console.log('[GENJAVA] Compiling:', cmd);
   try {
