@@ -247,7 +247,7 @@ Implementation-Vendor: ${PROJECT.name}
 `.trim() + '\n';
 
   if ( PROJECT.vendorId ) {
-    m += `Implementation-Vendor-Id: ${PROJECT.vendorId || POM.name}\n`;
+    m += `Implementation-Vendor-Id: ${PROJECT.vendorId || PROJECT.name}\n`;
   }
 
   return m;
@@ -598,7 +598,7 @@ buildEnv({
   JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
   JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
   LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
-  JAR_OUT:           () => `${NANOPAY_HOME}/{TARGET_DIR}/lib/${PROJECT.name}-${VERSION}.jar`,
+  JAR_OUT:           () => `${NANOPAY_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
   NANOS_PIDFILE:     '/tmp/nanos.pid',
   PROJECT_HOME:      process.cwd()
 });
