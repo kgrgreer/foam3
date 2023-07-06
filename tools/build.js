@@ -231,8 +231,8 @@ function error(msg) {
 
 function manifest() {
   versions();
-  var jars = execSync('find ./target/lib -type f -name "*.jar"').toString()
-              .replaceAll('./target/lib/', '  ').trim();
+  var jars = execSync(`find ${TARGET_DIR}/lib -type f -name "*.jar"`).toString()
+               .replaceAll(`${TARGET_DIR}/lib/`, '  ').trim();
   var m = `
 Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
