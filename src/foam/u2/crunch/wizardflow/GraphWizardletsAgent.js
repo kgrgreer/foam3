@@ -119,6 +119,7 @@ foam.CLASS({
       if ( beforeWizardlet && afterWizardlet ) {
         beforeWizardlet.isAvailable$.follow(afterWizardlet.isAvailable$);
         afterWizardlet.data$ = beforeWizardlet.data$;
+        afterWizardlet.isVisible = false;
       }
 
       return true;
