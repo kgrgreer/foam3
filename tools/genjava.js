@@ -284,9 +284,9 @@ function javac() {
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javacfiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[GENJAVA] Compiling:', cmd);
+  console.log('[GENJAVA] Compiling', X.javaFiles.length ,'java files:', cmd);
   try {
     exec_.execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
