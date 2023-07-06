@@ -646,7 +646,7 @@ const ARGS = {
   b: [ 'run all benchmarks.',
     () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
-    args => { ARGS.b(); BENCHMARKS = args; } ],
+    args => { ARGS.b[1](); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
     () => CLEAN_BUILD = true ],
   C: [ '<true | false> Enable Medusa clustering.',
@@ -654,7 +654,7 @@ const ARGS = {
   d: [ 'Run with JDPA debugging enabled on port 8000',
     () => DEBUG = true ],
   D: [ 'PORT : JDPA debugging enabled on port PORT.',
-    args => { ARGS.d(); DEBUG_PORT = args; } ],
+    args => { ARGS.d[1](); DEBUG_PORT = args; } ],
   e: [ 'Skipping genJava task.',
     () => {
       warning('Skipping genJava task');
@@ -712,7 +712,7 @@ const ARGS = {
     () => { TEST = true; MODE = 'test'; DELETE_RUNTIME_JOURNALS = true; } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
-      ARGS.t();
+      ARGS.t[1]();
       TESTS = args;
     } ],
   u: [ 'Run from jar. Intented for Production deployments.',
@@ -755,7 +755,7 @@ const ARGS = {
   z: [ 'Daemonize into the background, will write PID into $PIDFILE environment variable.',
     () => DAEMONIZE = true ],
   '?': [ 'Usage',
-    () => ARGS.h() ]
+    () => ARGS.h[1]() ]
 };
 
 
