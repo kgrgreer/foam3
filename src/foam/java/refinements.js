@@ -2289,11 +2289,8 @@ foam.CLASS({
         // this.fs_.writeFileSync("/tmp/" + of + ".new", this.fs_.readFileSync(outfile).toString());
 
         this.fs_.writeFileSync(outfile, javaSource);
+        X.javaFiles.push(outfile);
       }
-      // TODO: find out why this is needed with build2.sh but not build.sh
-      // Ideally, this should appear in the above 'if' statement since we shouldn't need
-      // to recompile if it hasn't updated.
-      X.javaFiles.push(outfile);
     },
 
     function outputJavaClass(X, outdir, javaClass) {
