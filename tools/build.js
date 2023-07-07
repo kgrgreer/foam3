@@ -452,7 +452,14 @@ task(function startNanos(nanos_dir) {
     info('JAVA_OPTS:' + JAVA_OPTS);
     info(MESSAGE);
 
-    if ( TEST || BENCHMARK ) {
+    if ( TEST ) {
+      try {
+        exec(`java -jar ${JAR_OUT}`);
+      } catch ( e ) {
+        // Failing tests, no need to throw
+      }
+      process.exit(0);
+    } else if ( BENCHMARK ) {
       exec(`java -jar ${JAR_OUT}`);
     } else if ( DAEMONIZE ) {
       var proc = spawn(`java -cp ${CLASSPATH} foam.nanos.boot.Boot`);
