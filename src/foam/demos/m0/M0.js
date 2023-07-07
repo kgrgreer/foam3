@@ -24,7 +24,8 @@ foam.CLASS({
 
 
 [
-  [ 'MOV', 16, [ 'dst', 'src' ], function () { dst.set(this.m0, src); } ]
+  [ 'MOV', 16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
+  [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ]
 ];
 
 foam.CLASS({
