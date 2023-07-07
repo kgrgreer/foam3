@@ -846,3 +846,6 @@ foam.XSD = function(model) {
     throw new Error("compiler neither xsd or xsdPath set");
   }
 };
+
+// Activate xsd flag when loading XSD module
+foam.flags['xsd'] = true;
