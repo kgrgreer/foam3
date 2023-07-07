@@ -338,10 +338,20 @@ task(function packageFOAM() {
 task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
-  if ( DISABLE_LIVESCRIPTBUNDLER ) pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
-  if ( TEST ) pom += ',./deployment/test/pom';
-  if ( JOURNAL_CONFIG )
-    JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
+
+  if ( DISABLE_LIVESCRIPTBUNDLER )
+    pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
+
+  if ( JOURNAL_CONFIG ) {
+    var includes = {};
+    JOURNAL_CONFIG.split(',').forEach(c => {
+      if ( ! c || includes[c] )
+        return;
+
+      pom += ',./deployment/' + c + '/pom';
+      includes[c] = true
+    });
+  }
 
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
   execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
@@ -671,7 +681,7 @@ const ARGS = {
   J: [ 'JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging',
     args => {
 //      POM = POM ? POM + ',' args : args;
-      JOURNAL_CONFIG = args;
+      JOURNAL_CONFIG += `,${args}` ;
       // TODO: handle GRADLE_CONFIG elsewhere
     } ],
   k: [ 'Package up a deployment tarball.',
@@ -697,7 +707,12 @@ const ARGS = {
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
     () => { DEBUG_SUSPEND = true; } ],
   t: [ 'Run All tests.',
-    () => { TEST = true; MODE = 'test'; DELETE_RUNTIME_JOURNALS = true; } ],
+    () => {
+      TEST = true;
+      MODE = 'test';
+      DELETE_RUNTIME_JOURNALS = true;
+      JOURNAL_CONFIG += ',test';
+    } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
       ARGS.t[1]();
