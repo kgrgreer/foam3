@@ -736,7 +736,12 @@ foam.CLASS({
       // preparse all the simple types
       var children = docElement.childNodes;
 
-      this.xmlns = docElement._nsMap[''] || '';
+      // DOMParser on browser doesn't have `_nsMap' but only in xmldom library
+      if ( docElement._nsMap ) {
+        this.xmlns = docElement._nsMap[''] || '';
+      } else {
+        this.xmlns = docElement.getAttribute('xmlns') || '';
+      }
 
       this.preparse(children);
 
