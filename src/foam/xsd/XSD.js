@@ -52,6 +52,10 @@ foam.CLASS({
     {
       name: 'enums',
       factory: function() { return new Map(); }
+    },
+    {
+      class: 'StringArray',
+      name: 'files'
     }
   ],
 
@@ -729,6 +733,9 @@ foam.CLASS({
     },
 
     function compile() {
+      if ( ! this.xsd )
+        return;
+
       var parser = new (globalThis.DOMParser || require('xmldom').DOMParser)();
 
       var doc = parser.parseFromString(this.xsd, 'text/xml');
@@ -757,41 +764,13 @@ foam.CLASS({
     },
 
     function compileAll() {
-      var sep = require('path').sep;
-      var fs = require('fs');
-      var DOMParser = (globalThis.DOMParser || require('xmldom').DOMParser);
-      var elements = new Map();
+      var parser = new (globalThis.DOMParser || require('xmldom').DOMParser);
 
       this.xmlns = '';
 
-      var path = __dirname + sep + this.xsdPath; // .replace(/\//g, sep);
-      fs.readdirSync(path).forEach(file => {
-        var f = path+sep+file;
-        // console.info('file', f);
-        var text = fs.readFileSync(f, 'utf8').trim();
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(text, 'text/xml');
-        var docElement = doc.documentElement;
-        var children = docElement.childNodes;
-
-        // preparse all the simple types
-        this.preparse(children);
-
-        Array.from(children).forEach(child => {
-          if ( ! child.nodeType ||
-               child.nodeType !== 1 ) {
-            return;
-          }
-          var name = child.getAttribute && child.getAttribute("name");
-          if ( ! name ) {
-            return;
-          }
-          elements.set(name, child);
-        });
-      });
-
-      elements.forEach((child, name) => {
-        this.process(child, name);
+      this.files.forEach(async file => {
+        this.xsd = await this.fetch(this.xsdPath + '/' + file);
+        this.compile();
       });
     },
 
@@ -839,13 +818,27 @@ foam.CLASS({
         propName = name[0].toLowerCase() + propName.substring(1);
       }
       return propName;
+    },
+
+    function fetch(file) {
+      if ( typeof require === 'function' ) {
+        var fs = require('fs');
+        return fs.existsSync(file) && fs.readFileSync(file).toString();
+      }
+
+      // `require()' is not available on browser, use global fetch() instead
+      var fetchSync = async file => {
+        var response = await globalThis.fetch(file);
+        return response.ok && (await response.text());
+      };
+      return fetchSync(file);
     }
   ]
 });
 
 foam.XSD = function(model) {
   var compiler = foam.xsd.XSDCompiler.create(model);
-  if ( compiler.xsdPath ) {
+  if ( compiler.xsdPath && compiler.files.length > 0 ) {
     compiler.compileAll();
   } else if ( compiler.xsd ) {
     compiler.compile();
