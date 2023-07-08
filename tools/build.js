@@ -297,6 +297,19 @@ task(function deployJournals(directory) {
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
 
+// Function to deploy resources
+task(function deployResources() {
+  RESOURCES.split(',').forEach(res => {
+    if ( ! res )
+      return;
+
+    var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
+    if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
+      copyDir(resDir, JOURNAL_HOME);
+    }
+  });
+});
+
 
 task(function cleanLib() {
   // A standalone task, not called by any others. Execute with -XcleanLib if desired.
@@ -701,7 +714,7 @@ const ARGS = {
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
   R: [ 'deployment directories with resources to add to Jar file',
-    args => { RESOURCES = args; } ],
+    args => { RESOURCES += `${args}`; } ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -829,6 +842,7 @@ task(function all() {
     buildJava();
     deployDocuments();
     deployJournals();
+    deployResources();
 
     // ???: Why is this?
     if ( RUN_JAR || TEST || BENCHMARK ) {
