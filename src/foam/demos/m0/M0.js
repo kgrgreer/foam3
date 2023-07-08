@@ -155,6 +155,17 @@ LABEL('START');
     function compile() {
       with ( {
         R0:    this.R0,
+        R1:    this.R1,
+        R2:    this.R2,
+        R3:    this.R3,
+        R4:    this.R4,
+        R5:    this.R6,
+        R6:    this.R7,
+        R7:    this.R8,
+        R12:   this.R12,
+        R13:   this.R13,
+        R14:   this.R14,
+        R15:   this.R15,
         ADD:   this.ADD.bind(this),
         B:     this.B.bind(this),
         LABEL: this.LABEL.bind(this),
