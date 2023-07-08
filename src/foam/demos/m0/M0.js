@@ -22,11 +22,22 @@ foam.CLASS({
   ]
 });
 
-
-[
+var INSTRS = [
   [ 'MOV', 16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
   [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ]
 ];
+
+INSTRS.forEach(i => foam.CLASS(
+  package: 'foam.demos.m0',
+  name: i[0],
+
+  properties: i[2],
+
+  methods: [
+    a[3]
+  ]
+));
+
 
 foam.CLASS({
   package: 'foam.demos.m0',
@@ -40,14 +51,11 @@ foam.CLASS({
     function execute() {
       dst.set(this.m0, src);
       this.m0.r15 += 16;
-    }/*,
-    function toString() {
-      return `MOV(${this.src}, ${this.dst})`;
-    }*/
+    }
   ]
 });
 
-
+/*
 foam.CLASS({
   package: 'foam.demos.m0',
   name: 'ADD',
@@ -60,10 +68,7 @@ foam.CLASS({
     function execute() {
       dst.set(this.m0, dst.get() + this.amt);
       this.m0.r15 += 16;
-    }/*,
-    function toString() {
-      return `ADD(${this.src}, ${this.amt})`;
-    }*/
+    }
   ]
 });
 
@@ -85,6 +90,7 @@ foam.CLASS({
     }
   ]
 });
+*/
 
 
 foam.CLASS({
