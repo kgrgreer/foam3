@@ -17,20 +17,20 @@ foam.CLASS({
       this.m0.emit(this);
     },
     function toString() {
-      return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')';
+      return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')');
     }
   ]
 });
 
 
 var INSTRS = [
-  [ 'MOV', 16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
-  [ 'ADD', 16, [ 'dst', 'amt' ], function() { dst.set(this.m0, dst.get() + this.amt); } ],
-  [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ],
+  [ 'MOV',   16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ], function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'B',     16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ],
 ];
 
 
-INSTRS.forEach(i => foam.CLASS(
+INSTRS.forEach(i => foam.CLASS({
   package: 'foam.demos.m0',
   name: i[0],
   extends: 'foam.demos.m0.Instr',
@@ -43,7 +43,7 @@ INSTRS.forEach(i => foam.CLASS(
       this.m0.r15 += i[1];
     }
   ]
-));
+}));
 
 
 foam.CLASS({
@@ -55,7 +55,7 @@ foam.CLASS({
 
   exports: [
     'as m0'
-  ]
+  ],
 
   properties: [
     {
