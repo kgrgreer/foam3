@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.demos.m0',
-  name: 'Instruction',
+  name: 'Instr',
 
   imports: [
     'm0'
@@ -22,75 +22,28 @@ foam.CLASS({
   ]
 });
 
+
 var INSTRS = [
   [ 'MOV', 16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
-  [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ]
+  [ 'ADD', 16, [ 'dst', 'amt' ], function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ],
 ];
+
 
 INSTRS.forEach(i => foam.CLASS(
   package: 'foam.demos.m0',
   name: i[0],
+  extends: 'foam.demos.m0.Instr',
 
   properties: i[2],
 
   methods: [
-    a[3]
+    function execute() {
+      a[3]();
+      this.m0.r15 += i[1];
+    }
   ]
 ));
-
-
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'MOV',
-
-  properties: [
-    'dst', 'src'
-  ],
-
-  methods: [
-    function execute() {
-      dst.set(this.m0, src);
-      this.m0.r15 += 16;
-    }
-  ]
-});
-
-/*
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'ADD',
-
-  properties: [
-    'dst', 'amt'
-  ],
-
-  methods: [
-    function execute() {
-      dst.set(this.m0, dst.get() + this.amt);
-      this.m0.r15 += 16;
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'B',
-
-  properties: [
-    'addr' // TODO: add 'label'
-  ],
-
-  methods: [
-    function execute() {
-      this.m0.ip = this.addr;
-    },
-    function toString() {
-      return `B(${this.addr})`;
-    }
-  ]
-});
-*/
 
 
 foam.CLASS({
@@ -98,11 +51,7 @@ foam.CLASS({
   name: 'M0',
   extends: 'foam.u2.Controller',
 
-  imports: [
-    'foam.demos.m0.ADD',
-    'foam.demos.m0.B',
-    'foam.demos.m0.MOV'
-  ],
+  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0]),
 
   exports: [
     'as m0'
