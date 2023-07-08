@@ -24,9 +24,9 @@ foam.CLASS({
 
 
 var INSTRS = [
-  [ 'MOV',   16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
-  [ 'ADD',   16, [ 'dst', 'amt' ], function() { dst.set(this.m0, dst.get() + this.amt); } ],
-  [ 'B',     16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ],
+  [ 'MOV_I',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
+  [ 'ADD_I',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'B_I',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
 
 
@@ -60,11 +60,11 @@ foam.CLASS({
   properties: [
     {
       name: 'mem',
-      factory: () => {}
+      factory: () => []
     },
     {
       name: 'labels',
-      factory: () => {}
+      factory: function() { return {}; }
     },
     {
       class: 'Int',
@@ -122,8 +122,9 @@ LABEL('START');
           end().
         end().
       end().
-      add(this.RUN).
-      start('t3').add('Memory:').end()
+      add(this.COMPILE, this.RUN).
+      br().
+      start('h3').add('Memory:').end()
       ;
     },
 
@@ -133,7 +134,7 @@ LABEL('START');
     },
 
     function MOV(r, n) {
-      this.MOV.create({dst: r, src: n}).emit();
+      this.MOV_I.create({dst: r, src: n}).emit();
     },
 
     function ADD(r, n) {
@@ -147,14 +148,20 @@ LABEL('START');
     },
 
     function B(l) {
-      // this.B.create({addr: a}).emit();
-      this.r15 = l;
+      this.B_I.create({label: l}).emit();
     }
   ],
 
   actions: [
     function compile() {
-      with ( this ) {
+      with ( {
+        R0:    this.R0,
+        ADD:   this.ADD.bind(this),
+        B:     this.B.bind(this),
+        LABEL: this.LABEL.bind(this),
+        MOV:   this.MOV.bind(this),
+      } ) {
+        console.log('Compiling: ', this.code);
         eval(this.code);
       }
     },
