@@ -14,19 +14,20 @@ foam.CLASS({
 
   methods: [
     function emit() {
+      console.log('Emitting: ' + this);
       this.m0.emit(this);
     },
     function toString() {
-      return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')');
+      return this.cls_.name + '(' + this.cls_.getAxiomsByClass(foam.core.Property).map(p => p.get(this)).join(',') + ')';
     }
   ]
 });
 
 
 var INSTRS = [
-  [ 'MOV_I',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
-  [ 'ADD_I',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
-  [ 'B_I',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
+  [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
 
 
@@ -51,7 +52,7 @@ foam.CLASS({
   name: 'M0',
   extends: 'foam.u2.Controller',
 
-  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0]),
+  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
 
   exports: [
     'as m0'
@@ -138,9 +139,7 @@ LABEL('START');
     },
 
     function ADD(r, n) {
-      console.log('ADD', r.name, n);
-      r.set(this, r.get(this) + n);
-      this.r15 += 16;
+      this.ADD_I.create({dst: r, amt: n});
     },
 
     function LABEL(n) {
