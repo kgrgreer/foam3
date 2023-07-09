@@ -231,10 +231,12 @@ function error(msg) {
 
 function manifest() {
   versions();
+  var jars = execSync(`find ${TARGET_DIR}/lib -type f -name "*.jar"`).toString()
+               .replaceAll(`${TARGET_DIR}/lib/`, '  ').trim();
   var m = `
 Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
-Class-Path: *
+Class-Path: ${jars}
 Implementation-Title: ${PROJECT.name}
 Implementation-Version: ${VERSION}
 Specification-Version: ${NANOPAY_REVISION}
@@ -245,7 +247,7 @@ Implementation-Vendor: ${PROJECT.name}
 `.trim() + '\n';
 
   if ( PROJECT.vendorId ) {
-    m += `Implementation-Vendor-Id: ${PROJECT.vendorId || POM.name}\n`;
+    m += `Implementation-Vendor-Id: ${PROJECT.vendorId || PROJECT.name}\n`;
   }
 
   return m;
@@ -295,6 +297,19 @@ task(function deployJournals(directory) {
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
 
+// Function to deploy resources
+task(function deployResources() {
+  RESOURCES.split(',').forEach(res => {
+    if ( ! res )
+      return;
+
+    var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
+    if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
+      copyDir(resDir, JOURNAL_HOME);
+    }
+  });
+});
+
 
 task(function cleanLib() {
   // A standalone task, not called by any others. Execute with -XcleanLib if desired.
@@ -340,8 +355,16 @@ task(function genJava() {
   if ( DISABLE_LIVESCRIPTBUNDLER )
     pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
 
-  if ( JOURNAL_CONFIG )
-    JOURNAL_CONFIG.split(',').forEach(c => { pom += ',./deployment/' + c + '/pom' });
+  if ( JOURNAL_CONFIG ) {
+    var includes = {};
+    JOURNAL_CONFIG.split(',').forEach(c => {
+      if ( ! c || includes[c] )
+        return;
+
+      pom += ',./deployment/' + c + '/pom';
+      includes[c] = true
+    });
+  }
 
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
   execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
@@ -359,7 +382,7 @@ task(function buildJar() {
   versions();
 
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${TARGET_DIR}/lib/${PROJECT.name}-${VERSION}.jar ${TARGET_DIR}/MANIFEST.MF -C ${TARGET_DIR}/classes . -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF -C ${NANOPAY_HOME} journals documents -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -422,24 +445,39 @@ task(function startNanos(nanos_dir) {
 
     JAVA_OPTS += ` -Dnanos.webroot=${PWD}`;
 
-    CLASSPATH = `${TARGET_DIR}/lib/*:${BUILD_DIR}/classes/java/main`;
+    CLASSPATH = `${TARGET_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
     if ( TEST || BENCHMARK ) {
+      JAVA_OPTS += ' -Dresource.journals.dir=journals';
+      JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
+      if ( TEST ) {
+        MESSAGE = 'Running tests...';
+        JAVA_OPTS += ' -Dfoam.main=testRunnerScript';
+        if ( TESTS ) JAVA_OPTS += ' -Dfoam.tests=' + TESTS;
+      } else if ( BENCHMARK ) {
+        MESSAGE = 'Running benchmarks...';
+        JAVA_OPTS += ' -Dfoam.main=benchmarkRunnerScript';
+        if ( BENCHMARKS ) JAVA_OPTS += ' -Dfoam.benchmarks=' + BENCHMARKS;
+      }
     }
 
     info('JAVA_OPTS:' + JAVA_OPTS);
     info(MESSAGE);
 
-    if ( TEST || BENCHMARK ) {
-      if ( TEST ) {
-      } else if ( BENCHMARK ) {
+    if ( TEST ) {
+      try {
+        exec(`java -jar ${JAR_OUT}`);
+      } catch ( e ) {
+        // Failing tests, no need to throw
       }
+      process.exit(0);
+    } else if ( BENCHMARK ) {
+      exec(`java -jar ${JAR_OUT}`);
     } else if ( DAEMONIZE ) {
-      /*
-      nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
-      echo $! > "$NANOS_PIDFILE"
-      */
+      var proc = spawn(`java -cp ${CLASSPATH} foam.nanos.boot.Boot`);
+      writeToPidFile(proc.pid);
+      console.log('Nanos started successfully');
     } else {
       //             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
 
@@ -448,8 +486,6 @@ task(function startNanos(nanos_dir) {
        exec(`java -cp "${CLASSPATH}" foam.nanos.boot.Boot`);
     }
   }
-
-  console.log('Nanos started successfully');
 });
 
 
@@ -482,17 +518,22 @@ task(function versions() {
 
 
 task(function setupDirs() {
-  ensureDir(`${PROJECT_HOME}/.foam`);
-  ensureDir(NANOPAY_HOME);
-  ensureDir(TARGET_DIR + '/lib');
-  ensureDir(`${NANOPAY_HOME}/lib`);
-  ensureDir(`${NANOPAY_HOME}/bin`);
-  ensureDir(`${NANOPAY_HOME}/etc`);
-  ensureDir(LOG_HOME);
-  ensureDir(JOURNAL_OUT);
-  ensureDir(JOURNAL_HOME);
-  ensureDir(DOCUMENT_HOME);
-  ensureDir(DOCUMENT_OUT);
+  try {
+    ensureDir(`${PROJECT_HOME}/.foam`);
+    ensureDir(NANOPAY_HOME);
+    ensureDir(TARGET_DIR + '/lib');
+    ensureDir(`${NANOPAY_HOME}/lib`);
+    ensureDir(`${NANOPAY_HOME}/bin`);
+    ensureDir(`${NANOPAY_HOME}/etc`);
+    ensureDir(LOG_HOME);
+    ensureDir(JOURNAL_OUT);
+    ensureDir(JOURNAL_HOME);
+    ensureDir(DOCUMENT_HOME);
+    ensureDir(DOCUMENT_OUT);
+  } catch ( e ) {
+    console.log(e);
+    error(`Directory is not writable! Please run 'sudo chown -R $USER ${NANOPAY_ROOT}' first.`);
+  }
 });
 
 
@@ -509,21 +550,41 @@ function buildEnv(m) {
   });
 }
 
-
-function exec(s) {
-  /** Export environment variables befor calling execSync. **/
+function exportEnvs() {
+  /** Export environment variables. **/
   Object.keys(ENV).forEach(k => {
     var v = globalThis[k];
     exportEnv(k, v);
   });
+}
 
-  return execSync(s, { stdio: 'inherit' })
+function exec(s) {
+  exportEnvs();
+  return execSync(s, { stdio: 'inherit' });
+}
+
+function spawn(s) {
+  exportEnvs();
+
+  console.log('Spawn: ', s);
+  var [cmd, ...args] = s.split(' ');
+  return child_process.spawn(cmd, args, { stdio: 'ignore' });
+}
+
+function writeToPidFile(pid) {
+  fs.writeFileSync(NANOS_PIDFILE, pid.toString());
+}
+
+function readFromPidFile() {
+  if ( fs.existsSync(NANOS_PIDFILE) )
+    return fs.readFileSync(NANOS_PIDFILE).toString().trim();
 }
 
 
 var
   PWD                       = process.cwd(),
   BENCHMARK                 = false,
+  BENCHMARKS                = '',
   BUILD_ONLY                = false,
   CLEAN_BUILD               = false,
   CLUSTER                   = false,
@@ -554,6 +615,7 @@ var
   RUN_USER                  = '',
   STOP_ONLY                 = false,
   TEST                      = false,
+  TESTS                     = '',
   WEB_PORT                  = null,
   FOAM_REVISION,
   NANOPAY_REVISION
@@ -564,12 +626,13 @@ buildEnv({
   NANOPAY_ROOT:      () => ( TEST || BENCHMARK ) ? '/tmp' : '/opt',
   NANOPAY_HOME:      () => NANOPAY_ROOT + ( ( INSTANCE !== 'localhost' ) ? `/${PROJECT.name}_` + INSTANCE : `/${PROJECT.name}`),
   DOCUMENT_HOME:     () => `${NANOPAY_HOME}/documents`,
-  DOCUMENT_OUT:      () => `${NANOPAY_HOME}/target/documents`,
+  DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`,
   JAVA_OPTS:         '',
   JAVA_TOOL_OPTIONS: () => JAVA_OPTS,
   JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
   JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
   LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
+  JAR_OUT:           () => `${NANOPAY_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
   NANOS_PIDFILE:     '/tmp/nanos.pid',
   PROJECT_HOME:      process.cwd()
 });
@@ -577,22 +640,10 @@ buildEnv({
 
 function setenv() {
   if ( TEST || BENCHMARK ) {
-    rmdir(NANOPAY_HOME)
+    rmdir(NANOPAY_HOME);
+    JAVA_OPTS += ' -enableassertions';
   }
 
-  /*
-  if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 && $BENCHMARK -ne 1 ]]; then
-      error "$NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
-      quit 1
-  fi
-
-  PID_FILE="nanos.pid"
-  if [[ ! -z "$INSTANCE" ]]; then
-      PID_FILE="nanos_${INSTANCE}.pid"
-  fi
-  export NANOS_PIDFILE="/tmp/${PID_FILE}"
-
-  */
   JAVA_OPTS += ` -DNANOPAY_HOME=${NANOPAY_HOME}`;
   JAVA_OPTS += ` -DJOURNAL_HOME=${JOURNAL_HOME}`;
   JAVA_OPTS += ` -DDOCUMENT_HOME=${DOCUMENT_HOME}`;
@@ -605,19 +656,15 @@ function setenv() {
       JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
     fi
   fi
-
-  if [ "$MODE" == "TEST" ] || [ "$MODE" == "BENCHMARK" ]; then
-      JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
-  fi
   */
 }
 
 
 const ARGS = {
   b: [ 'run all benchmarks.',
-    () => MODE = 'BENCHMARK' ],
+    () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
-    args => { ARGS.b(); BENCHMARKS = args; } ],
+    args => { ARGS.b[1](); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
     () => CLEAN_BUILD = true ],
   C: [ '<true | false> Enable Medusa clustering.',
@@ -625,7 +672,7 @@ const ARGS = {
   d: [ 'Run with JDPA debugging enabled on port 8000',
     () => DEBUG = true ],
   D: [ 'PORT : JDPA debugging enabled on port PORT.',
-    args => { ARGS.d(); DEBUG_PORT = args; } ],
+    args => { ARGS.d[1](); DEBUG_PORT = args; } ],
   e: [ 'Skipping genJava task.',
     () => {
       warning('Skipping genJava task');
@@ -654,7 +701,7 @@ const ARGS = {
   J: [ 'JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging',
     args => {
 //      POM = POM ? POM + ',' args : args;
-      JOURNAL_CONFIG = args;
+      JOURNAL_CONFIG += `,${args}` ;
       // TODO: handle GRADLE_CONFIG elsewhere
     } ],
   k: [ 'Package up a deployment tarball.',
@@ -674,18 +721,22 @@ const ARGS = {
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
   R: [ 'deployment directories with resources to add to Jar file',
-    args => { RESOURCES = args; } ],
+    args => { RESOURCES += `${args}`; } ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
     () => { DEBUG_SUSPEND = true; } ],
   t: [ 'Run All tests.',
-    () => { TEST = true; MODE = 'test'; DELETE_RUNTIME_JOURNALS = true; } ],
+    () => {
+      TEST = true;
+      MODE = 'test';
+      DELETE_RUNTIME_JOURNALS = true;
+      JOURNAL_CONFIG += ',test';
+    } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
-      TEST  = true;
+      ARGS.t[1]();
       TESTS = args;
-      DELETE_RUNTIME_JOURNALS = true;
     } ],
   u: [ 'Run from jar. Intented for Production deployments.',
     () => RUN_JAR = true ],
@@ -727,29 +778,43 @@ const ARGS = {
   z: [ 'Daemonize into the background, will write PID into $PIDFILE environment variable.',
     () => DAEMONIZE = true ],
   '?': [ 'Usage',
-    () => ARGS.h() ]
+    () => ARGS.h[1]() ]
 };
 
 
 function statusNanos() {
-  if ( ! fs.existsSync(NANOS_PIDFILE) ) {
+  var pid = readFromPidFile();
+  if ( ! pid ) {
     info('NANOS not running.');
-  } else if ( execSync(`kill -9 $(cat "${NANOS_PIDFILE}") &>/dev/null`) ) {
-    info('NANOS running.');
   } else {
-    rmfile(NANOS_PIDFILE);
-    error('Stale PID file.');
+    try {
+      execSync(`kill -0 ${pid} &>/dev/null`);
+      info('NANOS running.');
+    } catch (e) {
+      rmfile(NANOS_PIDFILE);
+      error('Stale PID file.');
+    }
   }
 }
 
 
 function stopNanos() {
   console.log('Stopping Nanos server...');
+
+  var pid = readFromPidFile();
   try {
-    execSync('killall -SIGTERM nanos', { stdio: 'ignore' });
+    if ( pid ) {
+      execSync(`kill -9 ${pid} &>/dev/null`);
+      rmfile(NANOS_PIDFILE);
+    } else {
+      execSync('killall -SIGTERM nanos', { stdio: 'ignore' });
+    }
     console.log('Nanos server stopped successfully.');
-  } catch (error) {
-    // console.error('Error occurred while stopping Nanos server:', error);
+  } catch (e) {
+    if ( STOP_ONLY ) {
+      console.log(e);
+      error('Error occurred while stopping Nanos server.');
+    }
   }
 
   deleteRuntimeJournals();
@@ -784,12 +849,11 @@ task(function all() {
     buildJava();
     deployDocuments();
     deployJournals();
+    deployResources();
 
-    if ( RUN_JAR ) {
-      buildJar();
-    }
     // ???: Why is this?
     if ( RUN_JAR || TEST || BENCHMARK ) {
+      buildJar();
       deployToHome();
     }
   }

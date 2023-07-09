@@ -191,6 +191,11 @@ function outputJournals() {
   Object.keys(X.journalOutput).forEach(f => {
     fs_.writeFileSync(X.journaldir + f + '.0', X.journalOutput[f]);
   });
+
+  // Write to journal_files is not needed, just for backward compatibility with find.sh
+  fs_.writeFileSync(X.builddir + '/journal_files', X.journalFiles.join('\n') + '\n');
+
+  console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
 }
 
 
@@ -279,14 +284,11 @@ function javac() {
   if ( flags.genjava )
     fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
-  // REVIEW: outputJournals() should already generate all journal.0 files, writing to journalFiles is not needed
-  // fs_.writeFileSync('journalFiles',       X.journalFiles.join('\n') + '\n');
-
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*:./foam3/android/nanos_example_client/gradle/wrapper/gradle-wrapper.jar" @${X.builddir}/javacfiles`;
+  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[GENJAVA] Compiling:', cmd);
+  console.log('[GENJAVA] Compiling', X.javaFiles.length ,'java files:', cmd);
   try {
     exec_.execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
@@ -303,9 +305,6 @@ function javac() {
     }
   });
   */
-
-  console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
-  // console.log(X.journalFiles);
 }
 
 
