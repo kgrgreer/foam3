@@ -96,9 +96,11 @@ foam.CLASS({
     function createWizardletsForCapability(current) {
       const capability = current.data;
 
-      if ( this.capabilityWizardletsMap[capability.id] ) {
-        return false;
-      }
+      // Removing this as it prevents a wizardlet belonging to two subtrees from being
+      // added both times
+      // if ( this.capabilityWizardletsMap[capability.id] ) {
+      //     return false;
+      // }
 
       const afterWizardlet = this.adaptWizardlet(
         { capability }, capability.wizardlet);
