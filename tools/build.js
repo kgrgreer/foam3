@@ -541,7 +541,7 @@ task(function getNanopayGitHash() {
 
 
 task(function getFOAMGitHash() {
-  FOAM_REVISION = execSync('cd foam3; git rev-parse --short HEAD').toString().trim();
+  FOAM_REVISION = execSync('git -C foam3 rev-parse --short HEAD').toString().trim();
 });
 
 
