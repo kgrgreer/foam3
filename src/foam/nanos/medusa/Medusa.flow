@@ -54,28 +54,3 @@ Before an election is called, the Primary blocks incomming requests, allows in-f
 <h2>Hard (JVM dies)</h2>
 
 When a mediator becomes Primary it blocks incomming requests and verifies the global index.
-
-<h1>Compaction</h1>
-<h2>Overview</h2>
-
-Compaction dumps the current system out to new ledger files, in a effort to reduce replay time.  Each DAO operation on the same object generates a unique MedusaEntry containing just the change on the object.  In time there are multiple MedusaEntry's for the same object.  Compaction writes out each object in entirety once, thus reducing the multiple MedusaEntry's to just one.
-
-<h2>Considerations</h2>
-<ul>
-  <li>Compaction can only be run from the Primary mediator.<li>
-  <li>Compaction can be run concurrently with live traffic, but it is recommended to run compaction at a low traffic period.  Also, compaction can fail requiring system halt and manual intervention, so a Maintenance Window should be scheduled</li>
-  <li>Compaction filters out many archive or history operations. See compactionDAO</li>
-</ul>
-
-Compaction is accomplished by running the script <b>Medusa Compaction</b>.
-<h2>Operations</h2>
-<ol>
-  <li>Perform a health check to ensure all nodes and mediators are online.</li>
-  <li>Start blocking new MedusaEntry DAO operations.</li>
-  <li>Wait for in-flight MedusaEntry DAO operations to complete.</li>
-  <li>Request each node to roll it's ledger.</li>
-  <li>Request each mediator to reconfigure it's Dagger Service with the <b>next</b> pair of hashes</li>
-  <li>Unblock MedusaEntry DAO operations.</li>
-  <li>For each MedusaEntry, once for each object, create a new MedusaEntry with the entire current object (no delta), and write this to the nodes.</li>
-  <li>Remove compacted MedusaEntry's from each Mediator</li>
-</ol>
