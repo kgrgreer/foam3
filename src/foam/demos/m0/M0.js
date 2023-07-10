@@ -30,6 +30,11 @@ var INSTRS = [
   [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
 
+// ARITHMETIC: ADD ADC SUB SBC NEG
+// SHIFT + ROTATION: LSL ASR ROR
+// CONDITIONAL CODES: EQ NE CS/HS CC/LO MI PL VS VC HI LS GE LT GT LE AL
+// Logical Operators: AND EOR ORR BIC MVN TST
+
 
 INSTRS.forEach(i => foam.CLASS({
   package: 'foam.demos.m0',
