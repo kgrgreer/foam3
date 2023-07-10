@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.demos.m0',
-  name: 'Instruction',
+  name: 'Instr',
 
   imports: [
     'm0'
@@ -14,77 +14,37 @@ foam.CLASS({
 
   methods: [
     function emit() {
+      console.log('Emitting: ' + this);
       this.m0.emit(this);
     },
     function toString() {
-      return this.cls_.name + '(' + this.cls_.getAxiomsByclass(foam.core.Property.map(p => p.get(this)).join(',') + ')';
+      return this.cls_.name + '(' + this.cls_.getAxiomsByClass(foam.core.Property).map(p => p.get(this)).join(',') + ')';
     }
   ]
 });
 
 
-[
-  [ 'MOV', 16, [ 'dst', 'src' ], function() { dst.set(this.m0, src); } ],
-  [ 'B',   16, [ 'addr' ],       function() { this.m0.ip = this.addr; } ]
+var INSTRS = [
+  [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
 
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'MOV',
 
-  properties: [
-    'dst', 'src'
-  ],
+INSTRS.forEach(i => foam.CLASS({
+  package: 'foam.demos.m0',
+  name: i[0],
+  extends: 'foam.demos.m0.Instr',
+
+  properties: i[2],
 
   methods: [
     function execute() {
-      dst.set(this.m0, src);
-      this.m0.r15 += 16;
-    }/*,
-    function toString() {
-      return `MOV(${this.src}, ${this.dst})`;
-    }*/
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'ADD',
-
-  properties: [
-    'dst', 'amt'
-  ],
-
-  methods: [
-    function execute() {
-      dst.set(this.m0, dst.get() + this.amt);
-      this.m0.r15 += 16;
-    }/*,
-    function toString() {
-      return `ADD(${this.src}, ${this.amt})`;
-    }*/
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'B',
-
-  properties: [
-    'addr' // TODO: add 'label'
-  ],
-
-  methods: [
-    function execute() {
-      this.m0.ip = this.addr;
-    },
-    function toString() {
-      return `B(${this.addr})`;
+      a[3]();
+      this.m0.r15 += i[1];
     }
   ]
-});
+}));
 
 
 foam.CLASS({
@@ -92,24 +52,20 @@ foam.CLASS({
   name: 'M0',
   extends: 'foam.u2.Controller',
 
-  imports: [
-    'foam.demos.m0.ADD',
-    'foam.demos.m0.B',
-    'foam.demos.m0.MOV'
-  ],
+  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
 
   exports: [
     'as m0'
-  ]
+  ],
 
   properties: [
     {
       name: 'mem',
-      factory: () => {}
+      factory: () => []
     },
     {
       name: 'labels',
-      factory: () => {}
+      factory: function() { return {}; }
     },
     {
       class: 'Int',
@@ -167,8 +123,9 @@ LABEL('START');
           end().
         end().
       end().
-      add(this.RUN).
-      start('t3').add('Memory:').end()
+      add(this.COMPILE, this.RUN).
+      br().
+      start('h3').add('Memory:').end()
       ;
     },
 
@@ -178,13 +135,11 @@ LABEL('START');
     },
 
     function MOV(r, n) {
-      this.MOV.create({dst: r, src: n}).emit();
+      this.MOV_I.create({dst: r, src: n}).emit();
     },
 
     function ADD(r, n) {
-      console.log('ADD', r.name, n);
-      r.set(this, r.get(this) + n);
-      this.r15 += 16;
+      this.ADD_I.create({dst: r, amt: n});
     },
 
     function LABEL(n) {
@@ -192,14 +147,31 @@ LABEL('START');
     },
 
     function B(l) {
-      // this.B.create({addr: a}).emit();
-      this.r15 = l;
+      this.B_I.create({label: l}).emit();
     }
   ],
 
   actions: [
     function compile() {
-      with ( this ) {
+      with ( {
+        R0:    this.R0,
+        R1:    this.R1,
+        R2:    this.R2,
+        R3:    this.R3,
+        R4:    this.R4,
+        R5:    this.R6,
+        R6:    this.R7,
+        R7:    this.R8,
+        R12:   this.R12,
+        R13:   this.R13,
+        R14:   this.R14,
+        R15:   this.R15,
+        ADD:   this.ADD.bind(this),
+        B:     this.B.bind(this),
+        LABEL: this.LABEL.bind(this),
+        MOV:   this.MOV.bind(this),
+      } ) {
+        console.log('Compiling: ', this.code);
         eval(this.code);
       }
     },
