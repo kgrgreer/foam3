@@ -119,6 +119,9 @@ var PROJECT;
 // Short-form of PROJECT.version
 var VERSION;
 
+// Root POM tasks
+var TASKS;
+
 // These are different for an unknown historic reason and should be merged.
 // var BUILD_DIR  = './build3', TARGET_DIR = './build3';
 var BUILD_DIR  = './build', TARGET_DIR = './target';
@@ -128,6 +131,7 @@ globalThis.foam = {
     // console.log('POM:', pom);
     PROJECT = pom;
     VERSION = pom.version;
+    TASKS   = pom.tasks;
   }
 };
 require(PWD+'/pom.js');
@@ -158,6 +162,10 @@ function task(f) {
     fired = true;
     summary.push(rec);
 
+    // before_task
+    if ( typeof globalThis['before_' + f.name] === 'function' )
+      globalThis['before_' + f.name]();
+
     info(`Starting Task :: ${f.name}`);
     var start = Date.now();
     rec[0] = ''.padEnd(2*depth) + f.name;
@@ -169,6 +177,10 @@ function task(f) {
     var dur = ((end-start)/1000).toFixed(1);
     info(`Finished Task :: ${f.name} in ${dur} seconds`);
     rec[1] = dur;
+
+    // after_task
+    if ( typeof globalThis['after_' + f.name] === 'function' )
+      globalThis['after_' + f.name]();
   }
 }
 
@@ -865,6 +877,17 @@ task(function all() {
     startNanos();
   }
 });
+
+// Install POM tasks
+if ( TASKS ) {
+  TASKS.forEach(f => {
+    if ( tasks.indexOf(f.name) > -1 ) {
+      task(f);
+    } else {
+      globalThis[f.name] = f;
+    }
+  });
+}
 
 all();
 
