@@ -72,6 +72,47 @@ const fs            = require('fs');
 const path          = require('path');
 const os            = require('os');
 
+// Build configs
+var
+  PWD                       = process.cwd(),
+  BENCHMARK                 = false,
+  BENCHMARKS                = '',
+  BUILD_ONLY                = false,
+  CLEAN_BUILD               = false,
+  CLUSTER                   = false,
+  DAEMONIZE                 = false,
+  DEBUG_PORT                = 8000,
+  DEBUG_SUSPEND             = false,
+  DEBUG                     = false,
+  DELETE_RUNTIME_JOURNALS   = false,
+  DELETE_RUNTIME_LOGS       = false,
+  DISABLE_LIVESCRIPTBUNDLER = false,
+  EXPLICIT_JOURNALS         = '',
+  FS                        = 'rw',
+  GEN_JAVA                  = true,
+  HOST_NAME                 = 'localhost',
+  INSTANCE                  = 'localhost',
+  IS_MAC                    = process.platform === 'darwin',
+  IS_LINUX                  = process.platform === 'linux',
+  JOURNAL_CONFIG            = '',
+  MODE                      = '',
+  PACKAGE                   = false,
+  POM                       = 'pom',
+  PROFILER                  = false,
+  PROFILER_PORT             = 8849,
+  RESOURCES                 = '',
+  RESTART_ONLY              = false,
+  RESTART                   = false,
+  RUN_JAR                   = false,
+  RUN_USER                  = '',
+  STOP_ONLY                 = false,
+  TEST                      = false,
+  TESTS                     = '',
+  WEB_PORT                  = null,
+  FOAM_REVISION,
+  NANOPAY_REVISION
+;
+
 // Top-Level Loaded POM Object, not be be confused with POM, which is the name of POM(s) to be loaded
 var PROJECT;
 
@@ -89,7 +130,7 @@ globalThis.foam = {
     VERSION = pom.version;
   }
 };
-require('./pom.js');
+require(PWD+'/pom.js');
 
 process.on('unhandledRejection', e => {
   console.error("ERROR: Unhandled promise rejection ", e);
@@ -350,22 +391,19 @@ task(function packageFOAM() {
 
 task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var pom = POM;
+  var pom = {};
+  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+
+  if ( POM )
+    POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
 
   if ( DISABLE_LIVESCRIPTBUNDLER )
-    pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
+    addPom(`${PROJECT_HOME}/tools/journal_extras/disable_livescriptbundler/pom`);
 
-  if ( JOURNAL_CONFIG ) {
-    var includes = {};
-    JOURNAL_CONFIG.split(',').forEach(c => {
-      if ( ! c || includes[c] )
-        return;
+  if ( JOURNAL_CONFIG )
+    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
 
-      pom += ',./deployment/' + c + '/pom';
-      includes[c] = true
-    });
-  }
-
+  pom = Object.keys(pom).join(',');
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
   execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
@@ -443,7 +481,7 @@ task(function startNanos(nanos_dir) {
       JAVA_OPTS += ` -Dhttp.port=${WEB_PORT}`;
     }
 
-    JAVA_OPTS += ` -Dnanos.webroot=${PWD}`;
+    JAVA_OPTS += ` -Dnanos.webroot=${PROJECT_HOME}`;
 
     CLASSPATH = `${TARGET_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
@@ -581,46 +619,6 @@ function readFromPidFile() {
 }
 
 
-var
-  PWD                       = process.cwd(),
-  BENCHMARK                 = false,
-  BENCHMARKS                = '',
-  BUILD_ONLY                = false,
-  CLEAN_BUILD               = false,
-  CLUSTER                   = false,
-  DAEMONIZE                 = false,
-  DEBUG_PORT                = 8000,
-  DEBUG_SUSPEND             = false,
-  DEBUG                     = false,
-  DELETE_RUNTIME_JOURNALS   = false,
-  DELETE_RUNTIME_LOGS       = false,
-  DISABLE_LIVESCRIPTBUNDLER = false,
-  EXPLICIT_JOURNALS         = '',
-  FS                        = 'rw',
-  GEN_JAVA                  = true,
-  HOST_NAME                 = 'localhost',
-  INSTANCE                  = 'localhost',
-  IS_MAC                    = process.platform === 'darwin',
-  IS_LINUX                  = process.platform === 'linux',
-  JOURNAL_CONFIG            = '',
-  MODE                      = '',
-  PACKAGE                   = false,
-  POM                       = 'pom',
-  PROFILER                  = false,
-  PROFILER_PORT             = 8849,
-  RESOURCES                 = '',
-  RESTART_ONLY              = false,
-  RESTART                   = false,
-  RUN_JAR                   = false,
-  RUN_USER                  = '',
-  STOP_ONLY                 = false,
-  TEST                      = false,
-  TESTS                     = '',
-  WEB_PORT                  = null,
-  FOAM_REVISION,
-  NANOPAY_REVISION
-;
-
 // Environment Variables which are exported when updated
 buildEnv({
   NANOPAY_ROOT:      () => ( TEST || BENCHMARK ) ? '/tmp' : '/opt',
@@ -634,7 +632,7 @@ buildEnv({
   LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
   JAR_OUT:           () => `${NANOPAY_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
   NANOS_PIDFILE:     '/tmp/nanos.pid',
-  PROJECT_HOME:      process.cwd()
+  PROJECT_HOME:      PWD
 });
 
 
