@@ -47,6 +47,9 @@ foam.CLASS({
       hidden: true
     },
     {
+      // NOTE: The javascript FScriptParser does not yet support
+      // 'if', so 'if(name exists){name}else{null}' is not supported
+      // to return a particular properties value as the identity func.
       documentation: 'Property for comparing. Defaults to ID. Intented to support models without an id property.',
       class: 'foam.mlang.ExprProperty',
       name: 'identityExpr',
@@ -157,31 +160,23 @@ foam.CLASS({
     },
     {
       name: 'find_',
-      code: function(x, key) {
-        // Predicate handled in AbstractDAO
-        if ( this.of.isInstance(key) ) {
-          var expr = this.identityExpr
-          for ( var i = 0 ; i < this.array.length ; i++ ) {
-            if ( foam.util.equals(id.f(this.array[i])) ) {
-              return Promise.resolve(this.array[i]);
-            }
-          }
-        } else {
-          var id = this.of.isInstance(key) ? key.id : key;
-          for ( var i = 0 ; i < this.array.length ; i++ ) {
-            if ( foam.util.equals(id, this.array[i].id) ) {
-              return Promise.resolve(this.array[i]);
-            }
-          }
+      code: function(x, id) {
+        // id of type Predicate handled in AbstractDAO
+        var identity = this.identityExpr
+        var val = this.of.isInstance(id) ? identity.f(id) : id;
+        for ( var i = 0 ; i < this.array.length ; i++ ) {
+          if ( foam.util.equals(identity.f(this.array[i]), val) )
+            return Promise.resolve(this.array[i]);
         }
         return Promise.resolve(null);
       },
       javaCode: `
-      // Predicate handled in AbstractDAO
+      // id of type Predicate handled in AbstractDAO
       Expr identity = getIdentityExpr();
       Object val = id instanceof FObject ? identity.f(id) : id;
       for ( Object o : getArray() ) {
-        if ( SafetyUtil.equals(identity.f(o), val) ) return (FObject) o;
+        if ( SafetyUtil.equals(identity.f(o), val) )
+          return (FObject) o;
       }
       return null;
       `
