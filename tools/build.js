@@ -270,11 +270,16 @@ function jarWebroot() {
   ensureDir(webroot);
   copyDir('./foam3/webroot', webroot);
   copyDir('./nanopay/src/resources/webroot', webroot);
+
   ensureDir(webroot + '/favicon');
   copyDir('./favicon', webroot + '/favicon');
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
+
+  copyFile('./nanopay/src/net/nanopay/ui/unauthorizedAccess/unauthorizedAccess.html', webroot + '/unauthorizedAccess.html');
+  copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcode.js', webroot + '/qrcode.js');
+  copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcodegen.js', webroot + '/qrcodegen.js');
 }
 
 function jarImages() {
