@@ -28,12 +28,12 @@
 //       /documents
 //       /images
 //       /journals
-//       /webroot
 //     /documents    - All .flow documents are copied here by genJava
 //     /journals     - All journal.0 files created by genJava
 //     /package      - Designation for .tar.gz files
 //     /javacfiles   - A list of all java files to be compiled by javac, created by genJava
 //     /lib          - 3rd party java .jar library files created by gradle (or maven)
+//     /webroot      - jetty resource base directory for jar build
 //   /opt/<pom.name>
 //     /bin
 //     /etc
@@ -169,8 +169,15 @@ function ensureDir(dir) {
 
 
 function copyDir(src, dst) {
+  ensureDir(dst);
   fs.readdirSync(src).forEach(f => {
-    fs.copyFileSync(path.join(src, f), path.join(dst, f));
+    var srcPath = path.join(src, f);
+    var dstPath = path.join(dst, f);
+
+    if ( fs.lstatSync(srcPath).isDirectory() )
+      copyDir(srcPath, dstPath);
+    else
+      copyFile(srcPath, dstPath);
   });
 }
 
@@ -193,6 +200,9 @@ function rmfile(file) {
   }
 }
 
+function copyFile(src, dst) {
+  fs.copyFileSync(src, dst);
+}
 
 function showSummary() {
   var s = 'Execution Summary:\n';
@@ -252,6 +262,33 @@ Implementation-Vendor: ${PROJECT.name}
 
   return m;
 };
+
+function jarWebroot() {
+  JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
+
+  var webroot = TARGET_DIR + '/webroot';
+  ensureDir(webroot);
+  copyDir('./foam3/webroot', webroot);
+  copyDir('./nanopay/src/resources/webroot', webroot);
+  ensureDir(webroot + '/favicon');
+  copyDir('./favicon', webroot + '/favicon');
+
+  var foambin = `foam-bin-${VERSION}.js`;
+  copyFile('./' + foambin, webroot + '/' + foambin);
+}
+
+function jarImages() {
+  JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
+
+  var images = TARGET_DIR + '/images';
+  ensureDir(images);
+  copyDir('./foam3/src/foam/u2/images', images);
+  copyDir('./foam3/src/foam/nanos/images', images);
+  copyDir('./foam3/src/foam/support/images', images);
+  copyDir('./nanopay/src/net/nanopay/images', images);
+  copyDir('./nanopay/src/net/nanopay/payroll/images', images);
+  copyDir('./nanopay/src/net/nanopay/flinks/widget/images', images);
+}
 
 
 task(function showManifest() {
@@ -380,9 +417,11 @@ task(function buildJava() {
 // Function to build the JAR file
 task(function buildJar() {
   versions();
+  jarWebroot();
+  jarImages();
 
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF -C ${NANOPAY_HOME} journals documents -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${NANOPAY_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -629,6 +668,7 @@ buildEnv({
   DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`,
   JAVA_OPTS:         '',
   JAVA_TOOL_OPTIONS: () => JAVA_OPTS,
+  JAR_INCLUDES:      '',
   JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
   JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
   LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
@@ -739,7 +779,11 @@ const ARGS = {
       TESTS = args;
     } ],
   u: [ 'Run from jar. Intented for Production deployments.',
-    () => RUN_JAR = true ],
+    () => {
+      RUN_JAR = true;
+      JOURNAL_CONFIG += ',u';
+      RESOURCES      += ',u';
+    } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],
   v: [ 'java compile only, no code generation.',
@@ -841,7 +885,7 @@ task(function all() {
 
   setupDirs();
 
-  if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE ) {
+  if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE || RUN_JAR ) {
     packageFOAM();
   }
 
