@@ -26,8 +26,8 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
       ArrayDAO dao = new ArrayDAO(x);
-      dao.setOf(foam.core.Currency.getOwnClassInfo());
-      dao.setIdentityExpr(new foam.mlang.predicate.FScript(x, "if(symbol exists){symbol}else{null}", null));
+      dao.setOf(Currency.getOwnClassInfo());
+      dao.setIdentityExpr(Currency.SYMBOL);
 
       // setup
       Currency cur = new Currency(x);

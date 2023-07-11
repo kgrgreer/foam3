@@ -47,9 +47,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      // NOTE: The javascript FScriptParser does not yet support
-      // 'if', so 'if(name exists){name}else{null}' is not supported
-      // to return a particular properties value as the identity func.
       documentation: 'Property for comparing. Defaults to ID. Intented to support models without an id property.',
       class: 'foam.mlang.ExprProperty',
       name: 'identityExpr',
