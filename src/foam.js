@@ -35,8 +35,9 @@
       }
 
       var path = document.currentScript && document.currentScript.src;
+      var src  = path.lastIndexOf('src/');
 
-      path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
+      path = src > 0 ? path.substring(0, src + 4) : '';
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
       foam.cwd = path;
