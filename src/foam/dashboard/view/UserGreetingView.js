@@ -56,14 +56,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
+      if ( ! this.subject.realUser?.firstName ) {
+        this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
+      }
       this.addClass(this.myClass(), 'h200')
         .start()
-          .add(this.slot(async function(subject$user) {
-            if ( subject$user && ! subject$user.firstName ) {
-              ctrl.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
-            }
-            return this.title + (this.subject.user ? ', ' + this.subject.user.firstName : '');
+          .add(this.slot(function(subject$realUser) {
+            return this.title + (this.subject.realUser ? ', ' + this.subject.realUser.firstName : '');
           }))
         .end();
     }
