@@ -280,6 +280,15 @@ function jarWebroot() {
   copyFile('./nanopay/src/net/nanopay/ui/unauthorizedAccess/unauthorizedAccess.html', webroot + '/unauthorizedAccess.html');
   copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcode.js', webroot + '/qrcode.js');
   copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcodegen.js', webroot + '/qrcodegen.js');
+
+  // Use dot notation for xsd path on jar file deployment
+  var xsdPath = 'nanopay/src/net/nanopay/payroll/tax/ca/cra/v2023/xsd';
+  var simple_xsd  = xsdPath + '/simple.xsd';
+  var complex_xsd = xsdPath + '/complex.xsd';
+  var t4_xsd      = xsdPath + '/t4.xsd';
+  copyFile('./' + simple_xsd , webroot + '/' + simple_xsd.replaceAll('/', '.'));
+  copyFile('./' + complex_xsd, webroot + '/' + complex_xsd.replaceAll('/', '.'));
+  copyFile('./' + t4_xsd     , webroot + '/' + t4_xsd.replaceAll('/', '.'));
 }
 
 function jarImages() {

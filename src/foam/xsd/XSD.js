@@ -826,6 +826,10 @@ foam.CLASS({
         return fs.existsSync(file) && fs.readFileSync(file).toString();
       }
 
+      // jar file deployment, converting file path to dot notation
+      if (  ! globalThis.FOAM_ROOT )
+        file = file.replaceAll('/', '.');
+
       // `require()' is not available on browser, use global fetch() instead
       var fetchSync = async file => {
         var response = await globalThis.fetch(file);
