@@ -13,7 +13,7 @@ import foam.core.XLocator;
 import java.util.TimerTask;
 
 /**
-  TimerTask which executes ContextAgent in it's own thread.
+  TimerTask which executes ContextAgent in its own thread.
 */
 public class ThreadTimerTask
   extends TimerTask {
@@ -21,7 +21,7 @@ public class ThreadTimerTask
   protected X x_;
   protected ContextAgent agent_;
   protected String name_;
-  public int priority_ = Thread.MAX_PRIORITY;
+  public int priority_ = Thread.NORM_PRIORITY;
 
   public ThreadTimerTask(X x, ContextAgent agent) {
     this(x, agent, agent.getClass().getSimpleName());
@@ -34,9 +34,17 @@ public class ThreadTimerTask
     this.name_ = name;
   }
 
+  public ThreadTimerTask(X x, ContextAgent agent, String name, int priority) {
+    super();
+    this.x_ = x;
+    this.agent_ = agent;
+    this.name_ = name;
+    this.priority_ = priority;
+  }
+
   public void run() {
+    final X oldX = ((ProxyX) XLocator.get()).getX();
     Thread thread = new Thread(() -> {
-        X oldX = ((ProxyX) XLocator.get()).getX();
         try {
           XLocator.set(x_);
           agent_.execute(x_);
