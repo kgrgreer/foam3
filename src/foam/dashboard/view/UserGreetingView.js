@@ -63,7 +63,7 @@ foam.CLASS({
       this.addClass(this.myClass(), 'h200')
         .start()
           .add(this.slot(function(subject$realUser) {
-            return this.title + (this.subject.realUser ? ', ' + this.subject.realUser.firstName : '');
+            return this.title + (this.subject.realUser.firstName ? ', ' + this.subject.realUser.firstName : '') ;
           }))
         .end();
     }
