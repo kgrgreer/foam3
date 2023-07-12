@@ -156,6 +156,13 @@ foam.CLASS({
             out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
           } else {
             out.println("<script async language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
+
+            var pom = appConfig.getPom();
+            if ( ! SafetyUtil.isEmpty(pom) ) {
+              queryString = SafetyUtil.isEmpty(queryString)
+                ? "pom=" + pom : queryString + "&pom=" + pom ;
+            }
+
             if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
             out.println("\\"></script>");
           }

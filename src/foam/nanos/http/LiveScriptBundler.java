@@ -8,22 +8,30 @@ package foam.nanos.http;
 
 import foam.core.ContextAware;
 import foam.core.X;
+import foam.nanos.NanoService;
+import foam.nanos.app.AppConfig;
 import foam.nanos.logger.Logger;
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import foam.util.SafetyUtil;
+import io.methvin.watcher.DirectoryWatcher;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static io.methvin.watcher.DirectoryChangeEvent.EventType.MODIFY;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringJoiner;
+
 import static io.methvin.watcher.DirectoryChangeEvent.EventType.DELETE;
-import io.methvin.watcher.DirectoryWatcher;
-import org.apache.commons.lang.ArrayUtils;
+import static io.methvin.watcher.DirectoryChangeEvent.EventType.MODIFY;
+import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class LiveScriptBundler
-  implements WebAgent, ContextAware
+  implements WebAgent, ContextAware, NanoService
 {
   protected X x_;
 
@@ -43,6 +51,10 @@ public class LiveScriptBundler
   protected static final String GENJAVA_INPUT_PATH = "foam3/tools/genjava.js";
   protected static final String GENJAVA_OUTPUT_PATH = "tools/classes.js";
   protected String[] binFiles = { "./foam-bin.js" };
+
+  // Command args
+  protected String flags_;
+  protected String pom_;
 
   // Modified files
   protected StringJoiner modified_;
@@ -112,8 +124,6 @@ public class LiveScriptBundler
         }
       });
 
-      doRebuildJavascript();
-
       // Read each files.js file
       for ( String currentFilesPath : filesPaths ) {
         DirectoryWatcher.builder()
@@ -134,6 +144,13 @@ public class LiveScriptBundler
     }
   }
 
+  @Override
+  public void start() throws Exception {
+    var appConfig = (AppConfig) getX().get("appConfig");
+    pom_ = appConfig.getPom();
+    doRebuildJavascript();
+  }
+
   private synchronized void scheduleRebuild() {
     if ( scheduled_ ) return;
     scheduled_ = true;
@@ -149,11 +166,31 @@ public class LiveScriptBundler
     }).start();
   }
 
+  protected String[] getCommand(String script) {
+    var command = "node " + script;
+    if ( ! SafetyUtil.isEmpty(flags_) ) command += " -flags=" + flags_;
+    if ( ! SafetyUtil.isEmpty(pom_  ) ) command += " -pom=" + getRelativePom();
+    return command.split("\\s+");
+  }
+
+  protected String getRelativePom() {
+    var result = new StringJoiner(",");
+    var poms = pom_.split(",");
+    for ( var pom : poms ) {
+      // Remove prefix ../ because pom fed to liveScriptBundler must be relative to project root
+      while ( pom.startsWith("../") ) {
+        pom = pom.substring(3);
+      }
+      result.add(pom);
+    }
+    return result.toString();
+  }
+
   private synchronized void doRebuildJavascript() {
     try {
       log_("START", "Building javascript... (JS)");
 
-      Process        p  = new ProcessBuilder("node", JS_BUILD_PATH).start();
+      Process        p  = new ProcessBuilder(getCommand(JS_BUILD_PATH)).start();
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String         line;
       while ( (line = br.readLine()) != null ) {
@@ -172,14 +209,13 @@ public class LiveScriptBundler
   }
 
   private synchronized void doRebuildJavascript(HttpServletRequest req) {
-    String queryString = req.getQueryString();
-    String[] args = queryString.split("&");
-    String[] command = (String[]) ArrayUtils.add(args, 0, JS_BUILD_PATH );
-    
+    flags_ = req.getParameter("flags");
+    pom_   = req.getParameter("pom");
+
     try {
       log_("START", "Building javascript with updated flags... (JS)");
 
-      Process        p  = new ProcessBuilder(command).start();
+      Process        p  = new ProcessBuilder(getCommand(JS_BUILD_PATH)).start();
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String         line;
       while ( (line = br.readLine()) != null ) {
@@ -232,21 +268,16 @@ public class LiveScriptBundler
     HttpServletResponse r  = x.get(HttpServletResponse.class);
     r.setHeader("Content-Type", "application/javascript");
     HttpServletRequest  req = x.get(HttpServletRequest.class);
-    if ( req.getParameter("java") != null && req.getParameter("java").equals("true") ) {
-      doRegenJava(req);
-    }
 
-    if (
-      req.getParameter("node") != null  ||
-      req.getParameter("web") != null   ||
-      req.getParameter("java") != null  ||
-      req.getParameter("swift") != null ||
-      req.getParameter("debug") != null ||
-      req.getParameter("js") != null 
-    ) {
-      doRebuildJavascript(req);
+    /* Wait for build to finish before serving */
+    synchronized (this) {
+      if (
+        SafetyUtil.compare(flags_, req.getParameter("flags")) != 0 ||
+        SafetyUtil.compare(pom_  , req.getParameter("pom")) != 0
+      ) {
+        doRebuildJavascript(req);
+      }
     }
-    synchronized (this) { /* Wait for build to finish before serving */ }
     pw.println(javascriptBuffer_);
   }
 
