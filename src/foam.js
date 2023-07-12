@@ -44,7 +44,17 @@
       foam.main();
     },
     main: function() {
-      foam.require(document.currentScript.getAttribute("project") || 'pom', false, true);
+      var poms = (document.currentScript.getAttribute("project") || 'pom').split(',');
+      var path = foam.cwd;
+
+      // Reset base path to root directory when loading pom,
+      // so that appConfig.pom can be relative to root instead of foam.js
+      foam.cwd = '/';
+      poms.forEach(pom => {
+        foam.require(pom, false, true);
+      });
+
+      foam.cwd = path;
     },
     checkFlags: function(flags) {
       if ( ! flags ) return true;

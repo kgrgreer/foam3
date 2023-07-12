@@ -169,21 +169,8 @@ public class LiveScriptBundler
   protected String[] getCommand(String script) {
     var command = "node " + script;
     if ( ! SafetyUtil.isEmpty(flags_) ) command += " -flags=" + flags_;
-    if ( ! SafetyUtil.isEmpty(pom_  ) ) command += " -pom=" + getRelativePom();
+    if ( ! SafetyUtil.isEmpty(pom_  ) ) command += " -pom=" + pom_;
     return command.split("\\s+");
-  }
-
-  protected String getRelativePom() {
-    var result = new StringJoiner(",");
-    var poms = pom_.split(",");
-    for ( var pom : poms ) {
-      // Remove prefix ../ because pom fed to liveScriptBundler must be relative to project root
-      while ( pom.startsWith("../") ) {
-        pom = pom.substring(3);
-      }
-      result.add(pom);
-    }
-    return result.toString();
   }
 
   private synchronized void doRebuildJavascript() {
