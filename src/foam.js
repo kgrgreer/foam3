@@ -47,16 +47,17 @@
     },
     main: function() {
       var poms = (document.currentScript.getAttribute("project") || 'pom').split(',');
-      var path = foam.cwd;
+      var cwd = foam.cwd;
 
-      // Reset base path to root directory when loading pom,
-      // so that appConfig.pom can be relative to root instead of foam.js
+      // Reset foam cwd to root directory when loading pom,
+      // so that appConfig.pom can be configured relative to the project root
+      // instead of foam.js script
       foam.cwd = '/';
       poms.forEach(pom => {
         foam.require(pom, false, true);
       });
 
-      foam.cwd = path;
+      foam.cwd = cwd;
     },
     checkFlags: function(flags) {
       if ( ! flags ) return true;
