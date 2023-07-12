@@ -764,13 +764,13 @@ foam.CLASS({
     },
 
     function compileAll() {
-      var parser = new (globalThis.DOMParser || require('xmldom').DOMParser);
-
       this.xmlns = '';
 
-      this.files.forEach(async file => {
-        this.xsd = await this.fetch(this.xsdPath + '/' + file);
-        this.compile();
+      this.files.forEach(file => {
+        this.fetch(this.xsdPath + '/' + file).then(content => {
+          this.xsd = content || '';
+          this.compile();
+        });
       });
     },
 
@@ -823,7 +823,9 @@ foam.CLASS({
     function fetch(file) {
       if ( typeof require === 'function' ) {
         var fs = require('fs');
-        return fs.existsSync(file) && fs.readFileSync(file).toString();
+        this.xsd = fs.existsSync(file) && fs.readFileSync(file).toString();
+        this.compile();
+        return Promise.resolve();
       }
 
       // jar file deployment, converting file path to dot notation
@@ -831,11 +833,9 @@ foam.CLASS({
         file = file.replaceAll('/', '.');
 
       // `require()' is not available on browser, use global fetch() instead
-      var fetchSync = async file => {
-        var response = await globalThis.fetch(file);
-        return response.ok && (await response.text());
-      };
-      return fetchSync(file);
+      return globalThis.fetch(file).then(response => {
+        return response.ok && response.text();
+      });
     }
   ]
 });
