@@ -163,6 +163,36 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'resendCode',
+      section: 'verificationCodeSection',
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
+      },
+      buttonStyle: 'TEXT',
+      code: async function() {
+        this.report('^resend-verification');
+        if ( this.codeVerified ) return;
+        try {
+          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
+          this.ctrl.add(this.NotificationMessage.create({
+            message: this.VERIFICATION_EMAIL_TITLE,
+            description: this.VERIFICATION_EMAIL+ ' ' + this.email,
+            type: this.LogLevel.INFO
+          }));
+          return true;
+        } catch ( err ) {
+          this.error('^resend-verification-failed', err);
+          this.assert('false', 'exception when resending verification', err.message);
+          this.ctrl.add(this.NotificationMessage.create({
+            err: err.data,
+            message: this.RESEND_ERROR_MSG,
+            type: this.LogLevel.ERROR
+          }));
+          return false;
+        }
+      }
+    },
+    {
       name: 'submit',
       buttonStyle: 'PRIMARY',
       section: 'verificationCodeSection',
@@ -193,36 +223,6 @@ foam.CLASS({
             err: err?.data
           }));
           throw err;
-        }
-      }
-    },
-    {
-      name: 'resendCode',
-      section: 'verificationCodeSection',
-      isAvailable: function(codeVerified) {
-        return ! codeVerified;
-      },
-      buttonStyle: 'TEXT',
-      code: async function() {
-        this.report('^resend-verification');
-        if ( this.codeVerified ) return;
-        try {
-          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
-          this.ctrl.add(this.NotificationMessage.create({
-            message: this.VERIFICATION_EMAIL_TITLE,
-            description: this.VERIFICATION_EMAIL+ ' ' + this.email,
-            type: this.LogLevel.INFO
-          }));
-          return true;
-        } catch ( err ) {
-          this.error('^resend-verification-failed', err);
-          this.assert('false', 'exception when resending verification', err.message);
-          this.ctrl.add(this.NotificationMessage.create({
-            err: err.data,
-            message: this.RESEND_ERROR_MSG,
-            type: this.LogLevel.ERROR
-          }));
-          return false;
         }
       }
     }
