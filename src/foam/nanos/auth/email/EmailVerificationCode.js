@@ -42,7 +42,7 @@ foam.CLASS({
     { name: 'VERIFICATION_EMAIL', message: 'Email sent to' },
     { name: 'EMPTY_CODE',       message: 'Please enter the 6-digit code sent to your email' },
     { name: 'INVALID_CODE',     message: 'Invalid code. Remaining attempts: ' },
-    { name: 'NO_ATTEMPTS_LEFT', message: 'You have exceeded the verification attempt limit for this code. A new code has been sent to your email.' }
+    { name: 'NO_ATTEMPTS_LEFT', message: 'The verification code is no longer valid. A new code has been sent to your email.' }
   ],
 
   sections: [
