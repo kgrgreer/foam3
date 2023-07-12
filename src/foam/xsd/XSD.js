@@ -829,7 +829,7 @@ foam.CLASS({
       }
 
       // jar file deployment, converting file path to dot notation
-      if (  ! globalThis.FOAM_ROOT )
+      if ( globalThis.FOAM_BIN )
         file = file.replaceAll('/', '.');
 
       // `require()' is not available on browser, use global fetch() instead

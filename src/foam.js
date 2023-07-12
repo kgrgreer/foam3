@@ -34,10 +34,12 @@
         globalThis.foam.flags[pair[0]] = (pair[1] == 'true');
       }
 
-      var path = document.currentScript && document.currentScript.src;
-      var src  = path.lastIndexOf('src/');
+      var src  = document.currentScript && document.currentScript.src;
+      var path = src && new URL(src).pathname || '';
 
-      path = src > 0 ? path.substring(0, src + 4) : '';
+      [path, globalThis.FOAM_BIN] = /^\/foam-bin(.)*\.js$/.test(path)
+        ? ['/', path] : [path.substring(0, path.lastIndexOf('/foam.js') + 1)];
+
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
       foam.cwd = path;
