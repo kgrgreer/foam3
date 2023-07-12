@@ -765,7 +765,7 @@ const ARGS = {
   m: [ "Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue",
     () => CLUSTER = true ],
   N: [ `NAME : start another instance with given instance name. Deployed to /opt/${PROJECT.name}_NAME.`,
-    args => { INSTANCE = HOST_NAME = args; NANOS_PIDFILE=`/tmp/nanos_${INSTANCE}.pid`; info('INSTANCE =', args); } ],
+    args => { INSTANCE = HOST_NAME = args; NANOS_PIDFILE=`/tmp/nanos_${INSTANCE}.pid`; info('INSTANCE=' + args); } ],
   o: [ "Build only - don't start nanos.",
     () => BUILD_ONLY = true ],
   p: [ 'Enable profiling on default port',
