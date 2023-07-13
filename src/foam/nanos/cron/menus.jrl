@@ -46,24 +46,6 @@ p({
   "parent":"admin"
 })
 
-// p({
-//   class: "foam.nanos.menu.Menu",
-//   id: "foam.nanos.cron.cronJobWidget",
-//   label: "Cron Jobs",
-//   handler: {
-//     class: "foam.nanos.menu.ViewMenu",
-//     view: {
-//       class: "foam.nanos.cron.CronDashboardCard",
-//       title: "Cron Jobs",
-//       predicate: {
-//         class: "foam.mlang.predicate.FScriptPredicate",
-//         query: 'status==foam.nanos.script.ScriptStatus.RUNNING || status==foam.nanos.script.ScriptStatus.ERROR || (status==foam.nanos.script.ScriptStatus.UNSCHEDULED && lastRun exists)'
-//       }
-//     }
-//   },
-//   parent:"hidden"
-// })
-//        citationView: "foam.nanos.cron.CronCitationView",
 p({
   class: "foam.nanos.menu.Menu",
   id: "foam.nanos.cron.cronJobWidget",
