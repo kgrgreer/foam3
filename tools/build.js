@@ -123,8 +123,8 @@ var VERSION;
 var TASKS;
 
 // These are different for an unknown historic reason and should be merged.
-// var BUILD_DIR  = './build3', TARGET_DIR = './build3';
-var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+// var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -571,9 +571,14 @@ task(function versions() {
 
 task(function setupDirs() {
   try {
-    ensureDir(`${PROJECT_HOME}/.foam`);
+    // ensureDir(`${PROJECT_HOME}/.foam`); // Only used by foamlink?
     ensureDir(NANOPAY_HOME);
-    ensureDir(TARGET_DIR + '/lib');
+    if ( ensureDir(TARGET_DIR + '/lib') ) {
+      // Remove stale pom.xml if the /lib dir needed to be created
+      // Wouldn't be necessary if pom.xml were written into the TARGET_DIR but then
+      // you couldn't check it in to get dependbot warnings.
+      rmfile('pom.xml');
+    }
     ensureDir(`${NANOPAY_HOME}/lib`);
     ensureDir(`${NANOPAY_HOME}/bin`);
     ensureDir(`${NANOPAY_HOME}/etc`);
