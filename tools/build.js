@@ -899,7 +899,7 @@ task(function all() {
 
   setupDirs();
 
-  if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE || RUN_JAR ) {
+  if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE || RUN_JAR || TEST || BENCHMARK ) {
     packageFOAM();
   }
 
