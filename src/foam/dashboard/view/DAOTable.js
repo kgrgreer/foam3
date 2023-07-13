@@ -122,7 +122,11 @@ foam.CLASS({
       menu item. Default is empty.
       `
     },
-    ['limit', 5],
+    {
+      class: 'Int',
+      name: 'limit',
+      value: 5
+    },
     'mode'
   ],
 
