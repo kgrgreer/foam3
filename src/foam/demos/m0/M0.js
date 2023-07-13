@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// https://developer.arm.com/documentation/dui0497/a/the-cortex-m0-instruction-set/instruction-set-summary?lang=en
+
 foam.CLASS({
   package: 'foam.demos.m0',
   name: 'Instr',
@@ -27,6 +29,8 @@ foam.CLASS({
 var INSTRS = [
   [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
   [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'SUB',   16, [] ],
+  [ 'SUBC',  16, [] ],
   [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
 
