@@ -260,7 +260,7 @@ foam.CLASS({
       setAlarms(0);
     }
 
-    // NOTE: this works in conjunction with heartbear service -
+    // NOTE: this works in conjunction with heartbeat service -
     // which creates entry for 'self'
     Health old = (Health) ((DAO) x.get("healthDAO")).find_(x, getId());
     if ( old == null ) {
