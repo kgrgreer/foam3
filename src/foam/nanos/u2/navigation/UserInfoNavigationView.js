@@ -143,26 +143,23 @@ foam.CLASS({
   `,
 
   methods: [
-    function render() {
+    async function render() {
       var self = this;
+      if ( ! this.subject.user?.firstName || ! this.subject.realUser?.firstName ) {
+        this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
+      }
       this
         .addClass(this.myClass('label-container'))
-        .add(this.slot(async function(subject$user) {
+        .add(this.slot(function(subject$user) {
           if ( ! this.subject.user ) return;
-          if ( ! subject$user.firstName ) {
-            ctrl.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
-          }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
                 .addClass('p-label')
                 .add(this.subject.user.toSummary())
               .end();
         }))
-        .add(this.slot(async function(subject$realUser, subject$user) {
+        .add(this.slot(function(subject$realUser, subject$user) {
           if ( ! this.subject.realUser || this.subject.user.id == this.subject.realUser.id ) return;
-          if ( ! subject$realUser.firstName ) {
-            ctrl.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
-          }
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
                 .addClass('p-legal-light', this.myClass('agentName'))
