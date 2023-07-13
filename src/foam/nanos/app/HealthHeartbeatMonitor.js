@@ -57,6 +57,12 @@ foam.CLASS({
       class: 'Long',
       value: 60000,
       units: 'ms'
+    },
+    {
+      name: 'timer',
+      class: 'Object',
+      hidden: true,
+      transient: true
     }
   ],
 
@@ -75,6 +81,28 @@ foam.CLASS({
         getInitialTimerDelay(),
         getTimerInterval()
       );
+      setTimer(timer);
+      `
+    },
+    {
+      name: 'reload',
+      javaCode: `
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+        Loggers.logger(getX(), this).info("reload, disabled on localhost");
+        return;
+      }
+      Loggers.logger(getX(), this).info("reload");
+      Timer timer = (Timer) getTimer();
+      if ( timer != null ) {
+        timer.cancel();
+      }
+      timer = new Timer(this.getClass().getSimpleName(), true);
+      timer.scheduleAtFixedRate(
+        new ContextAgentTimerTask(getX(), this),
+        getTimerInterval(),
+        getTimerInterval()
+      );
+      setTimer(timer);
       `
     },
     {
