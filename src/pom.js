@@ -1102,6 +1102,7 @@ foam.POM({
     { name: "foam/dao/WriteOnlyJDAO",                                 flags: "js|java" },
     { name: "foam/dao/WriteOnlyFileJournal",                          flags: "js|java" },
     { name: "foam/dao/WriteOnlyF3FileJournal",                        flags: "js|java" },
+    { name: "foam/dao/test/ArrayDAOTest",                             flags: "js|java" },
     { name: "foam/dao/test/FileRollCmdTest",                          flags: "js|java" },
     { name: "foam/nanos/actioncommand/ActionCommand",                 flags: "js|java" },
     { name: "foam/nanos/session/LocalSettingSessionDAO",              flags: "js|java" },

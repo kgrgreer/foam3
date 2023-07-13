@@ -45,3 +45,30 @@ p({
   },
   "parent":"admin"
 })
+
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.cron.cronJobWidget",
+  label: "Cron Jobs",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Cron Jobs",
+      currentView: {
+        class: "foam.dashboard.view.DAOTable",
+        dao: "cronJobDAO",
+        predicate: {
+          class: "foam.mlang.predicate.FScriptPredicate",
+          query: 'status==foam.nanos.script.ScriptStatus.RUNNING || status==foam.nanos.script.ScriptStatus.ERROR || (status==foam.nanos.script.ScriptStatus.UNSCHEDULED && lastRun exists)'
+        },
+        limit: 4,
+        citationView: "foam.nanos.cron.CronCitationView",
+        viewMore: true,
+        emptyTitle: "No activity"
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})

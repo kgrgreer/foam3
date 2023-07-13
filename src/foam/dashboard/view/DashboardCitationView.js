@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'DashboardCitationView',
   extends: 'foam.u2.View',
+  mixins: ['foam.u2.memento.Memorable'],
 
   axioms: [
     foam.pattern.Faceted.create()
@@ -37,7 +38,7 @@ foam.CLASS({
       var self = this;
       this
         .on('click', function() {
-          self.openFilteredListView(self.data);
+          self.openFilteredListView(self);
         })
         .addClass(this.myClass())
         .start()
@@ -51,7 +52,7 @@ foam.CLASS({
     },
 
     function openFilteredListView(obj) {
-      var dao = this.__subContext__[obj.listDAOName].where(this.EQ(obj.searchKey, obj.id));
+      var dao = this.__subContext__[obj.data && obj.data.listDAOName || obj.dao].where(this.EQ(obj.searchKey, obj.id));
       var config = this.DAOControllerConfig.create({ dao: dao, hideQueryBar: false });
       this.stack.push({
         class: 'foam.comics.v2.DAOBrowserView',

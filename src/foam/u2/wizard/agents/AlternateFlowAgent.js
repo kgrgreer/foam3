@@ -52,7 +52,7 @@ foam.CLASS({
 
       if ( this.capability ) {
         const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
-        res = ucj.status !== this.CapabilityJunctionStatus.AVAILABLE;
+        if ( ucj.status == this.CapabilityJunctionStatus.AVAILABLE ) return;
       } else if ( this.contextPredicate ) {
         const check = this.contextPredicate.f(this.__context__);
         if ( ! check ) return;

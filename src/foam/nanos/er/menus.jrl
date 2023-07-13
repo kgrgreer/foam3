@@ -15,3 +15,29 @@ p({
   },
   parent:"analytics"
 })
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.er.eventRecordWidget",
+  label: "Event Records",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Event Records",
+      currentView: {
+        class: "foam.dashboard.view.DAOTable",
+        dao: "eventRecordDAO",
+        predicate: {
+          class: "foam.mlang.predicate.FScriptPredicate",
+          query: 'severity==foam.log.LogLevel.ERROR || severity==foam.log.LogLevel.WARN'
+        },
+        limit: 4,
+        citationView: "foam.nanos.er.EventRecordCitationView",
+        viewMore: true,
+        emptyTitle: "No activity"
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})

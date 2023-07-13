@@ -3,3 +3,7 @@ p({
   id:"FileRollCmdTest",
   description:"Tests Journal backup and writing to new empty journal"
 })
+p({
+  class:"foam.dao.test.ArrayDAOTest",
+  id:"ArrayDAOTest"
+})

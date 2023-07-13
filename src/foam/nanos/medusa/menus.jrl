@@ -100,3 +100,49 @@ p({
   },
   "parent":"medusa"
 })
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.medusa.medusaHealthWidget",
+  label: "Medusa Health",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Medusa Health",
+      currentView: {
+        class: "foam.dashboard.view.DAOTable",
+        dao: "healthDAO",
+        predicate: {
+          class: "foam.mlang.predicate.FScriptPredicate",
+          query: 'instanceof foam.nanos.medusa.MedusaHealth && medusaType == foam.nanos.medusa.MedusaType.MEDIATOR'
+        },
+        citationView: "foam.nanos.medusa.MedusaHealthCitationView",
+        viewMore: true,
+        emptyTitle: "No activity"
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.medusa.medusaIndexChartWidget",
+  label: "Medusa Index",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Medusa Index",
+      currentView: {
+        class: "foam.nanos.analytics.CandlestickChartCitationView",
+        candlestickDAOKey: 'com5MinuteDAO',
+        candlestickKey1: 'medusa.index.aphrodite',
+        candlestickKey2: 'medusa.index.argus',
+        candlestickKey3: 'medusa.index.dionysus'
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})

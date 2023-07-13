@@ -149,7 +149,7 @@ foam.CLASS({
                                   .setFilename(getFilePrefix() + fileName)
                                   .setCreateFile(false)
                                   .setDao(new foam.dao.NullDAO())
-                                  .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
+                                  .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, foam.nanos.logger.StdoutLogger.instance()))
                                   .build();
         if ( journal.getFileExist() == false ) {
           journal.createJournalFile();

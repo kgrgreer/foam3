@@ -1,0 +1,76 @@
+<title>Medusa Compaction</title>
+<h1>Compaction</h1>
+<h2>Overview</h2>
+
+Compaction dumps the current system out to new ledger files, in a effort to reduce replay time.  Each DAO operation on the same object generates a unique MedusaEntry containing just the change on the object.  In time there are multiple MedusaEntry's for the same object.  Compaction writes out each object in entirety once, thus reducing the multiple MedusaEntry's to just one.
+
+<h2>Considerations</h2>
+<ul>
+  <li>Compaction can only be run from the Primary mediator.</li>
+  <li>Compaction can be run concurrently with live traffic, but it is recommended to run compaction at a low traffic period.  Also, compaction can fail requiring system halt and manual intervention, so a Maintenance Window should be scheduled</li>
+  <li>Compaction filters out many archive or history operations. See compactionDAO</li>
+</ul>
+
+<h2>Invocation</h2>
+Medusa Compaction is controlled by script <b>MedusaCompaction</b>.
+
+<p>Script will not run if:</p>
+<ol>
+<li>not on primary</li>
+<li>not all mediators and nodes ONLINE</li>
+</ol>
+
+<p>Once script execution reports completion, check:</p>
+<ol>
+<li>ScriptEvents for an 'OK' message.</li>
+<li>EventRecords for a compaction summary.  Open the reponse message to see the statistics.</li>
+</ol>
+
+<p>Compaction is accomplished by running the script <b>Medusa Compaction</b>.</p>
+<h2>Compaction, Major steps in the process</h2>
+<ol>
+<li>Ensure all mediators and nodes are ONLINE</li>
+<li>Stop Medusa monitoring services</li>
+<li>Start blocking MedusaEntry DAO operations</li>
+<li>Wait for any in-flight cluster operations to complete</li>
+<li>Roll the ledgers on the Nodes.  ledger becomes ledger.1 on the first invocation. Next will rename ledger to ledger.2</li>
+<li>Reconfigure the Dagger service with the next set of bootstrap hashes.</li>
+<li>Unblock Medusa DAO operations. At this point live traffic is processed during compaction.</li>
+<li>Start compating.
+For each MedusaEntry, once for each object, create a new MedusaEntry with the entire current object (no delta), and write this to the nodes.</li>
+<li>Remove compacted MedusaEntry's from each Mediator</li>
+<li>Restart Medusa monitoring services</li>
+<li>Generate report (See <i>compaction</i> EventRecord)</li>
+<li>End</li>
+</ol>
+
+<h2>Rollback</h2>
+Should compaction fail for any reason, a rollback is required.
+When compaction fails the system should be considered invalid. Live traffic must be halted immediately.  Any operations which occured during compaction will be lost on rollback.
+
+<p>Rollback, for the most part, is handled via the following tool scripts:</p>
+<ol>
+<li>tools/medusa/stop.sh tools/medusa/h-mediators</li>
+<li>tools/medusa/compaction-drop-daggerbootstrap.sh tools/medusa/h-mediators</li>
+<li>tools/medusa/stop.sh tools/medusa/h-nodes</li>
+<li>tools/medusa/compaction-revert-ledger.sh 1 tools/medusa/h-nodes</li>
+<li>tools/medusa/start.sh tools/medusa/h-nodes</li>
+<li>tools/medusa/start.sh tools/medusa/h-mediators</li>
+</ol>
+
+<b>Note</b>, the <b>compaction-drop-daggerbootstrap.sh</b> script is an all or nothing script at the moment. If this is the second or more compaction, then you'll need to hand edit each mediator journal/daggerbootstrap journal and remove the last entries (those with the same 'id').
+
+<h2>Controlling Compaction via the Compaction model</h2>
+<foam class="foam.flow.widgets.TabbedModelDocumentation" defaultTab="properties" of="foam.nanos.medusa.Compaction" />
+
+<h3>compactable</h3>
+By default a DAO is compactable, meaning it's entries will be reduced. If compaction is disabled (false), then the DAO's entries will be discarded - they will not be compacted into a new ledger.
+<h3>reducible</h3>
+By default a DAO is reducible, meaning multiple CRUD operations are reduced to one. If <i>reducible</i> is false, then all entries are transfered the new ledger.
+<h3>compactLifecycleDeleted</h3>
+LifecycleAware objects which are deleted/removed are set to state DELETED, an r() journal entry is not created.  This option allows to compact DELETED entries.
+<h3>clearable</h3>
+By default Medusa Entry data is clear (removed/purged) after compaction.  This property works in conjunction with <i>reducible</i>.
+<h3>sink</h3>
+Custom sinks can be registered for per entry control during compaction.
+See localTicketCommentDAO for an example of inline sink Predicate controlling Ticket Comment compaction based on Ticket Status.

@@ -20,7 +20,7 @@ This is the heart of Medusa.`,
 
   javaImports: [
     'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
+    'foam.core.ThreadTimerTask',
     'foam.core.ContextAgent',
     'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
@@ -282,7 +282,7 @@ This is the heart of Medusa.`,
       Timer timer = new Timer(this.getClass().getSimpleName());
       setTimer(timer);
       timer.schedule(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        new ThreadTimerTask(getX(), this),
         getInitialTimerDelay());
       `
     },

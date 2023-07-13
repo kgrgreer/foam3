@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// https://developer.arm.com/documentation/dui0497/a/the-cortex-m0-instruction-set/instruction-set-summary?lang=en
+
 foam.CLASS({
   package: 'foam.demos.m0',
   name: 'Instr',
@@ -27,8 +29,15 @@ foam.CLASS({
 var INSTRS = [
   [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
   [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+  [ 'SUB',   16, [] ],
+  [ 'SUBC',  16, [] ],
   [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
 ];
+
+// ARITHMETIC: ADD ADC SUB SBC NEG
+// SHIFT + ROTATION: LSL ASR ROR
+// CONDITIONAL CODES: EQ NE CS/HS CC/LO MI PL VS VC HI LS GE LT GT LE AL
+// Logical Operators: AND EOR ORR BIC MVN TST
 
 
 INSTRS.forEach(i => foam.CLASS({
@@ -166,6 +175,10 @@ LABEL('START');
         R13:   this.R13,
         R14:   this.R14,
         R15:   this.R15,
+        IP:    this.R12,
+        SP:    this.R13,
+        LR:    this.R14,
+        PC:    this.R15,
         ADD:   this.ADD.bind(this),
         B:     this.B.bind(this),
         LABEL: this.LABEL.bind(this),

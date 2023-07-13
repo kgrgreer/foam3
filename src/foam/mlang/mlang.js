@@ -4232,6 +4232,9 @@ foam.CLASS({
       if (ps == null)
         return null;
 
+      if ( ps.value() instanceof foam.mlang.Expr ) {
+        return ((foam.mlang.Expr) ps.value()).f(obj);
+      }
       return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
       `
     }
@@ -4558,8 +4561,16 @@ foam.CLASS({
   methods: [
     {
       name: 'f',
-      code: function(o) { return o; },
-      javaCode: 'return obj;'
+      code: function(o) {
+        return o.model_.ID && o.model_ID.get(o) || o;
+      },
+      javaCode: `
+      if ( obj instanceof foam.core.FObject ) {
+        foam.core.PropertyInfo id = (foam.core.PropertyInfo) ((foam.core.FObject) obj).getClassInfo().getAxiomByName("id");
+        if ( id != null ) return id.get(obj);
+      }
+      return obj;
+      `
     }
   ]
 });

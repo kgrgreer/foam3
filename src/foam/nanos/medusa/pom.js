@@ -40,6 +40,7 @@ foam.POM({
     { name: "MedusaEntryTimeoutException",                                                flags: "js|java" },
     { name: "MedusaException",                                                            flags: "js|java" },
     { name: "MedusaHealth",                                                               flags: "js|java" },
+    { name: "MedusaHealthCitationView",                                                   flags: "js" },
     { name: "MedusaHealthFactory",                                                        flags: "js|java" },
     { name: "MedusaHealthHeartbeatService",                                               flags: "js|java" },
     { name: "MedusaHealthStatusDAO",                                                      flags: "js|java" },
