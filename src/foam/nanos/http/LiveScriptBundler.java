@@ -30,6 +30,7 @@ import static io.methvin.watcher.DirectoryChangeEvent.EventType.DELETE;
 import static io.methvin.watcher.DirectoryChangeEvent.EventType.MODIFY;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
+@Deprecated(since = "3.31", forRemoval = true)
 public class LiveScriptBundler
   implements WebAgent, ContextAware, NanoService
 {

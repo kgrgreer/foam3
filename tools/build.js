@@ -403,9 +403,6 @@ task(function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom = POM;
 
-  if ( DISABLE_LIVESCRIPTBUNDLER )
-    pom += ',./tools/journal_extras/disable_livescriptbundler/pom';
-
   if ( JOURNAL_CONFIG ) {
     var includes = {};
     JOURNAL_CONFIG.split(',').forEach(c => {
@@ -647,7 +644,6 @@ var
   DEBUG                     = false,
   DELETE_RUNTIME_JOURNALS   = false,
   DELETE_RUNTIME_LOGS       = false,
-  DISABLE_LIVESCRIPTBUNDLER = false,
   EXPLICIT_JOURNALS         = '',
   FS                        = 'rw',
   GEN_JAVA                  = true,
@@ -810,8 +806,6 @@ const ARGS = {
       VERSION = args;
       info('VERSION=' + VERSION);
     } ],
-  w: [ 'Disable liveScriptBundler service. (development only)',
-    () => DISABLE_LIVESCRIPTBUNDLER = true ],
   W: [ 'PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1',
     args => { WEB_PORT = args; info('WEB_PORT=' + WEB_PORT); } ],
   x: [ 'Check dependencies for known vulnerabilities.',
@@ -899,7 +893,7 @@ task(function all() {
 
   setupDirs();
 
-  if ( DISABLE_LIVESCRIPTBUNDLER || PACKAGE || RUN_JAR || TEST || BENCHMARK ) {
+  if ( PACKAGE || RUN_JAR || TEST || BENCHMARK ) {
     packageFOAM();
   }
 
