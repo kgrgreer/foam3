@@ -1,0 +1,26 @@
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.alarming.alarmWidget",
+  label: "Alarms",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Alarms",
+      currentView: {
+        class: "foam.dashboard.view.DAOTable",
+        dao: "alarmDAO",
+        predicate: {
+          class: "foam.mlang.predicate.FScriptPredicate",
+          query: 'isActive==true&&(severity==foam.log.LogLevel.ERROR || severity==foam.log.LogLevel.WARN)'
+        },
+        limit: 4,
+        citationView: "foam.nanos.alarming.AlarmCitationView",
+        viewMore: true,
+        emptyTitle: "No activity"
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})
