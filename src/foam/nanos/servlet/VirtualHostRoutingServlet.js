@@ -152,13 +152,7 @@ foam.CLASS({
           out.println(".js\\"></script>");
         } else {
           // development
-          if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
-          } else {
-            out.println("<script async language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
-            if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
-            out.println("\\"></script>");
-          }
+          out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
         }
       }
 
