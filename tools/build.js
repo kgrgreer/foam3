@@ -154,7 +154,9 @@ function execSync(cmd, options) {
 
 
 function task(f) {
-  tasks.push(f.name);
+  if ( tasks.indexOf(f.name) === -1 )
+    tasks.push(f.name);
+
   var fired = false;
   var rec   = [ ];
   globalThis[f.name] = function() {
@@ -701,7 +703,8 @@ const ARGS = {
         console.log('  -' + a + ': ' + ARGS[a][0]);
       });
       tasks.sort();
-      console.log('\nTasks:', tasks.join(', '));
+      var excludes = /^(before|after)_/;
+      console.log('\nTasks:', tasks.filter(t => ! excludes.test(t)).join(', '));
       quit(0);
     } ],
   i: [ 'Install npm and git hooks',
@@ -879,15 +882,8 @@ task(function all() {
 });
 
 // Install POM tasks
-if ( TASKS ) {
-  TASKS.forEach(f => {
-    if ( tasks.indexOf(f.name) > -1 ) {
-      task(f);
-    } else {
-      globalThis[f.name] = f;
-    }
-  });
-}
+if ( TASKS )
+  TASKS.forEach(f => task(f));
 
 all();
 
