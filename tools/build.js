@@ -323,7 +323,7 @@ task(function jarWebroot() {
   copyDir('./foam3/webroot', webroot);
 
   ensureDir(webroot + '/favicon');
-  copyDir('./favicon', webroot + '/favicon');
+  copyDir('./foam3/favicon', webroot + '/favicon');
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
@@ -934,8 +934,8 @@ if ( TASKS ) {
   // Exports local variables and functions for POM tasks
   EXPORTS = {
     TARGET_DIR,
-    copyDir,
-    copyFile
+    copyFile,
+    copyDir
   }
 };
 
