@@ -935,6 +935,7 @@ if ( TASKS ) {
 
   // Exports local variables and functions for POM tasks
   EXPORTS = {
+    JOURNAL_CONFIG,
     TARGET_DIR,
     copyFile,
     copyDir
