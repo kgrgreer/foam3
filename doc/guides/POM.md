@@ -50,6 +50,11 @@ can be specified with & and | alone.
 
 A list of Java Maven library dependencies.
 
+### tasks
+
+A list of POM-specific build tasks. Allow for adding new build tasks, overwriting
+existing tasks and defining before and after tasks.
+
 ### JSLib
 
 Like adding a JSLib Axiom. Is read by foam.nanos.servlet.VirtualHostRoutingServlet.
@@ -66,6 +71,29 @@ foam.POM({
     [2023] Acme Corporation
     All Rights Reserved.
   `,
+  tasks: [
+    // call before `versions' task
+    function before_versions() {
+      console.log('---------- before versions');
+    },
+
+    // overwrite `versions' task
+    function versions() {
+      // call `myVersions' task
+      myVersion();
+    },
+
+    // call after `versions' task
+    function after_versions(build) {
+      console.log('---------- after versions');
+    },
+
+    // define new task
+    function myVersion() {
+      // access to `JAR_OUT' env variable
+      console.log('---------- my versions', JAR_OUT);
+    }
+  ],
   excludes: [
     'Something.java'
   ],
