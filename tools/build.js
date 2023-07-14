@@ -56,7 +56,6 @@
 //  7. -XcleanLib will cause pom.xml to be regenerated and maven to be rerun
 //
 // TODO:
-//   - rename NANOPAY to PROJECT
 //   - merge build and target
 //   - should genjs extract version from POM?
 //   - extract common build .js library code to a library
@@ -109,7 +108,7 @@ var
   TESTS                     = '',
   WEB_PORT                  = null,
   FOAM_REVISION,
-  NANOPAY_REVISION
+  PROJECT_REVISION
 ;
 
 // Top-Level Loaded POM Object, not be be confused with POM, which is the name of POM(s) to be loaded
@@ -303,9 +302,9 @@ Main-Class: foam.nanos.boot.Boot
 Class-Path: ${jars}
 Implementation-Title: ${PROJECT.name}
 Implementation-Version: ${VERSION}
-Specification-Version: ${NANOPAY_REVISION}
+Specification-Version: ${PROJECT_REVISION}
 Implementation-Timestamp: ${new Date()}
-${PROJECT.name}-Revision: ${NANOPAY_REVISION}
+${PROJECT.name}-Revision: ${PROJECT_REVISION}
 FOAM-Revision: ${FOAM_REVISION}
 Implementation-Vendor: ${PROJECT.name}
 `.trim() + '\n';
@@ -373,10 +372,10 @@ task(function install() {
   process.chdir('..');
 
   if ( IS_MAC ) {
-    ensureDir(path.join(NANOPAY_HOME, 'journals'));
-    ensureDir(path.join(NANOPAY_HOME, 'logs'));
-    // fs.mkdirSync(path.join(NANOPAY_HOME, 'journals'), { recursive: true });
-    // fs.mkdirSync(path.join(NANOPAY_HOME, 'logs'),     { recursive: true });
+    ensureDir(path.join(APP_HOME, 'journals'));
+    ensureDir(path.join(APP_HOME, 'logs'));
+    // fs.mkdirSync(path.join(APP_HOME, 'journals'), { recursive: true });
+    // fs.mkdirSync(path.join(APP_HOME, 'logs'),     { recursive: true });
   }
 
   // git hooks
@@ -426,8 +425,8 @@ task(function cleanLib() {
 
 task(function clean() {
   if ( RUN_JAR || TEST || BENCHMARK ) {
-    emptyDir(`${NANOPAY_HOME}/bin`);
-    emptyDir(`${NANOPAY_HOME}/lib`);
+    emptyDir(`${APP_HOME}/bin`);
+    emptyDir(`${APP_HOME}/lib`);
   }
 
   emptyDir(BUILD_DIR);
@@ -438,7 +437,7 @@ task(function clean() {
 
 
 task(function copyLib() {
-  copyDir(TARGET_DIR + '/lib', path.join(NANOPAY_HOME, 'lib'));
+  copyDir(TARGET_DIR + '/lib', path.join(APP_HOME, 'lib'));
 });
 
 task(function genJS() {
@@ -483,7 +482,7 @@ task(function buildJar() {
   jarImages();
 
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${NANOPAY_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${APP_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -513,9 +512,9 @@ task(function deleteRuntimeLogs() {
 
 
 task(function deployToHome() {
-  copyDir('./deploy/bin', path.join(NANOPAY_HOME, 'bin'));
-  copyDir('./deploy/etc', path.join(NANOPAY_HOME, 'etc'));
-  copyDir(TARGET_DIR + '/lib', path.join(NANOPAY_HOME, 'lib'));
+  copyDir('./deploy/bin', path.join(APP_HOME, 'bin'));
+  copyDir('./deploy/etc', path.join(APP_HOME, 'etc'));
+  copyDir(TARGET_DIR + '/lib', path.join(APP_HOME, 'lib'));
 });
 
 
@@ -526,7 +525,7 @@ task(function startNanos(nanos_dir) {
 
     if ( RUN_USER ) OPT_ARGS += ` -U${RUN_USER}`;
     if ( WEB_PORT ) OPT_ARGS += ` -W${WEB_PORT}`;
-    exec(`${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -N${NANOPAY_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${VERSION} ${OPT_ARGS}`);
+    exec(`${APP_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -N${APP_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${VERSION} ${OPT_ARGS}`);
   } else {
     MESSAGE = `Starting NANOS ${INSTANCE}`;
 
@@ -590,16 +589,20 @@ task(function startNanos(nanos_dir) {
 });
 
 
-task(function getNanopayGitHash() {
-  var out;
+task(function getProjectGitHash() {
+  var out = 'Unversioned';
 
   try {
     out = execSync('git describe --exact-match HEAD', {stdio: 'ignore'});
   } catch (x) {
-    out = execSync('git rev-parse --short HEAD');
+    try {
+      out = execSync('git rev-parse --short HEAD');
+    } catch (_) {
+      warning('Cannot determine project revision, no commit yet');
+    }
   }
 
-  NANOPAY_REVISION = out.toString().trim();
+  PROJECT_REVISION = out.toString().trim();
 });
 
 
@@ -609,11 +612,11 @@ task(function getFOAMGitHash() {
 
 
 task(function versions() {
-  getNanopayGitHash();
+  getProjectGitHash();
   getFOAMGitHash();
 
   console.log(`Application Version: ${VERSION}`);
-  console.log(`${PROJECT.name} revision:    ${NANOPAY_REVISION}`);
+  console.log(`${PROJECT.name} revision:    ${PROJECT_REVISION}`);
   console.log(`FOAM revision:       ${FOAM_REVISION}`);
 });
 
@@ -621,16 +624,16 @@ task(function versions() {
 task(function setupDirs() {
   try {
     // ensureDir(`${PROJECT_HOME}/.foam`); // Only used by foamlink?
-    ensureDir(NANOPAY_HOME);
+    ensureDir(APP_HOME);
     if ( ensureDir(TARGET_DIR + '/lib') ) {
       // Remove stale pom.xml if the /lib dir needed to be created
       // Wouldn't be necessary if pom.xml were written into the TARGET_DIR but then
       // you couldn't check it in to get dependbot warnings.
       rmfile('pom.xml');
     }
-    ensureDir(`${NANOPAY_HOME}/lib`);
-    ensureDir(`${NANOPAY_HOME}/bin`);
-    ensureDir(`${NANOPAY_HOME}/etc`);
+    ensureDir(`${APP_HOME}/lib`);
+    ensureDir(`${APP_HOME}/bin`);
+    ensureDir(`${APP_HOME}/etc`);
     ensureDir(LOG_HOME);
     ensureDir(JOURNAL_OUT);
     ensureDir(JOURNAL_HOME);
@@ -638,7 +641,7 @@ task(function setupDirs() {
     ensureDir(DOCUMENT_OUT);
   } catch ( e ) {
     console.log(e);
-    error(`Directory is not writable! Please run 'sudo chown -R $USER ${NANOPAY_ROOT}' first.`);
+    error(`Directory is not writable! Please run 'sudo chown -R $USER ${APP_ROOT}' first.`);
   }
 });
 
@@ -689,29 +692,33 @@ function readFromPidFile() {
 
 // Environment Variables which are exported when updated
 buildEnv({
-  NANOPAY_ROOT:      () => ( TEST || BENCHMARK ) ? '/tmp' : '/opt',
-  NANOPAY_HOME:      () => NANOPAY_ROOT + ( ( INSTANCE !== 'localhost' ) ? `/${PROJECT.name}_` + INSTANCE : `/${PROJECT.name}`),
-  DOCUMENT_HOME:     () => `${NANOPAY_HOME}/documents`,
+  // App resources path
+  APP_ROOT:          () => ( TEST || BENCHMARK ) ? '/tmp' : '/opt',
+  APP_HOME:          () => APP_ROOT + ( ( INSTANCE !== 'localhost' ) ? `/${PROJECT.name}_` + INSTANCE : `/${PROJECT.name}`),
+  JOURNAL_HOME:      () => `${APP_HOME}/journals`,
+  DOCUMENT_HOME:     () => `${APP_HOME}/documents`,
+  LOG_HOME:          () => `${APP_HOME}/logs`,
+  JAR_OUT:           () => `${APP_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
+
+  // Project resources path
+  PROJECT_HOME:      PWD,
+  JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
   DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`,
+
+  // Build options and pid
   JAVA_OPTS:         '',
   JAVA_TOOL_OPTIONS: () => JAVA_OPTS,
   JAR_INCLUDES:      '',
-  JOURNAL_HOME:      () => `${NANOPAY_HOME}/journals`,
-  JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
-  LOG_HOME:          () => `${NANOPAY_HOME}/logs`,
-  JAR_OUT:           () => `${NANOPAY_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
-  NANOS_PIDFILE:     '/tmp/nanos.pid',
-  PROJECT_HOME:      PWD
+  NANOS_PIDFILE:     '/tmp/nanos.pid'
 });
 
 
 function setenv() {
   if ( TEST || BENCHMARK ) {
-    rmdir(NANOPAY_HOME);
-    JAVA_OPTS += ' -enableassertions';
+    rmdir(APP_HOME);
+    JAVA_OPTS = '-enableassertions ' + JAVA_OPTS;
   }
 
-  JAVA_OPTS += ` -DNANOPAY_HOME=${NANOPAY_HOME}`;
   JAVA_OPTS += ` -DJOURNAL_HOME=${JOURNAL_HOME}`;
   JAVA_OPTS += ` -DDOCUMENT_HOME=${DOCUMENT_HOME}`;
 
@@ -814,7 +821,7 @@ const ARGS = {
     } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],
-  v: [ 'java compile only, no code generation.',
+  v: [ 'show versions.',
     () => {
       versions();
       quit(0);
