@@ -121,8 +121,7 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-// var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -464,6 +463,7 @@ task(function buildJar() {
   jarWebroot();
   jarImages();
 
+  rmfile(${JAR_OUT});
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
   execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${APP_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
