@@ -117,8 +117,8 @@ var PROJECT;
 // Short-form of PROJECT.version
 var VERSION;
 
-// Root POM tasks
-var TASKS;
+// Root POM tasks and exports
+var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
 var BUILD_DIR  = './build2', TARGET_DIR = './build2';
@@ -164,14 +164,14 @@ function task(f) {
 
     // before_task
     if ( typeof globalThis['before_' + f.name] === 'function' )
-      globalThis['before_' + f.name]();
+      globalThis['before_' + f.name](EXPORTS);
 
     info(`Starting Task :: ${f.name}`);
     var start = Date.now();
     rec[0] = ''.padEnd(2*depth) + f.name;
     rec[2] = start;
     depth++;
-    f();
+    f(EXPORTS);
     depth--;
     var end = Date.now();
     var dur = ((end-start)/1000).toFixed(1);
@@ -180,7 +180,7 @@ function task(f) {
 
     // after_task
     if ( typeof globalThis['after_' + f.name] === 'function' )
-      globalThis['after_' + f.name]();
+      globalThis['after_' + f.name](EXPORTS);
   }
 }
 
@@ -316,35 +316,21 @@ Implementation-Vendor: ${PROJECT.name}
   return m;
 };
 
-function jarWebroot() {
+task(function jarWebroot() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
 
   var webroot = TARGET_DIR + '/webroot';
   ensureDir(webroot);
   copyDir('./foam3/webroot', webroot);
-  copyDir('./nanopay/src/resources/webroot', webroot);
 
   ensureDir(webroot + '/favicon');
   copyDir('./favicon', webroot + '/favicon');
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
+});
 
-  copyFile('./nanopay/src/net/nanopay/ui/unauthorizedAccess/unauthorizedAccess.html', webroot + '/unauthorizedAccess.html');
-  copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcode.js', webroot + '/qrcode.js');
-  copyFile('./nanopay/src/net/nanopay/ui/qrcode/qrcodegen.js', webroot + '/qrcodegen.js');
-
-  // Use dot notation for xsd path on jar file deployment
-  var xsdPath = 'nanopay/src/net/nanopay/payroll/tax/ca/cra/v2023/xsd';
-  var simple_xsd  = xsdPath + '/simple.xsd';
-  var complex_xsd = xsdPath + '/complex.xsd';
-  var t4_xsd      = xsdPath + '/t4.xsd';
-  copyFile('./' + simple_xsd , webroot + '/' + simple_xsd.replaceAll('/', '.'));
-  copyFile('./' + complex_xsd, webroot + '/' + complex_xsd.replaceAll('/', '.'));
-  copyFile('./' + t4_xsd     , webroot + '/' + t4_xsd.replaceAll('/', '.'));
-}
-
-function jarImages() {
+task(function jarImages() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
 
   var images = TARGET_DIR + '/images';
@@ -352,10 +338,7 @@ function jarImages() {
   copyDir('./foam3/src/foam/u2/images', images);
   copyDir('./foam3/src/foam/nanos/images', images);
   copyDir('./foam3/src/foam/support/images', images);
-  copyDir('./nanopay/src/net/nanopay/images', images);
-  copyDir('./nanopay/src/net/nanopay/payroll/images', images);
-  copyDir('./nanopay/src/net/nanopay/flinks/widget/images', images);
-}
+});
 
 
 task(function showManifest() {
@@ -394,7 +377,7 @@ task(function deployDocuments() {
 });
 
 // Function to deploy journals
-task(function deployJournals(directory) {
+task(function deployJournals() {
   console.log('JOURNAL_OUT: ', JOURNAL_OUT);
   console.log('JOURNAL_HOME:', JOURNAL_HOME);
 
@@ -519,7 +502,7 @@ task(function deployToHome() {
 
 
 // Function to start Nanos
-task(function startNanos(nanos_dir) {
+task(function startNanos() {
   if ( RUN_JAR ) {
     var OPT_ARGS = ``;
 
@@ -946,8 +929,16 @@ task(function all() {
 });
 
 // Install POM tasks
-if ( TASKS )
+if ( TASKS ) {
   TASKS.forEach(f => task(f));
+
+  // Exports local variables and functions for POM tasks
+  EXPORTS = {
+    TARGET_DIR,
+    copyDir,
+    copyFile
+  }
+};
 
 all();
 
