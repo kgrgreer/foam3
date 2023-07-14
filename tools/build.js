@@ -143,6 +143,7 @@ process.on('unhandledRejection', e => {
 var summary = [];
 var depth   = 1;
 var tasks   = [];
+var running = {};
 
 
 function execSync(cmd, options) {
@@ -157,30 +158,32 @@ function task(f) {
 
   var fired = false;
   var rec   = [ ];
+
+  var SUPER = globalThis[f.name] || function() { };
   globalThis[f.name] = function() {
     if ( fired ) return;
     fired = true;
-    summary.push(rec);
 
-    // before_task
-    if ( typeof globalThis['before_' + f.name] === 'function' )
-      globalThis['before_' + f.name](EXPORTS);
+    running[f.name] = (running[f.name] || 0) + 1;
+    if ( running[f.name] === 1 ) {
+      summary.push(rec);
+      info(`Starting Task :: ${f.name}`);
+      var start = Date.now();
+      rec[0] = ''.padEnd(2*depth) + f.name;
+      rec[2] = start;
+      depth++;
+    }
 
-    info(`Starting Task :: ${f.name}`);
-    var start = Date.now();
-    rec[0] = ''.padEnd(2*depth) + f.name;
-    rec[2] = start;
-    depth++;
-    f(EXPORTS);
-    depth--;
-    var end = Date.now();
-    var dur = ((end-start)/1000).toFixed(1);
-    info(`Finished Task :: ${f.name} in ${dur} seconds`);
-    rec[1] = dur;
+    f(Object.assign({ SUPER }, EXPORTS));
 
-    // after_task
-    if ( typeof globalThis['after_' + f.name] === 'function' )
-      globalThis['after_' + f.name](EXPORTS);
+    running[f.name] -= 1;
+    if ( running[f.name] === 0 ) {
+      depth--;
+      var end = Date.now();
+      var dur = ((end-start)/1000).toFixed(1);
+      info(`Finished Task :: ${f.name} in ${dur} seconds`);
+      rec[1] = dur;
+    }
   }
 }
 
