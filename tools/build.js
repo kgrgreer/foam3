@@ -64,7 +64,7 @@
 //   - only add deployments/u when -u specified
 //
 // diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
-// ln -s /Volumes/RAM_DISK /Users/kgr/NANOPAY/build2
+// ln -s /Volumes/RAM_DISK /path/to/project/build2
 
 const child_process = require('child_process');
 const fs            = require('fs');
@@ -121,7 +121,8 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build2', TARGET_DIR = './target';
+// var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
