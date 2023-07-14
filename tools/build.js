@@ -414,7 +414,7 @@ task(function clean() {
   emptyDir(BUILD_DIR);
   emptyDir(TARGET_DIR + '/journals'); // Don't remove whole directory to avoid removing java libs under ./target/lib
   // TODO: convert to Node to make Windows compatible
-  execSync('rm -f foam-bin-*.js');
+  execSync('rm -f foam-bin*.js');
 });
 
 
