@@ -34,16 +34,30 @@
         globalThis.foam.flags[pair[0]] = (pair[1] == 'true');
       }
 
-      var path = document.currentScript && document.currentScript.src;
+      var src  = document.currentScript && document.currentScript.src;
+      var path = src && new URL(src).pathname || '';
 
-      path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
+      [path, globalThis.FOAM_BIN] = /^\/foam-bin(.)*\.js$/.test(path)
+        ? ['/', path] : [path.substring(0, path.lastIndexOf('/foam.js') + 1)];
+
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
       foam.cwd = path;
       foam.main();
     },
     main: function() {
-      foam.require(document.currentScript.getAttribute("project") || 'pom', false, true);
+      var poms = (document.currentScript.getAttribute("project") || 'pom').split(',');
+      var cwd = foam.cwd;
+
+      // Reset foam cwd to root directory when loading pom,
+      // so that appConfig.pom can be configured relative to the project root
+      // instead of foam.js script
+      foam.cwd = '/';
+      poms.forEach(pom => {
+        foam.require(pom, false, true);
+      });
+
+      foam.cwd = cwd;
     },
     checkFlags: function(flags) {
       if ( ! flags ) return true;

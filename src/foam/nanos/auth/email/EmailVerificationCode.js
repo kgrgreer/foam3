@@ -199,8 +199,8 @@ foam.CLASS({
     {
       name: 'resendCode',
       section: 'verificationCodeSection',
-      isAvailable: function(codeVerified) {
-        return ! codeVerified;
+      isAvailable: function(codeVerified, showAction) {
+        return ! codeVerified && showAction;
       },
       buttonStyle: 'TEXT',
       code: async function() {
