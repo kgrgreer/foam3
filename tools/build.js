@@ -463,7 +463,7 @@ task(function buildJar() {
   jarWebroot();
   jarImages();
 
-  rmfile(${JAR_OUT});
+  rmfile(JAR_OUT);
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
   execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${APP_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
@@ -495,8 +495,7 @@ task(function deleteRuntimeLogs() {
 
 
 task(function deployToHome() {
-  copyDir('./deploy/bin', path.join(APP_HOME, 'bin'));
-  copyDir('./deploy/etc', path.join(APP_HOME, 'etc'));
+  copyDir('./foam3/tools/deploy/bin', path.join(APP_HOME, 'bin'));
   copyDir(TARGET_DIR + '/lib', path.join(APP_HOME, 'lib'));
 });
 
@@ -508,7 +507,7 @@ task(function startNanos() {
 
     if ( RUN_USER ) OPT_ARGS += ` -U${RUN_USER}`;
     if ( WEB_PORT ) OPT_ARGS += ` -W${WEB_PORT}`;
-    exec(`${APP_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -N${APP_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${VERSION} ${OPT_ARGS}`);
+    exec(`${APP_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -n${PROJECT.name} -N${APP_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${VERSION} ${OPT_ARGS}`);
   } else {
     MESSAGE = `Starting NANOS ${INSTANCE}`;
 
