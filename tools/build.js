@@ -357,8 +357,6 @@ task(function install() {
   if ( IS_MAC ) {
     ensureDir(path.join(APP_HOME, 'journals'));
     ensureDir(path.join(APP_HOME, 'logs'));
-    // fs.mkdirSync(path.join(APP_HOME, 'journals'), { recursive: true });
-    // fs.mkdirSync(path.join(APP_HOME, 'logs'),     { recursive: true });
   }
 
   // git hooks
