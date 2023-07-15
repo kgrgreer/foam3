@@ -60,12 +60,19 @@
 //   - merge build and target
 //   - should genjs extract version from POM?
 //   - extract common build .js library code to a library
-//   - support "tasks:" in POM
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
 //
 // diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
 // ln -s /Volumes/RAM_DISK /Users/kgr/NANOPAY/build2
+
+/*
+diskutil erasevolume HFS+ 'RAMDisk' `hdiutil attach -nomount ram://848000`
+mkdir /Volumes/RamDisk/build
+rm -rf ~/NANOPAY/build
+ln -s /Volumes/RamDisk/build ~/NANOPAY/build
+
+*/
 
 const child_process = require('child_process');
 const fs            = require('fs');
