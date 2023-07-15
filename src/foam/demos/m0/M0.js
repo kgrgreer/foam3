@@ -75,23 +75,26 @@ const I_DESCS = {
 /*
 cond codes:
 EQ,NE,CS/HS,CC/LO,MI,PL,VS,VC,HI,LS,GE,LT,GT,LE // ,{AL}
-
-AL, Always, true
-EQ, EQual (last result zero), Z == 1
-NE, Not Equal (last result nonzero), Z == 0
-{CS|HS} Carry Set, unsigned Higher or Same (following a compare), C == 1
-{CC|LO} Carry Clear, unsigned LOwer (follwing a comparison), C == 0
-MI, MInus (last result negative), N==1
-PL, PLus (last result greater than or equal to zero), N == 1
-VS, V flag Set (signed overflow on last result), V == 1
-VC, V flag Clear (no signed overflow on last result), V == 0
-HI, unsigned HIgher (following a comparison), C == 1 && Z == 0
-LS, unsigned Lower or Same (following a comparison), c == 0 || Z == 1
-GE, signed Greater than or Equal, N == V
-LT, signed Less Than, N != V
-GT, signed Greater Than, N == V && Z == 0
-LE, signed Less than or Equal, N != V || Z == 1
 */
+
+const COND_CODES = `
+EQ,EQual (last result zero),Z == 1
+NE,Not Equal (last result nonzero),Z == 0
+{CS|HS} Carry Set,unsigned Higher or Same (following a compare),C == 1
+{CC|LO} Carry Clear,unsigned LOwer (follwing a comparison),C == 0
+MI,MInus (last result negative),N==1
+PL,PLus (last result greater than or equal to zero),N == 1
+VS,V flag Set (signed overflow on last result),V == 1
+VC,V flag Clear (no signed overflow on last result),V == 0
+HI,unsigned HIgher (following a comparison),C == 1 && Z == 0
+LS,unsigned Lower or Same (following a comparison),c == 0 || Z == 1
+GE,signed Greater than or Equal,N == V
+LT,signed Less Than,N != V
+GT,signed Greater Than,N == V && Z == 0
+LE,signed Less than or Equal,N != V || Z == 1
+AL,Always,true
+`.trim().split('\n');
+
 const INSTRUCTIONS_ = `
 LSL|LSR,0000,op,immed5,Lm,Ld
 ASR,00010,immed5,Lm,Ld
