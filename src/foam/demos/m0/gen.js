@@ -81,60 +81,65 @@
  `.trim().split('\n');
 
  const INSTRUCTIONS_ = `
- LSL|LSR,0000,op,immed5,Lm,Ld
- ASR,00010,immed5,Lm,Ld
- ADD|SUB,000110,op,Lm,Ln,Ld
- ADD|SUB,000111,op,immed3,Ln,Ld
- MOV|CMP,0010,op,Ld/Ln,immed8
- ADD|SUB,0011,op,Ld,immed8
- AND|EOR|LSL|LSR,01000000,op,Lm/Ls,Ld
- ASR|ADC|SBC|ROR,01000001,op,Lm/Ls,Ld
- TST|NEG|CMP|CMN,01000010,op,Lm,Ld/Ln
- ORR|MUL|BIC|MVN,01000011,op,Lm,Ld
- CPY,0100011000,Lm,Ld
- ADD|MOV,010001,op,001,Hm&7,Ld
- ADD|MOV,010001,op,010,Lm,Hd&7
- ADD|MOV,010001,op,011,Hm&7,Hd&7
- CMP,0100010101,Hm&7,Ln
- CMP,0100010110,Lm,Hn&7
- CMP,010001011,Hm&7,Hn&7
- BX|BLX,01000111,op,Rm,000
- LDR,01001,Ld,immed8
- STR|STRH|STRB|LDRSB,01010,op,Lm,Ln,Ld
- LDR|LDRH|LDRB|LDRSH,01011,op,Lm,Ln,Ld
- STR|LDR,0110,op,immed5,Ln,Ld
- STRB|LDRB,0111,op,immed5,Ln,Ld
- STRH|LDRH,1000,op,immed5,Ln,Ld
- STR|LDR,1001,op,Ld,immed8
- ADD,1010,pc|sp,Ld,immed8
- ADD|SUB,10110000,op,immed7
- SXTH|SXTB|UXTH|UXTB,10110010,op,Lm,Ld
- REV|REV16||REVSH,10111010,op,Lm<Ld
- PUSH|POP,1011,op,10,R,register_list
- SETEND LE|SETEND BE,101101100101,op,000
- CPSIE|SPSID,10110110011,op,0a,i,f
- BKPT,10111110,immed8
- STMIA|LDMIA,1100,op,Ln,register_list
- BEQ|BNE|BCS|BCC|BMI|BPL|BVS|BVC|BHI|BLS|BGE|BLT|BGT|BLE,1101,op,eightbitoffset
- SWI,11011110,x
- B,0,elevenbitoffset
- BLX,11101,unsignedtenbitoffset
- BL,11111,unsignedelevenbitoffset
+LSL|LSR,0000,op,immed5,Lm,Ld
+ASR,00010,immed5,Lm,Ld
+ADD|SUB,000110,op,Lm,Ln,Ld
+ADD|SUB,000111,op,immed3,Ln,Ld
+MOV|CMP,0010,op,Ld/Ln,immed8
+ADD|SUB,0011,op,Ld,immed8
+AND|EOR|LSL|LSR,01000000,op,Lm/Ls,Ld
+ASR|ADC|SBC|ROR,01000001,op,Lm/Ls,Ld
+TST|NEG|CMP|CMN,01000010,op,Lm,Ld/Ln
+ORR|MUL|BIC|MVN,01000011,op,Lm,Ld
+CPY,0100011000,Lm,Ld
+ADD|MOV,010001,op,001,Hm&7,Ld
+ADD|MOV,010001,op,010,Lm,Hd&7
+ADD|MOV,010001,op,011,Hm&7,Hd&7
+CMP,0100010101,Hm&7,Ln
+CMP,0100010110,Lm,Hn&7
+CMP,010001011,Hm&7,Hn&7
+BX|BLX,01000111,op,Rm,000
+LDR,01001,Ld,immed8
+STR|STRH|STRB|LDRSB,01010,op,Lm,Ln,Ld
+LDR|LDRH|LDRB|LDRSH,01011,op,Lm,Ln,Ld
+STR|LDR,0110,op,immed5,Ln,Ld
+STRB|LDRB,0111,op,immed5,Ln,Ld
+STRH|LDRH,1000,op,immed5,Ln,Ld
+STR|LDR,1001,op,Ld,immed8
+ADD,1010,pc|sp,Ld,immed8
+ADD|SUB,10110000,op,immed7
+SXTH|SXTB|UXTH|UXTB,10110010,op,Lm,Ld
+REV|REV16||REVSH,10111010,op,Lm<Ld
+PUSH|POP,1011,op,10,R,register_list
+SETEND LE|SETEND BE,101101100101,op,000
+CPSIE|SPSID,10110110011,op,0,a,i,f
+BKPT,10111110,immed8
+STMIA|LDMIA,1100,op,Ln,register_list
+BEQ|BNE|BCS|BCC|BMI|BPL|BVS|BVC|BHI|BLS|BGE|BLT|BGT|BLE,1101,op,eightbitoffset
+SWI,11011110,x
+B,0,elevenbitoffset
+BLX,11101,unsignedtenbitoffset
+BL,11111,unsignedelevenbitoffset
  `.trim().split('\n');
 
- INSTRUCTIONS_.forEach(i => {
-   var a  = i.split(',');
-   var is = a[0].split('|');
+const INSTRUCTIONS = [];
 
-   is.forEach((m, i) => {
-     if ( ! m ) return;
-     var b = foam.Array.clone(a);
-     b[0] = m;
-     var op_i = b.indexOf('op');
-     if ( op_i != -1 ) {
-       b[op_i] = i.toString(2).padStart(Math.ceil(Math.log2(is.length)), '0');
-     }
-     I_DESCS[b[0]] = b[0];
-     console.log(b);
-   });
- });
+INSTRUCTIONS_.forEach(i => {
+  var a  = i.split(',');
+  var is = a[0].split('|');
+
+  is.forEach((m, i) => {
+    if ( ! m ) return;
+    var b = foam.Array.clone(a);
+    b[0] = m;
+    var op_i = b.indexOf('op');
+    if ( op_i != -1 ) {
+      b[op_i] = i.toString(2).padStart(Math.ceil(Math.log2(is.length)), '0');
+    }
+    I_DESCS[b[0]] = b[0];
+    console.log(b);
+    INSTRUCTIONS.push(b);
+  });
+});
+
+INSTRUCTIONS.sort((a, b) => a[0].localeCompare(b[0]));
