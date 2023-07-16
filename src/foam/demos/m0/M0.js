@@ -130,7 +130,7 @@ SETEND LE|SETEND BE,101101100101,op,000
 CPSIE|SPSID,10110110011,op,0a,i,f
 BKPT,10111110,immed8
 STMIA|LDMIA,1100,op,Ln,register_list
-B,1101<condLT1110,eightbitoffset
+BEQ|BNE|BCS|BCC|BMI|BPL|BVS|BVC|BHI|BLS|BGE|BLT|BGT|BLE,1101,op,eightbitoffset
 SWI,11011110,x
 B,0,elevenbitoffset
 BLX,11101,unsignedtenbitoffset
@@ -147,7 +147,7 @@ INSTRUCTIONS_.forEach(i => {
     b[0] = m;
     var op_i = b.indexOf('op');
     if ( op_i != -1 ) {
-      b[op_i] = i.toString(2).padStart(Math.log2(is.length), '0');
+      b[op_i] = i.toString(2).padStart(Math.ceil(Math.log2(is.length)), '0');
     }
     I_DESCS[b[0]] = b[0];
     console.log(b);
