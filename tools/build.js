@@ -174,7 +174,7 @@ function task(f) {
       depth++;
     }
 
-    f(Object.assign({ SUPER }, EXPORTS));
+    f.bind(Object.assign({ SUPER }, EXPORTS))();
 
     running[f.name] -= 1;
     if ( running[f.name] === 0 ) {
