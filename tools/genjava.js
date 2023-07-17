@@ -36,6 +36,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   },
   {
     buildlib:      false, // generate Maven pom.xml
+    checklib:      false, // generate Maven pom.xml for checking dependencies vulnerabilities
     buildjournals: false, // generate journal.0 files
     genjava:       true,  // generate .java source from model files
     javac:         false, // compile generated and static .java files
@@ -258,6 +259,27 @@ function buildLibs() {
     throw new Error('Abort GENJAVA due to library versions conflict detected.');
   }
 
+  var buildPlugins = flags.checklib ?
+    `<build>
+      <plugins>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.3.1</version>
+          <configuration>
+            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>` : '';
+
   var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -271,12 +293,15 @@ function buildLibs() {
       <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
+    ${buildPlugins}
+
     <dependencies>${dependencies}</dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
+    if ( flags.buildlib )
+      execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
     console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }
@@ -326,6 +351,13 @@ function processPOMs() {
   console.log(`[GENJAVA] Found ${found} java files.`);
 }
 
+// generate Maven pom.xml for checking dependencies vulnerabilities, no need to
+// download the jar files and compile
+if ( flags.checklib ) {
+  processPOMs();
+  buildLibs();
+  process.exit(0);
+}
 
 if ( flags.javac || flags.buildlib || flags.buildjournals ) processPOMs();
 if ( flags.buildlib )                                       buildLibs();

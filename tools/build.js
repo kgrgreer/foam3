@@ -114,6 +114,8 @@ var
   TEST                      = false,
   TESTS                     = '',
   WEB_PORT                  = null,
+  VULNERABILITY_CHECK       = false,
+  VULNERABILITY_CHECK_SCORE = 9, // CVSS score (LOW:0..5 , MEDIUM:5..7 , HIGH:7..9 , CRITICAL:9..10, IGNORE:11) to fail the build
   FOAM_REVISION,
   PROJECT_REVISION
 ;
@@ -456,9 +458,15 @@ task(function genJava() {
 
   pom = Object.keys(pom).join(',');
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  var buildlib = VULNERABILITY_CHECK ? 'checklib' : 'buildlib';
+  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,${buildlib},xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
+function checkDeps(score) {
+  info('Checking dependencies for vulnerabilities...');
+  genJava();
+  execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+}
 
 task(function buildJava() {
   genJava();
@@ -824,10 +832,9 @@ const ARGS = {
   W: [ 'PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1',
     args => { WEB_PORT = args; info('WEB_PORT=' + WEB_PORT); } ],
   x: [ 'Check dependencies for known vulnerabilities.',
-    () => {
-      info('Checking dependencies for vulnerabilities...');
-      execSync('gradle dependencyCheckAnalyze --info');
-      // mvn dependency:analyze-only
+    args => {
+      VULNERABILITY_CHECK = true;
+      checkDeps(args);
       quit(0);
     } ],
   X: [ 'Execute a list of tasks.',
