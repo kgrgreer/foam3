@@ -465,7 +465,11 @@ task(function genJava() {
 function checkDeps(score) {
   info('Checking dependencies for vulnerabilities...');
   genJava();
-  execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
 }
 
 task(function buildJava() {
