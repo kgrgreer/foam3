@@ -730,7 +730,7 @@ const ARGS = {
   d: [ 'Run with JDPA debugging enabled on port 8000',
     () => DEBUG = true ],
   D: [ 'PORT : JDPA debugging enabled on port PORT.',
-    args => { ARGS.d[1](); DEBUG_PORT = args; } ],
+    args => { ARGS.d[1](); DEBUG_PORT = args; info('DEBUG_PORT=' + DEBUG_PORT); } ],
   e: [ 'Skipping genJava task.',
     () => {
       warning('Skipping genJava task');
