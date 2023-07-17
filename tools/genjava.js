@@ -214,7 +214,11 @@ function buildLibs() {
     var lib = groupId + ':' + artifactId;
     versions[lib] = [...(versions[lib] || []), { id, loc: d[1] }];
     // mark as conflicted if a different version found
-    if ( versions[lib].length == 2 && versions[lib][0].id === id ) versions[lib].pop();
+    if ( versions[lib].length == 2 && versions[lib][0].id === id ) {
+      versions[lib].pop();
+      // dependency already added to pom.xml
+      return;
+    }
     if ( versions[lib].length == 2 ) conflicts.push(lib);
 
     // Dependency exclusions
