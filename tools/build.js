@@ -749,8 +749,7 @@ const ARGS = {
         console.log('  -' + a + ': ' + ARGS[a][0]);
       });
       tasks.sort();
-      var excludes = /^(before|after)_/;
-      console.log('\nTasks:', tasks.filter(t => ! excludes.test(t)).join(', '));
+      console.log('\nTasks:', tasks.join(', '));
       quit(0);
     } ],
   i: [ 'Install npm and git hooks',
