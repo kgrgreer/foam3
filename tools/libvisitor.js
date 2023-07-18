@@ -1,23 +1,23 @@
+/**
+ * @license
+ * Copyright 2023 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+const path_ = require('path');
+
 exports.init = function() {
-  console.log('[LIBVISITOR] INIT');
+  console.log('[LIB VISITOR] INIT');
 }
 
 exports.visitPOM = function(pom) {
-  console.log('[LIBVISITOR] VISIT POM', pom.location);
-  loadLibs(pom);
-}
-
-exports.end = function() {
-  console.log('[LIBVISITOR] END');
-}
-
-
-function loadLibs(pom) {
+  console.log('[LIB VISITOR] VISIT POM', pom.location);
   pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => X.javaDependencies.push([d, pom.path]));
 }
 
+exports.end = function() {
+  console.log('[LIB VISITOR] END');
 
-function buildLibs() {
   // Build Maven file
   //  ensureDir(X.libdir);
   var pom = foam.poms[0].pom;
@@ -62,14 +62,14 @@ function buildLibs() {
 
   // Print versions conflict info and abort
   if ( conflicts.length > 0 ) {
-    console.log('[GENJAVA] Detected libs version conflict:');
+    console.log('[LIB VISITOR] Detected libs version conflict:');
     var info = '';
     conflicts.forEach(c => {
       info += '\t' + c + '\n' +
         versions[c].map(d => '\t\t' + d['id'] + ' at ' + d['loc']).join('\n') + '\n';
     });
     console.log(info);
-    throw new Error('Abort GENJAVA due to library versions conflict detected.');
+    throw new Error('Abort [LIB VISITOR] due to library versions conflict detected.');
   }
 
   var pomxml = `<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -89,9 +89,9 @@ function buildLibs() {
   </project>\n`.replaceAll(/^  /gm, '');
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
-    console.log('[GENJAVA] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
+    console.log('[LIB VISITOR] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
     execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
-    console.log('[GENJAVA] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
+    console.log('[LIB VISITOR] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
   }
 }

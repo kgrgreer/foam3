@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * Copyright 2023 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -14,7 +14,7 @@
 //     - call javac to compile files in javacfiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 
-console.log('[GENJAVA] Starting');
+console.log('[PGEN] Starting');
 
 const startTime = Date.now();
 
@@ -33,25 +33,25 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    visitors:      './libvisitor'
+    visitors:      './libvisitor,./javacvisitor' // TODO: genjava, doc, journal, js, swift, verbose?
   },
   {
     // buildlib:      false, // generate Maven pom.xml
     buildjournals: false, // generate journal.0 files
     genjava:       true,  // generate .java source from model files
-    javac:         false, // compile generated and static .java files
+    // javac:         false, // compile generated and static .java files
     verbose:       false  // print extra status information
   }
 );
 
-globalThis.X = X;
+globalThis.X     = X;
+globalThis.flags = flags;
 
 const VISITORS = X.visitors.split(',').map(require);
 
 VISITORS.forEach(v => v.init());
 
 X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
-X.javaFiles        = [];
 X.journalFiles     = [];
 X.journalOutput    = {};
 X.javaDependencies = [];
@@ -83,9 +83,7 @@ for ( var key in foam.USED ) try {
   }
 } catch(x) {}
 
-console.log(`END GENJAVA: ${jCount}/${mCount} models processed, ${X.javaFiles.length} Java files created in ${Math.round((Date.now()-startTime)/1000)}s.`);
-
-VISITORS.forEach(v => v.end());
+console.log(`END PGEN: ${jCount}/${mCount} models processed in ${Math.round((Date.now()-startTime)/1000)}s.`);
 
 // console.log(X.javaFiles);
 // console.log(foam.poms);
@@ -94,7 +92,7 @@ VISITORS.forEach(v => v.end());
 var found = 0;
 
 
-function writeFileIfUpdated(file, txt) {
+globalThis.writeFileIfUpdated = function writeFileIfUpdated(file, txt) {
   if ( fs_.existsSync(file) && ( fs_.readFileSync(file).toString() === txt ) )
     return false;
 
@@ -103,18 +101,18 @@ function writeFileIfUpdated(file, txt) {
 }
 
 
-function execSync(cmd, options) {
+globalThis.execSync = function execSync(cmd, options) {
   console.log('\x1b[0;32mExec: ' + cmd + '\x1b[0;0m');
   return exec_.execSync(cmd, options);
 }
 
 
-function verbose() {
+globalThis.verbose = function verbose() {
   if ( flags.verbose ) console.log.apply(console, arguments);
 }
 
 
-function isExcluded(pom, f) {
+globalThis.isExcluded = function isExcluded(pom, f) {
   var ex = pom.pom.excludes;
   if ( ! ex ) return false;
   for ( var i = 0 ; i < ex.length ; i++ ) {
@@ -145,15 +143,13 @@ function processDir(pom, location, skipIfHasPOM) {
       if ( f.name.indexOf('android') != -1 ) return;
       if ( f.name.indexOf('examples') != -1 ) return;
       if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
-    } else if ( f.name.endsWith('.java') ) {
-      if ( ! isExcluded(pom, fn) ) {
-        verbose('\t\tjava source:', fn);
-        found++;
-        X.javaFiles.push(fn);
+    } else {
+      VISITORS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
+
+      if ( f.name.endsWith('.jrl') ) {
+        verbose('\t\tjournal source:', fn);
+        addJournal(fn);
       }
-    } else if ( f.name.endsWith('.jrl') ) {
-      verbose('\t\tjournal source:', fn);
-      addJournal(fn);
     }
   });
 }
@@ -199,36 +195,7 @@ function outputJournals() {
   // Write to journal_files is not needed, just for backward compatibility with find.sh
   fs_.writeFileSync(X.builddir + '/journal_files', X.journalFiles.join('\n') + '\n');
 
-  console.log(`[GENJAVA] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
-}
-
-
-function javac() {
-  // Only overwrite javaFiles when genjava:true
-  if ( flags.genjava )
-    fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
-
-  if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
-
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
-
-  console.log('[GENJAVA] Compiling', X.javaFiles.length ,'java files:', cmd);
-  try {
-    exec_.execSync(cmd, {stdio: 'inherit'});
-  } catch(x) {
-    process.exit(1);
-  }
-  /*
-  , (error, stdout, stderr) => {
-    console.log('[GENJAVA] Finished Compiling');
-    console.log(stdout);
-    console.log(stderr);
-    if ( error ) {
-      console.log(error);
-      process.exit(1);
-    }
-  });
-  */
+  console.log(`[PGEN] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
 }
 
 
@@ -236,17 +203,21 @@ function processPOMs() {
   var seen = {};
   function processPOM(pom) {
     if ( seen[pom.location] ) return;
-    VISITORS.forEach(v => v.visitPOM(pom));
+    try { VISITORS.forEach(v => v.visitPOM(pom)); } catch (x) { console.log('******', x); }
     seen[pom.location] = true;
-    verbose('[GENJAVA] Scanning POM for java files:', pom.location);
+    verbose('[PGEN] Scanning POM for java files:', pom.location);
     processDir(pom, pom.location || '/', false);
   }
 
   foam.poms.forEach(processPOM);
-  console.log(`[GENJAVA] Found ${found} java files.`);
+  console.log(`[PGEN] Found ${found} java files.`);
 }
 
 
-if ( flags.javac || flags.buildjournals || VISITORS.length ) processPOMs();
-if ( flags.javac )                                          javac();
-if ( flags.buildjournals )                                  outputJournals();
+
+if ( flags.buildjournals || VISITORS.length ) {
+  processPOMs();
+  VISITORS.forEach(v => v.end());
+}
+
+if ( flags.buildjournals )                    outputJournals();
