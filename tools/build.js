@@ -381,7 +381,10 @@ task(function install() {
 
 // Function to deploy documents
 task(function deployDocuments() {
-  // TODO: Make part of genjava?
+  console.log('DOCUMENT_OUT: ', DOCUMENT_OUT);
+  console.log('DOCUMENT_HOME:', DOCUMENT_HOME);
+
+  copyDir(DOCUMENT_OUT, DOCUMENT_HOME);
 });
 
 // Function to deploy journals
@@ -474,7 +477,7 @@ task(function buildJar() {
 
   rmfile(JAR_OUT);
   fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF documents -C ${APP_HOME} journals ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF -C ${APP_HOME} journals -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
