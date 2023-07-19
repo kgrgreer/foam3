@@ -6,11 +6,17 @@
 
 // POM Make - POM Specific Build Tool
 //
-// Recursively traverses POMs applying specified builders.
+// Recursively traverses POMs applying specified makers.
+//
+// Uses the Visitor design pattern, with Makers actually being visitors.
 //
 // Standard Makers Include:
 //
-//  -
+//  - JavacMaker
+//  - MavenMaker
+//  - JournalMaker
+//  - VerboseMaker
+//
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
 //     - TODO: copy .flow files into /target/documents
@@ -39,7 +45,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    visitors:      './MavenBuilder,./JavacBuilder' // TODO: genjava, doc, journal, js, swift, verbose?
+    visitors:      './MavenMaker,./JavacMaker' // TODO: genjava, doc, journal, js, swift, verbose?
   },
   {
     // buildlib:      false, // generate Maven pom.xml
@@ -55,7 +61,7 @@ globalThis.flags = flags;
 
 const VISITORS = X.visitors.split(',').map(require);
 
-VISITORS.forEach(v => v.init());
+VISITORS.forEach(v => v.init && v.init());
 
 X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
 X.journalFiles     = [];
@@ -209,7 +215,7 @@ function processPOMs() {
   var seen = {};
   function processPOM(pom) {
     if ( seen[pom.location] ) return;
-    try { VISITORS.forEach(v => v.visitPOM(pom)); } catch (x) { console.log('******', x); }
+    try { VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom)); } catch (x) { console.log('******', x); }
     seen[pom.location] = true;
     verbose('[PMAKE] Scanning POM for java files:', pom.location);
     processDir(pom, pom.location || '/', false);
@@ -223,7 +229,7 @@ function processPOMs() {
 
 if ( flags.buildjournals || VISITORS.length ) {
   processPOMs();
-  VISITORS.forEach(v => v.end());
+  VISITORS.forEach(v => v.end && v.end());
 }
 
 if ( flags.buildjournals )                    outputJournals();
