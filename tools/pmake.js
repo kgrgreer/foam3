@@ -26,7 +26,7 @@
 //     - call javac to compile files in javacfiles
 //     - create a Maven pom.xml file with accumulated POM javaDependencies information
 
-console.log('[PMAKE] Starting');
+console.log('[PMAKE] Starting...');
 
 const startTime = Date.now();
 
@@ -132,15 +132,6 @@ function processDir(pom, location, skipIfHasPOM) {
 }
 
 
-// TODO: move to common library
-globalThis.ensureDir = function ensureDir(dir) {
-  if ( ! fs_.existsSync(dir) ) {
-    console.log('Creating directory', dir);
-    fs_.mkdirSync(dir, {recursive: true});
-  }
-}
-
-
 function processPOMs() {
   var seen = {};
   function processPOM(pom) {
@@ -156,4 +147,4 @@ function processPOMs() {
 processPOMs();
 VISITORS.forEach(v => v.end && v.end());
 
-console.log(`[PMAKE]: Executed in ${Math.round((Date.now()-startTime)/1000)}s.`);
+console.log(`[PMAKE] Finished in ${Math.round((Date.now()-startTime)/1000)}s.`);

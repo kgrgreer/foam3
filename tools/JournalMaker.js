@@ -6,22 +6,18 @@
 
 const fs_   = require('fs');
 const path_ = require('path');
+const b_    = require('./buildlib');
 
 const journalFiles  = [];
 const journalOutput = {};
 
 // TODO: move X.journaldir out of pmake
 
-exports.visitPOM = function(pom) {
-  console.log('[Journal Maker] VISIT POM', pom.location);
-}
-
-
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.jrl') ) {
     verbose('\t\tjournal source:', fn);
     journalFiles.push(fn);
-    if ( ! flags.buildjournals ) return;
+
     var i           = fn.lastIndexOf('/');
     var journalName = fn.substring(i+1, fn.length-4);
     var file        = fs_.readFileSync(fn).toString();
@@ -35,7 +31,9 @@ exports.visitFile = function(pom, f, fn) {
 
 
 exports.end = function() {
-  ensureDir(X.journaldir);
+  console.log(`[Journal Maker] Creating journals to ${X.journaldir}`);
+
+  b_.ensureDir(X.journaldir);
 
   if ( fs_.existsSync(X.journaldir) ) {
     fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
