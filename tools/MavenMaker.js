@@ -5,6 +5,7 @@
  */
 
 const path_ = require('path');
+const b_    = require('./buildlib');
 
 const javaDependencies = [];
 
@@ -86,9 +87,9 @@ exports.end = function() {
     <dependencies>${dependencies}</dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
-  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
+  if ( b_.writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[Maven Builder] Updating pom.xml with', javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
+    b_.execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
     console.log('[Maven Builder] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
   }

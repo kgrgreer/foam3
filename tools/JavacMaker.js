@@ -6,16 +6,17 @@
 
 const fs_   = require('fs');
 const exec_ = require('child_process');
+const b_    = require('./buildlib');
 
 X.javaFiles = [];
 
 exports.visitPOM = function(pom) {
-  console.log('[Java Maker] VISIT POM', pom.location);
+  console.log('[Javac Maker] VISIT POM', pom.location);
 }
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.java') ) {
-    if ( ! isExcluded(pom, fn) ) {
+    if ( ! b_.isExcluded(pom, fn) ) {
       verbose('\t\tjava source:', fn);
       X.javaFiles.push(fn);
     }
@@ -23,7 +24,7 @@ exports.visitFile = function(pom, f, fn) {
 }
 
 exports.end = function() {
-  console.log(`[Java Maker] END ${X.javaFiles.length} Java files`);
+  console.log(`[Javac Maker] END ${X.javaFiles.length} Java files`);
 
   // Only overwrite X.javaFiles when genjava:true
   // TODO: should move to separate genjava visitor
@@ -34,9 +35,9 @@ exports.end = function() {
 
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[Java Maker] Compiling', X.javaFiles.length ,'java files:', cmd);
+  console.log('[Javac Maker] Compiling', X.javaFiles.length ,'java files:', cmd);
   try {
-    exec_.execSync(cmd, {stdio: 'inherit'});
+    b_.execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
     process.exit(1);
   }

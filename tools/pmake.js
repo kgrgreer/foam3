@@ -31,8 +31,8 @@ console.log('[PMAKE] Starting...');
 const startTime = Date.now();
 
 const fs_   = require('fs');
-const exec_ = require('child_process');
 const path_ = require('path');
+const b_    = require('./buildlib');
 
 require('../src/foam_node.js');
 
@@ -52,12 +52,13 @@ var [argv, X, flags] = require('./processArgs.js')(
   }
 );
 
-globalThis.X     = X;
-globalThis.flags = flags;
+globalThis.X       = X;
+globalThis.flags   = flags;
+globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
 const VISITORS = X.makers.split(',').map(require);
 
-VISITORS.forEach(v => v.init && v.init());
+VISITORS.forEach(v => v.init && v.init()); // ???: Is this needed?
 
 X.outdir     = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
 
@@ -72,45 +73,6 @@ X.libdir     = X.builddir + '/lib';       // TODO: move to MavenMaker
 //  foam.loadFiles = function() {};
 // }
 
-globalThis.writeFileIfUpdated = function writeFileIfUpdated(file, txt) {
-  if ( fs_.existsSync(file) && ( fs_.readFileSync(file).toString() === txt ) )
-    return false;
-
-  fs_.writeFileSync(file, txt);
-  return true;
-}
-
-
-globalThis.execSync = function execSync(cmd, options) {
-  console.log('\x1b[0;32mExec: ' + cmd + '\x1b[0;0m');
-  return exec_.execSync(cmd, options);
-}
-
-
-globalThis.verbose = function verbose() {
-  if ( flags.verbose ) console.log.apply(console, arguments);
-}
-
-
-globalThis.isExcluded = function isExcluded(pom, f) {
-  var ex = pom.pom.excludes;
-  if ( ! ex ) return false;
-  for ( var i = 0 ; i < ex.length ; i++ ) {
-    var p = ex[i];
-    if ( p.endsWith('*') ) p = p.substring(0, p.length-1);
-
-    if (
-      f.endsWith(p) ||
-      ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) )
-    {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-
 function processDir(pom, location, skipIfHasPOM) {
   verbose('\tdirectory:', location);
   var files = fs_.readdirSync(location, {withFileTypes: true});
@@ -123,7 +85,7 @@ function processDir(pom, location, skipIfHasPOM) {
       if ( ! f.name.startsWith('.') ) {
         if ( f.name.indexOf('android') != -1 ) return;
         if ( f.name.indexOf('examples') != -1 ) return;
-        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+        if ( ! b_.isExcluded(pom, fn) ) processDir(pom, fn, true);
       }
     } else {
       VISITORS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
@@ -131,20 +93,15 @@ function processDir(pom, location, skipIfHasPOM) {
   });
 }
 
+var seen = {};
 
-function processPOMs() {
-  var seen = {};
-  function processPOM(pom) {
-    if ( seen[pom.location] ) return;
-    VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
-    seen[pom.location] = true;
-    processDir(pom, pom.location || '/', false);
-  }
+foam.poms.forEach(pom => {
+  if ( seen[pom.location] ) return;
+  VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
+  seen[pom.location] = true;
+  processDir(pom, pom.location || '/', false);
+});
 
-  foam.poms.forEach(processPOM);
-}
-
-processPOMs();
 VISITORS.forEach(v => v.end && v.end());
 
 console.log(`[PMAKE] Finished in ${Math.round((Date.now()-startTime)/1000)}s.`);
