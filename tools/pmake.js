@@ -186,7 +186,7 @@ function processPOMs() {
 
 
 
-if ( flags.buildjournals || VISITORS.length ) {
+if ( VISITORS.length ) {
   processPOMs();
   VISITORS.forEach(v => v.end && v.end());
 }
