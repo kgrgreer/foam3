@@ -45,7 +45,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    visitors:      './MavenMaker,./JavacMaker' // TODO: genjava, doc, journal, js, swift, verbose?
+    makers:        './MavenMaker,./JavacMaker' // TODO: genjava, doc, journal, js, swift, verbose?
   },
   {
     // buildlib:      false, // generate Maven pom.xml
@@ -59,7 +59,7 @@ var [argv, X, flags] = require('./processArgs.js')(
 globalThis.X     = X;
 globalThis.flags = flags;
 
-const VISITORS = X.visitors.split(',').map(require);
+const VISITORS = X.makers.split(',').map(require);
 
 VISITORS.forEach(v => v.init && v.init());
 
