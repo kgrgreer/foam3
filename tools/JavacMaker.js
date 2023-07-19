@@ -10,7 +10,7 @@ const exec_ = require('child_process');
 const javaFiles = [];
 
 exports.visitPOM = function(pom) {
-  console.log('[JavacBuilder] VISIT POM', pom.location);
+  console.log('[Java Maker] VISIT POM', pom.location);
 }
 
 exports.visitFile = function(pom, f, fn) {
@@ -23,7 +23,7 @@ exports.visitFile = function(pom, f, fn) {
 }
 
 exports.end = function() {
-  console.log(`[JavacBuilder] END ${javaFiles.length} Java files`);
+  console.log(`[Java Maker] END ${javaFiles.length} Java files`);
 
   // Only overwrite javaFiles when genjava:true
   // TODO: should move to separate genjava visitor
@@ -34,7 +34,7 @@ exports.end = function() {
 
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[JavacBuilder] Compiling', javaFiles.length ,'java files:', cmd);
+  console.log('[Java Maker] Compiling', javaFiles.length ,'java files:', cmd);
   try {
     exec_.execSync(cmd, {stdio: 'inherit'});
   } catch(x) {

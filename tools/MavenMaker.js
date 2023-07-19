@@ -6,9 +6,11 @@
 
 const path_ = require('path');
 
+const javaDependencies = [];
+
 exports.visitPOM = function(pom) {
   console.log('[Maven Builder] VISIT POM', pom.location);
-  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => X.javaDependencies.push([d, pom.path]));
+  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => javaDependencies.push([d, pom.path]));
 }
 
 exports.end = function() {
@@ -20,7 +22,7 @@ exports.end = function() {
 
   var versions     = {};
   var conflicts    = [];
-  var dependencies = X.javaDependencies.map(d => {
+  var dependencies = javaDependencies.map(d => {
     var [id, ...excludes] = d[0].split(' ');
     var [groupId, artifactId, version] = id.split(':');
 
@@ -85,9 +87,9 @@ exports.end = function() {
   </project>\n`.replaceAll(/^  /gm, '');
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
-    console.log('[Maven Builder] Updating pom.xml with', X.javaDependencies.length, 'dependencies.');
+    console.log('[Maven Builder] Updating pom.xml with', javaDependencies.length, 'dependencies.');
     execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
-    console.log('[Maven Builder] Not Updating pom.xml. No changes to', X.javaDependencies.length, 'dependencies.');
+    console.log('[Maven Builder] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
   }
 }

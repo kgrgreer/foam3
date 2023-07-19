@@ -45,11 +45,11 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    makers:        './MavenMaker,./JavacMaker' // TODO: genjava, doc, journal, js, swift, verbose?
+    makers:        './MavenMaker,./JavacMaker,./JournalMaker' // TODO: genjava, doc, js, swift
   },
   {
     // buildlib:      false, // generate Maven pom.xml
-    buildjournals: false, // generate journal.0 files
+    // buildjournals: false, // generate journal.0 files
     genjava:       true,  // generate .java source from model files
     // javac:         false, // compile generated and static .java files
     verbose:       false  // print extra status information
@@ -64,9 +64,6 @@ const VISITORS = X.makers.split(',').map(require);
 VISITORS.forEach(v => v.init && v.init());
 
 X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
-X.journalFiles     = [];
-X.journalOutput    = {};
-X.javaDependencies = [];
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
@@ -151,63 +148,25 @@ function processDir(pom, location, skipIfHasPOM) {
 
   files.forEach(f => {
     var fn = location + '/' + f.name;
-    if ( f.isDirectory() && ! f.name.startsWith('.') ) {
-      if ( f.name.indexOf('android') != -1 ) return;
-      if ( f.name.indexOf('examples') != -1 ) return;
-      if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+    if ( f.isDirectory() ) {
+      if ( ! f.name.startsWith('.') ) {
+        if ( f.name.indexOf('android') != -1 ) return;
+        if ( f.name.indexOf('examples') != -1 ) return;
+        if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
+      }
     } else {
       VISITORS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
-
-      if ( f.name.endsWith('.jrl') ) {
-        verbose('\t\tjournal source:', fn);
-        addJournal(fn);
-      }
     }
   });
 }
 
+
 // TODO: move to common library
-function ensureDir(dir) {
+globalThis.ensureDir = function ensureDir(dir) {
   if ( ! fs_.existsSync(dir) ) {
     console.log('Creating directory', dir);
     fs_.mkdirSync(dir, {recursive: true});
   }
-}
-
-
-function addJournal(fn) {
-  X.journalFiles.push(fn);
-  if ( ! flags.buildjournals ) return;
-  var i           = fn.lastIndexOf('/');
-  var journalName = fn.substring(i+1, fn.length-4);
-  var file        = fs_.readFileSync(fn).toString();
-
-  if ( ! file.length ) return;
-
-  file = `// The following ${(file || '').split('\n').length} lines were copied from "${path_.relative(process.cwd(), fn)}"\n` + file + '\n';
-  X.journalOutput[journalName] = (X.journalOutput[journalName] || '') + file;
-}
-
-
-function outputJournals() {
-  ensureDir(X.journaldir);
-
-  if ( ! flags.buildjournals ) return;
-
-  if ( fs_.existsSync(X.journaldir) ) {
-    fs_.readdirSync(X.journaldir).forEach(f => fs_.rmSync(`${X.journaldir}/${f}`));
-  } else {
-    fs_.mkdirSync(X.journaldir, {recursive: true});
-  }
-
-  Object.keys(X.journalOutput).forEach(f => {
-    fs_.writeFileSync(X.journaldir + f + '.0', X.journalOutput[f]);
-  });
-
-  // Write to journal_files is not needed, just for backward compatibility with find.sh
-  fs_.writeFileSync(X.builddir + '/journal_files', X.journalFiles.join('\n') + '\n');
-
-  console.log(`[PMAKE] Generating ${Object.keys(X.journalOutput).length} journal files from ${X.journalFiles.length} sources.`);
 }
 
 
@@ -231,5 +190,3 @@ if ( flags.buildjournals || VISITORS.length ) {
   processPOMs();
   VISITORS.forEach(v => v.end && v.end());
 }
-
-if ( flags.buildjournals )                    outputJournals();
