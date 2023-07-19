@@ -45,13 +45,9 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    makers:        './MavenMaker,./JavacMaker,./JournalMaker' // TODO: genjava, doc, js, swift
+    makers:        './GenJavaMaker,./MavenMaker,./JavacMaker,./JournalMaker' // TODO: genjava, doc, js, swift
   },
   {
-    // buildlib:      false, // generate Maven pom.xml
-    // buildjournals: false, // generate journal.0 files
-    genjava:       true,  // generate .java source from model files
-    // javac:         false, // compile generated and static .java files
     verbose:       false  // print extra status information
   }
 );
@@ -63,43 +59,18 @@ const VISITORS = X.makers.split(',').map(require);
 
 VISITORS.forEach(v => v.init && v.init());
 
-X.outdir           = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')));
+X.outdir     = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
-X.journaldir = X.builddir + '/journals/';
-X.libdir     = X.builddir + '/lib';
+X.journaldir = X.builddir + '/journals/'; // TODO: move to JournalMaker
+X.libdir     = X.builddir + '/lib';       // TODO: move to MavenMaker
 
 // If genjava is disabled, then override foam.loadFiles so that the POM
 // structure is loaded but .js files aren't.
-if ( ! flags.genjava ) {
-  foam.loadFiles = function() {};
-}
-
-
-// Promote all UNUSED Models to USED
-// 2 passes in case interfaces generated new classes in 1st pass
-for ( var i = 0 ; i < 2 ; i++ )
-  for ( var key in foam.UNUSED )
-    try { foam.maybeLookup(key); } catch(x) { }
-
-var mCount = 0, jCount = 0;
-// Build Java Classes
-for ( var key in foam.USED ) try {
-  mCount++;
-  if ( foam.maybeLookup(key).model_.targetJava(X) ) {
-    jCount++;
-  }
-} catch(x) {}
-
-console.log(`END PMAKE: ${jCount}/${mCount} models processed in ${Math.round((Date.now()-startTime)/1000)}s.`);
-
-// console.log(X.javaFiles);
-// console.log(foam.poms);
-
-
-var found = 0;
-
+// if ( ! flags.genjava ) {
+//  foam.loadFiles = function() {};
+// }
 
 globalThis.writeFileIfUpdated = function writeFileIfUpdated(file, txt) {
   if ( fs_.existsSync(file) && ( fs_.readFileSync(file).toString() === txt ) )
@@ -174,19 +145,15 @@ function processPOMs() {
   var seen = {};
   function processPOM(pom) {
     if ( seen[pom.location] ) return;
-    try { VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom)); } catch (x) { console.log('******', x); }
+    VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
     seen[pom.location] = true;
-    verbose('[PMAKE] Scanning POM for java files:', pom.location);
     processDir(pom, pom.location || '/', false);
   }
 
   foam.poms.forEach(processPOM);
-  console.log(`[PMAKE] Found ${found} java files.`);
 }
 
+processPOMs();
+VISITORS.forEach(v => v.end && v.end());
 
-
-if ( VISITORS.length ) {
-  processPOMs();
-  VISITORS.forEach(v => v.end && v.end());
-}
+console.log(`[PMAKE]: Executed in ${Math.round((Date.now()-startTime)/1000)}s.`);
