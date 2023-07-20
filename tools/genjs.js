@@ -21,7 +21,7 @@ require('../src/foam_node.js');
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   { version: '', pom: 'pom' },
-  { debug: true, java: false, web: true, genjava: false }
+  { debug: true, java: false, web: true }
 );
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
