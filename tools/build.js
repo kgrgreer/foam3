@@ -70,13 +70,12 @@ diskutil erasevolume HFS+ 'RAMDisk' `hdiutil attach -nomount ram://848000`
 mkdir /Volumes/RamDisk/build
 rm -rf ~/NANOPAY/build
 ln -s /Volumes/RamDisk/build ~/NANOPAY/build
-
 */
 
-const child_process = require('child_process');
-const fs            = require('fs');
-const path          = require('path');
-const os            = require('os');
+const fs                = require('fs');
+const { join }          = require('path');
+const { copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
+
 
 // Build configs
 var
@@ -128,8 +127,8 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './target';
-// var BUILD_DIR  = './build', TARGET_DIR = './target';
+// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -139,6 +138,7 @@ globalThis.foam = {
     TASKS   = pom.tasks;
   }
 };
+
 require(PWD+'/pom.js');
 
 process.on('unhandledRejection', e => {
@@ -151,12 +151,6 @@ var summary = [];
 var depth   = 1;
 var tasks   = [];
 var running = {};
-
-
-function execSync(cmd, options) {
-  console.log('\x1b[0;32mExec: ' + cmd + '\x1b[0;0m');
-  return child_process.execSync(cmd, options);
-}
 
 
 function task(f) {
@@ -194,6 +188,7 @@ function task(f) {
   }
 }
 
+
 function processArgs() {
   const args = process.argv.slice(2);
   for ( var i = 0 ; i < args.length ; i++ ) {
@@ -221,52 +216,6 @@ function exportEnv(name, value) {
 }
 
 
-function ensureDir(dir) {
-  if ( ! fs.existsSync(dir) ) {
-    console.log('Creating directory', dir);
-    fs.mkdirSync(dir, {recursive: true});
-    return true;
-  }
-  return false;
-}
-
-
-function copyDir(src, dst) {
-  ensureDir(dst);
-  fs.readdirSync(src).forEach(f => {
-    var srcPath = path.join(src, f);
-    var dstPath = path.join(dst, f);
-
-    if ( fs.lstatSync(srcPath).isDirectory() )
-      copyDir(srcPath, dstPath);
-    else
-      copyFile(srcPath, dstPath);
-  });
-}
-
-
-function emptyDir(dir) {
-  rmdir(dir);
-  ensureDir(dir);
-}
-
-
-function rmdir(dir) {
-  if ( fs.existsSync(dir) && fs.lstatSync(dir).isDirectory() ) {
-    fs.rmdirSync(dir, {recursive: true, force: true});
-  }
-}
-
-function rmfile(file) {
-  if ( fs.existsSync(file) && fs.lstatSync(file).isFile() ) {
-    fs.rmSync(file, {force: true});
-  }
-}
-
-function copyFile(src, dst) {
-  fs.copyFileSync(src, dst);
-}
-
 function showSummary() {
   var s = 'Execution Summary:\n';
   summary.forEach(e => {
@@ -291,9 +240,11 @@ function info(msg) {
   console.log('\x1b[0;34mINFO ::', msg, '\x1b[0;0m');
 }
 
+
 function warning(msg) {
   console.log('\x1b[0;33mWARNING ::', msg, '\x1b[0;0m');
 }
+
 
 function error(msg) {
   console.log('\x1b[0;31mERROR ::', msg, '\x1b[0;0m');
@@ -301,11 +252,10 @@ function error(msg) {
 }
 
 
-
 function manifest() {
   versions();
   var jars = execSync(`find ${TARGET_DIR}/lib -type f -name "*.jar"`).toString()
-               .replaceAll(`${TARGET_DIR}/lib/`, '  ').trim();
+      .replaceAll(`${TARGET_DIR}/lib/`, '  ').trim();
   var m = `
 Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
@@ -326,6 +276,7 @@ Implementation-Vendor: ${PROJECT.name}
   return m;
 };
 
+
 task(function jarWebroot() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
 
@@ -339,6 +290,7 @@ task(function jarWebroot() {
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
 });
+
 
 task(function jarImages() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
@@ -365,8 +317,8 @@ task(function install() {
   process.chdir('..');
 
   if ( IS_MAC ) {
-    ensureDir(path.join(APP_HOME, 'journals'));
-    ensureDir(path.join(APP_HOME, 'logs'));
+    ensureDir(join(APP_HOME, 'journals'));
+    ensureDir(join(APP_HOME, 'logs'));
   }
 
   // git hooks
@@ -431,8 +383,9 @@ task(function clean() {
 
 
 task(function copyLib() {
-  copyDir(TARGET_DIR + '/lib', path.join(APP_HOME, 'lib'));
+  copyDir(TARGET_DIR + '/lib', join(APP_HOME, 'lib'));
 });
+
 
 task(function genJS() {
   execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
@@ -459,7 +412,9 @@ task(function genJava() {
 
   pom = Object.keys(pom).join(',');
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  // TODO: use GEN_JAVA in pmake
+//  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
@@ -507,8 +462,8 @@ task(function deleteRuntimeLogs() {
 
 
 task(function deployToHome() {
-  copyDir('./foam3/tools/deploy/bin', path.join(APP_HOME, 'bin'));
-  copyDir(TARGET_DIR + '/lib', path.join(APP_HOME, 'lib'));
+  copyDir('./foam3/tools/deploy/bin', join(APP_HOME, 'bin'));
+  copyDir(TARGET_DIR + '/lib', join(APP_HOME, 'lib'));
 });
 
 
@@ -653,6 +608,7 @@ function buildEnv(m) {
   });
 }
 
+
 function exportEnvs() {
   /** Export environment variables. **/
   Object.keys(ENV).forEach(k => {
@@ -661,22 +617,17 @@ function exportEnvs() {
   });
 }
 
+
 function exec(s) {
   exportEnvs();
   return execSync(s, { stdio: 'inherit' });
 }
 
-function spawn(s) {
-  exportEnvs();
-
-  console.log('Spawn: ', s);
-  var [cmd, ...args] = s.split(' ');
-  return child_process.spawn(cmd, args, { stdio: 'ignore' });
-}
 
 function writeToPidFile(pid) {
   fs.writeFileSync(NANOS_PIDFILE, pid.toString());
 }
+
 
 function readFromPidFile() {
   if ( fs.existsSync(NANOS_PIDFILE) )
@@ -709,7 +660,7 @@ buildEnv({
 
 function setenv() {
   if ( TEST || BENCHMARK ) {
-    rmdir(APP_HOME);
+    b_.rmdir(APP_HOME);
     JAVA_OPTS = '-enableassertions ' + JAVA_OPTS;
   }
 
@@ -892,7 +843,6 @@ function stopNanos() {
 }
 
 
-
 // ############################
 // # Build steps
 // ############################
@@ -946,8 +896,8 @@ if ( TASKS ) {
   EXPORTS = {
     JOURNAL_CONFIG,
     TARGET_DIR,
-    copyFile,
-    copyDir
+    copyDir,
+    copyFile
   }
 };
 

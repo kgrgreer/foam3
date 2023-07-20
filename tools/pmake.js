@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @license
  * Copyright 2023 The FOAM Authors. All Rights Reserved.
