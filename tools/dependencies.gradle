@@ -93,7 +93,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:1.8.0-beta4"
     implementation "org.slf4j:slf4j-jdk14:1.7.32"
     implementation "com.nulab-inc:zxcvbn:1.2.5"
-    implementation "com.plaid:plaid-java:3.0.5"
+    implementation "com.plaid:plaid-java:16.0.0"
     implementation "com.itextpdf:itextpdf:5.5.12"
     implementation "com.itextpdf:html2pdf:1.0.2"
     implementation "xml-apis:xml-apis:1.4.01"
