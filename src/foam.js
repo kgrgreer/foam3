@@ -161,8 +161,8 @@
     poms: [],
     POM: function(pom) {
       if ( globalThis.document ) {
-        var src = document.currentScript.src;
-        var i = src.lastIndexOf('/');
+        var src  = document.currentScript.src;
+        var i    = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
       }
       foam.poms.push({

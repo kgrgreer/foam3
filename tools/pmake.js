@@ -46,7 +46,7 @@ var [argv, X, flags] = require('./processArgs.js')(
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
     pom:           'pom',
-    makers:        './GenJavaMaker,./MavenMaker,./JavacMaker,./JournalMaker' // TODO: genjava, doc, js, swift
+    makers:        '' // TODO: doc, swift
   },
   {
     verbose:       false  // print extra status information
@@ -61,12 +61,10 @@ const VISITORS = X.makers.split(',').map(require);
 
 VISITORS.forEach(v => v.init && v.init()); // ???: Is this needed?
 
-X.outdir     = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
+X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
-X.journaldir = X.builddir + '/journals/'; // TODO: move to JournalMaker
-X.libdir     = X.builddir + '/lib';       // TODO: move to MavenMaker
 
 // If genjava is disabled, then override foam.loadFiles so that the POM
 // structure is loaded but .js files aren't.

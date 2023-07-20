@@ -11,7 +11,8 @@ const b_    = require('./buildlib');
 const journalFiles  = [];
 const journalOutput = {};
 
-// TODO: move X.journaldir out of pmake
+X.journaldir = X.builddir + '/journals/';
+
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.jrl') ) {

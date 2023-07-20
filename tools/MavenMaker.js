@@ -9,10 +9,14 @@ const b_    = require('./buildlib');
 
 const javaDependencies = [];
 
+X.libdir = X.builddir + '/lib';       // TODO: move to MavenMaker
+
+
 exports.visitPOM = function(pom) {
   console.log('[Maven Builder] VISIT POM', pom.location);
   pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => javaDependencies.push([d, pom.path]));
 }
+
 
 exports.end = function() {
   console.log('[Maven Builder] END');
