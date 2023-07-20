@@ -13,19 +13,13 @@
 //
 // Standard Makers Include:
 //
-//  - JavacMaker
-//  - MavenMaker
-//  - JournalMaker
-//  - VerboseMaker
-//
-//     - generates .java files from .js models
-//     - copies .jrl files into /target/journals
-//     - TODO: copy .flow files into /target/documents
-//     - create /target/javacfiles file containing list of modified or static .java files
-//     - build pom.xml from accumulated javaDependencies
-//     - call maven to update dependencies if pom.xml updated
-//     - call javac to compile files in javacfiles
-//     - create a Maven pom.xml file with accumulated POM javaDependencies information
+//   JavaMaker    : generates .java files from .js models
+//   JavacMaker   : create /target/javacfiles file containing list of modified or static .java files, call javac
+//   MavenMaker   : build a Maven pom.xml from accumulated javaDependencies, call maven to update dependencies if pom.xml updated
+//   JournalMaker : copies .jrl files into /target/journals
+//   JsMaker      : create a minified foam-bin.js file
+//   DocMaker     : TODO: copy .flow files into /target/documents
+//   VerboseMaker : print out information about POMs and files visited
 
 console.log('[PMAKE] Starting...');
 
