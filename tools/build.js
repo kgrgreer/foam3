@@ -139,7 +139,7 @@ globalThis.foam = {
   }
 };
 
-require(PWD+'/pom.js');
+require(PWD + '/pom.js');
 
 process.on('unhandledRejection', e => {
   console.error("ERROR: Unhandled promise rejection ", e);
@@ -331,6 +331,7 @@ task(function install() {
   }
 });
 
+
 // Function to deploy documents
 task(function deployDocuments() {
   console.log('DOCUMENT_OUT: ', DOCUMENT_OUT);
@@ -339,6 +340,7 @@ task(function deployDocuments() {
   copyDir(DOCUMENT_OUT, DOCUMENT_HOME);
 });
 
+
 // Function to deploy journals
 task(function deployJournals() {
   console.log('JOURNAL_OUT: ', JOURNAL_OUT);
@@ -346,6 +348,7 @@ task(function deployJournals() {
 
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
+
 
 // Function to deploy resources
 task(function deployResources() {
@@ -441,6 +444,7 @@ task(function buildJar() {
 task(function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
+  // TODO: fix reference to target
   execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../target lib`);
 });
 
@@ -648,8 +652,8 @@ buildEnv({
 
   // Project resources path
   PROJECT_HOME:      PWD,
-  JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,
-  DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`,
+  JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,  // TODO: fix reference to target
+  DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`, // TODO: fix reference to target
 
   // Build options and pid
   JAVA_OPTS:         '',
