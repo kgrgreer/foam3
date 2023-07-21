@@ -51,7 +51,7 @@ globalThis.X       = X;
 globalThis.flags   = flags;
 globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
-const VISITORS = X.makers.split(',').map(require);
+const VISITORS = X.makers.split(',').map(m => m + 'Maker').map(require);
 
 VISITORS.forEach(v => v.init && v.init()); // ???: Is this needed?
 
@@ -59,7 +59,7 @@ X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 
-
+// TODO:
 // If genjava is disabled, then override foam.loadFiles so that the POM
 // structure is loaded but .js files aren't.
 // if ( ! flags.genjava ) {

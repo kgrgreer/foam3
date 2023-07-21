@@ -10,10 +10,6 @@ const b_    = require('./buildlib');
 
 X.javaFiles = [];
 
-exports.visitPOM = function(pom) {
-  console.log('[Javac Maker] VISIT POM', pom.location);
-}
-
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.java') ) {
     if ( ! b_.isExcluded(pom, fn) ) {
