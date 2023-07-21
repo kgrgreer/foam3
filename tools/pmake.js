@@ -47,6 +47,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   },
   {
     usage: function() {
+      // Include list of available Makers in 'usage' output.
       var files = fs_.readdirSync('.');
 
       console.log('\nMakers:');
