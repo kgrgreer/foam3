@@ -23,9 +23,9 @@ function processArgs(usage, x, defaultFlags) {
       var argList  = Object.keys(x).map(k => ` [ -${k}=value ]`).join('');
       var flagList = '';
       if ( flagKeys.length ) {
-        flagList = '[ -flags=' + flagKeys.map(k => `[-]${k}`).join(',') + ']'
+        flagList = '[ -flags=' + flagKeys.map(k => (defaultFlags[k] ? '-' : '') + k).join(',') + ' ]';
       }
-      console.log('USAGE:', process.argv[1], '[ -flags=[-]flag,...,[-]flag ]' + argList, usage);
+      console.log('USAGE:', process.argv[1], flagList + argList, usage);
       process.exit(1);
     }
 
