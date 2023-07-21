@@ -19,7 +19,12 @@ function processArgs(usage, x, defaultFlags) {
     var arg = argv.shift();
 
     if ( arg === '-help' || arg === '--help' ) {
-      var argList = Object.keys(x).map(k => ` [ -${k}=value ]`).join('');
+      var flagKeys = defaultFlags ? Object.keys(defaultFlags) : [];
+      var argList  = Object.keys(x).map(k => ` [ -${k}=value ]`).join('');
+      var flagList = '';
+      if ( flagKeys.length ) {
+        flagList = '[ -flags=' + flagKeys.map(k => `[-]${k}`).join(',') + ']'
+      }
       console.log('USAGE:', process.argv[1], '[ -flags=[-]flag,...,[-]flag ]' + argList, usage);
       process.exit(1);
     }
