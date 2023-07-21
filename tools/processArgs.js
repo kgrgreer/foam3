@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-function processArgs(usage, x, defaultFlags) {
+function processArgs(usage, x, defaultFlags, cmds) {
   var flags = globalThis.foam.flags;
   var argv  = process.argv.slice(2);
 
@@ -18,7 +18,7 @@ function processArgs(usage, x, defaultFlags) {
 
     var arg = argv.shift();
 
-    if ( arg === '-help' || arg === '--help' ) {
+    if ( arg === '-help' || arg === '--help' || arg === '-usage' || arg === '--usage' || arg === '-?' || arg === '--?' ) {
       var flagKeys = defaultFlags ? Object.keys(defaultFlags) : [];
       var argList  = Object.keys(x).map(k => ` [ -${k}=value ]`).join('');
       var flagList = '';
@@ -26,21 +26,32 @@ function processArgs(usage, x, defaultFlags) {
         flagList = '[ -flags=' + flagKeys.map(k => (defaultFlags[k] ? '-' : '') + k).join(',') + ' ]';
       }
       console.log('USAGE:', process.argv[1], flagList + argList, usage);
+      cmds && cmds.usage && cmds.usage();
       process.exit(1);
     }
 
-    var key   = arg.substring(1, arg.indexOf('='));
-    var value = arg.substring(arg.indexOf('=') + 1);
-    if ( key === 'flags' ) {
-      value.split(',').forEach(f => {
-        if ( f.startsWith('-') ) {
-          flags[f.substring(1)] = false;
-        } else {
-          flags[f] = true;
-        }
-      });
+    var i = arg.indexOf('=');
+    if ( i == -1 ) {
+      arg = arg.substring(1);
+      if ( cmds && cmds[arg] ) {
+        cmds[arg]();
+      } else {
+        console.log('Unknown command: ' + arg);
+      }
     } else {
-      x[key] = value;
+      var key   = arg.substring(1, i);
+      var value = arg.substring(i + 1);
+      if ( key === 'flags' ) {
+        value.split(',').forEach(f => {
+          if ( f.startsWith('-') ) {
+            flags[f.substring(1)] = false;
+          } else {
+            flags[f] = true;
+          }
+        });
+      } else {
+        x[key] = value;
+      }
     }
   }
 
