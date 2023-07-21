@@ -54,7 +54,7 @@ var [argv, X, flags] = require('./processArgs.js')(
       files.forEach(f => {
         if ( f.endsWith('Maker.js') ) {
           var maker = require('./' + f.substring(0, f.length-3));
-          console.log('\t' + f.substring(0, f.length-8).padEnd(12, ' '), maker.description || '');
+          console.log('    ' + f.substring(0, f.length-8).padEnd(12, ' '), maker.description || '');
         }
       });
     },

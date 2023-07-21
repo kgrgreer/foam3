@@ -27,7 +27,10 @@ function processArgs(usage, x, defaultFlags, cmds) {
         flagList = '[ -flags=' + flagKeys.map(k => (defaultFlags[k] ? '-' : '') + k).join(',') + ' ]';
       }
       console.log('USAGE:', process.argv[1], flagList + cmdList + argList, usage);
+
+      // If a 'usage' method is supplied in cmds, then call it to provide extra usage information.
       cmds && cmds.usage && cmds.usage();
+
       process.exit(1);
     }
 
