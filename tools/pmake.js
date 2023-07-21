@@ -54,7 +54,12 @@ var [argv, X, flags] = require('./processArgs.js')(
       files.forEach(f => {
         if ( f.endsWith('Maker.js') ) {
           var maker = require('./' + f.substring(0, f.length-3));
-          console.log('    ' + f.substring(0, f.length-8).padEnd(12, ' '), maker.description || '');
+          console.log('  ' + f.substring(0, f.length-8).padEnd(14, ' '), maker.description || '');
+          ( maker.args || []).forEach(a => {
+            var desc = a.description || '';
+            var def = a.value ? ( ( desc ? ', ' : '' ) + 'default: ' + a.value ) : '';
+            console.log('     ' + a.name.padEnd(12, ' ') + desc + def);
+          });
         }
       });
     },
@@ -71,7 +76,7 @@ const VISITORS = X.makers.split(',').map(m => m + 'Maker').map(require);
 
 VISITORS.forEach(v => v.init && v.init());
 
-X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
+X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to JavaMaker
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 

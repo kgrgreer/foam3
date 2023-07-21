@@ -4,10 +4,20 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+ const fs_   = require('fs');
+ const path_ = require('path');
+
+
 exports.description = 'generates .java files from .js models';
 
-const fs_   = require('fs');
-const path_ = require('path');
+exports.args = [
+  {
+    // Isn't used directly by this Maker, but is used in java/refinements.js
+    name: 'outdir',
+    description: 'location to write generated .java files, default: {builddir}/src/java',
+    factory: () => path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')))
+  }
+];
 
 exports.end = function() {
   // Promote all UNUSED Models to USED
