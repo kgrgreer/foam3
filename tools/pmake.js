@@ -15,7 +15,7 @@
 //
 //   JavaMaker    : generates .java files from .js models
 //   JavacMaker   : create /target/javacfiles file containing list of modified or static .java files, call javac
-//   MavenMaker   : build a Maven pom.xml from accumulated javaDependencies, call maven to update dependencies if pom.xml updated
+//   MavenMaker   : build a Maven pom.xml from javaDependencies, call maven if pom.xml updated
 //   JournalMaker : copies .jrl files into /target/journals
 //   JsMaker      : create a minified foam-bin.js file
 //   DocMaker     : TODO: copy .flow files into /target/documents
@@ -44,6 +44,21 @@ var [argv, X, flags] = require('./processArgs.js')(
   },
   {
     verbose:       false  // print extra status information
+  },
+  {
+    usage: function() {
+      var files = fs_.readdirSync('.');
+
+      console.log('\nMakers:');
+      files.forEach(f => {
+        if ( f.endsWith('Maker.js') ) {
+          var maker = require('./' + f.substring(0, f.length-3));
+          console.log('\t' + f.substring(0, f.length-8).padEnd(12, ' '), maker.description || '');
+        }
+      });
+    },
+    cmd: function() {
+    }
   }
 );
 
@@ -53,7 +68,7 @@ globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply
 
 const VISITORS = X.makers.split(',').map(m => m + 'Maker').map(require);
 
-VISITORS.forEach(v => v.init && v.init()); // ???: Is this needed?
+VISITORS.forEach(v => v.init && v.init());
 
 X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to GenJavaMaker
 

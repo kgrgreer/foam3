@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'print out information about POMs and files visited';
+
 var pCount = 0, fCount = 0;
 
 exports.visitPOM = function(pom) {

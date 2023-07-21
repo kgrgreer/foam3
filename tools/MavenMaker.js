@@ -4,12 +4,16 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'build a Maven pom.xml from javaDependencies, call maven if pom.xml updated';
+
 const path_ = require('path');
 const b_    = require('./buildlib');
 
 const javaDependencies = [];
 
-X.libdir = X.builddir + '/lib';       // TODO: move to MavenMaker
+exports.init = function() {
+  X.libdir = X.builddir + '/lib';       // TODO: move to MavenMaker
+}
 
 
 exports.visitPOM = function(pom) {

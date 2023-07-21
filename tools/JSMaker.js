@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'create minified foam-bin.js distribution';
+
 const fs_      = require('fs');
 const path_    = require('path');
 const uglify_  = require('uglify-js');
@@ -12,14 +14,15 @@ const licenses = {};
 var version    = '';
 var files      = {}; // filename to content map for uglify
 
-
 function addLicense(l) {
   l = l.split('\n').map(l => l.trim()).join('\n');
   licenses[l] = true;
 }
 
-flags.java = false;
-flags.web  = true;
+exports.init = function() {
+  flags.java = false;
+  flags.web  = true;
+}
 
 
 exports.visitPOM = function(pom) {

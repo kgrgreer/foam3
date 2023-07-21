@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'generates .java files from .js models';
+
 const fs_   = require('fs');
 const path_ = require('path');
 

@@ -4,11 +4,15 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'create /target/javacfiles file containing list of modified or static .java files, call javac';
+
 const fs_   = require('fs');
 const exec_ = require('child_process');
 const b_    = require('./buildlib');
 
-X.javaFiles = [];
+exports.init = function() {
+  X.javaFiles = [];
+}
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.java') ) {
