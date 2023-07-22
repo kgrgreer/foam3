@@ -6,6 +6,14 @@
 
 exports.description = 'build a Maven pom.xml from javaDependencies, call maven if pom.xml updated';
 
+exports.args = [
+  {
+    name: 'repo',
+    description: 'maven repository',
+    value: 'http://repo.maven.apache.org/maven2/'
+  }
+];
+
 const path_ = require('path');
 const b_    = require('./buildlib');
 

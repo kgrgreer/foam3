@@ -36,9 +36,9 @@ var [argv, X, flags] = require('./processArgs.js')(
   {
     d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
     builddir:      './target',
-    javacParams:   '--release 11',
-    repo:          'http://repo.maven.apache.org/maven2/', // should be https?
-    outdir:        '', // default value set below
+    javacParams:   '--release 11', // TODO: move to JavacMaker
+    repo:          'http://repo.maven.apache.org/maven2/', // should be https? TODO: move to MavenMaker
+    outdir:        '', // default value set below, TODO: move to JavaMaker
     pom:           'pom',
     makers:        '' // TODO: doc, swift
   },

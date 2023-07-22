@@ -6,6 +6,14 @@
 
 exports.description = 'create /target/javacfiles file containing list of modified or static .java files, call javac';
 
+exports.args = [
+  {
+    name: 'javacParams',
+    description: 'parameters to pass to javac'
+  }
+];
+
+
 const fs_   = require('fs');
 const exec_ = require('child_process');
 const b_    = require('./buildlib');
