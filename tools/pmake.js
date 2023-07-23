@@ -31,6 +31,7 @@ const b_    = require('./buildlib');
 
 require('../src/foam_node.js');
 
+// TODO: new version of processArgs which takes a map
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
