@@ -14,13 +14,14 @@ exports.args = [
   }
 ];
 
-const path_ = require('path');
-const b_    = require('./buildlib');
+const path_                                         = require('path');
+const { execSync, processArgs, writeFileIfUpdated } = require('./buildlib');
 
 const javaDependencies = [];
 
 exports.init = function() {
-  X.libdir = X.builddir + '/lib';       // TODO: move to MavenMaker
+  processArgs(X, exports.args);
+  X.libdir = X.builddir + '/lib';
 }
 
 
@@ -103,9 +104,9 @@ exports.end = function() {
     <dependencies>${dependencies}</dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
-  if ( b_.writeFileIfUpdated('pom.xml', pomxml) ) {
+  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[Maven Builder] Updating pom.xml with', javaDependencies.length, 'dependencies.');
-    b_.execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
     console.log('[Maven Builder] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
   }
