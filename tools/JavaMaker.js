@@ -6,6 +6,7 @@
 
  const fs_   = require('fs');
  const path_ = require('path');
+ const { processArgs } = require('./buildlib');
 
 
 exports.description = 'generates .java files from .js models';
@@ -18,6 +19,12 @@ exports.args = [
     factory: () => path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java')))
   }
 ];
+
+
+exports.init = function() {
+  processArgs(X, exports.args);
+}
+
 
 exports.end = function() {
   // Promote all UNUSED Models to USED

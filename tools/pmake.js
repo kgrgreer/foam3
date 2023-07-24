@@ -35,15 +35,14 @@ require('../src/foam_node.js');
 var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
-    d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
-    builddir:      './target',
-    repo:          'http://repo.maven.apache.org/maven2/', // should be https? TODO: move to MavenMaker
-    outdir:        '', // default value set below, TODO: move to JavaMaker
-    pom:           'pom',
-    makers:        '' // TODO: doc, swift
+    d:           './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
+    builddir:    './target',
+    repo:        'http://repo.maven.apache.org/maven2/', // should be https? TODO: move to MavenMaker
+    pom:         'pom',
+    makers:      '' // TODO: doc, swift
   },
   {
-    verbose:       false  // print extra status information
+    verbose:     false  // print extra status information
   },
   {
     usage: function() {
@@ -75,8 +74,6 @@ globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply
 const VISITORS = X.makers.split(',').map(m => m + 'Maker').map(require);
 
 VISITORS.forEach(v => v.init && v.init());
-
-X.outdir = path_.resolve(path_.normalize(X.outdir || (X.builddir + '/src/java'))); // TODO: move to JavaMaker
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 

@@ -15,19 +15,11 @@ exports.args = [
 ];
 
 
-const fs_                      = require('fs');
-const { execSync, isExcluded } = require('./buildlib');
+const fs_                                   = require('fs');
+const { execSync, isExcluded, processArgs } = require('./buildlib');
 
 exports.init = function() {
-  exports.args.forEach(a => {
-    if ( ! X.hasOwnProperty(a.name) ) {
-      if ( a.factory ) {
-        X[a.name] = a.factory();
-      } else if ( a.value ) {
-        X[a.name] = a.value;
-      }
-    }
-  });
+  processArgs(X, exports.args);
 
   X.javaFiles = [];
 }

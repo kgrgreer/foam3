@@ -11,6 +11,19 @@ const exec_ = require('child_process');
 const path_ = require('path');
 
 
+function processArgs(X, args) {
+  args.forEach(a => {
+    if ( ! X.hasOwnProperty(a.name) ) {
+      if ( a.factory ) {
+        X[a.name] = a.factory();
+      } else if ( a.value ) {
+        X[a.name] = a.value;
+      }
+    }
+  });
+}
+
+
 function ensureDir(dir) {
   if ( ! fs_.existsSync(dir) ) {
     console.log('Creating directory', dir);
@@ -104,8 +117,9 @@ exports.copyFile           = copyFile;
 exports.emptyDir           = emptyDir;
 exports.ensureDir          = ensureDir;
 exports.execSync           = execSync;
-exports.rmfile             = rmfile
 exports.isExcluded         = isExcluded;
+exports.processArgs        = processArgs;
 exports.rmdir              = rmdir;
+exports.rmfile             = rmfile
 exports.spawn              = spawn;
 exports.writeFileIfUpdated = writeFileIfUpdated;
