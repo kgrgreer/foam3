@@ -18,7 +18,8 @@ foam.POM({
     `
   ],
   projects: [
-    { name: "medusa/pom"}
+    { name: "medusa/pom"},
+    { name: "ruler/pom"}
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
