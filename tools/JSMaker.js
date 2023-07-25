@@ -30,9 +30,9 @@ exports.init = function() {
 exports.visitPOM = function(pom) {
   if ( ! version && pom.version ) version = pom.version;
 
-  if ( foam.String.isInstance(pom.licenses) ) {
+  if ( typeof pom.licenses === 'string' ) {
     addLicense(pom.licenses);
-  } else if ( foam.Array.isInstance(pom.licenses) ) {
+  } else if ( Array.isArray(pom.licenses) ) {
     pom.licenses.forEach(addLicense);
   }
 }
