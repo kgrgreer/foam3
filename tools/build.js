@@ -152,9 +152,15 @@ var tasks   = [];
 var running = {};
 
 
-function task(f) {
-  if ( tasks.indexOf(f.name) === -1 )
-    tasks.push(f.name);
+function task(desc, dep, f) {
+  if ( arguments.length == 1 ) {
+    f = desc;
+    desc = '';
+    dep = [];
+  }
+
+  if ( ! tasks[f.name] )
+    tasks[f.name] = [desc, dep];
 
   var fired = false;
   var rec   = [ ];
@@ -276,7 +282,7 @@ Implementation-Vendor: ${PROJECT.name}
 };
 
 
-task(function jarWebroot() {
+task('Build web root directory for inclusion in JAR.', [], function jarWebroot() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
 
   var webroot = TARGET_DIR + '/webroot';
@@ -291,7 +297,7 @@ task(function jarWebroot() {
 });
 
 
-task(function jarImages() {
+task('Copy images from src sub directories to TARGET_DIR/images.', [], function jarImages() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
 
   var images = TARGET_DIR + '/images';
@@ -302,12 +308,12 @@ task(function jarImages() {
 });
 
 
-task(function showManifest() {
+task('Display generated JAR manifest file.', [], function showManifest() {
   console.log('Manifest:', manifest());
 });
 
 
-task(function install() {
+task('Install npm and git hooks.', [], function install() {
   process.chdir(PROJECT_HOME);
 
   execSync('npm install');
@@ -331,8 +337,7 @@ task(function install() {
 });
 
 
-// Function to deploy documents
-task(function deployDocuments() {
+task('Deploy documents from DOCUMENT_OUT to DOCUMENT_HOME.', [], function deployDocuments() {
   console.log('DOCUMENT_OUT: ', DOCUMENT_OUT);
   console.log('DOCUMENT_HOME:', DOCUMENT_HOME);
 
@@ -340,8 +345,7 @@ task(function deployDocuments() {
 });
 
 
-// Function to deploy journals
-task(function deployJournals() {
+task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME', [], function deployJournals() {
   console.log('JOURNAL_OUT: ', JOURNAL_OUT);
   console.log('JOURNAL_HOME:', JOURNAL_HOME);
 
@@ -349,8 +353,7 @@ task(function deployJournals() {
 });
 
 
-// Function to deploy resources
-task(function deployResources() {
+task('Copy additional files from RESOURCES directories to be added to Jar file.', [], function deployResources() {
   RESOURCES.split(',').forEach(res => {
     if ( ! res )
       return;
@@ -363,15 +366,14 @@ task(function deployResources() {
 });
 
 
-task(function cleanLib() {
-  // A standalone task, not called by any others. Execute with -XcleanLib if desired.
+task('Standalone task to cause regeneration of pom.xml and java lib directory.', [ 'genJava' ], function cleanLib() {
   rmfile('pom.xml');
   emptyDir(TARGET_DIR + '/lib');
   genJava();
 });
 
 
-task(function clean() {
+task('Remove generated files.', [], function clean() {
   if ( RUN_JAR || TEST || BENCHMARK ) {
     emptyDir(`${APP_HOME}/bin`);
     emptyDir(`${APP_HOME}/lib`);
@@ -384,25 +386,25 @@ task(function clean() {
 });
 
 
-task(function copyLib() {
-  copyDir(TARGET_DIR + '/lib', join(APP_HOME, 'lib'));
+task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function copyLib() {
+  copyDir(join(TARGET_DIR, 'lib'), join(APP_HOME, 'lib'));
 });
 
 
-task(function genJS() {
+task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
 execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
   // execSync(`node ./foam3/tools/genjs.js -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
-task(function packageFOAM() {
+task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageFOAM() {
   genJava();
   genJS();
 });
 
 
-task(function genJava() {
+task('Call pmake with Java Makers to generate and compile Java code, collect journal files, build Maven pom.xml file and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom    = {};
   var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
@@ -421,14 +423,13 @@ task(function genJava() {
 });
 
 
-task(function buildJava() {
+task('Generate and compile java source.', [ 'genJava', 'copyLib' ], function buildJava() {
   genJava();
   copyLib();
 });
 
 
-// Function to build the JAR file
-task(function buildJar() {
+task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function buildJar() {
   versions();
   jarWebroot();
   jarImages();
@@ -439,8 +440,7 @@ task(function buildJar() {
 });
 
 
-// Function to package the files into a tar archive
-task(function buildTar() {
+task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
   // TODO: fix reference to target
@@ -448,8 +448,7 @@ task(function buildTar() {
 });
 
 
-// Function to delete runtime journals
-task(function deleteRuntimeJournals() {
+task('Delete runtime journals.', [], function deleteRuntimeJournals() {
   if ( DELETE_RUNTIME_JOURNALS ) {
     info('Runtime journals deleted.');
     emptyDir(JOURNAL_HOME);
@@ -457,7 +456,7 @@ task(function deleteRuntimeJournals() {
 });
 
 
-task(function deleteRuntimeLogs() {
+task('Delete runtime logs.', [], function deleteRuntimeLogs() {
   if ( DELETE_RUNTIME_LOGS ) {
     info('Runtime logs deleted.');
     emptyDir(LOG_HOME);
@@ -465,14 +464,14 @@ task(function deleteRuntimeLogs() {
 });
 
 
-task(function deployToHome() {
+task('Copy required files to APP_HOME deployment directory.', [], function deployToHome() {
   copyDir('./foam3/tools/deploy/bin', join(APP_HOME, 'bin'));
   copyDir(TARGET_DIR + '/lib', join(APP_HOME, 'lib'));
 });
 
 
-// Function to start Nanos
-task(function startNanos() {
+
+task('Start NANOS application server.', [], function startNanos() {
   if ( RUN_JAR ) {
     var OPT_ARGS = ``;
 
@@ -542,7 +541,7 @@ task(function startNanos() {
 });
 
 
-task(function getProjectGitHash() {
+task('Extract project git hash.', [], function getProjectGitHash() {
   var out = 'Unversioned';
 
   try {
@@ -559,12 +558,12 @@ task(function getProjectGitHash() {
 });
 
 
-task(function getFOAMGitHash() {
+task('Extract FOAM git hash.', [], function getFOAMGitHash() {
   FOAM_REVISION = execSync('git -C foam3 rev-parse --short HEAD').toString().trim();
 });
 
 
-task(function versions() {
+task('Show version information.', [ 'getProjectGitHash', 'getFOAMGitHash'], function versions() {
   getProjectGitHash();
   getFOAMGitHash();
 
@@ -574,7 +573,7 @@ task(function versions() {
 });
 
 
-task(function setupDirs() {
+task('Create empty build and deployment directory structures if required.', [], function setupDirs() {
   try {
     // ensureDir(`${PROJECT_HOME}/.foam`); // Only used by foamlink?
     ensureDir(APP_HOME);
@@ -713,8 +712,11 @@ const ARGS = {
       Object.keys(ARGS).forEach(a => {
         console.log('  -' + a + ': ' + ARGS[a][0]);
       });
-      tasks.sort();
-      console.log('\nTasks:', tasks.join(', '));
+      console.log('\nTasks:');
+      Object.keys(tasks).sort().forEach(t => {
+        var [ desc, dep ] = tasks[t];
+        console.log(`  ${t.padEnd(24)} ${desc}${dep.length ? ' [ ' + dep.join(', ') + ' ]': ''}`);
+      });
       quit(0);
     } ],
   i: [ 'Install npm and git hooks',
@@ -851,7 +853,10 @@ function stopNanos() {
 // # Build steps
 // ############################
 
-task(function all() {
+task(
+'Build everything specified by flags.',
+[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deployDocuments', 'deployJournals', 'deployResources', 'buildJar', 'deployToHome', 'buildTar', 'showSummary', 'startNanos' ],
+function all() {
   processArgs();
   setenv();
 
