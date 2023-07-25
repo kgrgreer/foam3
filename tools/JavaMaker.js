@@ -4,9 +4,11 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- const fs_   = require('fs');
- const path_ = require('path');
- const { processArgs } = require('./buildlib');
+// JavaMaker
+
+const fs_   = require('fs');
+const path_ = require('path');
+const { processArgs } = require('./buildlib');
 
 
 exports.description = 'generates .java files from .js models';
@@ -43,5 +45,5 @@ exports.end = function() {
     }
   } catch(x) {}
 
-  console.log(`[GenJava Maker]: ${jCount}/${mCount} models processed.`);
+  console.log(`[Java]: ${jCount}/${mCount} models processed.`);
 }

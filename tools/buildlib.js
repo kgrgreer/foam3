@@ -50,7 +50,7 @@ function execSync(cmd, options) {
 
 
 function isExcluded(pom, f) {
-  var ex = pom.pom.excludes;
+  var ex = pom.excludes;
   if ( ! ex ) return false;
   for ( var i = 0 ; i < ex.length ; i++ ) {
     var p = ex[i];

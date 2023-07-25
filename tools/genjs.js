@@ -50,7 +50,6 @@ try {
   }
 
   foam.poms.forEach(pom => {
-    pom = pom.pom;
     if ( foam.String.isInstance(pom.licenses) ) {
       addLicense(pom.licenses);
     } else if ( foam.Array.isInstance(pom.licenses) ) {

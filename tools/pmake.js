@@ -70,18 +70,11 @@ globalThis.X       = X;
 globalThis.flags   = flags;
 globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
-const VISITORS = X.makers.split(',').map(m => m + 'Maker').map(require);
+const VISITORS = X.makers.split(',').map(m => './' + m + 'Maker').map(require);
+
 
 VISITORS.forEach(v => v.init && v.init());
 
-X.pom.split(',').forEach(pom => foam.require(pom, false, true));
-
-// TODO:
-// If genjava is disabled, then override foam.loadFiles so that the POM
-// structure is loaded but .js files aren't.
-// if ( ! flags.genjava ) {
-//  foam.loadFiles = function() {};
-// }
 
 function processDir(pom, location, skipIfHasPOM) {
   verbose('\tdirectory:', location);
@@ -103,14 +96,30 @@ function processDir(pom, location, skipIfHasPOM) {
   });
 }
 
-var seen = {};
 
-foam.poms.forEach(pom => {
-  if ( seen[pom.location] ) return;
+var SUPER = foam.POM;
+var seen  = {};
+
+foam.POM = function(pom) {
+  if ( seen[foam.cwd] ) return;
+  seen[foam.cwd] = true;
+
+  pom.location = foam.cwd;
   VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
-  seen[pom.location] = true;
-  processDir(pom, pom.location || '/', false);
-});
+  SUPER(pom);
+  processDir(pom, foam.cwd, false);
+  VISITORS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
+}
+
+X.pom.split(',').forEach(pom => foam.require(pom, false, true));
+
+
+// TODO:
+// If genjava is disabled, then override foam.loadFiles so that the POM
+// structure is loaded but .js files aren't.
+// if ( ! flags.genjava ) {
+//  foam.loadFiles = function() {};
+// }
 
 VISITORS.forEach(v => v.end && v.end());
 

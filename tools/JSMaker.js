@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// JSMaker
+
 exports.description = 'create minified foam-bin.js distribution';
 
 const fs_      = require('fs');
@@ -26,8 +28,6 @@ exports.init = function() {
 
 
 exports.visitPOM = function(pom) {
-  pom = pom.pom;
-
   if ( ! version && pom.version ) version = pom.version;
 
   if ( foam.String.isInstance(pom.licenses) ) {

@@ -392,7 +392,7 @@ task(function copyLib() {
 
 task(function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="./JS" -pom=${POM}`, { stdio: 'inherit' });
+execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
   // execSync(`node ./foam3/tools/genjs.js -pom=${POM}`, { stdio: 'inherit' });
 });
 
@@ -418,7 +418,7 @@ task(function genJava() {
   var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
   // TODO: use GEN_JAVA in pmake
 //  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
-  execSync(`node foam3/tools/pmake.js -makers="./Java,./Maven,./Javac,./Journal" -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -makers="Java,Maven,Javac,Journal" -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 

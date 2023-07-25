@@ -4,20 +4,36 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// VerboseMaker
+
 exports.description = 'print out information about POMs and files visited';
 
-var pCount = 0, fCount = 0;
+exports.args = [
+  {
+    name: 'showFiles',
+    description: 'enable showing of processed files',
+    value: false
+  }
+];
+
+var pCount = 0, fCount = 0, depth = 0;
 
 exports.visitPOM = function(pom) {
-  console.log('[Verbose Maker] POM:', pom.location);
+  depth++;
+  console.log('[Verbose] POM:', ''.padEnd(depth*4) + foam.cwd);
   pCount++;
 }
 
+exports.endVisitPOM = function(pom) {
+  depth--;
+}
+
 exports.visitFile = function(pom, f, fn) {
-  console.log('[Verbose Maker] File:', f.name);
+  if ( ! X.showFiles ) return;
+  console.log('[Verbose] File:', ''.padEnd(depth*4) + f.name);
   fCount++;
 }
 
 exports.end = function() {
-  console.log(`[Verbose Maker] POM Count: ${pCount}, File Count: ${fCount}`);
+  console.log(`[Verbose] POM Count: ${pCount}, File Count: ${fCount}`);
 }

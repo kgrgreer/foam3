@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// JavacMaker
+
 exports.description = 'create /target/javacfiles file containing list of modified or static .java files, call javac';
 
 exports.args = [
@@ -36,7 +38,7 @@ exports.visitFile = function(pom, f, fn) {
 
 
 exports.end = function() {
-  console.log(`[Javac Maker] END ${X.javaFiles.length} Java files`);
+  console.log(`[Javac] END ${X.javaFiles.length} Java files`);
 
   // Only overwrite X.javaFiles when genjava:true
   // TODO: should move to separate genjava visitor
@@ -47,7 +49,7 @@ exports.end = function() {
 
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[Javac Maker] Compiling', X.javaFiles.length ,'java files:', cmd);
+  console.log('[Javac] Compiling', X.javaFiles.length ,'java files:', cmd);
   try {
     execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
