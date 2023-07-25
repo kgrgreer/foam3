@@ -30,7 +30,7 @@ foam.CLASS({
       class: 'String',
       name: 'foamUrl',
       value: '../../../../foam3/src/foam.js',
-      documentation: 'Location of FOAM for development when not using liveScriptBundler'
+      documentation: 'Location of FOAM for development build'
     },
     {
       documentation: 'Set at startup in bootscript.',
