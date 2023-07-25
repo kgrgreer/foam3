@@ -665,7 +665,7 @@ buildEnv({
 
 function setenv() {
   if ( TEST || BENCHMARK ) {
-    b_.rmdir(APP_HOME);
+    rmdir(APP_HOME);
     JAVA_OPTS = '-enableassertions ' + JAVA_OPTS;
   }
 
