@@ -4,22 +4,38 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-const path_ = require('path');
-const b_    = require('./buildlib');
+// MavenMaker
+
+exports.description = 'build a Maven pom.xml from javaDependencies, call maven if pom.xml updated';
+
+exports.args = [
+  {
+    name: 'repo',
+    description: 'maven repository',
+    value: 'http://repo.maven.apache.org/maven2/'
+  }
+];
+
+const path_                                         = require('path');
+const { execSync, processArgs, writeFileIfUpdated } = require('./buildlib');
 
 const javaDependencies = [];
 
-exports.visitPOM = function(pom) {
-  console.log('[Maven Builder] VISIT POM', pom.location);
-  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => javaDependencies.push([d, pom.path]));
+exports.init = function() {
+  processArgs(X, exports.args);
+  X.libdir = X.builddir + '/lib';
 }
 
-exports.end = function() {
-  console.log('[Maven Builder] END');
 
+exports.visitPOM = function(pom) {
+  pom.javaDependencies && pom.javaDependencies.forEach(d => javaDependencies.push([d, pom.path]));
+}
+
+
+exports.end = function() {
   // Build Maven file
   //  ensureDir(X.libdir);
-  var pom = foam.poms[0].pom;
+  var pom = foam.poms[0];
 
   var versions     = {};
   var conflicts    = [];
@@ -61,7 +77,7 @@ exports.end = function() {
 
   // Print versions conflict info and abort
   if ( conflicts.length > 0 ) {
-    console.log('[Maven Builder] Detected libs version conflict:');
+    console.log('[Maven] Detected libs version conflict:');
     var info = '';
     conflicts.forEach(c => {
       info += '\t' + c + '\n' +
@@ -87,10 +103,10 @@ exports.end = function() {
     <dependencies>${dependencies}</dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
-  if ( b_.writeFileIfUpdated('pom.xml', pomxml) ) {
-    console.log('[Maven Builder] Updating pom.xml with', javaDependencies.length, 'dependencies.');
-    b_.execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
+  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
+    console.log('[Maven] Updating pom.xml with', javaDependencies.length, 'dependencies.');
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
-    console.log('[Maven Builder] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
+    console.log('[Maven] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
   }
 }

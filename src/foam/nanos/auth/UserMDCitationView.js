@@ -44,7 +44,7 @@ foam.CLASS({
     this.SUPER();
       this
         .addClass(this.myClass())
-        this.add(this.MDProfileImageView.create({ src: this.data.profilePicture || 'images/ic-placeholder.png' }))
+        this.add(this.MDProfileImageView.create({ src: this.data.profilePicture || '/images/ic-placeholder.png' }))
         .start().addClass('info-container')
           .start()
             .addClass('md-title', 'name')

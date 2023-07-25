@@ -844,7 +844,7 @@ foam.CLASS({
     // TODO: simplify in NP-8928
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
-      var group = await groupDAO.find(this.subject.user.group);
+      var group = await groupDAO.find(this.subject.realUser.group);
 
       if ( ! group || ! group.generalCapability ) return true;
 

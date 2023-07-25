@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+exports.description = 'copies .jrl files into /target/journals';
+
 const fs_   = require('fs');
 const path_ = require('path');
 const b_    = require('./buildlib');
@@ -11,7 +13,10 @@ const b_    = require('./buildlib');
 const journalFiles  = [];
 const journalOutput = {};
 
-// TODO: move X.journaldir out of pmake
+exports.init = function() {
+  X.journaldir = X.builddir + '/journals/';
+}
+
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.jrl') ) {

@@ -4,27 +4,41 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-const fs_   = require('fs');
-const exec_ = require('child_process');
-const b_    = require('./buildlib');
+// JavacMaker
 
-X.javaFiles = [];
+exports.description = 'create /target/javacfiles file containing list of modified or static .java files, call javac';
 
-exports.visitPOM = function(pom) {
-  console.log('[Javac Maker] VISIT POM', pom.location);
+exports.args = [
+  {
+    name: 'javacParams',
+    description: 'parameters to pass to javac',
+    value: '--release 11'
+  }
+];
+
+
+const fs_                                   = require('fs');
+const { execSync, isExcluded, processArgs } = require('./buildlib');
+
+exports.init = function() {
+  processArgs(X, exports.args);
+
+  X.javaFiles = [];
 }
+
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.java') ) {
-    if ( ! b_.isExcluded(pom, fn) ) {
+    if ( ! isExcluded(pom, fn) ) {
       verbose('\t\tjava source:', fn);
       X.javaFiles.push(fn);
     }
   }
 }
 
+
 exports.end = function() {
-  console.log(`[Javac Maker] END ${X.javaFiles.length} Java files`);
+  console.log(`[Javac] END ${X.javaFiles.length} Java files`);
 
   // Only overwrite X.javaFiles when genjava:true
   // TODO: should move to separate genjava visitor
@@ -35,9 +49,9 @@ exports.end = function() {
 
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[Javac Maker] Compiling', X.javaFiles.length ,'java files:', cmd);
+  console.log('[Javac] Compiling', X.javaFiles.length ,'java files:', cmd);
   try {
-    b_.execSync(cmd, {stdio: 'inherit'});
+    execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
     process.exit(1);
   }

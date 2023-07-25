@@ -1,61 +1,57 @@
 /**
  * @license
- * Copyright 2022 The FOAM Authors. All Rights Reserved.
+ * Copyright 2023 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: don't actually load files
-// print warning if uglify not found
-// create sourcemap
-// merge with processArgs.js
+// JSMaker
 
-console.log('START GENJS');
+exports.description = 'create minified foam-bin.js distribution';
 
-const startTime = Date.now();
-const path_     = require('path');
-const fs_       = require('fs');
-const uglify_   = require('uglify-js');
+const fs_      = require('fs');
+const path_    = require('path');
+const uglify_  = require('uglify-js');
 
-require('../src/foam_node.js');
+const licenses = {};
+var version    = '';
+var files      = {}; // filename to content map for uglify
 
-var [argv, X, flags] = require('./processArgs.js')(
-  '',
-  { version: '', pom: 'pom' },
-  { debug: true, java: false, web: true }
-);
+function addLicense(l) {
+  l = l.split('\n').map(l => l.trim()).join('\n');
+  licenses[l] = true;
+}
 
-X.pom.split(',').forEach(pom => foam.require(pom, false, true));
+exports.init = function() {
+  flags.java = false;
+  flags.web  = true;
+}
 
-var version  = X.version;
-var files    = {}; // filename to content map for uglify
-var loaded   = Object.keys(globalThis.foam.loaded);
 
-loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
+exports.visitPOM = function(pom) {
+  if ( ! version && pom.version ) version = pom.version;
 
-// Build array of files for Uglify
-loaded.forEach(l => {
-  try {
-    l = path_.resolve(__dirname, l);
-    if ( foam.excluded[l] ) { /* console.log('****** EXCLUDING', l); */ return; }
-    // console.log('****** INCLUDING', l);
-    files[l] = fs_.readFileSync(l, "utf8");
-  } catch (x) {}
-});
-
-try {
-  var licenses = {};
-  function addLicense(l) {
-    l = l.split('\n').map(l => l.trim()).join('\n');
-    licenses[l] = true;
+  if ( typeof pom.licenses === 'string' ) {
+    addLicense(pom.licenses);
+  } else if ( Array.isArray(pom.licenses) ) {
+    pom.licenses.forEach(addLicense);
   }
+}
 
-  foam.poms.forEach(pom => {
-    if ( foam.String.isInstance(pom.licenses) ) {
-      addLicense(pom.licenses);
-    } else if ( foam.Array.isInstance(pom.licenses) ) {
-      pom.licenses.forEach(addLicense);
-    }
+
+exports.end = function() {
+  var loaded     = Object.keys(globalThis.foam.loaded);
+  loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
+
+  // Build array of files for Uglify
+  loaded.forEach(l => {
+    try {
+      l = path_.resolve(__dirname, l);
+      if ( foam.excluded[l] ) { /* console.log('****** EXCLUDING', l); */ return; }
+      // console.log('****** INCLUDING', l);
+      files[l] = fs_.readFileSync(l, "utf8");
+    } catch (x) {}
   });
+
   var a = Object.keys(licenses);
   var license = '';
   if ( a.length == 1 ) {
@@ -67,6 +63,7 @@ try {
 
   license = license.split('\n').map(l => '// ' + l).join('\n');
 
+  console.log(`[JS Maker] Version: ${version}, Licenses: ${Object.keys(licenses).length}, Files: ${Object.keys(files).length}`);
   var code = uglify_.minify(
     files,
     {
@@ -107,9 +104,6 @@ try {
   code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = version ? `foam-bin-${version}.js` : 'foam-bin.js';
-  console.log('GENJS: Writing', filename);
+  console.log('[JS Maker] Writing', filename);
   fs_.writeFileSync(filename, code);
-} catch (x) {
-  console.log('ERROR (JSBUILD):', x);
 }
-console.log(`END GENJS: ${Object.keys(files).length} files processed in ${Math.round((Date.now()-startTime)/1000)}s.`);

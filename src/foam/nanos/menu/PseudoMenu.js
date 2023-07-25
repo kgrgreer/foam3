@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'PseudoMenu',
   extends: 'foam.nanos.menu.Menu',
 
-  documentation: `Psedo-menu base class that can be used to create 
+  documentation: `Psedo-menu base class that can be used to create
     children for menus on startup rather than defined in jrls.
     Refer to foam.nanos.boot.DAONSpecMenu for reference.`,
 
@@ -23,6 +23,7 @@ foam.CLASS({
     {
       name: 'readPredicate',
       factory: function() {
+        /* ignoreWarning */
         return async function(o) {
           return await o.children_.select(this.COUNT()).value;
         };
