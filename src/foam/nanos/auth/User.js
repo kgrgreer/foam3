@@ -425,7 +425,7 @@ foam.CLASS({
         defaulting to a placeholder picture.`,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/ic-placeholder.png'
+        placeholderImage: '/images/ic-placeholder.png'
       },
       section: 'userInformation',
       order: 230,
