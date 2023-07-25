@@ -26,7 +26,6 @@ foam.POM({
       'commons-io:commons-io:2.13.0',
       'commons-lang:commons-lang:2.6',
       'commons-net:commons-net:3.6',
-      'io.methvin:directory-watcher:0.9.10', // Used by LiveScriptBundler?
       'javax.json:javax.json-api:1.0',
       'javax.mail:javax.mail-api:1.6.2',
       'javax.mail:mail:1.4.7',

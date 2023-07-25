@@ -50,8 +50,8 @@ foam.CLASS({
     {
       name: 'profileImg',
       factory: function() {
-        return this.MDProfileImageView.create({ label: this.subject.user.legalName,
-          src: 'images/ic-placeholder.png' });
+        return this.MDProfileImageView.create({ label: this.subject.user?.legalName,
+          src: '/images/ic-placeholder.png' });
       }
     }
   ],
