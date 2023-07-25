@@ -126,8 +126,8 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+// var BUILD_DIR  = './build', TARGET_DIR = './target';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -444,7 +444,7 @@ task(function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
   // TODO: fix reference to target
-  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../target lib`);
+  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
 });
 
 
@@ -651,8 +651,8 @@ buildEnv({
 
   // Project resources path
   PROJECT_HOME:      PWD,
-  JOURNAL_OUT:       () => `${PROJECT_HOME}/target/journals`,  // TODO: fix reference to target
-  DOCUMENT_OUT:      () => `${PROJECT_HOME}/target/documents`, // TODO: fix reference to target
+  JOURNAL_OUT:       () => `${PROJECT_HOME}/${TARGET_DIR}/journals`,
+  DOCUMENT_OUT:      () => `${PROJECT_HOME}/${TARGET_DIR}/documents`,
 
   // Build options and pid
   JAVA_OPTS:         '',
