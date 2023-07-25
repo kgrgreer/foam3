@@ -52,13 +52,12 @@
 //  3. Usage displays available tasks
 //  4. -X lets you explicitly execute a comma delimited set of tasks
 //  5. migrate_journals was removed, but no longer used by build.sh either
-//  6. remove PID / DAEMON support
+//  6. remove PID / DAEMON support (no longer true???)
 //  7. -XcleanLib will cause pom.xml to be regenerated and maven to be rerun
 //
 // TODO:
+//   - should Makers be responsible for building target directories?
 //   - merge build and target
-//   - should genjs extract version from POM?
-//   - extract common build .js library code to a library
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
 //
@@ -297,8 +296,8 @@ task(function jarImages() {
 
   var images = TARGET_DIR + '/images';
   ensureDir(images);
-  copyDir('./foam3/src/foam/u2/images', images);
-  copyDir('./foam3/src/foam/nanos/images', images);
+  copyDir('./foam3/src/foam/u2/images',      images);
+  copyDir('./foam3/src/foam/nanos/images',   images);
   copyDir('./foam3/src/foam/support/images', images);
 });
 
@@ -910,6 +909,6 @@ all();
 
 quit(0);
 
-// IS_AWS no longer used
+// IS_AWS, IS_MAC, IS_LINUX are no longer used
 // a note on 'c' clean on the current build.
 // if you issue 'c', and compilation fails, you need clean again to get a succesful deployment.
