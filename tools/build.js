@@ -96,8 +96,8 @@ var
   GEN_JAVA                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
-  IS_MAC                    = process.platform === 'darwin',
-  IS_LINUX                  = process.platform === 'linux',
+//  IS_MAC                    = process.platform === 'darwin',
+//  IS_LINUX                  = process.platform === 'linux',
   JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
@@ -316,19 +316,19 @@ task(function install() {
   execSync('npm install');
   process.chdir('..');
 
-  if ( IS_MAC ) {
+//   if ( IS_MAC ) {
     ensureDir(join(APP_HOME, 'journals'));
     ensureDir(join(APP_HOME, 'logs'));
-  }
+//  }
 
   // git hooks
   execSync('git config core.hooksPath .githooks');
   execSync('git config submodule.recurse true');
 
   // install pkcs12
-  if ( IS_MAC ) {
+//  if ( IS_MAC ) {
     exec('./tools/cert/copy-pkcs12.sh');
-  }
+//  }
 });
 
 

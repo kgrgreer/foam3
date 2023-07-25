@@ -39,7 +39,7 @@ exports.visitPOM = function(pom) {
 
 
 exports.end = function() {
-  var loaded     = Object.keys(globalThis.foam.loaded);
+  var loaded = Object.keys(globalThis.foam.loaded);
   loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 
   // Build array of files for Uglify
