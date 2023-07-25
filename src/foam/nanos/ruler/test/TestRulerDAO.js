@@ -44,7 +44,7 @@ foam.CLASS({
           var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
           if ( ! rules.isEmpty() ) {
             logger.debug("applyRules", "ruleGroup", rg.getId(), rules.size());
-            new RuleEngine(x, getX(), getDelegate()).execute(rules, obj, oldObj);
+            new TestRuleEngine(x, getX(), getDelegate()).execute(rules, obj, oldObj);
           } else {
             logger.debug("applyRules", "ruleGroup", rg.getId(), 0);
           }
