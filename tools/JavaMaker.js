@@ -25,6 +25,8 @@ exports.args = [
 
 exports.init = function() {
   processArgs(X, exports.args);
+  // Turns on loading of foam/java/* models needed for java code generation.
+  globalThis.flags.genjava = true;
 }
 
 

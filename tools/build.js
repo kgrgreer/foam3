@@ -412,7 +412,7 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 });
 
 
-task('Call pmake to generate/compile java, collect journals, call Maven and copy documents.', [], function genJava() {
+task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom    = {};
   var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
@@ -427,7 +427,7 @@ task('Call pmake to generate/compile java, collect journals, call Maven and copy
   var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
   // TODO: it would be better if the Makers specified if they needed files loaded or not
   // ???: why is genjava needed?
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=${GEN_JAVA ? 'loadFiles,' : ''}genjava,buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=${GEN_JAVA ? 'loadFiles,' : ''},xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
