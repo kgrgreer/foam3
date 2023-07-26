@@ -105,6 +105,7 @@ foam.POM = function(pom) {
   seen[foam.cwd] = true;
 
   pom.location = foam.cwd;
+  pom.path     = foam.sourceFile;
   VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
   SUPER(pom);
   processDir(pom, foam.cwd, false);
