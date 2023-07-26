@@ -167,15 +167,7 @@
       }
       pom.location = foam.cwd;
       pom.path     = foam.sourceFile;
-      // TODO: just push pom
       foam.poms.push(pom);
-      /*
-      foam.poms.push({
-        path: foam.sourceFile,
-        location: foam.cwd,
-        pom: pom
-      });
-      */
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
           var name = f.name;
