@@ -30,7 +30,7 @@ foam.CLASS({
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.nanos.ticket.TicketDAOCommand',
+    'foam.nanos.ticket.TicketCloseCommand',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -691,12 +691,11 @@ foam.CLASS({
         return id && status !== 'CLOSED';
       },
       code: function() {
-        const ticketDAOCommand = this.TicketDAOCommand.create({
-          ticket: this.id,
-          cmd: this.TicketDAOCommand.CLOSE_CMD
+        const ticketCloseCommand = this.TicketCloseCommand.create({
+          ticket: this.id
         });
 
-        this.ticketDAO.cmd(ticketDAOCommand).then(function(res) {
+        this.ticketDAO.cmd(ticketCloseCommand).then(function(res) {
           if ( res?.status === 'CLOSED' ) {
             this.copyFrom(res);
             this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
