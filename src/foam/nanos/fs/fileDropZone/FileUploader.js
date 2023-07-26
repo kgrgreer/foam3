@@ -61,11 +61,13 @@ foam.CLASS({
       name: 'owner'
     },
     [ 'showLabel', true ],
-    [ 'showAction', true]
+    [ 'showAction', true],
+    'supportedFormats'
   ],
 
   methods: [
     function render() {
+      debugger
       this.SUPER();
       this.data$.follow(this.files$);
       var self = this;
@@ -76,7 +78,7 @@ foam.CLASS({
             .add(this.LABEL_TITLE)
           .end();
         })
-        .tag(this.FileDropZone, { files$: this.files$, isMultipleFiles: false })
+        .tag(this.FileDropZone, { files$: this.files$, isMultipleFiles: false, supportedFormats: self.supportedFormats })
         .start()
           .show(this.showLabel$)
           .addClass('h600')
