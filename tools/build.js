@@ -18,7 +18,7 @@
 // Directory Structure:
 //   /deployments
 //     /u           - default deployment if not JOURNAL_CONFIG not specified with -J
-//       /resources - deployment speicific resources
+//     /resources   - deployment speicific resources
 //   /build
 //     /src         - java source files created by genJava
 //     /classes     - compiled java class files created with javac (called by genJava)
