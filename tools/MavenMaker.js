@@ -59,8 +59,7 @@ exports.end = function() {
           <exclusion>
             <groupId>${groupId}</groupId>
             <artifactId>${artifactId || '*'}</artifactId>
-          </exclusion>
-        `;
+          </exclusion>\n`;
       }
     });
 
@@ -71,8 +70,7 @@ exports.end = function() {
         <artifactId>${artifactId}</artifactId>
         <version>${version}</version>
         <exclusions>${exclusions}</exclusions>
-      </dependency>
-    `;
+      </dependency>\n`;
   }).join('');
 
   // Print versions conflict info and abort
@@ -100,7 +98,7 @@ exports.end = function() {
       <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
-    <dependencies>${dependencies}</dependencies>
+    <dependencies>${dependencies}    </dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
   if ( writeFileIfUpdated('pom.xml', pomxml) ) {
