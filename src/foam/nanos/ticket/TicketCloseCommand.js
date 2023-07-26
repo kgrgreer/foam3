@@ -6,24 +6,17 @@
 
 foam.CLASS({
   package: 'foam.nanos.ticket',
-  name: 'TicketDAOCommand',
+  name: 'TicketCloseCommand',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'A class that holds a ticket and a ticket dao command',
+  documentation: `
+    Ticket Close Command. Pass this class instance to ticketDAO.cmd to close a ticket
 
-  constants: [
-    {
-      name: 'CLOSE_CMD',
-      type: 'String',
-      value: 'CLOSE_CMD',
-    }
-  ],
+    e.g., 
+      ticketDAO.cmd_(x, new TicketCloseCommand.Builder(x).setTicket(<ticket id>).build());
+    `,
 
   properties: [
-    {
-      class: 'String',
-      name: 'cmd'
-    },
     {
       class: 'Reference',
       of: 'foam.nanos.ticket.Ticket',

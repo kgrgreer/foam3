@@ -475,7 +475,7 @@ foam.POM({
     { name: "ticket/TicketNotification",                                                  flags: "js|java" },
     { name: "ticket/TicketNotificationNotificationCitationView",                          flags: "js" },
     { name: "ticket/SummaryCard",                                                         flags: "js" },
-    { name: "ticket/TicketDAOCommand",                                                    flags: "js|java" },
+    { name: "ticket/TicketCloseCommand",                                                  flags: "js|java" },
     { name: "ticket/CloseTicketCommandDAO",                                               flags: "js|java" },
     { name: "dig/bench/DIGBenchmark",                                                     flags: "js|java" },
     { name: "dig/bench/DistributedDIGBenchmarkRunner",                                    flags: "js|java" },

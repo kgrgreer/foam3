@@ -19,19 +19,17 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-    if ( obj instanceof TicketDAOCommand ) {
-      TicketDAOCommand ticketDAOCommand = (TicketDAOCommand) obj;
-      if ( ticketDAOCommand.getCmd().equals(TicketDAOCommand.CLOSE_CMD) ) {
-        Ticket ticket = ticketDAOCommand.findTicket(x);
-        if ( ticket != null ) {
-          ticket.setStatus("CLOSED");
-          ticket.clearAssignedTo();
-  
-          ticket = (Ticket) ((DAO) x.get("localTicketDAO")).put(ticket);
-        }
+    if ( obj instanceof TicketCloseCommand ) {
+      TicketCloseCommand ticketCloseCommand = (TicketCloseCommand) obj;
+      Ticket ticket = ticketCloseCommand.findTicket(x);
+      if ( ticket != null ) {
+        ticket.setStatus("CLOSED");
+        ticket.clearAssignedTo();
 
-        return ticket;
+        ticket = (Ticket) ((DAO) x.get("localTicketDAO")).put(ticket);
       }
+      
+      return ticket;
     }
 
     return getDelegate().cmd_(x, obj);
