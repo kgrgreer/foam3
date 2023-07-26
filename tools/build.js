@@ -426,7 +426,6 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   pom = Object.keys(pom).join(',');
   var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
   // TODO: it would be better if the Makers specified if they needed files loaded or not
-  // ???: why is genjava needed?
   execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=${GEN_JAVA ? 'loadFiles,' : ''},xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
