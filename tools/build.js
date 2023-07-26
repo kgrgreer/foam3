@@ -404,7 +404,7 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 });
 
 
-task('Call pmake with Java Makers to generate and compile Java code, collect journal files, build Maven pom.xml file and copy documents.', [], function genJava() {
+task('Call pmake to generate/compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
   var pom    = {};
   var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
