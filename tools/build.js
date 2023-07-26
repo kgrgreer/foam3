@@ -366,7 +366,7 @@ task('Copy additional files from RESOURCES directories to be added to Jar file.'
 });
 
 
-task('Standalone task to cause regeneration of pom.xml and java lib directory.', [ 'genJava' ], function cleanLib() {
+task('Cause regeneration of pom.xml and java lib directory.', [ 'genJava' ], function cleanLib() {
   rmfile('pom.xml');
   emptyDir(TARGET_DIR + '/lib');
   genJava();
@@ -682,6 +682,33 @@ function setenv() {
 }
 
 
+function usage() {
+  console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
+  Object.keys(ARGS).forEach(a => {
+    console.log('  -' + a + ': ' + ARGS[a][0]);
+  });
+  console.log('\nTasks:');
+
+  var ts = { ...tasks };
+  var depth = 1;
+  function printTask(t) {
+    if ( ! ts[t] ) return;
+    delete ts[t];
+    var [ desc, dep ] = tasks[t];
+    var dep2 = dep.filter(d => ! ts[d]); // list of dependencies which appear elsewhere in tree
+    var dstr = dep2.length ? ' [ ' + dep2.join(', ') + ' ]': '';
+    console.log(''.padEnd(depth*2) + t.padEnd(27-depth*2) + desc + dstr);
+    depth++;
+    tasks[t][1].forEach(printTask);
+    depth--;
+  }
+  Object.keys(ts).sort().forEach(t => {
+    printTask(t);
+  });
+  quit(0);
+}
+
+
 const ARGS = {
   b: [ 'run all benchmarks.',
     () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
@@ -706,19 +733,7 @@ const ARGS = {
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
     () => { statusNanos(); quit(0); } ],
-  h: [ 'Print usage information.',
-    () => {
-      console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
-      Object.keys(ARGS).forEach(a => {
-        console.log('  -' + a + ': ' + ARGS[a][0]);
-      });
-      console.log('\nTasks:');
-      Object.keys(tasks).sort().forEach(t => {
-        var [ desc, dep ] = tasks[t];
-        console.log(`  ${t.padEnd(24)} ${desc}${dep.length ? ' [ ' + dep.join(', ') + ' ]': ''}`);
-      });
-      quit(0);
-    } ],
+  h: [ 'Print usage information.', usage ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',
@@ -855,7 +870,7 @@ function stopNanos() {
 
 task(
 'Build everything specified by flags.',
-[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deployDocuments', 'deployJournals', 'deployResources', 'buildJar', 'deployToHome', 'buildTar', 'showSummary', 'startNanos' ],
+[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deployDocuments', 'deployJournals', 'deployResources', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
   processArgs();
   setenv();
