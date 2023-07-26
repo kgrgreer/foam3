@@ -314,11 +314,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  // Don't use stdio: 'inherit' because it will be interleaved with JS warnings making it
-  // more difficult to read.
-  // TODO: don't load JS files
-//  console.log(execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`).toString());
-  execSync(`node foam3/tools/pmake.js -flags=web,java,-loadFiles -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
 });
 
 
@@ -402,7 +398,7 @@ task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function co
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-  execSync(`node foam3/tools/pmake.js -flags=web,-java,-loadFiles -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
@@ -425,8 +421,7 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
 
   pom = Object.keys(pom).join(',');
   var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
-  // TODO: it would be better if the Makers specified if they needed files loaded or not
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=${GEN_JAVA ? 'loadFiles,' : ''},xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
@@ -450,7 +445,6 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
 task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
-  // TODO: fix reference to target
   execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
 });
 
@@ -749,7 +743,6 @@ const ARGS = {
     args => {
 //      POM = POM ? POM + ',' args : args;
       JOURNAL_CONFIG += `,${args}` ;
-      // TODO: handle GRADLE_CONFIG elsewhere
     } ],
   k: [ 'Package up a deployment tarball.',
     () => { BUILD_ONLY = PACKAGE = true; } ],

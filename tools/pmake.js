@@ -42,7 +42,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   },
   {
     // TODO: it would be better if the Makers specified if they needed files loaded or not
-    loadFiles:   true,  // controls if individual .js files are loaded or not
+    loadFiles:   false,  // controls if individual .js files are loaded or not
     verbose:     false  // print extra status information
   },
   {
@@ -62,8 +62,6 @@ var [argv, X, flags] = require('./processArgs.js')(
           });
         }
       });
-    },
-    cmd: function() {
     }
   }
 );
@@ -72,10 +70,10 @@ globalThis.X       = X;
 globalThis.flags   = flags;
 globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
-const VISITORS = X.makers.split(',').map(m => './' + m + 'Maker').map(require);
+const MAKERS = X.makers.split(',').map(m => './' + m + 'Maker').map(require);
 
 
-VISITORS.forEach(v => v.init && v.init());
+MAKERS.forEach(v => v.init && v.init());
 
 
 function processDir(pom, location, skipIfHasPOM) {
@@ -93,7 +91,7 @@ function processDir(pom, location, skipIfHasPOM) {
         if ( ! b_.isExcluded(pom, fn) ) processDir(pom, fn, true);
       }
     } else {
-      VISITORS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
+      MAKERS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
     }
   });
 }
@@ -108,10 +106,10 @@ foam.POM = function(pom) {
 
   pom.location = foam.cwd;
   pom.path     = foam.sourceFile;
-  VISITORS.forEach(v => v.visitPOM && v.visitPOM(pom));
+  MAKERS.forEach(v => v.visitPOM && v.visitPOM(pom));
   SUPER(pom);
   processDir(pom, foam.cwd, false);
-  VISITORS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
+  MAKERS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
 }
 
 // Speeds up Makers like Verbose and JS which don't need to load .js model files.
@@ -127,6 +125,6 @@ X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 //  foam.loadFiles = function() {};
 // }
 
-VISITORS.forEach(v => v.end && v.end());
+MAKERS.forEach(v => v.end && v.end());
 
 console.log(`[PMAKE] Finished in ${Math.round((Date.now()-startTime)/1000)}s.`);
