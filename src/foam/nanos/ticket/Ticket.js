@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
+    'foam.nanos.ticket.TicketDAOCommand',
     'foam.nanos.ticket.TicketStatus',
     'foam.u2.dialog.Popup'
   ],
@@ -92,6 +93,10 @@ foam.CLASS({
     {
       name: 'SUCCESS_CLOSED',
       message: 'You have successfully closed this ticket'
+    },
+    {
+      name: 'FAIL_CLOSED',
+      message: 'Something went wrong. It failed to close this ticket'
     },
     {
       name: 'COMMENT_NOTIFICATION',
@@ -686,11 +691,18 @@ foam.CLASS({
         return id && status !== 'CLOSED';
       },
       code: function() {
-        this.status = 'CLOSED';
-        this.assignedTo = 0;
-        this.ticketDAO.put(this).then(function(ticket) {
-          this.copyFrom(ticket);
-          this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
+        const ticketDAOCommand = this.TicketDAOCommand.create({
+          ticket: this.id,
+          cmd: this.TicketDAOCommand.CLOSE_CMD
+        });
+
+        this.ticketDAO.cmd(ticketDAOCommand).then(function(res) {
+          if ( res?.status === 'CLOSED' ) {
+            this.copyFrom(res);
+            this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);
+          } else {
+            this.notify(this.FAIL_CLOSED, '', this.LogLevel.ERROR, true);
+          }
         }.bind(this));
       }
     }

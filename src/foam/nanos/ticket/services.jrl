@@ -21,6 +21,12 @@ p({
   "lazy": true,
   "serve": false,
   "serviceScript": """
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.ticket.Ticket.getOwnClassInfo()).build();
+    dao = new foam.nanos.ticket.TicketOwnerDAO.Builder(x).setDelegate(dao).build();
+    dao = new foam.nanos.ticket.TicketAddCommentDAO.Builder(x).setDelegate(dao).build();
+    dao = new foam.dao.history.HistoryDAO(x, "ticketHistoryDAO", dao);
+    dao = new foam.nanos.ticket.CloseTicketCommandDAO.Builder(x).setDelegate(dao).build();
+
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
       .setAuthorize(false)
@@ -33,12 +39,7 @@ p({
           foam.nanos.ticket.Ticket.LAST_MODIFIED
         )
       })
-      .setDecorator(
-        new foam.dao.history.HistoryDAO(x, "ticketHistoryDAO",
-          new foam.nanos.ticket.TicketAddCommentDAO.Builder(x).setDelegate(
-            new foam.nanos.ticket.TicketOwnerDAO.Builder(x).setDelegate(
-              new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.ticket.Ticket.getOwnClassInfo()).build()).build()).build())
-      )
+      .setDecorator(dao)
       .setServiceProviderAware(true)
       .setServiceProviderAwarePropertyInfos(
         new java.util.HashMap() {{
