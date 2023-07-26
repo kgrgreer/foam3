@@ -40,10 +40,7 @@ exports.visitFile = function(pom, f, fn) {
 exports.end = function() {
   console.log(`[Javac] END ${X.javaFiles.length} Java files`);
 
-  // Only overwrite X.javaFiles when genjava:true
-  // TODO: should move to separate genjava visitor
-  if ( flags.genjava )
-    fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
+  fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 

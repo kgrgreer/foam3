@@ -41,6 +41,8 @@ var [argv, X, flags] = require('./processArgs.js')(
     makers:      '' // TODO: doc, swift
   },
   {
+    // TODO: it would be better if the Makers specified if they needed files loaded or not
+    loadFiles:   true,  // controls if individual .js files are loaded or not
     verbose:     false  // print extra status information
   },
   {
@@ -111,6 +113,9 @@ foam.POM = function(pom) {
   processDir(pom, foam.cwd, false);
   VISITORS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
 }
+
+// Speeds up Makers like Verbose and JS which don't need to load .js model files.
+if ( ! flags.loadFiles ) foam.loadFiles = function() {};
 
 X.pom.split(',').forEach(pom => foam.require(pom, false, true));
 

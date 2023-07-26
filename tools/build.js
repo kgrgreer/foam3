@@ -154,9 +154,9 @@ var running = {};
 
 function task(desc, dep, f) {
   if ( arguments.length == 1 ) {
-    f = desc;
+    f    = desc;
     desc = '';
-    dep = [];
+    dep  = [];
   }
 
   if ( ! tasks[f.name] )
@@ -316,7 +316,9 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 task('Show POM structure.', [], function showPOMStructure() {
   // Don't use stdio: 'inherit' because it will be interleaved with JS warnings making it
   // more difficult to read.
-  console.log(execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`).toString());
+  // TODO: don't load JS files
+//  console.log(execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`).toString());
+  execSync(`node foam3/tools/pmake.js -flags=web,java,-loadFiles -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
 });
 
 
@@ -400,8 +402,7 @@ task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function co
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
-  // execSync(`node ./foam3/tools/genjs.js -pom=${POM}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -flags=web,-java,-loadFiles -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
@@ -423,10 +424,10 @@ task('Call pmake to generate/compile java, collect journals, call Maven and copy
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
 
   pom = Object.keys(pom).join(',');
-  var genjava = GEN_JAVA ? 'genjava,javac' : '-genjava,-javac';
-  // TODO: use GEN_JAVA in pmake
-//  execSync(`node foam3/tools/genjava.js -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
-  execSync(`node foam3/tools/pmake.js -makers="Java,Maven,Javac,Journal" -flags=${genjava},buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
+  // TODO: it would be better if the Makers specified if they needed files loaded or not
+  // ???: why is genjava needed?
+  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=${GEN_JAVA ? 'loadFiles,' : ''}genjava,buildjournals,buildlib,xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
