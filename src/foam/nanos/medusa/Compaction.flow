@@ -12,13 +12,15 @@ Compaction dumps the current system out to new ledger files, in a effort to redu
 </ul>
 
 <h2>Invocation</h2>
-Medusa Compaction is controlled by script <b>MedusaCompaction</b>.
+Medusa Compaction is controlled by script <b>MedusaCompaction</b> and <b>MedusaCompactionDryRun</b>.
 
 <p>Script will not run if:</p>
 <ol>
 <li>not on primary</li>
 <li>not all mediators and nodes ONLINE</li>
 </ol>
+
+<p>The <b>MedusaCompactionDryRun</b> script only executes the compaction logic. No new MedusaEntry entries are stored or sent to the Nodes.</p>
 
 <p>Once script execution reports completion, check:</p>
 <ol>
