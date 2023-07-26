@@ -313,6 +313,13 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 });
 
 
+task('Show POM structure.', [], function showPOMStructure() {
+  // Don't use stdio: 'inherit' because it will be interleaved with JS warnings making it
+  // more difficult to read.
+  console.log(execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`).toString());
+});
+
+
 task('Install npm and git hooks.', [], function install() {
   process.chdir(PROJECT_HOME);
 
