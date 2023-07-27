@@ -64,7 +64,7 @@ exports.end = function() {
 
   license = license.split('\n').map(l => '// ' + l).join('\n');
 
-  console.log(`[JS Maker] Version: ${version}, Licenses: ${Object.keys(licenses).length}, Files: ${Object.keys(files).length}`);
+  console.log(`[JS] Version: ${version}, Licenses: ${Object.keys(licenses).length}, Files: ${Object.keys(files).length}`);
   var code = uglify_.minify(
     files,
     {
@@ -105,6 +105,6 @@ exports.end = function() {
   code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = version ? `foam-bin-${version}.js` : 'foam-bin.js';
-  console.log('[JS Maker] Writing', filename);
+  console.log('[JS] Writing', filename);
   fs_.writeFileSync(filename, code);
 }
