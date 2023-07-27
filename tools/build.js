@@ -314,7 +314,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
 });
 
 
@@ -405,7 +405,7 @@ task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function co
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-  execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/ppmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
@@ -428,7 +428,7 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
 
   pom = Object.keys(pom).join(',');
   var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
 
