@@ -7,7 +7,10 @@
 foam.POM({
   name: "foam",
   version: 3,
-  excludes: [ 'DatastoreDAO.java' ],
+  excludes: [
+    'DatastoreDAO.java',
+    'com/google/flow/scripts.flow'
+  ],
   licenses: [
     `
     Copyright 2023 The FOAM Authors. All Rights Reserved.
