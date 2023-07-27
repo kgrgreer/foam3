@@ -420,7 +420,7 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
 
   pom = Object.keys(pom).join(',');
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
+  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
   execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
 });
 
