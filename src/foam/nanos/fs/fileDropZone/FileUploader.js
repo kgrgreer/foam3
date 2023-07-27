@@ -67,7 +67,6 @@ foam.CLASS({
 
   methods: [
     function render() {
-      debugger
       this.SUPER();
       this.data$.follow(this.files$);
       var self = this;
