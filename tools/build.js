@@ -847,7 +847,7 @@ function statusNanos() {
 }
 
 
-function stopNanos() {
+task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs' ], function stopNanos() {
   console.log('Stopping Nanos server...');
 
   var pid = readFromPidFile();
@@ -868,7 +868,7 @@ function stopNanos() {
 
   deleteRuntimeJournals();
   deleteRuntimeLogs();
-}
+});
 
 
 // ############################
