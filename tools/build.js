@@ -284,6 +284,20 @@ Implementation-Vendor: ${PROJECT.name}
 };
 
 
+function pom() {
+  var pom    = {};
+  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+
+  if ( POM )
+    POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
+
+  if ( JOURNAL_CONFIG )
+    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
+
+  return Object.keys(pom).join(',');
+}
+
+
 task('Build web root directory for inclusion in JAR.', [], function jarWebroot() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
 
@@ -419,24 +433,12 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
-
-  if ( POM )
-    POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
-
-  if ( JOURNAL_CONFIG )
-    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
-
-  pom = Object.keys(pom).join(',');
-
-  var makers = VULNERABILITY_CHECK ? 'Maven' :
-               GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal';
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -downloadLibs=${!VULNERABILITY_CHECK} -pom=${pom}`, { stdio: 'inherit' });
+  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal';
+  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
-task('Check dependencies for known vulnerabilities.', ['genJava'], function checkDeps(score) {
-  genJava();
+task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
+  execSync(`node foam3/tools/pmake.js -makers="Maven" -downloadLibs=false -pom=${pom()}`, { stdio: 'inherit' });
   try {
     execSync(`mvn dependency-check:check -f ${BUILD_DIR} -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
   } catch (_) {
