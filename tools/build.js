@@ -60,6 +60,7 @@
 //   - merge build and target
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
+//   - cleanAll
 //
 // diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
 // ln -s /Volumes/RAM_DISK /path/to/project/build2
@@ -405,7 +406,7 @@ task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function co
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-  execSync(__dirname + `/ppmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
