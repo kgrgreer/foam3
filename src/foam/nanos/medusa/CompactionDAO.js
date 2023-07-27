@@ -42,6 +42,7 @@ TODO: handle node roll failure - or timeout
     'foam.nanos.NanoService',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.er.EventRecord',
@@ -754,6 +755,7 @@ TODO: handle node roll failure - or timeout
           javaCode: `
           X x = getX();
           Logger logger = Loggers.logger(x, this, "put");
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
           MedusaEntry entry = (MedusaEntry) obj;
           if ( entry.getObjectId() == null ) {
              if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
@@ -762,17 +764,18 @@ TODO: handle node roll failure - or timeout
              return;
           }
 
-          Object nspec = x.get(entry.getNSpecName());
-           if ( nspec == null ) {
-            logger.warning("NSpec not found", entry.getNSpecName());
-            return;
-          }
-          if ( ! ( nspec instanceof DAO ) ) {
-            logger.warning("NSpec not DAO", entry.getNSpecName());
-            return;
-          }
-
-          FObject found = ((DAO) nspec).find(entry.getObjectId());
+          DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          // Object nspec = x.get(entry.getNSpecName());
+          //  if ( nspec == null ) {
+          //   logger.warning("NSpec not found", entry.getNSpecName());
+          //   return;
+          // }
+          // if ( ! ( nspec instanceof DAO ) ) {
+          //   logger.warning("NSpec not DAO", entry.getNSpecName());
+          //   return;
+          // }
+          // DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          FObject found = mdao.find(entry.getObjectId());
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK

@@ -28,8 +28,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function toString () {
-      return this.value;
+    {
+      name: 'toString',
+      code: function() {
+        return this.value;
+      },
+      javaCode: `
+        return getValue();
+      `
     }
   ]
 });
