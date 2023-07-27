@@ -429,19 +429,20 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
 
   pom = Object.keys(pom).join(',');
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal' ;
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+
+  var makers = VULNERABILITY_CHECK ? 'Maven' :
+               GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal';
+  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -downloadLibs=${!VULNERABILITY_CHECK} -pom=${pom}`, { stdio: 'inherit' });
 });
 
-function checkDeps(score) {
-  info('Checking dependencies for vulnerabilities...');
+task('Check dependencies for known vulnerabilities.', ['genJava'], function checkDeps(score) {
   genJava();
   try {
-    execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+    execSync(`mvn dependency-check:check -f ${BUILD_DIR} -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
   } catch (_) {
     // maven build error will be output to the console, no need to throw
   }
-}
+});
 
 task('Generate and compile java source.', [ 'genJava', 'copyLib' ], function buildJava() {
   genJava();
