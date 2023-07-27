@@ -96,7 +96,7 @@ foam.CLASS({
     },
     {
       name: 'FAIL_CLOSED',
-      message: 'Something went wrong. It failed to close this ticket'
+      message: 'Something went wrong. Ticket failed to close'
     },
     {
       name: 'COMMENT_NOTIFICATION',
