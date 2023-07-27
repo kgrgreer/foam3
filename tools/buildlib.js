@@ -10,6 +10,15 @@ const fs_   = require('fs');
 const exec_ = require('child_process');
 const path_ = require('path');
 
+const adapt = {
+  'Boolean': function (v) {
+    if ( typeof v === 'boolean' )
+      return v;
+
+    var s = v.toString().trim().toLowerCase();
+    return s === 'true' || s === 't' || s === '1' || s === 'yes' || s === 'on';
+  }
+};
 
 function processArgs(X, args) {
   args.forEach(a => {
@@ -20,6 +29,9 @@ function processArgs(X, args) {
         X[a.name] = a.value;
       }
     }
+
+    if ( a.class && adapt[a.class] )
+      X[a.name] = adapt[a.class](X[a.name]);
   });
 }
 
