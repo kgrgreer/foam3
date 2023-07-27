@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class RuleEngine extends ContextAwareSupport {
-  private DAO                      delegate_         = null;
-  private DAO                      ruleHistoryDAO_   = null;
-  private AtomicBoolean            stops_            = new AtomicBoolean(false);
-  private Map<String, Object>      results_          = new HashMap<>();
-  private Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
-  private X                        userX_;
-  private CompoundContextAgency    asyncAgency_      = new CompoundContextAgency();
+  protected DAO                      delegate_         = null;
+  protected DAO                      ruleHistoryDAO_   = null;
+  protected AtomicBoolean            stops_            = new AtomicBoolean(false);
+  protected Map<String, Object>      results_          = new HashMap<>();
+  protected Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
+  protected X                        userX_;
+  protected CompoundContextAgency    asyncAgency_      = new CompoundContextAgency();
 
   public RuleEngine(X x, X systemX, DAO delegate) {
     setX(systemX);
@@ -177,7 +177,7 @@ public class RuleEngine extends ContextAwareSupport {
     return results_.get(ruleId);
   }
 
-  private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
+  protected void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
     if ( rule.getAsync() ) {
       applyAsyncRule(rule, obj, oldObj);
     } else {
@@ -186,7 +186,7 @@ public class RuleEngine extends ContextAwareSupport {
     }
   }
 
-  private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
+  protected void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
     asyncAgency_.submit(userX_, new ContextAgent() {
         @Override
         public void execute(X x) {
@@ -223,13 +223,13 @@ public class RuleEngine extends ContextAwareSupport {
    * @param rule    rule object to check
    * @return true if the rule is ACTIVE, false otherwise
    */
-  private boolean isRuleActive(Rule rule) {
+  protected boolean isRuleActive(Rule rule) {
     return rule.getEnabled() &&
            rule.getLifecycleState() == LifecycleState.ACTIVE &&
            rule.getAction() != null;
   }
 
-  private boolean checkPermission(Rule rule, FObject obj) {
+  protected boolean checkPermission(Rule rule, FObject obj) {
     var user = rule.getUser(getX(), obj);
 
     if ( user != null ) {
