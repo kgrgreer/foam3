@@ -350,11 +350,18 @@ task('Deploy documents from DOCUMENT_OUT to DOCUMENT_HOME.', [], function deploy
 });
 
 
-task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME', [], function deployJournals() {
+task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function deployJournals() {
   console.log('JOURNAL_OUT: ', JOURNAL_OUT);
   console.log('JOURNAL_HOME:', JOURNAL_HOME);
 
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
+});
+
+
+task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
+  deployDocuments();
+  deployJournals();
+  deployResources();
 });
 
 
@@ -870,7 +877,7 @@ function stopNanos() {
 
 task(
 'Build everything specified by flags.',
-[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deployDocuments', 'deployJournals', 'deployResources', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
+[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
   processArgs();
   setenv();
@@ -891,9 +898,7 @@ function all() {
 
   if ( ! RESTART_ONLY ) {
     buildJava();
-    deployDocuments();
-    deployJournals();
-    deployResources();
+    deploy();
 
     // ???: Why is this?
     if ( RUN_JAR || TEST || BENCHMARK ) {
