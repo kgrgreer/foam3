@@ -8,7 +8,7 @@
 //   foam3/tools/genjava.js
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
-//     - TODO: copy .flow files into /target/documents
+//     - copies .flow files into /target/documents
 //     - create /target/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated

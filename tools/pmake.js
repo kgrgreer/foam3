@@ -18,7 +18,7 @@
 //   MavenMaker   : build a Maven pom.xml from javaDependencies, call maven if pom.xml updated
 //   JournalMaker : copies .jrl files into /target/journals
 //   JsMaker      : create a minified foam-bin.js file
-//   DocMaker     : TODO: copy .flow files into /target/documents
+//   DocMaker     : copies .flow files into /target/documents
 //   VerboseMaker : print out information about POMs and files visited
 
 console.log('[PMAKE] Starting...');

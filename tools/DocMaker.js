@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-exports.description = 'copies .flow files into ./{builddir}/documents';
+exports.description = 'copies .flow files into /target/documents';
 
 const fs_          = require('fs');
 const { copyFile, ensureDir, isExcluded } = require('./buildlib');
@@ -36,5 +36,5 @@ exports.end = function() {
   // Write to document_files for verification purpose
   fs_.writeFileSync(X.builddir + '/document_files', documentFiles.join('\n') + '\n');
 
-  console.log(`[Doc Maker] Copied ${documentFiles.length} document files to ${X.documentdir}.`);
+  console.log(`[Doc Maker] Copied ${documentFiles.length} flow document files to ${X.documentdir}.`);
 }
