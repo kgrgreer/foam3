@@ -43,7 +43,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   {
     // TODO: it would be better if the Makers specified if they needed files loaded or not
     loadFiles:   false,  // controls if individual .js files are loaded or not
-    verbose:     false  // print extra status information
+    verbose:     false   // print extra status information
   },
   {
     usage: function() {
@@ -70,7 +70,13 @@ globalThis.X       = X;
 globalThis.flags   = flags;
 globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
-const MAKERS = X.makers.split(',').map(m => './' + m + 'Maker').map(require);
+const MAKERS = X.makers.split(',').map(m => {
+  try {
+    return require('./' + m + 'Maker');
+  } catch (x) {
+    return require(path_.join(__dirname, m + 'Maker'));
+  }
+});
 
 
 MAKERS.forEach(v => v.init && v.init());
@@ -115,7 +121,14 @@ foam.POM = function(pom) {
 // Speeds up Makers like Verbose and JS which don't need to load .js model files.
 if ( ! flags.loadFiles ) foam.loadFiles = function() {};
 
-X.pom.split(',').forEach(pom => foam.require(pom, false, true));
+X.pom.split(',').forEach(pom => {
+  try {
+    foam.require(pom, false, true);
+  } catch (x) {
+    console.error('Unable to load POM: ' + pom);
+    process.exit(-1);
+  }
+});
 
 
 // TODO:
