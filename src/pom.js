@@ -59,6 +59,7 @@ foam.POM({
     { name: "foam/core/CountingSemaphore",                            flags: "js" },
     { name: "foam/core/Promised",                                     flags: "js" },
     { name: "foam/core/Interface",                                    flags: "js" },
+    { name: "foam/core/Macro",                                        flags: "js" },
     { name: "foam/core/Type",                                         flags: "js" },
     { name: "foam/core/Axiom",                                        flags: "js|java" },
     { name: "foam/core/ContextMethod",                                flags: "js" },
