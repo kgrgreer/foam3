@@ -134,7 +134,7 @@ TODO: handle node roll failure - or timeout
         if ( ! config.getIsPrimary() ) {
           throw new IllegalStateException("Compaction not allowed from Secondaries");
         }
-
+        setDryRun(false);
         execute(x);
         return obj;
       }
