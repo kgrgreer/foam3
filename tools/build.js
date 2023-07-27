@@ -168,7 +168,7 @@ function task(desc, dep, f) {
   var rec   = [ ];
 
   var SUPER = globalThis[f.name] || function() { };
-  globalThis[f.name] = function() {
+  globalThis[f.name] = function(...args) {
     if ( fired ) return;
     fired = true;
 
@@ -182,7 +182,7 @@ function task(desc, dep, f) {
       depth++;
     }
 
-    f.bind(Object.assign({ SUPER }, EXPORTS))();
+    f.bind(Object.assign({ SUPER }, EXPORTS))(...args);
 
     running[f.name] -= 1;
     if ( running[f.name] === 0 ) {
