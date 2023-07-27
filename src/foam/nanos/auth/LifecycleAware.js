@@ -8,19 +8,14 @@ foam.INTERFACE({
   package: 'foam.nanos.auth',
   name: 'LifecycleAware',
 
-  methods: [
+  properties: [
     {
-      name: 'getLifecycleState',
-      type: 'foam.nanos.auth.LifecycleState',
-    },
-    {
-      name: 'setLifecycleState',
-      args: [
-        {
-          name: 'value',
-          type: 'foam.nanos.auth.LifecycleState',
-        }
-      ]
+      class: 'Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: 'PENDING',
+      readPermissionRequired: true,
+      updatePermissionRequired: true
     }
   ]
 });

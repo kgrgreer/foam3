@@ -107,7 +107,7 @@ function verbose() {
 
 
 function isExcluded(pom, f) {
-  var ex = pom.pom.excludes;
+  var ex = pom.excludes;
   if ( ! ex ) return false;
   for ( var i = 0 ; i < ex.length ; i++ ) {
     var p = ex[i];
@@ -151,7 +151,7 @@ function processDir(pom, location, skipIfHasPOM) {
 }
 
 function loadLibs(pom) {
-  pom.pom.javaDependencies && pom.pom.javaDependencies.forEach(d => X.javaDependencies.push([d, pom.path]));
+  pom.javaDependencies && pom.javaDependencies.forEach(d => X.javaDependencies.push([d, pom.path]));
 }
 
 
@@ -203,7 +203,7 @@ function outputJournals() {
 function buildLibs() {
   // Build Maven file
   //  ensureDir(X.libdir);
-  var pom = foam.poms[0].pom;
+  var pom = foam.poms[0];
 
   var versions     = {};
   var conflicts    = [];

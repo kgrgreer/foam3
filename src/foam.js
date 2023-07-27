@@ -161,15 +161,13 @@
     poms: [],
     POM: function(pom) {
       if ( globalThis.document ) {
-        var src = document.currentScript.src;
-        var i = src.lastIndexOf('/');
+        var src  = document.currentScript.src;
+        var i    = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
       }
-      foam.poms.push({
-        path: foam.sourceFile,
-        location: foam.cwd,
-        pom: pom
-      });
+      pom.location = foam.cwd;
+      pom.path     = foam.sourceFile;
+      foam.poms.push(pom);
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
           var name = f.name;

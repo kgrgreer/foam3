@@ -42,6 +42,7 @@ TODO: handle node roll failure - or timeout
     'foam.nanos.NanoService',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.er.EventRecord',
@@ -64,6 +65,12 @@ TODO: handle node roll failure - or timeout
       name: 'COMPACTION_CMD',
       type: 'String',
       value: 'COMPACTION_CMD'
+    },
+    {
+      documentation: 'Initiate Compaction process',
+      name: 'COMPACTION_DRY_RUN_CMD',
+      type: 'String',
+      value: 'COMPACTION_DRY_RUN_CMD'
     },
     {
       name: 'ALARM_NAME',
@@ -102,6 +109,11 @@ TODO: handle node roll failure - or timeout
       name: 'notFound',
       class: 'Map',
       javaFactory: 'return new HashMap();'
+    },
+    {
+      name: 'dryRun',
+      class: 'Boolean',
+      value: false
     }
   ],
 
@@ -123,6 +135,17 @@ TODO: handle node roll failure - or timeout
           throw new IllegalStateException("Compaction not allowed from Secondaries");
         }
 
+        execute(x);
+        return obj;
+      }
+      if ( COMPACTION_DRY_RUN_CMD.equals(obj) ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
+        ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+        if ( replaying.getReplaying() ) {
+          Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");
+          throw new IllegalStateException("Compaction not allowed during Replay");
+        }
+        setDryRun(true);
         execute(x);
         return obj;
       }
@@ -154,47 +177,56 @@ TODO: handle node roll failure - or timeout
         logger.info("health");
         health(x);
 
-        // setup
-        logger.info("stopServices");
-        stopServices(x);
+        if ( getDryRun() ) {
 
-        // block
-        logger.info("block");
-        setBlocking(true);
+          // compaction
+          logger.info("compaction");
+          long compactionTime = compaction(x);
 
-        // wait
-        logger.info("in-flight");
-        try {
-          inFlight(x);
-        } catch (Throwable t) {
+        } else {
+
+          // setup
+          logger.info("stopServices");
+          stopServices(x);
+
+          // block
+          logger.info("block");
+          setBlocking(true);
+
+          // wait
+          logger.info("in-flight");
+          try {
+            inFlight(x);
+          } catch (Throwable t) {
+            setBlocking(false);
+            throw t;
+          }
+
+          // nodes
+          logger.info("roll");
+          roll(x);
+
+          // dagger
+          logger.info("dagger");
+          long oldGlobalIndex = dagger(x);
+
+          // unblock
+          logger.info("unblock");
           setBlocking(false);
-          throw t;
+          super.unblock(x);
+
+          // compaction
+          logger.info("compaction");
+          long compactionTime = compaction(x);
+
+          // purge
+          logger.info("purge");
+          purge(x, oldGlobalIndex, compactionTime);
+
+          // startServices
+          logger.info("startServices");
+          startServices(x);
         }
-
-        // nodes
-        logger.info("roll");
-        roll(x);
-
-        // dagger
-        logger.info("dagger");
-        long oldGlobalIndex = dagger(x);
-
-        // unblock
-        logger.info("unblock");
-        setBlocking(false);
-        super.unblock(x);
-
-        // compaction
-        logger.info("compaction");
-        long compactionTime = compaction(x);
-
-        // purge
-        logger.info("purge");
-        purge(x, oldGlobalIndex, compactionTime);
-
-        // startServices
-        logger.info("startServices");
-        startServices(x);
 
         // report
         logger.info("report");
@@ -495,12 +527,13 @@ TODO: handle node roll failure - or timeout
                     new CompactionSink(x,
                     new UniqueSink(x,
                     new NSpecSink(x, this,
+                    new DaggerSink(x, this,
                     new Sequence.Builder(x)
                       .setArgs(new Sink[] {
                         compacted,
-                        new NodeSink(x) })
+                        new NodeSink(x, this) })
                       .build()
-                    ))));
+                    )))));
       final Sink sink = new Sequence.Builder(x)
                      .setArgs(new Sink[] {
                        processed,
@@ -722,6 +755,7 @@ TODO: handle node roll failure - or timeout
           javaCode: `
           X x = getX();
           Logger logger = Loggers.logger(x, this, "put");
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
           MedusaEntry entry = (MedusaEntry) obj;
           if ( entry.getObjectId() == null ) {
              if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
@@ -730,17 +764,18 @@ TODO: handle node roll failure - or timeout
              return;
           }
 
-          Object nspec = x.get(entry.getNSpecName());
-           if ( nspec == null ) {
-            logger.warning("NSpec not found", entry.getNSpecName());
-            return;
-          }
-          if ( ! ( nspec instanceof DAO ) ) {
-            logger.warning("NSpec not DAO", entry.getNSpecName());
-            return;
-          }
-
-          FObject found = ((DAO) nspec).find(entry.getObjectId());
+          DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          // Object nspec = x.get(entry.getNSpecName());
+          //  if ( nspec == null ) {
+          //   logger.warning("NSpec not found", entry.getNSpecName());
+          //   return;
+          // }
+          // if ( ! ( nspec instanceof DAO ) ) {
+          //   logger.warning("NSpec not DAO", entry.getNSpecName());
+          //   return;
+          // }
+          // DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          FObject found = mdao.find(entry.getObjectId());
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK
@@ -783,11 +818,46 @@ TODO: handle node roll failure - or timeout
               MedusaEntry.OBJECT.clear(me);
               MedusaEntry.HASH.clear(me);
               me.setData(data);
-              DaggerService dagger = (DaggerService) x.get("daggerService");
-              me = dagger.link(x, me);
               getDelegate().put(me, sub);
             }
           }
+          `
+        }
+      ]
+    },
+    {
+      name: 'DaggerSink',
+      extends: 'foam.dao.ProxySink',
+
+      documentation: 'Links new MedusaEntry',
+
+      javaCode: `
+        public DaggerSink(X x, CompactionDAO self, ProxySink delegate) {
+          super(x, delegate);
+          setSelf(self);
+        }
+      `,
+
+      properties: [
+        {
+          name: 'self',
+          class: 'foam.dao.DAOProperty',
+          of: 'foam.nanos.medusa.CompactionDAO'
+        }
+      ],
+
+      methods: [
+        {
+          name: 'put',
+          javaCode: `
+          X x = getX();
+          Logger logger = Loggers.logger(x, this, "put");
+          MedusaEntry entry = (MedusaEntry) obj;
+          if ( ! getSelf().getDryRun() ) {
+            DaggerService dagger = (DaggerService) x.get("daggerService");
+            entry = dagger.link(x, entry);
+          }
+          getDelegate().put(entry, sub);
           `
         }
       ]
@@ -833,11 +903,28 @@ TODO: handle node roll failure - or timeout
 
       documentation: 'Sends MedusaEntry to nodes',
 
+      javaCode: `
+        public NodeSink(X x, CompactionDAO self) {
+          setX(x);
+          setSelf(self);
+        }
+      `,
+
       properties: [
+        {
+          name: 'self',
+          class: 'foam.dao.DAOProperty',
+          of: 'foam.nanos.medusa.CompactionDAO'
+        },
         {
           class: 'foam.dao.DAOProperty',
           name: 'dao',
-          javaFactory: 'return new MedusaBroadcast2NodesDAO(getX());'
+          javaFactory: `
+          if ( getSelf().getDryRun() )
+            return new foam.dao.NullDAO(getX(), MedusaEntry.getOwnClassInfo());
+
+          return new MedusaBroadcast2NodesDAO(getX());
+          `
         }
       ],
 

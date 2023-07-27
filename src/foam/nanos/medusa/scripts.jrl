@@ -13,7 +13,26 @@ try {
   print("WARNING: Compaction aborted. System OK");
 } catch (Throwable t) {
   print(t.getMessage());
-  print("ERROR: Compaction failed.  System OFFLINE. Intevention required.");
+  print("ERROR: Compaction failed.  System OFFLINE. Intervention required.");
+}
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaCompactionDryRun",
+  description:"Initiate MedusaEntryDAO Compaction DryRun",
+  code:"""
+import foam.nanos.medusa.CompactionDAO;
+d = x.get("medusaEntryMediatorDAO");
+try {
+  d.cmd(CompactionDAO.COMPACTION_DRY_RUN_CMD);
+  print("INFO: Compaction Dry Run complete. System OK");
+} catch (IllegalStateException e) {
+  print(e.getMessage());
+  print("WARNING: Compaction Dry Run aborted. System OK");
+} catch (Throwable t) {
+  print(t.getMessage());
+  print("ERROR: Compaction Dry Run failed.  System OFFLINE. Intervention required.");
 }
   """
 })
