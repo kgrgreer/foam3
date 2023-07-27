@@ -892,11 +892,11 @@ function all() {
 
   setupDirs();
 
-  if ( PACKAGE || RUN_JAR || TEST || BENCHMARK ) {
-    packageFOAM();
-  }
-
   if ( ! RESTART_ONLY ) {
+    if ( PACKAGE || RUN_JAR || TEST || BENCHMARK ) {
+      packageFOAM();
+    }
+
     buildJava();
     deploy();
 
@@ -905,10 +905,10 @@ function all() {
       buildJar();
       deployToHome();
     }
-  }
 
-  if ( PACKAGE ) {
-    buildTar();
+    if ( PACKAGE ) {
+      buildTar();
+    }
   }
 
   if ( ! BUILD_ONLY ) {
