@@ -21,6 +21,7 @@ const { processArgs } = require('./buildlib');
 
 exports.init = function() {
   processArgs(X, exports.args);
+  if ( X.showFiles ) flags.loadFiles = true;
 }
 
 var pCount = 0, fCount = 0, depth = 0;
