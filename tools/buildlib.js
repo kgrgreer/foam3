@@ -10,15 +10,19 @@ const fs_   = require('fs');
 const exec_ = require('child_process');
 const path_ = require('path');
 
+
 const adapt = {
   'Boolean': function (v) {
     if ( typeof v === 'boolean' )
       return v;
 
+    if ( ! v ) return undefined;
+
     var s = v.toString().trim().toLowerCase();
     return s === 'true' || s === 't' || s === '1' || s === 'yes' || s === 'on';
   }
 };
+
 
 function processArgs(X, args) {
   args.forEach(a => {
