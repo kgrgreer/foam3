@@ -106,6 +106,9 @@ foam.CLASS({
         }
 
         if ( this.dynamicSize ) this.size = Math.min(nu.length, this.maxSize);
+
+        if ( this.data ) this.choice = this.findChoiceByData(this.data);
+
         return nu;
       }
     },
