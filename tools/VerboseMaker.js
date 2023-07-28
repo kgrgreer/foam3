@@ -10,11 +10,18 @@ exports.description = 'print out information about POMs and files visited';
 
 exports.args = [
   {
+    class: 'Boolean',
     name: 'showFiles',
     description: 'enable showing of processed files',
     value: false
   }
 ];
+
+const { processArgs } = require('./buildlib');
+
+exports.init = function() {
+  processArgs(X, exports.args);
+}
 
 var pCount = 0, fCount = 0, depth = 0;
 

@@ -113,6 +113,8 @@ var
   TEST                      = false,
   TESTS                     = '',
   WEB_PORT                  = null,
+  VULNERABILITY_CHECK       = false,
+  VULNERABILITY_CHECK_SCORE = 9, // CVSS score (LOW:0..5 , MEDIUM:5..7 , HIGH:7..9 , CRITICAL:9..10, IGNORE:11) to fail the build
   FOAM_REVISION,
   PROJECT_REVISION
 ;
@@ -167,7 +169,7 @@ function task(desc, dep, f) {
   var rec   = [ ];
 
   var SUPER = globalThis[f.name] || function() { };
-  globalThis[f.name] = function() {
+  globalThis[f.name] = function(...args) {
     if ( fired ) return;
     fired = true;
 
@@ -181,7 +183,7 @@ function task(desc, dep, f) {
       depth++;
     }
 
-    f.bind(Object.assign({ SUPER }, EXPORTS))();
+    f.bind(Object.assign({ SUPER }, EXPORTS))(...args);
 
     running[f.name] -= 1;
     if ( running[f.name] === 0 ) {
@@ -281,6 +283,20 @@ Implementation-Vendor: ${PROJECT.name}
 
   return m;
 };
+
+
+function pom() {
+  var pom    = {};
+  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+
+  if ( POM )
+    POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
+
+  if ( JOURNAL_CONFIG )
+    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
+
+  return Object.keys(pom).join(',');
+}
 
 
 task('Build web root directory for inclusion in JAR.', [], function jarWebroot() {
@@ -392,8 +408,16 @@ task('Remove generated files.', [], function clean() {
     emptyDir(`${APP_HOME}/lib`);
   }
 
-  emptyDir(BUILD_DIR);
-  emptyDir(TARGET_DIR + '/journals'); // Don't remove whole directory to avoid removing java libs under ./target/lib
+  var files = fs.readdirSync(TARGET_DIR, {withFileTypes: true});
+  files.forEach(f => {
+    // Don't remove java libs under ./target/lib
+    if ( f.name === 'lib' ) return;
+
+    var fn = TARGET_DIR + '/' + f.name;
+    if ( f.isDirectory() ) rmdir(fn);
+    if ( f.isFile()      ) rmfile(fn);
+  });
+
   // TODO: convert to Node to make Windows compatible
   execSync('rm -f foam-bin*.js');
 });
@@ -418,20 +442,18 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
-
-  if ( POM )
-    POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
-
-  if ( JOURNAL_CONFIG )
-    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
-
-  pom = Object.keys(pom).join(',');
   var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
-  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
+task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
+  execSync(`node foam3/tools/pmake.js -makers="Maven" -pom=${pom()}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
+});
 
 task('Generate and compile java source.', [ 'genJava', 'copyLib' ], function buildJava() {
   genJava();
@@ -807,10 +829,9 @@ const ARGS = {
   W: [ 'PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1',
     args => { WEB_PORT = args; info('WEB_PORT=' + WEB_PORT); } ],
   x: [ 'Check dependencies for known vulnerabilities.',
-    () => {
-      info('Checking dependencies for vulnerabilities...');
-      execSync('gradle dependencyCheckAnalyze --info');
-      // mvn dependency:analyze-only
+    args => {
+      VULNERABILITY_CHECK = true;
+      checkDeps(args);
       quit(0);
     } ],
   X: [ 'Execute a list of tasks.',

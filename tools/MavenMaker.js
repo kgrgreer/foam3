@@ -16,8 +16,8 @@ exports.args = [
   }
 ];
 
-const path_                                         = require('path');
-const { execSync, processArgs, writeFileIfUpdated } = require('./buildlib');
+const path_                                                    = require('path');
+const { execSync, ensureDir, processArgs, writeFileIfUpdated } = require('./buildlib');
 
 const javaDependencies = [];
 
@@ -34,7 +34,7 @@ exports.visitPOM = function(pom) {
 
 exports.end = function() {
   // Build Maven file
-  //  ensureDir(X.libdir);
+  ensureDir(X.libdir);
   var pom = foam.poms[0];
 
   var versions     = {};
@@ -47,7 +47,11 @@ exports.end = function() {
     var lib = groupId + ':' + artifactId;
     versions[lib] = [...(versions[lib] || []), { id, loc: d[1] }];
     // mark as conflicted if a different version found
-    if ( versions[lib].length == 2 && versions[lib][0].id === id ) versions[lib].pop();
+    if ( versions[lib].length == 2 && versions[lib][0].id === id ) {
+      versions[lib].pop();
+      // dependency already added to pom.xml
+      return;
+    }
     if ( versions[lib].length == 2 ) conflicts.push(lib);
 
     // Dependency exclusions
@@ -97,6 +101,26 @@ exports.end = function() {
       <maven.compiler.source>1.7</maven.compiler.source>
       <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.owasp</groupId>
+          <artifactId>dependency-check-maven</artifactId>
+          <version>8.3.1</version>
+          <configuration>
+            <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
 
     <dependencies>${dependencies}    </dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
