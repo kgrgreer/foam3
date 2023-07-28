@@ -8,7 +8,7 @@
 //   foam3/tools/genjava.js
 //     - generates .java files from .js models
 //     - copies .jrl files into /target/journals
-//     - TODO: copy .flow files into /target/documents
+//     - copies .flow files into /target/documents
 //     - create /target/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated
@@ -60,6 +60,7 @@
 //   - merge build and target
 //   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
+//   - cleanAll
 //
 // diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
 // ln -s /Volumes/RAM_DISK /path/to/project/build2
@@ -330,7 +331,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(`node foam3/tools/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
 });
 
 
@@ -429,7 +430,7 @@ task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function co
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
 //  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-  execSync(`node foam3/tools/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
 
@@ -441,8 +442,8 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal' : 'Maven,Journal';
-  execSync(`node foam3/tools/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
+  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
