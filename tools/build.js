@@ -438,9 +438,9 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
-  execSync(`node foam3/tools/pmake.js -makers="Maven" -builddir=${TARGET_DIR} -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -makers="Maven" -pom=${pom()}`, { stdio: 'inherit' });
   try {
-    execSync(`mvn dependency-check:check -f ${BUILD_DIR} -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+    execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
   } catch (_) {
     // maven build error will be output to the console, no need to throw
   }

@@ -125,9 +125,9 @@ exports.end = function() {
     <dependencies>${dependencies}    </dependencies>
   </project>\n`.replaceAll(/^  /gm, '');
 
-  if ( writeFileIfUpdated(X.builddir + '/pom.xml', pomxml) ) {
+  if ( writeFileIfUpdated('pom.xml', pomxml) ) {
     console.log('[Maven] Updating pom.xml with', javaDependencies.length, 'dependencies.');
-    execSync(`mvn dependency:copy-dependencies -f ${X.builddir} -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
+    execSync(`mvn dependency:copy-dependencies -DoutputDirectory=${path_.join(process.cwd(), X.builddir + '/lib')}`, { stdio: 'inherit' });
   } else {
     console.log('[Maven] Not Updating pom.xml. No changes to', javaDependencies.length, 'dependencies.');
   }
