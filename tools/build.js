@@ -395,10 +395,21 @@ task('Copy additional files from RESOURCES directories to be added to Jar file.'
 });
 
 
-task('Cause regeneration of pom.xml and java lib directory.', [ 'genJava' ], function cleanLib() {
+task('Remove pom.xml and java lib directory.', [ ], function cleanLib() {
   rmfile('pom.xml');
   emptyDir(TARGET_DIR + '/lib');
+});
+
+
+task('Cause regeneration of pom.xml and java lib directory.', [ 'cleanLib', 'genJava' ], function regenLib() {
+  cleanLib();
   genJava();
+});
+
+
+task('Clean build files, include pom.xml and java libraries.', [ 'cleanLib', 'clean' ], function cleanAll() {
+  cleanLib();
+  clean();
 });
 
 
