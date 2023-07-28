@@ -92,6 +92,7 @@ function processDir(pom, location, skipIfHasPOM) {
     var fn = location + '/' + f.name;
     if ( f.isDirectory() ) {
       if ( ! f.name.startsWith('.') ) {
+        if ( f.name === 'build' || f.name === 'build2' ) return;
         if ( f.name.indexOf('android') != -1 ) return;
         if ( f.name.indexOf('examples') != -1 ) return;
         if ( ! b_.isExcluded(pom, fn) ) processDir(pom, fn, true);
@@ -131,13 +132,6 @@ X.pom.split(',').forEach(pom => {
   }
 });
 
-
-// TODO:
-// If genjava is disabled, then override foam.loadFiles so that the POM
-// structure is loaded but .js files aren't.
-// if ( ! flags.genjava ) {
-//  foam.loadFiles = function() {};
-// }
 
 MAKERS.forEach(v => v.end && v.end());
 
