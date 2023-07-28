@@ -5,14 +5,14 @@
  */
 
 foam.POM({
-    name: "foam-full",
+    name: 'foam-full',
     version: 3,
-    excludes: ['node_modules'],
+    excludes: [ 'node_modules' ],
     projects: [
-        { name: "src/pom" },
+        { name: 'src/pom' },
         { name: 'src/foam/nanos/pom' },
-        { name: "src/foam/u2/wizard/pom" },
-        { name: "src/foam/flow/laminar/pom" }
+        { name: 'src/foam/u2/wizard/pom' },
+        { name: 'src/foam/flow/laminar/pom' }
     ],
     javaDependencies: [
       'com.authy:authy-java:1.1.0',

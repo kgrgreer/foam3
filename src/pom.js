@@ -197,6 +197,7 @@ foam.POM({
     { name: "foam/util/uid/ClientGlobalSearchService",                flags: "js|java" },
     { name: "foam/util/uid/FuidKey",                                  flags: "js|java" },
     { name: "foam/util/DeFeedback",                                   flags: "web" },
+    { name: 'foam/util/development/ClientTestingReplayDAO',           flags: "js" },
     { name: "foam/log/LogLevel",                                      flags: "js|java" },
     { name: "foam/log/Logger",                                        flags: "js" },
     { name: "foam/log/ConsoleLogger",                                 flags: "js" },
