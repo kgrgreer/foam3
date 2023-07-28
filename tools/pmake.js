@@ -125,6 +125,7 @@ X.pom.split(',').forEach(pom => {
   try {
     foam.require(pom, false, true);
   } catch (x) {
+    console.log('ERROR:', x);
     console.error('Unable to load POM: ' + pom);
     process.exit(-1);
   }
