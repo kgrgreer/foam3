@@ -407,8 +407,16 @@ task('Remove generated files.', [], function clean() {
     emptyDir(`${APP_HOME}/lib`);
   }
 
-  emptyDir(BUILD_DIR);
-  emptyDir(TARGET_DIR + '/journals'); // Don't remove whole directory to avoid removing java libs under ./target/lib
+  var files = fs.readdirSync(TARGET_DIR, {withFileTypes: true});
+  files.forEach(f => {
+    // Don't remove java libs under ./target/lib
+    if ( f.name === 'lib' ) return;
+
+    var fn = TARGET_DIR + '/' + f.name;
+    if ( f.isDirectory() ) rmdir(fn);
+    if ( f.isFile()      ) rmfile(fn);
+  });
+
   // TODO: convert to Node to make Windows compatible
   execSync('rm -f foam-bin*.js');
 });
