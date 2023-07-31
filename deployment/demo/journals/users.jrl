@@ -1,0 +1,16 @@
+p({
+  "class":"foam.nanos.auth.User",
+  "id":1,
+  "spid":"foam",
+  "lifecycleState":1,
+  "firstName":"admin",
+  "lastName":"admin",
+  "email":"admin@foamddev.com",
+  "userName":"admin",
+  "group":"system",
+  "emailVerified":true,
+  "status":2,
+  "compliance":1,
+  "onboarded":true,
+  "loginEnabled":true
+})
