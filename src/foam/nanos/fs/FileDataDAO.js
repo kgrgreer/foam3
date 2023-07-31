@@ -42,6 +42,7 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
 
+      if ( file.getFilesize() != blob.getSize() ) file.setFilesize(blob.getSize());
       // save to data string
       if ( file.getFilesize() <= getMaxStringDataSize() ) {
         try {
