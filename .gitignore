@@ -17,6 +17,7 @@ local.properties
 *.iml
 tools/cp.txt
 /nanos
+build2/*
 build/*
 .*-build
 .*-gensrcs
