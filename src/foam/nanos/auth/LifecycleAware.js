@@ -14,7 +14,6 @@ foam.INTERFACE({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: 'PENDING',
-      readPermissionRequired: true,
       updatePermissionRequired: true
     }
   ]
