@@ -93,7 +93,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'client'
+      name: 'client',
+      postSet: function(o, n) { globalThis.x = n; }
     }
  ],
 
