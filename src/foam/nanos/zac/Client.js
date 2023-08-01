@@ -4,7 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// Access with: http://localhost:8080/foam3/src/foam/nanos/zac/index.html
+// Access with:
+// http://localhost:8080/foam3/src/foam/nanos/zac/index.html (embedded)
+// http://localhost:8080/src/foam/nanos/zac/index.html       (stand alone)
 
 /*
 group in foam.box.SessionReplyBox
@@ -97,13 +99,12 @@ foam.CLASS({
 
   methods: [
     async function render() {
-      this.add('Building Client...');
+      this.SUPER();
+
       var cls = await this.ClientBuilder.create({authenticate: false}, this).promise;
       this.client = cls.create(null, this);
 
       if ( ! globalThis.client ) globalThis.client = this.client;
-
-      this.add('built.');
     }
   ]
 });
