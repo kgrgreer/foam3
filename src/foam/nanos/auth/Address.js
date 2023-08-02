@@ -697,7 +697,7 @@ foam.CLASS({
       name: 'postalCodeLabel',
       expression: function(countryId) {
         let translatedPostalCodeLabel = this.translationService.getTranslation(foam.locale, `${countryId.toLowerCase()}.postalCode.label`);
-        return translatedPostalCodeLabel ? translatedPostalCodeLabel : this.translationService.getTranslation(foam.locale, 'postalCode.label');
+        return translatedPostalCodeLabel ? translatedPostalCodeLabel : this.translationService.getTranslation(foam.locale, 'postalCode.label', 'ZIP Code');
       },
       hidden: true
     },
