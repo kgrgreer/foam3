@@ -121,7 +121,12 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var bgColor = this.returnExpandedCSS(this.modalStyle.color);
+      let getColor = a => {
+        return a.startsWith('$') ?
+        foam.CSS.returnTokenValue(a, this.cls_, this.__subContext__) :
+        this.returnExpandedCSS(a);
+      };
+      var bgColor = getColor(this.modalStyle.color);
       this
         .addClass(this.myClass())
         .enableClass(this.myClass('fullscreen'), this.fullscreen$)
@@ -139,7 +144,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('$grey300')})
+              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : getColor('$grey300')})
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)

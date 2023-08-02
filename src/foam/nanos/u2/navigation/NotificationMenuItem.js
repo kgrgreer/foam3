@@ -81,7 +81,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showCountUnread',
-      expression: function(countUnread) { countUnread > 0 }
+      expression: function(countUnread) { return countUnread > 0 }
     },
     {
       class: 'Boolean',
