@@ -488,7 +488,8 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
 task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
-  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-2-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
+  fs.mkdirSync(TARGET_DIR + '/package', {recursive: true});
+  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
 });
 
 
@@ -690,7 +691,8 @@ buildEnv({
   JOURNAL_HOME:      () => `${APP_HOME}/journals`,
   DOCUMENT_HOME:     () => `${APP_HOME}/documents`,
   LOG_HOME:          () => `${APP_HOME}/logs`,
-  JAR_OUT:           () => `${APP_HOME}/lib/${PROJECT.name}-${VERSION}.jar`,
+
+  JAR_OUT:           () => ( PACKAGE ? `${PROJECT_HOME}/${TARGET_DIR}` : `${APP_HOME}` ) + `/lib/${PROJECT.name}-${VERSION}.jar`,
 
   // Project resources path
   PROJECT_HOME:      PWD,
@@ -942,6 +944,7 @@ function all() {
     }
 
     if ( PACKAGE ) {
+      buildJar();
       buildTar();
     }
   }
