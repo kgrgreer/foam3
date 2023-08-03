@@ -2327,6 +2327,74 @@ foam.CLASS({
 });
 
 
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'StubMethodJavaRefinement',
+  refines: 'foam.core.StubMethod',
+
+  methods: [
+    {
+      name: 'buildJavaClass',
+      flags: [ 'java' ],
+      code: function buildJavaClass(cls) {
+        if ( ! this.javaSupport ) return;
+
+        var name = this.name;
+        var args = this.args;
+        var boxPropName = foam.String.capitalize(this.boxPropName);
+
+        var code =
+`foam.box.Message message = getX().create(foam.box.Message.class);
+foam.box.RPCMessage rpc = getX().create(foam.box.RPCMessage.class);
+rpc.setName("${name}");
+Object[] args = { ${ args.map( a => a.name ).join(',') } };
+rpc.setArgs(args);
+
+message.setObject(rpc);
+foam.box.RPCReturnBox replyBox = getX().create(foam.box.RPCReturnBox.class);
+message.getAttributes().put("replyBox", replyBox);
+get${boxPropName}().send(message);
+try {
+  replyBox.getSemaphore().acquire();
+} catch (Throwable t) {
+  throw new RuntimeException(t);
+}
+
+Object result = replyBox.getMessage().getObject();
+`;
+
+        if ( this.javaType && this.javaType !== 'void' ) {
+          code += `if ( result instanceof foam.box.RPCReturnMessage )
+  return (${this.javaType})((foam.box.RPCReturnMessage)result).getData();
+`;
+        }
+
+        code += `if ( result instanceof java.lang.Throwable )
+  throw new RuntimeException((java.lang.Throwable)result);
+
+if ( result instanceof foam.box.RPCErrorMessage ) {
+  foam.box.RPCErrorMessage error = (foam.box.RPCErrorMessage) result;
+  if ( error.getData() != null ) {
+    throw new RuntimeException(error.getData().toString());
+  }
+  throw new RuntimeException(error.getMessage());
+}
+`;
+
+        if ( this.javaType && this.javaType !== 'void') {
+          code += `throw new RuntimeException("Invalid response type: " + result.getClass());`;
+        }
+
+        this.javaCode = code;
+
+        this.SUPER(cls);
+      }
+    }
+  ]
+});
+
+
 foam.CLASS({
   package: 'foam.java',
   name: 'ListenerJavaRefinement',
