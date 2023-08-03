@@ -32,6 +32,7 @@ foam.INTERFACE({
       tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' },
       section: 'userInformation',
       readPermissionRequired: true,
+      columnPermissionRequired: true,
       gridColumns: 6
     }
   ]
