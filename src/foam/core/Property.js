@@ -681,11 +681,10 @@ if ( eFactory && (
     function createChildProperty_(child) {
       var prop = this.clone();
 
-      if ( child.cls_ !== foam.core.Property &&
-           child.cls_ !== this.cls_ )
+      if ( child.cls_ !== foam.core.Property && child.cls_ !== this.cls_ )
       {
         if ( this.cls_ !== foam.core.Property ) {
-          this.__context__.warn('Unsupported change of property type from', this.cls_.id, 'to', child.cls_.id, 'property name', this.name);
+          this.__context__.warn('Unsupported change of property type from', this.cls_.id, 'to', child.cls_.id, 'property name', this.name,'in model',child.sourceCls_.id);
         }
 
         return child;
