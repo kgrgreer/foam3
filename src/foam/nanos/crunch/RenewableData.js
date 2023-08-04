@@ -68,7 +68,7 @@ foam.CLASS({
     },
     {
       name: 'expiry',
-      class: 'Date',
+      class: 'DateTime',
       hidden: true
     }
   ]

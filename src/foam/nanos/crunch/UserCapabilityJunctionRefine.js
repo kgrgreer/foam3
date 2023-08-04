@@ -10,15 +10,16 @@ foam.CLASS({
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
 
   implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.LifecycleAware',
-    'foam.nanos.crunch.lite.Capable'
+    'foam.nanos.crunch.lite.Capable',
+    'foam.nanos.crunch.Renewable'
   ],
 
   mixins: [
-    'foam.nanos.auth.CreatedAwareMixin',
-    'foam.nanos.auth.CreatedByAwareMixin',
-    'foam.nanos.auth.LastModifiedAwareMixin',
-    'foam.nanos.auth.LastModifiedByAwareMixin',
     'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.lite.CapableObjectData'
   ],
@@ -34,7 +35,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'static foam.nanos.crunch.AssociatedEntity.*'
+    'static foam.nanos.crunch.AssociatedEntity.*',
+    'java.util.Date'
   ],
 
   imports: [

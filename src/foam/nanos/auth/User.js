@@ -446,25 +446,15 @@ foam.CLASS({
       name: 'created',
       includeInDigest: true,
       documentation: 'The date and time of when the User was created in the system.',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      section: 'userInformation',
-      order: 250,
-      gridColumns: 6,
-      includeInDigest: true
+      order: 250
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       includeInDigest: true,
       documentation: 'The date and time the User was last modified.',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      storageOptional: true,
-      section: 'userInformation',
       readPermissionRequired: true,
-      order: 260,
-      gridColumns: 6
+      order: 260
     },
     {
       class: 'String',
