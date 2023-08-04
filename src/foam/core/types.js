@@ -943,6 +943,12 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'Boolean',
+      name: 'showSubColumns',
+      documentation: 'Allow for selection of referenced columns in table views.',
+      value: true
+    },
+    {
       name: 'menuKeys',
       documentation: `
         A list of menu ids.

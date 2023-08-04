@@ -801,9 +801,7 @@ foam.CLASS({
       name: 'hasSubProperties',
       class: 'Boolean',
       expression: function(subProperties) {
-        if ( subProperties.length === 0 )
-          return false;
-        return true;
+        return subProperties.length > 0;
       }
     },
     {
@@ -821,7 +819,7 @@ foam.CLASS({
       expression: function(prop) {
         if ( ! this.of || ! this.of.getAxiomByName )
           return [];
-        if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
+        if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || ( foam.core.Reference.isInstance(prop) && prop.showSubColumns ) ) )
           return prop.of.getAxiomsByClass(foam.core.Property).map(p => { if ( ! foam.dao.DAOProperty.isInstance(p) )  return [p.name, this.columnHandler.returnAxiomHeader(p)] }).filter(e => e != undefined);
         return [];
       }
