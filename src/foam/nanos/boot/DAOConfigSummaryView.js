@@ -148,6 +148,10 @@ foam.CLASS({
       color:$white;
       font-weight: 800;
     }
+    ^footer {
+      color: $grey500;
+      padding-top: 12px;
+    }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
     .foam-u2-view-AltView .property-selectedView {
       margin-left: 32px;
@@ -181,13 +185,25 @@ foam.CLASS({
       }
     },
     {
+      class: 'Int',
+      name: 'daoCount'
+    },
+    {
+      class: 'Int',
+      name: 'totalDAOCount'
+    },
+    {
       name: 'filteredDAO',
       factory: function() {
-       return this.data.where(
+       var dao = this.data.where(
          this.AND(
            this.ENDS_WITH(foam.nanos.boot.NSpec.ID, 'DAO'),
            this.EQ(foam.nanos.boot.NSpec.SERVE,     true)
          ));
+
+       dao.select(this.COUNT()).then(c => this.totalDAOCount = this.daoCount = c.value);
+
+       return dao;
       }
     },
     {
@@ -196,7 +212,8 @@ foam.CLASS({
       view: {
        class: 'foam.u2.SearchField',
        onKey: true
-      }
+      },
+      preSet: function(o, n) { this.daoCount = 0; return n; }
     },
     {
       name: 'currentDAO',
@@ -304,13 +321,16 @@ foam.CLASS({
                   }
                 }
 
+                if ( contains ) self.daoCount++;
                 localShow.set(contains);
                 updateSections[localI].set(! updateSections[localI].get());
               });
         });
+        self.start().addClass(self.myClass('footer')).add(self.daoCount$, ' of ', self.totalDAOCount$, ' shown').end();
       });
       this.mementoChange();
       this.viewDidRender = true;
+
     }
   ],
 
