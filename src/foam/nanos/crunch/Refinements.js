@@ -12,36 +12,7 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
-  ],
-
-  properties: [
-    {
-      name: 'lastModified',
-      class: 'DateTime',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
-    },
-    {
-      name: 'lastModifiedBy',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      projectionSafe: false,
-      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
-    },
-    {
-      name: 'lastModifiedByAgent',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      projectionSafe: false,
-      tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
-    }
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.crunch.Renewable'
   ]
 });
