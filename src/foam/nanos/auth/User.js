@@ -446,6 +446,7 @@ foam.CLASS({
       name: 'created',
       includeInDigest: true,
       documentation: 'The date and time of when the User was created in the system.',
+      readPermissionRequired: true,
       order: 250
     },
     {
