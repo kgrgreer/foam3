@@ -245,7 +245,7 @@ foam.CLASS({
           add('Data Management').
         end()
         .start()
-        .style({ 'width': 'fit-content', 'float': 'right', 'margin-right': '40px', 'margin-top': '6px' })
+        .style({ 'width': 'fit-content', 'float': 'right', 'margin-right': '40px', 'margin-top': '12px' })
             .start(this.SEARCH).focus().end()
             .addClass('foam-u2-search-TextSearchView')
             .addClass(this.myClass('foam-u2-search-TextSearchView'))
