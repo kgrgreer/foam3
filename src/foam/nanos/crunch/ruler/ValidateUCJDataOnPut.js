@@ -68,7 +68,6 @@ foam.CLASS({
   
                   data.validate(sourceX);
                   ucj.setStatus(CapabilityJunctionStatus.PENDING);
-                  ucj.resetRenewalStatus();
                 } catch (Throwable e) {
                   logger.warning("Validation failed", e.getMessage(), ucj.toString());
                 }

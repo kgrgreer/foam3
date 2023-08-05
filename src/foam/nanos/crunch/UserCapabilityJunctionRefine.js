@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'static foam.nanos.crunch.AssociatedEntity.*',
+    'java.time.*',
     'java.util.Date'
   ],
 

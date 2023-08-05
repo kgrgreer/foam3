@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.crunch.RenewableData',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
     'java.util.Calendar',
     'java.util.Date'
   ],
@@ -34,13 +35,13 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            Logger logger = (Logger) x.get("logger");
+            Logger logger = Loggers.logger(x, null, clsName);
             DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             UserCapabilityJunction old = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
-            // logger.debug(clsName, "ucj ", ucj);
-            // logger.debug(clsName, "old ", old);
+            // logger.debug("ucj ", ucj);
+            // logger.debug("old ", old);
 
             if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED || ucj.getIsRenewable() ) return;
             if ( old != null && old.getStatus() == CapabilityJunctionStatus.GRANTED && ! old.getIsRenewable() &&
@@ -49,43 +50,34 @@ foam.CLASS({
             ) return;
 
             Capability capability = (Capability) ucj.findTargetId(x);
-            // logger.debug(clsName, "ucj.findTargetId(x) - capability", capability);
+            // logger.debug("ucj.findTargetId(x) - capability", capability);
             if ( capability == null ) {
-              logger.debug("UCJ Expiry not configured: Capability not found for UCJ targetId : " + ucj.getSourceId());
+              logger.debug("UCJ Expiry not configured: Capability not found for UCJ targetId", ucj.getSourceId());
               return;
             }
 
             // if the data is Renewable and expiry is user-configured, get the expiry from the RenewableData,
             // otherwise, get the expiry from the capability
             FObject data = ucj.getData();
-            
+
             Date junctionExpiry = data instanceof RenewableData && ((RenewableData) data).getDataConfiguredExpiry() ?
               ((RenewableData) data).getExpiry() :
               capability.getExpiry(); 
 
-            ucj.resetRenewalStatus();
-    
-            if ( capability.getDuration() > 0 ) {
-              Date today = new Date();
-              Calendar calendar = Calendar.getInstance();
-              calendar.setTime(today);
-              calendar.add(Calendar.DATE, capability.getDuration());
+            if ( capability.getExpiryPeriod() > 0 ) {
+              Date expiry = capability.calculateDate(x, null, capability.getExpiryPeriod(), capability.getExpiryPeriodTimeUnit());
     
               if ( junctionExpiry == null ) {
-                junctionExpiry = calendar.getTime();
+                junctionExpiry = expiry;
               } else {
-                junctionExpiry = junctionExpiry.after(calendar.getTime()) ? calendar.getTime() : junctionExpiry;
+                junctionExpiry = junctionExpiry.after(expiry) ? expiry : junctionExpiry;
               }
             }
             ucj.setExpiry(junctionExpiry);
-            // logger.debug(clsName, "ucj.setExpiry()", ucj);
+            // logger.debug("ucj.setExpiry()", ucj);
             if ( junctionExpiry != null && ( data instanceof RenewableData ) ) {
-              ((RenewableData) data).setRenewable(false);
+              ((RenewableData) data).setRenewable(capability.getIsRenewable());
               ucj.setData(data);
-            } 
-    
-            if ( capability.getGracePeriod() > 0 ) {
-              ucj.setGracePeriod(capability.getGracePeriod());
             }
           }
         }, "");
