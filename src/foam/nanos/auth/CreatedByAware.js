@@ -18,7 +18,7 @@ foam.INTERFACE({
       documentation: 'User who created the entry',
       tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' },
       section: 'userInformation',
-      readPermissionRequired: true,
+      columnPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -28,10 +28,8 @@ foam.INTERFACE({
       documentation: 'Agent acting as User who created the entry',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      columnPermissionRequired: true,
       tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' },
       section: 'userInformation',
-      readPermissionRequired: true,
       columnPermissionRequired: true,
       gridColumns: 6
     }
