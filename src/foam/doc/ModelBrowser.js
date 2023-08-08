@@ -62,11 +62,19 @@ foam.CLASS({
         return this.params.path || 'foam.core.Property';
       }
     },
+    {
+      name: 'packageChoices',
+      value: [ 'foam.core', 'foam.u2' ]
+    },
+    {
+      class: 'String',
+      name: 'package'
+    },
     [ 'conventionalUML', false ],
     {
       class: 'Map',
       name: 'allowedModels',
-      adapt: function(_,models) {
+      adapt: function(_, models) {
         if ( foam.Array.isInstance(models) ) {
           var map = {};
           models.forEach((m) => map[m.id] = true);
@@ -76,11 +84,26 @@ foam.CLASS({
     },
     {
       name: 'modelDAO',
-      expression: function(nSpecDAO,allowedModels) {
+      factory: function(/*nSpecDAO, allowedModels*/) {
         var self = this;
-        var dao = self.ArrayDAO.create({of: self.Model});
-        Object.keys(foam.USED).forEach(m => {try { dao.put(foam.lookup(m).model_); } catch(x) {}});
-//        Object.keys(foam.UNUSED).forEach(m => dao.put(foam.lookup(m).model_));
+        var dao  = self.ArrayDAO.create({of: self.Model});
+        var packages = {};
+        function addModel(m) {
+          try {
+            var c = foam.maybeLookup(m);
+            if ( c ) {
+              var mdl = c.model_;
+              packages[mdl.package] = true;
+              dao.put(mdl);
+            }
+          } catch(x) {
+          }
+        }
+        Object.keys(foam.USED).forEach(addModel);
+//        Object.keys(foam.UNUSED).forEach(addModel);
+        var a = Object.keys(packages);
+        a.sort();
+        this.packageChoices = a;
         return dao;
         /*
         return self.PromisedDAO.create({
@@ -108,19 +131,23 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
+      self.package = 'foam.u2';
+
       this.start().addClass(this.myClass())
         .start('h2').add('Model Browser').end()
+        .start().add('Package: ').tag(foam.u2.view.ChoiceView, {data$: this.package$, choices$: this.packageChoices$}).end()
         .start().add(this.PRINT_PAGE).end()
-        .select(this.modelDAO.limit(10), function(model) {
+        .select(this.modelDAO.limit(100), function(model) {
+          if ( self.package && self.package !== model.package ) return;
+          console.log(self.package, model.package);
           try {
-          console.log('ModelBrowser:', model.id);
-          var cls = foam.maybeLookup(model.id);
-          return self.E().
-            start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
-              add('Model ' + model).
-            end().
-            start(self.UMLDiagram, { data: cls }).end().
-            start(self.SimpleClassView, { data: cls }).end();
+            var cls = foam.maybeLookup(model.id);
+            return self.E().
+              start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
+                add('Model ' + model.id).
+              end().
+              start(self.UMLDiagram,      { data: cls }).end().
+              start(self.SimpleClassView, { data: cls }).end();
           } catch (x) {
             console.log('Error: ', x);
           }
@@ -144,9 +171,7 @@ foam.CLASS({
     {
       name: 'printPage',
       label: 'Print',
-      code: function() {
-        globalThis.print();
-      }
+      code: function() { globalThis.print(); }
     }
   ]
 });
