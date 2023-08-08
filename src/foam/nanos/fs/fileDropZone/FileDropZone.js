@@ -100,7 +100,7 @@ foam.CLASS({
     { name: 'LABEL_MAX_SIZE',      message: 'Max size:' },
     { name: 'ERROR_FILE_TITLE',    message: 'Error' },
     { name: 'ERROR_FILE_TYPE',     message: 'Invalid file type' },
-    { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' }
+    { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' },
     { name: 'NO_FILES',            message: 'No files' }
   ],
 

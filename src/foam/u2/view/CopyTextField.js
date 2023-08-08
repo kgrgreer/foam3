@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'CopyTextField',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Controller',
   documentation: 'Read-Only text field that copies the contents of the field when the user clicks',
 
   mixins: ['foam.u2.util.ClipboardAccess'],
@@ -85,7 +85,6 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass()
-        .startContext({ data: this })
         .on('click', () => {
           this.copyText();
         })
@@ -95,8 +94,7 @@ foam.CLASS({
         .start(foam.u2.TooltipView, { data: 'Copied!' })
           .addClass(this.myClass('showTooltip'))
           .enableClass(this.myClass('show'), this.showTooltip_$)
-        .end()
-        .endContext();
+        .end();
     }
   ],
   actions: [
