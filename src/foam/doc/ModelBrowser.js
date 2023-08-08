@@ -64,11 +64,12 @@ foam.CLASS({
     },
     {
       name: 'packageChoices',
-      value: [ 'foam.core', 'foam.u2' ]
+      value: [ ]
     },
     {
       class: 'String',
-      name: 'package'
+      name: 'package',
+      value: 'foam.core'
     },
     [ 'conventionalUML', false ],
     {
@@ -86,7 +87,7 @@ foam.CLASS({
       name: 'modelDAO',
       factory: function(/*nSpecDAO, allowedModels*/) {
         var self = this;
-        var dao  = self.ArrayDAO.create({of: self.Model});
+        var dao  = self.ArrayDAO.create({of: self.Model}).orderBy(foam.core.Model.ID);
         var packages = {};
         function addModel(m) {
           try {
@@ -100,10 +101,11 @@ foam.CLASS({
           }
         }
         Object.keys(foam.USED).forEach(addModel);
-//        Object.keys(foam.UNUSED).forEach(addModel);
+        Object.keys(foam.UNUSED).forEach(addModel);
         var a = Object.keys(packages);
         a.sort();
         this.packageChoices = a;
+        this.package = 'foam.core';
         return dao;
         /*
         return self.PromisedDAO.create({
@@ -131,33 +133,37 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      self.package = 'foam.u2';
-
       this.start().addClass(this.myClass())
         .start('h2').add('Model Browser').end()
         .start().add('Package: ').tag(foam.u2.view.ChoiceView, {data$: this.package$, choices$: this.packageChoices$}).end()
         .start().add(this.PRINT_PAGE).end()
-        .select(this.modelDAO.limit(100), function(model) {
-          if ( self.package && self.package !== model.package ) return;
-          console.log(self.package, model.package);
-          try {
-            var cls = foam.maybeLookup(model.id);
-            return self.E().
-              start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
-                add('Model ' + model.id).
-              end().
-              start(self.UMLDiagram,      { data: cls }).end().
-              start(self.SimpleClassView, { data: cls }).end();
-          } catch (x) {
-            console.log('Error: ', x);
-          }
-        })
+        .start().add(self.dynamic(function(package) {
+          this.start('h2').add('Models:').end()
+          .select(self.modelDAO, function(model) {
+            if ( self.package && self.package !== model.package ) return;
+            return self.E().add(model.id, model.description, model.help);
+          })
+          .select(self.modelDAO, function(model) {
+            if ( self.package && self.package !== model.package ) return;
+            try {
+              var cls = foam.maybeLookup(model.id);
+              return self.E().
+                start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
+                  add('Model ' + model.id).
+                end().
+                start(self.UMLDiagram,      { data: cls }).end().
+                start(self.SimpleClassView, { data: cls }).end();
+            } catch (x) {
+              console.log('Error: ', x);
+            }
+          })
+        })).end()
       .end();
     },
 
     function parseClientModel(n) {
       var cls = JSON.parse(n.client);
-      if ( Object.keys(cls).length === 0 ){
+      if ( Object.keys(cls).length === 0 ) {
         console.log('this model', n.name, 'is not accessible in the client side or is a service')
         //throw new Error('Unsupported');
         return null;
