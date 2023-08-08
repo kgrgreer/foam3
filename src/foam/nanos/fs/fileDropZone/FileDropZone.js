@@ -101,6 +101,7 @@ foam.CLASS({
     { name: 'ERROR_FILE_TITLE',    message: 'Error' },
     { name: 'ERROR_FILE_TYPE',     message: 'Invalid file type' },
     { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' }
+    { name: 'NO_FILES',            message: 'No files' }
   ],
 
   properties: [
@@ -228,6 +229,8 @@ foam.CLASS({
       .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); })
       .add(this.slot(function(files) {
         var e = this.E().addClass(self.myClass('fileCards'));
+        if ( ! visibilitySlot.get() )
+          return e.add(self.NO_FILES);
         for ( var i = 0; i < files.length; i++ ) {
           e.tag({
             class: 'foam.nanos.fs.fileDropZone.FileCard',
