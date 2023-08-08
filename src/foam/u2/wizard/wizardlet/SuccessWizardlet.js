@@ -51,8 +51,7 @@ foam.CLASS({
             title: this.title,
             isAvailable: true,
             customView: {
-              class: 'foam.u2.wizard.wizardlet.SuccessWizardletView',
-              message$: this.message$
+              class: 'foam.u2.wizard.wizardlet.SuccessWizardletView'
             }
           })
         ];

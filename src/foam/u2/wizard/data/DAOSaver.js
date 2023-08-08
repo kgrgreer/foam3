@@ -17,6 +17,8 @@ foam.CLASS({
     (written by OpenAI)
   `,
 
+  imports: ['wizardlet'],
+
   properties: [
     {
       name: 'of',
@@ -53,6 +55,12 @@ foam.CLASS({
         Optional path used to specify the location of the desired wizardlet's data object that will
         be updated.
       `,
+    },
+    {
+      name: 'reloadAfterPut',
+      class: 'Boolean',
+      documentation: `reloads the wizardlet's data prop with updated data from the put, 
+      not sure why we dont do this everywhere. TODO: investigate and probably deafult to true`
     }
   ],
 
@@ -61,6 +69,8 @@ foam.CLASS({
       const dataToPut = this.path ? this.path.f(data) : data;
       if ( ! dataToPut ) return Promise.resolve();
       let newData = await this.dao.put(dataToPut);
+      if ( this.reloadAfterPut )
+        this.wizardlet[this.path || 'data'] = newData;
       return await this.delegate.save(newData);
     }
   ]
