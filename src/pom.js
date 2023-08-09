@@ -1007,6 +1007,7 @@ foam.POM({
     { name: "foam/i18n/Locale",                                       flags: "js|java" },
     { name: "foam/i18n/TranslationService",                           flags: "js|java" },
     { name: "foam/i18n/ClientCacheTranslationService",                flags: "js" },
+    { name: "foam/i18n/NullTranslationService",                       flags: "js" },
     { name: "foam/i18n/TranslationConsole",                           flags: "js" },
     { name: "foam/i18n/TranslationConsoleMenu",                       flags: "js" },
     { name: "foam/i18n/ClientTranslationService",                     flags: "js" },
