@@ -45,7 +45,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      var cls = this.data;
+      var cls   = this.data;
       var model = cls.model_;
       var impls = cls.getAxiomsByClass(this.Implements);
 
