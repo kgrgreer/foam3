@@ -14,18 +14,9 @@ foam.CLASS({
       border-collapse: collapse;
       width: 100%;
     }
-    ^ thead {
-      background-color: #dee3e9;
-    }
     ^ th {
       text-align: left;
       padding: 8px 3px 3px 7px;
-    }
-    ^ tbody > tr:nth-child(odd) {
-      background-color: #f6f9f9;
-    }
-    ^ tbody > tr:nth-child(even) {
-      background-color: $white;
     }
     ^ td {
       vertical-align: top;
@@ -49,11 +40,12 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.addClass(this.myClass());
       /** Temporary implementation while CSS is broken for UnstyledTableView. Remove when fixed. **/
       this.start('table').
-        start('tr').start('td').attrs({width: '250px'}).add('Class').end().start('td').add('Name').end().end().
+        start('tr').start('th').attrs({width: '250px'}).add('Class').end().start('th').add('Name').end().start('th').add('Description').end().end().
         select(this.data, function(a) {
-          return this.E().start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().end();
+          return this.E().start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().start('td').style({overflow: 'hidden', 'text-wrap':'nowrap'}).add(a.documentation).end().end();
         }).
       end();
     }
