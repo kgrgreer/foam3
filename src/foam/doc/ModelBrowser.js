@@ -62,6 +62,7 @@ foam.CLASS({
   `,
 
   properties: [
+    { class: 'Boolean', name: 'showPackage' },
     { name: 'package', value: [], preSet: function(o, n) { return n.sort((a, b) => foam.String.compare(a.id, b.id)); } }
   ],
 
@@ -78,7 +79,7 @@ foam.CLASS({
             enableClass(this.myClass('selected'), self.data$.map(d => d === m)).
             show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
             on('click', () => self.data = m).
-            add(m.id /*, m.documentation*/).
+            add(self.showPackage$.map(p => p ? m.id : m.name)).
           end()
         );
       }));
@@ -108,7 +109,7 @@ foam.CLASS({
 
   imports: [ 'nSpecDAO', 'params' ],
 
-  exports: [ 'conventionalUML', 'path as browserPath', 'query' ],
+  exports: [ 'conventionalUML', 'package', 'path as browserPath', 'query' ],
 
   css: `
     ^ {
@@ -187,7 +188,7 @@ foam.CLASS({
         var packages = { '--All--': all};
         function addModel(m) {
           try {
-          var c = foam.lookup(m);
+          var c = foam.maybeLookup(m);
           if ( c ) {
             var mdl = c.model_;
             (packages[mdl.package] || ( packages[mdl.package] = [])).push(mdl);
@@ -220,7 +221,11 @@ foam.CLASS({
             add(this.PackageList.create({data$: this.package$, packages: this.packages})).
           end().
           start('td').style({'vertical-align': 'top'}).
-            add(this.ModelList.create(  {data$: this.model$,   package$: this.package$.map(p => this.packages[p])})).
+            add(this.ModelList.create({
+              data$: this.model$,
+              package$: this.package$.map(p => this.packages[p]),
+              showPackage$: this.package$.map(p => p === '--All--')
+            })).
           end().
           start('td').style({'vertical-align': 'top'}).
             add(this.dynamic(function (model) {
