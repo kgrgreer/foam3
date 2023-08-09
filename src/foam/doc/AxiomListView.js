@@ -54,10 +54,12 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      var of = this.of;
-      var titleFn = this.titleFn;
-      var titleTag = this.titleTag;
-      var modelId = this.modelId;
+      this.addClass(this.myClass());
+
+      var of        = this.of;
+      var titleFn   = this.titleFn;
+      var titleTag  = this.titleTag;
+      var modelId   = this.modelId;
       var AxiomLink = this.AxiomLink;
 
       var dao = this.axiomDAO.where(
@@ -66,23 +68,18 @@ foam.CLASS({
           this.EQ(this.Axiom.HAS_PERMISSION, true),
           this.EQ(this.Axiom.PARENT_ID, modelId)));
 
-      dao = dao.orderBy(this.Axiom.NAME);
+      dao.select(this.COUNT()).then(c => {
+        if ( ! c.value ) return;
 
-      this.add(this.slot(function(sink) {
-        return this.E().
-          addClass(this.myClass()).
-          callIf(sink.value, function() {
-            this.
-              callIf(titleFn, function() { this.add(titleFn()) }).
-              start('code').
-                addClass('commaseparated').
-                select(dao, function(a) {
-                  return this.E('span').
-                    start(AxiomLink, { cls: modelId, axiomName: a.name }).end()
-                }).
-              end()
-          })
-      }, this.daoSlot(dao, this.Count.create())))
+        if ( titleFn ) this.add(titleFn());
+
+        this.start('code').
+          addClass('commaseparated').
+          select(dao.orderBy(this.Axiom.NAME), function(a) {
+            this.start('span').tag(AxiomLink, { cls: modelId, axiomName: a.name });
+          }).
+        end();
+      });
     }
   ]
 });
