@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'PackageList',
   extends: 'foam.u2.View',
 
+  imports: [ 'query' ],
+
   css: `
   ^selected { background: pink; }
 
@@ -30,6 +32,7 @@ foam.CLASS({
         this.start().
           addClass(self.myClass('row')).
           enableClass(self.myClass('selected'), self.data$.map(d => d === p)).
+          show(this.query$.map(q => q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
           on('click',     () => self.hardSelection = self.data = p).
           on('mouseover', () => self.data = p).
           on('mouseout',  () => self.data = self.hardSelection).
@@ -45,6 +48,8 @@ foam.CLASS({
   package: 'foam.doc',
   name: 'ModelList',
   extends: 'foam.u2.View',
+
+  imports: [ 'query' ],
 
   css: `
     ^selected {
@@ -71,6 +76,7 @@ foam.CLASS({
           this.start().
             addClass(this.myClass('row')).
             enableClass(this.myClass('selected'), self.data$.map(d => d === m)).
+            show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
             on('click', () => self.data = m).
             add(m.id /*, m.documentation*/).
           end()
@@ -84,7 +90,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.doc',
   name: 'ModelBrowser',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.Controller',
   documentation: 'Show UML & properties for passed in models',
 
   requires: [
@@ -102,7 +108,7 @@ foam.CLASS({
 
   imports: [ 'nSpecDAO', 'params' ],
 
-  exports: [ 'conventionalUML', 'path as browserPath' ],
+  exports: [ 'conventionalUML', 'path as browserPath', 'query' ],
 
   css: `
     ^ {
@@ -133,6 +139,11 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'String',
+      name: 'query',
+      view: { class: 'foam.u2.SearchField', onKey: true }
+    },
     {
       class: 'String',
       name: 'path',
@@ -201,6 +212,7 @@ foam.CLASS({
       globalThis.browser = this;
 
       this.modelDAO;
+      this.add(this.QUERY);
       this.start('table').
         attrs({cellpadding: 20}).
         start('tr').
