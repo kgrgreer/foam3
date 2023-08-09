@@ -64,7 +64,9 @@ foam.CLASS({
         this.AND(
           this.INSTANCE_OF(of),
           this.EQ(this.Axiom.HAS_PERMISSION, true),
-          this.EQ(this.Axiom.PARENT_ID, modelId)))
+          this.EQ(this.Axiom.PARENT_ID, modelId)));
+
+      dao = dao.orderBy(this.Axiom.NAME);
 
       this.add(this.slot(function(sink) {
         return this.E().
