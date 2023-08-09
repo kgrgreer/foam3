@@ -116,19 +116,23 @@ foam.CLASS({
 
   documentation: 'Tooltip view to be used by the tooltip handler',
 
+  css: `
+    ^ {
+      background: rgba(80, 80, 80, 0.9);
+      border-radius: 5px;
+      color: white;
+      padding: 5px 8px;
+      position: absolute;
+      z-index: 2000;
+    }
+  `,
+
   methods: [
     function render(data) {
       this.SUPER();
       this
       .add(this.data)
-      .style({
-        'background':    'rgba(80, 80, 80, 0.9)',
-        'border-radius': '5px',
-        'color':         'white',
-        'padding':       '5px 8px',
-        'position':      'absolute',
-        'z-index':       '2000'
-      });
+      .addClass()
     }
   ]
 });

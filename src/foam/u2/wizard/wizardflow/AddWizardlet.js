@@ -62,15 +62,16 @@ foam.CLASS({
       newWizardlet.isVisible = true;
       newWizardlet.id = this.wizardletId;
       newWizardlet.title = this.wizardletId;
-      newWizardlet.sections = [
-        this.WizardletSection.create({
-          title: newWizardlet.title,
-          isAvailable: true,
-          customView: {
-            class: 'foam.u2.detail.FlexSectionedDetailView'
-          }
-        }, x)
-      ];
+      if ( ! newWizardlet.sections.length )
+        newWizardlet.sections = [
+          this.WizardletSection.create({
+            title: newWizardlet.title,
+            isAvailable: true,
+            customView: {
+              class: 'foam.u2.detail.FlexSectionedDetailView'
+            }
+          }, x)
+        ];
 
       if ( this.before ) {
         let i = x.wizardlets.findIndex(w => w.id == this.before);
