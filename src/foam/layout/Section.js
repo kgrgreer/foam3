@@ -142,7 +142,14 @@ foam.CLASS({
       if ( a.hasOwnProperty('properties') ) {
         this.properties = a.properties.map(p => {
           if ( foam.String.isInstance(p) ) return cls.getAxiomByName(p);
-          if ( p.name ) return cls.getAxiomByName(p.name).clone().copyFrom(p);
+          if ( p.name ) {
+            if ( p.name.indexOf('.') != -1 ) {
+              let p2 = Object.assign({}, p);
+              delete p2.name;
+              return foam.layout.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
+            }
+            return data.cls_.getAxiomByName(p.name).clone().copyFrom(p);
+          }
         }).sort(foam.core.Property.ORDER.compare);
       } else {
         this.properties = cls.getAxiomsByClass(foam.core.Property)
