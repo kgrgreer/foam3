@@ -19,8 +19,7 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'stack',
-    'translationService'
+    'stack'
   ],
 
   exports: [
@@ -94,6 +93,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'translationService',
+      factory: function() {
+        return this.__context__.translationService || foam.i18n.NullTranslationService.create(); }
+    },
     {
       name: 'route',
       documentation: 'Current controller mode',
@@ -229,6 +233,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      var translationService = this.translationService;
 
       // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
       // Right now each view controls it's own controller mode
@@ -293,7 +298,7 @@ foam.CLASS({
                     .callIf( ! config.detailView && ! ( config.createControllerView || config$primaryAction ), function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
-                            label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
+                            label: translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
                             size: 'LARGE'
                         })
@@ -302,7 +307,7 @@ foam.CLASS({
                     .callIf( config.createControllerView, function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
-                            label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
+                            label: translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
                         })
                       .endContext();
