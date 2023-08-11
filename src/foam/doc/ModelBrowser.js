@@ -60,6 +60,7 @@ foam.CLASS({
   `,
 
   properties: [
+    'hardSelection',
     { class: 'Boolean', name: 'showPackage' },
     { name: 'package', value: [], preSet: function(o, n) { return n.sort((a, b) => foam.String.compare(a.id, b.id)); } }
   ],
@@ -77,7 +78,9 @@ foam.CLASS({
             addClass(self.myClass('row')).
             enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
             show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
-            on('click', () => self.data = m).
+            on('click',     () => self.hardSelection = self.data = m).
+            on('mouseover', () => self.data = m).
+            on('mouseout',  () => self.data = self.hardSelection).
             add(self.showPackage$.map(p => p ? m.id : m.name)).
           end()
         );
