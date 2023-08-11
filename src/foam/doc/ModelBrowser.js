@@ -52,13 +52,11 @@ foam.CLASS({
   imports: [ 'query' ],
 
   css: `
-    ^selected {
-      background: pink;
-    }
+    ^ { width: 450px; }
 
-    ^row:hover {
-      background: lightgray;
-    }
+    ^selected { background: pink; }
+
+    ^row:hover { background: lightgray; }
   `,
 
   properties: [
@@ -70,13 +68,14 @@ foam.CLASS({
     function render() {
       var self = this;
 
-      this.start('h3').add('Model:').end().
+      this.addClass(this.myClass()).
+      start('h3').add('Model:').end().
       start().
       add(this.dynamic(function(package) {
         this.forEach(package, m =>
           this.start().
-            addClass(this.myClass('row')).
-            enableClass(this.myClass('selected'), self.data$.map(d => d === m)).
+            addClass(self.myClass('row')).
+            enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
             show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
             on('click', () => self.data = m).
             add(self.showPackage$.map(p => p ? m.id : m.name)).
