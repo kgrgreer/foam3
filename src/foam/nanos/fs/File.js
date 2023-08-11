@@ -352,12 +352,14 @@ foam.CLASS({
         if ( foam.blob.BlobBlob.isInstance(blob) ) {
           window.open(URL.createObjectURL(blob.blob));
         } else {
-          let url = this.address;
-          let popup = window.open();
-          img = '<img src="'+url+'">';
-          popup.document.write(img);
-          popup.document.images[0].style.maxWidth = "100%";
-          popup.document.images[0].style.maxHeight = "100%";
+          var url = this.address;
+          window.open(url);
+//          let url = this.address;
+//          let popup = window.open();
+//          img = '<img src="'+url+'">';
+//          popup.document.write(img);
+//          popup.document.images[0].style.maxWidth = "100%";
+//          popup.document.images[0].style.maxHeight = "100%";
         }
       }
     },
