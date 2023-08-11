@@ -450,7 +450,7 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var batch = ++this.batch;
-        var self = this;
+        var self  = this;
 
         if ( ! foam.dao.DAO.isInstance(this.dao) ) {
           throw new Exception("You must set the 'dao' property of RenderSink.");
@@ -1709,18 +1709,16 @@ foam.CLASS({
           es[o.id] = e;
         },
         cleanup: function() {
-          for ( var key in es ) es[key] && es[key].remove();
+          for ( var key in es ) {
+            es[key] && es[key].remove();
+          }
 
           es = {};
         }
       }, this);
 
-      listener = this.MergedResetSink.create({
-        delegate: listener
-      }, this);
-
+      listener.paint();
       this.onDetach(dao.listen(listener));
-      listener.delegate.paint();
 
       return this;
     },
