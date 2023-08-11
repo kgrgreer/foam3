@@ -35,7 +35,7 @@ foam.CLASS({
       this.start('table').
         start('tr').start('th').attrs({width: '250px'}).add('Class').end().start('th').add('Name').end().start('th').add('Description').end().end().
         select(this.data, function(a) {
-          return this.E().start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().start('td').style({overflow: 'hidden', 'text-wrap':'nowrap'}).add(a.documentation).end().end();
+          return this.E().start('tr').start('td').add(a.axiom.cls_.name).end().start('td').add(a.name).end().start('td').style({overflow: 'hidden', 'text-wrap':'nowrap'}).add(a.documentation).end().end();
         }).
       end();
     }
