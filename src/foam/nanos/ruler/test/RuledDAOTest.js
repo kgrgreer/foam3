@@ -30,8 +30,8 @@ foam.CLASS({
         RuledDAOTest_find_ruled_obj_order_by_priority(x);
         RuledDAOTest_find_ruled_obj_with_truthy_predicate(x);
         RuledDAOTest_find_ruled_obj_with_falsely_predicate(x);
-        RuledDAOTest_find_ruled_obj_predicating_on_OBJ_in_context(x);
-        RuledDAOTest_find_ruled_obj_with_self_object_predicate(x);
+        RuledDAOTest_find_ruled_obj_predicating_on_OBJ_injected_in_context(x);
+        RuledDAOTest_find_ruled_obj_predicating_on_a_target_object(x);
         RuledDAOTest_SelectRuledCommand(x);
       `
     },
@@ -106,7 +106,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'RuledDAOTest_find_ruled_obj_predicating_on_OBJ_in_context',
+      name: 'RuledDAOTest_find_ruled_obj_predicating_on_OBJ_injected_in_context',
       args: [
         { type: 'Context', name: 'x' }
       ],
@@ -115,20 +115,21 @@ foam.CLASS({
         var obj = dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setPredicate(EQ(User.ID, 1234)).build());
 
         var found = dao.inX(x.put("OBJ", new User.Builder(x).setId(1234).build())).cmd(new FindRuledCommand("test"));
-        test(found != null && obj.equals(found), "Find ruled obj with context predicate");
+        test(found != null && obj.equals(found), "Find ruled obj with context predicate with injecting OBJ");
       `
     },
     {
-      name: 'RuledDAOTest_find_ruled_obj_with_self_object_predicate',
+      name: 'RuledDAOTest_find_ruled_obj_predicating_on_a_target_object',
       args: [
         { type: 'Context', name: 'x' }
       ],
       javaCode: `
         var dao = setUpDAO(x, RuledDummy.getOwnClassInfo());
-        var obj = dao.put(new RuledDummy.Builder(x).setProp("foo").setRuleGroup("test").setPredicate(EQ(RuledDummy.PROP, "foo")).build());
+        var obj = dao.put(new RuledDummy.Builder(x).setRuleGroup("test").setPredicate(EQ(User.ID, 1234)).build());
 
-        var found = dao.cmd(new FindRuledCommand("test"));
-        test(found != null && obj.equals(found), "Find ruled obj with self object predicate");
+        var target = new User.Builder(x).setId(1234).build();
+        var found = dao.cmd(new FindRuledCommand("test", target));
+        test(found != null && obj.equals(found), "Find ruled obj with context predicate with target object");
       `
     },
     {
