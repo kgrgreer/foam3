@@ -92,7 +92,7 @@ function processDir(pom, location, skipIfHasPOM) {
     var fn = location + '/' + f.name;
     if ( f.isDirectory() ) {
       if ( ! f.name.startsWith('.') ) {
-        if ( f.name === 'build' || f.name === 'build2' ) return;
+        if ( f.name.endsWith('build') || f.name.endsWith('build2') ) return;
         if ( f.name.indexOf('android') != -1 ) return;
         if ( f.name.indexOf('examples') != -1 ) return;
         if ( ! b_.isExcluded(pom, fn) ) processDir(pom, fn, true);
