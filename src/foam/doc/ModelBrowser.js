@@ -12,8 +12,8 @@ foam.CLASS({
   imports: [ 'query' ],
 
   css: `
+  ^ { min-width: 300px; }
   ^selected { background: pink; }
-
   ^row:hover { border: 1px solid red; }
   `,
 
@@ -25,10 +25,13 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.start('h3').add('Package:').end();
-      var a = Object.keys(this.packages);
+      var a    = Object.keys(this.packages);
+
       a.sort();
-      this.forEach(a, p => {
+
+      this.addClass(this.myClass()).
+      start('h3').add('Package:').end().
+      forEach(a, p => {
         this.start().
           addClass(self.myClass('row')).
           enableClass(self.myClass('selected'), self.data$.map(d => d === p)).
