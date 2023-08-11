@@ -40,6 +40,10 @@ foam.CLASS({
         if ( obj instanceof FindRuledCommand ) {
           var isSelectCmd = obj instanceof SelectRuledCommand;
 
+          // Setup target context for ruled matching
+          var target  = ((FindRuledCommand) obj).getTarget();
+          var targetX = target != null ? x.put("OBJ", target) : x;
+
           var sink = new ArraySink();
           getDelegate()
             .where(EQ(Ruled.RULE_GROUP, ((FindRuledCommand) obj).getRuleGroup()))
@@ -47,7 +51,7 @@ foam.CLASS({
             .select(new AbstractSink() {
               @Override
               public void put(Object o, Detachable s) {
-                if ( ((Ruled) o).f(x) ) {
+                if ( ((Ruled) o).f(targetX) ) {
                   sink.put(o, s);
                   if ( ! isSelectCmd ) s.detach();
                 }
