@@ -76,7 +76,7 @@ foam.CLASS({
         this.start('code').
           addClass('commaseparated').
           select(dao.orderBy(this.Axiom.NAME), function(a) {
-            this.start('span').tag(AxiomLink, { cls: modelId, axiomName: a.name });
+            return this.E('span').tag(AxiomLink, { cls: modelId, axiomName: a.name });
           }).
         end();
       });
