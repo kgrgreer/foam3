@@ -165,7 +165,7 @@ foam.CLASS({
     {
 //      class: 'String',
       name: 'package',
-      value: 'foam.core'
+      value: '--All--'
     },
     {
 //      class: 'String',
