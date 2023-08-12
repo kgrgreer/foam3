@@ -8,11 +8,21 @@ foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'FindRuledCommand',
 
+  javaCode: `
+    public FindRuledCommand(String ruleGroup) {
+      this(ruleGroup, null);
+    }
+  `,
+
   properties: [
     {
       class: 'Reference',
       of: 'foam.nanos.ruler.RuleGroup',
       name: 'ruleGroup'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'target'
     }
   ]
 })
@@ -20,5 +30,11 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.nanos.ruler',
   name: 'SelectRuledCommand',
-  extends: 'foam.nanos.ruler.FindRuledCommand'
+  extends: 'foam.nanos.ruler.FindRuledCommand',
+
+  javaCode: `
+    public SelectRuledCommand(String ruleGroup) {
+      this(ruleGroup, null);
+    }
+  `
 })

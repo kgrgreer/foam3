@@ -78,7 +78,7 @@ foam.CLASS({
 
         var obj = x.get("OBJ");
         try {
-          return getPredicate().f(obj != null ? obj : this);
+          return getPredicate().f(obj != null ? obj : x);
         } catch ( Throwable t ) {
           ((Logger) x.get("logger")).error("Failed to evaluate predicate on",
             "class: " + getClass().getName(),
