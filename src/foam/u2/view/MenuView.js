@@ -18,15 +18,15 @@ foam.CLASS({
   properties: [
     {
       name: 'label',
-      expression: function(menu) { return menu.label || ''; }
+      expression: function(menu) { return ( menu && menu.label ) || ''; }
     },
     {
       name: 'icon',
-      expression: function(menu) { return menu.icon || ''; }
+      expression: function(menu) { return ( menu && menu.icon ) || ''; }
     },
     {
       name: 'themeIcon',
-      expression: function(menu) { return menu.themeIcon || ''; }
+      expression: function(menu) { return ( menu && menu.themeIcon ) || ''; }
     },
     {
       class: 'Function',
@@ -46,7 +46,7 @@ foam.CLASS({
     function createIsEnabled$(x, data) {
       return this.isEnabled ?
       data.slot(this.isEnabled ) :
-      foam.core.ConstantSlot.create({ value: true });      
+      foam.core.ConstantSlot.create({ value: true });
     }
   ],
 
