@@ -170,7 +170,7 @@ foam.CLASS({
       documentation: `
         A map of classes to default values. Useful when using FObjectView with
         a small number of classes with little overlap in their properties.
-        
+
         Example:
         {
           'com.example.PaddleStrategy': {
