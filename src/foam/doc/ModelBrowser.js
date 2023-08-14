@@ -12,9 +12,9 @@ foam.CLASS({
   imports: [ 'query' ],
 
   css: `
-  ^ { min-width: 300px; }
-  ^selected { background: pink; }
-  ^row:hover { border: 1px solid red; }
+  ^list { font-size: smaller; width: 440px; overflow-y: auto; height: calc(100vh - 170px)!important; border: 1px solid gray; padding: 0 2; }
+  ^selected { background: lightgrey; }
+  // ^row:hover { border: 1px solid red; }
   `,
 
   properties: [
@@ -31,15 +31,16 @@ foam.CLASS({
 
       this.addClass(this.myClass()).
       start('h3').add('Package:').end().
-      forEach(a, p => {
+      start().addClass(self.myClass('list')).
+      forEach(a, function (p) {
         this.start().
           addClass(self.myClass('row')).
           enableClass(self.myClass('selected'), self.data$.map(d => d === p)).
-          show(this.query$.map(q => q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
+          show(self.query$.map(q => q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
           on('click',     () => self.hardSelection = self.data = p).
           on('mouseover', () => self.data = p).
           on('mouseout',  () => self.data = self.hardSelection).
-          add(p).start().style({float: 'right', 'padding-left': '8px'}).add(this.packages[p].length).end().
+          add(p).start().style({float: 'right', 'padding-left': '8px'}).add(self.packages[p].length).end().
         end();
       });
     }
@@ -55,11 +56,11 @@ foam.CLASS({
   imports: [ 'query' ],
 
   css: `
-    ^ { width: 450px; }
+    ^list { font-size: smaller; width: 480px; overflow-y: auto; height: calc(100vh - 170px)!important; border: 1px solid gray; padding: 0 2; }
 
-    ^selected { background: pink; }
+    ^selected { background: lightgrey; }
 
-    ^row:hover { background: lightgray; }
+  //  ^row:hover { border: 1px solid red;  }
   `,
 
   properties: [
@@ -74,9 +75,9 @@ foam.CLASS({
 
       this.addClass(this.myClass()).
       start('h3').add('Model:').end().
-      start().
+      start().addClass(self.myClass('list')).
       add(this.dynamic(function(package) {
-        this.forEach(package, m =>
+        this.forEach(package, function (m) {
           this.start().
             addClass(self.myClass('row')).
             enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
@@ -84,8 +85,9 @@ foam.CLASS({
             on('click',     () => self.hardSelection = self.data = m).
             on('mouseover', () => self.data = m).
             on('mouseout',  () => self.data = self.hardSelection).
-            add(self.showPackage$.map(p => p ? m.id : m.name)).
-          end()
+            add(self.showPackage ? m.id : m.name).
+          end();
+        }
         );
       }));
     }
