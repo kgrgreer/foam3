@@ -106,7 +106,7 @@ public class Boot {
       // or
       //      x.get("foo/test");
       //
-      if ( x != null )
+      if ( x != root_ )
         root_.putFactory(sp.getName(), factory);
     }
 
