@@ -59,7 +59,7 @@ foam.CLASS({
       class: 'String',
       name: 'viewTitle',
       expression: function (showTitle, data$currentWizardlet) {
-        return showTitle && data$currentWizardlet.showTitle ? this.translationService.getTranslation(foam.locale, data$currentWizardlet.id + 'wizard.title', data$currentWizardlet.title) : '';
+        return showTitle && data$currentWizardlet.showTitle ? this.translationService.getTranslation(foam.locale, data$currentWizardlet.id + 'wizardlet.title', data$currentWizardlet.title) : '';
       }
     }
   ],
@@ -86,7 +86,7 @@ foam.CLASS({
           return data$currentWizardlet.subTitle ?
             this.E().start()
               .addClass(self.myClass('wizardletTitle'), 'p-md')
-              .tag(foam.u2.HTMLView.create({ nodeName: 'div', data:this.translationService.getTranslation(foam.locale, data$currentWizardlet.id + 'wizard.subTitle', data$currentWizardlet.subTitle) }))
+              .tag(foam.u2.HTMLView.create({ nodeName: 'div', data:this.translationService.getTranslation(foam.locale, data$currentWizardlet.id + 'wizardlet.subTitle', data$currentWizardlet.subTitle) }))
             .end() : null
         }))
         .start(this.contentsView, { data: this.data })
