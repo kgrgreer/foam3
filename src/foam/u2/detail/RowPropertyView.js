@@ -52,8 +52,8 @@ foam.CLASS({
           const prop = self.prop;
           prop.tableCellFormatter.format(
             el,
-            prop.f ? prop.f(objData) : null,
-            objData,
+            prop.f ? prop.f(objData || data) : null,
+            objData || data,
             prop
           );
           return el;
