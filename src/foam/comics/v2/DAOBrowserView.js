@@ -132,7 +132,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'displayWidth?',
-    'exportDriverRegistryDAO',
+    'exportDriverRegistryDAO?',
     'stack?'
   ],
 
@@ -407,7 +407,7 @@ foam.CLASS({
       icon: 'images/export-arrow-icon.svg',
       isAvailable: async function(config) {
         if ( ! config.exportPredicate.f() ) return false;
-        var records = await this.exportDriverRegistryDAO.select();
+        var records = this.exportDriverRegistryDAO && await this.exportDriverRegistryDAO.select();
         return records && records.array && records.array.length != 0;
       },
       code: function(X) {

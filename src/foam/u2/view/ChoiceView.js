@@ -338,7 +338,7 @@ foam.CLASS({
         */
 
         var p = this.mode === foam.u2.DisplayMode.RW ?
-          dao.limit(150).select().then(s => s.array) :
+          dao.limit(350).select().then(s => s.array) :
           dao.find(this.data).then(o => o ? [o] : []);
 
         p.then(a => {

@@ -65,6 +65,10 @@ foam.CLASS({
         if ( cacheResults != null ) return;
 
         // Cache miss...
+        var capabilityDAO = (DAO) x.get("capabilityDAO");
+        var source = (Capability) capabilityDAO.find(capabilityId);
+        if ( source == null ) return;
+
         var stringResults = new ArrayList<String>();
         var objectResults = new ArrayList<Capability>();
 
@@ -77,9 +81,9 @@ foam.CLASS({
               var id = ((CapabilityCapabilityJunction) obj).getTargetId();
               var capabilityDAO = (DAO) x.get("capabilityDAO");
               var cap = (Capability) capabilityDAO.find(id);
-              stringResults.add(id);
               if ( cap == null ) return;
-              objectResults.add((Capability) capabilityDAO.find(id));
+              stringResults.add(id);
+              objectResults.add(cap);
             }
           });
 

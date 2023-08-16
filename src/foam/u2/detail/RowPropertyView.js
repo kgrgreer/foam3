@@ -14,6 +14,7 @@ foam.CLASS({
     will be used to render the value.
   `,
 
+  imports: ['objData'],
   css: `
     ^ {
       display: flex;
@@ -46,19 +47,17 @@ foam.CLASS({
           .add(this.prop.columnLabel).show(this.prop.columnLabel)
           .addClass(this.myClass('label'))
         .end()
-        .add(this.slot(function (data) {
+        .add(this.slot(function (data, objData) {
           const el = this.E();
           const prop = self.prop;
           prop.tableCellFormatter.format(
             el,
-            prop.f ? prop.f(data) : null,
-            data,
+            prop.f ? prop.f(objData) : null,
+            objData,
             prop
           );
           return el;
-        })).addClass(this.myClass('body'))
-
-        ;
+        })).addClass(this.myClass('body'));
     }
   ]
 });

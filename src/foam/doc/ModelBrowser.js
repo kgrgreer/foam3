@@ -6,8 +6,99 @@
 
 foam.CLASS({
   package: 'foam.doc',
+  name: 'PackageList',
+  extends: 'foam.u2.View',
+
+  imports: [ 'query' ],
+
+  css: `
+  ^list { font-size: smaller; width: 440px; overflow-y: auto; height: calc(100vh - 170px)!important; border: 1px solid gray; padding: 0 2; }
+  ^selected { background: lightgrey; }
+  // ^row:hover { border: 1px solid red; }
+  `,
+
+  properties: [
+    'hardSelection',
+    'packages'
+  ],
+
+  methods: [
+    function render() {
+      var self = this;
+      var a    = Object.keys(this.packages);
+
+      a.sort();
+
+      this.addClass(this.myClass()).
+      start('h3').add('Package:').end().
+      start().addClass(self.myClass('list')).
+      forEach(a, function (p) {
+        this.start().
+          addClass(self.myClass('row')).
+          enableClass(self.myClass('selected'), self.data$.map(d => d === p)).
+          show(self.query$.map(q => q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
+          on('click',     () => self.hardSelection = self.data = p).
+          on('mouseover', () => self.data = p).
+          on('mouseout',  () => self.data = self.hardSelection).
+          add(p).start().style({float: 'right', 'padding-left': '8px'}).add(self.packages[p].length).end().
+        end();
+      });
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.doc',
+  name: 'ModelList',
+  extends: 'foam.u2.View',
+
+  imports: [ 'query' ],
+
+  css: `
+    ^list { font-size: smaller; width: 480px; overflow-y: auto; height: calc(100vh - 170px)!important; border: 1px solid gray; padding: 0 2; }
+
+    ^selected { background: lightgrey; }
+
+  //  ^row:hover { border: 1px solid red;  }
+  `,
+
+  properties: [
+    'hardSelection',
+    { class: 'Boolean', name: 'showPackage' },
+    { name: 'package', value: [], preSet: function(o, n) { return n.sort((a, b) => foam.String.compare(a.id, b.id)); } }
+  ],
+
+  methods: [
+    function render() {
+      var self = this;
+
+      this.addClass(this.myClass()).
+      start('h3').add('Model:').end().
+      start().addClass(self.myClass('list')).
+      add(this.dynamic(function(package) {
+        this.forEach(package, function (m) {
+          this.start().
+            addClass(self.myClass('row')).
+            enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
+            show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
+            on('click',     () => self.hardSelection = self.data = m).
+            on('mouseover', () => self.data = m).
+            on('mouseout',  () => self.data = self.hardSelection).
+            add(self.showPackage ? m.id : m.name).
+          end();
+        }
+        );
+      }));
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.doc',
   name: 'ModelBrowser',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.Controller',
   documentation: 'Show UML & properties for passed in models',
 
   requires: [
@@ -16,6 +107,8 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.doc.ClassList',
     'foam.doc.DocBorder',
+    'foam.doc.ModelList',
+    'foam.doc.PackageList',
     'foam.doc.SimpleClassView',
     'foam.doc.UMLDiagram',
     'foam.nanos.boot.NSpec'
@@ -23,7 +116,7 @@ foam.CLASS({
 
   imports: [ 'nSpecDAO', 'params' ],
 
-  exports: [ 'conventionalUML', 'path as browserPath' ],
+  exports: [ 'conventionalUML', 'package', 'path as browserPath', 'query' ],
 
   css: `
     ^ {
@@ -56,17 +149,36 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'query',
+      view: { class: 'foam.u2.SearchField', onKey: true }
+    },
+    {
+      class: 'String',
       name: 'path',
       width: 80,
       factory: function() {
         return this.params.path || 'foam.core.Property';
       }
     },
-    [ 'conventionalUML', false ],
+    {
+      name: 'packages',
+      value: []
+    },
+    {
+//      class: 'String',
+      name: 'package',
+      value: '--All--'
+    },
+    {
+//      class: 'String',
+      name: 'model',
+      value: 'foam.core.Model'
+    },
+    [ 'conventionalUML', true ],
     {
       class: 'Map',
       name: 'allowedModels',
-      adapt: function(_,models) {
+      adapt: function(_, models) {
         if ( foam.Array.isInstance(models) ) {
           var map = {};
           models.forEach((m) => map[m.id] = true);
@@ -76,29 +188,26 @@ foam.CLASS({
     },
     {
       name: 'modelDAO',
-      expression: function(nSpecDAO,allowedModels) {
+      factory: function(/*nSpecDAO, allowedModels*/) {
         var self = this;
-        var dao = self.ArrayDAO.create({of: self.Model});
-        Object.keys(foam.USED).forEach(m => {try { dao.put(foam.lookup(m).model_); } catch(x) {}});
-//        Object.keys(foam.UNUSED).forEach(m => dao.put(foam.lookup(m).model_));
+        var dao  = self.ArrayDAO.create({of: self.Model}).orderBy(foam.core.Model.ID);
+        var all = [];
+        var packages = { '--All--': all};
+        function addModel(m) {
+          try {
+          var c = foam.maybeLookup(m);
+          if ( c ) {
+            var mdl = c.model_;
+            (packages[mdl.package] || ( packages[mdl.package] = [])).push(mdl);
+            all.push(mdl);
+            dao.put(mdl);
+          }
+        } catch (x) {}
+        }
+        Object.keys(foam.USED).forEach(addModel);
+        Object.keys(foam.UNUSED).forEach(addModel);
+        this.packages = packages;
         return dao;
-        /*
-        return self.PromisedDAO.create({
-          promise: nSpecDAO.select().then(function(a) {
-            return Promise.all(
-              a.array.map(function(nspec) {
-                return self.parseClientModel(nspec)
-              }).filter(function(cls) {
-                return cls && (allowedModels == undefined || ( Object.keys(allowedModels).length && Object.values(allowedModels).some( e => e == true) ) ? !!allowedModels[cls.id] : true );
-              }).map(function(cls) {
-                return dao.put(cls.model_);
-              })
-            );
-          }).then(function() {
-            return dao;
-          })
-        })
-        */
       }
     }
   ],
@@ -108,35 +217,35 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.start().addClass(this.myClass())
-        .start('h2').add('Model Browser').end()
-        .start().add(this.PRINT_PAGE).end()
-        .select(this.modelDAO.limit(10), function(model) {
-          try {
-          console.log('ModelBrowser:', model.id);
-          var cls = foam.maybeLookup(model.id);
-          return self.E().
-            start().style({ 'font-size': '2rem', 'margin-top': '20px' }).
-              add('Model ' + model).
-            end().
-            start(self.UMLDiagram, { data: cls }).end().
-            start(self.SimpleClassView, { data: cls }).end();
-          } catch (x) {
-            console.log('Error: ', x);
-          }
-        })
-      .end();
-    },
+      globalThis.browser = this;
 
-    function parseClientModel(n) {
-      var cls = JSON.parse(n.client);
-      if ( Object.keys(cls).length === 0 ){
-        console.log('this model', n.name, 'is not accessible in the client side or is a service')
-        //throw new Error('Unsupported');
-        return null;
-      }
-      var clsName = cls.of ? cls.of : cls.class;
-      return foam.maybeLookup(clsName);
+      this.modelDAO;
+      this.add(this.QUERY);
+      this.start('table').
+        attrs({cellpadding: 20}).
+        start('tr').
+          start('td').style({'vertical-align': 'top'}).
+            add(this.PackageList.create({data$: this.package$, packages: this.packages})).
+          end().
+          start('td').style({'vertical-align': 'top'}).
+            add(this.ModelList.create({
+              data$: this.model$,
+              package$: this.package$.map(p => this.packages[p]),
+              showPackage$: this.package$.map(p => p === '--All--')
+            })).
+          end().
+          start('td').style({'vertical-align': 'top'}).
+            add(this.dynamic(function (model) {
+              model = foam.maybeLookup(model.id);
+              if ( ! model ) return;
+              this.
+              start('h3').style({'padding-left': '16px'}).add(model.id).end().
+              start(self.UMLDiagram,      {data: model}).end().
+              start(self.SimpleClassView, {data: model}).style({'padding-left': '18px'}).end();
+            })).
+          end().
+        end().
+      end();
     }
   ],
 
@@ -144,9 +253,7 @@ foam.CLASS({
     {
       name: 'printPage',
       label: 'Print',
-      code: function() {
-        globalThis.print();
-      }
+      code: function() { globalThis.print(); }
     }
   ]
 });

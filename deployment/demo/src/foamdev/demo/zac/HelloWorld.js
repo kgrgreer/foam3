@@ -26,7 +26,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
 
-       this.ctrl.add(this);
+      this.ctrl.add(this);
     },
 
     async function render() {

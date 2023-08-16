@@ -44,6 +44,13 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      name: 'data',
+      preSet: function(o, n) {
+        // Happens when old choices are deleted and attrSlot temporarily reverts to ''
+        return n === '' ? o : n;
+      }
+    },
     ['nodeName', 'select'],
     {
       name: 'choices',
@@ -112,7 +119,7 @@ foam.CLASS({
 
       if ( this.size ) this.style({height: 'auto'});
 
-      this.add(this.dynamic(function(choices, placeholder, header, data) {
+      this.add(this.dynamic(function(choices, placeholder, header, data, disabledData) {
         if ( header ) {
           this.start('optgroup').attrs({ label: header });
         }
@@ -131,9 +138,7 @@ foam.CLASS({
           this.start('option').attrs({
             value: i,
             selected: isSelected,
-            disabled: ! isSelected && self.disabledData$.map(function(a) {
-              return a.some(o => foam.util.equals(o, value));
-            })
+            disabled: ! isSelected && disabledData.some(o => foam.util.equals(o, value))
           }).translate(value + '.name', value);
         }
       }));

@@ -45,7 +45,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      var cls = this.data;
+      var cls   = this.data;
       var model = cls.model_;
       var impls = cls.getAxiomsByClass(this.Implements);
 
@@ -142,6 +142,7 @@ foam.CLASS({
           title: 'Method Summary',
           of: this.MethodAxiom,
           modelId: model.id,
+          sort: true
         })).
         forEach(exts.map(function(e) { return e.id }).concat(impls.map(function(i) { return i.path })), function(id) {
           this.

@@ -48,6 +48,7 @@ foam.CLASS({
 
       if ( ! target.isAvailable ) {
         console.warn(`Wizardlet not available: ${this.wizardletId}`);
+        await this.delegate.save(data);
         return;
       }
 

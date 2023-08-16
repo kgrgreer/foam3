@@ -153,7 +153,7 @@ foam.CLASS({
                         var defaults = {
                           serviceName: 'service/' + spec.name
                         };
-                        if ( cls == foam.dao.EasyDAO ) {
+                        if ( cls === foam.dao.EasyDAO ) {
                           defaults.cache              = true;
                           defaults.ttlSelectPurgeTime = 15000;    // for select()
                           defaults.ttlPurgeTime       = 15000;    // for find()

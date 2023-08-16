@@ -62,7 +62,7 @@ foam.CLASS({
       requires: [
         'foam.u2.tag.Image'
       ],
-    
+
       css: `
         ^select-level {
           display: flex;
@@ -72,32 +72,33 @@ foam.CLASS({
           text-align: left;
           width: 100%;
         }
-    
+
         ^select-level > * {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-    
+
         ^toggle-icon {
           align-self: center;
           transition: 0.2s linear;
         }
-    
+
         ^toggle-icon svg{
           width: 0.75em;
           height: 0.75em;
         }
       `,
-      
+
       properties: [
         {
           name: 'row'
         }
       ],
+
       methods: [
         function render() {
-          let row = this.row;
+          let row  = this.row;
           let self = this;
           var selectedSlot = row.slot(function(selected_) {
             return selected_ ? 'p-semiBold' : 'p';

@@ -23,7 +23,7 @@ p({
   "description":"The default FOAM theme.",
   "topNavigation":"foam.nanos.u2.navigation.ResponsiveTopNav",
   "defaultMenu": ["admin.data"],
-  "logo":"images/foam_red.png",
+  "logo":"/images/foam_red.png",
   "loginView":"foam.u2.view.LoginView",
   "font1":"Arial",
   "primaryColor":"#1e1f21",
@@ -46,3 +46,12 @@ p({
   "created":"2020-04-29T22:32:52.685Z"
 }
 """})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"http",
+  "service":{
+    "class":"foam.nanos.jetty.HttpServer",
+    "welcomeFiles":["/deployment/demo/index.html"]
+  }
+});
