@@ -106,7 +106,6 @@ foam.CLASS({
     'subject',
     'theme',
     'user',
-    'webApp',
     'wrapCSS as installCSS'
   ],
 
@@ -398,7 +397,6 @@ foam.CLASS({
     },
     'currentMenu',
     'lastMenuLaunched',
-    'webApp',
     {
       name: 'languageDefaults_',
       factory: function() { return []; }
@@ -844,6 +842,7 @@ foam.CLASS({
     // TODO: simplify in NP-8928
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
+      if ( ! this.subject.realUser || ! groupDAO ) return false;
       var group = await groupDAO.find(this.subject.realUser.group);
 
       if ( ! group || ! group.generalCapability ) return true;
@@ -890,6 +889,8 @@ foam.CLASS({
     },
 
     function addMacroLayout() {
+      var theme = this.document.querySelector(`meta[name='theme-color']`);
+      var color = theme ? theme.getAttribute('content') : 'red';
       this
         .addClass(this.myClass())
         .tag(this.NavigationController, {
@@ -897,14 +898,15 @@ foam.CLASS({
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',
             data: this.stack,
-            stackDefault: { 
-              class: 'foam.u2.LoadingSpinner', 
-              size: 32, text: 'Loading...', 
-              showText: true,
-              color: this.document.querySelector(`meta[name='theme-color']`).getAttribute('content')
+            stackDefault: {
+              class:     'foam.u2.LoadingSpinner',
+              size:      32,
+              text:      'Loading...',
+              showText:  true,
+              color:     color
             },
             showActions: false,
-            nodeName: 'main'
+            nodeName:    'main'
           },
           footer$: this.footerView_$,
           sideNav$: this.sideNav_$
