@@ -18,10 +18,10 @@ foam.CLASS({
     'foam.core.X',
     'foam.nanos.fs.File',
     'foam.nanos.fs.ResourceStorage',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.StdoutLogger',
     'foam.nanos.jetty.JettyThreadPoolConfig',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.StdoutLogger',
     'foam.nanos.security.KeyStoreManager',
     'foam.net.Port',
     'java.io.ByteArrayInputStream',
@@ -31,14 +31,15 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.PrintStream',
     'java.security.KeyStore',
-    'java.util.Set',
-    'java.util.HashSet',
     'java.util.Arrays',
+    'java.util.HashSet',
+    'java.util.Set',
     'org.apache.commons.io.IOUtils',
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
-    'org.eclipse.jetty.server.handler.StatisticsHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
+    'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.servlet.ServletHolder',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
@@ -139,6 +140,12 @@ foam.CLASS({
           this.getClass().getSimpleName()
         }, (Logger) getX().get("logger"));
       `
+    },
+    {
+      class: 'String',
+      name: 'imageDirs',
+      value: 'images',
+      documentation: 'Colon separated list of image directories.'
     }
   ],
 
@@ -217,11 +224,15 @@ foam.CLASS({
         handler.setAttribute("X", getX());
         handler.setAttribute("httpServer", this);
 
+        // Install an ImageServlet
+        ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
+        imgServ.setInitParameter("paths", getImageDirs());
+
         for ( foam.nanos.servlet.ServletMapping mapping : getServletMappings() ) {
-          org.eclipse.jetty.servlet.ServletHolder holder;
+          ServletHolder holder;
 
           if ( mapping.getServletObject() != null ) {
-            holder = new org.eclipse.jetty.servlet.ServletHolder(mapping.getServletObject());
+            holder = new ServletHolder(mapping.getServletObject());
             handler.addServlet(holder, mapping.getPathSpec());
           } else {
             holder = handler.addServlet(
@@ -231,7 +242,7 @@ foam.CLASS({
           java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
 
           while ( iter.hasNext() ) {
-            String key = (String)iter.next();
+            String key = (String) iter.next();
             holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
           }
         }
@@ -410,9 +421,9 @@ foam.CLASS({
           // NOTE: Enabling these will fail self-signed certificate use.
           if ( getEnableMTLS() ) {
             sslContextFactory.setWantClientAuth(true);
-            sslContextFactory.setNeedClientAuth(true);  
+            sslContextFactory.setNeedClientAuth(true);
           }
-          
+
           getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
