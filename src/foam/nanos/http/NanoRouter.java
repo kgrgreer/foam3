@@ -154,8 +154,8 @@ public class NanoRouter
     if ( spec.getServe() ) {
       try {
         Class cls = spec.getBoxClass() != null && spec.getBoxClass().length() > 0 ?
-            Class.forName(spec.getBoxClass()) :
-            SessionDAOSkeleton.class ;
+          Class.forName(spec.getBoxClass()) :
+          SessionDAOSkeleton.class ;
         Skeleton skeleton = (Skeleton) cls.newInstance();
 
         // TODO: create using Context, which should do this automatically
