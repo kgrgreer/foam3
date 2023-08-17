@@ -62,14 +62,6 @@ p({
         "initParameters": {
           "paths": "/"
         }
-      },
-      {
-        "class": "foam.nanos.servlet.ServletMapping",
-        "className": "foam.nanos.servlet.ImageServlet",
-        "pathSpec": "/images/*",
-        "initParameters": {
-          "paths": "images:/src/foam/support/images:src/foam/u2/images:src/foam/nanos/images"
-        }
       }
     ]
   }
