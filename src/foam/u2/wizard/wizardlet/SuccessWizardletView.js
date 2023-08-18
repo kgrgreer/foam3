@@ -18,7 +18,6 @@ foam.CLASS({
       margin: 8rem 0;
     }
     ^centered {
-      align-self: center;
       margin: 1rem auto;
 
     }
