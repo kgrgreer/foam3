@@ -234,7 +234,7 @@ foam.CLASS({
               showPackage$: this.package$.map(p => p === '--All--')
             })).
           end().
-          start('td').style({'vertical-align': 'top'}).
+          start('td').style({'vertical-align': 'top', 'max-width': 'calc(100vw - 1024px)'}).
             add(this.dynamic(function (model) {
               model = foam.maybeLookup(model.id);
               if ( ! model ) return;
