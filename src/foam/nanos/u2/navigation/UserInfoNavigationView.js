@@ -145,9 +145,7 @@ foam.CLASS({
   methods: [
     async function render() {
       var self = this;
-      if ( ! this.subject.user?.firstName || ! this.subject.realUser?.firstName ) {
-        this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
-      }
+      this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
       this
         .addClass(this.myClass('label-container'))
         .add(this.slot(function(subject$user) {

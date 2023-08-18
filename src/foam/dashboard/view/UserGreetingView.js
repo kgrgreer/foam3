@@ -57,9 +57,7 @@ foam.CLASS({
 
   methods: [
     async function render() {
-      if ( ! this.subject.realUser?.firstName ) {
-        this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
-      }
+      this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
       this.addClass(this.myClass(), 'h200')
         .start()
           .add(this.slot(function(subject$realUser) {
