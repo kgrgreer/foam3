@@ -33,15 +33,15 @@ foam.CLASS({
 
   messages: [
     { name: 'CITY_REQUIRED', message: 'Required' },
-    { name: 'COUNTRY_REQUIRED', message: 'Country required' },
+    { name: 'COUNTRY_REQUIRED', message: 'Required' },
     { name: 'INVALID_COUNTRY', message: 'Invalid country' },
     { name: 'REGION_REQUIRED', message: 'Required' },
     { name: 'INVALID_REGION', message: 'Invalid region. Please provide valid ISO-3166-2 region.' },
     { name: 'INVALID_ADDRESS_1_REQUIRED', message: 'Required' },
-    { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
+    { name: 'INVALID_POSTAL_CODE', message: 'Required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Required' },
-    { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
-    { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
+    { name: 'STREET_NAME_REQUIRED', message: 'Required' },
+    { name: 'STREET_NUMBER_REQUIRED', message: 'Required' }
   ],
 
   properties: [
@@ -219,12 +219,7 @@ foam.CLASS({
       name: 'city',
       documentation: 'The city of the postal address.',
       required: true,
-      gridColumns: 6,
-      validateObj: function(city) {
-        if ( city.length === 0 ) {
-          return this.CITY_REQUIRED;
-        }
-      }
+      gridColumns: 6
     },
     {
       class: 'String',
