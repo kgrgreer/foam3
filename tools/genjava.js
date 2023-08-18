@@ -134,6 +134,9 @@ function processDir(pom, location, skipIfHasPOM) {
   files.forEach(f => {
     var fn = location + '/' + f.name;
     if ( f.isDirectory() && ! f.name.startsWith('.') ) {
+      // Prevent conflict with new build
+      if ( f.name.endsWith('build2') ) return;
+
       if ( f.name.indexOf('android') != -1 ) return;
       if ( f.name.indexOf('examples') != -1 ) return;
       if ( ! isExcluded(pom, fn) ) processDir(pom, fn, true);
