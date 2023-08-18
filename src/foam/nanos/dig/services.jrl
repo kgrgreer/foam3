@@ -1,6 +1,7 @@
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "dig",
+  "description": "Data Integration Gateway",
   "parameters": true,
   "serviceScript": "return new foam.nanos.dig.DigWebAgent()"
 })
@@ -8,6 +9,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"digDAO",
+  "description": "Data Integration Gateway",
   "serve":true,
   "serviceScript":
   """
