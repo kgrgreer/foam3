@@ -41,6 +41,19 @@ foam.CLASS({
 });
 
 
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'L',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return Number.isInteger(value) && value >= 0 && value <= 7;
+    }
+  ]
+});
+
+
 var INSTRS = [
   [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
   [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
