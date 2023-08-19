@@ -99,26 +99,6 @@ foam.CLASS({
 })});
 
 
-foam.CLASS({
-  package: 'foam.demos.m0',
-  name: 'Immed8',
-  extends: 'foam.core.Property',
-
-  static: [
-    function test(value) {
-      return Number.isInteger(value) && value >= 0 && value <= 255;
-    }
-  ],
-
-  methods: [
-    function emit(value) {
-      return value; // TODO: output in binary
-    }
-  ]
-});
-
-
-
 var INSTRS = [
   [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
   [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
