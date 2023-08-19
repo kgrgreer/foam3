@@ -79,14 +79,34 @@ foam.CLASS({
 });
 
 
+[ 3, 5, 7, 8 ].forEach(i => { const max = Math.pow(2, i);
 foam.CLASS({
   package: 'foam.demos.m0',
-  name: 'Immed5',
+  name: 'Immed' + i,
   extends: 'foam.core.Property',
 
   static: [
     function test(value) {
-      return Number.isInteger(value) && value >= 0 && value <= 31;
+      return Number.isInteger(value) && value >= 0 && value < max;
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+})});
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'Immed8',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return Number.isInteger(value) && value >= 0 && value <= 255;
     }
   ],
 
@@ -269,7 +289,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 60 },
+      view: { class: 'foam.u2.tag.TextArea', rows: 20, cols: 50 },
       value: `
   MOV(R0, 100);
 LABEL('START');
