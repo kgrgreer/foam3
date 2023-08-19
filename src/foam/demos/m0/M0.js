@@ -62,6 +62,25 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.demos.m0',
+  name: 'R',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return foam.core.HighRegister.isInstance(value);
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
   name: 'Immed5',
   extends: 'foam.core.Property',
 
@@ -211,7 +230,15 @@ INSTRS.forEach(i => foam.CLASS({
 foam.CLASS({
   package: 'foam.core',
   name: 'LowRegister',
-  extends: 'foam.core.Int'
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are low.'
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'HighRegister',
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are high.'
 });
 
 
@@ -259,14 +286,11 @@ LABEL('START');
     { class: 'LowRegister', name: 'r5' },
     { class: 'LowRegister', name: 'r6' },
     { class: 'LowRegister', name: 'r7' },
-//    { class: 'Int', name: 'r8' },  // Unavailable on thumb
-//    { class: 'Int', name: 'r9' },  // Unavailable on thumb
-//    { class: 'Int', name: 'r10' }, // Unavailable on thumb
-//    { class: 'Int', name: 'r11' }, // Unavailable on thumb
-    { class: 'Int', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
-    { class: 'Int', name: 'r13', shortName: 'SP' }, // Stack Pointer
-    { class: 'Int', name: 'r14', shortName: 'LR' }, // Link Register
-    { class: 'Int', name: 'r15', shortName: 'PC' }, // Program Counter
+    // r8-r11 unavailable on thumb
+    { class: 'HighRegister', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
+    { class: 'HighRegister', name: 'r13', shortName: 'SP' }, // Stack Pointer
+    { class: 'HighRegister', name: 'r14', shortName: 'LR' }, // Link Register
+    { class: 'HighRegister', name: 'r15', shortName: 'PC' }, // Program Counter
     // CPSR
   ],
 
