@@ -48,10 +48,36 @@ foam.CLASS({
 
   static: [
     function test(value) {
-      return Number.isInteger(value) && value >= 0 && value <= 7;
+      return foam.core.LowRegister.isInstance(value);
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
     }
   ]
 });
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'Immed5',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return Number.isInteger(value) && value >= 0 && value <= 31;
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+});
+
 
 
 var INSTRS = [
@@ -183,6 +209,13 @@ INSTRS.forEach(i => foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.core',
+  name: 'LowRegister',
+  extends: 'foam.core.Int'
+});
+
+
+foam.CLASS({
   package: 'foam.demos.m0',
   name: 'M0',
   extends: 'foam.u2.Controller',
@@ -218,14 +251,14 @@ LABEL('START');
       `
     },
     // r0-r3 functions can use without saving
-    { class: 'Int', name: 'r0' },
-    { class: 'Int', name: 'r1' },
-    { class: 'Int', name: 'r2' },
-    { class: 'Int', name: 'r3' },
-    { class: 'Int', name: 'r4' },
-    { class: 'Int', name: 'r5' },
-    { class: 'Int', name: 'r6' },
-    { class: 'Int', name: 'r7' },
+    { class: 'LowRegister', name: 'r0' },
+    { class: 'LowRegister', name: 'r1' },
+    { class: 'LowRegister', name: 'r2' },
+    { class: 'LowRegister', name: 'r3' },
+    { class: 'LowRegister', name: 'r4' },
+    { class: 'LowRegister', name: 'r5' },
+    { class: 'LowRegister', name: 'r6' },
+    { class: 'LowRegister', name: 'r7' },
 //    { class: 'Int', name: 'r8' },  // Unavailable on thumb
 //    { class: 'Int', name: 'r9' },  // Unavailable on thumb
 //    { class: 'Int', name: 'r10' }, // Unavailable on thumb
