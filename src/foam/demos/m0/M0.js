@@ -43,6 +43,23 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.demos.m0',
+  name: 'Label',
+
+  properties: [
+    'name',
+    { name: 'addr', value: 'unresolved' }
+  ],
+
+  methods: [
+    function toString() {
+      return this.addr + '<' + this.name + '>';
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
   name: 'L',
   extends: 'foam.core.Property',
 
@@ -100,13 +117,15 @@ foam.CLASS({
 
 
 var INSTRS = [
-  [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
-  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+//  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
+  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { this.dst.set(this.m0, this.dst.get() + this.amt); } ],
   [ 'SUB',   16, [] ],
   [ 'SUBC',  16, [] ],
-  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
+  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr.addr; } ],
 ];
 
+/*
 var INSTRS2 =  [
   [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
   [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld' ],
@@ -202,6 +221,7 @@ var INSTRS2 =  [
   [ 'UXTB',  '', '1011001011', 'Lm', 'Ld' ],
   [ 'UXTH',  '', '1011001010', 'Lm', 'Ld' ]
 ];
+*/
 
 // ARITHMETIC: ADD ADC SUB SBC NEG MUL
 // CMP CMN
@@ -220,7 +240,7 @@ INSTRS.forEach(i => foam.CLASS({
 
   methods: [
     function execute() {
-      a[3]();
+      i[3].call(this);
       this.m0.r15 += i[1];
     }
   ]
@@ -247,7 +267,10 @@ foam.CLASS({
   name: 'M0',
   extends: 'foam.u2.Controller',
 
-  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
+  requires: [
+    ...INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
+    'foam.demos.m0.Label'
+  ],
 
   exports: [
     'as m0'
@@ -269,7 +292,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 20, cols: 50 },
+      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 50 },
       value: `
   MOV(R0, 100);
 LABEL('START');
@@ -335,12 +358,16 @@ LABEL('START');
       this.ADD_I.create({dst: r, amt: n});
     },
 
+    function getLabel(n) {
+      return this.labels[n] || (this.labels[n] = this.Label.create({name: n}));
+    },
+
     function LABEL(n) {
-      this.labels[n] = this.cp;
+      this.getLabel(n).addr = this.cp;
     },
 
     function B(l) {
-      this.B_I.create({label: l}).emit();
+      this.B_I.create(this.getLabel(l)).emit();
     }
   ],
 
