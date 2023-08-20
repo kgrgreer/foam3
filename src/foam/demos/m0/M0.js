@@ -119,10 +119,10 @@ foam.CLASS({
 var INSTRS = [
 //  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
   [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
-  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { this.dst.set(this.m0, this.dst.get() + this.amt); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { this.dst.set(this.m0, this.dst.get(this.m0) + this.amt); } ],
   [ 'SUB',   16, [] ],
   [ 'SUBC',  16, [] ],
-  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr.addr; } ],
+  [ 'B',     0, [ 'addr' ], function() { this.m0.r15 = this.addr.addr; } ],
 ];
 
 /*
@@ -355,7 +355,7 @@ LABEL('START');
     },
 
     function ADD(r, n) {
-      this.ADD_I.create({dst: r, amt: n});
+      this.ADD_I.create({dst: r, amt: n}).emit();
     },
 
     function getLabel(n) {
@@ -367,7 +367,7 @@ LABEL('START');
     },
 
     function B(l) {
-      this.B_I.create(this.getLabel(l)).emit();
+      this.B_I.create({addr: this.getLabel(l)}).emit();
     }
   ],
 
@@ -400,9 +400,12 @@ LABEL('START');
       }
     },
     function run() {
-      this.ip = 0;
-      while ( true ) {
-        this.mem[this.ip].execute();
+      this.r15 = 0;
+      for ( var i = 0 ; i < 100 ; i++ ) {
+        var instr = this.mem[this.r15];
+        if ( ! instr ) return;
+        console.log(`STEP: ${i} IP: ${this.r15} INSTR: ${instr.cls_.name}`);
+        instr.execute();
       }
     }
   ]
