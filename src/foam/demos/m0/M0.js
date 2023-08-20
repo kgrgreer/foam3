@@ -338,10 +338,15 @@ LABEL('START');
             }).
           end().
         end().
+        start().
+          start('h3').add('Memory:').end().
+          forEach(this.mem$, function(m, i) {
+            this.add(i + ' ' + m.toString()).br();
+          }).
+        end().
       end().
       add(this.COMPILE, this.RUN).
-      br().
-      start('h3').add('Memory:').end()
+      br()
       ;
     },
 
@@ -397,6 +402,7 @@ LABEL('START');
       } ) {
         console.log('Compiling: ', this.code);
         eval(this.code);
+        this.propertyChange.pub('mem');
       }
     },
     function run() {
