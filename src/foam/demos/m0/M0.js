@@ -345,7 +345,7 @@ LABEL('START');
           }).
         end().
       end().
-      add(this.COMPILE, this.RUN).
+      add(this.COMPILE, this.STEP, this.RUN).
       br()
       ;
     },
@@ -405,13 +405,16 @@ LABEL('START');
         this.propertyChange.pub('mem');
       }
     },
+    function step() {
+      var instr = this.mem[this.r15];
+      if ( ! instr ) return;
+      console.log(`STEP: ${i} IP: ${this.r15} INSTR: ${instr.cls_.name}`);
+      instr.execute();
+    },
     function run() {
       this.r15 = 0;
       for ( var i = 0 ; i < 100 ; i++ ) {
-        var instr = this.mem[this.r15];
-        if ( ! instr ) return;
-        console.log(`STEP: ${i} IP: ${this.r15} INSTR: ${instr.cls_.name}`);
-        instr.execute();
+        this.step();
       }
     }
   ]
