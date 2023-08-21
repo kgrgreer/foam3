@@ -276,6 +276,10 @@ foam.CLASS({
     'as m0'
   ],
 
+  css: `
+    ^selected { xxxbackground: lightgray; border: 1px solid red; }
+  `,
+
   properties: [
     {
       name: 'mem',
@@ -341,7 +345,11 @@ LABEL('START');
         start().
           start('h3').add('Memory:').end().
           forEach(this.mem$, function(m, i) {
-            this.add(i + ' ' + m.toString()).br();
+
+            this.start().
+              enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
+              add(i + ' ' + m.toString()).br().
+            end();
           }).
         end().
       end().
