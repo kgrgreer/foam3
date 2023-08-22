@@ -296,7 +296,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 40 },
+      view: { class: 'foam.u2.tag.TextArea', rows: 27, cols: 40 },
       value: `  // Demo Program
   MOV(R0, 100);
 LABEL('START');
@@ -386,6 +386,8 @@ LABEL('START');
 
   actions: [
     function compile() {
+      this.cp = 0;
+      this.memory = [];
       with ( {
         R0:    this.R0,
         R1:    this.R1,
