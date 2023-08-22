@@ -148,7 +148,7 @@ foam.CLASS({
               delete p2.name;
               return foam.layout.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
             }
-            return data.cls_.getAxiomByName(p.name).clone().copyFrom(p);
+            return cls.getAxiomByName(p.name).clone().copyFrom(p);
           }
         }).sort(foam.core.Property.ORDER.compare);
       } else {
