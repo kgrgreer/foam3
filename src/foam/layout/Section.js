@@ -55,7 +55,8 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
-    'foam.core.Property'
+    'foam.core.Property',
+    'foam.layout.PathPropertyHolder'
   ],
 
   properties: [
@@ -146,7 +147,7 @@ foam.CLASS({
             if ( p.name.indexOf('.') != -1 ) {
               let p2 = Object.assign({}, p);
               delete p2.name;
-              return foam.layout.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
+              return this.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
             }
             return cls.getAxiomByName(p.name).clone().copyFrom(p);
           }
