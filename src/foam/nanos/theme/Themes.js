@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.theme',
   name: 'Themes',
 
-  documentation: `Support methods for Theme`,
+  documentation: 'Support methods for Theme',
 
   implements: [
     'foam.mlang.Expressions'
@@ -53,10 +53,8 @@ Later themes:
         var domain = window && window.location.hostname || 'localhost';
         var user = x.subject.user;
         if ( domain ) {
-          console.debug('domain', domain);
           themeDomain = await this.themeDomainDAO.find(domain);
-          if ( ! themeDomain &&
-               'localhost' != domain ) {
+          if ( ! themeDomain && 'localhost' != domain ) {
             themeDomain = await this.themeDomainDAO.find('localhost');
           }
           if ( themeDomain ) {
@@ -88,7 +86,7 @@ Later themes:
 
         var group = x.group;
         if ( user && group ) { // non-null when logged in.
-          var group = await user.group$find;
+          var group       = await user.group$find;
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
@@ -103,7 +101,7 @@ Later themes:
             group = await group.parent$find;
           }
 
-          if ( !! defaultMenu ) {
+          if ( defaultMenu ) {
             theme.defaultMenu = defaultMenu.concat(theme.defaultMenu);
           }
 
@@ -112,12 +110,13 @@ Later themes:
             theme = theme && theme.merge(userTheme) || userTheme;
           }
         }
+
         if ( theme ) {
           if ( theme.customRefinement ) await x.__subContext__.classloader.load(theme.customRefinement, []);
           return theme;
         }
 
-        return foam.nanos.theme.Theme.create({ 'name': 'foam', 'appName': 'FOAM' });
+        return foam.nanos.theme.Theme.create({name: 'foam', appName: 'FOAM'});
       },
       javaCode: `
       // TODO:  cache domain/theme and update on ThemeDAO changes.
@@ -140,8 +139,7 @@ Later themes:
         // if ( td == null ) {
         //   logger.debug("Themes", "ThemeDomain not found", domain);
         // }
-        if ( td == null &&
-             ! "localhost".equals(domain) ) {
+        if ( td == null && ! "localhost".equals(domain) ) {
           td = (ThemeDomain) themeDomainDAO.find("localhost");
           // if ( td == null ) {
           //   logger.debug("Themes", "ThemeDomain not found", "localhost");
