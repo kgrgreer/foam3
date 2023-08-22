@@ -49,7 +49,7 @@ foam.CLASS({
         // IMPORTANT: Delegate expects a slot so this slot returning a slot is correct behaviour
         delegate$: data$.map(data => {
           let propData$ = data$.dot(self.parentSlotPath);
-          let p = self.parent$get(data)?.[self.name.toUpperCase()];
+          let p = self.parent$get(data)?.[foam.String.constantize(self.name)];
           return p ? p.createVisibilityFor(propData$, controllerMode$) : foam.core.ConstantSlot.create({ value: foam.u2.DisplayMode.HIDDEN });
         })
       });
@@ -57,7 +57,7 @@ foam.CLASS({
     // Override default behaviour so when this prop is added to the DOM it displays the real prop instead
     function toPropertyView(args, X) {
       let data = args?.data || args?.data$.get() || X.data$.get();
-      let realProp = this.parent$get(data)?.[this.name.toUpperCase()];
+      let realProp = this.parent$get(data)?.[foam.String.constantize(this.name)];
       if ( ! realProp )  {
         console.error(`Couldn't find path at provided path ${this.value} for currrent data: ${data}`, data, this.parent$get(data)); 
         return null;
