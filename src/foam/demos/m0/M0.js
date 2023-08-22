@@ -277,7 +277,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^selected { xxxbackground: lightgray; border: 1px solid red; }
+    ^selected { xxxbackground: lightgray; border: 2px solid red; }
   `,
 
   properties: [
@@ -296,12 +296,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 50 },
-      value: `
+      view: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 40 },
+      value: `  // Demo Program
   MOV(R0, 100);
 LABEL('START');
   ADD(R0, 1);
- B('START');
+  B('START');
       `
     },
     // r0-r3 functions can use without saving
