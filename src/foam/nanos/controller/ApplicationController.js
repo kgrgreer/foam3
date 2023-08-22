@@ -448,7 +448,7 @@ foam.CLASS({
         globalThis.MLang = foam.mlang.Expressions.create();
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.language;
 
         await client.translationService.initLatch;
         self.installLanguage();
@@ -467,7 +467,15 @@ foam.CLASS({
 
         await self.fetchGroup();
 
-        await self.maybeReinstallLanguage(self.client);
+        // For anonymous users, we shouldn't reinstall the language
+        // because the user's language setting isn't meaningful.
+        if ( self?.subject?.realUser ) {
+          var spid = await self.subject.realUser.spid$find;
+          if ( self.subject.realUser.id !== spid.anonymousUser ) {
+            await self.maybeReinstallLanguage(self.client);
+          }
+        }
+
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
@@ -576,29 +584,28 @@ foam.CLASS({
     },
 
     async function maybeReinstallLanguage(client) {
-      if (
-        this.subject &&
-        this.subject.realUser &&
-        this.subject.realUser.language.toString() != foam.locale
-      ) {
+      // Is only called if the user exists and isn't the SPID's anonymousUser
+      if ( this.subject.realUser.language.toString() != foam.locale ) {
         let languages = (await client.languageDAO
           .where(foam.mlang.predicate.Eq.create({
             arg1: foam.nanos.auth.Language.ENABLED,
             arg2: true
           })).select()).array;
 
-        let userPreferLanguage = languages.find( e => e.id.compareTo(this.subject.realUser.language) === 0 )
+        let userPreferLanguage = languages.find(e => e.id.compareTo(this.subject.realUser.language) === 0);
+        // TODO: don't update language setting for anonymous users
+        // Can tell if a user is anonymous if their id === their spid's.anonymousUser
         if ( ! userPreferLanguage ) {
           foam.locale = this.defaultLanguage.toString()
-          let user = this.subject.realUser
-          user.language = this.defaultLanguage.id
-          await client.userDAO.put(user)
+          let user = this.subject.realUser;
+          user.language = this.defaultLanguage.id;
+          await client.userDAO.put(user);
         } else if ( foam.locale != userPreferLanguage.toString() ) {
-          foam.locale = userPreferLanguage.toString()
+          foam.locale = userPreferLanguage.toString();
         }
-        client.translationService.maybeReload()
-        await client.translationService.initLatch
-        this.installLanguage()
+        client.translationService.maybeReload();
+        await client.translationService.initLatch;
+        this.installLanguage();
       }
     },
 
