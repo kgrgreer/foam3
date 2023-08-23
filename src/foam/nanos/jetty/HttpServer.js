@@ -225,8 +225,10 @@ foam.CLASS({
         handler.setAttribute("httpServer", this);
 
         // Install an ImageServlet
-        ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
-        imgServ.setInitParameter("paths", getImageDirs());
+        if ( getImageDirs().length() > 0 ) {
+          ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
+          imgServ.setInitParameter("paths", getImageDirs());
+        }
 
         for ( foam.nanos.servlet.ServletMapping mapping : getServletMappings() ) {
           ServletHolder holder;
