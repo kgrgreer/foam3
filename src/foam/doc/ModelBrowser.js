@@ -116,7 +116,7 @@ foam.CLASS({
 
   imports: [ 'nSpecDAO', 'params' ],
 
-  exports: [ 'conventionalUML', 'package', 'path as browserPath', 'query' ],
+  exports: [ 'conventionalUML', 'modelDAO', 'package', 'path as browserPath', 'query' ],
 
   css: `
     ^ {

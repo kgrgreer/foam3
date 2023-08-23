@@ -15,6 +15,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Implements',
+    'foam.core.Model',
     'foam.doc.dao.AxiomDAO',
     'foam.doc.AxiomListView',
     'foam.doc.AxiomSummaryView',
@@ -22,6 +23,8 @@ foam.CLASS({
     'foam.doc.MethodAxiom',
     'foam.doc.PropertyAxiom'
   ],
+
+  imports: [ 'modelDAO' ],
 
   css: `
     ^commaseparated span:after {
@@ -42,7 +45,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
       this.SUPER();
 
       var cls   = this.data;
@@ -55,6 +58,8 @@ foam.CLASS({
         m = foam.lookup(m.model_.extends);
         exts.push(m);
       }
+
+      var subs = (await this.modelDAO.where(this.EQ(this.Model.EXTENDS, cls.id)).orderBy(this.Model.NAME).select()).array;
 
       var ClassLink = this.ClassLink;
 
@@ -113,7 +118,18 @@ foam.CLASS({
                   start(ClassLink, { data: impl.path }).end()
               })
           }).
+          callIf(subs.length, function() {
+            this.
+              br().
+              add('Direct Subclasses: ').
+              forEach(subs, function(impl, i) {
+                this.
+                  callIf(i > 0, function() { this.add(', ') }).
+                  start(ClassLink, { data: impl.id }).end()
+              })
+          }).
         end().
+        br().br().
         start('div').
           add(model.documentation).
         end().
