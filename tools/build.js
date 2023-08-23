@@ -317,11 +317,7 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 task('Copy images from src sub directories to TARGET_DIR/images.', [], function jarImages() {
   JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
 
-  var images = TARGET_DIR + '/images';
-  ensureDir(images);
-  copyDir('./foam3/src/foam/u2/images',      images);
-  copyDir('./foam3/src/foam/nanos/images',   images);
-  copyDir('./foam3/src/foam/support/images', images);
+  execSync(__dirname + `/pmake.js -makers="Image" -pom=${POM} -builddir=${TARGET_DIR}`, {stdio: 'inherit'});
 });
 
 
