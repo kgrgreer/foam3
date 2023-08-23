@@ -48,11 +48,20 @@ p({
         "class":"foam.nanos.servlet.ServletMapping",
         "className":"foam.nanos.http.NanoRouter",
         "pathSpec":"/service/*"
-      }, {
+      },
+      {
         "class":"foam.nanos.servlet.ServletMapping",
         "className":"org.eclipse.jetty.servlet.DefaultServlet",
         "pathSpec":"/*",
         "initParameters":{"dirAllowed":"true","redirectWelcome":"true"}
+      },
+      {
+        "class": "foam.nanos.servlet.ServletMapping"
+        "className": "foam.nanos.servlet.ImageServlet",
+        "pathSpec": "/favicon/*",
+        "initParameters": {
+          "paths": "/"
+        }
       }
     ]
   }

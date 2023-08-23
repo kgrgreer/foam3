@@ -46,16 +46,15 @@ public class ResourceImageServlet
   protected void service(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException
   {
-    X x = (X) this.getServletConfig().getServletContext().getAttribute("X");
+    X      x       = (X) this.getServletConfig().getServletContext().getAttribute("X");
     String request = req.getRequestURI();
-    Logger logger = Loggers.logger(x, this);
+    Logger logger  = Loggers.logger(x, this);
     // logger.info("uri", req.getRequestURI());
 
     try {
-      InputStream is = getClass().getResourceAsStream(request);
-      String fileName = request.replace("images/", "").replaceAll("/", "_");
-      if ( request.endsWith(".png") &&
-           is == null ) {
+      InputStream is       = getClass().getResourceAsStream(request);
+      String      fileName = request.replace("images/", "").replaceAll("/", "_");
+      if ( request.endsWith(".png") && is == null ) {
         // logger.info("png resource not found");
         DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
         File file = (File) fileDAO.find(EQ(File.FILENAME, fileName));
@@ -96,7 +95,7 @@ public class ResourceImageServlet
           // which strips data and dataString for File tableViews (select).
           // The above EQ results in select limit 1.
           file = (File) fileDAO.find(file.getId());
-          is = file.inputStream(x);
+          is   = file.inputStream(x);
         }
       }
       if ( is != null ) {
@@ -104,6 +103,7 @@ public class ResourceImageServlet
           String ext = EXTS.get(FilenameUtils.getExtension(fileName));
           resp.setContentType(!SafetyUtil.isEmpty(ext) ? ext : DEFAULT_EXT);
           resp.setHeader("Cache-Control", "public, max-age=86400"); // cache for 1 day
+
           IOUtils.copy(bis, resp.getOutputStream());
           return;
         }
@@ -111,6 +111,7 @@ public class ResourceImageServlet
     } catch (Exception e) {
       logger.error(e);
     }
+
     resp.sendError(resp.SC_NOT_FOUND);
   }
 }

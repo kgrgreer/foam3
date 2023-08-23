@@ -1673,6 +1673,8 @@ foam.CLASS({
      * the DAO
      */
     function select(dao, f, update, opt_comparator) {
+      // foam.Function.assertNotArrow(f); // TODO in U3
+
       var es   = {};
       var self = this;
 
@@ -1724,18 +1726,25 @@ foam.CLASS({
     },
 
     function call(f, args) {
+      foam.Function.assertNotArrow(f);
+
       f.apply(this, args);
 
       return this;
     },
 
     function callIf(bool, f, args) {
+      foam.Function.assertNotArrow(f);
+
       if ( bool ) f.apply(this, args);
 
       return this;
     },
 
     function callIfElse(bool, iff, elsef, args) {
+      foam.Function.assertNotArrow(iff);
+      foam.Function.assertNotArrow(elsef);
+
       (bool ? iff : elsef).apply(this, args);
 
       return this;
@@ -1748,6 +1757,8 @@ foam.CLASS({
      * @param {Function} fn A function to call for each item in the given array.
      */
     function forEach(array, fn) {
+      foam.Function.assertNotArrow(fn);
+
       if ( foam.core.Slot.isInstance(array) ) {
         this.add(array.map(a => this.E().forEach(a, fn)));
       } else {

@@ -1079,7 +1079,6 @@ foam.POM({
     { name: "foam/core/Identifiable",                                 flags: "js|java" },
     { name: "foam/net/IPSupport",                                     flags: "js|java" },
     { name: "foam/box/AbstractSkeleton",                              flags: "js|java" },
-    { name: "foam/demos/heroes/Hero",                                 flags: "web" },
     { name: "com/google/auth/TokenVerifier",                          flags: "js|java" },
     { name: "foam/box/sf/SFBOX",                                      flags: "js|java" },
     { name: "foam/box/sf/SFSink",                                     flags: "js|java" },

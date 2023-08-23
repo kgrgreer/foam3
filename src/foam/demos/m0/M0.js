@@ -41,14 +41,91 @@ foam.CLASS({
 });
 
 
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'Label',
+
+  properties: [
+    'name',
+    { name: 'addr', value: 'unresolved' }
+  ],
+
+  methods: [
+    function toString() {
+      return this.addr + '<' + this.name + '>';
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'L',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return foam.core.LowRegister.isInstance(value);
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'R',
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return foam.core.HighRegister.isInstance(value);
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+});
+
+
+[ 3, 5, 7, 8 ].forEach(i => { const max = Math.pow(2, i);
+foam.CLASS({
+  package: 'foam.demos.m0',
+  name: 'Immed' + i,
+  extends: 'foam.core.Property',
+
+  static: [
+    function test(value) {
+      return Number.isInteger(value) && value >= 0 && value < max;
+    }
+  ],
+
+  methods: [
+    function emit(value) {
+      return value; // TODO: output in binary
+    }
+  ]
+})});
+
+
 var INSTRS = [
-  [ 'MOV',   16, [ 'dst', 'src' ],    function() { dst.set(this.m0, src); } ],
-  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { dst.set(this.m0, dst.get() + this.amt); } ],
+//  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
+  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
+  [ 'ADD',   16, [ 'dst', 'amt' ],    function() { this.dst.set(this.m0, this.dst.get(this.m0) + this.amt); } ],
   [ 'SUB',   16, [] ],
   [ 'SUBC',  16, [] ],
-  [ 'B',     16, [ 'label', 'addr' ], function() { this.m0.ip = this.addr; } ],
+  [ 'B',     0, [ 'addr' ], function() { this.m0.r15 = this.addr.addr; } ],
 ];
 
+/*
 var INSTRS2 =  [
   [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
   [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld' ],
@@ -144,6 +221,7 @@ var INSTRS2 =  [
   [ 'UXTB',  '', '1011001011', 'Lm', 'Ld' ],
   [ 'UXTH',  '', '1011001010', 'Lm', 'Ld' ]
 ];
+*/
 
 // ARITHMETIC: ADD ADC SUB SBC NEG MUL
 // CMP CMN
@@ -162,7 +240,7 @@ INSTRS.forEach(i => foam.CLASS({
 
   methods: [
     function execute() {
-      a[3]();
+      i[3].call(this);
       this.m0.r15 += i[1];
     }
   ]
@@ -170,15 +248,37 @@ INSTRS.forEach(i => foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.core',
+  name: 'LowRegister',
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are low.'
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'HighRegister',
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are high.'
+});
+
+
+foam.CLASS({
   package: 'foam.demos.m0',
   name: 'M0',
   extends: 'foam.u2.Controller',
 
-  requires: INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
+  requires: [
+    ...INSTRS.map(i => 'foam.demos.m0.' + i[0] + ' as ' + i[0] + '_I'),
+    'foam.demos.m0.Label'
+  ],
 
   exports: [
     'as m0'
   ],
+
+  css: `
+    ^selected { xxxbackground: lightgray; border: 2px solid red; }
+  `,
 
   properties: [
     {
@@ -196,31 +296,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 60 },
-      value: `
+      view: { class: 'foam.u2.tag.TextArea', rows: 27, cols: 40 },
+      value: `  // Demo Program
   MOV(R0, 100);
 LABEL('START');
   ADD(R0, 1);
- B('START');
+  B('START');
       `
     },
     // r0-r3 functions can use without saving
-    { class: 'Int', name: 'r0' },
-    { class: 'Int', name: 'r1' },
-    { class: 'Int', name: 'r2' },
-    { class: 'Int', name: 'r3' },
-    { class: 'Int', name: 'r4' },
-    { class: 'Int', name: 'r5' },
-    { class: 'Int', name: 'r6' },
-    { class: 'Int', name: 'r7' },
-//    { class: 'Int', name: 'r8' },  // Unavailable on thumb
-//    { class: 'Int', name: 'r9' },  // Unavailable on thumb
-//    { class: 'Int', name: 'r10' }, // Unavailable on thumb
-//    { class: 'Int', name: 'r11' }, // Unavailable on thumb
-    { class: 'Int', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
-    { class: 'Int', name: 'r13', shortName: 'SP' }, // Stack Pointer
-    { class: 'Int', name: 'r14', shortName: 'LR' }, // Link Register
-    { class: 'Int', name: 'r15', shortName: 'PC' }, // Program Counter
+    { class: 'LowRegister', name: 'r0' },
+    { class: 'LowRegister', name: 'r1' },
+    { class: 'LowRegister', name: 'r2' },
+    { class: 'LowRegister', name: 'r3' },
+    { class: 'LowRegister', name: 'r4' },
+    { class: 'LowRegister', name: 'r5' },
+    { class: 'LowRegister', name: 'r6' },
+    { class: 'LowRegister', name: 'r7' },
+    // r8-r11 unavailable on thumb
+    { class: 'HighRegister', name: 'r12', shortName: 'IP' }, // Intraprocedure call scratch register
+    { class: 'HighRegister', name: 'r13', shortName: 'SP' }, // Stack Pointer
+    { class: 'HighRegister', name: 'r14', shortName: 'LR' }, // Link Register
+    { class: 'HighRegister', name: 'r15', shortName: 'PC' }, // Program Counter
     // CPSR
   ],
 
@@ -245,10 +342,19 @@ LABEL('START');
             }).
           end().
         end().
+        start().
+          start('h3').add('Memory:').end().
+          forEach(this.mem$, function(m, i) {
+
+            this.start().
+              enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
+              add(i + ' ' + m.toString()).br().
+            end();
+          }).
+        end().
       end().
-      add(this.COMPILE, this.RUN).
-      br().
-      start('h3').add('Memory:').end()
+      add(this.COMPILE, this.STEP, this.RUN).
+      br()
       ;
     },
 
@@ -262,20 +368,26 @@ LABEL('START');
     },
 
     function ADD(r, n) {
-      this.ADD_I.create({dst: r, amt: n});
+      this.ADD_I.create({dst: r, amt: n}).emit();
+    },
+
+    function getLabel(n) {
+      return this.labels[n] || (this.labels[n] = this.Label.create({name: n}));
     },
 
     function LABEL(n) {
-      this.labels[n] = this.cp;
+      this.getLabel(n).addr = this.cp;
     },
 
     function B(l) {
-      this.B_I.create({label: l}).emit();
+      this.B_I.create({addr: this.getLabel(l)}).emit();
     }
   ],
 
   actions: [
     function compile() {
+      this.cp = 0;
+      this.memory = [];
       with ( {
         R0:    this.R0,
         R1:    this.R1,
@@ -300,12 +412,19 @@ LABEL('START');
       } ) {
         console.log('Compiling: ', this.code);
         eval(this.code);
+        this.propertyChange.pub('mem');
       }
     },
+    function step() {
+      var instr = this.mem[this.r15];
+      if ( ! instr ) return;
+      console.log(`STEP: ${i} IP: ${this.r15} INSTR: ${instr.cls_.name}`);
+      instr.execute();
+    },
     function run() {
-      this.ip = 0;
-      while ( true ) {
-        this.mem[this.ip].execute();
+      this.r15 = 0;
+      for ( var i = 0 ; i < 100 ; i++ ) {
+        this.step();
       }
     }
   ]

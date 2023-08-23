@@ -12,7 +12,9 @@ p({
   "status":2,
   "compliance":1,
   "onboarded":true,
-  "loginEnabled":true
+  "loginEnabled":true,
+  // "secret"
+  "password":"7A6sKLKsb1k=:i+IBM76zFN2GRuoO7Wv7QcR1xrcOcRl5O9h3waC7uSPTe0EsrrgFq7aog0bL9LavgxTMoclvSMyvFlO2t6bmHg=="
 })
 
 p({

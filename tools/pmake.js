@@ -97,6 +97,7 @@ function processDir(pom, location, skipIfHasPOM) {
         if ( f.name.indexOf('examples') != -1 ) return;
         if ( ! b_.isExcluded(pom, fn) ) processDir(pom, fn, true);
       }
+      MAKERS.forEach(v => v.visitDir && v.visitDir(pom, f, fn));
     } else {
       MAKERS.forEach(v => v.visitFile && v.visitFile(pom, f, fn));
     }

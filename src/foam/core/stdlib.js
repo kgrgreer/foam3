@@ -25,6 +25,21 @@ foam.LIB({
           foam.assert(match, 'Unable to deduce method name from function');
           return match[1];
         }
+    },
+    {
+      name: 'isArrow',
+      code: function(f) {
+        return ! f.hasOwnProperty('prototype');
+      }
+    },
+    {
+      name: 'assertNotArrow',
+      code: function(f) {
+        // Choose your level of debugging:
+//        console.warn('Invalid use of arrow function in fluent method.');
+//        if ( foam.Function.isArrow(f) ) debugger;
+//        foam.assert(! foam.Function.isArrow(f), 'Illegal use of arrow function in fluent method.');
+      }
     }
   ]
 });

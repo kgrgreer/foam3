@@ -57,7 +57,8 @@ existing tasks and defining before and after tasks.
 
 ### JSLib
 
-Like adding a JSLib Axiom. Is read by foam.nanos.servlet.VirtualHostRoutingServlet.
+Like adding a JSLib Axiom. Is read by POM() in foam.js in development mode and by the VirtualHostRoutingServlet when running from foam-bin.js.
+TODO: Add support to VirtualHostRoutingServlet for loading JSLibs.
 
 
 ## Example
