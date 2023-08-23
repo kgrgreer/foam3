@@ -38,12 +38,6 @@ foam.CLASS({
       documentation: `Custom host mapping that will directly serve the index file for the specified virtual host.`
     },
     {
-      class: 'Boolean',
-      name: 'isResourceStorage',
-      documentation: `If set to true, generate index file from jar file resources.`,
-      value: false
-    },
-    {
       class: 'String',
       name: 'defaultHost'
     },
@@ -93,6 +87,8 @@ foam.CLASS({
       HashMap    headConfig          = (HashMap)   theme.getHeadConfig();
       AppConfig  appConfig           = (AppConfig) x.get("appConfig");
       String     queryString         = ((HttpServletRequest)request).getQueryString();
+      HttpServer server              = (HttpServer) this.getServletConfig().getServletContext().getAttribute("httpServer");
+
       Boolean    customFavIconFailed = false;
       Boolean    customScriptsFailed = false;
       Boolean    customFontsFailed   = false;
@@ -145,7 +141,7 @@ foam.CLASS({
 
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
-        if ( this.getIsResourceStorage() ) {
+        if ( server.getIsResourceStorage() ) {
           // jar file deployment
           out.print("<script async language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
