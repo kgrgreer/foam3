@@ -116,7 +116,8 @@ foam.POM = function(pom) {
   pom.path     = foam.sourceFile;
   MAKERS.forEach(v => v.visitPOM && v.visitPOM(pom));
   SUPER(pom);
-  processDir(pom, foam.cwd, false);
+  if ( ! seen[foam.cwd] ) processDir(pom, foam.cwd, false);
+  seen[foam.cwd] = true;
   MAKERS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
 }
 
