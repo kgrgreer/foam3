@@ -150,13 +150,14 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Data Access Object (DAO)',
       name: 'daoKey',
       // required: true, // TODO: make required when working
-      documentation: `The DAO in the DIG request.`,
+      documentation: 'The DAO in the DIG request.',
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          choosePlaceholder: 'Choose DAO...',
           sections: [
             {
               heading: 'DAO',
