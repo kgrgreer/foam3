@@ -37,6 +37,20 @@ foam.LIB({
         console.log(args);
         listener && listener.apply(this, args);
       };
+    },
+
+    function discardStale(listener) {
+      let ret =  function() {
+        ret.callId = {}.$UID;
+        const localId = ret.callId;
+        return listener.call(this, ...arguments).then(v => {
+          if ( localId == ret.callId ) {
+            return v;
+          }
+          throw new Error('stale response');
+        });
+      };
+      return ret;
     }
   ]
 });
