@@ -109,14 +109,15 @@ var SUPER = foam.POM;
 var seen  = {};
 
 foam.POM = function(pom) {
-  if ( seen[foam.cwd] ) return;
-  seen[foam.cwd] = true;
+  if ( seen[foam.sourceFile] ) return;
+  seen[foam.sourceFile] = true;
 
   pom.location = foam.cwd;
   pom.path     = foam.sourceFile;
   MAKERS.forEach(v => v.visitPOM && v.visitPOM(pom));
+  if ( ! seen[foam.cwd] ) processDir(pom, foam.cwd, false);
+  seen[foam.cwd] = true;
   SUPER(pom);
-  processDir(pom, foam.cwd, false);
   MAKERS.forEach(v => v.endVisitPOM && v.endVisitPOM(pom));
 }
 
