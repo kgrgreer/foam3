@@ -26,10 +26,10 @@ foam.CLASS({
 
   css: `
     ^ {
-         border-radius: 3px;
-         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-         display: inline-block;
-         width:100%;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+      display: inline-block;
+      width:100%;
     }
     ^title { padding: 6px; align-content: center; background: #c8e2f9; }
     ^info { float: right; font-size: smaller; }
@@ -211,24 +211,24 @@ foam.CLASS({
         start(this.DocBorder, {title: this.title, info$: this.info$}).
           start('div').
             forEach(this.data$, function(d) {
-                if ( ! self.showPackage ) {
-                  if ( d.package !== pkg ) {
-                    pkg = d.package;
-                    this.start('div').addClass(self.myClass('package')).add(pkg).end();
-                  }
+              if ( ! self.showPackage ) {
+                if ( d.package !== pkg ) {
+                  pkg = d.package;
+                  this.start('div').addClass(self.myClass('package')).add(pkg).end();
                 }
+              }
 
-                this.start('div')
-                  .start(self.ClassLink, {data: d, showPackage: self.showPackage}).
-                    addClass(self.showPackage ? undefined : self.myClass('indent')).
-                  end().
-                  call(function(f) {
-                    if ( d.model_ && self.showSummary ) {
-                      this.add(' ', self.summarize(d.model_.documentation));
-                    }
-                  }).
-                end();
-              }).
+              this.start('div')
+                .start(self.ClassLink, {data: d, showPackage: self.showPackage}).
+                  addClass(self.showPackage ? undefined : self.myClass('indent')).
+                end().
+                call(function(f) {
+                  if ( d.model_ && self.showSummary ) {
+                    this.add(' ', self.summarize(d.model_.documentation));
+                  }
+                }).
+              end();
+            }).
           end().
         end();
     },
@@ -264,9 +264,9 @@ foam.CLASS({
       this.SUPER();
       var data = this.data;
       this.
-          start('b').add(data.id).end().
-          br().
-          add('extends: ');
+        start('b').add(data.id).end().
+        br().
+        add('extends: ');
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
@@ -326,9 +326,9 @@ foam.CLASS({
       var data = this.data;
 
       this.
-          start('b').add(data.id).end().
-          start('span').style({float:'right','font-size':'smaller'}).add(data.count_, ' created').end().br().
-          add('extends: ');
+        start('b').add(data.id).end().
+        start('span').style({float:'right','font-size':'smaller'}).add(data.count_, ' created').end().br().
+        add('extends: ');
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
@@ -499,12 +499,12 @@ foam.CLASS({
       name: 'requiredByClasses',
       expression: function (path) {
         return Object.values(foam.USED).
-            filter(function(cls) {
-              if ( ! cls.model_ ) return false;
-              return cls.model_.requires && cls.model_.requires.map(
-                  function(r) { return r.path; }).includes(path);
-            }).
-            sort(this.MODEL_COMPARATOR);
+          filter(function(cls) {
+            if ( ! cls.model_ ) return false;
+            return cls.model_.requires && cls.model_.requires.map(
+                function(r) { return r.path; }).includes(path);
+          }).
+          sort(this.MODEL_COMPARATOR);
       }
     },
     {
@@ -799,7 +799,6 @@ foam.CLASS({
       this.className  = this.data.name;
       this.elementMap = new Map();
       this.properties = this.getAllProperties( data );
-
       this.canvas.height = this.conventionalUML && this.properties.length >= 15 ? this.properties.length * 30 + this.height : this.height;
 
       var heightCenterBox = (this.conventionalUML ? this.properties.length : nbrOfPropInNonConventionalDiag) * propertyHeight;
