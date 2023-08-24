@@ -220,7 +220,7 @@ foam.CLASS({
             goNextAction.buttonStyle = 'PRIMARY';
 
             // Copy defaults from original NEXT action
-            const copyProperties = ['isAvailable', 'isEnabled'];
+            const copyProperties = ['isAvailable', 'isEnabled', 'label'];
             for ( const k of copyProperties ) {
               if ( ! goNextAction[k] ) goNextAction[k] = this.GO_NEXT[k];
             }
