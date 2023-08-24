@@ -14,6 +14,12 @@ foam.CLASS({
   `,
   properties: [
     {
+      name: 'label',
+      expression: null
+      // Overrride the factory so it doesn't automatically use name as the preferred default name
+      // comes from the wizard controller for wizard actions
+    },
+    {
       name: 'message',
       type: 'String'
     },
