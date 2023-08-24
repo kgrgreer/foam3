@@ -18,6 +18,7 @@ foam.POM({
     `
   ],
   projects: [
+    { name: "crunch/pom"},
     { name: "medusa/pom"},
     { name: "ruler/pom"}
   ],
@@ -357,6 +358,7 @@ foam.POM({
     { name: "google/api/sheets/views/GoogleSheetsImportConfig",                           flags: "js|java" },
     { name: "google/api/sheets/views/GoogleSheetsDataImportService",                      flags: "js|java" },
     { name: "google/api/sheets/views/GoogleSheetsDataImportServiceImpl",                  flags: "js|java" },
+    { name: "google/api/sheets/views/GoogleSheetsTransactionsDataImportServiceImpl",     flags: "js|java" },
     { name: "google/api/sheets/views/ImportDataMessage",                                  flags: "js|java" },
     { name: "google/api/sheets/views/wizardModal/WizardModal",                            flags: "js" },
     { name: "google/api/sheets/views/wizardModal/WizardModalSubView",                     flags: "js" },
@@ -603,7 +605,6 @@ foam.POM({
     { name: "crunch/UserCapabilityJunctionRefine",                                        flags: "js|java" },
     { name: "crunch/CapabilityCapabilityJunctionRefine",                                  flags: "js|java" },
     { name: "crunch/CapabilityCategoryCapabilityJunctionRefine",                          flags: "js" },
-    { name: "crunch/RenewableData",                                                       flags: "js|java" },
     { name: "crunch/UCJProperty",                                                         flags: "js" },
     { name: "crunch/UCJUpdateApprovable",                                                 flags: "js|java" },
     { name: "crunch/connection/CapabilityPayload",                                        flags: "js|java" },
@@ -614,7 +615,6 @@ foam.POM({
     { name: "crunch/connection/CapabilityPayloadDAO",                                     flags: "js|java" },
     { name: "crunch/PredicatedPrerequisiteCapabilityJunctionDAO",                         flags: "js|java" },
     { name: "crunch/SendNotificationOnTopLevelCapabilityStatusUpdate",                    flags: "js|java" },
-    { name: "crunch/IsUserCapabilityJunctionStatusUpdate",                                flags: "js|java" },
     { name: "crunch/RemoveJunctionsOnUserRemoval",                                        flags: "js|java" },
     { name: "crunch/CrunchService",                                                       flags: "js|java" },
     { name: "crunch/SessionCrunchCache",                                                  flags: "js|java" },

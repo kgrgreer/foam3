@@ -215,6 +215,10 @@ p({
   "operation":3,
   "after":false,
   "enabled":true,
+  predicate: {
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: '( o != exists || o.status != n.status ) && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+  },
   "action":{"class":"foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted"},
   "lifecycleState":1,
   "documentation":"""
@@ -236,6 +240,10 @@ p({
   "operation":3,
   "after":false,
   "enabled":true,
+  predicate: {
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: '( o != exists || o.status != n.status ) && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+  },
   "action":{"class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"},
   "lifecycleState":1,
   "documentation":"""
@@ -276,7 +284,10 @@ p({
   "operation":1,
   "after":true,
   "enabled":true,
-  "predicate":{"class":"foam.nanos.crunch.IsUserCapabilityJunctionStatusUpdate","includeRenewalStatus":true},
+  "predicate":{
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: 'o != exists || ( o.status != n.status || o.isExpired != n.isExpired || o.isRenewable != n.isRenewable )'
+  },
   "action":{"class":"foam.nanos.crunch.ReputDependentUCJs"},
   "lifecycleState":1,
   "documentation":"""
@@ -297,7 +308,7 @@ p({
   "operation":3,
   "after":true,
   "enabled":true,
-  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  "predicate": { "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
   "action":{"class":"foam.nanos.crunch.ruler.SetUCJStatusOnPut"},
   "lifecycleState":1,
   "documentation":"""
@@ -316,7 +327,10 @@ p({
   "operation":3,
   "after":true,
   "enabled":true,
-  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  predicate: {
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: 'o.status != n.status && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+  },
   "action":{"class":"foam.nanos.crunch.ruler.ConfigureUCJExpiryOnGranted"},
   "lifecycleState":1,
   "documentation":"""
@@ -335,7 +349,10 @@ p({
   "operation":3,
   "after":true,
   "enabled":true,
-  "predicate":{ "class":"foam.nanos.crunch.predicate.StatusChangedTo", "status":6 },
+  predicate: {
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: 'o.status != n.status && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+  },
   "action":{"class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"},
   "lifecycleState":1,
   "documentation":"""
