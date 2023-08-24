@@ -49,7 +49,7 @@ foam.ENUM({
       color: '#FFFFFF',
       ordinal: 4
     },
-    // NOTE: 5 missing/removed ? 
+    // NOTE: 5 removed
     {
       name: 'APPROVED',
       label: { en: 'approved', pt: 'aprovada'},
