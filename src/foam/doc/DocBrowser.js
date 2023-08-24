@@ -499,9 +499,7 @@ foam.CLASS({
       expression: function (path) {
         return Object.values(foam.USED).
           filter(function(cls) {
-            if ( ! cls.model_ ) return false;
-            return cls.model_.requires && cls.model_.requires.map(
-                function(r) { return r.path; }).includes(path);
+            return cls.requires && cls.requires.includes(path);
           }).
           sort(this.MODEL_COMPARATOR);
       }
