@@ -192,7 +192,7 @@ foam.CLASS({
     {
       of: 'Boolean',
       name: 'showPackage',
-      value: true
+      value: false
     },
     {
       of: 'Boolean',
@@ -319,6 +319,10 @@ foam.CLASS({
     'showOnlyProperties'
   ],
 
+  css: `
+    ^ .foam-u2-view-TableView-row { height: auto; }
+  `,
+
   methods: [
     function render() {
       this.SUPER();
@@ -326,6 +330,7 @@ foam.CLASS({
       var data = this.data;
 
       this.
+        addClass(this.myClass()).
         start('b').add(data.id).end().
         start('span').style({float:'right','font-size':'smaller'}).add(data.count_, ' created').end().br().
         add('extends: ');
@@ -439,15 +444,9 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      color: #555;
-    }
-    ^ th {
-      color: #555;
-    }
-    ^ td {
-      padding-right: 12px;
-    }
+    ^ { color: #555; }
+    ^ th { color: #555; }
+    ^ td { padding-right: 12px; }
   `,
 
   constants: [
