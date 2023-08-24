@@ -484,7 +484,7 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
 task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
-  fs.mkdirSync(TARGET_DIR + '/package', {recursive: true});
+  ensureDir(TARGET_DIR + '/package');
   execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
 });
 

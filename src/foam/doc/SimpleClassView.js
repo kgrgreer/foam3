@@ -71,6 +71,11 @@ foam.CLASS({
           add('Class ').
           add(model.name).
         end().
+        start('b').
+          add(model.documentation).
+        end().
+        br().
+        br().
         start('div').
           forEach([cls].concat(exts).reverse(), function(e, i) {
             this.
@@ -85,6 +90,7 @@ foam.CLASS({
               end();
           }).
         end().
+        /*
         callIf(impls.length, function() {
           this.
             start('h4').
@@ -99,8 +105,7 @@ foam.CLASS({
                   end()
               }).
             end()
-        }).
-        // TODO Direct Known Subclasses? Javadoc has this.
+        }).*/
         start('hr').end().
         start('code').
           add('public class ').
@@ -121,6 +126,7 @@ foam.CLASS({
           callIf(subs.length, function() {
             this.
               br().
+              br().
               add('Direct Subclasses: ').
               forEach(subs, function(impl, i) {
                 this.
@@ -128,10 +134,6 @@ foam.CLASS({
                   start(ClassLink, { data: impl.id }).end()
               })
           }).
-        end().
-        br().br().
-        start('div').
-          add(model.documentation).
         end().
 
         add(this.AxiomSummaryView.create({
@@ -145,7 +147,7 @@ foam.CLASS({
               of: this.PropertyAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Properties inherited from ').
                     start(this.ClassLink, { data: id }).
                     end()
@@ -166,7 +168,7 @@ foam.CLASS({
               of: this.MethodAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Methods inherited from ').
                     start(this.ClassLink, { data: id }).
                     end()

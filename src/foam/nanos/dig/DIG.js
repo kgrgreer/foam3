@@ -97,6 +97,12 @@ NOTE: when using the java client, the first call to a newly started instance may
       section: 'details'
     },
     {
+      class: 'String',
+      name: 'description',
+      section: 'details',
+      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 144 }
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
@@ -150,13 +156,14 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Data Access Object (DAO)',
       name: 'daoKey',
       // required: true, // TODO: make required when working
-      documentation: `The DAO in the DIG request.`,
+      documentation: 'The DAO in the DIG request.',
       targetDAOKey: 'AuthenticatedNSpecDAO',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          choosePlaceholder: 'Choose DAO...',
           sections: [
             {
               heading: 'DAO',
@@ -189,6 +196,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       class: 'String',
       name: 'key',
       label: 'Object ID',
+      help: 'Used to specify the primary key if you want to act on only a single row with either a SELECT or REMOVE command.',
       section: 'details',
       visibility: function(cmd) {
         return ( cmd == 'SELECT' || cmd == 'REMOVE' ) ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -199,6 +207,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'q',
       label: 'Select Query',
       section: 'details',
+      help: 'Specify query to restrict data using the MQL query language. See: https://github.com/foam-framework/foam/wiki/MQL---Query-Language',
       visibility: function(cmd) {
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
@@ -217,6 +226,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       class: 'Long',
       name: 'limit',
       section: 'details',
+      help: 'Limits the number of results returned.',
       visibility: function(cmd) {
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
@@ -227,6 +237,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       class: 'Long',
       name: 'skip',
       section: 'details',
+      help: 'Specify number of initial rows in result set to skip (ie. not return). If empty it defaults to 0.',
       visibility: function(cmd) {
         return (cmd == 'SELECT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
@@ -349,12 +360,6 @@ NOTE: when using the java client, the first call to a newly started instance may
       section: 'details',
       transient: true,
       visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'description',
-      section: 'details',
-      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 144 }
     },
     {
       documentation: 'deprecated',

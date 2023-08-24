@@ -531,6 +531,7 @@ foam.CLASS({
   imports: [
     'document',
     'elementValidator',
+    'error',
     'framed',
     'getElementById',
     'translationService?'

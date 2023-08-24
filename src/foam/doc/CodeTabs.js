@@ -13,9 +13,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: gray;
       display: block;
-      padding: 10px 4px;
     }
     ^tabRow { height: 30px; }
     ^tab {

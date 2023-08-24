@@ -15,7 +15,7 @@
       js:    true,
       node:  false,
       swift: false,
-      web:   true  // Needed because flinks code uses but needs to be compiled to java
+      web:   true
     },
     setupFlags: function() {
       var flags        = globalThis.foam.flags;
@@ -24,6 +24,22 @@
       for ( var key in defaultFlags )
         if ( ! flags.hasOwnProperty(key) )
           flags[key] = defaultFlags[key];
+
+
+      if ( ! globalThis.document ) return;
+
+      // Allow flags to be set in loading script tag.
+      // Ex.: <script language="javascript" src="../../../foam.js" flags="u3,-debug"></script>
+      var sflags = document.currentScript.getAttribute('flags');
+      if ( sflags ) {
+        sflags.split(',').forEach(f => {
+          if ( f.startsWith('-') ) {
+            flags[f.substring(1)] = false;
+          } else {
+            flags[f] = true;
+          }
+        });
+      }
     },
     setup: function() {
       foam.setupFlags();
@@ -38,7 +54,8 @@
       var path = src && new URL(src).pathname || '';
 
       [path, globalThis.FOAM_BIN] = /^\/foam-bin(.)*\.js$/.test(path)
-        ? ['/', path] : [path.substring(0, path.lastIndexOf('/foam.js') + 1)];
+        ? ['/', path]
+        : [path.substring(0, path.lastIndexOf('/foam.js') + 1)];
 
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
