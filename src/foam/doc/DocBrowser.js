@@ -210,9 +210,8 @@ foam.CLASS({
         addClass(this.myClass()).
         start(this.DocBorder, {title: this.title, info$: this.info$}).
           start('div').
-            add(this.slot(function (data) {
-              return self.E('span').forEach(data, function(d) {
-                if ( ! this.showPackage ) {
+            forEach(this.data$, function(d) {
+                if ( ! self.showPackage ) {
                   if ( d.package !== pkg ) {
                     pkg = d.package;
                     this.start('div').addClass(self.myClass('package')).add(pkg).end();
@@ -220,8 +219,8 @@ foam.CLASS({
                 }
 
                 this.start('div')
-                  .start(self.ClassLink, {data: d, showPackage: this.showPackage}).
-                    addClass(this.showPackage ? null : self.myClass('indent')).
+                  .start(self.ClassLink, {data: d, showPackage: self.showPackage}).
+                    addClass(self.showPackage ? undefined : self.myClass('indent')).
                   end().
                   call(function(f) {
                     if ( d.model_ && self.showSummary ) {
@@ -229,8 +228,7 @@ foam.CLASS({
                     }
                   }).
                 end();
-              });
-            })).
+              }).
           end().
         end();
     },
@@ -491,10 +489,9 @@ foam.CLASS({
       name: 'subClasses',
       expression: function (path) {
         return Object.values(foam.USED).
-            filter(function(cls) {
-              if ( ! cls.model_ ) return false;
-              return cls.model_.extends == path || 'foam.core.' + cls.model_.extends == path;
-            }).
+          filter(function(cls) {
+            return cls.extends === path || 'foam.core.' + cls.extends === path;
+          }).
           sort(this.MODEL_COMPARATOR);
       }
     },
@@ -556,7 +553,7 @@ foam.CLASS({
                   return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length;
                 })
               }).
-                add( 'Conventional UML : ' ).tag( this.CONVENTIONAL_UML, { data$: this.conventionalUML$ } ).
+                add( 'Conventional UML : ' ).tag(this.CONVENTIONAL_UML, {data$: this.conventionalUML$}).
                 add(this.slot(function(selectedClass, conventionalUML) {
                   if ( ! selectedClass ) return '';
                   return this.UMLDiagram.create({
