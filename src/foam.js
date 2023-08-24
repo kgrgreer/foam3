@@ -25,6 +25,9 @@
         if ( ! flags.hasOwnProperty(key) )
           flags[key] = defaultFlags[key];
 
+
+      if ( ! globalThis.document ) return;
+
       // Allow flags to be set in loading script tag.
       // Ex.: <script language="javascript" src="../../../foam.js" flags="u3,-debug"></script>
       var sflags = document.currentScript.getAttribute('flags');
