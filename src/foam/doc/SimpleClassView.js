@@ -71,6 +71,11 @@ foam.CLASS({
           add('Class ').
           add(model.name).
         end().
+        start('b').
+          add(model.documentation).
+        end().
+        br().
+        br().
         start('div').
           forEach([cls].concat(exts).reverse(), function(e, i) {
             this.
@@ -129,10 +134,6 @@ foam.CLASS({
                   start(ClassLink, { data: impl.id }).end()
               })
           }).
-        end().
-        br().br().
-        start('b').
-          add(model.documentation).
         end().
 
         add(this.AxiomSummaryView.create({

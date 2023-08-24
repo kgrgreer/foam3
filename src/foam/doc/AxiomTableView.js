@@ -10,10 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.view.TableView',
 
   css: `
-    ^ {
-      border-collapse: collapse;
-      width: 100%;
-    }
+    ^ { border-collapse: collapse; height: auto; }
     ^ th { text-align: left; }
     ^ td { vertical-align: top; }
   `,
