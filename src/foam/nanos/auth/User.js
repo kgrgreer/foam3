@@ -224,7 +224,7 @@ foam.CLASS({
       documentation: 'The first name of the User.',
       section: 'userInformation',
       order: 70,
-      gridColumns: 6,
+gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       trim:true
@@ -235,7 +235,7 @@ foam.CLASS({
       documentation: 'The middle name of the User.',
       section: 'userInformation',
       order: 80,
-      gridColumns: 6,
+gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
@@ -248,7 +248,7 @@ foam.CLASS({
       documentation: 'The last name of the User.',
       section: 'userInformation',
       order: 90,
-      gridColumns: 6,
+gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       trim:true
