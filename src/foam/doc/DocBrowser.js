@@ -497,15 +497,19 @@ foam.CLASS({
     {
       name: 'requiredByClasses',
       expression: function (path) {
-        var cls = foam.lookup(path);
-        var rs  = cls.getAxiomsByClass(foam.core.Reference);
-        return rs.map(r => r.of.model_).sort(this.MODEL_COMPARATOR);
+        return Object.values(foam.USED).
+          filter(function(cls) {
+            return cls.requires && cls.requires.includes(path);
+          }).
+          sort(this.MODEL_COMPARATOR);
       }
     },
     {
       name: 'relationshipClasses',
       expression: function (path) {
-        return [];
+        var cls = foam.lookup(path);
+        var rs  = cls.getAxiomsByClass(foam.core.Reference);
+        return rs.map(r => r.of.model_).sort(this.MODEL_COMPARATOR);
       }
     },
     'subClassCount',
