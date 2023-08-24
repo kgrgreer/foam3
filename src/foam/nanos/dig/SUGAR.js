@@ -122,6 +122,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          choosePlaceholder: 'Choose Service...',
           sections: [
             {
               heading: 'Service',
