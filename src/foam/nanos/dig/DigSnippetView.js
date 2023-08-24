@@ -22,10 +22,9 @@ foam.CLASS({
 
   css: `
     .foam-doc-CodeTabs {
-      background: gray;
       display: block;
-      padding: 10px 4px;
-      width: 820;
+      padding: 0;
+      width: 1090;
     }
     .foam-doc-CodeTabs-content pre {
       display: block;
