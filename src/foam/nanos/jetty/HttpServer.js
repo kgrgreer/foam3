@@ -74,6 +74,12 @@ foam.CLASS({
       documentation: 'Enable mTLS on this server connection'
     },
     {
+      class: 'Boolean',
+      name: 'isResourceStorage',
+      documentation: `If set to true, generate index file from jar file resources.`,
+      value: false
+    },
+    {
       name: 'keystoreFileName',
       documentation: 'id of the keystore file in fileDAO',
       class: 'String',
@@ -226,8 +232,13 @@ foam.CLASS({
 
         // Install an ImageServlet
         if ( getImageDirs().length() > 0 ) {
-          ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
-          imgServ.setInitParameter("paths", getImageDirs());
+          if ( getIsResourceStorage() ) {
+            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ResourceImageServlet.class, "/images/*");
+            imgServ.setInitParameter("paths", getImageDirs());
+          } else {
+            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
+            imgServ.setInitParameter("paths", getImageDirs());
+          }
         }
 
         for ( foam.nanos.servlet.ServletMapping mapping : getServletMappings() ) {
@@ -246,6 +257,9 @@ foam.CLASS({
           while ( iter.hasNext() ) {
             String key = (String) iter.next();
             holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
+          }
+          if ( getIsResourceStorage() ) {
+            holder.setInitParameter("isResourceStorage", "true");
           }
         }
 
