@@ -121,6 +121,7 @@ foam.CLASS({
           callIf(subs.length, function() {
             this.
               br().
+              br().
               add('Direct Subclasses: ').
               forEach(subs, function(impl, i) {
                 this.
@@ -130,7 +131,7 @@ foam.CLASS({
           }).
         end().
         br().br().
-        start('div').
+        start('b').
           add(model.documentation).
         end().
 
