@@ -85,6 +85,7 @@ foam.CLASS({
               end();
           }).
         end().
+        /*
         callIf(impls.length, function() {
           this.
             start('h4').
@@ -99,8 +100,7 @@ foam.CLASS({
                   end()
               }).
             end()
-        }).
-        // TODO Direct Known Subclasses? Javadoc has this.
+        }).*/
         start('hr').end().
         start('code').
           add('public class ').
@@ -146,7 +146,7 @@ foam.CLASS({
               of: this.PropertyAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Properties inherited from ').
                     start(this.ClassLink, { data: id }).
                     end()
@@ -167,7 +167,7 @@ foam.CLASS({
               of: this.MethodAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Methods inherited from ').
                     start(this.ClassLink, { data: id }).
                     end()
