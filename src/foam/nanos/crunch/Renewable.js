@@ -63,7 +63,7 @@ foam.INTERFACE({
       javaSetter: `
       expiryPeriod_ = val;
       expiryPeriodIsSet_ = true;
-      // reset();
+      reset();
       `
     },
     {
