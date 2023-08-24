@@ -20,15 +20,15 @@
     {
       class: 'Int',
       name: 'expiryPeriod',
-      documentation: 'The number of time units to expire the ucj. Default to 365 days (1 year)',
-      value: 365
+      documentation: 'The number of time units to expire the ucj. Default to 1 year',
+      value: 1
     },
     {
       documentation: 'Unit of expiredPeriod',
       name: 'expiryPeriodTimeUnit',
       class: 'Enum',
       of: 'foam.time.TimeUnit',
-      value: 'DAY',
+      value: 'YEAR',
     },
     {
       name: 'daoKey',

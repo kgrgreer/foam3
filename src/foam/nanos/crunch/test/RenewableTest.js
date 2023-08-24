@@ -16,7 +16,10 @@ foam.CLASS({
     'foam.nanos.auth.*',
     'foam.nanos.crunch.*',
     'foam.time.TimeUnit',
-    'foam.util.Auth'
+    'foam.util.Auth',
+    'java.time.*',
+    'java.time.temporal.*',
+    'java.util.Date'
   ],
 
   methods: [
@@ -53,13 +56,22 @@ foam.CLASS({
       gpj.setTargetId("service.crunchService.updateUserContext");
       ((DAO) x.get("groupPermissionJunctionDAO")).put(gpj);
 
+      // A user would not normaly have this permission,
+      // but it's required to allow support manual status
+      // changes that this test case is trying to step through. 
+      gpj = new GroupPermissionJunction();
+      gpj.setSourceId(user.getGroup());
+      gpj.setTargetId("service.crunchService.unsafeSetStatus");
+      ((DAO) x.get("groupPermissionJunctionDAO")).put(gpj);
+
     Capability c = new Capability.Builder(x)
       .setId(name)
       .setGrantMode(CapabilityGrantMode.MANUAL)
-      .setExpiryPeriod(10)
-      .setExpiryPeriodTimeUnit(TimeUnit.MILLISECOND)
-      .setGracePeriod(10)
-      .setGracePeriodTimeUnit(TimeUnit.MILLISECOND)
+      .setTimeZone(ZoneId.systemDefault().toString())
+      .setExpiryPeriod(2)
+      .setExpiryPeriodTimeUnit(TimeUnit.SECOND)
+      .setGracePeriod(2)
+      .setGracePeriodTimeUnit(TimeUnit.SECOND)
       .build();
     c = (Capability) capabilityDAO.put(c);
 
@@ -73,6 +85,12 @@ foam.CLASS({
       .setTargetId(c.getId())
       .setStatus(CapabilityJunctionStatus.ACTION_REQUIRED)
       .build();
+
+    // test Renewable Date calculations
+    Renewable ren = (Renewable) ucjC;
+    Date now = new Date();
+    Date later = ren.calculateDate(x, now, 1, TimeUnit.SECOND);
+    test ( later.getTime() - now.getTime() == 1000, "Calculate Date");
 
     ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.put(ucjC);
 
@@ -94,20 +112,23 @@ foam.CLASS({
     test ( ucjC.isInGracePeriod(x) == false, "UCJ not in grace period");
 
     // wait expiry 
-    Thread.sleep(10L);
+    Thread.sleep(2000L);
+    ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
     test ( ucjC.getStatus() == CapabilityJunctionStatus.GRANTED, "UCJ istill granted");
     test ( ucjC.getIsRenewable() == true, "UCJ still renewable");
     test ( ucjC.isInRenewalPeriod(x) == false, "UCJ not in renewal period");
     test ( ucjC.isInGracePeriod(x) == true, "UCJ in grace period");
 
     // wait grace period
-    Thread.sleep(10L);
+    Thread.sleep(2000L);
+    ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
     test ( ucjC.getIsRenewable() == false, "UCJ no longer renewable");
     test ( ucjC.isInRenewalPeriod(x) == false, "UCJ not in renewal period");
     test ( ucjC.isInGracePeriod(x) == false, "UCJ not in grace period");
 
     // a put or cron job is required for this
-    test ( ucjC.getStatus() == CapabilityJunctionStatus.EXPIRED, "UCJ iexpired");
+    ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
+    test ( ucjC.getStatus() == CapabilityJunctionStatus.EXPIRED, "UCJ expired");
     `
     }
   ]

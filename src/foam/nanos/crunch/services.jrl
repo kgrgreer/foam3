@@ -88,8 +88,10 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
+      .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionExpiredDAO.Builder(x)
+        .setDelegate(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
+          .build())
         .build())
       .build();
   """,

@@ -26,9 +26,6 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-            UserCapabilityJunction ucjPre = (UserCapabilityJunction) obj;
-            final CapabilityJunctionStatus status = ucjPre.getStatus();
-
         agency.submit(x, new ContextAgent() {
           X systemX = ruler.getX();
           @Override
@@ -37,9 +34,6 @@ foam.CLASS({
 
             Logger logger = (Logger) x.get("logger");
             logger.debug("SetUCJStatusOnPut", "start", ucj);
-            if ( status != ucj.getStatus() ) {
-              logger.warning("UCJ status changed before agency execute "+status+" -> "+ucj.getStatus());
-            }
 
             try {
               // other relevant possibilities for ucj statuses are EXPIRED, ACTION_REQUIRED.

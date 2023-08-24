@@ -3,5 +3,9 @@ foam.POM({
   projects: [
     { name: "ruler/pom"},
     { name: "test/pom"}
+  ],
+  files: [
+    { name: "UserCapabilityJunctionExpiredDAO",
+      flags: "java" }
   ]
 })

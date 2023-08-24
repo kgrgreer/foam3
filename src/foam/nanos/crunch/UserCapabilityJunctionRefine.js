@@ -229,14 +229,11 @@ foam.CLASS({
       javaSetter: `
       expiry_ = val;
       expiryIsSet_ = true;
-      if ( expiry_ != null ) {
-        var zone = getTimeZoneId(foam.core.XLocator.get());
-        Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
-        if ( expiry_.after(now) ) {
-          setStatus(CapabilityJunctionStatus.EXPIRED);
-        }
-      }
       reset();
+      if ( expiry_ != null &&
+           ! getIsRenewable() ) {
+        setStatus(CapabilityJunctionStatus.EXPIRED);
+      }
       `
     },
     {

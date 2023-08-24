@@ -63,7 +63,7 @@ foam.INTERFACE({
       javaSetter: `
       expiryPeriod_ = val;
       expiryPeriodIsSet_ = true;
-      reset();
+      // reset();
       `
     },
     {
@@ -176,7 +176,8 @@ foam.INTERFACE({
 
       LocalDateTime last = null;
       if ( from == null ) {
-        last = LocalDate.now(zone).atStartOfDay();
+        // REVIEW: consider setting to startOfDay for YEAR,MONTH,DAY units
+        last = LocalDateTime.now(zone);
       } else {
         last = LocalDateTime.ofInstant(from.toInstant(), zone);
       }
@@ -195,11 +196,8 @@ foam.INTERFACE({
         case MINUTE:
           time = time.plus(increment, ChronoUnit.MINUTES);
           break;
-        case SECOND:
+        case SECOND: // for testing
           time = time.plus(increment, ChronoUnit.SECONDS);
-          break;
-        case MILLISECOND: // for testing
-          time = time.plus(increment, ChronoUnit.MILLIS);
           break;
         default: // case DAY:
           time = time.plusDays(increment);

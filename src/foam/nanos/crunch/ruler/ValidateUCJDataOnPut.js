@@ -49,8 +49,12 @@ foam.CLASS({
   
               Capability capability = (Capability) ucj.findTargetId(systemX);
   
-              if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) return;
-              if ( ! isRenewable ) ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
+              if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) {
+                return;
+              }
+              if ( ! isRenewable ) {
+                ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
+              }
   
               if ( capability.getOf() == null ) {
                 ucj.setStatus(CapabilityJunctionStatus.PENDING);

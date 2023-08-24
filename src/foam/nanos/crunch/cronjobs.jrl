@@ -1,11 +1,11 @@
 p({
   "class":"foam.nanos.cron.Cron",
   "id":"Expire User CapabilityJunctions",
-  "description":"Daily check to remove expired UserCapabilityJunctions",
+  "description":"Periodic check to expire expired UserCapabilityJunctions",
   "schedule":{
     "class":"foam.nanos.cron.CronSchedule",
     "minute":0,
-    "hour":0,
+    "hour":-1,
     "dayOfMonth":-1,
     "month":-1,
     "dayOfWeek":-1,
