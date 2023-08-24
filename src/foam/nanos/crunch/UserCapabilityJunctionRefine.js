@@ -56,6 +56,7 @@ foam.CLASS({
     'status',
     'expiry',
     'gracePeriod',
+    'gracePeriodTimeUnit',
     'data'
   ],
 
@@ -65,7 +66,7 @@ foam.CLASS({
   ],
 
   sections: [
-    { name: 'ucjExpirySection' }
+    { name: 'renewableSection' }
   ],
 
   axioms: [
@@ -110,8 +111,8 @@ foam.CLASS({
       label: 'Expired',
       predicateFactory: function(e) {
         return e.EQ(
-          foam.nanos.crunch.UserCapabilityJunction.IS_EXPIRED,
-          true
+          foam.nanos.crunch.UserCapabilityJunction.STATUS,
+          foam.nanos.crunch.CapabilityJunctionStatus.EXPIRED
         );
       }
     },
@@ -223,44 +224,20 @@ foam.CLASS({
       `,
       includeInDigest: true,
     },
-    // renewable
-    {
-      name: 'isExpired',
-      includeInDigest: true,
-      section: 'ucjExpirySection',
-      javaSetter: `
-        isExpired_ = val;
-        isExpiredIsSet_ = true;
-        if ( isExpired_ ) {
-          if ( getStatus() != CapabilityJunctionStatus.EXPIRED ) setStatus(CapabilityJunctionStatus.EXPIRED);
-          isInGracePeriod_ = false;
-        }
-      `
-    },
-    {
-      name: 'isRenewable',
-      includeInDigest: true,
-      section: 'ucjExpirySection'
-    },
-    {
-      name: 'isInRenewablePeriod',
-      includeInDigest: true,
-      section: 'ucjExpirySection'
-    },
-    {
-      name: 'isInGracePeriod',
-      includeInDigest: true,
-      section: 'ucjExpirySection'
-    },
     {
       name: 'expiry',
-      includeInDigest: true,
-      section: 'ucjExpirySection'
-    },
-    {
-      name: 'gracePeriod',
-      includeInDigest: true,
-      section: 'ucjExpirySection'
+      javaSetter: `
+      expiry_ = val;
+      expiryIsSet_ = true;
+      if ( expiry_ != null ) {
+        var zone = getTimeZoneId(foam.core.XLocator.get());
+        Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
+        if ( expiry_.after(now) ) {
+          setStatus(CapabilityJunctionStatus.EXPIRED);
+        }
+      }
+      reset();
+      `
     },
     {
       class: 'Boolean',

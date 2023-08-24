@@ -13,9 +13,9 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.CapabilityJunctionStatus;
-import foam.nanos.crunch.RenewableData;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.Loggers;
 import java.util.List;
 import java.util.Date;
 
@@ -28,53 +28,30 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
 
   @Override
   public void execute(X x) {
-    logger = (Logger) x.get("logger");
+    logger = Loggers.logger(x, this);
     DAO bareUserCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-    Date today = new Date();
 
-    // Find all junctions that are past the expiration date and filter by the following
-    //    - If ucj is still GRANTED and not in grace period, it needs to be returned 
-    //      and reput such that it is either in graceperiod (if applicable) or expired
-    //    - if ucj is in grace period, and the graceperiod is less than or equals to 0 days left
-    //    - return the ucj and reput it in EXPIRED status
+    // Find all GRANTED junctions that are past the expiration date and if not in Grace period, expire them.
     List<UserCapabilityJunction> activeJunctions = ((ArraySink) userCapabilityJunctionDAO
       .where(
         AND(
+          EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
           NEQ(UserCapabilityJunction.EXPIRY, null),
-          LT(UserCapabilityJunction.EXPIRY, today),
-          OR(
-            AND(
-              EQ(UserCapabilityJunction.IS_IN_GRACE_PERIOD, true),
-              LTE(UserCapabilityJunction.GRACE_PERIOD, 0)),
-            AND(
-              EQ(UserCapabilityJunction.IS_IN_GRACE_PERIOD, false),
-              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED))
-          )
-      ))
+          GT(UserCapabilityJunction.GRACE_PERIOD, 0),
+          LT(UserCapabilityJunction.EXPIRY, new Date())
+        )
+      )
       .select(new ArraySink()))
       .getArray();
 
     for ( UserCapabilityJunction activeJunction : activeJunctions ) {
-      activeJunction = (UserCapabilityJunction) activeJunction.fclone();
-      if ( activeJunction.getIsInGracePeriod() || activeJunction.getGracePeriod() <= 0 ) {
+      if ( ! activeJunction.isInGracePeriod(x) ) {
+        activeJunction = (UserCapabilityJunction) activeJunction.fclone();
         activeJunction.setStatus(CapabilityJunctionStatus.EXPIRED);
-        activeJunction.setIsExpired(true);
         userCapabilityJunctionDAO.put(activeJunction);
-      } else {
-        activeJunction.setIsInGracePeriod(true);
-
-        // update ucj data as renewable
-        FObject data = (FObject) activeJunction.getData();
-        if ( data != null && data instanceof RenewableData ) {
-          RenewableData renewableData = (RenewableData) data;
-          renewableData.setRenewable(true);
-          activeJunction.setData(renewableData);
-        }
-        bareUserCapabilityJunctionDAO.put(activeJunction);
-      }
-
-      logger.debug("Moved UserCapabilityJunction : " + activeJunction.getId() + " into status :" + activeJunction.getStatus());
+        logger.debug("UserCapabilityJunction Expired",activeJunction.getId());
+      } 
     }
   }
 }

@@ -1,0 +1,4 @@
+p({
+  class:"foam.nanos.crunch.test.RenewableTest",
+  id:"RenewableTest"
+})
