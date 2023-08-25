@@ -263,6 +263,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var data = this.data;
+      var self = this;
+
       this.
         start('b').add(data.id).end().
         br().
@@ -278,7 +280,7 @@ foam.CLASS({
       this.br();
       this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
-      this.add( this.slot(function () {
+      this.add(this.slot(function () {
         var axs = [];
         for ( var key in data.model_.values ) {
           var a  = data.model_.values[key];
@@ -289,10 +291,11 @@ foam.CLASS({
           });
           axs.push(ai);
         }
+
         return this.TableView.create({
           of: this.EnumInfo,
           data: this.ArrayDAO.create({array: axs}),
-          hoverSelection$: this.selectedAxiom$
+          hoverSelection$: self.selectedAxiom$
         });
       }));
     }
@@ -579,7 +582,7 @@ foam.CLASS({
             start('td').
               style({'vertical-align': 'top'}).
               start(this.DocBorder, {title: 'Axiom Definition'}).
-                add(this.slot(function (axiom) { return axiom && foam.u2.DetailView.create({data: axiom.axiom}); })).
+                add(this.dynamic(function (axiom) { this.add(axiom && foam.u2.DetailView.create({data: axiom.axiom})); })).
               end().
             end().
             start('td').
