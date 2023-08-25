@@ -131,9 +131,11 @@ foam.CLASS({
 
         processCode(x, user, verificationCode);
 
-        user = (User) user.fclone();
-        user.setEmailVerified(true);
-        ((DAO) x.get("localUserDAO")).put(user);
+        if ( ! user.getEmailVerified() ) {
+          user = (User) user.fclone();
+          user.setEmailVerified(true);
+          ((DAO) x.get("localUserDAO")).put(user);
+        }
 
         if ( signIn ) {
           var session = x.get(Session.class);
