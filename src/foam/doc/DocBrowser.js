@@ -549,8 +549,12 @@ foam.CLASS({
           start('tr').
             start('td').
               style({'vertical-align': 'top'}).
+              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
+            end().
+            start('td').
+              style({'vertical-align': 'top'}).
               start(this.DocBorder, {
-                title: 'UML ++',
+                title: 'UML',
                 info$: this.slot(function(selectedClass) {
                   return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length;
                 })
@@ -563,10 +567,6 @@ foam.CLASS({
                   });
                 })).
               end().
-            end().
-            start('td').
-              style({'vertical-align': 'top'}).
-              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
             end().
             start('td').
               style({'vertical-align': 'top'}).
