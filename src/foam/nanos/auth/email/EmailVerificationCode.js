@@ -120,6 +120,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAction',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'signIn',
+      value: false,
+      hidden: true
     }
   ],
 
@@ -176,11 +182,13 @@ foam.CLASS({
         var success, err;
         if ( ! this.codeVerified ) return;
         try {
-          success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.userName, this.verificationCode);
+          success = await this.emailVerificationService.verifyUserEmail(null, this.email, this.userName, this.verificationCode, this.signIn);
         } catch ( error ) {
           err = error;
         }
         if ( success ) {
+          if ( this.signIn ) await this.ctrl.reloadClient();
+
           this.ctrl.add(this.NotificationMessage.create({
             message: this.SUCCESS_MSG,
             type: this.LogLevel.INFO

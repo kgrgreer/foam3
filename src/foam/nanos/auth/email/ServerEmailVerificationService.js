@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.session.Session',
     'foam.mlang.predicate.Predicate',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
@@ -133,6 +134,13 @@ foam.CLASS({
         user = (User) user.fclone();
         user.setEmailVerified(true);
         ((DAO) x.get("localUserDAO")).put(user);
+
+        if ( signIn ) {
+          var session = x.get(Session.class);
+          session.setUserId(user.getId());
+          session.setContext(session.applyTo(session.getContext()));
+          ((DAO) x.get("localSessionDAO")).put(session);
+        }
         return true;
       `
     },
