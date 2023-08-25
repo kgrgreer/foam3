@@ -15,6 +15,7 @@ public class UnknownParser
     super(new Parser() {
 
       private Parser delegate = new Alt(
+        ArrayParser.instance(),
         NullParser.instance(),
         BooleanParser.instance(),
         //double parser should be before LongParser()
