@@ -77,22 +77,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'documentation',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.add(value);
-      }
-    },
-    {
-      name: 'cls',
-      label: 'Source',
-      tableCellView: function(o, e) {
-        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
-      },
-      tableCellFormatter: function(value, obj, axiom) {
-        this.tag(foam.doc.LinkView, { data: value });
-      }
-    },
-    {
       name: 'type',
       tableCellView: function(o, e) {
         return o.type ?
@@ -118,6 +102,22 @@ foam.CLASS({
         } else {
           this.add(value);
         }
+      }
+    },
+    {
+      name: 'cls',
+      label: 'Source',
+      tableCellView: function(o, e) {
+        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.tag(foam.doc.LinkView, { data: value });
+      }
+    },
+    {
+      name: 'documentation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value);
       }
     }
   ]
