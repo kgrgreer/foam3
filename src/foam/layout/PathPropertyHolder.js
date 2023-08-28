@@ -8,7 +8,8 @@ foam.CLASS({
   package: 'foam.layout',
   name: 'PathPropertyHolder',
   extends: 'foam.core.Property',
-  documentation: ``,
+  documentation: `A property for holding paths to sub-properties in FObjectProperties. 
+  Used by Section and SectionView to render properties of FObjectProperties`,
 
   requires: ['foam.core.ProxySlot'],
   properties: [
