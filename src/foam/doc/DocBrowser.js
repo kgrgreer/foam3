@@ -569,7 +569,7 @@ foam.CLASS({
               end().
             end().
             start('td').
-              style({'vertical-align': 'top'}).
+              style({'vertical-align': 'top', 'min-width': '800px'}).
               start(this.DocBorder, {title: 'Class Definition', info$: this.slot(function(selectedClass) { return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length; })}).
                 add( 'Show just properties : ' ).
                 tag( this.SHOW_ONLY_PROPERTIES, { data$: this.showOnlyProperties$ } ).
