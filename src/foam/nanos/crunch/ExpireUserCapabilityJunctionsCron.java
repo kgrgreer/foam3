@@ -21,25 +21,23 @@ import java.util.Date;
 
 import static foam.mlang.MLang.*;
 
+/**
+   Find all GRANTED junctions that are past the expiration date,
+   and if not in Grace period, expire them.
+ */
 public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
-
-  private Logger logger;
-  private DAO userCapabilityJunctionDAO;
 
   @Override
   public void execute(X x) {
-    logger = Loggers.logger(x, this);
     DAO bareUserCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
-    // Find all GRANTED junctions that are past the expiration date and if not in Grace period, expire them.
     List<UserCapabilityJunction> activeJunctions = ((ArraySink) userCapabilityJunctionDAO
       .where(
         AND(
           EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
           NEQ(UserCapabilityJunction.EXPIRY, null),
-          GT(UserCapabilityJunction.GRACE_PERIOD, 0),
-          LT(UserCapabilityJunction.EXPIRY, new Date())
+          LTE(UserCapabilityJunction.EXPIRY, new Date())
         )
       )
       .select(new ArraySink()))
@@ -50,8 +48,8 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
         activeJunction = (UserCapabilityJunction) activeJunction.fclone();
         activeJunction.setStatus(CapabilityJunctionStatus.EXPIRED);
         userCapabilityJunctionDAO.put(activeJunction);
-        logger.debug("UserCapabilityJunction Expired",activeJunction.getId());
-      } 
+        Loggers.logger(x, this).debug("UserCapabilityJunction Expired",activeJunction.getId());
+      }
     }
   }
 }

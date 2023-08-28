@@ -79,7 +79,7 @@ foam.CLASS({
     },
     {
       class: 'foam.comics.v2.CannedQuery',
-      label: 'All Expirable',
+      label: 'Expirable',
       predicateFactory: function(e) {
         return e.HAS(
           foam.nanos.crunch.UserCapabilityJunction.EXPIRY
@@ -90,19 +90,9 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Renewable',
       predicateFactory: function(e) {
-        return e.EQ(
-          foam.nanos.crunch.UserCapabilityJunction.IS_IN_RENEWABLE_PERIOD,
-          true
-        );
-      }
-    },
-    {
-      class: 'foam.comics.v2.CannedQuery',
-      label: 'In Grace Period',
-      predicateFactory: function(e) {
-        return e.EQ(
-          foam.nanos.crunch.UserCapabilityJunction.IS_IN_GRACE_PERIOD,
-          true
+        return e.OR(
+          e.GT(foam.nanos.crunch.UserCapabilityJunction.RENEWAL_PERIOD, 0),
+          e.GT(foam.nanos.crunch.UserCapabilityJunction.GRACE_PERIOD, 0)
         );
       }
     },

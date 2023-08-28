@@ -42,8 +42,10 @@ foam.CLASS({
               return;
             }
 
-            ucj.copyFromRenewable(x, capability);
-            ucj.setExpiry(ucj.calculateDate(x, null, ucj.getExpiryPeriod(), ucj.getExpiryPeriodTimeUnit()));
+            if ( ucj.getExpiry() == null ) {
+              ucj.copyFromRenewable(x, capability);
+              ucj.setExpiry(ucj.calculateDate(x, null, ucj.getExpiryPeriod(), ucj.getExpiryPeriodTimeUnit()));
+            }
           }
         }, "");
       `

@@ -114,7 +114,9 @@ foam.INTERFACE({
       javaGetter: `
       if ( ! isRenewableIsSet_ ) {
         foam.core.X x = foam.core.XLocator.get();
-        isRenewable_ = isInGracePeriod(x) || isInRenewalPeriod(x);
+        isRenewable_ = isNotYetInRenewalPeriod(x) ||
+                         isInRenewalPeriod(x) ||
+                         isInGracePeriod(x);
         isRenewableIsSet_ = true;
       }
       return isRenewable_;
@@ -231,6 +233,7 @@ foam.INTERFACE({
       type: 'Boolean',
       javaCode: `
       if ( getExpiry() == null ) return false;
+      if ( getRenewalPeriod() == 0 ) return false;
       if ( this instanceof UserCapabilityJunction &&
            ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
 
@@ -243,12 +246,34 @@ foam.INTERFACE({
       `
     },
     {
+      documentation: 'Before expiry, before renewable',
+      name: 'isNotYetInRenewalPeriod',
+      args: 'X x',
+      type: 'Boolean',
+      javaCode: `
+      if ( getExpiry() == null ) return false;
+      if ( getRenewalPeriod() == 0 ) return false;
+      if ( this instanceof UserCapabilityJunction &&
+           ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
+
+      var zone = getTimeZoneId(x);
+      Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
+      if ( now.before(getExpiry())) {
+        Date renewable = calculateDate(x, getExpiry(), -1 * getRenewalPeriod(), getRenewalPeriodTimeUnit());
+        // n < r
+        return now.before(renewable);
+      }
+      return false;
+      `
+    },
+    {
       documentation: 'After expiry, before grace',
       name: 'isInGracePeriod',
       args: 'X x',
       type: 'Boolean',
       javaCode: `
       if ( getExpiry() == null ) return false;
+      if ( getGracePeriod() == 0 ) return false;
       if ( this instanceof UserCapabilityJunction &&
            ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
 

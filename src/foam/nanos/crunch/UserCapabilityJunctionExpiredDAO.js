@@ -20,8 +20,9 @@ foam.CLASS({
       if ( ucj != null &&
            ucj.getStatus() == CapabilityJunctionStatus.GRANTED &&
            ucj.getExpiry() != null &&
-           ! ucj.isInGracePeriod(x) &&
-           ! ucj.isInRenewalPeriod(x) ) {
+           ! ucj.isNotYetInRenewalPeriod(x) &&
+           ! ucj.isInRenewalPeriod(x) &&
+           ! ucj.isInGracePeriod(x) ) {
         ucj = (UserCapabilityJunction) ucj.fclone();
         ucj.reset();
         ucj.setStatus(CapabilityJunctionStatus.EXPIRED);

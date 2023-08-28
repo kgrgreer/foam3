@@ -68,7 +68,9 @@ foam.CLASS({
       .setId(name)
       .setGrantMode(CapabilityGrantMode.MANUAL)
       .setTimeZone(ZoneId.systemDefault().toString())
-      .setExpiryPeriod(2)
+      .setRenewalPeriod(2)
+      .setRenewalPeriodTimeUnit(TimeUnit.SECOND)
+      .setExpiryPeriod(6)
       .setExpiryPeriodTimeUnit(TimeUnit.SECOND)
       .setGracePeriod(2)
       .setGracePeriodTimeUnit(TimeUnit.SECOND)
@@ -102,33 +104,46 @@ foam.CLASS({
     ucjC = service.updateJunctionFor(x, c.getId(), null, CapabilityJunctionStatus.PENDING, user, user);
     ucjC = service.updateJunctionFor(x, c.getId(), null, CapabilityJunctionStatus.GRANTED, user, user);
 
-    test ( ucjC.getStatus() == CapabilityJunctionStatus.GRANTED, "UCJ granted "+ucjC.getStatus());
+    test ( ucjC.getStatus() == CapabilityJunctionStatus.GRANTED, "UCJ status GRANTED "+ucjC.getStatus());
 
     // query as rules are after rules
     ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
     test ( ucjC.getExpiry() != null, "UCJ expiry set");
-    test ( ucjC.getIsRenewable() == true, "UCJ now renewable");
+    test ( ucjC.getIsRenewable() == true, "UCJ is renewable");
+    test ( ucjC.isInRenewalPeriod(x) == false, "UCJ not in renewal period");
+    test ( ucjC.isNotYetInRenewalPeriod(x) == true, "UCJ not yet in renewal period");
+    test ( ucjC.isInGracePeriod(x) == false, "UCJ not expired, not in grace period");
+
+    // wait until in renewal period
+    Thread.sleep(4000L);
+    test ( ucjC.getExpiry() != null, "UCJ expiry still set");
+    test ( ucjC.getIsRenewable() == true, "UCJ still renewable");
     test ( ucjC.isInRenewalPeriod(x) == true, "UCJ in renewal period");
-    test ( ucjC.isInGracePeriod(x) == false, "UCJ not in grace period");
+    test ( ucjC.isNotYetInRenewalPeriod(x) == false, "UCJ past not yet in renewal period");
+    test ( ucjC.isInGracePeriod(x) == false, "UCJ not expired, not yet in grace period");
+    test ( ucjC.getStatus() != CapabilityJunctionStatus.EXPIRED, "UCJ status not EXPIRED "+ucjC.getStatus());
 
     // wait expiry 
     Thread.sleep(2000L);
     ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
     test ( ucjC.getStatus() == CapabilityJunctionStatus.GRANTED, "UCJ istill granted");
-    test ( ucjC.getIsRenewable() == true, "UCJ still renewable");
-    test ( ucjC.isInRenewalPeriod(x) == false, "UCJ not in renewal period");
+    test ( ucjC.getIsRenewable() == true, "UCJ still renewable (2)");
+    test ( ucjC.isInRenewalPeriod(x) == false, "UCJ expired, past in renewal period");
+    test ( ucjC.isNotYetInRenewalPeriod(x) == false, "UCJ past expiry, past not yet in renewal period");
     test ( ucjC.isInGracePeriod(x) == true, "UCJ in grace period");
+    test ( ucjC.getStatus() != CapabilityJunctionStatus.EXPIRED, "UCJ status still not EXPIRED "+ucjC.getStatus());
 
     // wait grace period
     Thread.sleep(2000L);
     ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
     test ( ucjC.getIsRenewable() == false, "UCJ no longer renewable");
-    test ( ucjC.isInRenewalPeriod(x) == false, "UCJ not in renewal period");
-    test ( ucjC.isInGracePeriod(x) == false, "UCJ not in grace period");
+    test ( ucjC.isInRenewalPeriod(x) == false, "UCJ expired, past grace, past renewal period");
+    test ( ucjC.isNotYetInRenewalPeriod(x) == false, "UCJ expiry, past grace, past not yet in renewal period");
+    test ( ucjC.isInGracePeriod(x) == false, "UCJ past grace period");
 
     // a put or cron job is required for this
     ucjC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucjC.getId());
-    test ( ucjC.getStatus() == CapabilityJunctionStatus.EXPIRED, "UCJ expired");
+    test ( ucjC.getStatus() == CapabilityJunctionStatus.EXPIRED, "UCJ status EXPIRED " + ucjC.getStatus());
     `
     }
   ]
