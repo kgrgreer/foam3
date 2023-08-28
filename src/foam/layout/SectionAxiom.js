@@ -94,11 +94,11 @@ foam.CLASS({
       if ( this.hasOwnProperty('properties') ) {
         props = this.properties.map(p => {
           if ( foam.String.isInstance(p) ) return data.cls_.getAxiomByName(p);
+          // TODO: allow string only path props
           if ( p.name ) {
             if ( p.name.indexOf('.') != -1 ) {
               let p2 = Object.assign({}, p);
               delete p2.name;
-              // ADD SUPPORT FOR RENDERING PATH PROPERTIES IN SECTIONVIEW
               return foam.layout.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
             }
             return data.cls_.getAxiomByName(p.name).clone().copyFrom(p);

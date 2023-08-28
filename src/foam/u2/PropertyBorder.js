@@ -120,6 +120,9 @@
 
       this.SUPER();
 
+      if ( this.__context__.controllerMode$ )
+        this.controllerMode$.follow(this.__context__.controllerMode$);
+
       var data = this.data;
 
       // TODO: Add simplified "required: true" UI
@@ -142,7 +145,6 @@
       var visibilitySlot = modeSlot.map(m => m != foam.u2.DisplayMode.HIDDEN)
 
       var colorSlot = this.data$.dot(prop.name).map(v => !! v);
-
       this.
         addClass().
         show(visibilitySlot).

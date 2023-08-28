@@ -139,10 +139,10 @@ foam.CLASS({
                   code: section.title
                 });
                 if ( slot$.value ) {
-                  this.start().add(slot$.value.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
+                  this.start().add(slot$.value.toUpperCase()).addClass('h600', self.myClass('section-title')).end();
                 }
               } else {
-                this.start('h5').add(section.title.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
+                this.start().add(section.title.toUpperCase()).addClass('h600', self.myClass('section-title')).end();
               }
             })
             .callIf(section$subTitle, function() {
