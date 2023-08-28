@@ -120,7 +120,10 @@
 
       this.SUPER();
 
-      var data = this.__context__.data;
+      if ( this.__context__.controllerMode$ )
+        this.controllerMode$.follow(this.__context__.controllerMode$);
+
+      var data = this.data;
 
       // TODO: Add simplified "required: true" UI
       // TODO: Required checks on props are ignored if validateObj returns undefined. Bug? - Sarthak
@@ -141,8 +144,7 @@
       // Boolean version of modeSlot for use with show()
       var visibilitySlot = modeSlot.map(m => m != foam.u2.DisplayMode.HIDDEN)
 
-      var colorSlot = this.__context__.data$.dot(prop.name).map(v => !! v);
-
+      var colorSlot = this.data$.dot(prop.name).map(v => !! v);
       this.
         addClass().
         show(visibilitySlot).

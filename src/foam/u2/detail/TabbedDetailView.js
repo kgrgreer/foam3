@@ -55,9 +55,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(this.slot(function(sections, data) {
-          if ( ! data ) return;
-
+        .add(this.slot(function(sections) {
           var arraySlot = foam.core.ArraySlot.create({
             slots: sections.map((s) => s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
           });
@@ -89,7 +87,7 @@ foam.CLASS({
                         }) :
                         s.title$;
 
-                      var tab = foam.core.SimpleSlot.create();
+                      var tab = foam.core.SimpleSlot.create({}, self);
                       this
                         .start(self.Tab, { label$: title$ || self.defaultSectionLabel }, tab)
                          .call(function() {
