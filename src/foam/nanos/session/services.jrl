@@ -7,6 +7,7 @@ p({
       .setGuid(true)
       .setJournalName("sessions")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setSAF(true)
       .setAuthorize(false)
       .setDecorator(new foam.dao.ValidatingDAO(x, null))
       .build();
