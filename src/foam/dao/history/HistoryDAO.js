@@ -119,7 +119,8 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      if ( ! getPutPredicate().f(x.put("NEW", obj)) ) return super.put_(x, obj);
+      FObject current = this.find_(x, obj);
+      if ( ! getPutPredicate().f(x.put("NEW", obj).put("OLD", current)) ) return super.put_(x, obj);
 
       Subject subject = (Subject) x.get("subject");
       if ( x.get(Session.class) != null &&
@@ -128,7 +129,6 @@ foam.CLASS({
         subject = (Subject) ((Session) x.get(Session.class)).getContext().get("subject");
       }
 
-      FObject current = this.find_(x, obj);
       Object objectId = obj.getProperty("id");
 
       if ( current == null ) {
