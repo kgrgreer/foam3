@@ -22,6 +22,7 @@ foam.CLASS({
   imports: [
     'click?',
     'dblclick?',
+    'hoverSelection',
     'nestedPropsAndIndexes',
     'propertyNamesToQuery',
     'props',
@@ -43,10 +44,11 @@ foam.CLASS({
       this.SUPER();
       const obj = this.obj;
       var self = this;
-      var nestedPropertyValues = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
+      var nestedPropertyValues    = this.columnHandler.filterNestedPropertyValues(this.projection, this.nestedPropsAndIndexes[1]);
       var nestedPropertiesObjsMap = this.columnHandler.groupRelatedObjects(this.data.of, this.nestedPropsAndIndexes[0], nestedPropertyValues);
       this.addClass(this.data.myClass('tr')).
-      call(this.insertClick.bind(self), [obj]).
+      on('mouseover', () => self.hoverSelection = obj).
+      call(this.insertClick, [obj]). // TODO: why the bind(), call should apply to this anyway?
       addClass(this.data.myClass('row')).
       style({ 'min-width': this.data.tableWidth_$ }).
 

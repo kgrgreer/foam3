@@ -35,7 +35,7 @@ public class ImageServlet
 {
   protected static final int                 BUFFER_SIZE = 4096;
   protected static final String              DEFAULT_EXT = "application/octet-stream";
-  protected static final Map<String, String> EXTS = new HashMap<String, String>();
+  protected static final Map<String, String> EXTS        = new HashMap<String, String>();
 
   static {
     EXTS.put("js",    "application/javascript");
@@ -82,14 +82,16 @@ public class ImageServlet
     }
 
     if ( reqPath.endsWith(".png") ) {
-      for ( int i = 0; i < paths.length; i++ ) {
+      for ( int i = 0 ; i < paths.length ; i++ ) {
         File src    = new File(cwd + "/" + paths[i] + reqPath);
         File srcSvg = new File(cwd + "/" + paths[i] + reqPath.replaceFirst("\\.png", ".svg"));
+
         if ( srcSvg.isFile() && srcSvg.canRead() && srcSvg.getCanonicalPath().startsWith(new File(paths[i]).getCanonicalPath()) ) {
 
           // convert .svg to .png
           String          svgUriInput   = Paths.get(srcSvg.getPath()).toUri().toURL().toString();
           TranscoderInput inputSvgImage = new TranscoderInput(svgUriInput);
+
           try ( OutputStream pngOutputStream = new FileOutputStream(src.getPath()) ) {
             TranscoderOutput outputPngImage  = new TranscoderOutput(pngOutputStream);
             PNGTranscoder    myConverter     = new PNGTranscoder();

@@ -77,22 +77,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'documentation',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.add(value);
-      }
-    },
-    {
-      name: 'cls',
-      label: 'Source',
-      tableCellView: function(o, e) {
-        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
-      },
-      tableCellFormatter: function(value, obj, axiom) {
-        this.tag(foam.doc.LinkView, { data: value });
-      }
-    },
-    {
       name: 'type',
       tableCellView: function(o, e) {
         return o.type ?
@@ -118,6 +102,22 @@ foam.CLASS({
         } else {
           this.add(value);
         }
+      }
+    },
+    {
+      name: 'cls',
+      label: 'Source',
+      tableCellView: function(o, e) {
+        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.tag(foam.doc.LinkView, { data: value });
+      }
+    },
+    {
+      name: 'documentation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value);
       }
     }
   ]
@@ -159,92 +159,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.doc',
-  name: 'ClassList',
-  extends: 'foam.u2.View',
-
-  requires: [
-    'foam.doc.ClassLink',
-    'foam.doc.DocBorder'
-  ],
-
-  css: `
-    ^ a {
-      display: inline-block;
-      padding: 2px;
-      width: 200px;
-    }
-    ^package {
-      font-weight: 700;
-    }
-    ^indent {
-      margin-left: 30px;
-    }
-  `,
-
-  properties: [
-    'title',
-    {
-      name: 'info',
-      expression: function (data) {
-        return data && data.length;
-      }
-    },
-    {
-      of: 'Boolean',
-      name: 'showPackage',
-      value: false
-    },
-    {
-      of: 'Boolean',
-      name: 'showSummary'
-    }
-  ],
-
-  methods: [
-    function render() {
-      this.SUPER();
-      var self = this;
-      var pkg  = '';
-
-      this.
-        addClass(this.myClass()).
-        start(this.DocBorder, {title: this.title, info$: this.info$}).
-          start('div').
-            forEach(this.data$, function(d) {
-              if ( ! self.showPackage ) {
-                if ( d.package !== pkg ) {
-                  pkg = d.package;
-                  this.start('div').addClass(self.myClass('package')).add(pkg).end();
-                }
-              }
-
-              this.start('div')
-                .start(self.ClassLink, {data: d, showPackage: self.showPackage}).
-                  addClass(self.showPackage ? undefined : self.myClass('indent')).
-                end().
-                call(function(f) {
-                  if ( d.model_ && self.showSummary ) {
-                    this.add(' ', self.summarize(d.model_.documentation));
-                  }
-                }).
-              end();
-            }).
-          end().
-        end();
-    },
-
-    function summarize(txt) {
-      if ( ! txt ) return null;
-      var i = txt.indexOf('.');
-      if ( i < 60 ) return txt.substring(0, i+1);
-      return txt.substring(0, 56) + ' ...';
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.doc',
   name: 'ClassDocViewEnumValue',
   extends: 'foam.u2.View',
 
@@ -263,6 +177,8 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var data = this.data;
+      var self = this;
+
       this.
         start('b').add(data.id).end().
         br().
@@ -278,7 +194,7 @@ foam.CLASS({
       this.br();
       this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
-      this.add( this.slot(function () {
+      this.add(this.slot(function () {
         var axs = [];
         for ( var key in data.model_.values ) {
           var a  = data.model_.values[key];
@@ -289,10 +205,11 @@ foam.CLASS({
           });
           axs.push(ai);
         }
+
         return this.TableView.create({
           of: this.EnumInfo,
           data: this.ArrayDAO.create({array: axs}),
-          hoverSelection$: this.selectedAxiom$
+          hoverSelection$: self.selectedAxiom$
         });
       }));
     }
@@ -499,9 +416,7 @@ foam.CLASS({
       expression: function (path) {
         return Object.values(foam.USED).
           filter(function(cls) {
-            if ( ! cls.model_ ) return false;
-            return cls.model_.requires && cls.model_.requires.map(
-                function(r) { return r.path; }).includes(path);
+            return cls.requires && cls.requires.includes(path);
           }).
           sort(this.MODEL_COMPARATOR);
       }
@@ -509,7 +424,9 @@ foam.CLASS({
     {
       name: 'relationshipClasses',
       expression: function (path) {
-        return [];
+        var cls = foam.lookup(path);
+        var rs  = cls.getAxiomsByClass(foam.core.Reference);
+        return rs.map(r => r.of.model_).sort(this.MODEL_COMPARATOR);
       }
     },
     'subClassCount',
@@ -546,8 +463,12 @@ foam.CLASS({
           start('tr').
             start('td').
               style({'vertical-align': 'top'}).
+              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
+            end().
+            start('td').
+              style({'vertical-align': 'top'}).
               start(this.DocBorder, {
-                title: 'UML ++',
+                title: 'UML',
                 info$: this.slot(function(selectedClass) {
                   return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length;
                 })
@@ -562,11 +483,7 @@ foam.CLASS({
               end().
             end().
             start('td').
-              style({'vertical-align': 'top'}).
-              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
-            end().
-            start('td').
-              style({'vertical-align': 'top'}).
+              style({'vertical-align': 'top', 'min-width': '800px'}).
               start(this.DocBorder, {title: 'Class Definition', info$: this.slot(function(selectedClass) { return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length; })}).
                 add( 'Show just properties : ' ).
                 tag( this.SHOW_ONLY_PROPERTIES, { data$: this.showOnlyProperties$ } ).
@@ -579,7 +496,7 @@ foam.CLASS({
             start('td').
               style({'vertical-align': 'top'}).
               start(this.DocBorder, {title: 'Axiom Definition'}).
-                add(this.slot(function (axiom) { return axiom && foam.u2.DetailView.create({data: axiom.axiom}); })).
+                add(this.dynamic(function (axiom) { this.add(axiom && foam.u2.DetailView.create({data: axiom.axiom})); })).
               end().
             end().
             start('td').

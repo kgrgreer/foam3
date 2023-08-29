@@ -493,7 +493,6 @@ foam.CLASS({
             var proxy = view.ProxyDAO.create({ delegate: dao });
             if ( this.order ) proxy = proxy.orderBy(this.order);
 
-
             var canObjBeBuildFromProjection = true;
 
             for ( var p of view.props ) {

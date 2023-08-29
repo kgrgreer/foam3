@@ -60,24 +60,35 @@ foam.CLASS({
 
     ^selected { background: lightgrey; }
 
+    ^package {
+      font-weight: 700;
+    }
+
+    ^row {
+      margin-left: 30px;
+    }
   //  ^row:hover { border: 1px solid red;  }
   `,
 
   properties: [
     'hardSelection',
-    { class: 'Boolean', name: 'showPackage' },
     { name: 'package', value: [], preSet: function(o, n) { return n.sort((a, b) => foam.String.compare(a.id, b.id)); } }
   ],
 
   methods: [
     function render() {
       var self = this;
+      var pkg  = '';
 
       this.addClass(this.myClass()).
       start('h3').add('Model:').end().
       start().addClass(self.myClass('list')).
       add(this.dynamic(function(package) {
         this.forEach(package, function (m) {
+          if ( m.package != pkg ) {
+            pkg = m.package;
+            this.start('div').addClass(self.myClass('package')).add(m.package).end();
+          }
           this.start().
             addClass(self.myClass('row')).
             enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
@@ -85,7 +96,7 @@ foam.CLASS({
             on('click',     () => self.hardSelection = self.data = m).
             on('mouseover', () => self.data = m).
             on('mouseout',  () => self.data = self.hardSelection).
-            add(self.showPackage ? m.id : m.name).
+            add(m.name).
           end();
         }
         );
@@ -230,8 +241,7 @@ foam.CLASS({
           start('td').style({'vertical-align': 'top'}).
             add(this.ModelList.create({
               data$: this.model$,
-              package$: this.package$.map(p => this.packages[p]),
-              showPackage$: this.package$.map(p => p === '--All--')
+              package$: this.package$.map(p => this.packages[p])
             })).
           end().
           start('td').

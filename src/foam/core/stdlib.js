@@ -549,7 +549,7 @@ foam.LIB({
       var intArrayForHash   = new Int32Array(bufForHash);
 
       return function hashCode(n) {
-        if (Number.isInteger(n)) return n & n; // Truncate to 32 bits.
+        if ( Number.isInteger(n) ) return n & n; // Truncate to 32 bits.
 
         floatArrayForHash[0] = n;
         var hash = ((intArrayForHash[0] << 5) - intArrayForHash[0]) +
