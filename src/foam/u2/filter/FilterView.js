@@ -538,7 +538,7 @@ foam.CLASS({
         // clear all filters
         if ( this.filterController.isAdvanced ) return;
         this.filterController.clearAll();
-        this.generalSearchField.view.data = '';
+        if ( this.generalSearchField ) this.generalSearchField.view.data = '';
         this.mementoString = '';
       }
     },
