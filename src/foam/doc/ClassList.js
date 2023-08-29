@@ -70,8 +70,8 @@ foam.CLASS({
                   addClass(self.showPackage ? undefined : self.myClass('indent')).
                 end().
                 call(function(f) {
-                  if ( d.model_ && self.showSummary ) {
-                    this.add(' ', self.summarize(d.model_.documentation));
+                  if ( self.showSummary ) {
+                    this.add(' ', self.summarize(d.documentation));
                   }
                 }).
               end();
