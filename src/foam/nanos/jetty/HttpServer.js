@@ -327,15 +327,14 @@ foam.CLASS({
         ipAccessHandler.setHandler(handler);
         server.setHandler(ipAccessHandler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
-        // NOTE: With Medusa (clustering) must listen on MDAO to notice updates from 'other' mediators.
-        foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) getX().get("clusterConfigSupport");
-        if ( support != null ) {
-          Object result = ipAccessDAO.cmd(DAO.LAST_CMD);
-          if ( result != null &&
-               result instanceof foam.dao.MDAO ) {
-            ipAccessDAO = (DAO) result;
-          }
+
+        // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
+        Object result = ipAccessDAO.cmd(DAO.LAST_CMD);
+        if ( result != null &&
+             result instanceof foam.dao.MDAO ) {
+          ipAccessDAO = (DAO) result;
         }
+
         ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
         // initialilize
         ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));

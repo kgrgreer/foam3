@@ -9,7 +9,6 @@ p({
   "name": "jettyIPAccessDAO",
   "serve": true,
   "lazy": false,
-  "description":"NOTE: not clustered as not way to invoke listener on remote instances.",
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.jetty.IPAccess.getOwnClassInfo())
