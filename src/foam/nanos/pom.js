@@ -18,8 +18,8 @@ foam.POM({
     `
   ],
   projects: [
-    { name: "crunch/pom"},
     { name: "jetty/pom"},
+    { name: "medusa/pom"},
     { name: "ruler/pom"}
   ],
   files: [
