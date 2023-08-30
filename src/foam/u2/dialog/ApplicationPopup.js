@@ -19,7 +19,8 @@ foam.CLASS({
 
   imports: [
     'displayWidth?',
-    'theme'
+    'theme',
+    'translationService'
   ],
 
   exports: [
@@ -425,7 +426,7 @@ foam.CLASS({
                 .end()
               // link
               .start().addClass(self.myClass('footer-center'))
-                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
+                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: self.translationService.getTranslation(foam.locale, self.myClass("footerHTML"), self.footerHTML) }))
               .end()
               // support info
               .start().addClass(self.myClass('footer-right'))
