@@ -536,7 +536,8 @@ foam.CLASS({
             start('td').
               style({'vertical-align': 'top'}).
               start(this.DocBorder, {title: 'Axiom Definition'}).
-                add(this.dynamic(function (axiom) { this.add(axiom && foam.u2.DetailView.create({data: axiom.axiom})); })).
+                style({'min-width': '500px'}).
+                add(this.dynamic(function (axiom) { this.add(axiom && foam.u2.DetailView.create({data: axiom.axiom, controllerMode: foam.u2.ControllerMode.VIEW})); })).
               end().
             end().
             start('td').
