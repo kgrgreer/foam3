@@ -21,6 +21,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^ h4 {
+      margin-bottom: 4px;
+    }
     ^ .commaseparated span:after {
       content: ", ";
     }

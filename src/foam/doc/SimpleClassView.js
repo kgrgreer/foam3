@@ -172,8 +172,7 @@ foam.CLASS({
               titleFn: function() {
                   return this.E('h4').
                     add('Methods inherited from ').
-                    start(this.ClassLink, { data: id }).
-                    end()
+                    tag(this.ClassLink, { data: id });
               }.bind(this),
             }).
             end()
