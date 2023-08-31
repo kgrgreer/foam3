@@ -342,10 +342,12 @@ foam.CLASS({
   documentation: 'FOAM documentation browser.',
 
   requires: [
+    'foam.dao.ArrayDAO',
     'foam.doc.ClassDocView',
     'foam.doc.ClassDocViewEnumValue',
     'foam.doc.ClassList',
     'foam.doc.DocBorder',
+    'foam.doc.SimpleClassView',
     'foam.doc.UMLDiagram'
   ],
 
@@ -357,7 +359,8 @@ foam.CLASS({
     'conventionalUML',
     'path as browserPath',
     'showInherited',
-    'showOnlyProperties'
+    'showOnlyProperties',
+    'modelDAO'
   ],
 
   css: `
@@ -377,6 +380,30 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'modelDAO',
+      factory: function(/*nSpecDAO, allowedModels*/) {
+        var self = this;
+        var dao  = self.ArrayDAO.create({of: self.Model}).orderBy(foam.core.Model.ID);
+        var all = [];
+        var packages = { '--All--': all};
+        function addModel(m) {
+          try {
+          var c = foam.maybeLookup(m);
+          if ( c ) {
+            var mdl = c.model_;
+            (packages[mdl.package] || ( packages[mdl.package] = [])).push(mdl);
+            all.push(mdl);
+            dao.put(mdl);
+          }
+        } catch (x) {}
+        }
+        Object.keys(foam.USED).forEach(addModel);
+        Object.keys(foam.UNUSED).forEach(addModel);
+        this.packages = packages;
+        return dao;
+      }
+    },
     {
       class: 'String',
       name: 'path',
@@ -477,6 +504,19 @@ foam.CLASS({
                 add(this.slot(function(selectedClass, conventionalUML) {
                   if ( ! selectedClass ) return '';
                   return this.UMLDiagram.create({
+                    data: selectedClass
+                  });
+                })).
+              end().
+            end().
+            start('td').
+              style({'vertical-align': 'top'}).
+              start(this.DocBorder, {
+                title: 'ModelDoc'
+              }).
+                add(this.slot(function(selectedClass) {
+                  if ( ! selectedClass ) return '';
+                  return this.SimpleClassView.create({
                     data: selectedClass
                   });
                 })).
