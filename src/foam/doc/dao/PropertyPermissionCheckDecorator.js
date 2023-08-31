@@ -19,14 +19,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'auth',
+    'auth?',
   ],
 
   methods: [
     function put_(x, o) {
       var self = this;
-      if ( ! this.PropertyAxiom.isInstance(o) )
+
+      if ( ! this.auth || ! this.PropertyAxiom.isInstance(o) )
         return this.delegate.put_(x, o);
+
       return self.auth.check(x, `${o.parentId}.properties.permissioned`)
         .then(function(permitted) {
           if ( ! permitted ) return false;
