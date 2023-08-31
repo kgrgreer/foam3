@@ -489,7 +489,7 @@ foam.CLASS({
         start('table').
           start('tr').
             start('td').
-              style({'vertical-align': 'top'}).
+              style({'vertical-align': 'top', 'min-width': '700px'}).
               tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
             end().
             start('td').

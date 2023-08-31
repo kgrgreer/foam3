@@ -18,7 +18,7 @@ foam.CLASS({
     ^ a {
       display: inline-block;
       padding: 2px;
-      width: 200px;
+      width: 220px;
     }
     ^package {
       font-weight: 700;
@@ -84,7 +84,7 @@ foam.CLASS({
       if ( ! txt ) return null;
       var i = txt.indexOf('.');
       if ( i < 60 ) return txt.substring(0, i+1);
-      return txt.substring(0, 56) + ' ...';
+      return txt.substring(0, 60) + ' ...';
     }
   ]
 });
