@@ -18,6 +18,7 @@ foam.POM({
     `
   ],
   projects: [
+    { name: "jetty/pom"},
     { name: "medusa/pom"},
     { name: "ruler/pom"}
   ],
@@ -302,7 +303,6 @@ foam.POM({
     { name: "script/Relationships",                                                       flags: "js" },
     { name: "script/TestRunnerConfig",                                                    flags: "js|java" },
     { name: "script/TestRunnerScript",                                                    flags: "js|java" },
-    { name: "jetty/HttpServer",                                                           flags: "js|java" },
     { name: "servlet/Servlet",                                                            flags: "js|java" },
     { name: "servlet/ErrorPageMapping",                                                   flags: "js|java" },
     { name: "servlet/FilterMapping",                                                      flags: "js|java" },
@@ -386,7 +386,6 @@ foam.POM({
     { name: "pm/TemperatureCView",                                                        flags: "js" },
     { name: "pm/PMFactory",                                                               flags: "js|java" },
     { name: "pool/ThreadPoolAgency",                                                      flags: "js|java" },
-    { name: "jetty/JettyThreadPoolConfig",                                                flags: "js|java" },
     { name: "auth/PMAuthService",                                                         flags: "js|java" },
     { name: "notification/ClientResendNotificationService",                               flags: "js|java" },
     { name: "notification/DAONotificationRuleAction",                                     flags: "js|java" },

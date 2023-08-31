@@ -16,6 +16,8 @@ foam.CLASS({
   javaImports: [
     'foam.blob.Blob',
     'foam.core.X',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.TRUE',
     'foam.nanos.fs.File',
     'foam.nanos.fs.ResourceStorage',
     'foam.nanos.jetty.JettyThreadPoolConfig',
@@ -37,6 +39,7 @@ foam.CLASS({
     'org.apache.commons.io.IOUtils',
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
     'org.eclipse.jetty.server.*',
+    'org.eclipse.jetty.server.handler.IPAccessHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
     'org.eclipse.jetty.servlet.ServletHolder',
@@ -318,6 +321,23 @@ foam.CLASS({
         gzipHandler.setCompressionLevel(9);
         gzipHandler.setHandler(handler);
         server.setHandler(gzipHandler);
+
+        // IPAccessHandler
+        IPAccessHandler ipAccessHandler = new IPAccessHandler();
+        ipAccessHandler.setHandler(handler);
+        server.setHandler(ipAccessHandler);
+        DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
+
+        // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
+        Object result = ipAccessDAO.cmd(DAO.LAST_CMD);
+        if ( result != null &&
+             result instanceof foam.dao.MDAO ) {
+          ipAccessDAO = (DAO) result;
+        }
+
+        ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
+        // initialilize
+        ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));
 
         this.configHttps(server);
 
