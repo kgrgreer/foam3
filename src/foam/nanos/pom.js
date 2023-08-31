@@ -18,11 +18,8 @@ foam.POM({
     `
   ],
   projects: [
-<<<<<<< HEAD
     { name: "crunch/pom"},
-=======
     { name: "jetty/pom"},
->>>>>>> 21131ae955485c26641310f64a14661e6870fbc7
     { name: "medusa/pom"},
     { name: "ruler/pom"}
   ],
