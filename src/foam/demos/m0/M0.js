@@ -36,6 +36,8 @@ foam.CLASS({
     },
     function toString() {
       return this.cls_.name + '(' + this.cls_.getAxiomsByClass(foam.core.Property).map(p => p.get(this)).join(',') + ')';
+    },
+    function toBinary() {
     }
   ]
 });
@@ -277,7 +279,7 @@ foam.CLASS({
   ],
 
   css: `
-    ^selected { xxxbackground: lightgray; border: 2px solid red; }
+    ^selected { xxxbackground: lightgray; border: 2px solid red; background: #eee; }
   `,
 
   properties: [
@@ -291,13 +293,15 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'cp'
+      name: 'cp',
+      description: 'Code Pointer: position to put next instruction when compiling'
     },
     {
       class: 'String',
       name: 'code',
       view: { class: 'foam.u2.tag.TextArea', rows: 27, cols: 40 },
-      value: `  // Demo Program
+      value: `// Demo Program
+
   MOV(R0, 100);
 LABEL('START');
   ADD(R0, 1);
@@ -327,30 +331,39 @@ LABEL('START');
       this.start().
         style({display: 'flex'}).
         start().
+          start('h4').add('Assembly:').end().
           add(this.CODE).
         end().
         start().
+          style({padding: '0 12px'}).
+          start('h4').add('Registers:').end().
           start('table').
             call(function() {
               for ( var i = 0 ; i < 16 ; i++ ) {
                 this.start('tr').
                   start('th').add('R' + i).end().
-                  start('th').add(self['R' + i].shortName).end().
-                  start('td').add(self['R' + i]).end();
+                  start('td').add(self['R' + i]).end().
+                  start('th').add(self['R' + i].shortName).end();
                 if ( i == 7 ) i = 11; // Skip 8-11
               }
             }).
           end().
         end().
         start().
-          start('h3').add('Memory:').end().
-          forEach(this.mem$, function(m, i) {
-
-            this.start().
-              enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
-              add(i + ' ' + m.toString()).br().
-            end();
-          }).
+          start('h4').add('Memory:').end().
+          start('table').
+            start('tr').
+              start('th').add('Addr.').end().
+              start('th').add('Instr.').end().
+            end().
+            add(this.dynamic(function(mem) { mem.forEach((m, i) => {
+              this.start('tr').
+                enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
+                start('td').add(i).end().
+                start('td').add(m.toString()).end().
+              end();
+            })})).
+          end().
         end().
       end().
       add(this.COMPILE, this.STEP, this.RUN).
