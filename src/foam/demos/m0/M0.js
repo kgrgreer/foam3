@@ -7,6 +7,7 @@
 // https://developer.arm.com/documentation/dui0497/a/the-cortex-m0-instruction-set/instruction-set-summary?lang=en
 // https://gab.wallawalla.edu/~curt.nelson/cptr380/textbook/advanced%20material/Appendix_B1.pdf
 // https://gab.wallawalla.edu/~curt.nelson/cptr380/textbook/advanced%20material/Appendix_B2.pdf
+// https://azeria-labs.com/assembly-basics-cheatsheet/
 
 /*
 Lm Low register in range r0 to r7
@@ -130,12 +131,25 @@ var INSTRS = [
 /*
 var INSTRS2 =  [
   [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
-  [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld' ],
-  [ 'ADD',  '', '0001110', 'immed3', 'Ln', 'Ld' ],
-  [ 'ADD',  '', '00110', 'Ld', 'immed8' ],
-  [ 'ADD',  '', '0100010001', 'Hm&7', 'Ld' ],
-  [ 'ADD',  '', '0100010010', 'Lm', 'Hd&7' ],
-  [ 'ADD',  '', '0100010011', 'Hm&7', 'Hd&7' ],
+
+  [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.m.get(this.m0)); } ],
+
+  [ 'ADD',  '', '0001110', 'immed3', 'Ln', 'Ld',
+    function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.immed); } ],
+
+  [ 'ADD',  '', '00110', 'Ld', 'immed8',
+    function() { this.d.set(this.m0, this.d.get(this.m0) + this.immed); } ],
+
+  [ 'ADD',  '', '0100010001', 'Hm&7', 'Ld',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
+  [ 'ADD',  '', '0100010010', 'Lm', 'Hd&7',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
+  [ 'ADD',  '', '0100010011', 'Hm&7', 'Hd&7',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
   [ 'ADD',  '', '1010', 'pc|sp', 'Ld', 'immed8' ],
   [ 'ADD',  '', '101100000', 'immed7' ],
   [ 'AND',  'Logical AND', '0100000000', 'Lm/Ls', 'Ld' ],
@@ -280,6 +294,7 @@ foam.CLASS({
 
   css: `
     ^selected { xxxbackground: lightgray; border: 2px solid red; background: #eee; }
+    ^ textarea { font-family: monospace; }
   `,
 
   properties: [
@@ -299,7 +314,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 27, cols: 40 },
+      view: { class: 'foam.u2.tag.TextArea', rows: 29, cols: 40 },
       value: `// Demo Program
 
   MOV(R0, 100);
@@ -328,10 +343,14 @@ LABEL('START');
   methods: [
     function render() {
       var self = this;
-      this.start().
+
+      this.addClass(this.myClass()).
+      start().
         style({display: 'flex'}).
         start().
-          start('h4').add('Assembly:').end().
+//          start('h4').add('Assembly:').end().
+          add(this.COMPILE, this.STEP, this.RUN).
+          br().br().
           add(this.CODE).
         end().
         start().
@@ -366,7 +385,6 @@ LABEL('START');
           end().
         end().
       end().
-      add(this.COMPILE, this.STEP, this.RUN).
       br()
       ;
     },
