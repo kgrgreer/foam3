@@ -164,3 +164,9 @@ obj.EmptyListErps();
     }
   """
 })
+
+p({
+  "class":"foam.nanos.crunch.crunchtest.CapabilityReputTest",
+  "id":"CapabilityReputTest",
+  "documentation":"Test ucj reput when a prerequisite has been newly granted"
+})
