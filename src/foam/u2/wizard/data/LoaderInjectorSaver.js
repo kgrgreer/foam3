@@ -46,12 +46,6 @@ foam.CLASS({
         return;
       }
 
-      if ( ! target.isAvailable ) {
-        console.warn(`Wizardlet not available: ${this.wizardletId}`);
-        await this.delegate.save(data);
-        return;
-      }
-
       if ( ! this.SplitWAO.isInstance(target.wao) ) {
         target.wao = this.SplitWAO.create({ delegate: target.wao });
         // console.error(`LoaderInjectorSaver only supported on wizardlets with SplitWAO`);
