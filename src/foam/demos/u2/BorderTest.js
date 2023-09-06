@@ -10,8 +10,6 @@ var tabs = Tabs.create().
 
 tabs.write();
 
-
-
 E('br').write();
 E('br').write();
 
