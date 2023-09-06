@@ -7,6 +7,7 @@
 // https://developer.arm.com/documentation/dui0497/a/the-cortex-m0-instruction-set/instruction-set-summary?lang=en
 // https://gab.wallawalla.edu/~curt.nelson/cptr380/textbook/advanced%20material/Appendix_B1.pdf
 // https://gab.wallawalla.edu/~curt.nelson/cptr380/textbook/advanced%20material/Appendix_B2.pdf
+// https://azeria-labs.com/assembly-basics-cheatsheet/
 
 /*
 Lm Low register in range r0 to r7
@@ -36,6 +37,8 @@ foam.CLASS({
     },
     function toString() {
       return this.cls_.name + '(' + this.cls_.getAxiomsByClass(foam.core.Property).map(p => p.get(this)).join(',') + ')';
+    },
+    function toBinary() {
     }
   ]
 });
@@ -128,12 +131,25 @@ var INSTRS = [
 /*
 var INSTRS2 =  [
   [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
-  [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld' ],
-  [ 'ADD',  '', '0001110', 'immed3', 'Ln', 'Ld' ],
-  [ 'ADD',  '', '00110', 'Ld', 'immed8' ],
-  [ 'ADD',  '', '0100010001', 'Hm&7', 'Ld' ],
-  [ 'ADD',  '', '0100010010', 'Lm', 'Hd&7' ],
-  [ 'ADD',  '', '0100010011', 'Hm&7', 'Hd&7' ],
+
+  [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.m.get(this.m0)); } ],
+
+  [ 'ADD',  '', '0001110', 'immed3', 'Ln', 'Ld',
+    function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.immed); } ],
+
+  [ 'ADD',  '', '00110', 'Ld', 'immed8',
+    function() { this.d.set(this.m0, this.d.get(this.m0) + this.immed); } ],
+
+  [ 'ADD',  '', '0100010001', 'Hm&7', 'Ld',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
+  [ 'ADD',  '', '0100010010', 'Lm', 'Hd&7',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
+  [ 'ADD',  '', '0100010011', 'Hm&7', 'Hd&7',
+  function() { this.d.set(this.m0, this.d.get(this.m0) + this.m.get(this.m0)); }  ],
+
   [ 'ADD',  '', '1010', 'pc|sp', 'Ld', 'immed8' ],
   [ 'ADD',  '', '101100000', 'immed7' ],
   [ 'AND',  'Logical AND', '0100000000', 'Lm/Ls', 'Ld' ],
@@ -277,7 +293,8 @@ foam.CLASS({
   ],
 
   css: `
-    ^selected { xxxbackground: lightgray; border: 2px solid red; }
+    ^selected { xxxbackground: lightgray; border: 2px solid red; background: #eee; }
+    ^ textarea { font-family: monospace; }
   `,
 
   properties: [
@@ -291,13 +308,15 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'cp'
+      name: 'cp',
+      description: 'Code Pointer: position to put next instruction when compiling'
     },
     {
       class: 'String',
       name: 'code',
-      view: { class: 'foam.u2.tag.TextArea', rows: 27, cols: 40 },
-      value: `  // Demo Program
+      view: { class: 'foam.u2.tag.TextArea', rows: 29, cols: 40 },
+      value: `// Demo Program
+
   MOV(R0, 100);
 LABEL('START');
   ADD(R0, 1);
@@ -324,36 +343,48 @@ LABEL('START');
   methods: [
     function render() {
       var self = this;
-      this.start().
+
+      this.addClass(this.myClass()).
+      start().
         style({display: 'flex'}).
         start().
+//          start('h4').add('Assembly:').end().
+          add(this.COMPILE, this.STEP, this.RUN).
+          br().br().
           add(this.CODE).
         end().
         start().
+          style({padding: '0 12px'}).
+          start('h4').add('Registers:').end().
           start('table').
             call(function() {
               for ( var i = 0 ; i < 16 ; i++ ) {
                 this.start('tr').
                   start('th').add('R' + i).end().
-                  start('th').add(self['R' + i].shortName).end().
-                  start('td').add(self['R' + i]).end();
+                  start('td').add(self['R' + i]).end().
+                  start('th').add(self['R' + i].shortName).end();
                 if ( i == 7 ) i = 11; // Skip 8-11
               }
             }).
           end().
         end().
         start().
-          start('h3').add('Memory:').end().
-          forEach(this.mem$, function(m, i) {
-
-            this.start().
-              enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
-              add(i + ' ' + m.toString()).br().
-            end();
-          }).
+          start('h4').add('Memory:').end().
+          start('table').
+            start('tr').
+              start('th').add('Addr.').end().
+              start('th').add('Instr.').end().
+            end().
+            add(this.dynamic(function(mem) { mem.forEach((m, i) => {
+              this.start('tr').
+                enableClass(self.myClass('selected'), self.r15$.map(r15 => r15 === i)).
+                start('td').add(i).end().
+                start('td').add(m.toString()).end().
+              end();
+            })})).
+          end().
         end().
       end().
-      add(this.COMPILE, this.STEP, this.RUN).
       br()
       ;
     },

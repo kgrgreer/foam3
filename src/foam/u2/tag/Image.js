@@ -20,8 +20,6 @@ foam.CLASS({
   name: 'Image',
   extends: 'foam.u2.View',
 
-  imports: [ 'theme' ], //needed?
-
   requires: [
     'foam.net.HTTPRequest',
     'foam.u2.HTMLView'

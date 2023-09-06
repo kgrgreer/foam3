@@ -71,11 +71,13 @@ foam.CLASS({
           add('Class ').
           add(model.name).
         end().
-        start('b').
-          add(model.documentation).
-        end().
-        br().
-        br().
+        callIf(model.documentation, function() {
+          this.start('b').
+            add(model.documentation).
+            br().
+            br().
+          end();
+        }).
         start('div').
           forEach([cls].concat(exts).reverse(), function(e, i) {
             this.
@@ -170,8 +172,7 @@ foam.CLASS({
               titleFn: function() {
                   return this.E('h4').
                     add('Methods inherited from ').
-                    start(this.ClassLink, { data: id }).
-                    end()
+                    tag(this.ClassLink, { data: id });
               }.bind(this),
             }).
             end()

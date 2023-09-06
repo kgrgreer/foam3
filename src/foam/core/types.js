@@ -1004,7 +1004,10 @@ foam.CLASS({
 
       Object.defineProperty(proto, daoName, {
         get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+          var dao = this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+          if ( ! dao )
+            console.warn(`Missing Reference DAO: ${self.targetDAOKey} for property ${proto.cls_.id}.${self.name}`);
+          return dao;
         },
         configurable: true
       });
