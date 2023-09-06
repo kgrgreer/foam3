@@ -469,12 +469,8 @@ foam.CLASS({
 
         // For anonymous users, we shouldn't reinstall the language
         // because the user's language setting isn't meaningful.
-        // Anonymous users may not have access to the serviceProviderDAO
-        if ( self.__subContext__.serviceProviderDAO && self?.subject?.realUser ) {
-          var spid = await self.subject.realUser.spid$find;
-          if ( self.subject.realUser.id !== spid.anonymousUser ) {
-            await self.maybeReinstallLanguage(self.client);
-          }
+        if ( self?.subject?.realUser && ! ( await client.auth.isAnonymous() ) ) {
+          await self.maybeReinstallLanguage(self.client);
         }
 
         self.languageInstalled.resolve();
