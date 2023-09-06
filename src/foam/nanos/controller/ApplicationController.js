@@ -469,11 +469,8 @@ foam.CLASS({
 
         // For anonymous users, we shouldn't reinstall the language
         // because the user's language setting isn't meaningful.
-        if ( self?.subject?.realUser ) {
-          var spid = await self.subject.realUser.spid$find;
-          if ( self.subject.realUser.id !== spid.anonymousUser ) {
-            await self.maybeReinstallLanguage(self.client);
-          }
+        if ( self?.subject?.realUser && ! (await client.auth.isAnonymous()) ) {
+          await self.maybeReinstallLanguage(self.client);
         }
 
         self.languageInstalled.resolve();
