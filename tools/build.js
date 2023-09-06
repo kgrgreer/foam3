@@ -802,7 +802,7 @@ const ARGS = {
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
   R: [ 'deployment directories with resources to add to Jar file',
-    args => { RESOURCES += `${args}`; } ],
+    args => { RESOURCES += ( RESOURCES ? ',' : '' ) + args; } ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -823,7 +823,7 @@ const ARGS = {
     () => {
       RUN_JAR = true;
       JOURNAL_CONFIG += ',u';
-      RESOURCES      += ',u';
+      RESOURCES      += ( RESOURCES ? ',' : '' ) + 'u';
     } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],
