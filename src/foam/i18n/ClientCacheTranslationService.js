@@ -107,7 +107,6 @@ foam.CLASS({
     },
 
     function addLocale(l) {
-      l.locale = this.locale; // in case it is a locale variant like us-EN
       this.localeEntries[l.source] = l.target;
     },
 
