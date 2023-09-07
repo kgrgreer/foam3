@@ -107,6 +107,7 @@ foam.INTERFACE({
       `
     },
     {
+      documentation: 'Can this Capability be renewed at some time',
       name: 'isRenewable',
       class: 'Boolean',
       storageTransient: true,
@@ -120,6 +121,22 @@ foam.INTERFACE({
         isRenewableIsSet_ = true;
       }
       return isRenewable_;
+      `
+    },
+    {
+      documentation: 'Only true when currently in renewal or grace period',
+      name: 'isInRenewable',
+      class: 'Boolean',
+      storageTransient: true,
+      section: 'renewableSection',
+      javaGetter: `
+      if ( ! isInRenewableIsSet_ ) {
+        foam.core.X x = foam.core.XLocator.get();
+        isInRenewable_ = isInRenewalPeriod(x) ||
+                           isInGracePeriod(x);
+        isInRenewableIsSet_ = true;
+      }
+      return isInRenewable_;
       `
     },
     {

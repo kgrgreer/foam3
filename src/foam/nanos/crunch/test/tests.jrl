@@ -2,3 +2,8 @@ p({
   class:"foam.nanos.crunch.test.RenewableTest",
   id:"RenewableTest"
 })
+p({
+  "class":"foam.nanos.crunch.crunchtest.CapabilityReputTest",
+  "id":"CapabilityReputTest",
+  "documentation":"Test ucj reput when a prerequisite has been newly granted"
+})
