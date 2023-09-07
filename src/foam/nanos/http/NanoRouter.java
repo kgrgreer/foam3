@@ -16,6 +16,7 @@ import foam.nanos.NanoService;
 import foam.nanos.boot.NSpec;
 import foam.nanos.boot.NSpecAware;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.StdoutLogger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMWebAgent;
@@ -69,6 +70,7 @@ public class NanoRouter
     String[] urlParams  = path.split("/");
     String   serviceKey = urlParams[2];
     NSpec    spec       = (NSpec) nSpecDAO_.find(serviceKey);
+    Logger   logger     = StdoutLogger.instance();
 
     foam.core.ClassInfoImpl clsInfo = new foam.core.ClassInfoImpl();
     clsInfo.setObjClass(this.getClass());
@@ -91,12 +93,12 @@ public class NanoRouter
 
     try {
       if ( spec == null ) {
-        System.err.println("Service not found: " + serviceKey);
+        logger.warning("Service not found", serviceKey);
         resp.sendError(resp.SC_NOT_FOUND, "No service found for: "+serviceKey);
         return;
       }
       if ( ! spec.getEnabled() ) {
-        System.err.println("Service disabled: " + serviceKey);
+        logger.info("Service disabled", serviceKey);
         resp.sendError(resp.SC_NOT_FOUND, "No service found for: "+serviceKey);
         return;
       }
@@ -107,7 +109,7 @@ public class NanoRouter
       Object   service   = getX().get(serviceKey);
       WebAgent agent     = getWebAgent(spec, service);
       if ( agent == null ) {
-        System.err.println("No service found for: " + serviceKey);
+        logger.warning("Service not found", serviceKey);
         resp.sendError(resp.SC_NOT_FOUND, "No service found for: "+serviceKey);
       } else {
         X requestContext = getX()
@@ -128,8 +130,7 @@ public class NanoRouter
         agent.execute(requestContext);
       }
     } catch (Throwable t) {
-      System.err.println("Error serving: " + serviceKey + " " + path + " " + t.getMessage());
-      t.printStackTrace();
+      logger.error("Service", serviceKey, path, t);
       throw t;
     } finally {
       XLocator.set(null);
