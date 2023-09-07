@@ -253,12 +253,12 @@ p({
     * On create of UCJ in GRANTED state.
     * On update of UCJ data, now in GRANTED state.
     DAO is specified by the target capability daoKey or contextDAOFindKey.
-    NOTE: This rule has unexplained behaviour.  Restricting to GRANTED on the
-predicate fails some capability updates, even through the rule action fails fast if
-status is not GRANTED.
+    NOTE: The check for GRANTED state is in the rule action as change to
+    GRANTED may occur in rule SetUCJStatusOnPut. This dependeny exists
+    because the two rules are in the same ruleGroup, and the predicates
+    are tested before applying any rules.
   """
 })
-// desired: query: '( o !exists || o.status != n.status || o.isInRenewable != n.isInRenewable ) && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
 
 // rule to be re-ran if a non-core ucj rule moves the ucj to APPROVED status
 p({
