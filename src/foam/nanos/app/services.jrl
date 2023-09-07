@@ -10,15 +10,16 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"healthDAO",
   "serve":true,
-  "serviceScript":
-  """
+  "serviceScript": """
   return new foam.dao.EasyDAO.Builder(x)
     .setOf(foam.nanos.app.Health.getOwnClassInfo())
     .setCluster(false)
-    .build()
+    .setDecorator(new foam.nanos.app.HealthRemoveDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.app.Health.getOwnClassInfo()))
+      .build())
+    .build();
   """,
-  "client":
-  """
+  "client":"""
   {
     "of":"foam.nanos.app.Health"
   }
