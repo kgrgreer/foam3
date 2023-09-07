@@ -1143,12 +1143,7 @@ foam.CLASS({
     function start(spec, args, slot) {
       /* Create a new Element and add it as a child. Return the child. */
       var c = this.createChild_(spec, args);
-      /*
-      if ( this.content ) {
-        this.content.addChild_(c, this);
-      } else {
-        this.addChild_(c, this);
-      }*/
+
       this.add(c);
 
       if ( slot ) slot.set(c);
@@ -1184,7 +1179,7 @@ foam.CLASS({
 
     function add() {
       if ( this.content ) {
-        this.content.add(arguments, this);
+        this.content.add_(arguments, this);
         return this;
       }
       return this.add_(arguments, this);

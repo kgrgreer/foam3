@@ -128,6 +128,12 @@ function spawn(s) {
 }
 
 
+function comma(list, value) {
+  return list ? list + ',' + value : value;
+}
+
+
+exports.comma              = comma;
 exports.copyDir            = copyDir;
 exports.copyFile           = copyFile;
 exports.emptyDir           = emptyDir;
