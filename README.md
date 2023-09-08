@@ -118,7 +118,7 @@ to run the unit tests.
 
 ## NANOS
 To run NANOS, the FOAM Java Application Server, run:
-./tools/build.js -Jdemo
+`./tools/build.js -Jdemo`
 then connect to http://localhost:8080
 
 ## Design Patterns
