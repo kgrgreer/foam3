@@ -129,9 +129,8 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+var BUILD_DIR  = './build2', TARGET_DIR = './build2';
 // var BUILD_DIR  = './build', TARGET_DIR = './target';
-var BUILD_DIR  = './build', TARGET_DIR = './build';
 
 globalThis.foam = {
   POM: function (pom) {
