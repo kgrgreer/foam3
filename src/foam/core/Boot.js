@@ -196,7 +196,7 @@ foam.LIB({
 
         return cls;
       };
-      let l = localStorage && localStorage.getItem('localeLanguage');
+      let l = localStorage?.getItem('localeLanguage') || navigator?.locale || 'en';
       var locale_;
 
       // Update foam.lang and foam.variant whenever foam.locale is set
@@ -207,14 +207,14 @@ foam.LIB({
           get: function() { return locale_; },
           set: function(l) {
             locale_ = l;
-            foam.lang    = l.substring(0,2);
-            foam.variant = l.substring(3);
+            foam.language = l.substring(0,2);
+            foam.variant  = l.substring(3);
           },
           configurable: false
         }
       );
-      foam.locale = l || 'en';
-      foam.xmsg = globalThis.window && ( globalThis.window.location.href.indexOf('XMSG') != -1 );
+      foam.locale = l;
+      foam.xmsg   = globalThis.window && ( globalThis.window.location.href.indexOf('XMSG') != -1 );
     },
 
     /** Start second phase of bootstrap process. Called at end of Method.js. */

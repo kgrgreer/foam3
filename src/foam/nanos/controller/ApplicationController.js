@@ -448,7 +448,7 @@ foam.CLASS({
         globalThis.MLang = foam.mlang.Expressions.create();
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.language;
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.locale;
 
         await client.translationService.initLatch;
         self.installLanguage();

@@ -88,9 +88,8 @@ foam.CLASS({
       getter: function() {
         var msg = this.message_;
         if ( foam.Undefined.isInstance(msg) ) {
-          // Temporary fix until foam.lang and foam.language are unified
           if ( foam.locale )
-            msg = this.messageMap[foam.locale] || this.messageMap[foam.lang] || this.messsageMap[foam.language];
+            msg = this.messageMap[foam.locale] || this.messsageMap[foam.language];
 
           msg = msg || this.messageMap.en;
 
