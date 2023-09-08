@@ -55,8 +55,8 @@ tools by doing the following.
 
 ## Running Application Controller
 
-The FOAM Application Controller allows you to access components of your foam 
-app by using the browser & displaying it as a GUI. 
+The FOAM Application Controller allows you to access components of your foam
+app by using the browser & displaying it as a GUI.
 To access, run the following in the parent directory of foam3:
 
 * Build java (see above)
@@ -115,6 +115,11 @@ to run the unit tests.
 ## Demos
 - [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
 - FOAM by Example
+
+## NANOS
+To run NANOS, the FOAM Java Application Server, run:
+./tools/build.js -Jdemo
+then connect to http://localhost:8080
 
 ## Design Patterns
 The following course is not directly about FOAM, but covers material essential for fully understanding FOAM's design:
