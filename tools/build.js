@@ -373,8 +373,8 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
 
 task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
   deployDocuments();
-  deployJournals();
   deployResources();
+  deployJournals(); // should run last
 });
 
 
@@ -385,7 +385,7 @@ task('Copy additional files from RESOURCES directories to be added to Jar file.'
 
     var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
     if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_HOME);
+      copyDir(resDir, JOURNAL_OUT);
     }
   });
 });
