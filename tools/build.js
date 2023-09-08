@@ -294,6 +294,7 @@ function pom() {
 
   if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
+
   return Object.keys(pom).join(',');
 }
 
