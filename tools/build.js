@@ -129,8 +129,9 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './build2';
+// var BUILD_DIR  = './build2', TARGET_DIR = './build2';
 // var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build', TARGET_DIR = './build';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -294,7 +295,6 @@ function pom() {
 
   if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
-
   return Object.keys(pom).join(',');
 }
 
@@ -373,8 +373,8 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
 
 task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
   deployDocuments();
-  deployJournals();
   deployResources();
+  deployJournals(); // should run last
 });
 
 
@@ -385,7 +385,7 @@ task('Copy additional files from RESOURCES directories to be added to Jar file.'
 
     var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
     if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_HOME);
+      copyDir(resDir, JOURNAL_OUT);
     }
   });
 });
