@@ -196,7 +196,7 @@ foam.LIB({
 
         return cls;
       };
-      let l = localStorage?.getItem('localeLanguage') || navigator?.locale || 'en';
+      let l = localStorage?.getItem('localeLanguage') || foam.locale;
       var locale_;
 
       // Update foam.lang and foam.variant whenever foam.locale is set
