@@ -123,6 +123,7 @@
         return root;
       }
     },
+    locale: typeof navigator === 'undefined' ? 'en' : navigator.language,
     language: typeof navigator === 'undefined' ? 'en' : navigator.language.substring(0, 2),
     next$UID: (function() {
       /* Return a unique id. */
