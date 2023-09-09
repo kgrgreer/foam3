@@ -89,7 +89,7 @@ foam.CLASS({
         var msg = this.message_;
         if ( foam.Undefined.isInstance(msg) ) {
           if ( foam.locale )
-            msg = this.messageMap[foam.locale] || this.messsageMap[foam.language];
+            msg = this.messageMap[foam.locale] || this.messageMap[foam.language];
 
           msg = msg || this.messageMap.en;
 
