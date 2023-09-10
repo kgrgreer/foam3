@@ -42,7 +42,7 @@ foam.CLASS({
   extends: 'FObject',
 
   requires: [
-    'foam.core.internal.PropertySlot',
+    'foam.core.internal.PropertySlot'
   ],
 
   properties: [
