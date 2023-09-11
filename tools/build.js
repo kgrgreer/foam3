@@ -74,7 +74,7 @@ ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 
 const fs                = require('fs');
 const { join }          = require('path');
-const { copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
+const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -373,8 +373,8 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
 
 task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
   deployDocuments();
-  deployJournals();
   deployResources();
+  deployJournals(); // should run last
 });
 
 
@@ -385,7 +385,7 @@ task('Copy additional files from RESOURCES directories to be added to Jar file.'
 
     var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
     if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_HOME);
+      copyDir(resDir, JOURNAL_OUT);
     }
   });
 });
@@ -783,7 +783,7 @@ const ARGS = {
   J: [ 'JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging',
     args => {
 //      POM = POM ? POM + ',' args : args;
-      JOURNAL_CONFIG += `,${args}` ;
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, args) ;
     } ],
   k: [ 'Package up a deployment tarball.',
     () => { BUILD_ONLY = PACKAGE = true; } ],
@@ -802,17 +802,17 @@ const ARGS = {
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
   R: [ 'deployment directories with resources to add to Jar file',
-    args => { RESOURCES += ( RESOURCES ? ',' : '' ) + args; } ],
+    args => RESOURCES = comma(RESOURCES, args) ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
-    () => { DEBUG_SUSPEND = true; } ],
+    () => DEBUG_SUSPEND = true ],
   t: [ 'Run All tests.',
     () => {
       TEST = true;
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
-      JOURNAL_CONFIG += ',test';
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
@@ -822,8 +822,8 @@ const ARGS = {
   u: [ 'Run from jar. Intented for Production deployments.',
     () => {
       RUN_JAR = true;
-      JOURNAL_CONFIG += ',u';
-      RESOURCES      += ( RESOURCES ? ',' : '' ) + 'u';
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'u');
+      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],

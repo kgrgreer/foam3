@@ -717,6 +717,7 @@ foam.POM({
     { name: 'auth/email/EmailVerificationService',                                        flags: 'js|java' },
     { name: 'auth/email/ServerEmailVerificationService',                                  flags: 'js|java' },
     { name: 'auth/email/VerifyEmail',                                                     flags: 'js|java' },
-    { name: 'auth/email/VerificationCodeException',                                       flags: 'js|java' }
+    { name: 'auth/email/VerificationCodeException',                                       flags: 'js|java' },
+    { name: 'auth/email/wizard/EmailVerificationCodeLoader',                              flags: 'web' }
   ]
 });

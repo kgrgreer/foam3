@@ -89,7 +89,7 @@ foam.CLASS({
         var msg = this.message_;
         if ( foam.Undefined.isInstance(msg) ) {
           if ( foam.locale )
-            msg = this.messageMap[foam.locale] || this.messageMap[foam.lang];
+            msg = this.messageMap[foam.locale] || this.messageMap[foam.language];
 
           msg = msg || this.messageMap.en;
 
@@ -131,7 +131,7 @@ foam.CLASS({
         proto,
         this.name,
         {
-          get: function() { return this.cls_[name] },
+          get: function() { return this.cls_[name]; },
           configurable: false
         });
     }

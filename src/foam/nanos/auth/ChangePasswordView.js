@@ -111,7 +111,7 @@ foam.CLASS({
       documentation: 'instance of password model used for this view',
       factory: function() {
         return foam.lookup(this.modelOf)
-          .create({ isHorizontal: this.isHorizontal }, this);
+          .create({ isHorizontal: this.isHorizontal }, ctrl);
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' }
     },
