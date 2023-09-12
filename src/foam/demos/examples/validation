@@ -147,6 +147,13 @@ foam.CLASS({
 });
 
 var f = Flight.create();
+
+add(foam.u2.detail.SectionedDetailView.create({data: f}));
+
+f.errors_$.sub(() => {
+  log('Sub:', f.errors_ || 'no errors');
+});
+
 function validateFlight() {
   if ( f.errors_ ) {
     log('Errors: ', (f.errors_ || []).map(e => e[1]).join(', '));
