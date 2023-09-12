@@ -970,6 +970,7 @@ foam.POM({
     { name: "foam/comics/v2/userfeedback/UserFeedbackException",      flags: "js|java" },
     { name: "foam/layout/Section",                                    flags: "js" },
     { name: "foam/layout/SectionAxiom",                               flags: "js" },
+    { name: "foam/layout/PathPropertyHolder",                         flags: "js" },
     { name: "foam/u2/detail/AbstractSectionedDetailView",             flags: "web" },
     { name: "foam/u2/detail/ChoiceSectionDetailView",                 flags: "web" },
     { name: "foam/u2/detail/SectionView",                             flags: "web" },

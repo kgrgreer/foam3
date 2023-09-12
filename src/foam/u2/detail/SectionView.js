@@ -53,6 +53,12 @@ foam.CLASS({
         var of = data.cls_;
         var a = of.getAxiomByName(sectionName);
         return this.Section.create().fromSectionAxiom(a, of);
+      },
+      adapt: function(o, n) {
+        if ( ! this.Section.isInstance(n) && n ) {
+          return this.Section.create().fromSectionAxiom(n, this.data.cls_);
+        }
+        return n;
       }
     },
     {
@@ -169,13 +175,10 @@ foam.CLASS({
                     }
                   }
                   var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode != self.DisplayMode.HIDDEN);
-                  this.start(self.GUnit, { columns: p.gridColumns })
+                  this.start(self.GUnit, { columns$: p.gridColumns$ })
                     .show(shown$)
                     .add(shown$.map(shown => {
-                      return shown ? self.PropertyBorder.create({
-                        prop: p,
-                        data$: self.data$
-                      }) :
+                      return shown ? p.toPropertyView({ data$: self.data$ }, self.__subContext__) :
                       self.E();
                     }))
                   .end();
