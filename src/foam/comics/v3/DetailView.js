@@ -28,14 +28,13 @@ foam.CLASS({
   ],
 
   imports: [
-    'auth',
-    'ctrl',
+    'auth?',
     'config? as importedConfig',
     'currentMenu?',
     'currentControllerMode?',
+    'notify',
     'setControllerMode?',
-    'stack?',
-    'translationService'
+    'stack?'
   ],
 
   exports: [
@@ -93,6 +92,7 @@ foam.CLASS({
     },
     {
       name: 'primary',
+      documentation: `Axiom to store the primary action of the 'of' model`
       expression: function(config$of, data) {
         var allActions = config$of.getAxiomsByClass(foam.core.Action);
         var defaultAction = allActions.filter((a) => a.isDefault);
@@ -160,7 +160,13 @@ foam.CLASS({
         }
         return maybePromise;
       }
-    }
+    },
+    {
+      name: 'translationService',
+      factory: function() {
+        return this.context.translationService || foam.i18n.NullTranslationService.create({}, this); 
+      }
+    },
   ],
 
   methods: [
@@ -250,7 +256,7 @@ foam.CLASS({
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.UPDATE, data);
 
-            return this.auth.check(null, permissionString) && this.data;
+            return this.auth?.check(null, permissionString) && this.data;
           } catch(e) {
             return false;
           }
@@ -277,7 +283,7 @@ foam.CLASS({
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.CREATE, data);
 
-            return this.auth.check(null, permissionString);
+            return this.auth?.check(null, permissionString);
           } catch(e) {
             return false;
           }
@@ -322,14 +328,14 @@ foam.CLASS({
             if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
               var currentFeedback = o.userFeedback;
               while ( currentFeedback ) {
-                this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+                this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
                 currentFeedback = currentFeedback.next;
               }
             } else {
               var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
               var title = this.translationService.getTranslation(foam.locale, menuId + '.browseTitle', this.config.browseTitle);
 
-              this.ctrl.notify(title + " " + this.UPDATED, '', this.LogLevel.INFO, true);
+              this.notify(title + " " + this.UPDATED, '', this.LogLevel.INFO, true);
             }
           }
           this.cancelEdit();
@@ -339,13 +345,13 @@ foam.CLASS({
           if ( e.exception && e.exception.userFeedback  ) {
             var currentFeedback = e.exception.userFeedback;
             while ( currentFeedback ) {
-              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+              this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
 
               currentFeedback = currentFeedback.next;
             }
             this.cancelEdit();
           } else {
-            this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
+            this.notify(e.message, '', this.LogLevel.ERROR, true);
           }
         });
       }
@@ -368,7 +374,7 @@ foam.CLASS({
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.REMOVE, data);
 
-            return this.auth.check(null, permissionString);
+            return this.auth?.check(null, permissionString);
           } catch(e) {
             return false;
           }
