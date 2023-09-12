@@ -153,6 +153,7 @@ foam.CLASS({
             console.warn('Missing stack, can not push view');
             return;
           }
+          this.__subContext__.setControllerMode('view');
           (this.stack || this.__subContext__.stack).push(foam.u2.stack.StackBlock.create({
           view: {
             class: 'foam.comics.v2.DAOSummaryView',

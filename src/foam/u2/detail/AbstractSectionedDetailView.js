@@ -37,15 +37,13 @@ foam.CLASS({
         return this.hasOwnProperty('of') ? this.of.create(null, this) : null;
       },
       postSet: function(oldValue, newValue) {
-        this.of = newValue ? newValue.cls_ : undefined;
+        if ( newValue?.cls_ == oldValue?.cls_ ) return;
+        this.of = newValue?.cls_ || undefined;
       }
     },
     {
       class: 'Class',
-      name: 'of',
-      expression: function(data) {
-        return data && data.cls_;
-      }
+      name: 'of'
     },
     {
       class: 'Boolean',
@@ -95,6 +93,13 @@ foam.CLASS({
       of: 'foam.layout.Section',
       name: 'sections',
       factory: null,
+      adaptArrayElement: function(o, obj) {
+        if ( ! obj.of ) foam.assert(obj.of, `${obj.cls_.name} needs of in order to create transient sections`)
+        if ( ! obj.Section.isInstance(o) && o ) {
+          return obj.Section.create().fromSectionAxiom(o, obj.of);
+        }
+        return o;
+      },  
       expression: function(of, useSections, propertyWhitelist) {
         if ( ! of ) return [];
 
