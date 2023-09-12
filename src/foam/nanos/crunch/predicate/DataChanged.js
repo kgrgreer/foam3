@@ -34,8 +34,12 @@ foam.CLASS({
         if ( ! ( obj instanceof X ) ) return false;
         var x = (X) obj;
 
-        var oldData = (FObject) ((UserCapabilityJunction) x.get("OLD")).getData();
+        var old = (UserCapabilityJunction) x.get("OLD");
         var newData = (FObject) ((UserCapabilityJunction) x.get("NEW")).getData();
+
+        if ( old == null && newData != null ) return true;
+
+        var oldData = (FObject) old.getData();
 
         if ( oldData == null || newData == null ) {
           return oldData != null || newData != null;
