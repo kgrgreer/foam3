@@ -1050,7 +1050,6 @@ foam.POM({
     { name: "foam/dashboard/view/DashboardCitationView",              flags: "js" },
     { name: "foam/dashboard/view/DateRangeChoiceView",                flags: "js" },
     { name: "foam/nanos/fs/AgreementView",                            flags: "js" },
-    { name: "foam/nanos/crunch/ruler/UCJDataExpiryRule",              flags: "js|java" },
     { name: "foam/time/Hours",                                        flags: "js|java" },
     { name: "foam/time/TimeZone",                                     flags: "js|java" },
     { name: "foam/time/DayOfWeek",                                    flags: "js|java" },

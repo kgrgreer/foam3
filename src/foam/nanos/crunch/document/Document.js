@@ -8,7 +8,6 @@
 foam.CLASS({
   package: 'foam.nanos.crunch.document',
   name: 'Document',
-  extends: 'foam.nanos.crunch.RenewableData',
 
   documentation: 'document upload capability',
 
@@ -17,7 +16,8 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.nanos.crunch.Renewable'
   ],
 
   requires: ['foam.nanos.crunch.Capability'],
@@ -75,14 +75,49 @@ foam.CLASS({
       documentation: 'Whether the file is required or not.',
       value: true,
       hidden: true
+    },
+    // hide renewable properties
+    {
+      name: 'timeZone',
+      hidden: true
+    },
+    {
+      name: 'expiryPeriod',
+      hidden: true
+    },
+    {
+      name: 'expiryPeriodTimeUnit',
+      hidden: true
+    },
+    {
+      name: 'isRenewable',
+      hidden: true
+    },
+    {
+      name: 'renewalPeriod',
+      hidden: true
+    },
+    {
+      name: 'renewalPeriodTimeUnit',
+      hidden: true
+    },
+    {
+      name: 'gracePeriod',
+      hidden: true
+    },
+    {
+      name: 'gracePeriodTimeUnit',
+      hidden: true
+    },
+    {
+      name: 'lastNotification',
+      hidden: true
     }
   ],
   methods: [
     {
       name: 'validate',
       javaCode: `
-      super.validate(x);
-
       if ( getIsRequired() && getDocuments().length == 0 ) {
         throw new foam.core.ValidationException(IMAGE_REQUIRED);
       }

@@ -115,5 +115,5 @@ foam.CLASS({
         return toSummaryString;
       `
     }
-  ],
+  ]
 });

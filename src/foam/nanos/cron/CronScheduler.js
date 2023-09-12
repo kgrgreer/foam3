@@ -36,7 +36,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.NanoService',
-    'foam.nanos.medusa.ClusterConfigSupport',
     'foam.nanos.medusa.ReplayingInfo',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date',
