@@ -54,7 +54,7 @@ foam.CLASS({
       if ( this.delegate ) {
         const delegateResult = await this.delegate.load(o);
         if ( delegateResult ) {
-          return delegateResult.copyFrom(this.args);
+          return this.updateWithSpec ? delegateResult.copyFrom(this.args) : delegateResult;
         }
       }
 
