@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
   mixins: ['foam.u2.memento.Memorable'],
 
-  documentation: `Experimental new detail view that uses controller mode for a more seamless view/edit experience 
+  documentation: `Experimental new detail view that uses controller mode for a more seamless view/edit experience
   and offers more customisation while simplifying the code`,
 
   axioms: [
@@ -92,7 +92,7 @@ foam.CLASS({
     },
     {
       name: 'primary',
-      documentation: `Axiom to store the primary action of the 'of' model`
+      documentation: `Axiom to store the primary action of the 'of' model`,
       expression: function(config$of, data) {
         var allActions = config$of.getAxiomsByClass(foam.core.Action);
         var defaultAction = allActions.filter((a) => a.isDefault);
@@ -137,7 +137,7 @@ foam.CLASS({
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
           return id;
-      }, 
+      },
       postSet: function(_,n) {
         if ( ! this.idOfRecord && n ) this.idOfRecord = n;
       }
@@ -154,7 +154,7 @@ foam.CLASS({
       expression: function(data) {
         var self = this;
         var maybePromise = data?.toSummary() ?? '';
-        if ( maybePromise.then ) { 
+        if ( maybePromise.then ) {
           maybePromise.then( v => { self.viewTitle = v })
           return '';
         }
@@ -164,7 +164,7 @@ foam.CLASS({
     {
       name: 'translationService',
       factory: function() {
-        return this.context.translationService || foam.i18n.NullTranslationService.create({}, this); 
+        return this.context.translationService || foam.i18n.NullTranslationService.create({}, this);
       }
     },
   ],
@@ -175,8 +175,8 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
-      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { 
-        self.data = d; 
+      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
+        self.data = d;
         if ( self.currentControllerMode == 'edit' ) self.edit();
       });
     },
@@ -232,7 +232,7 @@ foam.CLASS({
               .end()
             .end()
             .start(config$viewBorder)
-              .start(viewView, { 
+              .start(viewView, {
                 data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
                 memento_$: self.memento_$
               })
