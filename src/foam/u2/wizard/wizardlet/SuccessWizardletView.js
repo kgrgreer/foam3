@@ -16,10 +16,13 @@ foam.CLASS({
     ^ {
       text-align: center;
       margin: 8rem 0;
-    }
-    ^centered {
-      margin: 1rem auto;
-
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 8rem 0;
+      height: 100%;
+      gap: 2rem;
     }
     ^image {
       width: 8rem;
@@ -49,11 +52,11 @@ foam.CLASS({
         .addClass(this.myClass())
         .startContext({ data: this })
           .start(this.IMAGE)
-            .addClass(this.myClass('image'), this.myClass('centered'))
+            .addClass(this.myClass('image'))
           .end()
         .endContext()
         .start()
-          .addClass('h300', this.myClass('centered'))
+          .addClass('h300')
           .add(this.message$)
         .end();
     }
