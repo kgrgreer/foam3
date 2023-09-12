@@ -314,6 +314,8 @@ foam.CLASS({
     }
   `,
 
+  imports: [ 'params' ],
+
   exports: [
     'globalScope',
     'query',
@@ -357,12 +359,10 @@ foam.CLASS({
       async function load(section) {
         self.testData += await fetch(section).then(response => response.text()).catch(x => { debugger; });
       }
-      await load('u2all');
-      await load('u2');
-//      await load('faq');
-//      await load('validation');
-//      await load('examples');
-//      await load('dao');
+
+      var modules = (this.params?.modules || 'u2all,u2,faq,validation,examples,dao').split(',');
+
+      for ( const m of modules ) await load(m);
 
       this.
         addClass(this.myClass()).
