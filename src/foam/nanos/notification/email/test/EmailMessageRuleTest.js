@@ -98,6 +98,7 @@ foam.CLASS({
     args.put("subject", subject_);
     args.put("args1", "args1");
     EmailMessage msg = new EmailMessage(x, user_.getId(), args);
+    msg.setTo(new String[] { "another@example.com" });
     msg = (EmailMessage) dao.put(msg);
     test(msg!=null, "EmailMessage created: "+msg.getId());
     msg = (EmailMessage) dao.find(msg.getId());
@@ -109,6 +110,7 @@ foam.CLASS({
     msg.setSubject(subjectResolved_);
     msg.setBody("Body: args1");
     msg.setUser(user_.getId());
+    msg.setTo(new String[] { "another@example.com" });
     args = new HashMap();
     args.put("template", template_.getId());
     msg.setTemplateArguments(args);

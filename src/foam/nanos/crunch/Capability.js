@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.nanos.crunch.edit.EditBehaviour',
     'foam.nanos.crunch.edit.NullEditBehaviour',
     'foam.nanos.logger.Logger',
+    'java.time.*',
     'java.util.Date',
     'java.util.List',
     'javax.security.auth.AuthPermission',

@@ -10,23 +10,25 @@
   name: 'UCJDataExpiryRule',
   extends: 'foam.nanos.ruler.Rule',
 
-  documentation: `Rule that set the expiry of ucj renewable data.`,
+  documentation: `Rule that set the expiry of ucj.`,
 
   javaImports: [
-    'foam.nanos.crunch.RenewableData',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Logger',
-    'java.time.LocalDate',
-    'java.time.ZoneId',
-    'java.util.Date',
+    'foam.nanos.crunch.UserCapabilityJunction'
   ],
 
   properties: [
     {
       class: 'Int',
-      name: 'expiredIn',
-      documentation: 'The number of days to expire the ucj. Default to 365 days (1 year)',
-      value: 365
+      name: 'expiryPeriod',
+      documentation: 'The number of time units to expire the ucj. Default to 1 year',
+      value: 1
+    },
+    {
+      documentation: 'Unit of expiredPeriod',
+      name: 'expiryPeriodTimeUnit',
+      class: 'Enum',
+      of: 'foam.time.TimeUnit',
+      value: 'YEAR',
     },
     {
       name: 'daoKey',
@@ -57,12 +59,10 @@
           name: 'applyAction',
           javaCode: `
             var ucj = (UserCapabilityJunction) obj;
-            ((RenewableData) ucj.getData())
-              .setExpiry(Date.from(LocalDate.now()
-                .plusDays(((UCJDataExpiryRule) rule).getExpiredIn())
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-              ));
+            var self = (UCJDataExpiryRule) rule;
+            ucj.setExpiryPeriod(self.getExpiryPeriod());
+            ucj.setExpiryPeriodTimeUnit(self.getExpiryPeriodTimeUnit());
+            ucj.setExpiry(ucj.calculateDate(x, null, ucj.getExpiryPeriod(), ucj.getExpiryPeriodTimeUnit()));
             ruler.stop();
           `
         }
