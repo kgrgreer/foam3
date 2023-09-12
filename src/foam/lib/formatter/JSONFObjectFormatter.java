@@ -465,7 +465,10 @@ public class JSONFObjectFormatter
       return;
     }
 
-    ClassInfo info = o.getClassInfo();
+    int       len      = builder().length(); // Safe pos in case we want to undo
+    int       props   = 0;
+
+    ClassInfo info   = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
 
@@ -483,9 +486,17 @@ public class JSONFObjectFormatter
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
       outputComma = maybeOutputProperty(o, prop, outputComma) || outputComma;
+      if ( outputComma ) props++;
     }
-    addInnerNewline();
-    append('}');
+
+    if ( props > 0 ||
+         outputDefaultClassNames_ ) {
+      addInnerNewline();
+      append('}');
+    } else {
+      // skip outputting just class:
+      builder().setLength(len);
+    }
   }
 
   public void output(PropertyInfo prop) {
