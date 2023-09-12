@@ -132,6 +132,7 @@ public class FScriptParser
       grammar.sym("PAREN"),
       grammar.sym("NEGATE"),
       grammar.sym("INSTANCE_OF"),
+      grammar.sym("CLASS_OF"),
       grammar.sym("UNARY"),
       grammar.sym("COMPARISON")
     )));
@@ -434,6 +435,23 @@ public class FScriptParser
       Object[] vals = (Object[]) val;
       ClassInfo cls = (ClassInfo) vals[1];
       IsInstanceOf pred = new IsInstanceOf();
+      pred.setTargetClass(cls);
+      if ( vals[0] != null ) {
+        pred.setPropExpr((Expr) vals[0]);
+      }
+      return pred;
+    });
+
+    grammar.addSymbol("CLASS_OF", new Seq2(0,4,
+      new Optional(grammar.sym("FIELD")),
+      Whitespace.instance(),
+      Literal.create("classof"),
+      Whitespace.instance(),
+      grammar.sym("CLASS_INFO")));
+      grammar.addAction("CLASS_OF", (val, x) -> {
+      Object[] vals = (Object[]) val;
+      ClassInfo cls = (ClassInfo) vals[1];
+      IsClassOf pred = new IsClassOf();
       pred.setTargetClass(cls);
       if ( vals[0] != null ) {
         pred.setPropExpr((Expr) vals[0]);

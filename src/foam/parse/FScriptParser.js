@@ -151,6 +151,7 @@ foam.CLASS({
             sym('paren'),
             sym('negate'),
             sym('instance_of'),
+            sym('class_of'),
             sym('unary'),
             sym('comparison')
           ),
@@ -292,6 +293,8 @@ foam.CLASS({
           class_info: seq(sym('word'), repeat(seq('.', sym('word')))),
 
           instance_of: seq(optional(sym('field')), optional(' '), literal('instanceof'), ' ', sym('class_info')),
+
+          class_of: seq(optional(sym('field')), optional(' '), literal('classof'), ' ', sym('class_info')),
 
           number: seq(optional(literal('-')), repeat(range('0', '9'), null, 1))
 //          number: repeat(range('0', '9'), null, 1)
@@ -462,6 +465,10 @@ foam.CLASS({
 
           instance_of: function(v) {
             return foam.mlang.predicate.IsInstanceOf.create({targetClass: v[4], propExpr: v[0]});
+          },
+
+          class_of: function(v) {
+            return foam.mlang.predicate.IsClassOf.create({targetClass: v[4], propExpr: v[0]});
           },
 
           class_info: function(v) {

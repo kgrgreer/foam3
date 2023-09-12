@@ -368,13 +368,28 @@ foam.CLASS({
     test("Toronto".equals(result.toString()), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }"+result.toString()+" class "+result.getClass().getName());
 
     sps.setString("address instanceof foam.nanos.auth.Address");
-    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instanceof foam.nanos.auth.Address");
 
     sps.setString("!(address instanceof foam.nanos.auth.User)");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "!(address instanceof foam.nanos.auth.User)");
 
     sps.setString("address instanceof foam.nanos.auth.Address");
-    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instanceof foam.nanos.auth.Address");
+
+    sps.setString("address classof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address classOf foam.nanos.auth.Address");
+
+    sps.setString("address classof foam.nanos.auth.PKAddress");
+    test(! ( ((Predicate) parser.parse(sps, px).value()).f(user)), "! address classOf foam.nanos.auth.PKAddress");
+
+    user.setAddress(new foam.nanos.auth.PKAddress.Builder(x).build());
+    sps.setString("address classof foam.nanos.auth.PKAddress");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address classOf foam.nanos.auth.PKAddress");
+
+    sps.setString("address classof foam.nanos.auth.Address");
+    test( ! ( ((Predicate) parser.parse(sps, px).value()).f(user)), "! address classOf foam.nanos.auth.Address");
+
+    user.setAddress(addr);
 
     sps.setString("SYSTEM_USER_ID==1");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "SYSTEM_USER_ID==1");

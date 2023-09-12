@@ -3865,6 +3865,12 @@ foam.CLASS({
 
   documentation: 'Predicate which checks if the class of object is a specified class.',
 
+  javaCode: `
+  public IsClassOf(foam.core.ClassInfo targetClass) {
+    setTargetClass(targetClass);
+  }
+  `,
+
   properties: [
     {
       class: 'Class',
@@ -3873,7 +3879,12 @@ foam.CLASS({
         class: 'foam.u2.view.StrategizerChoiceView',
         desiredModelId: 'foam.Class'
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      javaType: 'foam.mlang.Expr',
+      name: 'propExpr'
+   }
   ],
 
   methods: [
@@ -3883,7 +3894,7 @@ foam.CLASS({
         return obj && this.targetClass.id == obj.cls_.id;
       },
       javaCode: `
-        return getTargetClass().getObjClass() == obj.getClass();
+      return getPropExpr() == null ? getTargetClass().getObjClass() == obj.getClass() : getTargetClass().getObjClass() == getPropExpr().f(obj).getClass();
       `
     },
     function toString() {
