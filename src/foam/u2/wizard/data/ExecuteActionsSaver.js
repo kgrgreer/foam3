@@ -23,7 +23,11 @@
   methods: [
     async function save(data) {
       for ( var action of this.actions ) {
-        await data[action]?.code.call(data)
+        try {
+          await data[action]?.call(data, this.__subContext__)
+        } catch(e) {
+          console.log(e);
+        }
       }
       await this.delegate.save(data);
     }
