@@ -3891,7 +3891,7 @@ foam.CLASS({
     {
       name: 'f',
       code: function(obj) {
-        return obj && this.targetClass.id == obj.cls_.id;
+        return this.propExpr == null || this.propExpr == undefined ? this.targetClass.id == obj.cls_.id : this.targetClass.id == this.propExpr.f(obj).cls_.id;
       },
       javaCode: `
       return getPropExpr() == null ? getTargetClass().getObjClass() == obj.getClass() : getTargetClass().getObjClass() == getPropExpr().f(obj).getClass();
