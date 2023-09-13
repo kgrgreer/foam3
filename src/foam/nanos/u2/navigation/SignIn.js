@@ -161,8 +161,7 @@ foam.CLASS({
               data: {
                 class: 'foam.nanos.auth.email.EmailVerificationCode',
                 email: email,
-                userName: username,
-                showAction: true
+                userName: username
               }
             }]
           }, parent: this
