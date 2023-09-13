@@ -50,7 +50,11 @@ foam.CLASS({
       name: '_defaultSection',
       permissionRequired: true
     },
-    { name: 'verificationCodeSection' }
+    { name: 'verificationCodeSection' },
+    {
+      name: 'verificationCodeWizardSection',
+      properties: [ 'verificationCode' ]
+    }
   ],
 
   properties: [
