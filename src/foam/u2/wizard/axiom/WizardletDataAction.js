@@ -19,6 +19,12 @@ foam.CLASS({
       name: 'actionName'
     },
     {
+      name: 'label',
+      expression: function(name) {
+        return name;
+      }
+    },
+    {
       name: 'code',
       value: function (slot, X) {
         var wizardletData = slot.data.currentWizardlet.data;
