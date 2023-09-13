@@ -354,7 +354,7 @@ foam.CLASS({
         var ret;
 
         for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p = ps[i];
+          var p   = ps[i];
           var err = args[i].get();
           if ( err ) (ret || (ret = [])).push([p, err]);
         }
@@ -363,7 +363,7 @@ foam.CLASS({
       }
 
       return foam.core.ExpressionSlot.create({
-        obj: obj,
+        obj:  obj,
         code: validateObject,
         args: args
       });
