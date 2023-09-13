@@ -206,10 +206,12 @@ foam.CLASS({
       class: 'Int',
       name: 'age',
       validationPredicates: [
-        args: [ 'age' ],
-        query: 'age>=18&&age<=25',
-        errorString: 'Age must be between 18 and 25'
-        // errorMessage:
+        {
+          args: [ 'age' ],
+          query: 'age>=18&&age<=25',
+          errorString: 'Age must be between 18 and 25'
+          // errorMessage:
+        }
       ]
     }
   ]
