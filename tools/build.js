@@ -455,6 +455,10 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
+task('Call pmake to collect journals.', [], function genJournals() {
+  execSync(__dirname + `/pmake.js -makers="Journal" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+});
+
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
   execSync(`node foam3/tools/pmake.js -makers="Maven" -pom=${pom()}`, { stdio: 'inherit' });
   try {
