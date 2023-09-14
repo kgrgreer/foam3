@@ -394,8 +394,17 @@ foam.CLASS({
       name: 'preSelectedCannedQuery'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
+      name: 'createMenu',
+      documentation: 'Used as the menu to create a new object for this DAO',
+    },
+    // Legacy support
+    {
       class: 'String',
-      name: 'redirectMenu'
+      name: 'redirectMenu',
+      getter: function() { return this.createMenu; },
+      setter: function(v) { this.createMenu = v; }
     }
   ]
 });
