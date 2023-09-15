@@ -307,16 +307,15 @@ If empty then no permissions are required.`
       // No permission check if no auth service or no permissions to check.
       if ( ! x.auth ||
            ! ( this.availablePermissions.length || this.enabledPermissions.length ) ) {
-        call();
-        return;
+        return call();
       }
 
       var permissions = this.availablePermissions.concat(this.enabledPermissions);
 
       permissions = foam.Array.unique(permissions);
-      Promise.all(permissions.map(p => x.auth.check(null, p))).
+      return Promise.all(permissions.map(p => x.auth.check(null, p))).
         then(function(args) {
-          if ( args.every(b => b) ) call();
+          if ( args.every(b => b) ) return call();
         });
     },
 
@@ -327,7 +326,7 @@ If empty then no permissions are required.`
     function installInProto(proto) {
       var action = this;
       proto[this.name] = function(x) {
-        action.maybeCall(x || this.__context__, this);
+        return action.maybeCall(x || this.__context__, this);
       };
     }
   ]
