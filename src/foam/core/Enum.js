@@ -237,8 +237,6 @@ foam.CLASS({
             this.EnumValueAxiom.create({definition: def});
 
           v[i] = def;
-
-          used[def.ordinal] = def.name;
         }
 
         return v;
