@@ -113,7 +113,8 @@ foam.CLASS({
       width: 100%;
     }
     ^fullHeightBody {
-      height: auto;
+      height: 650px;
+      overflow-y: scroll;
     }
     ^fullHeightBody > *{
       flex-grow: 1;
