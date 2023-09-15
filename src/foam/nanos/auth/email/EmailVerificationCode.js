@@ -50,7 +50,11 @@ foam.CLASS({
       name: '_defaultSection',
       permissionRequired: true
     },
-    { name: 'verificationCodeSection' }
+    { name: 'verificationCodeSection' },
+    {
+      name: 'verificationCodeWizardSection',
+      properties: [ 'verificationCode' ]
+    }
   ],
 
   properties: [
@@ -118,11 +122,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showAction',
-      hidden: true
-    },
-    {
-      class: 'Boolean',
       name: 'signIn',
       value: false,
       hidden: true
@@ -172,9 +171,6 @@ foam.CLASS({
       name: 'submit',
       buttonStyle: 'PRIMARY',
       section: 'verificationCodeSection',
-      isAvailable: function(showAction) {
-        return showAction;
-      },
       isEnabled: function(codeVerified) {
         return codeVerified;
       },
@@ -207,8 +203,8 @@ foam.CLASS({
     {
       name: 'resendCode',
       section: 'verificationCodeSection',
-      isAvailable: function(codeVerified, showAction) {
-        return ! codeVerified && showAction;
+      isAvailable: function(codeVerified) {
+        return ! codeVerified;
       },
       buttonStyle: 'TEXT',
       code: async function() {
