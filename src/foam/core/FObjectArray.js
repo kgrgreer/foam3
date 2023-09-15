@@ -23,6 +23,29 @@ foam.CLASS({
   documentation: "A Property which contains an array of 'of' FObjects.",
 
   methods: [
+    function installInClass(c) {
+      this.SUPER(...arguments);
+      if ( ! this.indexProperty ) return;
+      let self = this;
+      let name = this.name;
+      c.installAxiom(foam.core.Map.create({
+        name: this.name + 'Map',
+        transient: true,
+        initObject: function(obj) {
+          obj[`${name}Map$`].mapFrom(obj[`${name}$`], function(obj) {
+            // Maybe make this function a property property so every Fobjectarray can define how it needs to be converted to a map
+            if ( ! self.indexProperty ) {
+              console.error('tried to map unindexable array');
+              return {};
+            }
+            let map = {};
+            // Replace . with - as . interferes with path property behaviour
+            obj.forEach(v => map[v[self.indexProperty].replaceAll('.', '-')] = v);
+            return map;
+          })
+        }
+      }, this))
+    },
     function installInProto(proto) {
       this.SUPER(proto);
       var self = this;
@@ -108,6 +131,11 @@ foam.CLASS({
       value: function(value, ctx, prop) {
         return foam.json.parse(value, prop.of, ctx);
       }
+    },
+    {
+      name: 'indexProperty',
+      class: 'String',
+      documentation: 'Property on the of model that can be used to index array entries. Only used by the view'
     }
   ]
 });
