@@ -10,6 +10,15 @@ foam.CLASS({
 
   documentation: 'Reset Password Base Model',
 
+  imports: [
+    'ctrl',
+    'loginView?'
+  ],
+
+  requires: [
+    'foam.u2.stack.StackBlock'
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Reset your password' },
     { name: 'INSTRUCTION', message: 'Create a new password for your account' },
@@ -93,8 +102,8 @@ foam.CLASS({
     {
       name: 'finalRedirectionCall',
       code: function() {
-        window.history.replaceState(null, null, window.location.origin);
-        location.reload();
+        this.ctrl.window.history.replaceState(null, null, this.ctrl.window.location.origin);
+        this.ctrl.stack.push(this.StackBlock.create({ view: { ...(this.ctrl.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUi' }, parent: this.ctrl }));
       }
     }
   ]
