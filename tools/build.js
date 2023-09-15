@@ -515,8 +515,9 @@ task('Copy required files to APP_HOME deployment directory.', [], function deplo
 });
 
 
+task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
+  setenv();
 
-task('Start NANOS application server.', [], function startNanos() {
   if ( RUN_JAR ) {
     var OPT_ARGS = ``;
 
@@ -707,7 +708,7 @@ buildEnv({
 });
 
 
-function setenv() {
+task('Set environmental variables needed by Java.', [], function setenv() {
   if ( TEST || BENCHMARK ) {
     rmdir(APP_HOME);
     JAVA_OPTS = '-enableassertions ' + JAVA_OPTS;
@@ -725,7 +726,7 @@ function setenv() {
     fi
   fi
   */
-}
+});
 
 
 function usage() {
@@ -914,7 +915,7 @@ task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs
 
 task(
 'Build everything specified by flags.',
-[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
+[ 'clean', 'setenv', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
   processArgs();
   setenv();
