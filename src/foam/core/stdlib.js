@@ -1254,19 +1254,19 @@ foam.LIB({
      * The provided factory function creates the class.
      */
     function registerClassFactory(m, thunk) {
-      var pkg = foam.package.ensurePackage(globalThis, m.package);
-      var tmp;
+      var value;
 
       Object.defineProperty(
-        pkg,
+        foam.package.ensurePackage(globalThis, m.package),
         m.name, {
           configurable: true,
           get: function() {
-            if ( tmp ) return tmp;
+            if ( value ) return value;
 
-            tmp = thunk();
+            value = thunk();
+            thunk = undefined;
 
-            return tmp;
+            return value;
           }
         }
       );
