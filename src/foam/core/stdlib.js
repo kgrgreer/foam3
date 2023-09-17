@@ -1264,7 +1264,7 @@ foam.LIB({
             if ( value ) return value;
 
             value = thunk();
-            thunk = undefined;
+            if ( value ) thunk = undefined;
 
             return value;
           }
