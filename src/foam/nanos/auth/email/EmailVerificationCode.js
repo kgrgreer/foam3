@@ -29,6 +29,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'emailVerificationService',
+    'loginSuccess',
     'pushMenu'
   ],
 
@@ -183,7 +184,10 @@ foam.CLASS({
           err = error;
         }
         if ( success ) {
-          if ( this.signIn ) await this.ctrl.reloadClient();
+          if ( this.signIn ) {
+            await this.ctrl.reloadClient();
+            this.loginSuccess = true;
+          }
 
           this.ctrl.add(this.NotificationMessage.create({
             message: this.SUCCESS_MSG,
