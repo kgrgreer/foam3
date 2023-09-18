@@ -494,9 +494,14 @@ task('Package files into a TAR archive', [], function buildTar() {
 
 
 task('Delete runtime journals.', [], function deleteRuntimeJournals() {
+  info('Runtime journals deleted.');
+  emptyDir(JOURNAL_HOME);
+});
+
+
+task('Delete runtime journals if -j/DELETE_RUNTIME_JOURNALS specified..', [ 'deleteRuntimeJournals' ], function maybeDeleteRuntimeJournals() {
   if ( DELETE_RUNTIME_JOURNALS ) {
-    info('Runtime journals deleted.');
-    emptyDir(JOURNAL_HOME);
+    deleteRuntimeJournals();
   }
 });
 
@@ -903,9 +908,6 @@ task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs
       error('Error occurred while stopping Nanos server.');
     }
   }
-
-  deleteRuntimeJournals();
-  deleteRuntimeLogs();
 });
 
 
@@ -921,6 +923,8 @@ function all() {
   setenv();
 
   stopNanos();
+  maybeDeleteRuntimeJournals();
+  deleteRuntimeLogs();
 
   if ( STOP_ONLY ) quit(0);
 
