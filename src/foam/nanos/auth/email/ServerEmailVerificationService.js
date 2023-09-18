@@ -88,12 +88,12 @@ foam.CLASS({
       name: 'verifyByCode',
       javaCode: `
         User user = findUser(x, identifier, userName);
-        sendCode(x, user, emailTemplate);
+        return sendCode(x, user, emailTemplate);
       `
     },
     {
       name: 'sendCode',
-      type: 'Void',
+      type: 'String',
       args: 'Context x, User user, String emailTemplate',
       javaCode: `
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
@@ -122,6 +122,7 @@ foam.CLASS({
         args.put("template", emailTemplate);
         message.setTemplateArguments(args);
         ((DAO) getX().get("emailMessageDAO")).put(message);
+        return user.getEmail();
       `
     },
     {

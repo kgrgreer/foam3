@@ -215,10 +215,10 @@ foam.CLASS({
         this.report('^resend-verification');
         if ( this.codeVerified ) return;
         try {
-          await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
+          var userEmail = await this.emailVerificationService.verifyByCode(null, this.email, this.userName, '');
           this.ctrl.add(this.NotificationMessage.create({
             message: this.VERIFICATION_EMAIL_TITLE,
-            description: this.VERIFICATION_EMAIL+ ' ' + this.email,
+            description: this.VERIFICATION_EMAIL+ ' ' + userEmail,
             type: this.LogLevel.INFO
           }));
           return true;
