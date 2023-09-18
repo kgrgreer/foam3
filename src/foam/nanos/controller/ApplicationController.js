@@ -548,7 +548,7 @@ foam.CLASS({
 
     async function reloadClient() {
       this.clientReloading.pub();
-      var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
+      var newClient = await this.ClientBuilder.create({}, this.originalSubContext).promise;
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
