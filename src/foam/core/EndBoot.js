@@ -63,10 +63,14 @@ foam.CLASS({
         }
 
         if ( o.__copyFrom__ ) {
-          var path = o.__copyFrom__.split('.');
-          var parent = foam;
-          for ( var i = 0 ; i < path.length ; i++ )
-            parent = parent[path[i]];
+          try {
+            var path   = o.__copyFrom__.split('.');
+            var parent = globalThis;
+            for ( var i = 0 ; i < path.length ; i++ )
+              parent = parent[path[i]];
+          } catch (x) {
+            console.error('UNKNOWN __copyFrom__:', o.__copyFrom__);
+          }
           return parent.clone().copyFrom(o);
         }
 
