@@ -70,6 +70,7 @@ foam.CLASS({
   properties: [
     {
       name: 'citationView',
+      class: 'foam.u2.ViewSpec',
       factory: function() {
         return this.DashboardCitationView;
       }
@@ -159,8 +160,7 @@ foam.CLASS({
             })
             .forEach(currentValues, function(obj) {
               e.start().addClass('table-row')
-                .start({
-                  class: self.citationView,
+                .start(self.citationView, {
                   data: obj
                 })
                .end();
