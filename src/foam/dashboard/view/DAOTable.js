@@ -40,7 +40,7 @@ foam.CLASS({
       padding-left: 20px;
       padding-right: 20px;
     }
-    ^ div.table-row:last-child div {
+    ^ div.table-row:last-child > div {
       border-bottom: none;
     }
     ^ .view-more button {
