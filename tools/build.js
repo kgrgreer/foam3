@@ -499,18 +499,9 @@ task('Delete runtime journals.', [], function deleteRuntimeJournals() {
 });
 
 
-task('Delete runtime journals if -j/DELETE_RUNTIME_JOURNALS specified..', [ 'deleteRuntimeJournals' ], function maybeDeleteRuntimeJournals() {
-  if ( DELETE_RUNTIME_JOURNALS ) {
-    deleteRuntimeJournals();
-  }
-});
-
-
 task('Delete runtime logs.', [], function deleteRuntimeLogs() {
-  if ( DELETE_RUNTIME_LOGS ) {
-    info('Runtime logs deleted.');
-    emptyDir(LOG_HOME);
-  }
+  info('Runtime logs deleted.');
+  emptyDir(LOG_HOME);
 });
 
 
@@ -890,7 +881,7 @@ function statusNanos() {
 }
 
 
-task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs' ], function stopNanos() {
+task('Stop running NANOS server.', [], function stopNanos() {
   console.log('Stopping Nanos server...');
 
   var pid = readFromPidFile();
@@ -917,14 +908,16 @@ task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs
 
 task(
 'Build everything specified by flags.',
-[ 'clean', 'setenv', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
+[ 'clean', 'setenv', 'deleteRuntimeJournals', 'deleteRuntimeLogs', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
   processArgs();
   setenv();
 
   stopNanos();
-  maybeDeleteRuntimeJournals();
-  deleteRuntimeLogs();
+
+  if ( DELETE_RUNTIME_JOURNALS ) deleteRuntimeJournals();
+
+  if ( DELETE_RUNTIME_LOGS     ) deleteRuntimeLogs();
 
   if ( STOP_ONLY ) quit(0);
 
