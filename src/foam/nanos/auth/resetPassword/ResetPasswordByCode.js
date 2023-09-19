@@ -35,6 +35,10 @@ foam.CLASS({
     },
     {
       name: 'resetPasswordSection'
+    },
+    {
+      name: 'resetPasswordWizardSection',
+      properties: [ 'newPassword', 'confirmationPassword' ]
     }
   ],
 
@@ -172,9 +176,6 @@ foam.CLASS({
       section: 'resetPasswordSection',
       isEnabled: function (errors_) {
         return ! errors_;
-      },
-      isAvailable: function (showSubmitAction) {
-        return showSubmitAction
       },
       code: async function (X) {
         try {
