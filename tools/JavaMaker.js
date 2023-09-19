@@ -47,7 +47,7 @@ exports.end = function() {
       jCount++;
     }
   } catch(x) {
-    console.error('[Java] Model error:', x);
+    // console.error('[Java] Model error:', x);
   }
 
   console.log(`[Java]: ${jCount}/${mCount} models processed.`);
