@@ -21,23 +21,27 @@ foam.CLASS({
   ],
 
   properties: [
-    foam.nanos.theme.Theme.NAME.clone().copyFrom({
+    {
+      __copyFrom__: 'foam.nanos.theme.Theme.NAME',
       visibility: 'HIDDEN'
-    }),
-    foam.nanos.theme.Theme.TOP_NAV_LOGO.clone().copyFrom({
+    },
+    {
+      __copyFrom__: 'foam.nanos.theme.Theme.TOP_NAV_LOGO',
       view: { class: 'foam.nanos.theme.customisation.ThemeImageUploadView' },
       section: 'topNavBarLogo'
-    }),
-    foam.nanos.theme.Theme.LOGIN_IMAGE.clone().copyFrom({
+    },
+    {
+      __copyFrom__: 'foam.nanos.theme.Theme.LOGIN_IMAGE',
       view: { class: 'foam.nanos.theme.customisation.ThemeImageUploadView' },
       section: 'loginPageImage'
-    }),
-    foam.nanos.theme.Theme.EXTERNAL_COMMUNICATION_IMAGE.clone().copyFrom({
+    },
+    {
+      __copyFrom__: 'foam.nanos.theme.Theme.EXTERNAL_COMMUNICATION_IMAGE',
       view: {
         class: 'foam.nanos.theme.customisation.ThemeImageUploadView',
         supportedFormats: { 'image/png': 'PNG' }
       },
       section: 'externalImage'
-    })
+    }
   ]
 });
