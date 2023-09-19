@@ -11,8 +11,9 @@ foam.CLASS({
   documentation: 'Reset Password Base Model',
 
   imports: [
-    'ctrl',
-    'loginView?'
+    'window',
+    'loginView?',
+    'stack'
   ],
 
   requires: [
@@ -102,8 +103,8 @@ foam.CLASS({
     {
       name: 'finalRedirectionCall',
       code: function() {
-        this.ctrl.window.history.replaceState(null, null, this.ctrl.window.location.origin);
-        this.ctrl.stack.push(this.StackBlock.create({ view: { ...(this.ctrl.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUi' }, parent: this.ctrl }));
+        this.window.history.replaceState(null, null, this.window.location.origin);
+        this.stack.push(this.StackBlock.create({ view: { ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: this }));
       }
     }
   ]
