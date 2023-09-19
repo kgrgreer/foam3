@@ -60,6 +60,11 @@ foam.CLASS({
       }
     }
   `,
+
+  imports: [
+    'notify'
+  ],
+  
   properties: [
     {
       name: 'data',
@@ -101,13 +106,13 @@ foam.CLASS({
     {
       name: 'copyText',
       code: function(_, X) {
+        var self = this;
         let res = this.copy(this.data);
         res.then(() => {
           this.showTooltip_ = true;
           setTimeout(() => { this.showTooltip_ = false; }, 1000);
         }, e => {
-          console.error(e);
-          X.notify(e.message);
+          self.notify(e.message, '', self.LogLevel.ERROR, true);
         });
       }
     }
