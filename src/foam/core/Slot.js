@@ -673,7 +673,7 @@ foam.CLASS({
       name: 'promise',
       postSet: function(_, n) {
         n && n.then(function(v) {
-          if ( n === this.promise ) this.value = v;
+           if ( n === this.promise && this.value != v ) this.value = v;
         }.bind(this));
       }
     }
