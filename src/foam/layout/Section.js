@@ -81,6 +81,10 @@ foam.CLASS({
       name: 'help'
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'view'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.Property',
       name: 'properties'

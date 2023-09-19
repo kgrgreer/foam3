@@ -75,7 +75,7 @@ foam.CLASS({
           });
 
           return self.E()
-            .add(arraySlot.map((visibilities) => {
+            .add(arraySlot.map(visibilities => {
               self.visibleSections = sections.filter((s, i) => visibilities[i]);
               return this.E()
                 .startContext({ controllerMode: 'EDIT' })
@@ -103,10 +103,12 @@ foam.CLASS({
                   .end()
                 .endContext()
                 .add(this.slot(function(currentIndex) {
+                  let section = self.visibleSections[currentIndex];
                   return this.E()
-                    .tag(self.SectionView, {
+                    .tag(section.view, {
                       data$: self.data$,
-                      section: this.visibleSections[this.currentIndex],
+                      of$: self.of$,
+                      section: section,
                       showTitle: true
                     });
                 }));
