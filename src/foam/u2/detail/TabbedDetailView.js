@@ -90,14 +90,16 @@ foam.CLASS({
                       var tab = foam.core.SimpleSlot.create({}, self);
                       this
                         .start(self.Tab, { label$: title$ || self.defaultSectionLabel }, tab)
-                         .call(function() {
-                           this.tag(self.SectionView, {
-                             data$: self.data$,
-                             section: s,
-                             showTitle: false,
-                             selected$: tab.value.selected$
-                           });
-                         })
+                          // .call(function() {
+                            // this
+                            .tag(s.view, {
+                              data$: self.data$,
+                              of$: self.of$,
+                              section: s,
+                              showTitle: false,
+                              selected$: tab.value.selected$
+                            })
+                          // })
                        .end();
                     }
                   })
