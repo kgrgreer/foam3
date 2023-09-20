@@ -83,6 +83,11 @@ foam.CLASS({
       name: 'help'
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'view',
+      value: { class: 'foam.u2.detail.SectionView' }
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.Property',
       name: 'properties'

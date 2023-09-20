@@ -126,7 +126,8 @@ foam.CLASS({
       }
     },
     [ 'javaJSONParser', 'foam.lib.json.UnknownFObjectParser.instance()' ],
-    [ 'displayWidth', 80 ]
+    [ 'displayWidth', 80 ],
+    [ 'copyValueFrom', () =>  false]
     /*
     TODO: do on the Java side also.
     [ 'toJSON', function(value) {
