@@ -1018,7 +1018,7 @@ foam.CLASS({
     },
 
     function el_() {
-      return this.getElementById(this.id);
+      return this.elId_ || ( this.elId_ = this.getElementById(this.id) );
     },
 
     function findChildForEvent(e) {
@@ -1350,7 +1350,7 @@ foam.CLASS({
           self.addClass_(lastValue, v);
           lastValue = v;
         };
-        this.onDetach(cls.sub(l));
+        this.onDetach(cls.dedup().sub(l));
         l();
       } else if ( typeof cls === 'string' ) {
         this.addClass_(null, cls);
@@ -1377,7 +1377,7 @@ foam.CLASS({
         var self = this;
         var value = enabled;
         var l = function() { self.enableClass(cls, value.get(), opt_negate); };
-        this.onDetach(value.sub(l));
+        this.onDetach(value.dedup().sub(l));
         l();
       } else {
         enabled = negate(enabled, opt_negate);
@@ -1875,7 +1875,7 @@ foam.CLASS({
       /* Set an attribute based off of a dynamic Value. */
       var self = this;
       var l = function() { self.setAttribute(key, value.get()); };
-      this.onDetach(value.sub(l));
+      this.onDetach(value.dedup().sub(l));
       l();
     },
 
@@ -1883,7 +1883,7 @@ foam.CLASS({
       /* Set a CSS style based off of a dynamic Value. */
       var self = this;
       var l = function(value) { self.style_(key, v.get()); };
-      this.onDetach(v.sub(l));
+      this.onDetach(v.dedup().sub(l));
       l();
     },
 
@@ -1933,7 +1933,7 @@ foam.CLASS({
       }
 
       var e = nextE();
-      var l = this.framed(function() {
+      var l = function() {
         if ( self.state !== self.LOADED ) {
           return;
         }
@@ -1959,9 +1959,9 @@ foam.CLASS({
         self.insertBefore(e2, tmp);
         tmp.remove();
         e = e2;
-      });
+      };
 
-      this.onDetach(slot.sub(l));
+      this.onDetach(slot.framed().sub(l));
 
       return e;
     },
