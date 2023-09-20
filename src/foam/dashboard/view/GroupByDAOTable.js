@@ -79,8 +79,7 @@
             .forEach(Array.from(this.groupingsCount.entries()), function(grouping) {
               e.start()
                 .addClass('table-row')
-                .start({
-                  class: self.citationView,
+                .start(self.citationView, {
                   data: grouping,
                   groupByPropertyName: self.groupByPropertyName,
                   redirectMenu: self.redirectMenu,
