@@ -21,8 +21,10 @@ foam.CLASS({
 
   requires: [
     'foam.core.internal.And',
-    'foam.core.internal.Or',
+    'foam.core.internal.FramedSlot',
+    'foam.core.internal.IndexedSlot',
     'foam.core.internal.Not',
+    'foam.core.internal.Or',
     'foam.core.internal.SubSlot'
   ],
 
@@ -81,6 +83,25 @@ foam.CLASS({
           name:   name
         });
       }
+    },
+
+    /**
+      Create an IndexedSlot for an indexed item from this Slot's value. If this Slot's
+      value changes, then the IndexedSlot becomes the Slot for
+      the new value's indexed value instead. Useful for creating
+      Slot paths without having to rebuild whenever a value
+      along the chain changes. Unlike dot(), which works with FObjects, at() works
+      with maps and arrays.
+    */
+    function at(index) {
+      return this.IndexedSlot.create({
+        parent: this,
+        name:   index
+      });
+    },
+
+    function framed() {
+      return this.FramedSlot.create({delegate: this});
     },
 
     // TODO: remove when all code ported
@@ -575,7 +596,9 @@ foam.CLASS({
         this.cleanup_ = null;
       }
     },
-    function invalidate() { this.clearProperty('value'); }
+    function invalidate() {
+      this.clearProperty('value');
+    }
   ]
 });
 
@@ -673,7 +696,7 @@ foam.CLASS({
       name: 'promise',
       postSet: function(_, n) {
         n && n.then(function(v) {
-          if ( n === this.promise ) this.value = v;
+          if ( n === this.promise && this.value != v ) this.value = v;
         }.bind(this));
       }
     }
@@ -773,6 +796,56 @@ foam.CLASS({
 
 
 foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'FramedSlot',
+  extends: 'foam.core.SimpleSlot',
+
+  documentation: `Create a Slot where updates are delayed until the next animation frame, and are
+  then ignored if the value didn't actually update.`,
+
+  properties: [
+    {
+      name: 'sub_'
+    },
+    {
+      name: 'delegate',
+      postSet: function(o, n) {
+        if ( this.sub_ ) this.sub_.detach();
+
+        if ( foam.core.Slot.isInstance(n) ) {
+          this.sub_ = n.sub(this.update);
+          if ( o ) this.update();
+        }
+      }
+    }
+  ],
+
+  methods: [
+    function set(v) {
+      this.value = v;
+      this.delegate.set(v);
+    },
+
+    function framed() {
+      return this; // already framed, so just return this
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        var newValue = this.delegate.get();
+        if ( ! foam.util.equals(this.value, newValue) )
+          this.value = newValue;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
   package: 'foam.core',
   name: 'ProxyExpressionSlot',
   extends: 'foam.core.ProxySlot',
@@ -813,6 +886,33 @@ foam.CLASS({
         code: this.code,
         obj:  this.obj
       })
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'IndexedSlot',
+  extends: 'foam.core.internal.SubSlot',
+
+  documentation: 'A slot for accessing an element of a parent slot. Works for both arrays and maps.',
+
+  methods: [
+    function set(value) {
+      var o = this.parent.get() || [];
+      var a = foam.util.clone(o);
+
+      a[this.name] = value;
+      this.parent.set(a);
+    },
+    function toString() {
+      return 'IndexedSlot(' + this.parent + '[' + this.name + '])';
+    }
+  ],
+  listeners: [
+    function parentChange(s) {
+      this.value = this.get();
     }
   ]
 });
