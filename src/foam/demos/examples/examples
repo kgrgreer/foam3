@@ -1454,6 +1454,39 @@ p2.name = 'Ringo';
 log("  After setting p2.name, s:", s.get());
 
 
+##  IndexedSlot
+Create a slot for an element of an array
+--
+foam.CLASS({
+  name: 'IndexedSlotTest',
+  properties: [
+    {
+      class: 'FObjectArray',
+      name: 'array',
+      of: 'foam.core.StringHolder',
+      factory: function() {
+        return [
+          foam.core.StringHolder.create({value: 'str1'}),
+          foam.core.StringHolder.create({value: 'str2'}),
+          foam.core.StringHolder.create({value: 'str3'})
+        ];
+      }
+    }
+  ]
+});
+
+var test = IndexedSlotTest.create();
+var is = foam.core.internal.IndexedSlot.create({parent: test.array$, name: 1});
+
+is.sub(function() { log('IndexedSlot update:', is.get().value, test.array[1].value); });
+is.set(foam.core.StringHolder.create({value: 'str2value2'}));
+log('Time 1:', is.get().value);
+is.set(foam.core.StringHolder.create({value: 'str2value3'}));
+log('Time 2:', is.get().value);
+log('Values:', test.array.map(a => a.value).join(','));
+log('at:', test.array$.get()[1].value, test.array$.at(1).get().value);
+
+
 ##  Subscription nesting
 Subscribe using valueSub() of the slot, automatically resubscribed as the value changes
 --

@@ -62,6 +62,18 @@ foam.CLASS({
           return m.create(o, this);
         }
 
+        if ( o.__copyFrom__ ) {
+          try {
+            var path   = o.__copyFrom__.split('.');
+            var parent = globalThis;
+            for ( var i = 0 ; i < path.length ; i++ )
+              parent = parent[path[i]];
+          } catch (x) {
+            console.error('UNKNOWN __copyFrom__:', o.__copyFrom__);
+          }
+          return parent.clone().copyFrom(o);
+        }
+
         return foam.core.Property.isInstance(o) ? o : foam.core.Property.create(o);
       }
     },
@@ -278,10 +290,10 @@ foam.CLASS({
   };
 
   // List of unused Models in the system.
-  foam.USED      = {};
-  foam.UNUSED    = {};
+  foam.USED   = {};
+  foam.UNUSED = {};
 
-  var CLASS = foam.CLASS;
+  var CLASS   = foam.CLASS;
 
   foam.CLASS = function(m) {
     if ( ! m.source && globalThis.document && globalThis.document.currentScript ) {
@@ -313,6 +325,7 @@ foam.CLASS({
 
     if ( ! m.flags && foam.currentFlags ) m.flags = foam.currentFlags;
 
+    // TODO: I don't think the memoize0 is needed since registerClassFactory already does that
     var f = foam.Function.memoize0(function() {
       delete foam.UNUSED[m.id];
       try {

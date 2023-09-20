@@ -46,7 +46,9 @@ exports.end = function() {
     if ( foam.maybeLookup(key).model_.targetJava(X) ) {
       jCount++;
     }
-  } catch(x) {}
+  } catch(x) {
+    // console.error('[Java] Model error:', x);
+  }
 
   console.log(`[Java]: ${jCount}/${mCount} models processed.`);
 }

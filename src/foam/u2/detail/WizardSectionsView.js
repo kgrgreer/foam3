@@ -128,10 +128,12 @@ foam.CLASS({
       self
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
+            let section = sections[currentIndex];
             return self.E()
-              .tag(self.sectionView, {
-                section: sections[currentIndex],
-                data$: self.data$
+              .tag(section.view, {
+                section: section,
+                data$: self.data$,
+                of$: self.of$
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })

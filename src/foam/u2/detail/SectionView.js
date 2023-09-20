@@ -56,9 +56,17 @@ foam.CLASS({
       },
       adapt: function(o, n) {
         if ( ! this.Section.isInstance(n) && n ) {
-          return this.Section.create().fromSectionAxiom(n, this.data.cls_);
+          foam.assert(this.of, `${this.cls_.name} needs of in order to create transient sections`)
+          return this.Section.create().fromSectionAxiom(n, this.of);
         }
         return n;
+      }
+    },
+    {
+      name: 'of',
+      class: 'Class',
+      expression: function(data) {
+        return data?.cls_;
       }
     },
     {

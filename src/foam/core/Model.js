@@ -22,10 +22,6 @@ foam.CLASS({
 
   documentation: 'A Class Model (description).',
 
-  imports: [
-    'translationService'
-  ],
-
   properties: [
     {
       name: 'id',
@@ -66,7 +62,6 @@ foam.CLASS({
     {
       name: 'label',
       expression: function(name, id) {
-        var name_ = ctrl.__subContext__.translationService.getTranslation(foam.locale, id, name);
         return foam.String.labelize(name_);
       }
     },

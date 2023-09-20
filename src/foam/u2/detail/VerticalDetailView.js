@@ -50,8 +50,9 @@ foam.CLASS({
               .forEach(sections, function(s) {
                 var slot = s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$).map(function(isAvailable) {
                   if ( ! isAvailable ) return self.E().style({ display: 'none' });
-                  return self.E().enableClass(self.myClass('centered'), self.centered$).start(self.SectionView, {
+                  return self.E().enableClass(self.myClass('centered'), self.centered$).start(s.view, {
                     data$: self.data$,
+                    of$: self.of$,
                     section: s,
                     config: self.config,
                     showTitle: self.showTitle
