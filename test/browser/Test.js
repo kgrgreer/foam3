@@ -244,7 +244,7 @@ function foo(/* Int */ i, /* String */ s, /* FObject */ o) {
 }
 
 console.log(foam.Function.argNames(foo));
-console.log(foam.Function.args(foo));
+console.log(foam.Function.argsStr(foo));
 
 foam.CLASS({
   name: 'Test',
@@ -278,10 +278,12 @@ foam.CLASS({
   name: 'RefTest',
 });
 foam.CLASS({
+  name: 'RefTestRefinement1',
   refines: 'RefTest',
 });
 console.log('1: ', RefTest.create());
 foam.CLASS({
+  name: 'RefTestRefinement2',
   refines: 'RefTest',
   properties: ['f1']
 });
