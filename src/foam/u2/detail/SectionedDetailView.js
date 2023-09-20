@@ -69,8 +69,9 @@ foam.CLASS({
                   .end()
                   .start(self.borders[s.name] || self.CardBorder)
                     .addClass('inner-card')
-                    .tag(self.SectionView, {
+                    .tag(s.view, {
                       data$: self.data$,
+                      of$: self.of$,
                       section: s,
                       showTitle: false
                     })

@@ -30,6 +30,11 @@ foam.CLASS({
       name: 'properties'
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'view',
+      value: { class: 'foam.u2.detail.SectionView' }
+    },
+    {
       name: 'help'
     },
     {

@@ -94,8 +94,8 @@ foam.CLASS({
       name: 'sections',
       factory: null,
       adaptArrayElement: function(o, obj) {
-        foam.assert(obj.of, `${obj.cls_.name} needs of in order to create transient sections`)
         if ( ! obj.Section.isInstance(o) && o ) {
+          foam.assert(obj.of, `${obj.cls_.name} needs of in order to create transient sections`)
           return obj.Section.create().fromSectionAxiom(o, obj.of);
         }
         return o;
