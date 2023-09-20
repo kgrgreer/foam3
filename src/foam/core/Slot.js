@@ -21,6 +21,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.internal.And',
+    'foam.core.internal.DedupSlot',
     'foam.core.internal.FramedSlot',
     'foam.core.internal.IndexedSlot',
     'foam.core.internal.Not',
@@ -102,6 +103,10 @@ foam.CLASS({
 
     function framed() {
       return this.FramedSlot.create({delegate: this});
+    },
+
+    function dedup() {
+      return this.DedupSlot.create({delegate: this});
     },
 
     // TODO: remove when all code ported
@@ -814,7 +819,7 @@ foam.CLASS({
 
         if ( foam.core.Slot.isInstance(n) ) {
           this.sub_ = n.sub(this.update);
-          if ( o ) this.update();
+          this.updateNow();
         }
       }
     }
@@ -828,6 +833,10 @@ foam.CLASS({
 
     function framed() {
       return this; // already framed, so just return this
+    },
+
+    function dedup() {
+      return this; // already framed, so just return this
     }
   ],
 
@@ -835,11 +844,40 @@ foam.CLASS({
     {
       name: 'update',
       isFramed: true,
+      code: function() { this.updateNow(); }
+    },
+    {
+      name: 'updateNow',
       code: function() {
         var newValue = this.delegate.get();
-        if ( ! foam.util.equals(this.value, newValue) )
+        if ( ! foam.util.equals(this.value, newValue) ) {
           this.value = newValue;
+        } else {
+        //  console.log('avoid stale notify');
+        }
       }
+    }
+  ]
+});
+
+
+
+foam.CLASS({
+  package: 'foam.core.internal',
+  name: 'DedupSlot',
+  extends: 'foam.core.internal.FramedSlot',
+
+  methods: [
+    function framed() {
+      return this.delegate.framed();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: false,
+      code: function() { this.updateNow(); }
     }
   ]
 });
