@@ -18,7 +18,7 @@ foam.CLASS({
   name: 'PyBranch',
   extends: 'foam.u2.Element',
 
-//  requires: [ 'PyBranch' ],
+  requires: [ 'PyBranch' ],
 
   imports: [ 'maxLvl' ],
 
