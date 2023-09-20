@@ -109,7 +109,12 @@ foam.CLASS({
   // TODO: store the proxy node instead of element_ so it can be properly detached
 
   properties: [
-    'slot',
+    {
+      name: 'slot',
+      preSet: function(o, n) {
+        return n.framed();
+      }
+    },
     {
       name: 'node',
       factory: function() { return foam.u2.Text.create({text: 'filler'}, this); }
@@ -136,7 +141,6 @@ foam.CLASS({
   listeners: [
     {
       name: 'update',
-//      isFramed: true,
       code: function() {
         var update_ = val => {
           var n;
@@ -1023,7 +1027,7 @@ foam.CLASS({
           self.addClass_(lastValue, v);
           lastValue = v;
         };
-        this.onDetach(cls.sub(l));
+        this.onDetach(cls.dedup().sub(l));
         l();
       } else if ( typeof cls === 'string' ) {
         this.addClass_(null, cls);
@@ -1050,7 +1054,7 @@ foam.CLASS({
         var self = this;
         var value = enabled;
         var l = function() { self.enableClass(cls, value.get(), opt_negate); };
-        this.onDetach(value.sub(l));
+        this.onDetach(value.dedup().sub(l));
         l();
       } else {
         enabled = negate(enabled, opt_negate);
@@ -1412,7 +1416,7 @@ foam.CLASS({
       /* Set an attribute based off of a dynamic Value. */
       var self = this;
       var l = function() { self.setAttribute(key, value.get()); };
-      this.onDetach(value.sub(l));
+      this.onDetach(value.dedup().sub(l));
       l();
     },
 
@@ -1420,7 +1424,7 @@ foam.CLASS({
       /* Set a CSS style based off of a dynamic Value. */
       var self = this;
       var l = function(value) { self.style_(key, v.get()); };
-      this.onDetach(v.sub(l));
+      this.onDetach(v.dedup().sub(l));
       l();
     },
 
@@ -2334,14 +2338,13 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.data$.sub(this.update);
+      this.data$.framed().sub(this.update);
     }
   ],
 
   listeners: [
     {
       name: 'update',
-      isFramed: true,
       code: function() {
         // TODO: add validation
         this.element_.innerHTML = this.data;
