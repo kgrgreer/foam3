@@ -103,7 +103,7 @@ foam.CLASS({
       name: 'finalRedirectionCall',
       code: function() {
         this.window.history.replaceState(null, null, this.window.location.origin);
-        this.pushMenu("shop-rates-sequence-menu");
+        this.pushMenu("sign-in");
       }
     }
   ]
