@@ -431,7 +431,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PHONE_NUMBER_REQUIRED', message: 'Required' },
-    { name: 'INVALID_PHONE_NUMBER',  message: 'Valid phone number required' }
+    { name: 'INVALID_PHONE_NUMBER',  message: 'Valid phone number required' },
+    { name: 'INVALID_CHARACTER',     message: 'Phone Number can only contain numbers' }
   ],
 
   properties: [
@@ -442,6 +443,13 @@ foam.CLASS({
       factory: function() {
         var self = this;
         return [
+          {
+            args: [this.name],
+            query:
+              this.name + ' !exists||' +
+              this.name + '~' + foam.nanos.auth.Phone.ALPHA_CHAR_CHECK,
+            errorString: this.INVALID_CHARACTER
+          },
           {
             args: [this.name],
             query:
