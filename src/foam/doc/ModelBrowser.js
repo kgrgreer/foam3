@@ -79,6 +79,7 @@ foam.CLASS({
     function render() {
       var self = this;
       var pkg  = '';
+      var currentCount;
 
       this.addClass(this.myClass()).
       start('h3').add('Model:').end().
@@ -87,12 +88,24 @@ foam.CLASS({
         this.forEach(package, function (m) {
           if ( m.package != pkg ) {
             pkg = m.package;
-            this.start('div').addClass(self.myClass('package')).add(m.package).end();
+            this.start('div').
+              show(currentCount = foam.core.IntHolder.create().value$).
+              addClass(self.myClass('package')).
+              add(m.package, currentCount).
+            end();
           }
+          let count = currentCount;
+
+          var shown = self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1).dedup().map(r => {
+            var d = r ? 1 : -1;
+            count.set(count.get() + d);
+            return r;
+          });
+
           this.start().
             addClass(self.myClass('row')).
-            enableClass(self.myClass('selected'), self.data$.map(d => d === m)).
-            show(self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1)).
+            enableClass(self.myClass('selected'), self.data$.map(d => d === m )).
+            show(shown).
             on('click',     () => self.hardSelection = self.data = m).
             on('mouseover', () => self.data = m).
             on('mouseout',  () => self.data = self.hardSelection).
