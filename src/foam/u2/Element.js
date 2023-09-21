@@ -2404,6 +2404,22 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'PhoneNumberViewRefinement',
+  refines: 'foam.core.PhoneNumber',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'tel' }
+      }
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.u2',
