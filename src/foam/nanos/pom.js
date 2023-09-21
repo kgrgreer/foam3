@@ -585,7 +585,6 @@ foam.POM({
     { name: "crunch/lite/Capable",                                                        flags: "js|java" },
     { name: "crunch/lite/CapableDAO",                                                     flags: "js|java" },
     { name: "crunch/lite/CapableAdapterDAO",                                              flags: "js|java" },
-    { name: "crunch/lite/CapableObjectDataProperties",                                    flags: "js" },
     { name: "crunch/lite/CapableObjectData",                                              flags: "js" },
     { name: "crunch/lite/CapableCompatibleCapability",                                    flags: "js|java" },
     { name: "crunch/lite/CapabilityRefinement",                                           flags: "js" },
