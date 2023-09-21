@@ -63,10 +63,15 @@
       foam.main();
     },
     main: function() {
+      // main() only runs when this foam.js file is added to an html page via
+      // <script> tag. The <script> tag may contain project attribute to specify
+      // which pom files to be loaded on startup.
+      //
+      // If the project pom is provided then pom.js files relative to the html
+      // file will be loaded otherwise it will by default load pom.js that
+      // resided in the same directory as the foam.js file.
       var poms = (document.currentScript.getAttribute("project") || globalThis.FOAM_ROOT + 'pom').split(',');
 
-      // Reset foam cwd when loading project pom so that it can be configured
-      // relative to the html file.
       foam.cwd = '';
       poms.forEach(pom => {
         foam.require(pom, false, true);
