@@ -28,9 +28,6 @@ foam.CLASS({
       flex-direction: column;
       gap: 24px;
     }
-    ^ .h600 {
-      margin-bottom: 1.5rem;
-    }
   `,
 
   properties: [

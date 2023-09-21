@@ -37,6 +37,9 @@ foam.CLASS({
     ^actionDiv {
       justify-content: end;
     }
+    ^grid {
+      grid-gap: 16px 12px;
+    }
   `,
 
   properties: [
@@ -168,7 +171,7 @@ foam.CLASS({
               }
             })
             .add(this.slot(function(loadLatch) {
-              var view = this.E().start(self.Grid).style({ 'grid-gap': '16px 12px' });
+              var view = this.E().start(self.Grid).addClass(self.myClass('grid'));
 
               if ( loadLatch ) {
                 view.forEach(section.properties, function(p, index) {
