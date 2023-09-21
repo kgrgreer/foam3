@@ -63,7 +63,7 @@
       foam.main();
     },
     main: function() {
-      var poms = (document.currentScript.getAttribute("project") || 'pom').split(',');
+      var poms = (document.currentScript.getAttribute("project") || globalThis.FOAM_ROOT + 'pom').split(',');
 
       // Reset foam cwd when loading project pom so that it can be configured
       // relative to the html file.
