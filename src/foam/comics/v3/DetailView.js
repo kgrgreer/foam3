@@ -92,7 +92,7 @@ foam.CLASS({
     },
     {
       name: 'primary',
-      documentation: `Axiom to store the primary action of the 'of' model`
+      documentation: `Axiom to store the primary action of the 'of' model`,
       expression: function(config$of, data) {
         var allActions = config$of.getAxiomsByClass(foam.core.Action);
         var defaultAction = allActions.filter((a) => a.isDefault);
