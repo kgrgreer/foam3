@@ -47,12 +47,12 @@ foam.CLASS({
       const sup = this.SUPER;
       this.initContainerWidth();
       this.add(this.dynamic(function(containerWidth) {
-        // Hack to make dynamic behave properly in U2
-        this.removeClass(self.myClass('row'));
-        if ( containerWidth.minWidth <= foam.u2.layout.DisplayWidth.XS.minWidth ) {
+        let isRow = containerWidth?.minWidth <= foam.u2.layout.DisplayWidth.XS.minWidth;
+        this.enableClass(self.myClass('row'), ! isRow);
+        if ( isRow ) {
           sup.call(self);
         } else {
-          this.addClass(self.myClass('row'))
+          this
           .start()
             .add(self.prop.columnLabel).show(self.prop.columnLabel)
             .addClass(self.myClass('label'))
@@ -70,7 +70,6 @@ foam.CLASS({
           })).addClass(this.myClass('body'));
         }
       }));
-      // this
     }
   ]
 });
