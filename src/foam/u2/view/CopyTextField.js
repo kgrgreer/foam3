@@ -112,7 +112,7 @@ foam.CLASS({
           this.showTooltip_ = true;
           setTimeout(() => { this.showTooltip_ = false; }, 1000);
         }, e => {
-          self.notify(e.message, '', self.LogLevel.ERROR, true);
+          self.notify(e.message, '', foam.log.LogLevel.ERROR, true);
         });
       }
     }
