@@ -78,8 +78,10 @@ foam.CLASS({
       lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
       next = sched.getNextScheduledTime(x, last);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
-      long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
-      test ( diff == 1, "DayOfMonth - next month "+diff );
+      // If nextTime month changes DST/EST, then month delta will be zero as it's an hour short of a full month.
+      // long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      long diff = Math.abs(nextTime.getMonthValue() - lastTime.getMonthValue());
+      test ( diff == 1 || diff == 11, "DayOfMonth - next month "+diff );
 
       CronSchedule.HOURS.clear(sched);
       sched.setMinute(-1);
