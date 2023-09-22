@@ -259,6 +259,8 @@
     },
     {
       name: 'formatPrecision',
+      args: 'Long amount',
+      type: 'String',
       documentation: `
         Given a number, display it as a currency using the appropriate
         precision. Use a period '.' for the decimal place and do not
@@ -266,21 +268,24 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return (amount/Math.pow(10, this.precision)).toFixed(this.precision);
+        return this.translateAmount(amount).toFixed(this.precision);
       },
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          class: 'foam.core.UnitValue',
-          name: 'amount'
-        }
-      ],
-      type: 'String',
       javaCode: `
-        return String.format("%." + getPrecision() + "f", amount/Math.pow(10, getPrecision()));
+        return String.format("%." + getPrecision() + "f", translateAmount(amount));
+      `
+    },
+    {
+      name: 'translateAmount',
+      args: 'Long amount',
+      type: 'Double',
+      documentation: `
+        Convert from internal long format to that of the currency
+      `,
+      code: function(amount) {
+        return amount / Math.pow(10, this.precision);
+      },
+      javaCode: `
+        return Double.valueOf(amount) / (double) Math.pow(10, getPrecision());
       `
     }
   ]
