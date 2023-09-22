@@ -40,10 +40,24 @@ foam.CLASS({
         return parent.toString().replace('.', '$');
       }
     },
-    'config'
+    {
+      class: 'Map',
+      name: 'config',
+      postSet: function(_,n) {
+        if ( Object.keys(n).length ) {
+          this.copyKeys();
+        }
+      }
+    }
   ],
   methods: [
-
+    function copyKeys() {
+      for ( var key in this.config ) {
+        if ( this.config.hasOwnProperty(key) ) {
+          this[key] = this.config[key];
+        }
+      }
+    },
     function createVisibilityFor(data$, controllerMode$) {
       let self = this;
       return this.ProxySlot.create({
@@ -67,7 +81,7 @@ foam.CLASS({
       this.gridColumns$ = realProp.gridColumns$;
       // Override any data/data$ provided with appropriate replacements for real propertys
       let data$ = args?.data?.slot(this.parentSlotPath) || (args?.data$ || X.data$).dot(this.parentSlotPath);
-      X = X.createSubContext({ data: data$ })
+      X = X.createSubContext({ data: data$, objData: data$ })
       return realProp.createElFromSpec_({ class: 'foam.u2.PropertyBorder', prop: realProp }, {...args, data$: data$}, X);
     }
   ]

@@ -150,7 +150,7 @@ foam.CLASS({
           if ( foam.String.isInstance(p) ) {
             if ( p.indexOf('.') == -1 )
               return cls.getAxiomByName(p);
-            return this.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name });
+            return this.PathPropertyHolder.create({ name: p.split('.').pop(), value: p });
           }
           if ( p.name?.indexOf('.') != -1 ) {
             let p2 = Object.assign({}, p);
