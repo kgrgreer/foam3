@@ -81,7 +81,7 @@ foam.CLASS({
       // If nextTime month changes DST/EST, then month delta will be zero as it's an hour short of a full month.
       // long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
       long diff = Math.abs(nextTime.getMonthValue() - lastTime.getMonthValue());
-      test ( diff == 1, "DayOfMonth - next month "+diff );
+      test ( diff == 1 || diff == 11, "DayOfMonth - next month "+diff );
 
       CronSchedule.HOURS.clear(sched);
       sched.setMinute(-1);
