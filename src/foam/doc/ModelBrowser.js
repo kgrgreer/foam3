@@ -78,21 +78,23 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      var pkg  = '';
-      var currentCount;
 
       this.addClass(this.myClass()).
       start('h3').add('Model:').end().
       start().addClass(self.myClass('list')).
       add(this.dynamic(function(package) {
+        var pkg  = '';
+        var currentCount;
+
         this.forEach(package, function (m) {
           if ( m.package != pkg ) {
             pkg = m.package;
-            this.start('div').
-              show(currentCount = foam.core.IntHolder.create().value$).
-              addClass(self.myClass('package')).
-              add(m.package, currentCount).
-            end();
+            currentCount = foam.core.IntHolder.create().value$;
+            this.start('div')
+              .show(currentCount)
+              .addClass(self.myClass('package'))
+              .add(m.package)
+            .end();
           }
           let count = currentCount;
 
