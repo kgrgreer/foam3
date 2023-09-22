@@ -36,7 +36,7 @@ foam.CLASS({
         this.start().
           addClass(self.myClass('row')).
           enableClass(self.myClass('selected'), self.data$.map(d => d === p)).
-          show(self.query$.map(q => q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
+          show(self.query$.map(q => p === '--All--' || q === '' || p.toLowerCase().indexOf(q.toLowerCase()) != -1)).
           on('click',     () => self.hardSelection = self.data = p).
           on('mouseover', () => self.data = p).
           on('mouseout',  () => self.data = self.hardSelection).
