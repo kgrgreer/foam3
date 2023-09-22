@@ -275,7 +275,7 @@
       `
     },
     {
-      name: 'translateAmount',
+      name: 'floatAmount',
       args: 'Long amount',
       type: 'Double',
       documentation: `
