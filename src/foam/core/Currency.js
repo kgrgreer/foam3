@@ -268,10 +268,10 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return this.translateAmount(amount).toFixed(this.precision);
+        return this.floatAmount(amount).toFixed(this.precision);
       },
       javaCode: `
-        return String.format("%." + getPrecision() + "f", translateAmount(amount));
+        return String.format("%." + getPrecision() + "f", floatAmount(amount));
       `
     },
     {
