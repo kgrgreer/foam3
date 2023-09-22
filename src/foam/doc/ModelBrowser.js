@@ -82,39 +82,29 @@ foam.CLASS({
       this.addClass(this.myClass()).
       start('h3').add('Model:').end().
       start().addClass(self.myClass('list')).
-      add(this.dynamic(function(package) {
+      add(this.dynamic(function(package, query) {
+        query = query.toLowerCase();
         var pkg  = '';
-        var currentCount;
 
         this.forEach(package, function (m) {
+          if ( query && m.id.toLowerCase().indexOf(query) == -1 ) return;
           if ( m.package != pkg ) {
             pkg = m.package;
-            currentCount = foam.core.IntHolder.create().value$;
             this.start('div')
-              .show(currentCount)
               .addClass(self.myClass('package'))
               .add(m.package)
             .end();
           }
-          let count = currentCount;
-
-          var shown = self.query$.map(q => q === '' || m.id.toLowerCase().indexOf(q.toLowerCase()) != -1).dedup().map(r => {
-            var d = r ? 1 : -1;
-            count.set(count.get() + d);
-            return r;
-          });
 
           this.start().
             addClass(self.myClass('row')).
             enableClass(self.myClass('selected'), self.data$.map(d => d === m )).
-            show(shown).
             on('click',     () => self.hardSelection = self.data = m).
             on('mouseover', () => self.data = m).
             on('mouseout',  () => self.data = self.hardSelection).
             add(m.name).
           end();
-        }
-        );
+        });
       }));
     }
   ]
