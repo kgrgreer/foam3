@@ -6,12 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.crunch.lite',
-  name: 'CapableObjectData',
-
-  imports: [
-    'auth?',
-    'crunchController?'
-  ],
+  name: 'CapableObjectDataProperties',
 
   properties: [
     {
@@ -51,7 +46,20 @@ foam.CLASS({
       section: 'capabilityInformation',
       visibility: 'HIDDEN'
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.nanos.crunch.lite',
+  name: 'CapableObjectData',
+
+  imports: [
+    'auth?',
+    'crunchController?'
   ],
+
+  mixins: [ 'foam.nanos.crunch.lite.CapableObjectDataProperties' ],
 
   methods: [
     {
@@ -71,9 +79,7 @@ foam.CLASS({
       name: 'getCapablePayloadDAO',
       flags: ['web'],
       code: function () {
-        return this.CapableAdapterDAO.create({
-          capable: this
-        });
+        return this.CapableAdapterDAO.create({capable: this});
       }
     }
   ],
