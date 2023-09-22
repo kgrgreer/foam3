@@ -13,10 +13,10 @@ foam.CLASS({
     .temperature-converter {
       margin-top: 50px;
     }
-    .temperature-converter, ^.temperature-converter ^input {
+    .temperature-converter, .temperature-converter input {
       cursor: default;
     }
-    .temperature-converter ^input {
+    .temperature-converter input {
       width: 5em;
       text-align: right;
       border: none;
@@ -26,11 +26,11 @@ foam.CLASS({
       vertical-align: baseline;
       padding-right: .4em;
     }
-    .temperature-converter ^.arrows {
+    .temperature-converter .arrows {
       font-size: 2.0rem;
       vertical-align: middle;
     }
-    .temperature-converter ^input:focus {
+    .temperature-converter input:focus {
       outline: none;
     }
     .celsius-wrap,
