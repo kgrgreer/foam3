@@ -94,7 +94,7 @@ foam.CLASS({
     {
       name: 'data',
       postSet: function(_,n) {
-        if ( ! n ) 
+        if ( ! n )
           this.clearInput();
       }
     },
@@ -205,7 +205,7 @@ foam.CLASS({
     },
 
     function clearInput() {
-      if ( this.richText && this.richText.el_() ) 
+      if ( this.richText && this.richText.el_() )
         this.richText.el_().innerHTML = '';
     },
 
@@ -524,8 +524,6 @@ foam.CLASS({
   name: 'RichTextValidator',
   extends: 'foam.u2.DefaultValidator',
 
-  axioms: [ foam.pattern.Singleton.create() ],
-
   imports: [ 'document' ],
 
   requires: [ 'foam.u2.Element' ],
@@ -661,7 +659,7 @@ foam.CLASS({
       for ( var i = 0; i < frame.contentDocument.body.childNodes.length; i++ ) {
         copyNodes(sanitizedContent, frame.contentDocument.body.childNodes[i]);
       }
-      
+
       this.document.body.removeChild(frame);
       return sanitizedContent;
     }
