@@ -101,7 +101,7 @@ foam.CLASS({
 
 [ 3, 5, 7, 8 ].forEach(i => { const max = Math.pow(2, i);
 foam.CLASS({
-  package: 'foam.demos.m0',
+  package: 'foam.core',
   name: 'Immed' + i,
   extends: 'foam.core.Property',
 
@@ -118,6 +118,21 @@ foam.CLASS({
   ]
 })});
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'LowRegister',
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are low.'
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'HighRegister',
+  extends: 'foam.core.Int',
+  description: 'A marker class so we can easily tell which registers are high.'
+});
+
+
 
 var INSTRS = [
 //  [ 'MOV',   16, [ 'dst', 'src' ],    function() { this.dst.set(this.m0, this.src); } ],
@@ -128,16 +143,16 @@ var INSTRS = [
   [ 'B',     0, [ 'addr' ], function() { this.m0.r15 = this.addr.addr; } ],
 ];
 
-/*
 var INSTRS2 =  [
-  [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
+//  [ 'ADC',  'Add with carry', '0100000101', 'Lm/Ls', 'Ld' ],
 
-  [ 'ADD',  '', '0001100', 'Lm', 'Ln', 'Ld',
+  [ 'ADD',  'L = L + L', 'L m,L n,L d', '0001100,m,n,d', 16,
   function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.m.get(this.m0)); } ],
 
-  [ 'ADD',  '', '0001110', 'immed3', 'Ln', 'Ld',
+  [ 'ADD',  '', 'Immed3 i,L n,L d', '0001110,immed3,n,d', 16,
     function() { this.d.set(this.m0, this.d.get(this.m0) + this.n.get(this.m0) + this.immed); } ],
 
+/*
   [ 'ADD',  '', '00110', 'Ld', 'immed8',
     function() { this.d.set(this.m0, this.d.get(this.m0) + this.immed); } ],
 
@@ -236,8 +251,9 @@ var INSTRS2 =  [
   [ 'TST',   'Logical Test bits', '0100001000', 'Lm', 'Ld/Ln' ],
   [ 'UXTB',  '', '1011001011', 'Lm', 'Ld' ],
   [ 'UXTH',  '', '1011001010', 'Lm', 'Ld' ]
+  */
 ];
-*/
+
 
 // ARITHMETIC: ADD ADC SUB SBC NEG MUL
 // CMP CMN
@@ -262,21 +278,58 @@ INSTRS.forEach(i => foam.CLASS({
   ]
 }));
 
+const I2S = [];
 
-foam.CLASS({
-  package: 'foam.core',
-  name: 'LowRegister',
-  extends: 'foam.core.Int',
-  description: 'A marker class so we can easily tell which registers are low.'
+INSTRS2.forEach(a => {
+  var [ name, desc, props, pattern, size, fn ] = a;
+  props = props.split(',');
+  var clsName = name + props.map(p => p.split(' ')[0]).join('');
+
+  var model = {
+    package: 'foam.demos.m0',
+    name: clsName,
+    extends: 'foam.demos.m0.Instr',
+
+    static: [
+      function matches(p) {
+        return true;
+      }
+    ],
+
+    properties: props.map(p => {
+      var [cl, name] = p.split(' ');
+      if ( cl === 'L' ) cl = 'LowRegister';
+      return {
+        class: cl,
+        name: name
+      };
+    }),
+
+    methods: [
+      function execute() {
+        fn.call(this);
+        this.m0.r15 += size;
+      }
+    ]
+  };
+  console.log('DEFINING', clsName, a, model);
+  foam.CLASS(model);
+
+  I2S.push(foam.lookup('foam.demos.m0.' + clsName));
 });
 
-foam.CLASS({
-  package: 'foam.core',
-  name: 'HighRegister',
-  extends: 'foam.core.Int',
-  description: 'A marker class so we can easily tell which registers are high.'
-});
+function i2(...args) {
+  for ( var i = 0 ; i < I2S.length ; i++ ) {
+    var cls = I2S[i];
 
+    if ( cls.matches(args) ) {
+      console.log('*** MATCH', args, ls.name);
+
+      var inst = cls.create();
+      return inst;
+    }
+  }
+}
 
 foam.CLASS({
   package: 'foam.demos.m0',
