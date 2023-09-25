@@ -163,8 +163,7 @@ foam.CLASS({
       // setControllerMode can be undefined when NOT coming from
       // DAOBrowserControllerView eg. when manually pushing DAOSummaryView to
       // the stack.
-      this.controllerMode = 'EDIT';
-      if ( this.setControllerMode ) this.setControllerMode('edit');
+      this.setControllerMode?.('edit');
 
 
       this
