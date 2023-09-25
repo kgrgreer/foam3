@@ -147,7 +147,7 @@ INSTRUCTIONS.forEach(i => {
   const P = /([01])+/;
   for ( var j = 1 ; j < i.length - 1 ; j++ ) {
     if ( i[j].match(P) && i[j+1].match(P) ) {
-      console.log('splice',i,i[j],i[j+1]);
+      // console.log('splice',i,i[j],i[j+1]);
       i[j] = i[j] + i[j+1];
       i.splice(j+1,1);
       j--;
