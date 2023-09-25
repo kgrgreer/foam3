@@ -57,7 +57,10 @@ foam.CLASS({
                 typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
-        return p.trim ? s.trim() : s;
+        return s;
+        // Disable client-side triming because it causes problems in onKey mode
+        // It is still performed on the (Java) server.
+        // return p.trim ? s.trim() : s;
       }
     },
     [ 'type', 'String' ],
@@ -635,10 +638,11 @@ foam.CLASS({
   label: 'Email address',
   properties: [
     [ 'displayWidth', 50 ],
+    [ 'trim', true ],
     [
       'preSet',
       function(_, v) {
-        return v.toLowerCase().trim();
+        return v.toLowerCase();
       }
     ]
   ]
