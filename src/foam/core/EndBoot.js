@@ -68,10 +68,11 @@ foam.CLASS({
             var parent = globalThis;
             for ( var i = 0 ; i < path.length ; i++ )
               parent = parent[path[i]];
+
+            return parent.clone().copyFrom(o);
           } catch (x) {
             console.error('UNKNOWN __copyFrom__:', o.__copyFrom__);
           }
-          return parent.clone().copyFrom(o);
         }
 
         return foam.core.Property.isInstance(o) ? o : foam.core.Property.create(o);
