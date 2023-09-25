@@ -1,0 +1,108 @@
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "bootstrap"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localAnalyticEventDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "analyticEventDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "capabilityPayloadDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "counterDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localEmailMessageDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "emailMessageDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "eventRecordDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "medusaTestObjectDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localNotificationDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "notificationDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "omNameDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "bareOmNameDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ruleHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localSessionDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "sessionDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketDAO",
+  compactible: true,
+  sink: {
+    class: "foam.nanos.ticket.TicketCompactionSink",
+    predicate: {
+      class: "foam.mlang.predicate.FScriptPredicate",
+      query: 'status != "CLOSED"'
+    }
+  }
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketCommentDAO",
+  compactible: true,
+  sink: {
+    class: "foam.nanos.ticket.TicketCommentCompactionSink",
+    predicate: {
+      class: "foam.mlang.predicate.FScriptPredicate",
+      query: 'status != "CLOSED"'
+    }
+  }
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ticketHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketCommentHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ticketCommentHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "userCapabilityJunctionHistoryDAO"
+})

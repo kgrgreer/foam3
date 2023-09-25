@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-      MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+      MedusaEntrySupport entrySupport = new MedusaEntrySupport(x);
 
       String value = "nu";
 

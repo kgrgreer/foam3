@@ -77,25 +77,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"sfTestObjectDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":`
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorize(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("sftestobjects")
-      .setSAF(true)
-      .setFuid(true)
-      .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
-      .build();
-    `,
-  "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"demoHttpSinkUsingAtime",
   "description": "A demo http sink for SFSink",
   "serviceScript":

@@ -8,8 +8,8 @@ foam.CLASS({
   name: 'MedusaTestObjectDIGBenchmark',
   extends: 'foam.nanos.dig.bench.DIGBenchmark',
 
-  mixins: [
-    'foam.nanos.medusa.ClusterableMixin'
+  implements: [
+    'foam.nanos.medusa.Clusterable'
   ],
 
   javaImports: [

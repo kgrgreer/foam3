@@ -13,11 +13,8 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
-  ],
-
-  mixins: [
-    'foam.nanos.medusa.ClusterableMixin'
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.medusa.Clusterable'
   ],
 
   tableColumns: [

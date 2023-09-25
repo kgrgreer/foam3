@@ -14,8 +14,7 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.medusa.DaggerLink'
+    'foam.nanos.auth.LastModifiedByAware'
   ],
 
   ids: [
