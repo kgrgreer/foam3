@@ -622,6 +622,7 @@ foam.POM({
     { name: "foam/u2/view/StringView",                                flags: "web" },
     { name: "foam/u2/view/DateView",                                  flags: "web" },
     { name: "foam/u2/view/DateTimeView",                              flags: "web" },
+    { name: "foam/u2/view/RODateTimeView",                            flags: "web" },
     { name: "foam/u2/view/TimeView",                                  flags: "web" },
     { name: "foam/u2/view/FloatView",                                 flags: "web" },
     { name: "foam/u2/view/IntView",                                   flags: "web" },
