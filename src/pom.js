@@ -1092,7 +1092,6 @@ foam.POM({
     { name: "foam/box/sf/SFManager",                                  flags: "js|java" },
     { name: "foam/box/sf/SF",                                         flags: "js|java" },
     { name: "foam/box/sf/SFFileJournal",                              flags: "js|java" },
-    { name: "foam/box/sf/SFTestObject",                               flags: "js|java" },
     { name: "foam/box/sf/SFException",                                flags: "js|java" },
     { name: "foam/box/sf/SFMonitorDAO",                               flags: "js|java" },
     { name: "foam/box/sf/SFMonitor",                                  flags: "js|java" },

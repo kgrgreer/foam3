@@ -1,0 +1,56 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"com1m",
+  "label":"COM - 1 Minute",
+  keywords: ["analytic", "om", "operation", "measure", "minute","cluster"],
+  "handler":{
+  "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"com1MinuteDAO"
+    }
+  },
+  "parent":"analytics"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"com5m",
+  "label":"COM - 5 Minute",
+  keywords: ["analytic", "om", "operation", "measure", "minute","cluster"],
+  "handler":{
+  "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"com5MinuteDAO"
+    }
+  },
+  "parent":"analytics"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"comh",
+  "label":"COM - Hour",
+  keywords: ["analytic", "om", "operation", "measure", "hour","cluster"],
+  "handler":{
+  "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"comHourlyDAO"
+    }
+  },
+  "parent":"analytics"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"comd",
+  "label":"COM - Day",
+  keywords: ["analytic", "om", "operation", "measure", "day","cluster"],
+  "handler":{
+  "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"comDailyDAO"
+    }
+  },
+  "parent":"analytics"
+})

@@ -204,18 +204,7 @@ foam.CLASS({
 
         if ( getCluster() &&
              getMdao() != null ) {
-          if ( getSAF() ) {
-            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
-            .setNSpec(getNSpec())
-            .setDelegate(delegate)
-            .build();
-          } else {
-            logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
-            delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
-              .setNSpec(getNSpec())
-              .setDelegate(delegate)
-              .build();
-          }
+          delegate = getClusterDelegate(delegate);
         }
 
         if ( getSubdomainAware() ) {
@@ -925,6 +914,14 @@ model from which to test ServiceProvider ID (spid)`,
           }
         }
         return delegate;
+      `
+    },
+    {
+      name: 'getClusterDelegate',
+      args: 'foam.dao.DAO delegate',
+      type: 'foam.dao.DAO',
+      javaCode: `
+      return delegate;
       `
     },
     {

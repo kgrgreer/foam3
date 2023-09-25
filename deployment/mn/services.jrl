@@ -1,0 +1,58 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaNodeBootstrapAgent",
+  "lazy":false,
+  "service": {
+    "class": "foam.nanos.medusa.MedusaNodeBootstrapAgent"
+  }
+})
+// Menus entry point
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntryDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(x.get("medusaNodeDAO"))
+      .setCluster(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
+      })
+      .build();
+  `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+// disable cron scheduler
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"cronScheduler",
+  "lazy":false,
+  "enabled":false,
+  "serviceScript":"""
+    return new foam.nanos.cron.CronScheduler();
+  """
+})
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"healthDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(foam.nanos.medusa.MedusaHealth.getOwnClassInfo())
+    .setCluster(false)
+    .build()
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.medusa.MedusaHealth"
+  }
+  """
+})

@@ -14,11 +14,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.auth.ServiceProviderAware'
-  ],
-
-  mixins: [
-    'foam.nanos.medusa.ClusterableMixin'
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.medusa.Clusterable'
   ],
 
   javaImports: [

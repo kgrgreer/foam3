@@ -21,7 +21,6 @@ foam.POM({
     { name: "app/pom"},
     { name: "crunch/pom"},
     { name: "jetty/pom"},
-    { name: "medusa/pom"},
     { name: "ruler/pom"}
   ],
   files: [
@@ -257,6 +256,9 @@ foam.POM({
     { name: "session/SessionTimer",                                                       flags: "js" },
     { name: "session/SessionService",                                                     flags: "js|java" },
     { name: "session/SessionNotFoundException",                                           flags: "js|java" },
+    { name: "medusa/MedusaEntry",                                                         flags: "js|java" },
+    { name: "medusa/MedusaSupport",                                                       flags: "js|java" },
+    { name: "medusa/Clusterable",                                                         flags: "js|java" },
     { name: "menu/XRegistration",                                                         flags: "js|java" },
     { name: "menu/AbstractMenu",                                                          flags: "js|java" },
     { name: "menu/DAOMenu",                                                               flags: "js" },

@@ -23,8 +23,6 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.StdoutLogger',
-    'foam.nanos.medusa.MedusaEntry',
-    'foam.nanos.medusa.DaggerService',
     'static foam.mlang.MLang.EQ',
     'java.util.UUID'
   ],
