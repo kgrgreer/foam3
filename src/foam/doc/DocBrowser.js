@@ -386,7 +386,7 @@ foam.CLASS({
         var self = this;
         var dao  = self.ArrayDAO.create({of: self.Model}).orderBy(foam.core.Model.ID);
         var all = [];
-        var packages = { '--All--': all};
+        var packages = { '--All--': all };
         function addModel(m) {
           try {
           var c = foam.maybeLookup(m);
