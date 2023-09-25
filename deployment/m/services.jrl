@@ -193,123 +193,100 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "daggerService",
-  "serve": false,
+  "name": "socketServer",
   "lazy": false,
-  "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
+  "service": {
+    "class": "foam.box.socket.SocketServer",
+    "threadPoolName": "medusaThreadPool"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacyUrl":"/service/file/d6a408c6-587d-b00f-6e04-6a4b933f7495",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
+    "mode":1
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaSupport",
+  "lazy":false,
+  "service": {
+    "class": "foam.nanos.medusa.MedusaSupport"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigSupport",
+  "lazy":false,
+  "service": {
+    "class": "foam.nanos.medusa.ClusterConfigSupport"
+  }
 })
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "daggerBootstrapDAO",
-  "serve": true,
+  "name": "replayingInfo",
+  "description": "Medusa replay info for this instance",
   "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("daggerbootstrap")
-      .setDecorator(new foam.nanos.medusa.DaggerBootstrapDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.DaggerBootstrap.getOwnClassInfo()))
-        .build())
-      .setCluster(false)
-      .setRuler(false)
-      .setSeqNo(true)
-      .build()
-      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.DaggerBootstrap.ID));
-  """,
-  "client": "{\"of\":\"foam.nanos.medusa.DaggerBootstrap\"}"
+     return new foam.nanos.medusa.ReplayingInfo();
+  """
 })
-
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "compactionDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.medusa.Compaction.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("compactions")
-      .setRuler(false)
-      .build()
-      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.Compaction.ID));
-  """,
-  "client": "{\"of\":\"foam.nanos.medusa.Compaction\"}"
+  "name": "medusastatuswatcher",
+  "lazy": false,
+  "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
 })
 
-// See deployment/mm and mn for type specific setup
+p({
+  class:"foam.nanos.boot.NSpec",
+  name:"Health",
+  description:"Medusa Health Factory",
+  authenticate:false,
+  pm:false,
+  service:{
+    class:"foam.nanos.medusa.MedusaHealthFactory"
+  }
+})
 
-// p({
-//   "class": "foam.nanos.boot.NSpec",
-//   "name": "clusterConfigSupport",
-//   "serviceScript":"""
-//     return new foam.nanos.medusa.ClusterConfigSupport.Builder(x)
-//       .build();
-//   """
-// })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "healthHeartbeatService",
+  "lazy": false,
+  "service": {
+    class: "foam.nanos.medusa.MedusaHealthHeartbeatService",
+    useMulticast: false,
+    multicastAddress: "230.22.41.0",
+    port: 52241
+  }
+})
 
-// mm specific - started by MedusaConsensusDAO
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"medusaConsensusMonitor",
-//   "service": {
-//     class:"foam.nanos.medusa.MedusaConsensusMonitor"
-//   }
-// })
-
-// Only required in localhost 2+2 setup
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"clusterConfigMonitor",
-//   "lazy": false,
-//   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
-// })
-
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"medusaNodeBootstrapAgent",
-//   "lazy":false,
-//   "service": {
-//     "class": "foam.nanos.medusa.MedusaNodeBootstrapAgent"
-//   }
-// })
-
-// enable for medusa systems
-// p({
-//   "class": "foam.nanos.boot.NSpec",
-//   "name": "medusastatuswatcher",
-//   "lazy": false,
-//   "serviceClass": "foam.nanos.medusa.MedusaStatusWatcher"
-// })
-
-// p({
-//   class:"foam.nanos.boot.NSpec",
-//   name:"Health",
-//   description:"Medusa Health Factory",
-//   authenticate:false,
-//   pm:false,
-//   service:{
-//     class:"foam.nanos.medusa.MedusaHealthFactory"
-//   }
-// })
-
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"healthDAO",
-//   "serve":true,
-//   "serviceScript":
-//   """
-//   return new foam.dao.EasyDAO.Builder(x)
-//     .setOf(foam.nanos.medusa.MedudsaHealth.getOwnClassInfo())
-//     .setDecorator(new foam.nanos.medusa.MedusaHealthStatusDAO.Builder(x)
-//       .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaHealth.getOwnClassInfo())).build())
-//     .setCluster(false)
-//     .build()
-//   """,
-//   "client":
-//   """
-//   {
-//     "of":"foam.nanos.medusa.MedusaHealth"
-//   }
-//   """
-// })
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sfTestObjectDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("sftestobjects")
+      .setSAF(true)
+      .setFuid(true)
+      .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
+      .build();
+    `,
+  "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
+})

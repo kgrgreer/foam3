@@ -1,0 +1,11 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaNodePurge",
+  description:"Issue DAO.PURGE_CMD against Medusa Node cache.",
+  code:"""
+import foam.dao.DAO;
+d = x.get("medusaNodeDAO");
+d.cmd(DAO.PURGE_CMD);
+print("done");
+  """
+})

@@ -893,6 +893,27 @@ configuration for contacting the primary node.`,
      `
     },
     {
+      documentation: 'test if system is replaying',
+      name: 'isReplaying',
+      args: 'Context x',
+      type: 'Boolean',
+      javaCode: `
+      return ((ReplayingInfo) x.get("replayingInfo")).getReplaying();
+      `
+    },
+    {
+      documentation: `Decorate the root serviceDAO to 'cluster' serviceDAO updates`,
+      name: 'clusterServiceDAO',
+      args: 'Context x, foam.dao.DAO delegate',
+      type: 'foam.dao.DAO',
+      javaCode: `
+      return new foam.nanos.medusa.MedusaAdapterDAO.Builder(x)
+        .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("nSpecDAO").build())
+        .setDelegate(delegate)
+        .build();
+      `
+    },
+    {
       name: 'getMdao',
       args: [
         {

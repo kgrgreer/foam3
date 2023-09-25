@@ -155,10 +155,10 @@ public class Boot {
       // On startup, select() above will be against repo services.0.
       // Mediator/Node replay put()s will hit the serviceDAO_ above,
       // which has a listener to Reload the service on change.
-      serviceDAO_ = new foam.nanos.medusa.MedusaAdapterDAO.Builder(root_)
-        .setNSpec(new NSpec.Builder(root_).setName("nSpecDAO").build())
-        .setDelegate(serviceDAO_)
-        .build();
+      foam.nanos.medusa.MedusaSupport support = (foam.nanos.medusa.MedusaSupport) root_.get("medusaSupport");
+      if ( support != null ) {
+        serviceDAO_ = support.clusterServiceDAO(root_, serviceDAO_);
+      }
     }
 
     // Export the ServiceDAO

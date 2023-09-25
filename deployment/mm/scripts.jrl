@@ -1,0 +1,26 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaNodePurge",
+  description:"Issue DAO.PURGE_CMD against Medusa Node cache.",
+  code:"""
+import foam.dao.DAO;
+import foam.nanos.medusa.*;
+logger = x.get("logger");
+support = x.get("clusterConfigSupport");
+myConfig = support.getConfig(x, support.getConfigId());
+buckets = support.getNodeBuckets();
+for ( bucket : buckets ) {
+  for ( id : bucket ) {
+    print("purging: "+id);
+    logger.info(new Object[] {"MedusaNodePurge", "node", id, "purge"});
+    try {
+      dao = support.getBroadcastClientDAO(x, "medusaNodeDAO", myConfig, support.getConfig(x, id));
+      dao.cmd_(x, DAO.PURGE_CMD);
+    } catch ( Throwable t ) {
+      logger.error(new Object[] {"MedusaNodePurge", "node", id, "purge", t});
+    }
+  }
+}
+print("done");
+  """
+})

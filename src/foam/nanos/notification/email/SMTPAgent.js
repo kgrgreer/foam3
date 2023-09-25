@@ -222,7 +222,7 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
-      foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
+      foam.nanos.medusa.MedusaSupport support = (foam.nanos.medusa.MedusaSupport) x.get("medusaSupport");
       if ( support != null &&
            ! support.cronEnabled(x, true) ) {
         // Loggers.logger(x, this).debug("execution disabled");

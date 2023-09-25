@@ -1,1 +1,4 @@
-p({"class":"foam.nanos.medusa.test.MedusaEntryParseFormatTest","id":"MedusaEntryParseFormatTest"})
+p({
+  "class":"foam.nanos.medusa.test.MedusaEntryParseFormatTest",
+  "id":"MedusaEntryParseFormatTest"
+})

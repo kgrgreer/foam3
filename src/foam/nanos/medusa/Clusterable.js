@@ -9,20 +9,15 @@ foam.INTERFACE({
   name: 'Clusterable',
 
   documentation: `Per object instance control over clustering. Consider Sessions, some are to be clustered, others not.`,
-  methods: [
+  properties: [
     {
-      name: 'getClusterable',
-      type: 'Boolean'
-    },
-    {
-      name: 'setClusterable',
-      args: [
-        {
-          name: 'value',
-          type: 'Boolean'
-        }
-      ]
-    },
+      class: 'Boolean',
+      name: 'clusterable',
+      value: true,
+      documentation: 'In a medusa cluster, when false, this entity remains local to the generating server.  Intended for entity such as Alarms, Notifications, Emails allowing a medusa server to report clustering issues.',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    }
   ]
 });
 
