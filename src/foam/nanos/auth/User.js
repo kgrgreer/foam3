@@ -224,10 +224,9 @@ foam.CLASS({
       documentation: 'The first name of the User.',
       section: 'userInformation',
       order: 70,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
-      containsPII: true,
-      trim:true
+      containsPII: true
    },
     {
       class: 'String',
