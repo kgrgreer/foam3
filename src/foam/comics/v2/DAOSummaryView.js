@@ -210,7 +210,7 @@ foam.CLASS({
             data:   this.data,
             config: this.config,
             of:     this.config.of
-          }, parent: this.__subContext__.createSubContext({ memento_: this.memento_ })
+          }, parent: this.__subContext__
         }));
       }
     },
