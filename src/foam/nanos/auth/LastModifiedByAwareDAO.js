@@ -32,14 +32,16 @@ foam.CLASS({
       javaCode: `
         if ( obj instanceof LastModifiedByAware && ! obj.equals(getDelegate().find_(x, obj)) ) {
           var subject = (Subject) x.get("subject");
-          var user = subject.getUser();
-          var realUser = subject.getRealUser();
+          if ( subject != null ) {
+            var user     = subject.getUser();
+            var realUser = subject.getRealUser();
 
-          ((LastModifiedByAware) obj).setLastModifiedBy(user.getId());
-          if ( user.getId() != realUser.getId() ) {
-            ((LastModifiedByAware) obj).setLastModifiedByAgent(realUser.getId());
-            if ( obj instanceof LastModifiedByAgentNameAware ) {
-              ((LastModifiedByAgentNameAware) obj).setLastModifiedByAgentName(realUser.toSummary());
+            ((LastModifiedByAware) obj).setLastModifiedBy(user.getId());
+            if ( user.getId() != realUser.getId() ) {
+              ((LastModifiedByAware) obj).setLastModifiedByAgent(realUser.getId());
+              if ( obj instanceof LastModifiedByAgentNameAware ) {
+                ((LastModifiedByAgentNameAware) obj).setLastModifiedByAgentName(realUser.toSummary());
+              }
             }
           }
         }
