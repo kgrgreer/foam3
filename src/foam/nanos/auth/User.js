@@ -170,7 +170,7 @@ foam.CLASS({
       order: 20,
       gridColumns: 6,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'Boolean',
@@ -182,7 +182,7 @@ foam.CLASS({
       value: true,
       section: 'userInformation',
       order: 30,
-      gridColumns: 6,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
@@ -224,10 +224,10 @@ foam.CLASS({
       documentation: 'The first name of the User.',
       section: 'userInformation',
       order: 70,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true
    },
     {
       class: 'String',
@@ -235,11 +235,11 @@ gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       documentation: 'The middle name of the User.',
       section: 'userInformation',
       order: 80,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'String',
@@ -248,10 +248,10 @@ gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       documentation: 'The last name of the User.',
       section: 'userInformation',
       order: 90,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true
     },
     {
       class: 'String',
@@ -264,7 +264,7 @@ gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: false,
       containsPII: true,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'Date',
