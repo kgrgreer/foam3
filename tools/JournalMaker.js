@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-exports.description = 'copies .jrl files into /target/journals';
+exports.description = 'copies .jrl files into /build/journals';
 
 const fs_   = require('fs');
 const path_ = require('path');

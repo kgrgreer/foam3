@@ -14,11 +14,11 @@
 // Standard Makers Include:
 //
 //   JavaMaker    : generates .java files from .js models
-//   JavacMaker   : create /target/javacfiles file containing list of modified or static .java files, call javac
+//   JavacMaker   : create /build/javacfiles file containing list of modified or static .java files, call javac
 //   MavenMaker   : build a Maven pom.xml from javaDependencies, call maven if pom.xml updated
-//   JournalMaker : copies .jrl files into /target/journals
+//   JournalMaker : copies .jrl files into /build/journals
 //   JsMaker      : create a minified foam-bin.js file
-//   DocMaker     : copies .flow files into /target/documents
+//   DocMaker     : copies .flow files into /build/documents
 //   VerboseMaker : print out information about POMs and files visited
 
 console.log('[PMAKE] Starting...');
@@ -36,7 +36,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
     d:           './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
-    builddir:    './target',
+    builddir:    './build',
     pom:         'pom',
     makers:      '' // TODO: doc, swift
   },

@@ -6,7 +6,7 @@
 
 // JavacMaker
 
-exports.description = 'create /target/javacfiles file containing list of modified or static .java files, call javac';
+exports.description = 'create /build/javacfiles file containing list of modified or static .java files, call javac';
 
 exports.args = [
   {
