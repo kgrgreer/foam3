@@ -6,9 +6,9 @@
 
 // FOAM Java related build tool. Builds:
 //     - generates .java files from .js models
-//     - copies .jrl files into /target/journals
-//     - TODO: copy .flow files into /target/documents
-//     - create /target/javacfiles file containing list of modified or static .java files
+//     - copies .jrl files into /build/journals
+//     - TODO: copy .flow files into /build/documents
+//     - create /build/javacfiles file containing list of modified or static .java files
 //     - build pom.xml from accumulated javaDependencies
 //     - call maven to update dependencies if pom.xml updated
 //     - call javac to compile files in javacfiles
@@ -28,7 +28,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   '',
   {
     d:             './build/classes/java/main', // TODO: build/classes should be sufficient, but doesn't work with rest of build
-    builddir:      './target',
+    builddir:      './build',
     javacParams:   '--release 11',
     repo:          'http://repo.maven.apache.org/maven2/', // should be https?
     outdir:        '', // default value set below
