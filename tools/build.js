@@ -129,8 +129,7 @@ var VERSION;
 var TASKS, EXPORTS;
 
 // These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-// var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build', TARGET_DIR = './build';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -802,8 +801,12 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
-  R: [ 'deployment directories with resources to add to Jar file',
-    args => RESOURCES = comma(RESOURCES, args) ],
+  R: [ 'deployment directories with resources to add to Jar file. This option should follow -u to preserve order of resource directories',
+       args => {
+         RESOURCES = '';
+         RESOURCES = comma(RESOURCES, args);
+       }
+     ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -814,6 +817,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
