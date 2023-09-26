@@ -36,7 +36,7 @@ foam.CLASS({
         wizardController.onClose = function() {
           // Maybe make forcepush a prop
           x.pushMenu?.(action.menu, true);
-          temp?.call(wizardController);
+          return temp?.call(wizardController);
         }
         wizardController.goNext();
       }
