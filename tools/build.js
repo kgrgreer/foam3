@@ -967,6 +967,7 @@ if ( TASKS ) {
 
   // Exports local variables and functions for POM tasks
   EXPORTS = {
+    BUILD_DIR,
     JOURNAL_CONFIG,
     copyDir,
     copyFile
