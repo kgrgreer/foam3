@@ -59,7 +59,7 @@ foam.CLASS({
     'ctrl',
     'currentControllerMode',
     'currentMenu?',
-    'setControllerMode',
+    'setControllerMode?',
     'stack',
     'translationService'
   ],
@@ -159,7 +159,11 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
-      this.setControllerMode('edit');
+
+      // setControllerMode can be undefined when NOT coming from
+      // DAOBrowserControllerView eg. when manually pushing DAOSummaryView to
+      // the stack.
+      this.setControllerMode?.('edit');
 
 
       this
