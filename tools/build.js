@@ -369,8 +369,13 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
 });
 
 
-task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
-  deployDocuments();
+// TODO: Document copy failing on jenkins with permission errors
+// task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
+//   deployDocuments();
+//   deployResources();
+//   deployJournals(); // should run last
+// });
+task('Deploy documents, journals and other resources.', [ 'deployJournals', 'deployResources' ], function deploy() {
   deployResources();
   deployJournals(); // should run last
 });
@@ -962,6 +967,7 @@ if ( TASKS ) {
 
   // Exports local variables and functions for POM tasks
   EXPORTS = {
+    BUILD_DIR,
     JOURNAL_CONFIG,
     copyDir,
     copyFile
