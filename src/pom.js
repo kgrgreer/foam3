@@ -291,7 +291,7 @@ foam.POM({
     { name: "foam/mlang/expr/Ref",                                    flags: "js|java" },
     { name: "foam/mlang/expr/TimeOfDay",                              flags: "js|java" },
     { name: "foam/mlang/predicate/ContextUserPredicate",              flags: "js|java" },
-    { name: "foam/mlang/predicate/CapabilityAuthServicePredicate",      flags: "js|java" },
+    { name: "foam/mlang/predicate/CapabilityAuthServicePredicate",    flags: "js|java" },
     { name: "foam/mlang/predicate/AuthPermissionPredicate",           flags: "js|java" },
     { name: "foam/swift/refines/MLang",                               flags: "swift" },
     { name: "foam/swift/refines/Predicate",                           flags: "swift" },
