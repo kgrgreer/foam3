@@ -926,8 +926,6 @@ foam.POM({
     { name: "foam/dashboard/view/CardWrapper",                        flags: "js" },
     { name: "foam/dashboard/view/Dashboard",                          flags: "js" },
     { name: "foam/dashboard/view/DashboardView",                      flags: "js" },
-    { name: "foam/build/Library",                                     flags: "js" },
-    { name: "foam/build/EmbeddedModelDAO",                            flags: "js" },
     { name: "foam/u2/view/JSONTextView",                              flags: "web" },
     { name: "foam/u2/view/MapView",                                   flags: "web" },
     { name: "foam/u2/view/AnyView",                                   flags: "web" },
