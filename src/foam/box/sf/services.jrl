@@ -68,9 +68,6 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
-      .setDelegate(new foam.nanos.medusa.sf.SFBroadcastReceiverDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFEntry.getOwnClassInfo()))
-      .build())
       .build();
    `
 })

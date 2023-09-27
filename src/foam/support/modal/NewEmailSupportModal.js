@@ -16,7 +16,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.support.model.SupportEmail',
     'foam.support.modal.NewEmailSupportConfirmationModal',
     'foam.u2.ModalHeader',
     'foam.log.LogLevel',

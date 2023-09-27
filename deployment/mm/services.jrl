@@ -272,6 +272,24 @@ p({
   }
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sfBroadcastReceiverDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.box.sf.SFEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.nanos.medusa.sf.SFBroadcastReceiverDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFEntry.getOwnClassInfo()))
+      .build())
+      .build();
+   `
+})
+
 // Clustered OMs
 p({
   "class": "foam.nanos.boot.NSpec",

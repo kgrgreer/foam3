@@ -557,23 +557,6 @@ p({
   "client": "{\"of\":\"foam.flow.Document\"\}"
 })
 
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"supportEmailDAO",
-  "serve":true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setSeqProperty(true)
-      .setOf(foam.support.model.SupportEmail.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("supportEmails")
-      .build();
-  """,
-  "client":"{\"of\":\"foam.support.model.SupportEmail\"}"
-})
-
 p({"class":"foam.nanos.boot.NSpec", "name":"serializationTestEchoService", "boxClass": "foam.nanos.test.EchoServiceSkeleton",  "serve":true, "serviceClass":"foam.nanos.test.SerializationTestEchoService", "client":"{\"class\":\"foam.nanos.test.ClientEchoService\",\"delegate\":{\"class\":\"foam.box.SessionClientBox\",\"delegate\":{\"class\":\"foam.box.HTTPBox\",\"method\":\"POST\",\"url\":\"service/serializationTestEchoService\"}}}"})
 
 p({
