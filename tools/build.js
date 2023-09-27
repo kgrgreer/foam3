@@ -57,23 +57,20 @@
 //
 // TODO:
 //   - should Makers be responsible for building target directories?
-//   - merge build and target
-//   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
-//   - cleanAll
-//
-// diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
-// ln -s /Volumes/RAM_DISK /path/to/project/build2
 
 /*
+diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
+ln -s /Volumes/RAM_DISK /path/to/project/build2
+
 diskutil erasevolume HFS+ 'RAMDisk' `hdiutil attach -nomount ram://848000`
 mkdir /Volumes/RamDisk/build
 rm -rf ~/NANOPAY/build
 ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 */
 
-const fs                = require('fs');
-const { join }          = require('path');
+const fs       = require('fs');
+const { join } = require('path');
 const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
 
 
@@ -454,7 +451,7 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
+  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc,Resource' : 'Maven,Journal,Doc,Resource' ;
   execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
