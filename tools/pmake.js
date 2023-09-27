@@ -70,16 +70,21 @@ globalThis.X       = X;
 globalThis.flags   = flags;
 globalThis.verbose = function verbose() { if ( flags.verbose ) console.log.apply(console, arguments); }
 
+/** 'makers' format: task1,task2,task3(args),... where args are optional **/
 const MAKERS = X.makers.split(',').map(m => {
+  var task;
+  var [_, taskName, _, taskArgs] = m.match(/([a-zA-Z0-9]*)(\((.*)\))?/);
+
   try {
-    return require('./' + m + 'Maker');
+    task = require('./' + taskName + 'Maker');
   } catch (x) {
-    return require(path_.join(__dirname, m + 'Maker'));
+    task = require(path_.join(__dirname, taskName + 'Maker'));
   }
+
+  if ( task && task.init ) task.init(taskArgs);
+
+  return task;
 });
-
-
-MAKERS.forEach(v => v.init && v.init());
 
 
 function processDir(pom, location, skipIfHasPOM) {
