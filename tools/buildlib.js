@@ -81,6 +81,7 @@ function isExcluded(pom, f) {
 
 
 function copyDir(src, dst) {
+  /** Recursively copy a directory. **/
   ensureDir(dst);
   fs_.readdirSync(src).forEach(f => {
     var srcPath = path_.join(src, f);
