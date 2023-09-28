@@ -143,6 +143,6 @@ exports.execSync           = execSync;
 exports.isExcluded         = isExcluded;
 exports.processArgs        = processArgs;
 exports.rmdir              = rmdir;
-exports.rmfile             = rmfile
+exports.rmfile             = rmfile;
 exports.spawn              = spawn;
 exports.writeFileIfUpdated = writeFileIfUpdated;

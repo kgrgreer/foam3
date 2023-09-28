@@ -971,7 +971,8 @@ if ( TASKS ) {
     BUILD_DIR,
     JOURNAL_CONFIG,
     copyDir,
-    copyFile
+    copyFile,
+    execSync
   }
 };
 
