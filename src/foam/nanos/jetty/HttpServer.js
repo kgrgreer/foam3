@@ -38,6 +38,8 @@ foam.CLASS({
     'java.util.Set',
     'org.apache.commons.io.IOUtils',
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
+    'org.eclipse.jetty.proxy.ProxyServlet',
+    'org.eclipse.jetty.proxy.ProxyServlet.Transparent',
     'org.eclipse.jetty.server.*',
     'org.eclipse.jetty.server.handler.IPAccessHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
@@ -129,6 +131,12 @@ foam.CLASS({
       name: 'filterMappings',
       of: 'foam.nanos.servlet.FilterMapping',
       javaFactory: 'return new foam.nanos.servlet.FilterMapping[0];'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.servlet.ProxyMapping',
+      name: 'proxyMappings',
+      javaFactory: `return new foam.nanos.servlet.ProxyMapping[0];`
     },
     {
       documentation: 'hold reference to server for dumpStats',
@@ -264,6 +272,14 @@ foam.CLASS({
           if ( getIsResourceStorage() ) {
             holder.setInitParameter("isResourceStorage", "true");
           }
+        }
+
+        for ( foam.nanos.servlet.ProxyMapping mapping : getProxyMappings() ) {
+          ServletHolder holder = handler.addServlet(ProxyServlet.Transparent.class, mapping.getPathSpec());
+          holder.setInitOrder(1);
+          holder.setInitParameter("proxyTo", mapping.getProxyTo());
+          holder.setInitParameter("prefix", mapping.getPrefix());
+          getLogger().info("ProxyMapping", mapping.getPathSpec(), mapping.getProxyTo());
         }
 
         org.eclipse.jetty.servlet.ErrorPageErrorHandler errorHandler =
