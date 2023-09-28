@@ -442,7 +442,6 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-//  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
   execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
 });
 
