@@ -285,7 +285,6 @@ foam.CLASS({
           holder.setInitOrder(1);
           holder.setInitParameter("proxyTo", mapping.getProxyTo());
           holder.setInitParameter("prefix", mapping.getPrefix());
-          getLogger().info("ProxyMapping", mapping.getPathSpec(), mapping.getProxyTo());
         }
 
         org.eclipse.jetty.servlet.ErrorPageErrorHandler errorHandler =
