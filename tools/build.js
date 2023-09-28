@@ -315,6 +315,10 @@ task('Copy images from src sub directories to BUILD_DIR/images.', [], function j
   execSync(__dirname + `/pmake.js -makers="Image" -pom=${POM} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 });
 
+task('Include journals in jar.', [], function jarJournals() {
+  JAR_INCLUDES += ` -C ${BUILD_DIR} journals `;
+});
+
 
 task('Display generated JAR manifest file.', [], function showManifest() {
   console.log('Manifest:', manifest());
@@ -369,12 +373,12 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
 // TODO: Document copy failing on jenkins with permission errors
 // task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
 //   deployDocuments();
-//   deployResources();
 //   deployJournals(); // should run last
 // });
 task('Deploy documents, journals and other resources.', [ 'deployJournals', 'deployResources' ], function deploy() {
-  deployResources();
-  deployJournals(); // should run last
+  if ( ! RUN_JAR && ! TEST && ! BENCHMARK ) {
+    deployJournals();
+  }
 });
 
 
@@ -478,10 +482,11 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
   versions();
   jarWebroot();
   jarImages();
+  jarJournals();
 
   rmfile(JAR_OUT);
   fs.writeFileSync(BUILD_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${APP_HOME} journals -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -829,7 +834,6 @@ const ARGS = {
     () => {
       RUN_JAR = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'u');
-      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],
