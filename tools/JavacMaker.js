@@ -18,10 +18,10 @@ exports.args = [
 
 
 const fs_                                   = require('fs');
-const { execSync, isExcluded, processArgs } = require('./buildlib');
+const { execSync, isExcluded, adaptOrCreateArgs } = require('./buildlib');
 
 exports.init = function() {
-  processArgs(X, exports.args);
+  adaptOrCreateArgs(X, exports.args);
 
   X.javaFiles = [];
 }

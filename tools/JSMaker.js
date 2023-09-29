@@ -50,7 +50,9 @@ exports.end = function() {
       if ( foam.excluded[l] ) { /* console.log('****** EXCLUDING', l); */ return; }
       // console.log('****** INCLUDING', l);
       files[l] = fs_.readFileSync(l, "utf8");
-    } catch (x) {}
+    } catch (x) {
+      // console.log('********************************* Unexpected Error: ', x);
+    }
   });
 
   var a = Object.keys(licenses);
