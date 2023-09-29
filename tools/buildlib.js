@@ -11,7 +11,12 @@ const exec_ = require('child_process');
 const path_ = require('path');
 
 
-function processArgs(X, args) {
+function adaptOrCreateArgs(X, args) {
+  /**
+    If listed arguments from are found in X, then adapt their value
+    to appropriate type if an adapter based on their class: is available.
+    Otherwise, create a binding in X if argument has a factory: or value:.
+  **/
   const adapt = {
     'Boolean': function (v) {
       if ( typeof v === 'boolean' ) return v;
@@ -24,16 +29,15 @@ function processArgs(X, args) {
   };
 
   args.forEach(a => {
-    if ( ! X.hasOwnProperty(a.name) ) {
-      if ( a.factory ) {
-        X[a.name] = a.factory();
-      } else if ( a.value ) {
-        X[a.name] = a.value;
+    if ( X.hasOwnProperty(a.name) ) {
+      if ( a.class && adapt[a.class] ) {
+        X[a.name] = adapt[a.class](X[a.name]);
       }
+    } else if ( a.factory ) {
+      X[a.name] = a.factory();
+    } else if ( a.value ) {
+      X[a.name] = a.value;
     }
-
-    if ( a.class && adapt[a.class] )
-      X[a.name] = adapt[a.class](X[a.name]);
   });
 }
 
@@ -139,7 +143,7 @@ exports.emptyDir           = emptyDir;
 exports.ensureDir          = ensureDir;
 exports.execSync           = execSync;
 exports.isExcluded         = isExcluded;
-exports.processArgs        = processArgs;
+exports.adaptOrCreateArgs  = adaptOrCreateArgs;
 exports.rmdir              = rmdir;
 exports.rmfile             = rmfile;
 exports.spawn              = spawn;
