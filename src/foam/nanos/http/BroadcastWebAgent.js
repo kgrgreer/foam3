@@ -12,8 +12,9 @@ foam.CLASS({
     'foam.nanos.http.WebAgent'
   ],
 
-  documentation: `Distribute request to each of the specified end points. Behaviour send and forget.
-NOTE: do not install nspec with parameters: true`,
+  documentation: `Distribute request to each of the specified end points.
+Returns OK on first success.
+Also supports send and forget, immediately returning OK.`,
 
   javaImports: [
     'foam.box.HTTPAuthorizationType',
