@@ -369,10 +369,13 @@ foam.CLASS({
         return false;
       }
       for ( const capable of intercept.capables ) {
-        for ( const capabilityId of capable.capabilityIds ) {
+        for ( let i = 0; i < capable.capabilityIds.length; i++ ) {
+          // for capable intercepts with multiple capability ids
+          // only do put on last wizardlet
+          var doPut = i == capable.capabilityIds.length - 1;
           await this.doInlineIntercept(
-            wizardController, capable, capabilityId, intercept,
-            { put: true }
+            wizardController, capable, capable.capabilityIds[i], intercept,
+            { put: doPut }
           );
         }
       }
@@ -430,12 +433,14 @@ foam.CLASS({
         }
       }
 
-      await this.inlineWizardFromSequence(wizardController, seq, options);
+      // for multiple capabilityIds: pass in start index before any wizardlets are added
+      const wi = wizardController.activePosition.wizardletIndex;
+      await this.inlineWizardFromSequence(wizardController, seq, options, wi);
 
       if ( opt_intercept ) opt_intercept.resolve(capable);
     },
 
-    async function inlineWizardFromSequence(wizardController, seq, options) {
+    async function inlineWizardFromSequence(wizardController, seq, options, startWi) {
       options = options || {};
 
       if ( ! wizardController ) wizardController = this.lastActiveWizard;
@@ -457,14 +462,17 @@ foam.CLASS({
       }
 
       const wi = wizardController.activePosition.wizardletIndex;
+      startWi = startWi || wi;
+
       console.log('splicing at wizard position', wi);
       // Remove intercept wizardlets if user goes back beyond th intercept
       wizardController.wizardlets[wi].wao = this.TopicWAO.create({
         delegate: wizardController.wizardlets[wi].wao
       });
-      wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
+
+      wizardController.onDetach(wizardController.wizardlets[startWi].wao.saving.sub(
         foam.events.oneTime(() => {
-          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length)
+          wizardController.wizardlets$splice(startWi + 1, x.wizardlets.length)
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);
