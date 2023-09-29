@@ -136,15 +136,38 @@ function comma(list, value) {
 }
 
 
-exports.comma              = comma;
-exports.copyDir            = copyDir;
-exports.copyFile           = copyFile;
-exports.emptyDir           = emptyDir;
-exports.ensureDir          = ensureDir;
-exports.execSync           = execSync;
-exports.isExcluded         = isExcluded;
-exports.adaptOrCreateArgs  = adaptOrCreateArgs;
-exports.rmdir              = rmdir;
-exports.rmfile             = rmfile;
-exports.spawn              = spawn;
-exports.writeFileIfUpdated = writeFileIfUpdated;
+// TODO: move usage() support here.
+function processSingleCharArgs(ARGS) {
+  const args = process.argv.slice(2);
+  for ( var i = 0 ; i < args.length ; i++ ) {
+    var arg = args[i];
+    if ( arg.startsWith('-') ) {
+      for ( var j = 1 ; j < arg.length ; j++ ) {
+        var a = arg.charAt(j);
+        var d = ARGS[a];
+        if ( d ) {
+          d[1](arg.substring(j+1));
+          if ( a >= 'A' && a <= 'Z' ) break;
+        } else {
+          console.log('Unknown argument "' + a + '"');
+          ARGS['h'][1]();
+        }
+      }
+    }
+  }
+}
+
+
+exports.adaptOrCreateArgs     = adaptOrCreateArgs;
+exports.comma                 = comma;
+exports.copyDir               = copyDir;
+exports.copyFile              = copyFile;
+exports.emptyDir              = emptyDir;
+exports.ensureDir             = ensureDir;
+exports.execSync              = execSync;
+exports.isExcluded            = isExcluded;
+exports.processSingleCharArgs = processSingleCharArgs;
+exports.rmdir                 = rmdir;
+exports.rmfile                = rmfile;
+exports.spawn                 = spawn;
+exports.writeFileIfUpdated    = writeFileIfUpdated;

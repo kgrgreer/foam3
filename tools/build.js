@@ -71,7 +71,7 @@ ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 
 const fs       = require('fs');
 const { join } = require('path');
-const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
+const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -93,8 +93,6 @@ var
   GEN_JAVA                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
-//  IS_MAC                    = process.platform === 'darwin',
-//  IS_LINUX                  = process.platform === 'linux',
   JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
@@ -187,27 +185,6 @@ function task(desc, dep, f) {
       var dur = ((end-start)/1000).toFixed(1);
       info(`Finished Task :: ${f.name} in ${dur} seconds`);
       rec[1] = dur;
-    }
-  }
-}
-
-
-function processArgs() {
-  const args = process.argv.slice(2);
-  for ( var i = 0 ; i < args.length ; i++ ) {
-    var arg = args[i];
-    if ( arg.startsWith('-') ) {
-      for ( var j = 1 ; j < arg.length ; j++ ) {
-        var a = arg.charAt(j);
-        var d = ARGS[a];
-        if ( d ) {
-          d[1](arg.substring(j+1));
-          if ( a >= 'A' && a <= 'Z' ) break;
-        } else {
-          console.log('Unknown argument "' + a + '"');
-          ARGS['h'][1]();
-        }
-      }
     }
   }
 }
@@ -918,7 +895,7 @@ task(
 'Build everything specified by flags.',
 [ 'clean', 'setenv', 'deleteRuntimeJournals', 'deleteRuntimeLogs', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
-  processArgs();
+  processSingleCharArgs(ARGS);
   setenv();
 
   stopNanos();
