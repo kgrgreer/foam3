@@ -11,20 +11,18 @@ const exec_ = require('child_process');
 const path_ = require('path');
 
 
-const adapt = {
-  'Boolean': function (v) {
-    if ( typeof v === 'boolean' )
-      return v;
-
-    if ( ! v ) return undefined;
-
-    var s = v.toString().trim().toLowerCase();
-    return s === 'true' || s === 't' || s === '1' || s === 'yes' || s === 'on';
-  }
-};
-
-
 function processArgs(X, args) {
+  const adapt = {
+    'Boolean': function (v) {
+      if ( typeof v === 'boolean' ) return v;
+
+      if ( ! v ) return false;
+
+      var s = v.toString().trim().toLowerCase();
+      return s === 'true' || s === 't' || s === '1' || s === 'yes' || s === 'y' || s === 'on';
+    }
+  };
+
   args.forEach(a => {
     if ( ! X.hasOwnProperty(a.name) ) {
       if ( a.factory ) {
