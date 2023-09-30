@@ -14,21 +14,26 @@ foam.CLASS({
 
   documentation: `Distribute request to each of the specified end points.
 Returns OK on first success.
-Also supports send and forget, immediately returning OK.`,
+Also supports send and forget, immediately returning OK.
+Otherwise, using AsyncAssemblyLine waits for all calls to fail before reporting failure - 500`,
 
   javaImports: [
     'foam.box.HTTPAuthorizationType',
     'foam.box.socket.SslContextFactory',
+    'foam.core.FOAMException',
     'foam.core.X',
+    'foam.nanos.dig.DigUtil',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.pm.PM',
     'foam.nanos.http.DefaultHttpParameters',
+    'foam.nanos.http.Format',
     'foam.util.concurrent.AbstractAssembly',
     'foam.util.concurrent.AssemblyLine',
     'foam.util.concurrent.AsyncAssemblyLine',
     'foam.util.SafetyUtil',
     'java.io.IOException',
+    'java.io.PrintWriter',
     'java.net.CookieHandler',
     'java.net.CookieManager',
     'java.net.http.HttpClient',
@@ -125,9 +130,10 @@ Also supports send and forget, immediately returning OK.`,
       final var resp = x.get(HttpServletResponse.class);
       final var parameters = x.get(HttpParameters.class);
       AssemblyLine line = new AsyncAssemblyLine(x);
-      final Map replies = new HashMap();
-      final Map failures = new HashMap();
-      final Map timeouts = new HashMap();
+      final Map<String, HttpResponse> replies = new HashMap();
+      final Map<String, HttpResponse> failures = new HashMap();
+      final Map<String, String> timeouts = new HashMap();
+      final Map<String, String> errors = new HashMap();
       for ( String t : getTo() ) {
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
@@ -179,21 +185,20 @@ Also supports send and forget, immediately returning OK.`,
                 HttpClient client = client_.get();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 if ( response.statusCode() == HttpServletResponse.SC_OK ) {
-                  logger.debug("response", url, response.statusCode(), response.body());
-                  replies.put(url, response.statusCode());
+                  replies.put(url, response);
                 } else {
-                  logger.warning("response", url, response.statusCode(), response.body());
-                  failures.put(url, response.statusCode());
+                  failures.put(url, response);
                 }
               } catch (HttpTimeoutException e) {
                 logger.warning(url, e.getMessage());
                 timeouts.put(url, e.getMessage());
               } catch (java.io.IOException | InterruptedException e) {
                 logger.error(url, e.getMessage());
-                failures.put(url, e.getMessage());
+                errors.put(url, e.getMessage());
               }
-            } catch (Throwable t) {
-              logger.error(t);
+            } catch (Throwable th) {
+              logger.error(th);
+              errors.put(t, th.getMessage());
             }
           }
         });
@@ -215,24 +220,41 @@ Also supports send and forget, immediately returning OK.`,
           break;
         }
         if ( replies.size() > 0 ) {
-          resp.setStatus(HttpServletResponse.SC_OK);
+          Map.Entry<String, HttpResponse> entry = replies.entrySet().iterator().next();
+          Object body = entry.getValue().body();
+          logger.debug("response", entry.getKey(), entry.getValue().statusCode(), entry.getValue().body());
+          resp.setContentType(req.getContentType());
+          resp.setStatus(entry.getValue().statusCode());
+          PrintWriter out = x.get(PrintWriter.class);
+          out.print(body);
           return;
         }
-        if ( failures.size() == getTo().length ) {
-          logger.warning("failed");
-          resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-          return;
-        }
-        if ( timeouts.size() == getTo().length ) {
-          logger.warning("timeout");
-          resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-          return;
+        if ( failures.size() + timeouts.size() + errors.size() == getTo().length ) {
+          if ( failures.size() > 0 ) {
+            Map.Entry<String, HttpResponse> entry = failures.entrySet().iterator().next();
+            Object body = entry.getValue().body();
+            logger.warning("response", entry.getKey(), entry.getValue().statusCode(), body);
+            DigUtil.outputFOAMException(x, new FOAMException(String.valueOf(body)), entry.getValue().statusCode(), (Format) parameters.get(Format.class));
+            return;
+          }
+          if ( errors.size() > 0 ) {
+            Map.Entry<String, String> entry = errors.entrySet().iterator().next();
+            logger.error("response", entry.getKey(), entry.getValue());
+            DigUtil.outputFOAMException(x, new FOAMException(entry.getValue()), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, (Format) parameters.get(Format.class));
+            return;
+          }
+          if ( timeouts.size() > 0 ) {
+            Map.Entry<String, String> entry = timeouts.entrySet().iterator().next();
+            logger.warning("response", entry.getKey(), entry.getValue());
+            DigUtil.outputFOAMException(x, new FOAMException(entry.getValue()), HttpServletResponse.SC_GATEWAY_TIMEOUT, (Format) parameters.get(Format.class));
+            return;
+          }
         }
       }
 
       // timeout
       logger.error("timeout");
-      resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      DigUtil.outputFOAMException(x, new FOAMException("Timeout"), HttpServletResponse.SC_GATEWAY_TIMEOUT, (Format) parameters.get(Format.class));
       `
     },
     {

@@ -460,6 +460,7 @@ foam.POM({
     { name: "http/ProxyWebAgent",                                                         flags: "js|java" },
     { name: "http/WebAgent",                                                              flags: "js|java" },
     { name: "http/SendErrorHandler",                                                      flags: "js|java" },
+    { name: "http/test/DIGBroadcastWebAgentTest",                                      flags: "js|java" },
     { name: "dao/Operation",                                                              flags: "js|java" },
     { name: "doc/DocumentationView",                                                      flags: "js" },
     { name: "demo/relationship/CourseType",                                               flags: "js|java" },
