@@ -706,13 +706,7 @@ task('Set environmental variables needed by Java.', [], function setenv() {
 });
 
 
-function usage() {
-  console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
-  Object.keys(ARGS).forEach(a => {
-    console.log('  -' + a + ': ' + ARGS[a][0]);
-  });
-  console.log('\nTasks:');
-
+function moreUsage() {
   var ts = { ...tasks };
   var depth = 1;
   function printTask(t) {
@@ -729,9 +723,7 @@ function usage() {
   Object.keys(ts).sort().forEach(t => {
     printTask(t);
   });
-  quit(0);
 }
-
 
 const ARGS = {
   b: [ 'run all benchmarks.',
@@ -757,7 +749,6 @@ const ARGS = {
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
     () => { statusNanos(); quit(0); } ],
-  h: [ 'Print usage information.', usage ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',
@@ -844,9 +835,7 @@ const ARGS = {
       quit(0);
     } ],
   z: [ 'Daemonize into the background, will write PID into $PIDFILE environment variable.',
-    () => DAEMONIZE = true ],
-  '?': [ 'Usage',
-    () => ARGS.h[1]() ]
+    () => DAEMONIZE = true ]
 };
 
 
@@ -895,7 +884,7 @@ task(
 'Build everything specified by flags.',
 [ 'clean', 'setenv', 'deleteRuntimeJournals', 'deleteRuntimeLogs', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
-  processSingleCharArgs(ARGS);
+  processSingleCharArgs(ARGS, moreUsage);
   setenv();
 
   stopNanos();

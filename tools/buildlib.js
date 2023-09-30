@@ -137,7 +137,23 @@ function comma(list, value) {
 
 
 // TODO: move usage() support here.
-function processSingleCharArgs(ARGS) {
+function processSingleCharArgs(ARGS, moreUsage) {
+  function usage() {
+    console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
+    Object.keys(ARGS).forEach(a => {
+      console.log('  -' + a + ': ' + ARGS[a][0]);
+    });
+    console.log('\nTasks:');
+
+    moreUsage && moreUsage();
+
+    process.exit(0);
+  }
+
+  var USAGE = [ 'Print usage information.', usage ];
+  if ( ! ARGS.h    ) ARGS.h    = USAGE;
+  if ( ! ARGS['?'] ) ARGS['?'] = USAGE;
+
   const args = process.argv.slice(2);
   for ( var i = 0 ; i < args.length ; i++ ) {
     var arg = args[i];
