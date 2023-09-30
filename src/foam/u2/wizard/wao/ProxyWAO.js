@@ -14,6 +14,16 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.u2.wizard.wao.WAO',
       name: 'delegate',
+      adapt: function(_, n) {
+        if ( typeof n === 'string' ) {
+          var cls = foam.lookup(n);
+          return cls?.create() || n;
+        } if ( typeof n === 'object' && n.class ) {
+          var cls = foam.lookup(n.class);
+          return cls?.create(n, this) || n;
+        }
+        return n;
+      },
       factory: function() { return foam.u2.wizard.wao.NullWAO.create(); }
     }
   ]
