@@ -222,7 +222,7 @@ Otherwise, using AsyncAssemblyLine waits for all calls to fail before reporting 
         if ( replies.size() > 0 ) {
           Map.Entry<String, HttpResponse> entry = replies.entrySet().iterator().next();
           Object body = entry.getValue().body();
-          logger.debug("response", entry.getKey(), entry.getValue().statusCode(), entry.getValue().body());
+          logger.debug("response", entry.getKey(), entry.getValue().statusCode(), body);
           resp.setContentType(req.getContentType());
           resp.setStatus(entry.getValue().statusCode());
           PrintWriter out = x.get(PrintWriter.class);
