@@ -707,6 +707,7 @@ task('Set environmental variables needed by Java.', [], function setenv() {
 
 
 function moreUsage() {
+  console.log('\nTasks:');
   var ts = { ...tasks };
   var depth = 1;
   function printTask(t) {

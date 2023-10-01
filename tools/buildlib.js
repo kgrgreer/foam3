@@ -143,7 +143,6 @@ function processSingleCharArgs(ARGS, moreUsage) {
     Object.keys(ARGS).forEach(a => {
       console.log('  -' + a + ': ' + ARGS[a][0]);
     });
-    console.log('\nTasks:');
 
     moreUsage && moreUsage();
 
