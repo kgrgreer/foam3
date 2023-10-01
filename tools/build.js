@@ -99,7 +99,6 @@ var
   POM                       = 'pom',
   PROFILER                  = false,
   PROFILER_PORT             = 8849,
-  RESOURCES                 = '',
   RESTART_ONLY              = false,
   RESTART                   = false,
   RUN_JAR                   = false,
@@ -346,29 +345,11 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
 
-
-// TODO: Document copy failing on jenkins with permission errors
-// task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
-//   deployDocuments();
-//   deployJournals(); // should run last
-// });
-task('Deploy documents, journals and other resources.', [ 'deployJournals', 'deployResources' ], function deploy() {
+// task('Deploy documents, journals.', [ 'deployDocuments','deployJournals'], function deploy() {
+task('Deploy journals.', [ 'deployJournals'], function deploy() {
   if ( ! RUN_JAR && ! TEST && ! BENCHMARK ) {
     deployJournals();
   }
-});
-
-
-task('Copy additional files from RESOURCES directories to be added to Jar file.', [], function deployResources() {
-  RESOURCES.split(',').forEach(res => {
-    if ( ! res )
-      return;
-
-    var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
-    if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_OUT);
-    }
-  });
 });
 
 
@@ -728,7 +709,11 @@ function moreUsage() {
 
 const ARGS = {
   b: [ 'run all benchmarks.',
-    () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
+    () => {
+      BENCHMARK = true;
+      MODE = 'BENCHMARK';
+      DELETE_RUNTIME_JOURNALS = true;
+    } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
     args => { ARGS.b[1](); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
@@ -775,12 +760,6 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
-  R: [ 'deployment directories with resources to add to Jar file. This option should follow -u to preserve order of resource directories',
-       args => {
-         RESOURCES = '';
-         RESOURCES = comma(RESOURCES, args);
-       }
-     ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -791,7 +770,6 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
-      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
