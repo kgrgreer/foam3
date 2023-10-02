@@ -4,7 +4,7 @@
 
 const fs       = require('fs');
 const { join } = require('path');
-const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('../../buildlib');
+const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('../../buildlib');
 
 /*
 #!/bin/bash
@@ -86,7 +86,7 @@ const ARGS = {
   U: [ 'User to run script as.',       arg => RUN_USER = arg ],
   V: [ 'Set version.',                 arg => VERSION = arg ],
   W: [ 'Set web port.',                arg => WEB_PORT = arg ],
-  Z: [ 'Set demonize.',                () => DEMONIZE = true ],
+  Z: [ 'Set demonize.',                () => DEMONIZE = true ]
 };
 
 processSingleCharArgs(ARGS);
@@ -143,6 +143,22 @@ if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${R
     exec sudo -u "${RUN_USER}" -- "$0" "$@"
 fi
 
+*/
+
+if ( RUN_USER ) {
+
+}
+
+
+buildEnv({
+  JOURNAL_HOME:  HOME + '/journals',
+  DOCUMENT_HOME: HOME + '/documents',
+  LOG_HOME:      HOME + '/logs',
+  JAVA_OPTS:     `-Dresource.journals.dir=journals -Dhostname=${HOST_NAME}`
+});
+
+/*
+
 JAVA_OPTS=""
 export JOURNAL_HOME="${NANOPAY_HOME}/journals"
 export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
@@ -153,16 +169,33 @@ if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
     . "${NANOPAY_HOME}/etc/shrc.local"
 fi
 
+
+
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 if [ -z "`echo "${JAVA_OPTS}" | grep "http.port"`" ] && [ ! -z ${WEB_PORT} ]; then
     JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
 fi
+*/
+if ( JAVA_OPTS.indexOf("http.port") == -1 && WEB_PORT ) {
+  JAVA_OPTS += ' -Dhttp.port=' + WEB_PORT;
+}
+
+JAVA_OPTS += ' -DHOME=' + HOME;
+JAVA_OPTS += ' -DJOURNAL_HOME=' + JOURNAL_HOME;
+JAVA_OPTS += ' -DDOCUMENT_HOME=' + JOURNAL_HOME;
+JAVA_OPTS += ' -DLOG_HOME=' + LOG_HOME;
+/*
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${JOURNAL_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${DOCUMENT_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${LOG_HOME}"
 
+*/
+if ( FS === 'ro' ) {
+  JAVA_OPTS += ' -DFS=ro';
+}
+/*
 if [[ ${FS} = "ro" ]]; then
     JAVA_OPTS="${JAVA_OPTS} -DFS=ro"
 fi
@@ -173,9 +206,22 @@ if [[ ${JAVA_OPTS} != *"CLUSTER"* ]]; then
     JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
   fi
 fi
+*/
+if ( PROFILER ) {
+  JAVA_OPTS += `-agentpath:${PROFILER_AGENT_PATH}=port=${PROFILER_PORT}`;
+}
+/*
 if [ "$PROFILER" -eq 1 ]; then
     JAVA_OPTS="${JAVA_OPTS} -agentpath:${PROFILER_AGENT_PATH}=port=$PROFILER_PORT"
 fi
+
+*/
+
+if ( VERSION ) {
+  JAR = `"${HOME}/lib/${APP_NAME}-${VERSION}.jar`;
+} else {
+}
+/*
 
 if [ ! -z $VERSION ]; then
     JAR="${NANOPAY_HOME}/lib/${APP_NAME}-${VERSION}.jar"
@@ -188,6 +234,15 @@ export RES_JAR_HOME="${JAR}"
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 echo ${JAVA_OPTS} > ${NANOPAY_HOME}/logs/opts.txt
 echo JAVA_OPTS=${JAVA_OPTS}
+*/
+
+if ( DAEMONIZE ) {
+} else {
+  execSync(`java -server -jar "${JAR}"`);
+}
+
+
+/*
 if [ "$DAEMONIZE" -eq 1 ]; then
     nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 3>&1 &
     echo $! > "${NANOS_PIDFILE}"
@@ -197,3 +252,4 @@ fi
 
 exit 0
 */
+process.exit(0);
