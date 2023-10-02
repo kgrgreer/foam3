@@ -56,9 +56,9 @@ function bool(s) {
 }
 
 var
-  HOST_NAME     = '',
-  APP_NAME      = 'demo',
-  HOME          ='/opt/demo',
+  HOST_NAME     = execSync('hostname -s').toString(),
+  APP_NAME      = 'foam',
+  HOME          ='/opt/foam',
   WEB_PORT      = 8080,
   DEBUG_PORT    ="*:5005",
   DEBUG_SUSPEND = false,
