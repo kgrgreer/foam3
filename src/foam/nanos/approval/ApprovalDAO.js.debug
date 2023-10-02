@@ -101,7 +101,7 @@ foam.CLASS({
               }
             }
           }
-        } else if ( ! (old != null && old.getStatus() != request.getStatus()               || old == null && request.getStatus() != ApprovalStatus.REQUESTED) && ( obj instanceof net.nanopay.fx.afex.AFEXBusinessApprovalRequest ) && ! (((net.nanopay.fx.afex.AFEXBusinessApprovalRequest) obj).getClassification().equals("AFEX Business")) ) {
+        } else if ( ! (old != null && old.getStatus() != request.getStatus()               || old == null && request.getStatus() != ApprovalStatus.REQUESTED) ) {
           logger.warning(this.getClass().getSimpleName(), "test","A", "old", old, "new", request);
         }
         return request;
