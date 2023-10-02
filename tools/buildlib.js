@@ -97,6 +97,20 @@ function copyDir(src, dst) {
 }
 
 
+function buildEnv(m) {
+  globalThis.ENV = m;
+
+  Object.keys(m).forEach(k => {
+    let val = m[k];
+    Object.defineProperty(globalThis, k, {
+      get: function()  { return typeof val === 'function' ? val() : val; },
+      set: function(v) { val = v; }
+    });
+    globalThis[k] = val;
+  });
+}
+
+
 function emptyDir(dir) {
   rmdir(dir);
   ensureDir(dir);
@@ -174,6 +188,7 @@ function processSingleCharArgs(ARGS, moreUsage) {
 
 
 exports.adaptOrCreateArgs     = adaptOrCreateArgs;
+exports.buildEnv              = buildEnv;
 exports.comma                 = comma;
 exports.copyDir               = copyDir;
 exports.copyFile              = copyFile;

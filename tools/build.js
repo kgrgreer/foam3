@@ -71,7 +71,7 @@ ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 
 const fs       = require('fs');
 const { join } = require('path');
-const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
+const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -600,20 +600,6 @@ task('Create empty build and deployment directory structures if required.', [], 
     error(`Directory is not writable! Please run 'sudo chown -R $USER ${APP_ROOT}' first.`);
   }
 });
-
-
-function buildEnv(m) {
-  globalThis.ENV = m;
-
-  Object.keys(m).forEach(k => {
-    let val = m[k];
-    Object.defineProperty(globalThis, k, {
-      get: function()  { return typeof val === 'function' ? val() : val; },
-      set: function(v) { val = v; }
-    });
-    globalThis[k] = val;
-  });
-}
 
 
 function exportEnvs() {
