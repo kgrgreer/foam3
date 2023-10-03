@@ -867,13 +867,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"integration.api-dug.browseTitle"
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.date.DateTimePicker.SELECT_DATE",target:"Selecione a Data"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.date.DateTimePicker.SELECT_DATE",target:"Selecione a Data"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.BoxText",target:"Escolha os arquivos para fazer upload ou arraste e solte-os aqui"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.FileRestrictText",target:"* jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx apenas, máximo de 10 MB"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.FileTypeError",target:"Formato de arquivo errado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.FileSizeError",target:"O tamanho do arquivo excede 10 MB"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.CHOOSE_FILE",target:"Escolher arquivo"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.CANCEL_BUTTON.label",target:"Cancelar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.UploadModal.SUBMIT_BUTTON.label",target:"Enviar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ProfilePictureView.UploadImageLabel",target:"Escolher arquivo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ProfilePictureView.RemoveImageLabel",target:"Remover arquivo"})

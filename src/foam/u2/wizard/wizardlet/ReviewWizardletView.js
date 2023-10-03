@@ -60,7 +60,9 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
+      var wizardletId = ctrl.__subContext__.crunchController.lastActiveWizard.currentWizardlet.id;
       this.addClass(this.myClass())
+        .enableClass(wizardletId.replaceAll(' ', '-').replaceAll('.', '-'), wizardletId)
         .start()
           .start().addClass('h200').show(this.showTitle$).add(this.title$).end()
           .start().addClass(this.myClass('generic-container'))

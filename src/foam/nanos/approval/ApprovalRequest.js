@@ -44,8 +44,7 @@ foam.CLASS({
     'foam.nanos.approval.CustomViewReferenceApprovable',
     'foam.nanos.auth.LifecycleState',
     'foam.u2.dialog.Popup',
-    'foam.u2.stack.StackBlock',
-    'net.nanopay.admin.model.AccountStatus'
+    'foam.u2.stack.StackBlock'
   ],
 
   imports: [
@@ -877,8 +876,7 @@ foam.CLASS({
         // Disabled users are not authorized to access their ucjs
         let createdFor = await this.userDAO.find(this.createdFor);
         if (
-          createdFor.lifecycleState === this.LifecycleState.DISABLED ||
-          createdFor.status === this.AccountStatus.DISABLED || ! createdFor.enabled
+          createdFor.lifecycleState === this.LifecycleState.DISABLED || ! createdFor.enabled
         ) {
           this.notify('User is disabled', '', this.LogLevel.ERROR, true);
           return;

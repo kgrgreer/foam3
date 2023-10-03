@@ -28,18 +28,18 @@ foam.CLASS({
           })
         }
         return res;
-      }
+      }.bind(this);
       if ( navigator.permissions ) {
         return navigator.permissions.query({ name: 'clipboard-write' }).then(result => {
           if (result.state === "granted" || result.state === "prompt") {
-            return tryCopy().bind(this);
+            return tryCopy();
           }
           if ( provideNotifications )
             this.ctrl.notify?.('Copy Failed', 'Permission Denied', 'ERROR', true);
           return Promise.reject(new Error('Permission Denied')) ;
         })
       } else {
-        return tryCopy().bind(this);
+        return tryCopy();
       }
     },
     function cut() {},
