@@ -58,11 +58,9 @@ foam.CLASS({
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
         return s;
-        // Disable client-side triming because it causes problems in onKey mode
-        // It is still performed on the (Java) server.
-        // return p.trim ? s.trim() : s;
       }
     },
+    [ 'normalize', function(value, p) { return p.trim ? value.trim() : value; } ],
     [ 'type', 'String' ],
     [ 'value', '' ]
   ]

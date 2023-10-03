@@ -114,6 +114,14 @@ foam.CLASS({
     'postSet',
 
     /**
+      A function of the form:
+        Object function(value, property)
+      that normalizes an property value in some way. Like postSet but only
+      called when done editing a property.
+    */
+    'normalize',
+
+    /**
       A dynamic function which defines this Property's value.
       Similar to 'factory', except that the function takes arguments
       which are named the same as other properties of this object.
