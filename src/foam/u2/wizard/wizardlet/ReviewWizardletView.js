@@ -61,6 +61,7 @@ foam.CLASS({
       var self = this;
       this.SUPER();
       this.addClass(this.myClass())
+        .enableClass(this.title.replaceAll(' ', '-'), this.title$)
         .start()
           .start().addClass('h200').show(this.showTitle$).add(this.title$).end()
           .start().addClass(this.myClass('generic-container'))
