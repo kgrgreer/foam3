@@ -29,6 +29,7 @@ Suitable for usage against backends that don't support listen(), such as plain H
 
   methods: [
     function put_(x, obj) {
+      obj.normalizeObj();
       var self = this;
       return this.SUPER(null, obj).then(function(obj) {
         self.on.put.pub(obj);
