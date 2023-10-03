@@ -37,7 +37,7 @@ foam.CLASS({
     {
       name: 'autoSave',
       isIdled: true,
-      delay: 15000,
+      delay: 1500,
       code: function(wizardlet) {
         wizardlet.save({ reloadData: wizardlet.reloadOnAutoSave });
       }
