@@ -49,13 +49,6 @@ foam.CLASS({
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
 
-    // var parser2 = new FScriptParser(net.nanopay.payroll.PayrollTransaction.getOwnClassInfo());
-    // net.nanopay.payroll.PayrollTransaction tx = new net.nanopay.payroll.PayrollTransaction();
-    // tx.setPayPeriods(2);
-    // sps.setString("1.2 * (24000 / payPeriods)");
-    // var r = ((Double)((Expr) parser2.parse(sps, px).value()).f(tx));
-    // test(((Double)((Expr) parser2.parse(sps, px).value()).f(tx))==10000.0, "expected: 1.2 * (24000/2) == 14400.0, found: "+r);
-
     var parser = new FScriptParser(FScriptParserTestUser.FIRST_NAME);
     sps.setString("address==null");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address==null");
