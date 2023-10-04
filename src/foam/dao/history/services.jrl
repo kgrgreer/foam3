@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.boot.NSpec",
-	"name":"historyRecordService",
+  "name":"historyRecordService",
   "serve":true,
   "boxClass":"foam.dao.history.HistoryRecordServiceSkeleton",
   "serviceClass":"foam.dao.history.ServerHistoryRecordService",
