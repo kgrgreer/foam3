@@ -17,18 +17,3 @@ p({
   "onboarded":true,
   "loginEnabled":true
 })
-p({
-  "class":"foam.nanos.auth.User",
-  "id":2,
-  "spid":"foam",
-  "firstName":"Medusa",
-  "lastName":"API",
-  "email":"medusa",
-  "password":"",
-  "group":"system",
-  "emailVerified":true,
-  "status":2,
-  "lifecycleState":1,
-  "onboarded":true,
-  "loginEnabled":false
-})
