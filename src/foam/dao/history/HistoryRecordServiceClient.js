@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.dao.history',
-  name: 'ClientHistoryRecordService',
+  name: 'HistoryRecordServiceClient',
 
   implements: [
     'foam.dao.history.HistoryRecordService'

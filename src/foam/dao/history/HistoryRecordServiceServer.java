@@ -13,7 +13,7 @@ import foam.mlang.order.Desc;
 import java.util.stream.Collectors;
 import java.util.List;
 
-public class ServerHistoryRecordService implements HistoryRecordService {
+public class HistoryRecordServiceServer implements HistoryRecordService {
   @Override
   public HistoryRecord getRecord(X x, DAO dao, String propertyName) {
     if ( dao == null ) {
