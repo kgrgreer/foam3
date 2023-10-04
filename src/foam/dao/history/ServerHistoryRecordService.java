@@ -19,6 +19,10 @@ public class ServerHistoryRecordService implements HistoryRecordService {
     if ( dao == null ) {
       throw new IllegalStateException("DAO does not exist");
     }
+
+    if ( ! HistoryRecord.class.isAssignableFrom(dao.getOf().getObjClass()) ) {
+      throw new IllegalStateException("DAO must be of HistoryRecord");
+    }
     
     ArraySink sink = (ArraySink) dao.orderBy(new Desc(HistoryRecord.TIMESTAMP))
       .limit(1)
@@ -31,6 +35,10 @@ public class ServerHistoryRecordService implements HistoryRecordService {
   public HistoryRecord[] getRecords(X x, DAO dao, String propertyName) {
     if ( dao == null ) {
       throw new IllegalStateException("DAO does not exist");
+    }
+
+    if ( ! HistoryRecord.class.isAssignableFrom(dao.getOf().getObjClass()) ) {
+      throw new IllegalStateException("DAO must be of HistoryRecord");
     }
 
     List<HistoryRecord> records = ((ArraySink) dao.select(new ArraySink())).getArray();
