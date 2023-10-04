@@ -14,6 +14,9 @@ foam.INTERFACE({
     {
       name: 'getRecord',
       type: 'HistoryRecord',
+      documentation: `
+        Returns the latest record that has 'propertyName' property update
+      `,
       async: true,
       args: [
         { name: 'x',              type: 'Context' },
@@ -24,6 +27,9 @@ foam.INTERFACE({
     {
       name: 'getRecords',
       type: 'HistoryRecord[]',
+      documentation: `
+        Returns all the records that have 'propertyName' property update
+      `,
       async: true,
       args: [
         { name: 'x',              type: 'Context' },
