@@ -7,7 +7,7 @@
 foam.INTERFACE({
   package: 'foam.dao.history',
   name: 'HistoryRecordService',
-
+  client: true,
   skeleton: true,
 
   methods: [

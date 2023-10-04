@@ -6,7 +6,7 @@ p({
   "serviceClass":"foam.dao.history.HistoryRecordServiceServer",
   "client":"""
     {
-      "class": "foam.dao.history.HistoryRecordServiceClient",
+      "class": "foam.dao.history.ClientHistoryRecordService",
       "delegate": {
         "class": "foam.box.SessionClientBox",
         "delegate": {
