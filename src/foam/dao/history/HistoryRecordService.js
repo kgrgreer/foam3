@@ -18,11 +18,7 @@ foam.INTERFACE({
         Returns the latest record that has 'propertyName' property update
       `,
       async: true,
-      args: [
-        { name: 'x',              type: 'Context' },
-        { name: 'dao',            type: 'foam.dao.DAO' },
-        { name: 'propertName',    type: 'String' }
-      ]
+      args: 'Context x, foam.dao.DAO dao, String propertyName'
     },
     {
       name: 'getRecords',
@@ -31,11 +27,7 @@ foam.INTERFACE({
         Returns all the records that have 'propertyName' property update
       `,
       async: true,
-      args: [
-        { name: 'x',              type: 'Context' },
-        { name: 'dao',            type: 'foam.dao.DAO' },
-        { name: 'propertName',    type: 'String' }
-      ]
+      args: 'Context x, foam.dao.DAO dao, String propertyName'
     }
   ]
 });
