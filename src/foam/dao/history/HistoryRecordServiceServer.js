@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.dao.history',
-  name: 'HistoryRecordServiceImpl',
+  name: 'HistoryRecordServiceServer',
   implements: [ 'foam.dao.history.HistoryRecordService' ],
 
   javaImports: [

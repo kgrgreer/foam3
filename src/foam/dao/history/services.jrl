@@ -3,7 +3,7 @@ p({
   "name":"historyRecordService",
   "serve":true,
   "boxClass":"foam.dao.history.HistoryRecordServiceSkeleton",
-  "serviceClass":"foam.dao.history.HistoryRecordServiceImpl",
+  "serviceClass":"foam.dao.history.HistoryRecordServiceServer",
   "client":"""
     {
       "class": "foam.dao.history.ClientHistoryRecordService",
