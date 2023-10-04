@@ -9,13 +9,22 @@ package foam.dao.history;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.mlang.order.Desc;
 import java.util.stream.Collectors;
 import java.util.List;
 
 public class ServerHistoryRecordService implements HistoryRecordService {
   @Override
   public HistoryRecord getRecord(X x, DAO dao, String propertyName) {
-    return null;
+    if ( dao == null ) {
+      throw new IllegalStateException("DAO does not exist");
+    }
+    
+    ArraySink sink = (ArraySink) dao.orderBy(new Desc(HistoryRecord.TIMESTAMP))
+      .limit(1)
+      .select(new ArraySink());
+    
+    return sink.getArray().size() > 0 ? (HistoryRecord) sink.getArray().get(0) : null;
   }
 
   @Override
