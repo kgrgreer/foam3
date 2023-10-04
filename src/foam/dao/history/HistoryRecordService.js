@@ -8,10 +8,6 @@ foam.INTERFACE({
   package: 'foam.dao.history',
   name: 'HistoryRecordService',
 
-  javaImports: [
-    'foam.dao.DAO'
-  ],
-
   skeleton: true,
 
   methods: [
@@ -21,7 +17,7 @@ foam.INTERFACE({
       async: true,
       args: [
         { name: 'x',              type: 'Context' },
-        { name: 'dao',            type: 'DAO' },
+        { name: 'dao',            type: 'foam.dao.DAO' },
         { name: 'propertName',    type: 'String' }
       ]
     },
@@ -31,7 +27,7 @@ foam.INTERFACE({
       async: true,
       args: [
         { name: 'x',              type: 'Context' },
-        { name: 'dao',            type: 'DAO' },
+        { name: 'dao',            type: 'foam.dao.DAO' },
         { name: 'propertName',    type: 'String' }
       ]
     }
