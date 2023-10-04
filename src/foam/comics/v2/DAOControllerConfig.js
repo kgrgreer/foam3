@@ -359,7 +359,8 @@ foam.CLASS({
     {
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
-      value: null
+      value: null,
+      cloneProperty: function() { }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -379,7 +380,8 @@ foam.CLASS({
         var lastIndex = o.lastIndexOf('.');
         var classObj = foam.lookup(o.substring(0, lastIndex));
         return classObj[o.substring(lastIndex + 1)];
-      }
+      },
+      cloneProperty: function() { }
     },
     {
       class: 'Map',
