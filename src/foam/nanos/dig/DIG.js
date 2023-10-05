@@ -462,7 +462,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
-       var url = this.postURL + "&sessionId=" + this.sessionId || localStorage.defaultSession;
+        var url = this.postURL + "&sessionId=" + (this.sessionId || localStorage.defaultSession);
         var req = this.HTTPRequest.create({
           url: url,
           method: 'POST',
