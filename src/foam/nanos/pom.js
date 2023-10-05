@@ -509,6 +509,7 @@ foam.POM({
     { name: "dig/exception/UnknownIdException",                                           flags: "js|java" },
     { name: "dig/Argument",                                                               flags: "js|java" },
     { name: "dig/DIG",                                                                    flags: "js|java" },
+    { name: "dig/DIGDetailView",                                                          flags: "js" },
     { name: "dig/DigFileUploadView",                                                      flags: "js" },
     { name: "dig/DigSnippetView",                                                         flags: "js" },
     { name: "dig/DUGDigestConfig",                                                        flags: "js|java" },
