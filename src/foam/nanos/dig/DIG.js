@@ -251,7 +251,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       },
       view: {
         class: 'foam.u2.view.DualView',
-        viewa: {class: 'foam.u2.tag.TextArea', rows: 16, cols: 120},
+        viewa: {class: 'foam.u2.tag.TextArea', rows: 32, cols: 120},
         viewb: {class: 'foam.nanos.dig.DIGDetailView' }
       }
     },
