@@ -159,14 +159,14 @@ foam.SCRIPT({
   foam.core.FObject.describe = function(opt_name) {
     console.log('CLASS:  ', this.name);
     console.log('extends:', this.model_.extends);
-    console.log('Axiom Type           Source Class   Name                 Source Path');
-    console.log('-------------------------------------------------------------------------------------------------');
+    console.log('Axiom Type             Source Class   Name                                          Source Path');
+    console.log('----------------------------------------------------------------------------------------------------------------------------');
     for ( var key in this.axiomMap_ ) {
       var a = this.axiomMap_[key];
       console.log(
-        foam.String.pad(a.cls_ ? a.cls_.name : 'anonymous', 20),
+        foam.String.pad(a.cls_ ? a.cls_.name : 'anonymous', 22),
         foam.String.pad((a.sourceCls_ && a.sourceCls_.name) || 'unknown', 14),
-        foam.String.pad(a.name, 20),
+        foam.String.pad(a.name, 45),
         a.source || '');
     }
     console.log('\n');
