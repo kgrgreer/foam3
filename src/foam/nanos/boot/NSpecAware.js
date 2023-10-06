@@ -12,7 +12,8 @@ foam.INTERFACE({
     {
       name: 'nSpec',
       class: 'FObjectProperty',
-      of: 'foam.nanos.boot.NSpec'
+      of: 'foam.nanos.boot.NSpec',
+      transient: true
     }
   ]
 });
