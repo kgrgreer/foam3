@@ -755,8 +755,8 @@ NOTE: when using the java client, the first call to a newly started instance may
       try {
         Object result = null;
         String text = data.toString();
-        Class of = getOf() != null ? getOf().getObjClass() : null;
         if ( ! SafetyUtil.isEmpty(text) ) {
+          Class of = getOf() != null ? getOf().getObjClass() : null;
           if ( text.startsWith("[") ) {
             result = parser_.get().parseStringForArray(text, of);
             // convert Object[] to FObject[]
