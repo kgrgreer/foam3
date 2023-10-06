@@ -132,7 +132,6 @@ foam.POM({
     { name: "auth/DuplicateUserNameException",                                            flags: "js|java" },
     { name: "auth/Group",                                                                 flags: "js|java" },
     { name: "auth/GroupPermissionJunctionRefinement",                                     flags: "js|java" },
-    { name: "auth/HumanNameTrait",                                                        flags: "js|java" },
     { name: "auth/InvalidPasswordException",                                              flags: "js|java" },
     { name: "auth/LifecycleState",                                                        flags: "js|java" },
     { name: "auth/LifecycleAware",                                                        flags: "js|java" },
