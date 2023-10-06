@@ -415,7 +415,9 @@ NOTE: when using the java client, the first call to a newly started instance may
     {
       name: 'secure',
       class: 'Boolean',
-      javaFactory: `return getPostURL().contains("https");`,
+      javaFactory: `
+      return ( ! SafetyUtil.isEmpty(getPostURL())) && getPostURL().contains("https");
+      `,
       visibility: 'HIDDEN'
     },
     // {
@@ -571,16 +573,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       name: 'find_',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'id',
-          type: 'Object'
-        }
-      ],
+      args: 'Context x, Object id',
       type: 'foam.core.FObject',
       javaCode: `
       Object result = submit(x, DOP.SELECT, "id=" + id.toString());
@@ -590,6 +583,13 @@ NOTE: when using the java client, the first call to a newly started instance may
           return ((FObject[]) result)[0];
         }
         return null;
+      }
+      if ( result instanceof String &&
+           getLastResponseCode() != 200 ) {
+        throw new FOAMException((String) result);
+      }
+      if ( result instanceof String ) {
+        return new foam.core.StringHolder((String) result);
       }
       return (FObject) result;
       `
@@ -602,16 +602,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'foam.core.FObject'
-        }
-      ],
+      args: 'Context x, foam.core.FObject obj',
       type: 'foam.core.FObject',
       javaCode: `
       // Special support for Sessions as they must go through SUGAR
@@ -622,7 +613,15 @@ NOTE: when using the java client, the first call to a newly started instance may
         return session;
       }
 
-      return (FObject) submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
+      Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
+      if ( result instanceof String &&
+           getLastResponseCode() != 200 ) {
+        throw new FOAMException((String) result);
+      }
+      if ( result instanceof String ) {
+        return new foam.core.StringHolder((String) result);
+      }
+      return (FObject) result;
       `
     },
     {
@@ -792,24 +791,21 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       name: 'buildUrl',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'dop',
-          type: 'foam.dao.DOP'
-        },
-        {
-          name: 'data',
-          type: 'String'
-        },
-      ],
+      args: 'Context x, foam.dao.DOP dop, String data',
       type: 'String',
       javaCode: `
       StringBuilder sb = new StringBuilder();
-      sb.append(getPostURL());
+      String postUrl = getPostURL();
+      if ( SafetyUtil.isEmpty(postUrl) ) {
+        if ( getSecure() ) {
+          sb.append("https://");
+        } else {
+          sb.append("http://");
+        }
+        sb.append(System.getProperty("hostname", "localhost"));
+        sb.append(":");
+        sb.append(System.getProperty("http.port", "8080"));
+      }
       sb.append("/service/");
       sb.append(getServiceName());
       sb.append("?cmd=");
