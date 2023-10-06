@@ -204,28 +204,34 @@ foam.INTERFACE({
       class: 'FObjectArray',
       of: 'CapabilityJunctionPayload',
       externalTransient: true,
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       flags: ['java']
     },
     {
       name: 'capabilityIds',
       class: 'StringArray',
       externalTransient: true,
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       flags: ['java']
     },
     {
       name: 'userCapabilityRequirements',
       class: 'StringArray',
       externalTransient: true,
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       flags: ['java']
     },
     {
       name: 'DAOKey',
       class: 'String',
       externalTransient: true,
-      visibility: 'RO',
+      visibility: 'HIDDEN',
       flags: ['java']
     }
   ]
