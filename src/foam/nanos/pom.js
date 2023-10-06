@@ -514,7 +514,6 @@ foam.POM({
     { name: "dig/DUGDigestConfig",                                                        flags: "js|java" },
     { name: "dig/DUGRule",                                                                flags: "js|java" },
     { name: "dig/DUGRuleAction",                                                          flags: "js|java" },
-    { name: "dig/ExternalDataAwareMixin",                                                 flags: "js" },
     { name: "dig/LinkView",                                                               flags: "js" },
     { name: "dig/ResultView",                                                             flags: "js" },
     { name: "dig/SUGAR",                                                                  flags: "js|java" },
