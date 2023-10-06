@@ -115,7 +115,8 @@ foam.CLASS({
       name: 'isClientException',
       class: 'Boolean',
       value: false,
-      hidden: true
+      hidden: true,
+      externalTransient: true
     }
   ],
 

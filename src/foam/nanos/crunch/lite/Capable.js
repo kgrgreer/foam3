@@ -198,73 +198,41 @@ foam.INTERFACE({
     },
   ],
 
-  methods: [
+  properties: [
     {
-      name: 'getCapablePayloads',
-      type: 'CapabilityJunctionPayload[]',
-      flags: ['java'],
-    },
-    {
-      name: 'setCapablePayloads',
-      flags: ['java'],
-      args: [
-        {
-          name: 'payloads',
-          type: 'CapabilityJunctionPayload[]'
-        }
-      ]
-    },
-    {
-      name: 'getCapabilityIds',
-      documentation: `
-        Getting the ids of the root capabilit(y/ies) required for the capable object.
-      `,
-      type: 'String[]',
-      flags: ['java'],
-    },
-    {
-      name: 'setCapabilityIds',
-      documentation: `
-        Setting the ids of the root capabilit(y/ies) required for the capable object.
-        Should be handled by using capable.addRequirement rather than directly setting.
-    `,
-      flags: ['java'],
-      args: [
-        {
-          name: 'ids',
-          type: 'String[]'
-        }
-      ]
-    },
-    {
-      name: 'getUserCapabilityRequirements',
-      flags: ['java'],
-      type: 'String[]'
-    },
-    {
-      name: 'setUserCapabilityRequirements',
-      flags: ['java'],
-      args: [
-        {
-          name: 'payloads',
-          type: 'String[]'
-        }
-      ]
-    },
-    {
-      name: 'getDAOKey',
-      type: 'String',
+      name: 'capablePayloads',
+      class: 'FObjectArray',
+      of: 'CapabilityJunctionPayload',
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       flags: ['java']
     },
     {
-      name: 'setDAOKey',
-      flags: ['java'],
-      args: [
-        {
-          name: 'daokey',
-          type: 'String'
-        }
-      ]
+      name: 'capabilityIds',
+      class: 'StringArray',
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      flags: ['java']
+    },
+    {
+      name: 'userCapabilityRequirements',
+      class: 'StringArray',
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      flags: ['java']
+    },
+    {
+      name: 'DAOKey',
+      class: 'String',
+      externalTransient: true,
+      visibility: 'HIDDEN',
+      flags: ['java']
     }
   ]
 });

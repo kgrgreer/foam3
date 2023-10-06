@@ -17,33 +17,47 @@ foam.CLASS({
       columnPermissionRequired: true,
       section: 'capabilityInformation',
       autoValidate: true,
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       name: 'userCapabilityRequirements',
       class: 'StringArray',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       name: 'isWizardIncomplete',
       class: 'Boolean',
       section: 'systemInformation',
       transient: true,
-      hidden: true
+      externalTransient: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'StringArray',
       name: 'capabilityIds',
       columnPermissionRequired: true,
-      section: 'capabilityInformation'
+      section: 'capabilityInformation',
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'DAOKey',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
+      externalTransient: true,
       visibility: 'HIDDEN'
     }
   ]
