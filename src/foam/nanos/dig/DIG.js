@@ -252,10 +252,16 @@ NOTE: when using the java client, the first call to a newly started instance may
       visibility: function(cmd) {
         return (cmd == 'PUT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      view: {
-        class: 'foam.u2.view.DualView',
-        viewa: {class: 'foam.u2.tag.TextArea', rows: 32, cols: 120},
-        viewb: {class: 'foam.nanos.dig.DIGDetailView' }
+      view: function(_, X) {
+        // Only Support entering data with a DetailView when the format is JSON,
+        // since that's the only format supported on the client.
+        return X.objData.format === 'JSON' ?
+          {
+            class: 'foam.u2.view.DualView',
+            viewa: {class: 'foam.u2.tag.TextArea', rows: 32, cols: 120},
+            viewb: {class: 'foam.nanos.dig.DIGDetailView' }
+          } :
+          {class: 'foam.u2.tag.TextArea', rows: 20, cols: 120} ;
       }
     },
     {
