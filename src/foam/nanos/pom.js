@@ -416,7 +416,7 @@ foam.POM({
     { name: "notification/ToastNotificationDAO",                                          flags: "js|java" },
     { name: "notification/ToastState",                                                    flags: "js|java" },
     { name: "notification/email/EmailConfig",                                             flags: "js|java" },
-    { name: "notification/email/EmailFolderAgent",                                        flags: "java" },
+    { name: "notification/email/EmailFolderAgent",                                        flags: "js|java" },
     { name: "notification/email/EmailMessage",                                            flags: "js|java" },
     { name: "notification/email/EmailMessagePropertyServiceRuleAction",                   flags: "js|java" },
     { name: "notification/email/EmailMessageStatusRuleAction",                            flags: "js|java" },
