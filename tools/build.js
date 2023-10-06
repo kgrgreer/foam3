@@ -71,7 +71,7 @@ ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 
 const fs       = require('fs');
 const { join } = require('path');
-const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
+const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -93,15 +93,12 @@ var
   GEN_JAVA                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
-//  IS_MAC                    = process.platform === 'darwin',
-//  IS_LINUX                  = process.platform === 'linux',
   JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
   POM                       = 'pom',
   PROFILER                  = false,
   PROFILER_PORT             = 8849,
-  RESOURCES                 = '',
   RESTART_ONLY              = false,
   RESTART                   = false,
   RUN_JAR                   = false,
@@ -187,27 +184,6 @@ function task(desc, dep, f) {
       var dur = ((end-start)/1000).toFixed(1);
       info(`Finished Task :: ${f.name} in ${dur} seconds`);
       rec[1] = dur;
-    }
-  }
-}
-
-
-function processArgs() {
-  const args = process.argv.slice(2);
-  for ( var i = 0 ; i < args.length ; i++ ) {
-    var arg = args[i];
-    if ( arg.startsWith('-') ) {
-      for ( var j = 1 ; j < arg.length ; j++ ) {
-        var a = arg.charAt(j);
-        var d = ARGS[a];
-        if ( d ) {
-          d[1](arg.substring(j+1));
-          if ( a >= 'A' && a <= 'Z' ) break;
-        } else {
-          console.log('Unknown argument "' + a + '"');
-          ARGS['h'][1]();
-        }
-      }
     }
   }
 }
@@ -369,29 +345,11 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
 
-
-// TODO: Document copy failing on jenkins with permission errors
-// task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
-//   deployDocuments();
-//   deployJournals(); // should run last
-// });
-task('Deploy documents, journals and other resources.', [ 'deployJournals', 'deployResources' ], function deploy() {
+// task('Deploy documents, journals.', [ 'deployDocuments','deployJournals'], function deploy() {
+task('Deploy journals.', [ 'deployJournals'], function deploy() {
   if ( ! RUN_JAR && ! TEST && ! BENCHMARK ) {
     deployJournals();
   }
-});
-
-
-task('Copy additional files from RESOURCES directories to be added to Jar file.', [], function deployResources() {
-  RESOURCES.split(',').forEach(res => {
-    if ( ! res )
-      return;
-
-    var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
-    if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_OUT);
-    }
-  });
 });
 
 
@@ -644,20 +602,6 @@ task('Create empty build and deployment directory structures if required.', [], 
 });
 
 
-function buildEnv(m) {
-  globalThis.ENV = m;
-
-  Object.keys(m).forEach(k => {
-    let val = m[k];
-    Object.defineProperty(globalThis, k, {
-      get: function()  { return typeof val === 'function' ? val() : val; },
-      set: function(v) { val = v; }
-    });
-    globalThis[k] = val;
-  });
-}
-
-
 function exportEnvs() {
   /** Export environment variables. **/
   Object.keys(ENV).forEach(k => {
@@ -729,13 +673,8 @@ task('Set environmental variables needed by Java.', [], function setenv() {
 });
 
 
-function usage() {
-  console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
-  Object.keys(ARGS).forEach(a => {
-    console.log('  -' + a + ': ' + ARGS[a][0]);
-  });
+function moreUsage() {
   console.log('\nTasks:');
-
   var ts = { ...tasks };
   var depth = 1;
   function printTask(t) {
@@ -752,13 +691,15 @@ function usage() {
   Object.keys(ts).sort().forEach(t => {
     printTask(t);
   });
-  quit(0);
 }
-
 
 const ARGS = {
   b: [ 'run all benchmarks.',
-    () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
+    () => {
+      BENCHMARK = true;
+      MODE = 'BENCHMARK';
+      DELETE_RUNTIME_JOURNALS = true;
+    } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
     args => { ARGS.b[1](); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
@@ -780,7 +721,6 @@ const ARGS = {
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
     () => { statusNanos(); quit(0); } ],
-  h: [ 'Print usage information.', usage ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',
@@ -806,12 +746,6 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
-  R: [ 'deployment directories with resources to add to Jar file. This option should follow -u to preserve order of resource directories',
-       args => {
-         RESOURCES = '';
-         RESOURCES = comma(RESOURCES, args);
-       }
-     ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -822,7 +756,6 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
-      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
@@ -867,9 +800,7 @@ const ARGS = {
       quit(0);
     } ],
   z: [ 'Daemonize into the background, will write PID into $PIDFILE environment variable.',
-    () => DAEMONIZE = true ],
-  '?': [ 'Usage',
-    () => ARGS.h[1]() ]
+    () => DAEMONIZE = true ]
 };
 
 
@@ -918,7 +849,7 @@ task(
 'Build everything specified by flags.',
 [ 'clean', 'setenv', 'deleteRuntimeJournals', 'deleteRuntimeLogs', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
-  processArgs();
+  processSingleCharArgs(ARGS, moreUsage);
   setenv();
 
   stopNanos();

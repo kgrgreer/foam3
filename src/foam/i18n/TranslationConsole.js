@@ -154,7 +154,6 @@ foam.CLASS({
       class: 'String',
       name: 'locale',
       factory: function() { return foam.locale.substring(0,2); }
-//          view: 'net.nanopay.ui.topNavigation.LanguageChoiceView'
     }
   ],
 

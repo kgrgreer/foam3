@@ -75,7 +75,6 @@ p({
   """,
   "output":""
 })
-p({"class":"net.nanopay.tx.billing.ChargeDateServiceTest","id":"ChargeDateServiceTest"})
 p({"class":"foam.test.AddressUtilTests","id":"AddressUtilAddressParsingTest"})
 p({
   "class":"foam.nanos.test.Test",

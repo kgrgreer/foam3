@@ -85,6 +85,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'supportDetails'
     },
     {
+      name: 'authDetails'
+    },
+    {
       name: '_defaultSection',
       permissionRequired: true
     }
@@ -248,6 +251,11 @@ NOTE: when using the java client, the first call to a newly started instance may
       section: 'details',
       visibility: function(cmd) {
         return (cmd == 'PUT') ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: {
+        class: 'foam.u2.view.DualView',
+        viewa: {class: 'foam.u2.tag.TextArea', rows: 32, cols: 120},
+        viewb: {class: 'foam.nanos.dig.DIGDetailView' }
       }
     },
     {
@@ -373,19 +381,19 @@ NOTE: when using the java client, the first call to a newly started instance may
       documentation: 'Session token / BEARER token',
       name: 'sessionId',
       class: 'String',
-      // javaFactory: 'return getX().get(Session.class).getId();',
-      visibility: 'HIDDEN'
+      section: 'authDetails'
     },
     {
       documentation: 'Basic Auth',
       name: 'userName',
       class: 'String',
-      value: 'admin',
+      section: 'authDetails',
       visibility: 'HIDDEN'
     },
     {
       name: 'password',
       class: 'Password',
+      section: 'authDetails',
       visibility: 'HIDDEN'
     },
     {
@@ -470,8 +478,7 @@ NOTE: when using the java client, the first call to a newly started instance may
       label: 'Send Request',
       section: "details",
       code: async function() {
-        var url = this.window.location.origin + this.postURL + "&sessionId=" + localStorage.defaultSession;
-        var url = this.postURL + "&sessionId=" + localStorage.defaultSession;
+        var url = this.postURL + "&sessionId=" + (this.sessionId || localStorage.defaultSession);
         var req = this.HTTPRequest.create({
           url: url,
           method: 'POST',

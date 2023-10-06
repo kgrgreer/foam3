@@ -48,6 +48,7 @@ var [argv, X, flags] = require('./processArgs.js')(
   {
     usage: function() {
       // Include list of available Makers in 'usage' output.
+      // TODO: load from dir where pmake is also
       var files = fs_.readdirSync('.');
 
       console.log('\nMakers:');

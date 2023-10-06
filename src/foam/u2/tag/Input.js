@@ -152,6 +152,10 @@ foam.CLASS({
       }
       if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;
+
+      if ( p.normalize ) {
+        this.on('blur', () => this.data$.set(p.normalize(this.data$.get(), p)));
+      }
     },
 
     function updateMode_(mode) {

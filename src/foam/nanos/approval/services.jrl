@@ -34,9 +34,7 @@ p({
       .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
         new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
-          new net.nanopay.approval.AuthenticatedApprovalDAO(x,
-            new foam.dao.NullDAO(x, foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
-          )
+          new foam.dao.NullDAO(x, foam.nanos.approval.ApprovalRequest.getOwnClassInfo())
         )
       )
       .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
