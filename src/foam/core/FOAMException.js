@@ -116,7 +116,7 @@ foam.CLASS({
       class: 'Boolean',
       value: false,
       hidden: true,
-      externalTransien: true
+      externalTransient: true
     }
   ],
 
