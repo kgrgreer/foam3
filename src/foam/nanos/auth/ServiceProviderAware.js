@@ -20,7 +20,8 @@ foam.INTERFACE({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid'
+      name: 'spid',
+      externalTransient: true
     }
   ],
 

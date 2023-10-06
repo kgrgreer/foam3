@@ -9,24 +9,12 @@ foam.INTERFACE({
   name: 'ExternalDataAware',
   documentation: 'Interface for marking an object that contains the externalData map',
 
-  methods: [
+  properties: [
     {
-      name: 'getExternalData',
-      type: 'Map'
-    },
-    {
-      name: 'setExternalData',
-      type: 'Void',
-      args: [
-        {
-          name: 'val',
-          type: 'Map'
-        }
-      ]
-    },
-    {
-      name: 'clearExternalData',
-      type: 'Void'
+      class: 'Map',
+      name: 'externalData',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     }
   ]
 });
