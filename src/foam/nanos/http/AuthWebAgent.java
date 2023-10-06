@@ -66,6 +66,8 @@ public class AuthWebAgent
       PrintWriter out = x.get(PrintWriter.class);
       out.println("Access denied. Need permission: " + permission_);
       ((foam.nanos.logger.Logger) x.get("logger")).debug("Access denied, requires permission", permission_,"subject", x.get("subject"));
+      HttpServletResponse response = x.get(HttpServletResponse.class);
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 
