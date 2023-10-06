@@ -448,11 +448,27 @@ NOTE: when using the java client, the first call to a newly started instance may
       name: 'of',
       class: 'Class',
       javaFactory: `
-        DAO dao = (DAO) foam.core.XLocator.get().get(getDaoKey());
-        return dao.getOf();
+      if ( ! SafetyUtil.isEmpty(getDaoKey()) ) {
+        DAO dao = (DAO) getX().get(getDaoKey());
+        if ( dao == null ) {
+          dao = (DAO) foam.core.XLocator.get().get(getDaoKey());
+        }
+        if ( dao != null ) {
+          return dao.getOf();
+        }
+        foam.nanos.logger.StdoutLogger.instance().error("DAO not found", getDaoKey());
+      }
+      return null;
       `,
       hidden: true,
       transient: true
+    },
+    {
+      documentation: 'submit() returns null for a 200 with an empty response body, retrieving the response code of 200 can be useful for text based clients (not expecting FObjects)',
+      name: 'lastResponseCode',
+      class: 'Int',
+      transient: true,
+      hidden: true
     }
   ],
 
@@ -732,36 +748,24 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       name: 'unAdapt',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'dop',
-          type: 'foam.dao.DOP'
-        },
-        {
-          name: 'data',
-          type: 'Object'
-        }
-      ],
+      args: 'Context x, foam.dao.DOP dop, Object data',
       type: 'Object',
       javaCode: `
       PM pm = PM.create(x, "DIG", "unAdapt", getPostURL(), getDaoKey(), dop);
       try {
         Object result = null;
         String text = data.toString();
-        if ( ! foam.util.SafetyUtil.isEmpty(text) ) {
+        if ( ! SafetyUtil.isEmpty(text) ) {
+          Class of = getOf() != null ? getOf().getObjClass() : null;
           if ( text.startsWith("[") ) {
-            result = parser_.get().parseStringForArray(text, getOf().getObjClass());
+            result = parser_.get().parseStringForArray(text, of);
             // convert Object[] to FObject[]
             if ( result != null &&
                  result instanceof Object[] ) {
               result = Arrays.copyOf((Object[]) result, ((Object[]) result).length, FObject[].class);
             }
           } else if ( text.startsWith("{") ) {
-            result = parser_.get().parseString(text, getOf().getObjClass());
+            result = parser_.get().parseString(text, of);
           }
         }
         if ( result == null ) {
@@ -827,20 +831,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       name: 'submit',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'dop',
-          type: 'foam.dao.DOP'
-        },
-        {
-          name: 'data',
-          type: 'String'
-        },
-      ],
+      args: 'Context x, foam.dao.DOP dop, String data',
       type: 'Object',
       javaCode: `
       String url = buildUrl(x, dop, data);
@@ -857,9 +848,10 @@ NOTE: when using the java client, the first call to a newly started instance may
         builder = builder.header("Authorization", "BASIC "+Base64.getEncoder().encodeToString((getUserName()+":"+getPassword()).getBytes()));
       } else {
         Loggers.logger(x, this).warning("submit", "Missing auth details", "session", getSessionId(), "username", getUserName(), "password", getPassword());
-        throw new IllegalArgumentException("Missing auth details");
+        // throw new IllegalArgumentException("Missing auth details");
       }
-      if ( dop == DOP.PUT ) {
+      if ( dop == DOP.PUT &&
+           ! SafetyUtil.isEmpty(data) ) {
         builder = builder.POST(HttpRequest.BodyPublishers.ofString(data));
       }
       HttpRequest request = builder.build();
@@ -872,13 +864,15 @@ NOTE: when using the java client, the first call to a newly started instance may
         } finally {
           pm.log(x);
         }
+        setLastResponseCode(response.statusCode());
+        String body = response.body();
         if ( response.statusCode() != 200 ) {
-          Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), response.body());
+          Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), body);
         } else {
-          // Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), response.body());
+          // Loggers.logger(x, this).debug("submit", "request", dop, url, "response", response.statusCode(), body);
         }
-        if ( SafetyUtil.isEmpty(response.body()) ) return null;
-        Object result = unAdapt(x, dop, response.body());
+        if ( SafetyUtil.isEmpty(body)) return null;
+        Object result = unAdapt(x, dop, body);
         // Empty array has a trailing new line - assume server side dig is doing this.
         if ( result instanceof String &&
              result.toString().startsWith("[]") ) {
