@@ -848,6 +848,7 @@ foam.POM({
     { name: "foam/dao/history/HistoryRecord",                         flags: "js|java" },
     { name: "foam/dao/history/HistoryRecordService",                  flags: "js|java" },
     { name: "foam/dao/history/HistoryRecordServiceServer",            flags: "js|java" },
+    { name: "foam/dao/history/test/HistoryRecordServiceTest",         flags: "js|java" },
     { name: "foam/dao/jdbc/JDBCConnectionSpec",                       flags: "js|java" },
     { name: "foam/dao/jdbc/ConnectionPool",                           flags: "js|java" },
     { name: "foam/lib/Outputter",                                     flags: "js|java" },
