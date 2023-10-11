@@ -58,7 +58,7 @@ foam.CLASS({
       name: 'runTest',
       args: 'X x',
       javaCode: `
-      String url = "http://" + System.getProperty("hostname", "llocalhost") + ":" + System.getProperty("http.port", "8080");
+      String url = "http://" + System.getProperty("hostname", "localhost") + ":" + System.getProperty("http.port", "8080");
 
       DIG client = new DIG.Builder(x)
         .setPostURL(url)
