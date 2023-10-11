@@ -1,0 +1,25 @@
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "broadcast",
+  authenticate:false,
+  parameters:true,
+  service: {
+    class: "foam.nanos.http.BroadcastWebAgent",
+    to: [
+      "service/trace",
+      "service/fail"
+    ]
+  }
+})
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "broadcast-fail",
+  authenticate:false,
+  parameters:true,
+  service: {
+    class: "foam.nanos.http.BroadcastWebAgent",
+    to: [
+      "service/fail"
+    ]
+  }
+})
