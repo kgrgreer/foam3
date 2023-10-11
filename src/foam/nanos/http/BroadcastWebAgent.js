@@ -72,7 +72,7 @@ Otherwise, using AsyncAssemblyLine waits for all calls to fail before reporting 
       `
     },
     {
-      documentation: 'Do not wait for a pass or fail on any of hte proxy requests. Immediately return 200',
+      documentation: 'Do not wait for a pass or fail on any of the proxy requests. Immediately return 200',
       name: 'sendAndForget',
       class: 'Boolean'
     },
