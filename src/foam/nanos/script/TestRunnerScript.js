@@ -84,10 +84,13 @@ foam.CLASS({
         TestRunnerConfig config = (TestRunnerConfig) x.get("testRunnerConfig");
         String testSuite = config != null ? config.getTestSuite() : null;
 
+        List<String> explicitTests = new ArrayList<String>();
+        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ) {
+          explicitTests = Arrays.asList(System.getProperty("foam.tests").split(","));
+        }
         DAO testDAO = (DAO) x.get("testDAO");
-        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ){
-          String t = System.getProperty("foam.tests");
-          testDAO = testDAO.where(IN(Test.ID, t.split(",")));
+        if ( explicitTests.size() > 0 ) {
+          testDAO = testDAO.where(IN(Test.ID, explicitTests));
         }
 
         ArraySink tests = testSuite == null ?
@@ -98,7 +101,9 @@ foam.CLASS({
         for ( int i = 0; i < testArray.size(); i ++ ) {
           Test test = (Test) testArray.get(i);
           test = (Test) test.fclone();
-          if ( ! test.getEnabled() ) {
+          if ( ! test.getEnabled() &&
+               ( explicitTests.size() == 0 ||
+                 ! explicitTests.contains(test.getId()) ) ) {
             continue;
           }
 
