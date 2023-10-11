@@ -78,7 +78,7 @@ foam.CLASS({
 
         this.add(c);
 
-        this.timer.i$.sub(foam.Function.bind(function(c, i) {
+        this.timer.i$.sub((function(c, i) {
           c.color = hsl((i*347%180+this.timer.i*2)%360);
           var x = c.x, y = c.y;
           if ( y < 0           ) c.vy =  Math.abs(c.vy);
@@ -87,7 +87,7 @@ foam.CLASS({
           if ( x > this.width  ) c.vx = -Math.abs(c.vx);
           c.x += c.vx;
           c.y += c.vy;
-        }, this, c, i));
+        }).bind(this, c, i));
       }
 
       this.timer.i$.sub(this.invalidated.pub);

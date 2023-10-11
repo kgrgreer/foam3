@@ -171,57 +171,6 @@ foam.LIB({
     },
     function hashCode(o) { return foam.String.hashCode(o.toString()); },
 
-    /* istanbul ignore next */
-    function bind(f, that, a1, a2, a3, a4) {
-      /**
-       * Faster than Function.prototype.bind
-       */
-      switch ( arguments.length ) {
-        case 1:
-          console.error('No arguments given to bind to.');
-          break;
-        case 2: return function() { return f.apply(that, arguments); };
-        case 3: return function(b1, b2, b3, b4) {
-          switch ( arguments.length ) {
-            case 0: return f.call(that, a1);
-            case 1: return f.call(that, a1, b1);
-            case 2: return f.call(that, a1, b1, b2);
-            case 3: return f.call(that, a1, b1, b2, b3);
-            case 4: return f.call(that, a1, b1, b2, b3, b4);
-          }
-        };
-        case 4: return function(b1, b2, b3, b4) {
-          switch ( arguments.length ) {
-            case 0: return f.call(that, a1, a2);
-            case 1: return f.call(that, a1, a2, b1);
-            case 2: return f.call(that, a1, a2, b1, b2);
-            case 3: return f.call(that, a1, a2, b1, b2, b3);
-            case 4: return f.call(that, a1, a2, b1, b2, b3, b4);
-          }
-        };
-        case 5: return function(b1, b2, b3, b4) {
-          switch ( arguments.length ) {
-            case 0: return f.call(that, a1, a2, a3);
-            case 1: return f.call(that, a1, a2, a3, b1);
-            case 2: return f.call(that, a1, a2, a3, b1, b2);
-            case 3: return f.call(that, a1, a2, a3, b1, b2, b3);
-            case 4: return f.call(that, a1, a2, a3, b1, b2, b3, b4);
-          }
-        };
-        case 6: return function(b1, b2, b3, b4) {
-          switch ( arguments.length ) {
-            case 0: return f.call(that, a1, a2, a3, a4);
-            case 1: return f.call(that, a1, a2, a3, a4, b1);
-            case 2: return f.call(that, a1, a2, a3, a4, b1, b2);
-            case 3: return f.call(that, a1, a2, a3, a4, b1, b2, b3);
-            case 4: return f.call(that, a1, a2, a3, a4, b1, b2, b3, b4);
-          }
-        };
-      }
-
-      console.error('Attempt to foam.Function.bind more than 4 arguments.');
-    },
-
     /**
      * Decorates the function 'f' to cache the return value of 'f' when
      * called in the future. Also known as a 'thunk'.

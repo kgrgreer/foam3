@@ -132,10 +132,10 @@ foam.CLASS({
         this.clearTimeout(this.retryTimer);
       }
 
-      this.retryTimer = this.setTimeout(foam.Function.bind(function() {
+      this.retryTimer = this.setTimeout(() => {
         this.retryTimer = 0;
         this.onError();
-      }, this), 30000);
+      }, 30000);
     },
 
     function close() {

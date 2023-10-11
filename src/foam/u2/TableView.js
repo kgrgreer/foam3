@@ -127,10 +127,9 @@ foam.CLASS({
             .start(this.CheckBox).call(function() { cb = this; }).end()
         .end();
 
-        this.selectionQuery$.sub(foam.Function.bind(this.selectionUpdate, this,
-            cb, obj));
+        this.selectionQuery$.sub(this.selectionUpdate.bind(this, cb, obj));
         this.selectionUpdate(cb, obj);
-        cb.data$.sub(foam.Function.bind(this.selectionClick, this, obj));
+        cb.data$.sub(this.selectionClick.bind(this, obj));
       }
 
       for ( var j = 0 ; j < this.columns_.length ; j++ ) {
