@@ -24,7 +24,7 @@ foam.INTERFACE({
       name: 'getRecordById',
       type: 'HistoryRecord',
       documentation: `
-        Returns the latest record that has id as it objectId and has 'propertyName' property update
+        Returns the latest record that has id as its objectId and has 'propertyName' property update
       `,
       async: true,
       args: 'Context x, String daoKey, Object id, String propertyName'
