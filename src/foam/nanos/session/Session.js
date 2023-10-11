@@ -70,8 +70,7 @@ foam.CLASS({
         }.bind(this));
       },
       required: true,
-      updateVisibility: 'RO',
-      storageTransient: true
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
