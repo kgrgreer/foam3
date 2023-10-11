@@ -496,11 +496,11 @@ public class ServerCrunchService
     // If the subject in context doesn't have the capability available, we
     // should act as though it doesn't exist; this is why inX is here.
     Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
-    if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
-      throw new RuntimeException(String.format(
-        "Capability with id '%s' is either unavailable or does not exist",
-        capabilityId
-      ));
+    if ( cap == null ) {
+      throw new RuntimeException(String.format("Capability not found %s", capabilityId));
+    }
+    if ( cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
+      throw new RuntimeException(String.format("Capability not available %s", capabilityId));
     }
     AssociatedEntity associatedEntity = cap.getAssociatedEntity();
     boolean isAssociation = associatedEntity == AssociatedEntity.ACTING_USER;
@@ -720,6 +720,27 @@ public class ServerCrunchService
 
     Predicate acjPredicate = INSTANCE_OF(AgentCapabilityJunction.class);
 
+    // Consider the capability that is being referenced,
+    // and assign correct predicate
+    if ( capabilityId != null ) {
+      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
+      if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
+        throw new RuntimeException(String.format("Capability not found, find %s, subject.user(ucj.effectiveUser): %s, subject.realUser(ucj.sourceId): %s", capabilityId, user.getId(), realUser.getId()));
+      }
+      if ( cap.getAssociatedEntity() == AssociatedEntity.USER )
+        return EQ(UserCapabilityJunction.SOURCE_ID, user.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.REAL_USER )
+        return EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId());
+      if ( cap.getAssociatedEntity() == AssociatedEntity.ACTING_USER )
+        return AND(
+                   acjPredicate,
+                   // Check if a ucj implies the subject.realUser has this permission in relation to the user
+                   EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
+                   EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
+                   );
+    }
+
     // default search result - however updates need to be more specific
     Predicate result = OR(
       AND(
@@ -740,29 +761,6 @@ public class ServerCrunchService
         EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
       )
     );
-    // Consider the capability that is being referenced,
-    // and assign correct predicate
-    if ( capabilityId != null ) {
-      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
-      Capability cap = (Capability) capabilityDAO.inX(x).find(capabilityId);
-      if ( cap == null || cap.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
-        throw new RuntimeException(String.format(
-          "Attempting a UCJ find and asked Capability, not found - Capid: %s, subject.user(ucj.effectiveUser): %s, subject.realUser(ucj.sourceId): %s",
-          capabilityId, user.getId(), realUser.getId()
-        ));
-      }
-      if ( cap.getAssociatedEntity() == AssociatedEntity.USER )
-          return EQ(UserCapabilityJunction.SOURCE_ID, user.getId());
-      if ( cap.getAssociatedEntity() == AssociatedEntity.REAL_USER )
-          return EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId());
-      if ( cap.getAssociatedEntity() == AssociatedEntity.ACTING_USER )
-        return AND(
-          acjPredicate,
-          // Check if a ucj implies the subject.realUser has this permission in relation to the user
-          EQ(UserCapabilityJunction.SOURCE_ID, realUser.getId()),
-          EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId())
-        );
-      }
 
     return result;
   }
