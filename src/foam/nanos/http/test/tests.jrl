@@ -1,0 +1,4 @@
+p({
+  class: "foam.nanos.http.test.DIGBroadcastWebAgentTest",
+  id: "DIGBroadcastWebAgentTest"
+})

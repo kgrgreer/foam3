@@ -1,0 +1,19 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"historyRecordService",
+  "serve":true,
+  "boxClass":"foam.dao.history.HistoryRecordServiceSkeleton",
+  "serviceClass":"foam.dao.history.HistoryRecordServiceServer",
+  "client":"""
+    {
+      "class": "foam.dao.history.ClientHistoryRecordService",
+      "delegate": {
+        "class": "foam.box.SessionClientBox",
+        "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/historyRecordService"
+        }
+      }
+    }
+  """
+})

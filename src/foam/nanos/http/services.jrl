@@ -19,7 +19,6 @@ p({
   "name": "trace",
   "authenticate": false,
   "parameters": true,
-  "enabled": false,
   "serviceClass": "foam.nanos.http.TraceWebAgent"
 })
 
