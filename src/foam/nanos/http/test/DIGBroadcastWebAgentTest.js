@@ -58,10 +58,7 @@ foam.CLASS({
       name: 'runTest',
       args: 'X x',
       javaCode: `
-      String url = "http://" + System.getProperty("hostname", "localhost") + ":" + System.getProperty("http.port", "8080");
-
       DIG client = new DIG.Builder(x)
-        .setPostURL(url)
         .setServiceName(getPathSpec())
         .setConnectionTimeout(getConnectionTimeout())
         .setRequestTimeout(getRequestTimeout())
@@ -73,7 +70,6 @@ foam.CLASS({
 
 
       client = new DIG.Builder(x)
-        .setPostURL(url)
         .setServiceName(getPathSpec()+"-fail")
         .setConnectionTimeout(getConnectionTimeout())
         .setRequestTimeout(getRequestTimeout())
