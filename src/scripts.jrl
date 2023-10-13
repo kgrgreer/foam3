@@ -236,3 +236,34 @@ x.nSpecDAO.select(ns => {
 });
 """
 })
+p({
+class:"foam.nanos.script.Script",
+id:"DAO Security Report",
+description:"List DAO's with potential security issues.",
+language:0,
+code:"""
+x.nSpecDAO.select(async n => {
+  if ( n.name.indexOf('DAO') == -1 ) return;
+  if ( ! n.serve ) return;
+  if ( ! n.enabled ) return;
+  let authorized = false;
+  let readOnly   = false;
+try {
+readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
+authorized = !! await x[n.name].cmd('CLASS? foam.nanos.auth.AuthorizationDAO');
+} catch (x) {
+// console.log('******** ERROR', n.name, x.data.toString());
+}
+let labels = '';
+let warning    = ! authorized && ! readOnly && ! n.authenticate;
+if ( n.authenticate ) labels += ' authenticated';
+if ( readOnly       ) labels += ' read-only';
+if ( authorized     ) labels += ' authorized';
+if ( warning        ) labels += ' warning';
+
+if ( warning )  console.log(n.name, labels, n.authNotes);
+});
+""",
+notes:"",
+lastModifiedBy:1348,lastModified:1697222596604
+})
