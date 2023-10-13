@@ -83,6 +83,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'isIframe',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
@@ -812,6 +813,14 @@ foam.CLASS({
           clonedNotification.toastState = this.ToastState.DISPLAYED;
           this.__subSubContext__.notificationDAO.put(clonedNotification);
         }
+      }
+    },
+
+    function isIframe() {
+      try {
+        return globalThis.self !== globalThis.top;
+      } catch (e) {
+        return true;
       }
     }
   ],
