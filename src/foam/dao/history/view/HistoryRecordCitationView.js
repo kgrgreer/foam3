@@ -19,6 +19,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
+
       const propertyUpdate = this.getPropertyUpdate('compliance');
 
       this
