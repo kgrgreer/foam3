@@ -16,7 +16,7 @@ foam.CLASS({
     }
   `,
 
-  property: [
+  properties: [
     {
       class: 'String',
       name: 'propertyName'
@@ -39,8 +39,8 @@ foam.CLASS({
         .end()
     },
 
-    function getPropertyUpdate(propertyName) {
-      return this.data.updates.find(update => update.name === propertyName);
+    function getPropertyUpdate() {
+      return this.data.updates.find(update => update.name === this.propertyName);
     }
   ]
 });
