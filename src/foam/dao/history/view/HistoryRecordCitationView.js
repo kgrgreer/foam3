@@ -16,11 +16,18 @@ foam.CLASS({
     }
   `,
 
+  property: [
+    {
+      class: 'String',
+      name: 'propertyName'
+    }
+  ],
+
   methods: [
     function render() {
       this.SUPER();
 
-      const propertyUpdate = this.getPropertyUpdate('compliance');
+      const propertyUpdate = this.getPropertyUpdate(this.propertyName);
 
       this
         .addClass('p-legal-light', this.myClass('row'))

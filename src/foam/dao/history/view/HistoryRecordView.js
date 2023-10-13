@@ -67,7 +67,8 @@ foam.CLASS({
           class: 'foam.u2.view.ArrayView',
           data: this.data,
           valueView: {
-            class: 'foam.dao.history.view.HistoryRecordCitationView'
+            class: 'foam.dao.history.view.HistoryRecordCitationView',
+            propertyName: this.propertyName
           }
         });
     }
