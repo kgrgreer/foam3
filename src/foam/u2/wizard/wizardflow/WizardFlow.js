@@ -42,7 +42,7 @@ foam.CLASS({
             return x.createSubContext({ wizardlets: [] });
           }
         });
-        await this.sequence();
+        await this.sequence(a[0]);
         this.initialized_ = true;
       }
       return await SUPER(...a);

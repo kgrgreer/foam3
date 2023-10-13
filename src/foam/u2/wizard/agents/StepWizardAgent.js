@@ -20,6 +20,7 @@ foam.CLASS({
     'crunchController?',
     'ctrl',
     'config? as importedConfig',
+    'isIframe',
     'popupMode',
     'flowAgent?',
     'stack',
@@ -113,6 +114,11 @@ foam.CLASS({
   ],
   listeners: [
     function pushDefault() {
+      // Prevent sending the user to the default menu when finishing the wizard
+      // in an iframe as it makes more sense to yield the control back to the
+      // parent window instead of redirecting to the home page.
+      if ( this.isIframe() ) return;
+
       if ( this.stack.pos < 0 ) {
         this.pushMenu('');
       }  
