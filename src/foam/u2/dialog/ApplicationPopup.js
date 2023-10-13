@@ -23,10 +23,6 @@ foam.CLASS({
     'translationService'
   ],
 
-  exports: [
-    'as controlBorder'
-  ],
-
   requires: [
     'foam.core.Action',
     'foam.u2.ActionReference',
