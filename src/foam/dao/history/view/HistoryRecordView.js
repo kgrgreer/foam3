@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: `
     A view for displaying history records for specifed object(record) id and specificied property.
-    daoKey, objectId, and propertyName must be provided when creating a view
+    daoKey, objectId, and propertyName must be provided when creating this view
 
     e.g., if you want to display compliance history from user's history records for user with id 1111,
     do the following:
