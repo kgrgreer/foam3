@@ -27,8 +27,7 @@ foam.CLASS({
       args: 'Context x, String daoKey, String propertyName',
       javaCode: `
         DAO dao = getHistoryDAO(x, daoKey)
-          .orderBy(new Desc(HistoryRecord.TIMESTAMP))
-          .limit(1);
+          .orderBy(new Desc(HistoryRecord.TIMESTAMP));
         
         List<HistoryRecord> records = getRecords_(x, dao, propertyName);
         return records.size() > 0 ? records.get(0) : null;
@@ -41,8 +40,7 @@ foam.CLASS({
       javaCode: `
         DAO dao = getHistoryDAO(x, daoKey)
           .where(EQ(HistoryRecord.OBJECT_ID, id))
-          .orderBy(new Desc(HistoryRecord.TIMESTAMP))
-          .limit(1);
+          .orderBy(new Desc(HistoryRecord.TIMESTAMP));
         
         List<HistoryRecord> records = getRecords_(x, dao, propertyName);
         return records.size() > 0 ? records.get(0) : null;
