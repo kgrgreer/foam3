@@ -39,7 +39,10 @@ foam.CLASS({
           /****** Setup ******/
   
           // Create test users
-          testUser1 = new User.Builder(x).setUserName("test_user1").build();
+          testUser1 = new User.Builder(x)
+            .setUserName("test_user1")
+            .setPhoneNumber("111-222-3333")
+            .build();
           testUser2 = new User.Builder(x).setUserName("test_user2").build();
     
           testUser1 = (User) userDAO.put(testUser1).fclone();
@@ -51,6 +54,9 @@ foam.CLASS({
   
           testUser1.setEmail(NEW_EMAIL);
           testUser1 = (User) userDAO.put(testUser1).fclone();
+
+          // Update user1 phone number
+          testUser1.setPhoneNumber("222-333-4444");
 
           List<Long> testUserIds = new ArrayList<>();
           testUserIds.add(testUser1.getId());
