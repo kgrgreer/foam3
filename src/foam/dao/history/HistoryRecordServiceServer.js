@@ -29,7 +29,7 @@ foam.CLASS({
         DAO dao = getHistoryDAO(x, daoKey)
           .orderBy(new Desc(HistoryRecord.TIMESTAMP));
         
-        List<HistoryRecord> records = getRecords_(x, dao, propertyName);
+        List<HistoryRecord> records = filterRecordsByProperty(x, dao, propertyName);
         return records.size() > 0 ? records.get(0) : null;
       `
     },
@@ -42,7 +42,7 @@ foam.CLASS({
           .where(EQ(HistoryRecord.OBJECT_ID, id))
           .orderBy(new Desc(HistoryRecord.TIMESTAMP));
         
-        List<HistoryRecord> records = getRecords_(x, dao, propertyName);
+        List<HistoryRecord> records = filterRecordsByProperty(x, dao, propertyName);
         return records.size() > 0 ? records.get(0) : null;
       `
     },
@@ -52,7 +52,7 @@ foam.CLASS({
       args: 'Context x, String daoKey, String propertyName',
       javaCode: `
         DAO dao = getHistoryDAO(x, daoKey).orderBy(new Desc(HistoryRecord.TIMESTAMP));
-        return getRecords_(x, dao, propertyName);
+        return filterRecordsByProperty(x, dao, propertyName);
       `
     },
     {
@@ -63,7 +63,7 @@ foam.CLASS({
         DAO dao = getHistoryDAO(x, daoKey)
           .where(EQ(HistoryRecord.OBJECT_ID, id))
           .orderBy(new Desc(HistoryRecord.TIMESTAMP));
-        return getRecords_(x, dao, propertyName);
+        return filterRecordsByProperty(x, dao, propertyName);
       `
     },
     {
@@ -86,7 +86,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getRecords_',
+      name: 'filterRecordsByProperty',
       visibility: 'private',
       type: 'List<HistoryRecord>',
       args: 'Context x, DAO dao, String propertyName',
