@@ -379,6 +379,8 @@
         var limit = ( this.data && this.data.limit_ ) || undefined;
         return this.data$proxy.select(this.Count.create()).then(s => {
           this.daoCount = limit && limit < s.value ? limit : s.value;
+          // Need to purge and rebuild cache here because new items added might fall within the range of index
+          // already in the QueryCachingDAO so that when we do a select for the missing range, we return a duplicated element
           this.data$proxy.cmd_(x, foam.dao.DAO.PURGE_CMD);
           this.refresh();
         });
