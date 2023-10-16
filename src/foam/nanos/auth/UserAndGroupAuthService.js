@@ -83,7 +83,7 @@ foam.CLASS({
 
         User anonymousUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getAnonymousUser());
         if ( anonymousUser == null ) {
-          throw new AuthorizationException("Unable to find anonymous user: '" + serviceProvider.getAnonymousUser() + "'");
+          throw new AuthorizationException("Anonymous user not found. spid: "+serviceProvider.getId()+" user: "+serviceProvider.getAnonymousUser());
         }
 
         if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
@@ -104,7 +104,7 @@ foam.CLASS({
         try {
           authorizeAnonymous(x);
         } catch ( AuthorizationException e ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(e);
+          ((foam.nanos.logger.Logger) x.get("logger")).warning(e.getMessage());
         }
         Session session = x.get(Session.class);
         // fetch context and check if not null or user id is 0
