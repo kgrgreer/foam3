@@ -26,7 +26,7 @@ foam.CLASS({
     function init() {
       // if anything changes in the delegate -> clear cache
       // Can happen if the dao is modified outside the DAOController (for eg. in wizards)
-      this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.cache = {} })));
+      this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD) })));
     },
     function detach() {
       this.SUPER();
@@ -35,7 +35,7 @@ foam.CLASS({
 
     // Put invalidates cache and is forwarded to the source.
     function put_(x, o) {
-      this.cache = {};
+      this.cmd_(x, foam.dao.DAO.PURGE_CMD);
       return this.delegate.put_(x, o);
     },
 
@@ -100,6 +100,7 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( foam.dao.DAO.PURGE_CMD === obj ) {
         this.cache = {};
+        this.on.reset.pub();
       }
 
       this.SUPER(x, obj);
