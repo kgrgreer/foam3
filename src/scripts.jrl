@@ -242,12 +242,34 @@ id:"DAO Security Report",
 description:"List DAO's with potential security issues.",
 language:0,
 code:"""
-output = 'DAO,Authenticated,Authorizer,Read-Only,Warning,Auth Notes\n';
 
-await x.nSpecDAO.select(async n => {
-  if ( n.name.indexOf('DAO') == -1 ) return;
-  if ( ! n.serve ) return;
-  if ( ! n.enabled ) return;
+
+var COLUMNS = [
+  'DAO',
+  'Authenticated',
+  'Authorizer',
+  'Read-Only',
+  'Warning',
+  'Notes'
+];
+
+var data = [];
+
+function table(data, columns) {
+  console.table(data);
+  var output = columns.join('|') + '\n';
+  output += data.map(a => a.join('|')).join('\n');
+  console.log(output);
+}
+
+var array = await x.nSpecDAO.select();
+array = array.array;
+for ( var i = 0 ; i < array.length ; i++ ) {
+  var n = array[i];
+  if ( n.name.indexOf('DAO') == -1 ) continue;
+  if ( ! n.serve )  continue;
+  if ( ! n.enabled )  continue;
+
   let authorizer = ''
   let readOnly   = false;
 try {
@@ -256,32 +278,28 @@ readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
 // console.log('******** ERROR', n.name, x.data.toString());
 }
 try {
-authorizer = await x[n.name].cmd('AUTHORIZER');
+authorizer = await x[n.name].cmd('AUTHORIZER?');
 } catch (x) {
 }
-let labels = '';
 let warning    = ! authorizer && ! readOnly && ! n.authenticate;
-if ( n.authenticate ) labels += ' authenticated';
-if ( readOnly       ) labels += ' read-only';
-if ( authorizer     ) labels += ' authorized(' + authorizer + ')';
-if ( warning        ) labels += ' warning';
+
+if ( authorizer ) {
+  authorizer = authorizer.replace('foam.nanos.auth.', '');
+}
 
 if ( warning || true ) {
-  // console.log(n.name, labels, n.authNotes);
-  output +=
-   [
+  data.push( [
      n.name,
      n.authenticate,
-     authorizer,
+     authorizer || '',
      readOnly ? 'read-only' : '',
      warning ? 'warning': '',
      n.authNotes
-   ].join(',') + "\n"
-  ;
+   ]);
 }
-});
+}
 
-console.log(output);
+table(data, COLUMNS);
 """,
 notes:"",
 lastModifiedBy:1348,lastModified:1697222596604
