@@ -9,7 +9,6 @@ p({
   "userName":"admin",
   "group":"admin",
   "emailVerified":true,
-  "status":2,
   "compliance":1,
   "onboarded":true,
   "loginEnabled":true,
@@ -28,7 +27,6 @@ p({
   "userName":"anon",
   "group":"admin",
   "emailVerified":true,
-  "status":2,
   "compliance":1,
   "onboarded":true,
   "loginEnabled":true

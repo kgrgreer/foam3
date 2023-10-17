@@ -120,7 +120,7 @@ foam.CLASS({
                 disabled: true,
                 heading: 'Disabled users',
                 hideIfEmpty: true,
-                dao: X.userDAO.where(this.EQ(foam.nanos.auth.User.STATUS, this.AccountStatus.DISABLED)),
+                dao: X.userDAO.where(this.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, this.LifecycleState.DISABLED)),
               },
             ]
           };
