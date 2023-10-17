@@ -236,3 +236,53 @@ x.nSpecDAO.select(ns => {
 });
 """
 })
+p({
+class:"foam.nanos.script.Script",
+id:"DAO Security Report",
+description:"List DAO's with potential security issues.",
+language:0,
+code:"""
+output = 'DAO,Authenticated,Authorizer,Read-Only,Warning,Auth Notes\n';
+
+await x.nSpecDAO.select(async n => {
+  if ( n.name.indexOf('DAO') == -1 ) return;
+  if ( ! n.serve ) return;
+  if ( ! n.enabled ) return;
+  let authorizer = ''
+  let readOnly   = false;
+try {
+readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
+} catch (x) {
+// console.log('******** ERROR', n.name, x.data.toString());
+}
+try {
+authorizer = await x[n.name].cmd('AUTHORIZER');
+} catch (x) {
+}
+let labels = '';
+let warning    = ! authorizer && ! readOnly && ! n.authenticate;
+if ( n.authenticate ) labels += ' authenticated';
+if ( readOnly       ) labels += ' read-only';
+if ( authorizer     ) labels += ' authorized(' + authorizer + ')';
+if ( warning        ) labels += ' warning';
+
+if ( warning || true ) {
+  // console.log(n.name, labels, n.authNotes);
+  output +=
+   [
+     n.name,
+     n.authenticate,
+     authorizer,
+     readOnly ? 'read-only' : '',
+     warning ? 'warning': '',
+     n.authNotes
+   ].join(',') + "\n"
+  ;
+}
+});
+
+console.log(output);
+""",
+notes:"",
+lastModifiedBy:1348,lastModified:1697222596604
+})
