@@ -47,13 +47,19 @@ foam.CLASS({
     
           testUser1 = (User) userDAO.put(testUser1).fclone();
           testUser2 = (User) userDAO.put(testUser2);
+
+          sleep(500);
   
           // Update user1 email
           testUser1.setEmail(OLD_EMAIL);
           testUser1 = (User) userDAO.put(testUser1).fclone();
+
+          sleep(500);
   
           testUser1.setEmail(NEW_EMAIL);
           testUser1 = (User) userDAO.put(testUser1).fclone();
+
+          sleep(500);
 
           // Update user1 phone number
           testUser1.setPhoneNumber("222-333-4444");
@@ -74,8 +80,8 @@ foam.CLASS({
           test(record != null &&
             (Long) record.getObjectId() == testUser1.getId() &&
             emailUpdate != null && 
-            emailUpdate.getOldValue() == OLD_EMAIL &&
-            emailUpdate.getNewValue() == NEW_EMAIL,
+            OLD_EMAIL.equals(emailUpdate.getOldValue()) &&
+            NEW_EMAIL.equals(emailUpdate.getNewValue()),
             "getRecord returns the latest record that has 'propertyName' property update");
           
           // 2. Returns null if there is no 'propertyName' property update
@@ -92,8 +98,8 @@ foam.CLASS({
           test(record != null &&
             (Long) record.getObjectId() == testUser1.getId() &&
             emailUpdate != null &&
-            emailUpdate.getOldValue() == OLD_EMAIL &&
-            emailUpdate.getNewValue() == NEW_EMAIL,
+            OLD_EMAIL.equals(emailUpdate.getOldValue()) &&
+            NEW_EMAIL.equals(emailUpdate.getNewValue()),
             "getRecordId returns the latest record with given id and has 'propertyName' property update");
   
           // 2. Returns null if there is no record with given id or 'propertyName' property update
@@ -178,6 +184,16 @@ foam.CLASS({
         return records.stream()
           .filter(record -> ids.contains((Long) record.getObjectId()))
           .collect(Collectors.toList());
+      `
+    },
+    {
+      name: 'sleep',
+      visibility: 'private',
+      args: 'long millis',
+      javaCode: `
+        try {
+          Thread.sleep(millis);
+        } catch(InterruptedException e) {}
       `
     }
   ]
