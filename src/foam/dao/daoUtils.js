@@ -32,7 +32,7 @@ foam.CLASS({
       class: 'Proxy',
       of: 'foam.dao.DAO',
       name: 'delegate',
-      forwards: [ 'put_', 'remove_', 'find_', 'select_', 'removeAll_', 'cmd_', 'listen_' ],
+      forwards: [ 'put_', 'remove_', 'find_', 'select_', 'removeAll_', 'listen_' ],
       topics: [ 'on' ], // TODO: Remove this when all users of it are updated.
       factory: function() { return this.NullDAO.create() },
       postSet: function(old, nu) {
@@ -57,6 +57,21 @@ if let oldValue = oldValue as? foam_dao_AbstractDAO {
   ],
 
   methods: [
+    {
+      name: 'cmd_',
+      code: function cmd_(x, obj) {
+        return this.delegate.cmd_(x, obj);
+      },
+      javaCode: `
+        if ( obj != null && obj instanceof String ) {
+          String s = (String) obj;
+          if ( s.startsWith("CLASS? ") ) {
+            if ( getClass().getName().equals(s.substring(7)) ) return true;
+          }
+        }
+        return getDelegate().cmd_(x, obj);
+      `
+    },
     {
       name: 'listen_',
       code: function listen_(context, sink, predicate) {
