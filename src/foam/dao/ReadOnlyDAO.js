@@ -47,7 +47,10 @@ foam.CLASS({
     },
     {
       name: 'cmd_',
-      javaCode: `throw new UnsupportedOperationException("Cannot cmd from ReadOnlyDAO");`,
+      javaCode: `
+        if ( "CLASS? foam.dao.ReadOnlyDAO".equals(obj) ) return true;
+        throw new UnsupportedOperationException("Cannot cmd from ReadOnlyDAO");
+      `,
       swiftCode: `throw FoamError("Cannot cmd from ReadOnlyDAO")`,
       code: function cmd_() {
         return Promise.reject('Cannot cmd from ReadOnlyDAO');
