@@ -60,6 +60,7 @@ foam.CLASS({
           if ( SafetyUtil.isEmpty(data) &&
                SafetyUtil.isEmpty(transientData) ) {
             Loggers.logger(x, this).warning("No delta detected", entry.getObject().getClass().getName(), entry.getObjectId());
+            MedusaEntry.OBJECT.clear(entry);
             return entry;
           }
         } else if ( DOP.REMOVE == entry.getDop() ) {
