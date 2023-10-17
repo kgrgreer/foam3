@@ -518,6 +518,12 @@ return this.find_(this.getX(), id);
         return undefined;
       },
       javaCode: `
+      if ( obj != null && obj instanceof String ) {
+        String s = (String) obj;
+        if ( s.startsWith("CLASS? ") ) {
+          if ( getClass().getName().equals(s.substring(7)) ) return true;
+        }
+      }
 // null return indicates cmd not handled.
 return null;
       `,
