@@ -156,11 +156,11 @@ and waits on a response.`,
           nu = getDelegate().find_(x, id);
 
           if ( nu == null ) {
-            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry not found, failed to update", entry.toSummary(), LogLevel.ERROR, null));
-            throw new MedusaException("MedusaEntry not found, failed to update");
+            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry Object not found, failed to update", entry.toSummary(), LogLevel.ERROR, null));
+            throw new MedusaException("MedusaEntry Object not found, failed to update");
           }
           return nu;
-        } else { // if ( DOP.REMOVE == dop ) {
+        } else if ( DOP.REMOVE == dop ) {
           FObject result = obj;
           Object id = obj.getProperty("id");
           MedusaEntry entry = x.create(MedusaEntry.class);
@@ -172,10 +172,12 @@ and waits on a response.`,
           registry.wait(x, (Long) entry.getId());
 
           if ( getDelegate().find_(x, id) != null ) {
-            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry not found, failed to delete", entry.toSummary(), LogLevel.ERROR, null));
+            ((DAO) x.get("eventRecordDAO")).put(new EventRecord(x, this, "MedusaEntry Object not found, failed to delete", entry.toSummary(), LogLevel.ERROR, null));
             throw new MedusaException("Failed to delete");
           }
           return result;
+        } else {
+          throw new UnsupportedOperationException(dop.toString());
         }
      } catch (MedusaException e) {
         pm.error(x, e);
