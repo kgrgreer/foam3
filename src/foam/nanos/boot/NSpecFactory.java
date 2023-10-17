@@ -90,7 +90,7 @@ public class NSpecFactory
       logger = StdoutLogger.instance();
     }
 
-    X  nx = x_ instanceof SubX ? x_ : x_.getX();
+    X nx = x_ instanceof SubX ? x_ : x_.getX();
     Object ns = ns_;
     try {
       while ( ns != null ) {
@@ -122,6 +122,7 @@ public class NSpecFactory
 
   public Object create(X x) {
     Object ns = null;
+
     if ( spec_.getThreadLocalEnabled() ) {
       ns = tlService_.get();
     } else {
