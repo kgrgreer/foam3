@@ -21,7 +21,7 @@ p({
     }
   """,
   "documentation": "A DAO that knows which objects in the system implement the various interfaces present in the system. It is used on the server by the Strategizer service.",
-  "authNotes": "This DAO is decorated with a standard AuthenticatedDAO via EasyDAO."
+  "authNotes": "This DAO is decorated with a standard AuthorizationDAO via EasyDAO."
 })
 p({
   "class": "foam.nanos.boot.NSpec",
