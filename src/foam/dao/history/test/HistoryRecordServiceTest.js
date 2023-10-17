@@ -191,9 +191,9 @@ foam.CLASS({
       visibility: 'private',
       args: 'long millis',
       javaCode: `
-      try {
-        Thread.sleep(millis);
-      } catch(InterruptedException e) {}
+        try {
+          Thread.sleep(millis);
+        } catch(InterruptedException e) {}
       `
     }
   ]
