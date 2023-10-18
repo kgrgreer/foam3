@@ -209,6 +209,11 @@ foam.CLASS({
         gap: 2rem;
       }
     }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 1280px) {
+      ^:not(^fullscreen) ^inner {
+        width: min(120rem, 100%);
+      }
+    }
   `,
 
   messages: [
