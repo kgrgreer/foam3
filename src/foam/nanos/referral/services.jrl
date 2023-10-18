@@ -1,0 +1,21 @@
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "referralCodeDAO",
+  "serve": true,
+  "authenticate": true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setGuid(true)
+    .setJournalName("referralCodes")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setOf(foam.nanos.referral.ReferralCode.getOwnClassInfo())
+    .build();
+  """,
+  "client": """
+  {
+    "of": "foam.nanos.referral.ReferralCode"
+  }
+  """
+})
