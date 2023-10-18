@@ -46,11 +46,14 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'spid'
+      name: 'spid',
+      permissionRequired: true,
+      columnPermissionRequired: true
     },
     {
       class: 'String',
-      name: 'url'
+      name: 'url',
+      label: 'Referral Link'
     }
   ],
 
@@ -118,12 +121,20 @@ foam.RELATIONSHIP({
   targetModel: 'foam.nanos.referral.ReferralCode',
   forwardName: 'referralCodes',
   inverseName: 'referrer',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  targetProperty: {
+    permissionRequired: true,
+    columnPermissionRequired: true
+  }
 });
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.referral.ReferralCode',
   targetModel: 'foam.nanos.auth.User',
   forwardName: 'referees',
   inverseName: 'referralCode',
-  cardinality: '1:*'
+  cardinality: '1:*',
+  sourceProperty: {
+    permissionRequired: true,
+    columnPermissionRequired: true
+  }
 });
