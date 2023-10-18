@@ -15,13 +15,11 @@ foam.CLASS({
   css: `
     ^ {
       text-align: center;
-      margin: 8rem 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 8rem 0;
-      height: 100%;
+      margin: 2rem 0;
       gap: 2rem;
     }
     ^image {
@@ -38,11 +36,12 @@ foam.CLASS({
       }
     },
     {
-      class: 'Image',
-      name: 'image',
-      view: 'foam.u2.view.ImageView',
-      // value: '/images/checkmark-small-green.svg'
-      value: '/images/checkmark-outline-green.svg'
+      class: 'foam.u2.ViewSpec',
+      name: 'logoSpec',
+      value: {
+        class: 'foam.u2.tag.Image',
+        data: '/images/checkmark-outline-green.svg'
+      }
     }
   ],
 
@@ -51,7 +50,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .startContext({ data: this })
-          .start(this.IMAGE)
+          .start(this.logoSpec)
             .addClass(this.myClass('image'))
           .end()
         .endContext()
