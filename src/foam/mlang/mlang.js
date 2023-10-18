@@ -1414,6 +1414,41 @@ return ( s1 instanceof String && ((String) s1).toUpperCase().contains(s2) );`
   ]
 });
 
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'Find',
+  extends: 'foam.mlang.predicate.Binary',
+  implements: [ 'foam.core.Serializable' ],
+
+  documentation: `Predicate returns true if result of second arg found in first array argument.
+   Unlike contains, the second arg is applied to every element of first arg before evaluating`,
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        let self = this;
+        var arg1 = this.arg1.f(o);
+        if ( Array.isArray(arg1) ) {
+          return !! arg1.find(function(a) {
+            return self.arg2.f(a);
+          })
+        }
+        return arg1 ? arg1.indexOf(arg2) !== -1 : false;
+      },
+      javaCode:
+      `
+      // TODO
+      return true;
+      `
+    },
+    {
+      name: 'createStatement',
+      javaCode: `return " '" + getArg1().createStatement() + "' like '%" + getArg2().createStatement() + "%' ";`
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.mlang.predicate',
@@ -3893,6 +3928,7 @@ foam.CLASS({
     'foam.mlang.predicate.And',
     'foam.mlang.predicate.Contains',
     'foam.mlang.predicate.ContainsIC',
+    'foam.mlang.predicate.Find',
     'foam.mlang.predicate.DotF',
     'foam.mlang.predicate.Eq',
     'foam.mlang.predicate.False',
@@ -3965,6 +4001,7 @@ foam.CLASS({
     function AND() { return this._nary_("And", arguments); },
     function CONTAINS(a, b) { return this._binary_("Contains", a, b); },
     function CONTAINS_IC(a, b) { return this._binary_("ContainsIC", a, b); },
+    function FIND(a, b) { return this._binary_("Find", a, b); },
     function EQ(a, b) { return this._binary_("Eq", a, b); },
     function NEQ(a, b) { return this._binary_("Neq", a, b); },
     function IN(a, b) { return this._binary_("In", a, b); },
