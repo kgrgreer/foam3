@@ -70,6 +70,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.wizard.agents.NullEventHandlerAgent',
+    'foam.u2.wizard.debug.WizardInspector',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
     'foam.u2.borders.SpacingBorder',
@@ -116,7 +117,9 @@ foam.CLASS({
     {
       name: 'openWizardInspector',
       code: function() {
-        this.lastActiveWizard.OPEN_WIZARD_INSPECTOR.code.call(this.lastActiveWizard);
+        this.WizardInspector.OPEN({}, this.__subContext__.createSubContext({
+          wizardController$: this.lastActiveWizard$
+        }));
       }
     },
     {
