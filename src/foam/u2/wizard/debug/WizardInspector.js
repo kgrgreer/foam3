@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   imports: [
-    'wizardController'
+    'wizardController',
+    'crunchController'
   ],
 
   requires: [
@@ -67,24 +68,28 @@ foam.CLASS({
   methods: [
     function render() {
       const self = this;
-      const wizardController = self.wizardController;
+      const wizardController$ = this.crunchController.lastActiveWizard$;
       self.AppStyles.create();
       self.Fonts.create();
       this
         .addClass(this.myClass())
-        .start('h1').add(wizardController.title || 'Untitled Wizard').end()
-        .startContext({ data: wizardController })
-          .tag(self.STORE_GLOBAL)
-        .endContext()
-        .start('h2').add('wizardlets').end()
-        .start(this.Block)
-          .add(wizardController.wizardlets$.map(() => this.E()
-            .addClass(self.myClass('wizardlet-list'))
-            .forEach(wizardController.wizardlets, function (wizardlet) {
-              this
-                .start(self.Block)
-                  .addClass(wizardController.currentWizardlet$.map(() =>
-                    ( wizardController.currentWizardlet === wizardlet )
+        .add(this.dynamic(function(crunchController$lastActiveWizard) {
+          if (! crunchController$lastActiveWizard) {
+            this.start('h1').add('Open a wizard to inspect').end();
+            return;
+          }
+          this.start('h1').add(wizardController$.get().title || 'Untitled Wizard').end()
+          .startContext({ data: this.crunchController.lastActiveWizard$ })
+            .tag(self.STORE_GLOBAL)
+          .endContext()
+          .start('h2').add('wizardlets').end()
+          .start(this.Block)
+            .add(wizardController$.dot('wizardlets').map(() => this.E()
+              .addClass(self.myClass('wizardlet-list'))
+              .forEach(wizardController$.dot('wizardlets').map(v => v ?? []), function (wizardlet) {
+                this.start(self.Block)
+                  .addClass(wizardController$.dot('currentWizardlet').map(() =>
+                    ( wizardController$.get().currentWizardlet === wizardlet )
                       ? self.myClass('current')
                       : self.myClass('not-current')))
                   .addClass(self.myClass('wizardlet-row'))
@@ -110,9 +115,10 @@ foam.CLASS({
                   .endContext()
                 .end()
                 ;
-            })
-          ))
-        .end()
+              })
+            ))
+          .end()
+        }))
         ;
     }
   ],

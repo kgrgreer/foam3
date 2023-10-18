@@ -143,7 +143,7 @@ foam.CLASS({
       },
       preSet: function(o, n) {
         if ( n?.wizardletIndex != o?.wizardletIndex )
-          this.wizardlets[n.wizardletIndex].load({});
+          this.tryWizardletLoad(this.wizardlets[n.wizardletIndex], n);
         return n;
       },
       postSet: function (o, n) {
