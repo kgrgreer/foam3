@@ -301,7 +301,7 @@ try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.Permissioned
 
 if ( authorizer ) {
  authorizer = authorizer.replace('foam.nanos.auth.', '');
- authorizer = authorizer.replace('Authorizer.', '');
+ authorizer = authorizer.replace('Authorizer', '');
 }
 
 var pgroups = [];
@@ -319,7 +319,7 @@ for ( var j = 0 ; j < caps.length ; j++ ) {
       return p === 'service.' + n.name;
     });
    if ( granted ) {
-      pcaps.push('"' + c.name + '"');
+      pcaps.push(c.name);
     }
 }
 
@@ -337,8 +337,8 @@ if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
      permissioned ? 'permissioned' : '',
      readOnly ? 'read-only' : '',
      warning,
-     pgroups.join(' '),
-     pcaps.join(' '),
+     pgroups.join(', '),
+     pcaps.join(', '),
      n.authNotes
    ]);
 }
