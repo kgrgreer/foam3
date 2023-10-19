@@ -248,6 +248,7 @@ var COLUMNS = [
   'DAO',
   'Authenticated',
   'Authorizer',
+  'Permissioned',
   'Read-Only',
   'Warning',
   'Notes'
@@ -270,30 +271,28 @@ for ( var i = 0 ; i < array.length ; i++ ) {
   if ( ! n.serve )  continue;
   if ( ! n.enabled )  continue;
 
-  let authorizer = ''
+  let authorizer = '';
+  let permissioned = false;
   let readOnly   = false;
 try {
 readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
 } catch (x) {
 // console.log('******** ERROR', n.name, x.data.toString());
 }
-try {
-authorizer = await x[n.name].cmd('AUTHORIZER?');
-} catch (x) {
-}
+try { authorizer = await x[n.name].cmd('AUTHORIZER?'); } catch (x) { }
+try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.PermissionedPropertyDAO'); } catch (x) { }
 let warning    = ! authorizer && ! readOnly && ! n.authenticate;
 
-if ( authorizer ) {
-  authorizer = authorizer.replace('foam.nanos.auth.', '');
-}
+if ( authorizer ) authorizer = authorizer.replace('foam.nanos.auth.', '');
 
 if ( warning || true ) {
   data.push( [
      n.name,
      n.authenticate,
      authorizer || '',
+     permissioned ? 'permissioned' : '',
      readOnly ? 'read-only' : '',
-     warning ? 'warning': '',
+     warning ? 'warning' : '',
      n.authNotes
    ]);
 }
