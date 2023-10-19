@@ -4,7 +4,7 @@
   * http://www.apache.org/licenses/LICENSE-2.0
   */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2',
   name: 'PropertyBorder',
   extends: 'foam.u2.Element',
@@ -55,6 +55,7 @@
       color: $destructive400;
     }
     ^label {
+      display: contents;
       line-height: 1;
       min-height: 1em;
       width: 100%;
@@ -153,7 +154,7 @@
           let el = this.E().addClass(this.myClass('label'), this.myClass('label' + '-' + prop.name), 'p-light');
           return prop$label ?
             el.call(prop.labelFormatter, [data, prop]) :
-            ( prop$reserveLabelSpace ? el : undefined )
+            ( prop$reserveLabelSpace ? el : this.E().style({ display: 'contents' }) )
         })).
         start().
           addClass(this.myClass('propHolder')).
