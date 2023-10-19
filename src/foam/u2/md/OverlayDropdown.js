@@ -33,7 +33,7 @@ foam.CLASS({
       overflow-y: hidden;
       position: absolute;
       z-index: 1010;
-      max-width: 90%;
+      max-width: 100%;
     }
 
     ^styled{
