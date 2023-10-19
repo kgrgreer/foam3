@@ -28,7 +28,9 @@ foam.CLASS({
       // Can happen if the dao is modified outside the DAOController (for eg. in wizards)
       this.onDetach(this.delegate.listen({ 
         put: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD),
-        remove: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD)
+        remove: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD),
+        // only clear cache on reset to avoid infinite loop when used alongside cachingdao
+        reset: () =>  this.cache = {}
       }));
     },
     function detach() {
@@ -147,7 +149,6 @@ foam.CLASS({
         // console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-
           if ( foam.dao.ArraySink.isInstance(sink) ) {
             // ArraySink
             // Update cache with missing data
