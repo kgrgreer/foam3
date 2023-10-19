@@ -26,7 +26,12 @@ foam.CLASS({
     function init() {
       // if anything changes in the delegate -> clear cache
       // Can happen if the dao is modified outside the DAOController (for eg. in wizards)
-      this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD) })));
+      this.onDetach(this.delegate.listen({ 
+        put: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD),
+        remove: () => this.cmd_(x, foam.dao.DAO.PURGE_CMD),
+        // only clear cache on reset to avoid infinite loop when used alongside cachingdao
+        reset: () =>  this.cache = {}
+      }));
     },
     function detach() {
       this.SUPER();
@@ -87,13 +92,13 @@ foam.CLASS({
 
     // Remove invalidates cache and is forwarded to the source.
     function remove_(x, o) {
-      this.cache = {};
+      this.cmd_(x, foam.dao.DAO.PURGE_CMD);
       return this.delegate.remove_(x, o);
     },
 
     // RemoveAll invalidates cache and is forwarded to the source.
     function removeAll_(x, skip, limit, order, predicate) {
-      this.cache = {};
+      this.cmd_(x, foam.dao.DAO.PURGE_CMD);
       this.delegate.removeAll_(x, skip, limit, order, predicate);
     },
 
@@ -144,7 +149,6 @@ foam.CLASS({
         // console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-
           if ( foam.dao.ArraySink.isInstance(sink) ) {
             // ArraySink
             // Update cache with missing data
