@@ -23,19 +23,19 @@ foam.CLASS({
   messages: [
     {
       name: 'LACKS_CREATE_PERMISSION',
-      message: 'You do not have permission to create a payment code'
+      message: 'You do not have permission to create a referral code'
     },
     {
       name: 'LACKS_READ_PERMISSION',
-      message: 'You do not have permission to read this payment code'
+      message: 'You do not have permission to read this referral code'
     },
     {
       name: 'LACKS_UPDATE_PERMISSION',
-      message: 'You do not have permission to update this payment code'
+      message: 'You do not have permission to update this referral code'
     },
     {
       name: 'LACKS_REMOVE_PERMISSION',
-      message: 'You do not have permission to remove this payment code'
+      message: 'You do not have permission to remove this referral code'
     }
   ],
 
@@ -116,6 +116,8 @@ foam.CLASS({
   ]
 });
 
+/* Relationship between the creator and referralCode. The creator can create multiple
+  referralCodes, each code would be for a specific application/feature. */
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.referral.ReferralCode',
@@ -127,6 +129,9 @@ foam.RELATIONSHIP({
     columnPermissionRequired: true
   }
 });
+
+/* Relationship between a referralCode and a user that signs up using that code.
+  A user can only sign up using one referralCode*/
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.referral.ReferralCode',
   targetModel: 'foam.nanos.auth.User',

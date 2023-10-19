@@ -34,7 +34,7 @@ foam.CLASS({
           referralCode.setSpid(user.getSpid());
           referralCode = (ReferralCode) referralCodeDAO.put_(x, referralCode);
 
-          AppConfig config = (AppConfig) (x).get("appConfig");
+          AppConfig config = (AppConfig) x.get("appConfig");
           String url = config.getUrl()+ "/?referral=" + referralCode.getId() + "/#sign-up";
           referralCode.setUrl(url);
           referralCodeDAO.put_(x, referralCode);
