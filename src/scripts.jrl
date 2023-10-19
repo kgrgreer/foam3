@@ -252,6 +252,7 @@ var COLUMNS = [
   'Read-Only',
   'Warning',
   'Groups',
+  'Capabilities',
   'Notes'
 ];
 
@@ -270,6 +271,7 @@ var IGNORED_GROUPS = {
 var data = [];
 
 var groups = await x.groupDAO.select(); groups = groups.array;
+var caps = await x.capabilityDAO.select(); caps = caps.array;
 
 function table(data, columns) {
   console.table(data);
@@ -301,11 +303,23 @@ if ( authorizer ) {
  authorizer = authorizer.replace('foam.nanos.auth.', '');
  authorizer = authorizer.replace('Authorizer.', '');
 }
+
 var pgroups = [];
 for ( var j = 0 ; j < groups.length ; j++ ) {
   var g = groups[j];
     if ( ! IGNORED_GROUPS[g.id] && await g.implies(x, 'service.' + n.name) ) {
       pgroups.push(g.id);
+    }
+}
+
+var pcaps = [];
+for ( var j = 0 ; j < caps.length ; j++ ) {
+  var c = caps[j];
+   var granted =  c.permissionsGranted.find(p => {
+      return p === 'service.' + n.name;
+    });
+   if ( granted ) {
+      pcaps.push('"' + c.name + '"');
     }
 }
 
@@ -324,6 +338,7 @@ if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
      readOnly ? 'read-only' : '',
      warning,
      pgroups.join(' '),
+     pcaps.join(' '),
      n.authNotes
    ]);
 }
