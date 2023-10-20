@@ -196,6 +196,7 @@ public class SessionServerBox
       pm.log(x);
       delegate.send(msg);
     } catch (Throwable t) {
+      // t.printStackTrace(); // Uncomment to debug server-side exceptions
       logger.warning(t.getMessage());
       if ( t instanceof NullPointerException) {
         logger.error(t);

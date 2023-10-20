@@ -278,6 +278,7 @@ foam.CLASS({
       return this.consumePrerequisites;
     },
     function handleLifting(liftedWizardlets) {
+      if ( ! liftedWizardlets.length ) return;
       const updated = () => {
         // Hide choice selection if lifted choices reach maximum
         const countLifted = liftedWizardlets.length && liftedWizardlets

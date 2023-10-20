@@ -151,6 +151,7 @@ foam.POM({
     { name: "theme/customisation/CSSTokenOverride",                                       flags: "js|java" },
     { name: "theme/customisation/CSSTokenOverrideService",                                flags: "web" },
     { name: "auth/User",                                                                  flags: "js|java" },
+    { name: "auth/UserCitationView",                                                      flags: "web" },
     { name: "auth/UserNotFoundException",                                                 flags: "js|java" },
     { name: "auth/PasswordPolicy",                                                        flags: "js|java" },
     { name: "auth/PermissionTableView",                                                   flags: "js" },

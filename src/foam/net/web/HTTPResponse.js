@@ -84,12 +84,12 @@ foam.CLASS({
       var reader = this.resp.body.getReader();
       this.streaming = true;
 
-      var onError = foam.Function.bind(function(e) {
+      var onError = e => {
         this.err.pub();
         this.end.pub();
-      }, this);
+      };
 
-      var onData = foam.Function.bind(function(e) {
+      var onData = e => {
         if ( e.value )
           this.data.pub(e.value);
 
@@ -98,7 +98,7 @@ foam.CLASS({
           return this;
         }
         return reader.read().then(onData, onError);
-      }, this);
+      };
 
       return reader.read().then(onData, onError);
     },

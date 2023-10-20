@@ -127,6 +127,16 @@ foam.CLASS({
       ) :
       newPredicate;
  `
-    }
+  },
+  {
+    name: 'cmd_',
+    javaCode: `
+      if ( "AUTHORIZER?".equals(obj) ) {
+        return getAuthorizer().getClass().getName();
+      }
+
+      return super.cmd_(x, obj);
+    `
+  }
   ]
 });

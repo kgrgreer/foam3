@@ -343,9 +343,7 @@ public class JSONFObjectFormatter
     if ( ! outputDefaultValues_ && ! prop.isSet(fo) ) return false;
 
     Object value = prop.get(fo);
-    if ( value == null ||
-         ( isArray(value) && Array.getLength(value) == 0 ) ||
-         ( value instanceof FObject && value.equals(fo) ) ) {
+    if ( value == null || ( isArray(value) && Array.getLength(value) == 0 ) || ( value instanceof FObject && value.equals(fo) ) ) {
       return false;
     }
 
@@ -465,10 +463,9 @@ public class JSONFObjectFormatter
       return;
     }
 
-    int       len      = builder().length(); // Safe pos in case we want to undo
-    int       props   = 0;
-
-    ClassInfo info   = o.getClassInfo();
+    int       len   = builder().length(); // Safe pos in case we want to undo
+    int       props = 0;
+    ClassInfo info  = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
 
@@ -489,8 +486,7 @@ public class JSONFObjectFormatter
       if ( outputComma ) props++;
     }
 
-    if ( props > 0 ||
-         outputDefaultClassNames_ ) {
+    if ( props > 0 || outputDefaultClassNames_ ) {
       addInnerNewline();
       append('}');
     } else {
