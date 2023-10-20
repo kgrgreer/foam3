@@ -22,6 +22,7 @@ foam.POM({
     { name: "jetty/pom"},
     { name: "medusa/pom"},
     { name: "ruler/pom"}
+    { name: "referral/pom" }
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
