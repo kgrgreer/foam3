@@ -215,7 +215,7 @@
         boolean unauthenticated = false;
         try {
           var subject = auth.getCurrentSubject(x);
-          if ( subject == null || auth.isUserAnonymous(x, subject.getUser().getId()) ) 
+          if ( subject == null || auth.isUserAnonymous(x, subject.getUser().getId()) )
             unauthenticated = true;
         } catch(foam.nanos.auth.AuthenticationException e) {
           unauthenticated = true;
