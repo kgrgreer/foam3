@@ -21,7 +21,8 @@ foam.POM({
     { name: "app/pom"},
     { name: "crunch/pom"},
     { name: "jetty/pom"},
-    { name: "ruler/pom"}
+    { name: "ruler/pom"},
+    { name: "referral/pom" }
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },

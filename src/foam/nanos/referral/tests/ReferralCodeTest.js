@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.referral',
+  package: 'foam.nanos.referral.test',
   name: 'ReferralCodeTest',
   extends: 'foam.nanos.test.Test',
 
@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
     'foam.nanos.auth.User',
+    'foam.nanos.referral.ReferralCode',
     'java.util.List'
   ],
 

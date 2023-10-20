@@ -12,8 +12,7 @@ foam.POM({
         { name: 'src/pom' },
         { name: 'src/foam/nanos/pom' },
         { name: 'src/foam/u2/wizard/pom' },
-        { name: 'src/foam/flow/laminar/pom' },
-        { name: 'src/foam/nanos/referral/pom' }
+        { name: 'src/foam/flow/laminar/pom' }
     ],
     javaDependencies: [
       'com.authy:authy-java:1.1.0',
