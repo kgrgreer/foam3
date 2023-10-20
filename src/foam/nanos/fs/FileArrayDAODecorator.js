@@ -10,8 +10,9 @@ foam.CLASS({
   extends: 'foam.dao.AbstractDAODecorator',
 
   imports: [
-    'fileDAO'
+    'fileDAO?'
   ],
+
   requires: [
     'foam.nanos.fs.File'
   ],
@@ -39,7 +40,7 @@ foam.CLASS({
       if ( ! newObj ) {
         return Promise.resolve(obj);
       }
-      await this.arrayRecursion(newObj);
+      if ( this.fileDAO ) await this.arrayRecursion(newObj);
       return Promise.resolve(obj);
     },
 
