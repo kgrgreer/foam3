@@ -38,6 +38,10 @@ foam.CLASS({
         ApprovalRequest old = (ApprovalRequest) getDelegate().inX(x).find(nu.getId());
         ApprovalRequest request = (ApprovalRequest) (getDelegate().inX(x).put(obj)).fclone();
 
+        String daoKey = request.getServerDaoKey() != null && ! SafetyUtil.isEmpty(request.getServerDaoKey()) ? request.getServerDaoKey() : request.getDaoKey();
+        DAO dao = (DAO) x.get(daoKey);
+        FObject objToReput = dao.find(request.getObjId()).fclone();
+
         if ( old != null && old.getStatus() != request.getStatus()
           || old == null && request.getStatus() != ApprovalStatus.REQUESTED
         ) {
@@ -78,6 +82,16 @@ foam.CLASS({
               request.setAssignedTo(0);
               getDelegate().put(request);
             }
+          }
+        } else if ( objToReput instanceof Retriable && ((Retriable) objToReput).getIsRetriable() ) {
+          // reput retriable object
+          try {
+            rePutObject(x, request);
+            getDelegate().put(request);
+          } catch ( Exception e ) {
+            request.setStatus(ApprovalStatus.REQUESTED);
+            getDelegate().put(request);
+            throw new RuntimeException(e);
           }
         }
         return request;

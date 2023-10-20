@@ -587,10 +587,10 @@ foam.CLASS({
       name: 'SUCCESS_ASSIGNED',
       message: 'You have successfully assigned this request'
     },
-     {
+    {
       name: 'SUCCESS_ASSIGNED_TITLE',
       message: 'Request Assigned'
-     },
+    },
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this request'
@@ -603,20 +603,18 @@ foam.CLASS({
       name: 'SUCCESS_APPROVED',
       message: 'You have successfully approved this request'
     },
-
-     {
+    {
       name: 'SUCCESS_APPROVED_TITLE',
       message: 'Request Approved'
-     },
+    },
     {
       name: 'SUCCESS_MEMO',
       message: 'You have successfully added a memo'
     },
-  {
+    {
       name: 'SUCCESS_MEMO_TITLE',
       message: 'Memo Added'
-   },
-
+    },
     {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request'
@@ -624,7 +622,7 @@ foam.CLASS({
     {
       name: 'SUCCESS_REJECTED_TITLE',
       message: 'Request Rejected'
-     },
+    },
     {
       name: 'SUCCESS_CANCELLED',
       message: 'You have successfully cancelled this request'
@@ -632,7 +630,15 @@ foam.CLASS({
     {
       name: 'SUCCESS_CANCELLED_TITLE',
       message: 'Request Cancelled'
-     },
+    },
+    {
+      name: 'FAILED_RETRY',
+      message: 'You have failed to retry this request'
+    },
+    {
+      name: 'FAILED_RETRY_TITLE',
+      message: 'Failed retry'
+    },
     {
       name: 'ASSIGN_TITLE',
       message: 'Select an assignee'
@@ -770,6 +776,53 @@ foam.CLASS({
           isMemoRequired: true,
           onExecute: this.addMemoL.bind(this, X)
         }));
+      }
+    },
+    {
+      name: 'retry',
+      section: 'approvalRequestInformation',
+      isAvailable: async function(isTrackingRequest, status, subject, assignedTo) {
+        if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
+
+        const reputObjectDAO = this.__subContext__[this.daoKey || this.serverDaoKey];
+        const objToReput = await reputObjectDAO?.find(this.objId);
+
+        return ! isTrackingRequest && objToReput?.isRetriable;
+      },
+      code: async function(X) {
+        const approvalRequest = this.clone();
+
+        this.approvalRequestDAO.put(approvalRequest).then(req => {
+          this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.approvalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          this.tableViewApprovalRequestDAO.cmd(foam.dao.DAO.PURGE_CMD);
+
+          this.finished.pub();
+          // Give some delay while approval request moves to the final state
+          setTimeout(() => {
+            this.approvalRequestDAO.find(req.id).then(req => {
+              if ( req.status === this.ApprovalStatus.APPROVED ) {
+                this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
+              } else if ( req.status === this.ApprovalStatus.REJECTED ) {
+                this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
+              } else if ( req.status === this.ApprovalStatus.REQUESTED ) {
+                this.notify(this.FAILED_RETRY_TITLE, this.FAILED_RETRY, this.LogLevel.ERROR, true);
+              }
+            });
+          }, 1000);
+
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
       }
     },
     {
