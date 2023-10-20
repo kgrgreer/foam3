@@ -160,16 +160,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       name: 'implies',
       type: 'Boolean',
       async: true,
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'permission',
-          javaType: 'java.security.Permission'
-        }
-      ],
+      args: 'Context x, java.security.Permission permission',
       javaCode: `
         PM        pm      = PM.create(x, this.getClass(), "implies");
         DAO       dao     = (DAO) x.get("groupDAO");
