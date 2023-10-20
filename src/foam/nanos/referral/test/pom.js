@@ -1,5 +1,5 @@
 foam.POM({
-  name: "referralTests",
+  name: "referralTest",
   files: [
     { name: "ReferralCodeTest",                   flags: "js|java" }
   ]
