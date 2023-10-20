@@ -253,6 +253,16 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
+    },
+    {
+      class: 'String',
+      name: 'referralToken',
+      documentation: `Input to associate new user with something.`,
+      factory: function() {
+        var searchParams = new URLSearchParams(location.search);
+        return searchParams.get('referral');
+      },
+      hidden: true
     }
   ],
   actions: [
@@ -271,7 +281,8 @@ foam.CLASS({
           email: this.email,
           desiredPassword: this.desiredPassword,
           signUpToken: this.token_,
-          language: this.defaultUserLanguage()
+          language: this.defaultUserLanguage(),
+          referralCode: this.referralToken
         });
         var user;
         try {
