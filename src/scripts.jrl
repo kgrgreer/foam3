@@ -236,3 +236,117 @@ x.nSpecDAO.select(ns => {
 });
 """
 })
+p({
+class:"foam.nanos.script.Script",
+id:"DAO Security Report",
+description:"List DAO's with potential security issues.",
+language:0,
+code:"""
+
+
+var COLUMNS = [
+  'DAO',
+  'Authenticated',
+  'Authorizer',
+  'Permissioned',
+  'Read-Only',
+  'SPID Aware',
+  'Warning',
+  'Groups',
+  'Capabilities',
+  'Notes'
+];
+
+var IGNORED_GROUPS = {
+  'msp-admin': true,
+  admin: true,
+  system: true,
+  liquidBasic: true,
+  'fraud-ops-permissions': true,
+  'support-ops-permissions': true,
+  'support-base': true,
+  'payment-ops': true,
+  'operations-support': true,
+};
+
+var data = [];
+
+var groups = await x.groupDAO.select(); groups = groups.array;
+var caps = await x.capabilityDAO.select(); caps = caps.array;
+
+function table(data, columns) {
+  console.table(data);
+  var output = columns.join('|') + '\n';
+  output += data.map(a => a.join('|')).join('\n');
+  console.log(output);
+}
+
+var array = await x.nSpecDAO.select();
+array = array.array;
+for ( var i = 0 ; i < array.length ; i++ ) {
+  var n = array[i];
+  if ( n.name.indexOf('DAO') == -1 ) continue;
+  if ( ! n.serve )  continue;
+  if ( ! n.enabled )  continue;
+
+  let authorizer = '';
+  let permissioned = false;
+  let readOnly   = false;
+  let spidAware   = false;
+try {
+readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
+} catch (x) { }
+try { authorizer = await x[n.name].cmd('AUTHORIZER?'); } catch (x) { }
+try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.PermissionedPropertyDAO'); } catch (x) { }
+try { spidAware = !! await x[n.name].cmd('CLASS? foam.nanos.auth.ServiceProviderAwareDAO'); } catch (x) { }
+
+if ( authorizer ) {
+ authorizer = authorizer.replace('foam.nanos.auth.', '');
+ authorizer = authorizer.replace('Authorizer', '');
+}
+
+var pgroups = [];
+for ( var j = 0 ; j < groups.length ; j++ ) {
+  var g = groups[j];
+    if ( ! IGNORED_GROUPS[g.id] && await g.implies(x, 'service.' + n.name) ) {
+      pgroups.push(g.id);
+    }
+}
+
+var pcaps = [];
+for ( var j = 0 ; j < caps.length ; j++ ) {
+  var c = caps[j];
+   var granted =  c.permissionsGranted.find(p => {
+      return p === 'service.' + n.name;
+    });
+   if ( granted ) {
+      pcaps.push(c.name);
+    }
+}
+
+let warning = '';
+if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
+  warning = 'alert';
+} else if ( ! authorizer && pgroups.length ) {
+  warning = 'warning';
+}
+
+  data.push( [
+     n.name,
+     n.authenticate,
+     authorizer || '',
+     permissioned ? 'permissioned' : '',
+     readOnly ? 'read-only' : '',
+     spidAware ? 'spid-aware' : '',
+     warning,
+     pgroups.join(', '),
+     pcaps.join(', '),
+     n.authNotes
+   ]);
+}
+
+table(data, COLUMNS);
+""",
+notes:"",
+lastModifiedBy:1348,lastModified:1697222596604
+})
