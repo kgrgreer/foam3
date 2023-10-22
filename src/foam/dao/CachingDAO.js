@@ -149,12 +149,15 @@ foam.CLASS({
     function cmd_(x, obj) {
       if ( foam.dao.DAO.PURGE_CMD === obj ) {
         this.onSrcReset();
-      } else if ( this.PurgeRecordCmd.isInstance(obj) ) {
+        return true;
+      }
+      if ( this.PurgeRecordCmd.isInstance(obj) ) {
         // REVIEW: this.cache is a dao not object, need to call dao.remove(obj)?
         delete this.cache[obj.id];
+        return true;
       }
 
-      this.SUPER(x, obj);
+      return this.src.cmd_(x, obj);
     }
   ],
 
