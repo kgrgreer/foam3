@@ -524,8 +524,9 @@ return this.find_(this.getX(), id);
           if ( getClass().getName().equals(s.substring(7)) ) return true;
         }
       }
-// null return indicates cmd not handled.
-return null;
+
+      // null return indicates cmd not handled.
+      return null;
       `,
     },
 
