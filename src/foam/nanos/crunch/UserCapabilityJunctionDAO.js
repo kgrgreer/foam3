@@ -116,7 +116,6 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         UserCapabilityJunction old = (UserCapabilityJunction) super.find_(x, ucj.getId());
 
-
         // do not allow updates to sourceId/targetId properties
         AuthService auth = (AuthService) x.get("auth");
         if ( old != null && ucj.getSourceId() != old.getSourceId() && ! auth.check(x, SOURCE_CAPABILITY_ID_CHANGE) ) throw new RuntimeException(this.ERROR_TWO);
@@ -138,8 +137,7 @@ foam.CLASS({
           if ( capability == null ) {
             logger.error(this.getClass().getSimpleName(), "Capability not found", ucj.getTargetId());
             alarm.setNote(this.ERROR_CAPABILITY_NOT_FOUND + ucj.getTargetId());
-          } else if ( capability.getOf() != null &&
-                      ucj.getData() != null ) {
+          } else if ( capability.getOf() != null && ucj.getData() != null ) {
             logger.error(this.getClass().getSimpleName(), "Type mismatch", "capability", capability.getId(), "expected", capability.getOf().getId(), "received", ucj.getData().getClassInfo().getId());
           }
           ((DAO) x.get("alarmDAO")).put(alarm);
@@ -147,6 +145,16 @@ foam.CLASS({
         }
 
         return super.put_(x, obj);
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+        if ( "AUTHORIZER?".equals(obj) ) {
+          return getClass().getName();
+        }
+
+        return super.cmd_(x, obj);
       `
     }
   ]
