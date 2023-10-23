@@ -701,8 +701,6 @@ foam.POM({
     { name: "approval/PopulateApprovalRequestSummariesDAO",                               flags: "js|java" },
     { name: "approval/SendGroupRequestApprovalDAO",                                       flags: "js|java" },
     { name: "approval/UCJApprovable",                                                     flags: "js|java" },
-    { name: "approval/Retriable",                                                         flags: "js|java" },
-    { name: "approval/RetriableMixin",                                                    flags: "js" },
     { name: "auth/CapabilityAuthService",                                                 flags: "js|java" },
     { name: "geocode/GoogleMapsCredentials",                                              flags: "js|java" },
     { name: "crunch/TopLevelCapabilityStatusUpdateNotification",                          flags: "js|java" },

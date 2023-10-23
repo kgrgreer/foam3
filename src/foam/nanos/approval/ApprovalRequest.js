@@ -574,7 +574,12 @@ foam.CLASS({
       documentation: `
         Optional field to specify the request to be sent to multiple  groups.
         Should remain non-transient to handle fulfilled requests being visible to different groups.
-      `,
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'canRetry',
+      hidden: true
     }
   ],
 
@@ -781,14 +786,11 @@ foam.CLASS({
     {
       name: 'retry',
       section: 'approvalRequestInformation',
-      isAvailable: async function(isTrackingRequest, status, subject, assignedTo) {
+      isAvailable: async function(isTrackingRequest, status, subject, assignedTo, canRetry) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
         if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
 
-        const reputObjectDAO = this.__subContext__[this.daoKey || this.serverDaoKey];
-        const objToReput = await reputObjectDAO?.find(this.objId);
-
-        return ! isTrackingRequest && objToReput?.isRetriable;
+        return ! isTrackingRequest && canRetry;
       },
       code: async function(X) {
         const approvalRequest = this.clone();
