@@ -6,6 +6,10 @@ p({
   "documentation": "Create a referral code for each user on signup",
   "ruleGroup": "Referrals",
   "daoKey": "localUserDAO",
+  predicate: {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n classof foam.nanos.auth.User'
+  },
   "operation": 0,
   "after": true,
   "action":{
