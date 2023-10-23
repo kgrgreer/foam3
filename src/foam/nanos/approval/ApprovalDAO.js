@@ -80,14 +80,8 @@ foam.CLASS({
             }
           }
         } else if ( old != null && request.getCanRetry() ) {
-          try {
-            rePutObject(x, request);
-            getDelegate().put(request);
-          } catch ( Exception e ) {
-            request.setStatus(ApprovalStatus.REQUESTED);
-            getDelegate().put(request);
-            throw new RuntimeException(e);
-          }
+          rePutObject(x, request);
+          getDelegate().put(request);
         }
         return request;
       `
