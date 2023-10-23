@@ -74,7 +74,7 @@ access to an FObject under different circumstances.`,
         {
           name: 'obj',
           type: 'foam.core.FObject'
-        },
+        }
       ],
       javaThrows: [
         'foam.nanos.auth.AuthorizationException'
@@ -96,13 +96,14 @@ access to an FObject under different circumstances.`,
     },
     {
       name: 'checkGlobalRemove',
-      args: [
-        {
-          name: 'x',
-          type: 'foam.core.X'
-        },
-      ],
+      args: 'foam.core.X x',
       javaType: 'boolean'
+    },
+    {
+      name: 'checkGlobalFind',
+      args: 'foam.core.X x',
+      javaType: 'boolean',
+      javaCode: 'return checkGlobalRead(x, null);'
     }
   ]
 });

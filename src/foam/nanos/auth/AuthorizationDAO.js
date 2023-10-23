@@ -75,7 +75,7 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
     if ( id == null ) return null;
-    if ( getAuthorizer().checkGlobalRead(x, null) ) return super.find_(x, id);
+    if ( getAuthorizer().checkGlobalFind(x) ) return super.find_(x, id);
 
     FObject obj = super.find_(x, id);
     try {
