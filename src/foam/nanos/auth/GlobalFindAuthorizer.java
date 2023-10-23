@@ -6,9 +6,8 @@
 
 package foam.nanos.auth;
 
-import foam.core.FObject;
 import foam.core.X;
-import foam.mlang.predicate.Predicate;
+
 
 public class GlobalFindAuthorizer
   extends StandardAuthorizer
