@@ -803,8 +803,8 @@ foam.CLASS({
 
           this.finished.pub();
           // Give some delay while approval request moves to the final state
-          // TODO: If server async job is done on the server side, we can only give delay and expect
-          //       it gets done before the delay is over. However, if the server side job takes longer than the delay (currently 1 second)
+          // TODO: If the server job is done asynchronously, we can only give delay and expect it gets done before the delay is over. 
+          //       However, if the server side job takes longer than the delay (currently 1 second)
           //       for approval request to move to the final state, notification will not work as expected. Please fix this
           //       when one can come up with a better idea of handling the notification.
           setTimeout(() => {
