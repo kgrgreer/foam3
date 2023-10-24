@@ -9,7 +9,7 @@ package foam.nanos.auth;
 import foam.core.X;
 
 
-public class GlobalCreateAuthorizer
+public class GlobalPutAuthorizer
   extends StandardAuthorizer
 {
 
@@ -18,7 +18,7 @@ public class GlobalCreateAuthorizer
   // Useful for DAO's where the id's are unknown and unguessable,
   // like token or invitation DAOs.
 
-  public GlobalCreateAuthorizer(String permissionPrefix) {
+  public GlobalPutAuthorizer(String permissionPrefix) {
     super(permissionPrefix);
   }
 
