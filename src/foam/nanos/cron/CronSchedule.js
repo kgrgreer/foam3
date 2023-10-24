@@ -376,32 +376,34 @@ foam.CLASS({
       javaType: 'java.time.LocalDateTime',
       javaCode: `
       boolean adjusted = false;
-      for ( foam.time.DayOfWeek d : getDaysOfWeek() ) {
-        int day = d.getOrdinal();
-        if ( day == time.getDayOfWeek().getValue() &&
-             time.isAfter(last) ) {
-          adjusted = true;
-          break;
-        }
-        // schedule change to earlier in week
-        if ( day < time.getDayOfWeek().getValue() ) {
-          LocalDateTime temp = time.with(ChronoField.DAY_OF_WEEK, day);
-          if ( temp.isAfter(last) ) {
-            time = temp;
+      while ( ! adjusted ) {
+        for ( foam.time.DayOfWeek d : getDaysOfWeek() ) {
+          int day = d.getOrdinal();
+          if ( day == time.getDayOfWeek().getValue() &&
+               time.isAfter(last) ) {
+            adjusted = true;
+            break;
+          }
+          // schedule change to earlier in week
+          if ( day < time.getDayOfWeek().getValue() ) {
+            LocalDateTime temp = time.with(ChronoField.DAY_OF_WEEK, day);
+            if ( temp.isAfter(last) ) {
+              time = temp;
+              adjusted = true;
+              break;
+            }
+          }
+
+          if ( day > time.getDayOfWeek().getValue() ) {
+            time = time.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(day)));
             adjusted = true;
             break;
           }
         }
-
-        if ( day > time.getDayOfWeek().getValue() ) {
-          time = time.with(TemporalAdjusters.nextOrSame(DayOfWeek.of(day)));
-          adjusted = true;
-          break;
+        if ( ! adjusted ) {
+          // bump week
+          time = time.with(TemporalAdjusters.next(DayOfWeek.of(((foam.time.DayOfWeek)getDaysOfWeek()[0]).getOrdinal())));
         }
-      }
-      if ( ! adjusted ) {
-        // bump week
-        time = time.with(TemporalAdjusters.next(DayOfWeek.of(((foam.time.DayOfWeek)getDaysOfWeek()[0]).getOrdinal())));
       }
       return time;
       `
