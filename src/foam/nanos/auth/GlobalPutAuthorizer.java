@@ -6,8 +6,9 @@
 
 package foam.nanos.auth;
 
+import foam.core.FObject;
 import foam.core.X;
-
+import foam.nanos.auth.AuthorizationException;
 
 public class GlobalPutAuthorizer
   extends StandardAuthorizer
@@ -23,12 +24,12 @@ public class GlobalPutAuthorizer
   }
 
   @Override
-  public void authorizeOnCreate(X x, foam.core.FObject obj) {
+  public void authorizeOnCreate(X x, FObject obj) throws AuthorizationException {
     // NOP to enable put() of a new object
   }
 
   @Override
-  public void authorizeOnUpdate(X x, foam.core.FObject obj) {
+  public void authorizeOnUpdate(X x, FObject oldObj, FObject obj) throws AuthorizationException {
     // NOP to enable put() of an updated object
   }
 }
