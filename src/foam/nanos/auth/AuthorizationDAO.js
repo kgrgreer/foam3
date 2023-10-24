@@ -48,8 +48,8 @@ foam.CLASS({
       javaCode: `
    if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
-    Object id = obj.getProperty("id");
-    FObject oldObj = getDelegate().find(id);
+    Object  id       = obj.getProperty("id");
+    FObject oldObj   = getDelegate().find(id);
     boolean isCreate = id == null || oldObj == null;
 
     if ( isCreate ) {
