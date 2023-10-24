@@ -803,6 +803,10 @@ foam.CLASS({
 
           this.finished.pub();
           // Give some delay while approval request moves to the final state
+          // TODO: The validation on the server side is done asynchronously so we can only give delay and expect
+          //       it gets done before the delay is over. However, if the validation takes longer than the delay (currently 1 second)
+          //       for approval request to move to the final state, notification will not work as expected. Please fix this
+          //       when one can come up with a better idea of handling the notification.
           setTimeout(() => {
             this.approvalRequestDAO.find(req.id).then(req => {
               if ( req.status === this.ApprovalStatus.APPROVED ) {
