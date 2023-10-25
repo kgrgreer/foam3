@@ -6,11 +6,12 @@
 
 package foam.nanos.auth;
 
+import foam.core.FObject;
 import foam.core.X;
+import foam.nanos.auth.AuthorizationException;
 
-
-public class GlobalCreateAuthorizer
-  extends StandardAuthorizer
+public class GlobalPutAuthorizer
+    extends StandardAuthorizer
 {
 
   // This authorizer is an extension of the standardauthorizer that is meant
@@ -18,17 +19,17 @@ public class GlobalCreateAuthorizer
   // Useful for DAO's where the id's are unknown and unguessable,
   // like token or invitation DAOs.
 
-  public GlobalCreateAuthorizer(String permissionPrefix) {
+  public GlobalPutAuthorizer(String permissionPrefix) {
     super(permissionPrefix);
   }
 
   @Override
-  public void authorizeOnCreate(X x, FObject obj) {
+  public void authorizeOnCreate(X x, FObject obj) throws AuthorizationException {
     // NOP to enable put() of a new object
   }
 
   @Override
-  public void authorizeOnUpdate(X x, FObject obj) {
+  public void authorizeOnUpdate(X x, FObject oldObj, FObject obj) throws AuthorizationException {
     // NOP to enable put() of an updated object
   }
 }
