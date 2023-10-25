@@ -473,8 +473,14 @@ NOTE: when using the java client, the first call to a newly started instance may
     },
     {
       documentation: 'submit() returns null for a 200 with an empty response body, retrieving the response code of 200 can be useful for text based clients (not expecting FObjects)',
-      name: 'lastResponseCode',
+      name: 'lastHttpResponseCode',
       class: 'Int',
+      transient: true,
+      hidden: true
+    },
+    {
+      name: 'lastHttpResponse',
+      class: 'Object',
       transient: true,
       hidden: true
     }
@@ -591,7 +597,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         return null;
       }
       if ( result instanceof String &&
-           getLastResponseCode() != 200 ) {
+           getLastHttpResponseCode() != 200 ) {
         throw new FOAMException((String) result);
       }
       if ( result instanceof String ) {
@@ -621,7 +627,7 @@ NOTE: when using the java client, the first call to a newly started instance may
 
       Object result = submit(x, DOP.PUT, adapt(x, DOP.PUT, obj));
       if ( result instanceof String &&
-           getLastResponseCode() != 200 ) {
+           getLastHttpResponseCode() != 200 ) {
         throw new FOAMException((String) result);
       }
       if ( result instanceof String ) {
@@ -866,7 +872,8 @@ NOTE: when using the java client, the first call to a newly started instance may
         } finally {
           pm.log(x);
         }
-        setLastResponseCode(response.statusCode());
+        setLastHttpResponse(response);
+        setLastHttpResponseCode(response.statusCode());
         String body = response.body();
         if ( response.statusCode() != 200 ) {
           Loggers.logger(x, this).warning("submit", "request", dop, url, "response", response.statusCode(), body);
