@@ -529,20 +529,6 @@ foam.CLASS({
       section: 'businessInformation',
       order: 30,
       gridColumns: 6,
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
-            dao: X.jobTitleDAO,
-            objToChoice: function(a) {
-              return [a.name, a.label];
-            }
-          }
-        };
-      },
       tableCellFormatter: function(val) {
         this.translate(`${val}.label`, val);
       }
