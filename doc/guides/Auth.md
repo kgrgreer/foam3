@@ -1,1 +1,1 @@
-See ../src/foam/nanos/auth/README.md
+See: [auth/README.md](../../src/foam/nanos/auth/README.md)
