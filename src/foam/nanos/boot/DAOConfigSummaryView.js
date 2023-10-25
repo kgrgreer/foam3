@@ -201,6 +201,7 @@ foam.CLASS({
            this.EQ(foam.nanos.boot.NSpec.SERVE,     true)
          ));
 
+       /* ignoreWarning */
        dao.select(this.COUNT()).then(c => this.totalDAOCount = this.daoCount = c.value);
 
        return dao;
