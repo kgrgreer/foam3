@@ -19,7 +19,9 @@ foam.CLASS({
   package: 'foam.dao',
   name: 'ReadOnlyDAO',
   extends: 'foam.dao.ProxyDAO',
+
   documentation: 'DAO decorator that throws errors on put and remove.',
+
   methods: [
     {
       name: 'put_',
@@ -48,16 +50,16 @@ foam.CLASS({
     {
       name: 'cmd_',
       javaCode: `
-        if ( obj instanceof String && ((String) obj).startsWith("CLASS?") ) {
+        if ( obj instanceof String && ((String) obj).startsWith("CLASS? ") )
           return super.cmd_(x, obj);
-        }
-        if ( "AUTHORIZER?".equals(obj) ) return getDelegate().cmd_(x, obj);
-        throw new UnsupportedOperationException("Cannot cmd from ReadOnlyDAO");
+
+        if ( "AUTHORIZER?".equals(obj) )
+          return getDelegate().cmd_(x, obj);
+
+        return null;
       `,
-      swiftCode: `throw FoamError("Cannot cmd from ReadOnlyDAO")`,
-      code: function cmd_() {
-        return Promise.reject('Cannot cmd from ReadOnlyDAO');
-      }
+      swiftCode: `throw FoamError("Cannot cmd from ReadOnlyDAO")`, // TODO: NOP
+      code: function cmd_() { return Promise.resolve(undefined); }
     }
   ]
 });
