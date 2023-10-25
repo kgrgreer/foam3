@@ -182,6 +182,16 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'String',
+      name: 'referralToken',
+      documentation: `Input to associate new user with something.`,
+      factory: function() {
+        var searchParams = new URLSearchParams(location.search);
+        return searchParams.get('referral');
+      },
+      hidden: true
     }
   ],
 
@@ -253,18 +263,9 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
-    },
-    {
-      class: 'String',
-      name: 'referralToken',
-      documentation: `Input to associate new user with something.`,
-      factory: function() {
-        var searchParams = new URLSearchParams(location.search);
-        return searchParams.get('referral');
-      },
-      hidden: true
     }
   ],
+
   actions: [
     {
       name: 'login',
