@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+// TODO: FIX BUG: extend and size must be set before value otherwise value will be reset to 1
+
 foam.CLASS({
   package: 'foam.graphics',
   name: 'ScrollCView',
