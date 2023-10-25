@@ -327,7 +327,7 @@ for ( var j = 0 ; j < caps.length ; j++ ) {
 let warning = '';
 if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
   warning = 'alert';
-} else if ( ! authorizer && pgroups.length ) {
+} else if ( ! authorizer && pgroups.length && ! readOnly ) {
   warning = 'warning';
 }
 
