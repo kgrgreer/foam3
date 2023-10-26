@@ -45,7 +45,7 @@ p({
   daoKey: 'userCapabilityJunctionDAO',
   operation: 1,
   after: false,
-  enabled: true,
+  enabled: false,
   action: {
     class: 'foam.nanos.crunch.ruler.InvokeEditBehaviourRuleAction'
   },

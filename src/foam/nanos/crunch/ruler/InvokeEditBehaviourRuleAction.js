@@ -35,9 +35,6 @@ foam.CLASS({
           @Override
           public void execute (X x) {
 
-            // If user has permission to update junctions for other users
-            // then we ignore edit behaviour entirely.
-            AuthService auth = (AuthService) x.get("auth");
             if ( ucj.getSkipEditBehaviour() == true ) {
               ucj.setSkipEditBehaviour(false);
               return;
