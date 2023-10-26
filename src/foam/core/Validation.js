@@ -25,7 +25,11 @@ foam.CLASS({
       expression: function(query, jsErr) {
         return function(obj) {
           var predicate = foam.mlang.predicate.FScript.create({query: query, prop: this});
-          if ( ! predicate.f(obj) ) return jsErr(obj);
+          if ( ! predicate.f(obj) ) {
+            const prop = this.forClass_ + '.' + foam.String.constantize(this.name);
+            foam.assert(false, prop, 'validation failed:', query);
+            return jsErr(obj);
+          }
         };
       }
     },
