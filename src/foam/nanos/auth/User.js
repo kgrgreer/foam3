@@ -841,7 +841,7 @@ foam.CLASS({
       javaCode: `
 
         // check if user enabled
-        if ( ! this.getEnabled() ) {
+        if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
 
