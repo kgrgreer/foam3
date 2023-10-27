@@ -1,0 +1,31 @@
+{
+  "name": "Sweeper",
+  "short_name": "Sweeper",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#aaa",
+  "description": "A mine sweeper game.",
+  "scope": "/",
+  "start_url": "/src/foam/demos/sweeper/sweep.html",
+  "icons": [
+    {
+      "src": "minesweeper.svg",
+      "sizes": "any",
+      "purpose": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "sweeperscreenshot.png",
+      "sizes": "874x838",
+      "form_factor": "wide",
+      "type": "image/png"
+    },
+    {
+      "src": "sweeperscreenshot.png",
+      "sizes": "874x838",
+      "type": "image/png"
+    }
+  ]
+}
