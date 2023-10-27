@@ -670,7 +670,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'systemInformation',
       order: 130,
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      javaCompare: 'return 0;'
     },
     {
       class: 'Object',
@@ -841,7 +842,7 @@ foam.CLASS({
       javaCode: `
 
         // check if user enabled
-        if ( ! this.getEnabled() ) {
+        if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
 

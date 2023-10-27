@@ -28,8 +28,8 @@ foam.CLASS({
 
         if (
           oldUser != null
-          && oldUser.getEnabled()
-          && !newUser.getEnabled()
+          && oldUser.getLifecycleState() == foam.nanos.auth.LifecycleState.ACTIVE
+          && newUser.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE
         ) {
           sessionDAO_ = (DAO) x.get("localSessionDAO");
           auth_ = (AuthService) x.get("auth");
