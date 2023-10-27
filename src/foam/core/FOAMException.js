@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'FOAMException',
   implements: ['foam.core.Exception'],
   javaExtends: 'RuntimeException',
+
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
@@ -153,12 +154,7 @@ foam.CLASS({
     {
       documentation: 'Perform template replacement on msg. Provides server side exceptionMessage template rendering, without translation.',
       name: 'renderMessage',
-      args: [
-        {
-          name: 'msg',
-          type: 'String'
-        }
-      ],
+      args: 'String msg',
       type: 'String',
       javaCode: `
       if ( SafetyUtil.isEmpty(msg) ) {
