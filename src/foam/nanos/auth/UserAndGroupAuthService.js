@@ -150,7 +150,7 @@ foam.CLASS({
         }
         user.validateAuth(x);
         // check if user enabled
-        if ( ! user.getEnabled() ) {
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AccessDeniedException();
         }
         if ( ! user.getEmailVerified() ) {
@@ -329,7 +329,7 @@ foam.CLASS({
         // check that the user is active
         assertUserIsActive(user);
         // check if user enabled
-        if ( ! user.getEnabled() ) {
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
         // check if user login enabled

@@ -65,7 +65,6 @@ public class TestUtils {
     profilePicFile.setFilename("Profile picture");
     user.setProfilePicture(profilePicFile);
     user.setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE);
-    user.setEnabled(true);
     return user;
   }
 
