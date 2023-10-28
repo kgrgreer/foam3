@@ -283,6 +283,7 @@ public class AuthWebAgent
         // TODO: generate stack trace.
         sendError(x, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Authentication failure.");
       } catch ( AuthenticationException e ) {
+        logger.error("AuthServcie.login fail", "email: " + email);
         if ( sendErrorHandler_ != null ) {
           sendError(x, resp, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
