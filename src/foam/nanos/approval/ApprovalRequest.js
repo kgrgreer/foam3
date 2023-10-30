@@ -730,6 +730,7 @@ foam.CLASS({
       code: function(X) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
+        approvedApprovalRequest.canRetry = false;
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -858,6 +859,7 @@ foam.CLASS({
       code: function(X) {
         var cancelledApprovalRequest = this.clone();
         cancelledApprovalRequest.status = this.ApprovalStatus.CANCELLED;
+        cancelledApprovalRequest.retry = false;
 
         X.approvalRequestDAO.put(cancelledApprovalRequest).then(o => {
           X.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1102,6 +1104,7 @@ foam.CLASS({
       code: function(X, memo) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
+        approvedApprovalRequest.canRetry = false;
         approvedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
@@ -1156,6 +1159,7 @@ foam.CLASS({
       code: function(X, memo) {
         var rejectedApprovalRequest = this.clone();
         rejectedApprovalRequest.status = this.ApprovalStatus.REJECTED;
+        rejectedApprovalRequest.canRetry = false;
         rejectedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
