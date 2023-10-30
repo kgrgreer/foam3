@@ -242,8 +242,6 @@ id:"DAO Security Report",
 description:"List DAO's with potential security issues.",
 language:0,
 code:"""
-
-
 var COLUMNS = [
   'DAO',
   'Authenticated',
@@ -292,9 +290,13 @@ for ( var i = 0 ; i < array.length ; i++ ) {
   let authorizer = '';
   let permissioned = false;
   let readOnly   = false;
+  let nullDAO    = false;
   let spidAware   = false;
 try {
 readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
+} catch (x) { }
+try {
+nullDAO   = !! await x[n.name].cmd('CLASS? foam.dao.NullDAO');
 } catch (x) { }
 try { authorizer = await x[n.name].cmd('AUTHORIZER?'); } catch (x) { }
 try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.PermissionedPropertyDAO'); } catch (x) { }
@@ -325,9 +327,9 @@ for ( var j = 0 ; j < caps.length ; j++ ) {
 }
 
 let warning = '';
-if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
+if  ( ! authorizer && ! readOnly && ! n.authenticate && ! nullDAO ) {
   warning = 'alert';
-} else if ( ! authorizer && pgroups.length && ! readOnly ) {
+} else if ( ! authorizer && pgroups.length && ! readOnly && ! nullDAO ) {
   warning = 'warning';
 }
 
@@ -336,7 +338,7 @@ if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
      n.authenticate,
      authorizer || '',
      permissioned ? 'permissioned' : '',
-     readOnly ? 'read-only' : '',
+     readOnly ? 'read-only' : nullDAO ? 'null' : '',
      spidAware ? 'spid-aware' : '',
      warning,
      pgroups.join(', '),
