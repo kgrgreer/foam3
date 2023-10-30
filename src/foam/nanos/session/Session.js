@@ -462,7 +462,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         // Testing 'id' allows internal session setup, used for capability checks,
         // for users in any state.
-        if ( ! user.getEnabled() &&
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE &&
              ! SafetyUtil.isEmpty(getId()) ) {
           Loggers.logger(x, this).warning("User disabled", user.getId());
           throw new foam.nanos.auth.AccountDisabledException();

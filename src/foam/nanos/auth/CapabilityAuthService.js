@@ -177,7 +177,7 @@ foam.CLASS({
       javaCode: `
         if ( x == null || permission == null ) return false;
         if ( x.get(Session.class) == null ) return false;
-        if ( user == null || ! user.getEnabled() ) return false;
+        if ( user == null || user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) return false;
 
         User realUser = ((Subject) x.get("subject")).getRealUser();
 

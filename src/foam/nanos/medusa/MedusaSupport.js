@@ -8,10 +8,13 @@ foam.CLASS({
   package: 'foam.nanos.medusa',
   name: 'MedusaSupport',
 
-  documentation: `Provided for the nanos system to determine if the application
-is running in clustered environment and if should be responsible for tasks which
-should only run on the primary.
-This model is refined by the real medusa system.`,
+  documentation: `Provided for the nanos system to determine if the
+application is running in clustered environment and if should be
+responsible for tasks which should only run on the primary.
+This model is refined by the real medusa system to use the
+real ClusterConfigSupport.
+See MedusaSupportRefinement
+`,
 
   methods: [
     {
@@ -20,7 +23,7 @@ only run on the primary mediator.`,
       name: 'cronEnabled',
       args: 'Context x, boolean clusterable',
       type: 'Boolean',
-      javaCode: 'return false;'
+      javaCode: 'return true;'
     },
     {
       documentation: 'test if system is replaying',

@@ -154,7 +154,7 @@ foam.CLASS({
         delete this.cache[obj.id];
       }
 
-      this.SUPER(x, obj);
+      return this.src.cmd_(x, obj);
     }
   ],
 

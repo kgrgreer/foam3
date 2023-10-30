@@ -141,7 +141,7 @@ public class NanoRouter
   protected WebAgent getWebAgent(NSpec spec, Object service) {
     if ( spec == null ) return null;
 
-    synchronized (spec.getName().intern()) {
+    synchronized ( spec.getName().intern() ) {
       if ( ! handlerMap_.containsKey(spec.getName()) ) {
         handlerMap_.put(spec.getName(), createWebAgent(spec, service));
       }

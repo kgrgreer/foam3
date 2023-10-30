@@ -10,7 +10,9 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.mlang.predicate.Predicate;
 
-public class GlobalReadAuthorizer extends StandardAuthorizer {
+public class GlobalReadAuthorizer
+  extends StandardAuthorizer
+{
 
   // this authorizer is an extension of the standardauthorizer that is meant
   // to replace the authorizeReads flag on services using the standardAuthorizer.
@@ -25,5 +27,4 @@ public class GlobalReadAuthorizer extends StandardAuthorizer {
     // return true in checkGlobalRead to save time checking each object
     return true;
   }
-
 }

@@ -529,20 +529,6 @@ foam.CLASS({
       section: 'businessInformation',
       order: 30,
       gridColumns: 6,
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
-            dao: X.jobTitleDAO,
-            objToChoice: function(a) {
-              return [a.name, a.label];
-            }
-          }
-        };
-      },
       tableCellFormatter: function(val) {
         this.translate(`${val}.label`, val);
       }
@@ -684,7 +670,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'systemInformation',
       order: 130,
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      javaCompare: 'return 0;'
     },
     {
       class: 'Object',
@@ -775,42 +762,32 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnUpdate',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldObj', type: 'foam.core.FObject' }
-      ],
-      javaThrows: ['AuthorizationException'],
+      args: 'Context x, foam.core.FObject oldObj',
+      javaThrows: [ 'AuthorizationException' ],
       javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-        User oldUser = (User) oldObj;
+        Subject     subject      = (Subject)     x.get("subject");
+        AuthService auth         = (AuthService) x.get("auth");
+        User        oldUser      = (User)        oldObj;
+        User        user         = subject.getUser();
+        User        agent        = subject.getRealUser();
+        boolean     updatingSelf =
+          ( user  != null && SafetyUtil.equals(this.getId(), user.getId()) ) ||
+          ( agent != null && SafetyUtil.equals(this.getId(), agent.getId()) );
 
-        Subject subject = (Subject) x.get("subject");
-        User agent = subject.getRealUser();
-        boolean updatingSelf =
-          ( user != null &&
-            SafetyUtil.equals(this.getId(), user.getId()) ) ||
-          ( agent != null &&
-            SafetyUtil.equals(agent.getId(), this.getId()) );
-        boolean hasUserEditPermission = auth.check(x, "user.update." + this.getId());
-
-        if (
-          ! updatingSelf &&
-          ! hasUserEditPermission
-        ) {
+        if ( ! updatingSelf && ! auth.check(x, "user.update." + this.getId()) ) {
           throw new AuthorizationException("You do not have permission to update this user.");
         }
 
         // Prevent privilege escalation by only allowing a user's group to be
         // changed under appropriate conditions.
         if ( ! SafetyUtil.equals(oldUser.getGroup(), this.getGroup()) ) {
-          boolean hasOldGroupUpdatePermission = auth.check(x, "group.update." + oldUser.getGroup());
-          boolean hasNewGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
           if ( updatingSelf ) {
             throw new AuthorizationException("You cannot change your own group.");
-          } else if ( ! hasUserEditPermission ) {
+          }
+          if ( ! auth.check(x, "user.update." + this.getId()) ) {
             throw new AuthorizationException("You do not have permission to change that user's group.");
-          } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
+          }
+          if ( ! auth.check(x, "group.update." + oldUser.getGroup()) || ! auth.check(x, "group.update." + this.getGroup()) ) {
             throw new AuthorizationException("You do not have permission to change that user's group to '" + this.getGroup() + "'.");
           }
         }
@@ -818,10 +795,8 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnDelete',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      javaThrows: ['AuthorizationException'],
+      args: 'Context x',
+      javaThrows: [ 'AuthorizationException' ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
@@ -867,7 +842,7 @@ foam.CLASS({
       javaCode: `
 
         // check if user enabled
-        if ( ! this.getEnabled() ) {
+        if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
 

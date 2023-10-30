@@ -250,6 +250,7 @@ var COLUMNS = [
   'Authorizer',
   'Permissioned',
   'Read-Only',
+  'SPID Aware',
   'Warning',
   'Groups',
   'Capabilities',
@@ -291,13 +292,13 @@ for ( var i = 0 ; i < array.length ; i++ ) {
   let authorizer = '';
   let permissioned = false;
   let readOnly   = false;
+  let spidAware   = false;
 try {
 readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
-} catch (x) {
-// console.log('******** ERROR', n.name, x.data.toString());
-}
+} catch (x) { }
 try { authorizer = await x[n.name].cmd('AUTHORIZER?'); } catch (x) { }
 try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.PermissionedPropertyDAO'); } catch (x) { }
+try { spidAware = !! await x[n.name].cmd('CLASS? foam.nanos.auth.ServiceProviderAwareDAO'); } catch (x) { }
 
 if ( authorizer ) {
  authorizer = authorizer.replace('foam.nanos.auth.', '');
@@ -326,7 +327,7 @@ for ( var j = 0 ; j < caps.length ; j++ ) {
 let warning = '';
 if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
   warning = 'alert';
-} else if ( ! authorizer && pgroups.length ) {
+} else if ( ! authorizer && pgroups.length && ! readOnly ) {
   warning = 'warning';
 }
 
@@ -336,6 +337,7 @@ if  ( ! authorizer && ! readOnly && ! n.authenticate ) {
      authorizer || '',
      permissioned ? 'permissioned' : '',
      readOnly ? 'read-only' : '',
+     spidAware ? 'spid-aware' : '',
      warning,
      pgroups.join(', '),
      pcaps.join(', '),

@@ -79,6 +79,9 @@ foam.CLASS({
               getDelegate().put(request);
             }
           }
+        } else if ( old != null && request.getCanRetry() ) {
+          rePutObject(x, request);
+          getDelegate().put(request);
         }
         return request;
       `

@@ -1,0 +1,21 @@
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"create-referralCode",
+  "name": "Create referral code",
+  "priority": 100,
+  "documentation": "Create a referral code for each user on signup",
+  "ruleGroup": "Referrals",
+  "daoKey": "localUserDAO",
+  predicate: {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n classof foam.nanos.auth.User'
+  },
+  "operation": 0,
+  "after": true,
+  "action":{
+    "class":"foam.nanos.referral.CreateReferralCode"
+  },
+  "enabled": true,
+  "saveHistory": false,
+  "lifecycleState":1
+})

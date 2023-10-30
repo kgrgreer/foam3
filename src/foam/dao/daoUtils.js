@@ -66,7 +66,10 @@ if let oldValue = oldValue as? foam_dao_AbstractDAO {
         if ( obj != null && obj instanceof String ) {
           String s = (String) obj;
           if ( s.startsWith("CLASS? ") ) {
-            if ( getClass().getName().equals(s.substring(7)) ) return true;
+            try {
+              if ( Class.forName(s.substring(7)).isAssignableFrom(getClass()) ) return true;
+            } catch (ClassNotFoundException e) {
+            }
           }
         }
         return getDelegate().cmd_(x, obj);

@@ -190,8 +190,7 @@ foam.CLASS({
           delegate = new foam.dao.GUIDDAO(getX(), delegate);
         }
 
-        if ( getMdao() != null &&
-             getLastDao() == null ) {
+        if ( getMdao() != null && getLastDao() == null ) {
           setLastDao(delegate);
         }
 
@@ -202,8 +201,7 @@ foam.CLASS({
           );
         }
 
-        if ( getCluster() &&
-             getMdao() != null ) {
+        if ( getCluster() && getMdao() != null ) {
           delegate = getClusterDelegate(delegate);
         }
 
@@ -1285,16 +1283,7 @@ model from which to test ServiceProvider ID (spid)`,
     // ProxyDAO operations
     {
       name: 'cmd_',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'Object'
-        }
-      ],
+      args: 'Context x, Object obj',
       type: 'Object',
       code: function cmd_(x, obj) {
         return this.delegate.cmd_(x, obj);

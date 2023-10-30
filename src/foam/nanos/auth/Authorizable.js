@@ -7,43 +7,33 @@
 foam.INTERFACE({
     package: 'foam.nanos.auth',
     name: 'Authorizable',
-  
+
     documentation: `
       A model should implement this interface if it is authorizable, meaning some
       users are allowed to operate on (create, read, update, or delete) that
       object but others are not.
     `,
-  
+
     methods: [
       {
         name: 'authorizeOnCreate',
-        args: [
-          { name: 'x', type: 'Context' }
-        ],
+        args: 'Context x',
         javaThrows: ['foam.nanos.auth.AuthorizationException']
       },
       {
         name: 'authorizeOnRead',
-        args: [
-          { name: 'x', type: 'Context' }
-        ],
+        args: 'Context x',
         javaThrows: ['foam.nanos.auth.AuthorizationException']
       },
       {
         name: 'authorizeOnUpdate',
-        args: [
-          { name: 'x', type: 'Context' },
-          { name: 'oldObj', type: 'foam.core.FObject' }
-        ],
+        args: 'Context x, foam.core.FObject oldObj',
         javaThrows: ['foam.nanos.auth.AuthorizationException']
       },
       {
         name: 'authorizeOnDelete',
-        args: [
-          { name: 'x', type: 'Context' }
-        ],
+        args: 'Context x',
         javaThrows: ['foam.nanos.auth.AuthorizationException']
       }
     ]
   });
-  

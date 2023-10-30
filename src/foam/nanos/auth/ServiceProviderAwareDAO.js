@@ -212,7 +212,7 @@ foam.CLASS({
       name: 'select_',
       documentation: `
         Add an additional predicate to select based on the context given:
-          - If there is a user in the context, restrict select to return only the objects for which they have permission to 
+          - If there is a user in the context, restrict select to return only the objects for which they have permission to
           via "serviceprovider.read.<spid>
           - Otherwise, restrict select based on the getUnauthenticatedPredicate(x)
       `,

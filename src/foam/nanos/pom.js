@@ -21,7 +21,8 @@ foam.POM({
     { name: "app/pom"},
     { name: "crunch/pom"},
     { name: "jetty/pom"},
-    { name: "ruler/pom"}
+    { name: "ruler/pom"},
+    { name: "referral/pom" }
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
@@ -692,7 +693,7 @@ foam.POM({
     { name: "approval/PopulateApprovalRequestsDAO",                                       flags: "js|java" },
     { name: "approval/ApprovalRequestAssignedToRule",                                     flags: "js|java" },
     { name: "approval/ApprovalRequestMemoRule",                                           flags: "js|java" },
-   { name: "approval/AuthenticatedApprovalDAOAuthorizer",                                flags: "js|java" },
+    { name: "approval/AuthenticatedApprovalDAOAuthorizer",                                flags: "js|java" },
     { name: "approval/CompositeApprovable",                                               flags: "js|java" },
     { name: "approval/CustomViewReferenceApprovable",                                     flags: "js|java" },
     { name: "approval/FulfilledCompositeApprovableRule",                                  flags: "js|java" },
