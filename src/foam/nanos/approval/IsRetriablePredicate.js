@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'IsRetriablePredicate',
-  documentation: 'A predicate for checking if an approval request has canRetry flag set to true',
+  documentation: 'A predicate for checking if the object has a retriable approval request',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   
   implements: ['foam.core.Serializable'],
