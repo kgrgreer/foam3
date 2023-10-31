@@ -22,8 +22,10 @@ foam.CLASS({
       flex-direction: row;
       justify-content: space-between;
       gap: 2rem;
+      align-items: center;
     }
     ^label{
+      display: inherit;
       flex-basis: 50%;
       font-weight: normal;
     }
