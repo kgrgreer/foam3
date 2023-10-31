@@ -70,7 +70,7 @@ foam.CLASS({
     function render() {
       const self = this;
       this.addClass()
-        .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$.or(this.popup?.forceFullscreen$))
+        .enableClass(this.myClass('isFullscreen'), this.popup?.fullscreen$.or(this.popup?.forceFullscreen$ ?? foam.core.ConstantSlot.create({ value: false })))
         .add(this.slot(function (controlBorder, showTitle, data$currentWizardlet) {
           return showTitle && data$currentWizardlet.showTitle && ! controlBorder ?
             this.E().start()
