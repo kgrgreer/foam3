@@ -31,3 +31,4 @@ src/cronjobs
 src/notifications
 src/ruleHistory
 src/agentJunctions
+tools/pom.xml
