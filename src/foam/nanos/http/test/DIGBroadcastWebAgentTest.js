@@ -66,7 +66,7 @@ foam.CLASS({
 
       Object reply = client.submit(x, getDop(), getData());
       test ( reply != null, "recieved non-null reply: "+reply);
-      test ( client.getLastResponseCode() == 200, "response code 200: "+client.getLastResponseCode());
+      test ( client.getLastHttpResponseCode() == 200, "response code 200: "+client.getLastHttpResponseCode());
 
 
       client = new DIG.Builder(x)
@@ -79,7 +79,7 @@ foam.CLASS({
         reply = client.submit(x, getDop(), getData());
         test ( false, "expected exception: "+reply);
       } catch (Exception e) {
-        test ( client.getLastResponseCode() != 200, "response code ! 200: "+client.getLastResponseCode());
+        test ( client.getLastHttpResponseCode() != 200, "response code ! 200: "+client.getLastHttpResponseCode());
         test ( e instanceof foam.core.FOAMException, "expected FOAMException: "+e.getClass().getSimpleName());
       }
       `
