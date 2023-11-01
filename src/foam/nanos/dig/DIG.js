@@ -633,6 +633,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       if ( result instanceof String ) {
         return new foam.core.StringHolder((String) result);
       }
+      if ( result instanceof FObject[] ) {
+        return ((FObject[]) result)[0];
+      }
       return (FObject) result;
       `
     },
