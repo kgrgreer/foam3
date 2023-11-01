@@ -43,7 +43,7 @@ foam.CLASS({
             
             if (
               isUpdating && auth.check(x, "usercapabilityjunction.update.*") ||
-              ! isUpdating && auth.check(x, "usercapabilityjunction.create.*")
+              ! isUpdating && auth.check(x, "usercapabilityjunction.create")
             ) return;
 
             boolean isOwner = ucj.getSourceId() == user.getId() || ucj.getSourceId() == realUser.getId();
