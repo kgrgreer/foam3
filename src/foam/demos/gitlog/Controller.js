@@ -516,7 +516,7 @@ name: 'NANOS',
       value: '2021',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: [
-          [0, '-- All --'], [ 2021, '2021' ], [ 2022, '2022' ]
+          [0, '-- All --'], [ 2021, '2021' ], [ 2022, '2022' ], [ 2023, '2023' ]
         ]}, X);
       }
     },
@@ -667,15 +667,10 @@ name: 'NANOS',
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      const year = 2022;
+      const year = 2023;
 
-      if ( year == 2021 ) {
-        this.loadData('data2021.log');
-        this.loadData('np2021.log');
-      } else if ( year == 2022 ) {
-        this.loadData('data2022.log');
-        this.loadData('np2022.log');
-      }
+      this.loadData(`data/data${year}.log`);
+      this.loadData(`data/np${year}.log`);
 
     },
 
