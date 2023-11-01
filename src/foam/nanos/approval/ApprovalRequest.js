@@ -637,6 +637,14 @@ foam.CLASS({
       message: 'Request Cancelled'
     },
     {
+      name: 'RETRIED',
+      message: 'You have retried this request'
+    },
+    {
+      name: 'RETRIED_TITLE',
+      message: 'Retried'
+    },
+    {
       name: 'FAILED_RETRY',
       message: 'You have failed to retry this request'
     },
@@ -730,6 +738,7 @@ foam.CLASS({
       code: function(X) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
+        approvedApprovalRequest.canRetry = false;
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -809,7 +818,9 @@ foam.CLASS({
           //       when one can come up with a better idea of handling the notification.
           setTimeout(() => {
             this.approvalRequestDAO.find(req.id).then(req => {
-              if ( req.status === this.ApprovalStatus.APPROVED ) {
+              if ( ! req ) {
+                this.notify(this.RETRIED_TITLE, this.RETRIED, this.LogLevel.INFO, true);
+              } else if ( req.status === this.ApprovalStatus.APPROVED ) {
                 this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
               } else if ( req.status === this.ApprovalStatus.REJECTED ) {
                 this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
@@ -858,6 +869,7 @@ foam.CLASS({
       code: function(X) {
         var cancelledApprovalRequest = this.clone();
         cancelledApprovalRequest.status = this.ApprovalStatus.CANCELLED;
+        cancelledApprovalRequest.retry = false;
 
         X.approvalRequestDAO.put(cancelledApprovalRequest).then(o => {
           X.approvalRequestDAO.cmd(foam.dao.DAO.RESET_CMD);
@@ -1102,6 +1114,7 @@ foam.CLASS({
       code: function(X, memo) {
         var approvedApprovalRequest = this.clone();
         approvedApprovalRequest.status = this.ApprovalStatus.APPROVED;
+        approvedApprovalRequest.canRetry = false;
         approvedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
@@ -1156,6 +1169,7 @@ foam.CLASS({
       code: function(X, memo) {
         var rejectedApprovalRequest = this.clone();
         rejectedApprovalRequest.status = this.ApprovalStatus.REJECTED;
+        rejectedApprovalRequest.canRetry = false;
         rejectedApprovalRequest.memo = this.appendMemoReverse(X, memo);
 
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
