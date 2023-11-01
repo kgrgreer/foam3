@@ -524,6 +524,7 @@ foam.POM({
     { name: "dig/LinkView",                                                               flags: "js" },
     { name: "dig/ResultView",                                                             flags: "js" },
     { name: "dig/SUGAR",                                                                  flags: "js|java" },
+    { name: "dig/test/DigJsonDriverTest",                                                 flags: "js|java" },
     { name: "notification/email/ClientPOP3EmailService",                                  flags: "js|java" },
     { name: "notification/email/POP3Email",                                               flags: "js|java" },
     { name: "ruler/RuleGroup",                                                            flags: "js|java" },

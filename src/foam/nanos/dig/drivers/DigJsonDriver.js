@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
     'foam.nanos.http.*',
+    'foam.util.SafetyUtil',
     'java.io.PrintWriter',
     'java.util.ArrayList',
     'java.util.Arrays',
@@ -124,10 +125,14 @@ foam.CLASS({
         outputterJson.setMultiLine(true);
       }
 
-      if ( fobjects.size() == 1 )
+      // NOTE: only json output has this one element behaviour
+      if ( fobjects.size() == 1 &&
+          // 'id' property indicates 'find' rather than 'select'
+          ! SafetyUtil.isEmpty(p.getParameter("id")) ) {
         outputterJson.output(fobjects.get(0));
-      else
+      } else {
         outputterJson.output(fobjects.toArray());
+      }
 
       // Output the formatted data
       out.println(outputterJson.toString());
