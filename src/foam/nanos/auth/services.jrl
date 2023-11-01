@@ -139,7 +139,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("groups")
       .setOf(foam.nanos.auth.Group.getOwnClassInfo())
-      .setDecorator(new foam.nanos.session.GroupResetSessionDAO(x, new foam.dao.NullDAO(x, foam.nanos.auth.Group.getOwnClassInfo())))
       .setAuthorize(false)
       .build();
   """,

@@ -253,7 +253,7 @@ foam.POM({
     { name: "boot/NSpecAware",                                                            flags: "js|java" },
     { name: "boot/DAOConfigSummaryView",                                                  flags: "web" },
     { name: "boot/DAONSpecMenu",                                                          flags: "js|java" },
-    { name: "session/GroupResetSessionDAO",                                               flags: "js|java" },
+    { name: "session/GroupResetSessionRuleAction",                                        flags: "js|java" },
     { name: "session/LocalSetting",                                                       flags: "js|java" },
     { name: "session/Session",                                                            flags: "js|java" },
     { name: "session/SessionTimer",                                                       flags: "js" },

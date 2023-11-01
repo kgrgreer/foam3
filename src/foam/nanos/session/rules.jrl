@@ -1,0 +1,19 @@
+p({
+  class: "foam.nanos.ruler.Rule",
+  id: "foam-nanos-session-group-reset",
+  name: "Reset session on group change",
+  enabled: true,
+  ruleGroup: "auth",
+  daoKey: "localGroupDAO",
+  operation: 1,
+  lifecycleState: 1,
+  priority: 100,
+  after: true,
+  predicate: {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n.url exists && o.url != n.url'
+  },
+  action: {
+    class: "foam.nanos.session.GroupResetSessionRuleAction"
+  }
+})
