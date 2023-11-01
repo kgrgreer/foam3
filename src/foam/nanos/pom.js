@@ -134,6 +134,7 @@ foam.POM({
     { name: "auth/Group",                                                                 flags: "js|java" },
     { name: "auth/GroupPermissionJunctionRefinement",                                     flags: "js|java" },
     { name: "auth/test/GroupResetSessionTest",                                          flags: "js|java" },
+    { name: "auth/test/GroupURLSessionTest",                                              flags: "js|java" },
     { name: "auth/InvalidPasswordException",                                              flags: "js|java" },
     { name: "auth/LifecycleState",                                                        flags: "js|java" },
     { name: "auth/LifecycleAware",                                                        flags: "js|java" },
