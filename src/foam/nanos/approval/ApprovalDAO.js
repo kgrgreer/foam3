@@ -81,7 +81,15 @@ foam.CLASS({
           }
         } else if ( old != null && request.getCanRetry() ) {
           rePutObject(x, request);
-          getDelegate().put(request);
+          
+          // NOTE: Reput could update current request and possibly do it on a different thread (e.g., async rule).
+          // In this case, we might have a stale request after reput, and it is not
+          // safe to put this request after the reput.
+
+          // NOTE: request still might be stale after find. If you know you will be reputting the object on retry,
+          // and this reput updates the current request, it is advisable that you do them sequentially to avoid returning
+          // stale request.
+          request = (ApprovalRequest) getDelegate().find(request.getId());
         }
         return request;
       `

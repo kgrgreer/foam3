@@ -206,21 +206,22 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       }
     },
     {
+      documentation: 'Traverse group parent chain inspecting for first set url, and set this on the AppConfig',
       name: 'getAppConfig',
       type: 'foam.nanos.app.AppConfig',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
         AppConfig appConfig = (AppConfig) x.get("appConfig");
-        String url = getUrl();
-        if ( ! foam.util.SafetyUtil.isEmpty(url) ) {
-          appConfig = (AppConfig) appConfig.fclone();
-          appConfig.setUrl(url.replaceAll("/$", ""));
-        }
+        Group group = this;
+        do {
+          String url = group.getUrl();
+          if ( ! foam.util.SafetyUtil.isEmpty(url) ) {
+            appConfig = (AppConfig) appConfig.fclone();
+            appConfig.setUrl(url.replaceAll("/$", ""));
+            break;
+          }
+          group = group.findParent(x);
+        } while ( group != null );
         return appConfig;
         `
     },

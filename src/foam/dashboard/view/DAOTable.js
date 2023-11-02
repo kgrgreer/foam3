@@ -16,7 +16,7 @@ foam.CLASS({
   ],
   imports: [
     'dashboardController',
-    'pushMenu',
+    'menu',
     'stack'
   ],
 
@@ -116,7 +116,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
       name: 'viewMoreMenuItem',
       documentation: `
       If set, this will cause viewMoreAction() to instead open the given
@@ -161,7 +162,8 @@ foam.CLASS({
             .forEach(currentValues, function(obj) {
               e.start().addClass('table-row')
                 .start(self.citationView, {
-                  data: obj
+                  data: obj,
+                  sourceMenu$: self.viewMoreMenuItem$
                 })
                .end();
            })
@@ -183,17 +185,18 @@ foam.CLASS({
     {
       name: 'viewMoreAction',
       label: 'View more activities',
-      code: function() {
+      code: async function() {
+        let menu;
         if ( this.viewMoreMenuItem ) {
-          this.pushMenu(this.viewMoreMenuItem);
-        } else {
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: this.DAOBrowseControllerView,
-              data: this.dao.where(this.predicate),
-            }, parent: this.__subContext__
-          }));
+          menu = await this.viewMoreMenuItem$find;
         }
+        this.stack.push(this.StackBlock.create({
+          view: {
+            class: this.DAOBrowseControllerView,
+            data: this.dao.where(this.predicate),
+            ...( menu ? { config: menu.handler.config.clone() } : {} )
+          }, parent: this.__subContext__
+        }));
       }
     }
   ],
