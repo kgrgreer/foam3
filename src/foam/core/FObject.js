@@ -799,7 +799,7 @@ foam.CLASS({
     function normalizeObj() {
       /** Normalize all properties that provide a normalize function. **/
       this.cls_.getAxiomsByClass(foam.core.Property).forEach(p => {
-        if ( p.normalize )
+        if ( p.normalize && ! p.hasDefaultValue(this) )
           p.set(this, p.normalize(p.get(this), p));
       });
     },
