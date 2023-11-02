@@ -243,13 +243,13 @@ description:"List DAO's with potential security issues.",
 language:0,
 code:"""
 var COLUMNS = [
+  'Warning',
   'DAO',
   'Authenticated',
   'Authorizer',
   'Permissioned',
   'Read-Only',
   'SPID Aware',
-  'Warning',
   'Groups',
   'Capabilities',
   'Notes'
@@ -332,15 +332,16 @@ if  ( ! authorizer && ! readOnly && ! n.authenticate && ! nullDAO ) {
 } else if ( ! authorizer && pgroups.length && ! readOnly && ! nullDAO ) {
   warning = 'warning';
 }
+if ( warning == 'warning' && n.authNotes ) warning = 'PASSED*';
 
   data.push( [
+     warning || 'PASSED',
      n.name,
      n.authenticate,
      authorizer || '',
      permissioned ? 'permissioned' : '',
      readOnly ? 'read-only' : nullDAO ? 'null' : '',
      spidAware ? 'spid-aware' : '',
-     warning,
      pgroups.join(', '),
      pcaps.join(', '),
      n.authNotes
