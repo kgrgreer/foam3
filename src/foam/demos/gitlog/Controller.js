@@ -443,7 +443,7 @@ foam.CLASS({
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
-        paths: [ 'cluster' ]
+        paths: [ 'medusa', 'cluster', 'sf' ]
       },
       {
         name: 'NANOS',
@@ -506,6 +506,11 @@ name: 'NANOS',
         name: 'NANOS',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
         paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
+      },
+      {
+        name: 'Test',
+        keywords: [ 'test', 'tests' ],
+        paths: [ 'test', 'tests' ]
       }
     ]
   },
