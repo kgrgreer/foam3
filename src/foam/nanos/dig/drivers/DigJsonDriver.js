@@ -125,10 +125,13 @@ foam.CLASS({
         outputterJson.setMultiLine(true);
       }
 
+      Command cmd = (Command) p.get(Command.class);
       // NOTE: only json output has this one element behaviour
       if ( fobjects.size() == 1 &&
-          // 'id' property indicates 'find' rather than 'select'
-          ! SafetyUtil.isEmpty(p.getParameter("id")) ) {
+          ( cmd == Command.PUT || cmd == Command.REMOVE ||
+            // 'id' property indicates 'find' rather than 'select'
+            ! SafetyUtil.isEmpty(p.getParameter("id")) )
+      ) {
         outputterJson.output(fobjects.get(0));
       } else {
         outputterJson.output(fobjects.toArray());
