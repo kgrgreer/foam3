@@ -677,11 +677,12 @@ name: 'NANOS',
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      const year = 2023;
+      this.loadYear(2023);
+    },
 
+    function loadYear(year) {
       this.loadData(`data/data${year}.log`);
       this.loadData(`data/np${year}.log`);
-
     },
 
     function loadData(f) {
