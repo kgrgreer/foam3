@@ -30,8 +30,7 @@
     'foam.nanos.dig.HTTPDigestSink',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.pm.PM',
-    'foam.util.SafetyUtil',
-    'javax.servlet.http.HttpServletRequest'
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -85,7 +84,7 @@
             sb.append(":");
             sb.append(System.getProperty("http.port", "8080"));
             sb.append("/");
-            sb.append(getLoopbackPath);
+            sb.append(getLoopbackPath());
             url = sb.toString();
         }
         if ( dugDigestConfig != null &&
