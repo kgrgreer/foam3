@@ -13,6 +13,7 @@ import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.PropertyPredicate;
 import foam.nanos.http.Format;
+import foam.nanos.logger.Loggers;
 import foam.util.SafetyUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,10 @@ public class HTTPSink
   protected Format format_;
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
+  protected boolean loopback_ = false;
+
+  protected HTTPSink() {
+  }
 
   public HTTPSink(String url, Format format) {
     this(url, "", format, null, false);
@@ -42,6 +47,10 @@ public class HTTPSink
     outputDefaultValues_ = outputDefaultValues;
   }
 
+  public void setLoopback(boolean loopback) {
+    loopback_ = loopback;
+  }
+  
   @Override
   public void put(Object obj, Detachable sub) {
     HttpURLConnection conn = null;
@@ -71,7 +80,11 @@ public class HTTPSink
 
       try (OutputStream os = conn.getOutputStream()) {
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
-          writer.write(outputter.stringify((FObject)obj));
+          String data = outputter.stringify((FObject)obj);
+          if ( loopback_ ) {
+            Loggers.logger(getX(), this).info("sending", url_, data);
+          }
+          writer.write(data);
           writer.flush();
         }
       }

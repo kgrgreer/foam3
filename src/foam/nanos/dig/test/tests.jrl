@@ -2,3 +2,7 @@ p({
   class:"foam.nanos.dig.test.DigJsonDriverTest"
   id:"DigJsonDriverTest"
 })
+p({
+  class:"foam.nanos.dig.test.DUGLoopbackBucketTest"
+  id:"DUGLoopbackBucketTest"
+})
