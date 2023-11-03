@@ -818,14 +818,14 @@ foam.CLASS({
           //       when one can come up with a better idea of handling the notification.
           setTimeout(() => {
             this.approvalRequestDAO.find(req.id).then(req => {
-              if ( ! req ) {
-                this.notify(this.RETRIED_TITLE, this.RETRIED, this.LogLevel.INFO, true);
-              } else if ( req.status === this.ApprovalStatus.APPROVED ) {
+              if ( req.status === this.ApprovalStatus.APPROVED ) {
                 this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
               } else if ( req.status === this.ApprovalStatus.REJECTED ) {
                 this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
               } else if ( req.status === this.ApprovalStatus.REQUESTED ) {
                 this.notify(this.FAILED_RETRY_TITLE, this.FAILED_RETRY, this.LogLevel.ERROR, true);
+              } else {
+                this.notify(this.RETRIED_TITLE, this.RETRIED, this.LogLevel.INFO, true);
               }
             });
           }, 1000);
