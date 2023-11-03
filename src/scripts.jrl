@@ -238,10 +238,14 @@ x.nSpecDAO.select(ns => {
 })
 p({
 class:"foam.nanos.script.Script",
-id:"DAO Security Report",
+id:"DAOSecurityReport",
 description:"List DAO's with potential security issues.",
 language:0,
 code:"""
+if ( ! globalThis.test ) globalThis.test = function(pass, msg) {
+  console.log(pass ? 'SUCCESS' : 'FAILURE', msg);
+}
+
 var COLUMNS = [
   'Warning',
   'DAO',
@@ -329,8 +333,12 @@ for ( var j = 0 ; j < caps.length ; j++ ) {
 let warning = '';
 if  ( ! authorizer && ! readOnly && ! n.authenticate && ! nullDAO ) {
   warning = 'alert';
+  test(false, 'DAO Security Audit: ' + n.name + ' ALERT');
 } else if ( ! authorizer && pgroups.length && ! readOnly && ! nullDAO ) {
   warning = 'warning';
+  test(!! n.authNotes, 'DAO Security Audit: ' + n.name + ' WARNING');
+} else {
+    test(true, 'DAO Security Audit: ' + n.name);
 }
 if ( warning == 'warning' && n.authNotes ) warning = 'PASSED*';
 
