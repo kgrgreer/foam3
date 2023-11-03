@@ -45,8 +45,9 @@ foam.CLASS({
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
 
-      if ( x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
-        var ret = parseMap(x.get(HttpParameters.class).getParameter("nameMapping"));
+      var p = x.get(HttpParameters.class);
+      if ( p.getParameter("nameMapping") != null ) {
+        var ret = parseMap(p.getParameter("nameMapping"));
         if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
           data = new FieldNameMapGrammar().replaceFields(data, (Map) ret.value());
         }
@@ -74,8 +75,8 @@ foam.CLASS({
         list.add(o);
       }
 
-      if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
-        var ret = parseMap(x.get(HttpParameters.class).getParameter("fieldValue"));
+      if ( p.getParameter("fieldValue") != null ) {
+        var ret = parseMap(p.getParameter("fieldValue"));
         if ( ret != null && ((Map)ret.value()).size() != 0 ) {
           Map map  = (Map) ret.value();
           Set keys = map.entrySet();
@@ -93,49 +94,35 @@ foam.CLASS({
         }
       }
 
-      return list;
+      return o instanceof FObject ? o : list;
       `
     },
     {
       name: 'outputFObjects',
       javaCode: `
       PrintWriter out    = x.get(PrintWriter.class);
-      String      output = null;
 
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
         return;
       }
 
-      foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)
-        .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x,
-            new foam.lib.PropertyPredicate[] {
-              new foam.lib.ExternalPropertyPredicate(),
-              new foam.lib.NetworkPropertyPredicate(),
-              new foam.lib.PermissionedPropertyPredicate()}));
+      var outputterJson = getOutputter(x);
+      outputterJson.output(fobjects.toArray());
 
-      outputterJson.setOutputDefaultValues(true);
-      outputterJson.setOutputClassNames(true);
+      // Output the formatted data
+      out.println(outputterJson.toString());
+      `
+    },
+    {
+      name: 'outputFObject',
+      javaCode: `
+      PrintWriter out    = x.get(PrintWriter.class);
 
-      HttpParameters p = x.get(HttpParameters.class);
-      if ( p != null && "false".equals(p.getParameter("multiline")) ) {
-        outputterJson.setMultiLine(false);
-      } else {
-        outputterJson.setMultiLine(true);
-      }
+      if ( obj == null ) return;
 
-      Command cmd = (Command) p.get(Command.class);
-      // NOTE: only json output has this one element behaviour
-      if ( fobjects.size() == 1 &&
-          ( cmd == Command.PUT || cmd == Command.REMOVE ||
-            // 'id' property indicates 'find' rather than 'select'
-            ! SafetyUtil.isEmpty(p.getParameter("id")) )
-      ) {
-        outputterJson.output(fobjects.get(0));
-      } else {
-        outputterJson.output(fobjects.toArray());
-      }
+      var outputterJson = getOutputter(x);
+      outputterJson.output(obj);
 
       // Output the formatted data
       out.println(outputterJson.toString());
@@ -151,6 +138,32 @@ foam.CLASS({
       var mapParser = MapParser.instance();
       var ret = mapParser.parse(mapStr, new ParserContextImpl());
       return ret;
+      `
+    },
+    {
+      name: 'getOutputter',
+      type: 'foam.lib.json.Outputter',
+      args: 'Context x',
+      javaCode: `
+        var out = new foam.lib.json.Outputter(x)
+          .setPropertyPredicate(
+            new foam.lib.AndPropertyPredicate(x,
+              new foam.lib.PropertyPredicate[] {
+                new foam.lib.ExternalPropertyPredicate(),
+                new foam.lib.NetworkPropertyPredicate(),
+                new foam.lib.PermissionedPropertyPredicate()}));
+
+        out.setOutputDefaultValues(true);
+        out.setOutputClassNames(true);
+
+        HttpParameters p = x.get(HttpParameters.class);
+        if ( p != null && "false".equals(p.getParameter("multiline")) ) {
+          out.setMultiLine(false);
+        } else {
+          out.setMultiLine(true);
+        }
+
+        return out;
       `
     }
   ]

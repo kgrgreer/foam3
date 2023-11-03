@@ -69,7 +69,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parseFObjects',
-      type: 'List',
+      type: 'Object',
       javaThrows: [
         'java.lang.Exception'
       ],
@@ -83,6 +83,14 @@ foam.CLASS({
       args: 'X x, DAO dao, List fobjects, String[] cols',
       javaCode: `
         throw new RuntimeException("Unimplemented output method");
+      `
+    },
+    {
+      name: 'outputFObject',
+      args: 'X x, DAO dao, FObject obj, String[] cols',
+      javaCode: `
+        if ( obj == null ) return;
+        outputFObjects(x, dao, List.of(obj), cols);
       `
     },
     {
@@ -105,14 +113,17 @@ foam.CLASS({
           return;
         }
 
-        List fobjects = parseFObjects(x, dao, data);
+        var fobjects = parseFObjects(x, dao, data);
         if ( fobjects == null ) return;
-
-        for ( int i = 0 ; i < fobjects.size() ; i++ ) {
-          fobjects.set(i, daoPut(x, dao, (FObject) fobjects.get(i)));
+        if ( fobjects instanceof FObject ) {
+          outputFObject(x, dao, daoPut(x, dao, (FObject) fobjects), null);
+        } else {
+          var list = (List) fobjects;
+          for ( int i = 0 ; i < list.size() ; i++ ) {
+            list.set(i, daoPut(x, dao, (FObject) list.get(i)));
+          }
+          outputFObjects(x, dao, list, null);
         }
-
-        outputFObjects(x, dao, fobjects, null);
 
         PrintWriter out = x.get(PrintWriter.class);
         out.println();
@@ -204,7 +215,12 @@ foam.CLASS({
       List fobjects = ((ArraySink) dao.select(new ArraySink())).getArray();
       getLogger().debug("Number of FObjects selected: " + fobjects.size());
 
-      outputFObjects(x, dao, fobjects, outputCols);
+      if ( ! SafetyUtil.isEmpty(id) && fobjects.size() == 1 ) {
+        // NOTE: 'id' property indicates 'find' rather than 'select'
+        outputFObject(x, dao, (FObject) fobjects.get(0), outputCols);
+      } else {
+        outputFObjects(x, dao, fobjects, outputCols);
+      }
 
       PrintWriter out = x.get(PrintWriter.class);
       out.println();
