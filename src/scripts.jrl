@@ -361,3 +361,36 @@ table(data, COLUMNS);
 notes:"",
 lastModifiedBy:1348,lastModified:1697222596604
 })
+p({
+  class: "foam.nanos.script.Script",
+  id: "BeanShell JConsole",
+  code:
+  """
+import bsh.util.JConsole;
+import javax.swing.*;
+
+appConfig = x.get("appConfig");
+
+if ( appConfig.getMode() != foam.nanos.app.Mode.DEVELOPMENT ) {
+  print("Can only be run in DEVELOPMENT mode.");
+  return;
+}
+
+JFrame      f       = new JFrame();
+JConsole    console = new JConsole();
+
+f.setContentPane(console);
+
+Interpreter shell   = new Interpreter(console);
+
+shell.eval("import foam.core.*;");
+shell.eval("import foam.mlang.MLang;");
+shell.eval("import foam.dao.*;");
+shell.set("x", x);
+
+new Thread(shell).start();
+
+f.setSize(800, 600);
+f.setVisible(true);
+  """
+})
