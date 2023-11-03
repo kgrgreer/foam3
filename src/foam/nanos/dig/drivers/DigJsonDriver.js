@@ -173,6 +173,8 @@ foam.CLASS({
       args: 'Context x',
       javaCode: `
         var formatter = formatter_.get();
+        formatter.setX(x);
+
         var p = x.get(HttpParameters.class);
         if ( p != null && "false".equals(p.getParameter("multiline")) ) {
           formatter.setMultiLine(false);
