@@ -30,7 +30,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.theme.ThemeDomainCapabilityJunction.getOwnClassInfo())
       .setGuid(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("themeDomainCapabilityJunctionDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("themeDomainCapabilityJunction"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("themeDomainCapabilityJunctions")
       .setPm(true)
@@ -63,7 +63,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.theme.ThemeDomain.getOwnClassInfo())
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("themeDomainDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("themeDomain"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("themeDomains")
       .setPm(true)
@@ -98,7 +98,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("cssTokenOverrideDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("cssTokenOverride"))
       .setJournalName("cssTokenOverrides")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setOf(foam.nanos.theme.customisation.CSSTokenOverride.getOwnClassInfo())

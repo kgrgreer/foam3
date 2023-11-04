@@ -6,7 +6,7 @@ p({
   "serviceScript": """
     dao = new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("timezoneDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("timezone"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("timezones")
       .setOf(foam.time.TimeZone.getOwnClassInfo())

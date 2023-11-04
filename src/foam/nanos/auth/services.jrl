@@ -72,7 +72,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("countryDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("country"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("countries")
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
@@ -93,7 +93,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
       .setName("countries")
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("countryDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("country"))
       .setInnerDAO(x.get("localCountryDAO"))
       .build();
   """,
@@ -216,7 +216,7 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("commonPasswordDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("commonPassword"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("commonPasswords")
       .setOf(foam.nanos.auth.CommonPassword.getOwnClassInfo())
@@ -285,7 +285,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("regionDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("region"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName(\"regions\")
       .setOf(foam.nanos.auth.Region.getOwnClassInfo())
@@ -333,7 +333,7 @@ p({
   """
     return new foam.nanos.auth.AuthorizationDAO.Builder(x)
       .setDelegate((foam.dao.DAO) x.get("localServiceProviderDAO"))
-      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceproviderdao"))
+      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceprovider"))
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.ServiceProvider\"}"
