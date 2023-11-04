@@ -53,6 +53,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'java.time.Duration',
     'java.util.Arrays',
     'java.util.Base64',
+    'java.util.List',
     'javax.net.ssl.SSLContext',
     'javax.servlet.http.HttpServletRequest',
   ],
@@ -745,7 +746,7 @@ NOTE: when using the java client, the first call to a newly started instance may
         },
         {
           name: 'obj',
-          type: 'FObject'
+          type: 'Object'
         }
       ],
       type: 'String',
@@ -753,7 +754,11 @@ NOTE: when using the java client, the first call to a newly started instance may
       PM pm = PM.create(x, "DIG", "adapt", getPostURL(), getDaoKey(), dop);
       try {
         FObjectFormatter formatter = formatter_.get();
-        formatter.output(obj);
+        if ( obj instanceof List ) {
+          formatter.output(((List)obj).toArray());
+        } else {
+          formatter.output(obj);
+        }
         return formatter.builder().toString();
       } finally {
         pm.log(x);
