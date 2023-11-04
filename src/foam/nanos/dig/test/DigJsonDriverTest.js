@@ -82,6 +82,127 @@ foam.CLASS({
       response = (HttpResponse) client.getLastHttpResponse();
       body = String.valueOf(response.body());
       test ( body != null && body.startsWith("["), "Select return [...]");
+
+      test_put_return_json_object(x);
+      test_put_return_json_array(x);
+      `
+    },
+    {
+      name: 'test_put_return_json_object',
+      args: 'Context x',
+      javaCode: `
+        var admin = newUser("test_put_return_json_object-admin");
+        admin.setGroup("admin");
+        admin = (User) ((DAO)x.get("userDAO")).put(admin);
+
+        var session = createSession(x, admin.getId());
+        var client = new DIG.Builder(x)
+          .setDaoKey("userDAO")
+          .setSessionId(session.getId())
+          .setRequestTimeout(getRequestTimeout())
+          .build();
+
+        var user = newUser("test_put_return_json_object");
+        try {
+          user = (User) client.put(user);
+          test ( user != null, "User created");
+
+          var response = (HttpResponse) client.getLastHttpResponse();
+          var body = String.valueOf(response.body());
+          test ( body != null && body.startsWith("{"), "Put return {...}");
+        } catch ( Exception e ) {
+          test(false, "Failed test_put_return_json_object");
+        } finally {
+          removeUser(x, admin);
+          removeUser(x, user);
+        }
+      `
+    },
+    {
+      name: 'test_put_return_json_array',
+      args: 'Context x',
+      javaCode: `
+        var admin = newUser("test_put_return_json_array-admin");
+        admin.setGroup("admin");
+        admin = (User) ((DAO)x.get("userDAO")).put(admin);
+
+        var session = createSession(x, admin.getId());
+        var client = new DIG.Builder(x)
+          .setDaoKey("userDAO")
+          .setSessionId(session.getId())
+          .setRequestTimeout(getRequestTimeout())
+          .build();
+
+        var user1 = newUser("test_put_return_json_array1");
+        var user2 = newUser("test_put_return_json_array2");
+        try {
+          var result = (FObject[]) client.submit(x, DOP.PUT, "[" +
+            client.adapt(x, DOP.PUT, user1) + "," +
+            client.adapt(x, DOP.PUT, user2) + "]");
+
+          var created = result != null && result.length == 2;
+          if ( created ) {
+            user1 = (User) result[0];
+            user2 = (User) result[1];
+          }
+          test ( created, "Two users created" );
+
+          var response = (HttpResponse) client.getLastHttpResponse();
+          var body = String.valueOf(response.body());
+          test ( body != null && body.startsWith("["), "Put return [...]");
+        } catch ( Exception e ) {
+          test(false, "Failed test_put_return_json_array");
+        } finally {
+          removeUser(x, admin);
+          removeUser(x, user1);
+          removeUser(x, user2);
+        }
+      `
+    },
+    {
+      name: 'createSession',
+      type: 'Session',
+      args: 'Context x, Long userId',
+      javaCode: `
+        var sessionDAO = (DAO) x.get("sessionDAO");
+        var session = new Session();
+        session.setUserId(userId);
+        return (Session) sessionDAO.put(session);
+      `
+    },
+    {
+      name: 'removeUser',
+      args: 'Context x, User user',
+      javaCode: `
+        var userDAO = (DAO) x.get("localUserDAO");
+        var sessionDAO = (DAO) x.get("localSessionDAO");
+
+        userDAO.remove(user);
+        sessionDAO
+          .where(EQ(Session.USER_ID, user.getId()))
+          .select(new foam.dao.AbstractSink() {
+            public void put(Object o, foam.core.Detachable d) {
+              sessionDAO.remove((FObject) o);
+            }
+          });
+      `
+    },
+    {
+      name: 'newUser',
+      type: 'User',
+      args: 'String userName',
+      javaCode: `
+        var user = new User();
+        user.setSpid("test");
+        user.setFirstName(userName);
+        user.setMiddleName("dig");
+        user.setLastName("json");
+        user.setEmail(userName + "@foam.foam");
+        user.setUserName(userName);
+        user.setGroup("test");
+        user.setEmailVerified(true);
+        user.setLifecycleState(LifecycleState.ACTIVE);
+        return user;
       `
     }
   ]
