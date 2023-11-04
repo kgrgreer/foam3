@@ -363,7 +363,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
         // Support hierarchical SPID context
         var subX = rtn.cd(user.getSpid());
         if ( subX != null ) {
-          rtn = new OrX(reset(subX));
+          subX = reset(((foam.core.SubX) subX).fclone());
+          rtn  = new OrX(rtn, subX);
         }
 
         Subject subject = null;

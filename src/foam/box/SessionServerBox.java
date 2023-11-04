@@ -6,6 +6,7 @@
 
 package foam.box;
 
+import foam.core.OrX;
 import foam.core.SubX;
 import foam.core.X;
 import foam.core.XLocator;
@@ -15,19 +16,16 @@ import foam.nanos.app.Mode;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.Group;
-import foam.nanos.auth.User;
 import foam.nanos.boot.Boot;
 import foam.nanos.boot.NSpec;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.Loggers;
-import foam.nanos.om.OMLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
-import org.eclipse.jetty.server.Request;
 
-import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
+import java.util.StringTokenizer;
 
 /**
  * This Box decorator adds session support to boxes.
@@ -61,6 +59,15 @@ public class SessionServerBox
     Session session    = null;
     String  sessionID  = null;
     PM      pm         = PM.create(x, "SessionServerBox", spec.getName());
+
+    // Save skeleton delegateObj in case it's overwritten by subX
+    var skeleton       = (Skeleton) delegate;
+    Object delegateObj = null;
+    try {
+      // REVIEW: Cannot call getDelegate() directly because DELEGATE axiom is not added to the <Interface>Skeleton classInfo
+      var delegateMethod = skeleton.getClass().getMethod("getDelegate");
+      delegateObj = delegateMethod.invoke(skeleton);
+    } catch ( Exception e ) { /* noop */ }
 
     try {
       HttpServletRequest req = x.get(HttpServletRequest.class);
@@ -187,9 +194,11 @@ public class SessionServerBox
       }
 
       // Sub context might have service override for the delegate
-      if ( effectiveContext instanceof SubX ) {
-        ((Skeleton) delegate).setDelegateObject(
-          effectiveContext.get(x.get(NSpec.class).getId()));
+      X last = effectiveContext;
+      while ( last instanceof OrX ) last = ((OrX) last).getX();
+      if ( last instanceof SubX ) {
+        var sub = last.get(spec.getId());
+        if ( ! delegateObj.equals(sub) ) skeleton.setDelegateObject(sub);
       }
 
       msg.getLocalAttributes().put("x", effectiveContext);
@@ -207,6 +216,8 @@ public class SessionServerBox
       if ( Mode.TEST == appConfig.getMode() )
         throw t;
     } finally {
+      // Reset skeleton delegateObj and XLocator
+      skeleton.setDelegateObject(delegateObj);
       XLocator.set(null);
     }
   }
