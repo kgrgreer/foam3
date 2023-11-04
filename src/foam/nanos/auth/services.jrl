@@ -216,7 +216,7 @@ p({
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("commonPassword"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("commonpassword"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("commonPasswords")
       .setOf(foam.nanos.auth.CommonPassword.getOwnClassInfo())
