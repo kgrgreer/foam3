@@ -50,7 +50,7 @@
     {
       class: 'String',
       name: 'loopbackPath',
-      value: 'service/dugLoopbackBucket'
+      value: 'service/dugLoopback'
     }
   ],
 

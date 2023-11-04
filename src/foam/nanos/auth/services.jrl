@@ -285,7 +285,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("regionDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("region"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName(\"regions\")
       .setOf(foam.nanos.auth.Region.getOwnClassInfo())

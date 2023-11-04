@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.dig',
-  name: 'DUGLoopbackBucket',
+  name: 'DUGLoopbackWebAgent',
 
   implements: [
     'foam.nanos.http.WebAgent'
@@ -15,23 +15,12 @@ foam.CLASS({
   documentation: `WebAgent which can be a DUG endpoint for testing`,
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.http.HttpParameters',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'javax.servlet.http.HttpServletRequest',
     'javax.servlet.http.HttpServletResponse'
-  ],
-
-  properties: [
-    {
-      documentation: 'Last recieved HTTP post data',
-      name: 'content',
-      class: 'String'
-    },
-    {
-      name: 'timestamp',
-      class: 'DateTime',
-    }
   ],
 
   methods: [
@@ -42,9 +31,11 @@ foam.CLASS({
       HttpServletRequest req = x.get(HttpServletRequest.class);
       HttpServletResponse resp = x.get(HttpServletResponse.class);
       HttpParameters p = x.get(HttpParameters.class);
-      setContent(p.getParameter("data"));
-      setTimestamp(new java.util.Date());
-      Loggers.logger(x, this).info("received", getContent());
+      DUGLoopback loopback = new DUGLoopback();
+      loopback.setData(p.getParameter("data"));
+      loopback.setTimestamp(new java.util.Date());
+      Loggers.logger(x, this).info("received", loopback);
+      ((DAO) x.get("dugLoopbackDAO")).put(loopback);
       `
     }
   ]

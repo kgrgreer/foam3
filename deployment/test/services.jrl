@@ -23,3 +23,47 @@ p({
     ]
   }
 })
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "mode":4
+  }
+})
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "smtpAgent",
+  lazy: false,
+  service: {
+    class: "foam.nanos.notification.email.test.MockSMTPAgent",
+    id: "test"
+  }
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "dugLoopbackDAO",
+  serviceScript: """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.dig.DUGLoopback.getOwnClassInfo())
+      .setFuid(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.dig.DUGLoopback.TIMESTAMP))
+        .setSize(100)
+        .build())
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.dig.DUGLoopback.TIMESTAMP));
+  """
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "dugLoopback",
+  description: "DUG endpoint for testing. Set DUGRule url to loopback",
+  authenticate: false,
+  parameters: true,
+  serviceClass: "foam.nanos.dig.DUGLoopbackWebAgent"
+})
