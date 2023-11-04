@@ -366,31 +366,36 @@ p({
   id: "BeanShell JConsole",
   code:
   """
-import bsh.util.JConsole;
-import javax.swing.*;
+  import bsh.util.JConsole;
+  import javax.swing.*;
 
-appConfig = x.get("appConfig");
+  appConfig = x.get("appConfig");
 
-if ( appConfig.getMode() != foam.nanos.app.Mode.DEVELOPMENT ) {
-  print("Can only be run in DEVELOPMENT mode.");
-  return;
-}
+  if ( appConfig.getMode() != foam.nanos.app.Mode.DEVELOPMENT ) {
+    print("Can only be run in DEVELOPMENT mode.");
+    return;
+  }
 
-JFrame      f       = new JFrame();
-JConsole    console = new JConsole();
+  SwingUtilities.invokeLater(new Runnable() { public void run() {
+  JFrame      f       = new JFrame();
+  JConsole    console = new JConsole();
 
-f.setContentPane(console);
+  f.setContentPane(console);
 
-Interpreter shell   = new Interpreter(console);
+  Interpreter shell   = new Interpreter(console);
 
-shell.eval("import foam.core.*;");
-shell.eval("import foam.mlang.MLang;");
-shell.eval("import foam.dao.*;");
-shell.set("x", x);
+  shell.eval("import foam.core.*;");
+  shell.eval("import foam.mlang.MLang;");
+  shell.eval("import foam.dao.*;");
+  shell.set("x", x);
 
-new Thread(shell).start();
+  new Thread(shell).start();
 
-f.setSize(800, 600);
-f.setVisible(true);
-  """
+  f.setVisible(true);
+  f.setResizable(true);
+  f.setSize(800, 600);
+  f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  f.setTitle("BeanShell JConsole");
+  }
+  });  """
 })
