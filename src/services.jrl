@@ -451,7 +451,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("reportTemplates")
       .setAuthorize(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("reportTemplateDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("reporttemplate"))
       .build();
   """,
   "client":
@@ -511,7 +511,7 @@ p({
   "serve":true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("addressConfigDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("addressconfig"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("addressConfig")
       .setOf(foam.nanos.auth.AddressConfig.getOwnClassInfo())
