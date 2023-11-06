@@ -53,11 +53,6 @@ foam.CLASS({
       cls.name    = this.name;
       cls.extends = 'foam.box.AbstractSkeleton';
 
-      foam.core.FObjectProperty.create({
-        name: 'delegate',
-        type: this.of.id
-      }).buildJavaClass(cls);
-
       cls.method({
         type: 'void',
         visibility: 'public',
@@ -73,6 +68,29 @@ foam.CLASS({
         args: [ { name: 'obj', type: 'Object' } ],
         body: "setDelegate((" + this.of.id + ") obj);"
       });
+
+      // Add classInfo to store delegate property axiom
+      cls.fields.push(foam.java.ClassInfo.create({ id: this.id }));
+      cls.method({
+        name: 'getClassInfo',
+        type: 'foam.core.ClassInfo',
+        visibility: 'public',
+        body: 'return classInfo_;',
+        forceJavaOutputter:true
+      });
+      cls.method({
+        name: 'getOwnClassInfo',
+        visibility: 'public',
+        static: true,
+        type: 'foam.core.ClassInfo',
+        body: 'return classInfo_;',
+        forceJavaOutputter:true
+      });
+
+      foam.core.FObjectProperty.create({
+        name: 'delegate',
+        type: this.of.id
+      }).buildJavaClass(cls);
 
       return cls;
     }

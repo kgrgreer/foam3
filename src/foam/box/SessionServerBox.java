@@ -61,13 +61,8 @@ public class SessionServerBox
     PM      pm         = PM.create(x, "SessionServerBox", spec.getName());
 
     // Save skeleton delegateObj in case it's overwritten by subX
-    var skeleton       = (Skeleton) delegate;
-    Object delegateObj = null;
-    try {
-      // REVIEW: Cannot call getDelegate() directly because DELEGATE axiom is not added to the <Interface>Skeleton classInfo
-      var delegateMethod = skeleton.getClass().getMethod("getDelegate");
-      delegateObj = delegateMethod.invoke(skeleton);
-    } catch ( Exception e ) { /* noop */ }
+    var skeleton       = (AbstractSkeleton) delegate;
+    var delegateObj    = skeleton.getProperty("delegate");
 
     try {
       HttpServletRequest req = x.get(HttpServletRequest.class);
