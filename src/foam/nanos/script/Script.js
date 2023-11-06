@@ -395,17 +395,13 @@ foam.CLASS({
           return Promise.reject(err);
         }
       },
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
-        RuntimeException thrown      = null;
-        Language         l           = getLanguage();
-        ByteArrayOutputStream baos   = new ByteArrayOutputStream();
-        PrintStream            ps    = new PrintStream(baos);
-        PM                     pm    = new PM(this.getClass(), getId());
+        RuntimeException thrown    = null;
+        Language         l         = getLanguage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream            ps  = new PrintStream(baos);
+        PM                     pm  = new PM(this.getClass(), getId());
 
         try {
           Thread.currentThread().setPriority(getPriority());
