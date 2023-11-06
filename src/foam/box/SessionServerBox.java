@@ -60,7 +60,7 @@ public class SessionServerBox
     String  sessionID  = null;
     PM      pm         = PM.create(x, "SessionServerBox", spec.getName());
 
-    // Save skeleton delegateObj in case it's overwritten by subX
+    // Save skeleton delegateObj in case it's overridden by subX
     var skeleton       = (AbstractSkeleton) delegate;
     var delegateObj    = skeleton.getProperty("delegate");
 
