@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.dig.DUGRule",
-  "id": "foam-nanos-dig-DUGLoopbackBucketTest",
+  "id": "foam-nanos-dig-DUGLoopbackTest",
   "name": "DUG Webhook Test",
   enabled: true,
   "ruleGroup": "DUG",
