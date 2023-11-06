@@ -317,6 +317,7 @@ foam.POM({
     { name: "servlet/Servlet",                                                            flags: "js|java" },
     { name: "servlet/ServletMapping",                                                     flags: "js|java" },
     { name: "servlet/VirtualHostRoutingServlet",                                          flags: "js|java" },
+    { name: "test/AbstractDIGTest",                                                       flags: "js|java" },
     { name: "test/Test",                                                                  flags: "js|java" },
     { name: "test/TestBorder",                                                            flags: "js" },
     { name: "cron/Cron",                                                                  flags: "js|java" },
