@@ -1,0 +1,16 @@
+p({
+  "class": "foam.nanos.dig.DUGRule",
+  "id": "foam-nanos-dig-DUGLoopbackTest",
+  "name": "DUG Webhook Test",
+  enabled: true,
+  "ruleGroup": "DUG",
+  "daoKey": "regionDAO",
+  url: "loopback",
+  "lifecycleState": 1,
+  "spid": "test",
+  "authType": 0,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.FScriptRulePredicate",
+    "query":'o.name != n.name'
+  }
+})

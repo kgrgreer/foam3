@@ -37,6 +37,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.dao.HTTPSink;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.Outputter;
 import foam.lib.PropertyPredicate;
@@ -47,14 +48,9 @@ import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
-public class HTTPDigestSink extends AbstractSink {
+public class HTTPDigestSink extends HTTPSink {
 
-  protected String url_;
-  protected String bearerToken_;
   protected DUGDigestConfig dugDigestConfig_;
-  protected Format format_;
-  protected PropertyPredicate propertyPredicate_;
-  protected boolean outputDefaultValues_;
   protected boolean removeWhitespacesInPayloadDigest_;
 
   private static final ThreadLocal<Outputter> outputter = new ThreadLocal<>();

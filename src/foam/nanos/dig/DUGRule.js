@@ -155,7 +155,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'URL',
+      class: 'String', // 'URL','Website', - neither of these accept a complete URI.
       name: 'url',
       label: 'URL',
       section: 'dugInfo'

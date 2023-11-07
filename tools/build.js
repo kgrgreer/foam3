@@ -258,7 +258,12 @@ Implementation-Vendor: ${PROJECT.name}
 
 function pom() {
   var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+  var addPom = fn => {
+    if ( ! fs.existsSync(fn + '.js') )
+      error('File not found ' + fn + '.js');
+    else
+      pom[fn] = true;
+  };
 
   if ( POM )
     POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
@@ -756,6 +761,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, '../foam3/deployment/test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {

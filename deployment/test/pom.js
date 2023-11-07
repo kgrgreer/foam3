@@ -1,0 +1,3 @@
+foam.POM({
+  name:'test'
+})

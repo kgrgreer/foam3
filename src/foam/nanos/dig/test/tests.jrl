@@ -1,4 +1,8 @@
 p({
-  class:"foam.nanos.dig.test.DigJsonDriverTest"
+  class: "foam.nanos.dig.test.DigJsonDriverTest",
   id:"DigJsonDriverTest"
+})
+p({
+  class: "foam.nanos.dig.test.DUGLoopbackTest",
+  id:"DUGLoopbackTest"
 })
