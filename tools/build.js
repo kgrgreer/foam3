@@ -258,7 +258,12 @@ Implementation-Vendor: ${PROJECT.name}
 
 function pom() {
   var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+  var addPom = fn => {
+    if ( ! fn || ! fs.existsSync(fn + '.js') )
+      warning('File not found ' + fn + '.js');
+    else
+      pom[fn] = true;
+  };
 
   if ( POM )
     POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
