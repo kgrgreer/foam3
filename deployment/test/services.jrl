@@ -46,6 +46,7 @@ p({
 p({
   class: "foam.nanos.boot.NSpec",
   name: "dugLoopbackDAO",
+  serve: true,
   serviceScript: """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.dig.DUGLoopback.getOwnClassInfo())
@@ -56,6 +57,11 @@ p({
         .build())
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.nanos.dig.DUGLoopback.TIMESTAMP));
+  """,
+  "client": """
+    {
+      "of":"foam.nanos.dig.DUGLoopback"
+    }
   """
 })
 
