@@ -756,6 +756,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, '../foam3/deployment/test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
