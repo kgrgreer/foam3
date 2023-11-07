@@ -345,6 +345,7 @@ foam.CLASS({
     },
 
     function outputPropertyName(p) {
+    //  console.log('********** Property:', p.name);
       this.out(this.maybeEscapeKey(this.useShortNames && p.shortName ? p.shortName : p.name));
       return this;
     },
@@ -411,6 +412,7 @@ foam.CLASS({
       this.start('{');
       var cls = this.getCls(opt_cls);
       var outputClassName = this.outputClassNames && o.cls_ !== cls;
+//      console.log('************* class', o.cls_.name);
       if ( outputClassName ) {
         this.out(
           this.maybeEscapeKey('class'),
@@ -423,8 +425,7 @@ foam.CLASS({
       var ps = o.cls_.getAxiomsByClass(foam.core.Property);
       var outputComma = outputClassName;
       for ( var i = 0 ; i < ps.length ; i++ ) {
-        outputComma = this.outputProperty(o, ps[i], outputComma) ||
-          outputComma;
+        outputComma = this.outputProperty(o, ps[i], outputComma) || outputComma;
       }
       this.end('}');
     },
@@ -760,7 +761,7 @@ foam.LIB({
         Object: function(json, opt_class, opt_ctx) {
           if ( foam.String.isInstance(opt_class) ) opt_class = ( opt_ctx || foam ).lookup(opt_class);
           var c = json.class || opt_class;
-          if ( foam.String.isInstance(c) ) c = ( opt_ctx || foam ).lookup(c);
+          if ( foam.String.isInstance(c) ) c = ( opt_ctx || foam ).maybeLookup(c);
 
           if ( c ) {
             if ( json.class && json.class != c.id ) {
@@ -799,17 +800,21 @@ foam.LIB({
               }
             }
 
-            var o = c.create(json, opt_ctx);
+            try {
+              var o = c.create(json, opt_ctx);
 
-            /* For debugging:
-            if ( opt_class && ! opt_class.isInstance(o) ) {
-              console.error(
-                '********************************************** JSON: Incompatible specified class. ',
-                o.cls_.id, 'is not a sub-class of', opt_class.id, json);
+              /* For debugging:
+              if ( opt_class && ! opt_class.isInstance(o) ) {
+                console.error(
+                  '********************************************** JSON: Incompatible specified class. ',
+                  o.cls_.id, 'is not a sub-class of', opt_class.id, json);
+              }
+              */
+
+              return o;
+            } catch (x) {
+              console.error(`Error creating object of class ${c.id} from ${JSON.stringify(json)}:`, x);
             }
-            */
-
-            return o;
           }
 
           for ( var key in json ) {
