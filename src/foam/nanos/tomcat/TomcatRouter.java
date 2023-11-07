@@ -142,7 +142,7 @@ public class TomcatRouter
           return;
         }
 
-        foam.core.X requestContext = getX().put("returnBox", returnBox_).put("webSocketId", new Integer(id_));
+        foam.core.X requestContext = getX().put("returnBox", returnBox_).put("webSocketId", Integer.valueOf(id_));
 
         foam.core.FObject request = requestContext.create(foam.lib.json.JSONParser.class).parseString(message);
 
