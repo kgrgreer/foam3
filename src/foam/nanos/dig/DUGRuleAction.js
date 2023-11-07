@@ -35,7 +35,7 @@
 
   properties: [
     {
-      class: 'URL',
+      class: 'String',
       name: 'url'
     },
     {
@@ -46,6 +46,11 @@
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format'
+    },
+    {
+      class: 'String',
+      name: 'loopbackPath',
+      value: 'service/dugLoopback'
     }
   ],
 
@@ -69,9 +74,23 @@
         DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         DUGRule dugRule = (DUGRule) rule;
         AbstractSink sink = null;
-        if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
+        String url = getUrl();
+        boolean loopback = "loopback".equals(url);
+        if ( loopback ) {
+            StringBuilder sb = new StringBuilder();
+            // TODO: what to test to know running https
+            sb.append("http://");
+            sb.append(System.getProperty("hostname", "localhost"));
+            sb.append(":");
+            sb.append(System.getProperty("http.port", "8080"));
+            sb.append("/");
+            sb.append(getLoopbackPath());
+            url = sb.toString();
+        }
+        if ( dugDigestConfig != null &&
+             dugDigestConfig.getEnabled() ) {
             sink = new HTTPDigestSink(
-              dugRule.getUrl(),
+              url,
               dugRule.evaluateBearerToken(),
               dugDigestConfig,
               dugRule.getFormat(),
@@ -86,9 +105,9 @@
               true,
               true
             );
-          } else {
+        } else {
             sink = new HTTPSink(
-              dugRule.getUrl(),
+              url,
               dugRule.evaluateBearerToken(),
               dugRule.getFormat(),
               new foam.lib.AndPropertyPredicate(
@@ -101,9 +120,10 @@
               ),
               true
             );
-          }
-          sink.setX(agencyX);
-          return sink;
+        }
+        sink.setX(agencyX);
+        ((HTTPSink) sink).setLoopback(loopback);
+        return sink;
       `
     },
     {
