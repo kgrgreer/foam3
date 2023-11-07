@@ -100,9 +100,9 @@ public class ThreadsWebAgent
       out.println(thread.getState());
       Integer count = threadsInState.get(thread.getState());
       if ( count == null ) {
-        threadsInState.put(thread.getState(), new Integer(1));
+        threadsInState.put(thread.getState(), Integer.valueOf(1));
       } else {
-        threadsInState.put(thread.getState(), new Integer(count.intValue() + 1));
+        threadsInState.put(thread.getState(), Integer.valueOf(count.intValue() + 1));
       }
       out.println("</td>");
       out.println("<td>");
