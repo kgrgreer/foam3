@@ -259,8 +259,8 @@ Implementation-Vendor: ${PROJECT.name}
 function pom() {
   var pom    = {};
   var addPom = fn => {
-    if ( ! fn || ! fs.existsSync(fn + '.js') )
-      warning('File not found ' + fn + '.js');
+    if ( ! fs.existsSync(fn + '.js') )
+      error('File not found ' + fn + '.js');
     else
       pom[fn] = true;
   };
