@@ -263,10 +263,8 @@ function pom() {
   if ( POM )
     POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
 
-  if ( JOURNAL_CONFIG ) {
+  if ( JOURNAL_CONFIG )
     JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/deployment/${c}/pom`));
-    JOURNAL_CONFIG.split(',').forEach(c => addPom(c && `./foam3/deployment/${c}/pom`));
-  }
 
   return Object.keys(pom).join(',');
 }
@@ -758,6 +756,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, '../foam3/deployment/test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
