@@ -293,7 +293,7 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 task('Copy images from src sub directories to BUILD_DIR/images.', [], function jarImages() {
   JAR_INCLUDES += ` -C ${BUILD_DIR} images `;
 
-  execSync(__dirname + `/pmake.js -makers="Image" -pom=${POM} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -makers="Image" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 });
 
 task('Include journals in jar.', [], function jarJournals() {
@@ -307,7 +307,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${pom()}`, {stdio: 'inherit'});
 });
 
 
@@ -405,7 +405,7 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 
