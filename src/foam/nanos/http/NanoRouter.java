@@ -20,7 +20,6 @@ import foam.nanos.logger.StdoutLogger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMWebAgent;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * WebAgents require the service.run.<nspecname> permission.
  */
 public class NanoRouter
-  extends HttpServlet
+  extends    HttpServlet
   implements NanoService, ContextAware
 {
   protected X x_;
@@ -71,11 +70,7 @@ public class NanoRouter
     String   serviceKey = urlParams[2];
     NSpec    spec       = (NSpec) nSpecDAO_.find(serviceKey);
     Logger   logger     = StdoutLogger.instance();
-
-    foam.core.ClassInfoImpl clsInfo = new foam.core.ClassInfoImpl();
-    clsInfo.setObjClass(this.getClass());
-    clsInfo.setId(this.getClass().getSimpleName());
-    PM       pm         = PM.create(getX(), clsInfo, serviceKey);
+    PM       pm         = PM.create(getX(), "NanoRouter", serviceKey);
 
     resp.setContentType("text/html");
 
@@ -171,30 +166,28 @@ public class NanoRouter
         ex.printStackTrace();
         ((Logger) getX().get("logger")).error("Unable to create NSPec servlet: " + spec.getName());
       }
-    } else {
-      if ( service instanceof WebAgent ) {
-        WebAgent pmService = (WebAgent) service;
+    } else if ( service instanceof WebAgent ) {
+      WebAgent pmService = (WebAgent) service;
 
-        SendErrorHandler sendErrorHandler = null;
-        if ( service instanceof SendErrorHandler )
-          sendErrorHandler = (SendErrorHandler) service;
+      SendErrorHandler sendErrorHandler = null;
+      if ( service instanceof SendErrorHandler )
+        sendErrorHandler = (SendErrorHandler) service;
 
-        if ( spec.getParameters() ) {
-          service = new HttpParametersWebAgent((WebAgent) service);
-        }
-        if ( spec.getPm() ) {
-          service = new PMWebAgent(pmService.getClass(), spec.getName(), (WebAgent) service);
-        }
-
-        //
-        // NOTE: Authentication must be last as HttpParametersWebAgent will consume the authentication parameters.
-        //
-        if ( spec.getAuthenticate() ) {
-          service = new AuthWebAgent("service.run." + spec.getName(), (WebAgent) service, sendErrorHandler);
-        }
-
-        logger.debug(this.getClass().getSimpleName(), "createWebAgent.WebAgent", spec.getName(), "webAgent");
+      if ( spec.getParameters() ) {
+        service = new HttpParametersWebAgent((WebAgent) service);
       }
+      if ( spec.getPm() ) {
+        service = new PMWebAgent(pmService.getClass(), spec.getName(), (WebAgent) service);
+      }
+
+      //
+      // NOTE: Authentication must be last as HttpParametersWebAgent will consume the authentication parameters.
+      //
+      if ( spec.getAuthenticate() ) {
+        service = new AuthWebAgent("service.run." + spec.getName(), (WebAgent) service, sendErrorHandler);
+      }
+
+      logger.debug(this.getClass().getSimpleName(), "createWebAgent.WebAgent", spec.getName(), "webAgent");
     }
 
     if ( service instanceof WebAgent ) return (WebAgent) service;
