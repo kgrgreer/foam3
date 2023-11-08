@@ -16,13 +16,12 @@ import foam.nanos.boot.NSpec;
 import foam.nanos.boot.NSpecAware;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
-
 import javax.servlet.http.HttpServlet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NanoServiceRouter
-  extends HttpServlet
+  extends    HttpServlet
   implements NanoService, ContextAware
 {
   protected X x_;
@@ -64,7 +63,7 @@ public class NanoServiceRouter
   }
 
   protected foam.box.Box createServiceBox(NSpec spec, Object service) {
-    Logger      logger   = (Logger)getX().get("logger");
+    Logger logger = (Logger)getX().get("logger");
 
     if ( ! spec.getServe() ) {
       logger.warning(this.getClass(), "Request attempted for disabled service", spec.getName());
@@ -78,7 +77,7 @@ public class NanoServiceRouter
       Class cls = spec.getBoxClass() != null && spec.getBoxClass().length() > 0 ?
         Class.forName(spec.getBoxClass()) :
         DAOSkeleton.class ;
-      Skeleton skeleton = (Skeleton)getX().create(cls);
+      Skeleton skeleton = (Skeleton) getX().create(cls);
       result = skeleton;
 
       informService(skeleton, spec);
@@ -92,6 +91,7 @@ public class NanoServiceRouter
     } catch (ClassNotFoundException ex) {
       logger.error(this.getClass(), "Unable to create NSpec servlet: ", spec.getName(), "error: ", ex);
     }
+
     return null;
   }
 

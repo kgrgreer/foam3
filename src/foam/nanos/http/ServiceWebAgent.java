@@ -139,7 +139,7 @@ public class ServiceWebAgent
       }
 
       foam.box.Message msg = (foam.box.Message) result;
-      new SessionServerBox(x, skeleton_, authenticate_).send(msg);
+      SessionServerBox.send(x, skeleton_, authenticate_, msg);
     } catch (java.io.IOException t) {
       throw new foam.core.FOAMException(t.getMessage(), t);
     }
