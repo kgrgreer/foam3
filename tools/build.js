@@ -370,7 +370,7 @@ task('Cause regeneration of pom.xml and java lib directory.', [ 'cleanLib', 'gen
 });
 
 
-task('Clean build files, include pom.xml and java libraries.', [ 'cleanLib', 'clean' ], function cleanAll() {
+task('Clean build files, include pom.xml and java libraries. Cleaner than clean.', [ 'cleanLib', 'clean' ], function cleanAll() {
   cleanLib();
   clean();
 });
