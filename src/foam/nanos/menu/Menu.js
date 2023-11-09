@@ -210,6 +210,11 @@
     },
     {
       name: 'authorizeOnRead',
+      documentation: `
+        If a menu is unauthenticated, we allow read without checking permission only when the session is also unauthenticated.
+        If the session is authenticated, read permission will be checked as usual.
+        This allows us make certain unauthenticated menus accessible to unauthenticated sessions such as sign-in, and sign-up
+      `,
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
         boolean unauthenticated = false;
