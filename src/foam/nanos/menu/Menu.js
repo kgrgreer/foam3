@@ -129,7 +129,9 @@
     {
       class: 'Boolean',
       name: 'authenticate',
-      value: true
+      value: true,
+      documentation: `By deafult, authenticate: false only bypasses the authentication check for logged out users, 
+      logged in users still need to be granted permission to see unauthenticated menus`
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -216,6 +218,7 @@
         This allows us make certain unauthenticated menus accessible to unauthenticated sessions such as sign-in, and sign-up
       `,
       javaCode: `
+        // Authentication is only skipped for anonymous sessions, logged in users still require menu.read.<menu_id> permission
         AuthService auth = (AuthService) x.get("auth");
         boolean unauthenticated = false;
         try {
