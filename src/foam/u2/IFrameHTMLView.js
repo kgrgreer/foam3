@@ -27,10 +27,6 @@ foam.CLASS({
       class: 'String',
       name: 'src',
       documentation: 'Used to load a url rather than an HTML document, ignored if data is set'
-    },
-    {
-      class: 'Boolean',
-      name: 'showSrc'
     }
   ],
 
