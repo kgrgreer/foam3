@@ -22,16 +22,20 @@ foam.CLASS({
   `,
 
   properties: [
-    'resizable'
+    'resizable',
+    {
+      class: 'String',
+      name: 'src',
+      documentation: 'Used to load a url rather than an HTML document, ignored if data is set'
+    }
   ],
 
   methods: [    
     function render() {
       this.SUPER();
       this.addClass();
-
       this.start('iframe')
-        .attrs({ srcdoc: this.data })
+        .attrs((this.data ? { srcdoc: this.data } : { src: this.src }))
         .enableClass(this.myClass('resize'), this.resizable$)
         .on('load', evt => this.resizeIFrame(evt.target))
       .end();
