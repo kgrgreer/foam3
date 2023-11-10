@@ -615,7 +615,7 @@ This is the heart of Medusa.`,
         try {
           for ( Map<String, MedusaEntry> nodes : hashes.values() ) {
             if ( nodes.size() >= support.getNodeQuorum() ||
-                 ( nodes.size() == 1 &&
+                 ( nodes.size() > 0 &&
                    support.getSir().contains(next.getId()) ) ) {
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
