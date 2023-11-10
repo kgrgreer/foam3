@@ -26,7 +26,12 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
+    'foam.util.SafetyUtil',
+    'java.util.ArrayList',
+    'java.util.Arrays',
+    'java.util.List',
     'java.util.Timer',
+    'java.util.stream.Collectors',
     'java.io.File',
     'java.io.IOException',
     'java.nio.file.Files',
@@ -59,6 +64,11 @@ foam.CLASS({
       name: 'DISSOLVE',
       type: 'String',
       value: 'DISSOLVE'
+    },
+    {
+      name: 'SIR',
+      type: 'String',
+      value: 'SIR'
     }
   ],
 
@@ -135,7 +145,8 @@ foam.CLASS({
                  ( SHUTDOWN.equals(event.context().toString()) ||
                    OFFLINE.equals(event.context().toString()) ||
                    ONLINE.equals(event.context().toString()) ||
-                   DISSOLVE.equals(event.context().toString()) ) ) {
+                   DISSOLVE.equals(event.context().toString()) ||
+                   SIR.equals(event.context().toString()) ) ) {
               logger.warning("detected", event.context());
 
               ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
@@ -160,6 +171,33 @@ foam.CLASS({
                             config.getType() == MedusaType.MEDIATOR ) {
                   ElectoralService electoral = (ElectoralService) x.get("electoralService");
                   electoral.dissolve(x);
+                } else if ( SIR.equals(request) &&
+//                            config.getStatus() == Status.ONLINE &&
+                            config.getType() == MedusaType.MEDIATOR ) {
+                  try {
+                    ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+                    if ( replaying.getReplaying() ) {
+                      Path file = path.resolve(event.context().toString());
+                      String contents = Files.readAllLines(file).get(0);
+                      logger.info("SIR contents", contents);
+                      if ( ! SafetyUtil.isEmpty(contents) ) {
+                        List<Long> sir =
+                          Arrays.stream(contents
+                           .split(","))
+                           .map(String::trim)
+                           .map(Long::valueOf)
+                           .collect(Collectors.toList());
+                         logger.warning("SIR", sir.toString());
+                         support.setSir(sir);
+                      } else {
+                        ClusterConfigSupport.SIR.clear(support);
+                      }
+                    } else {
+                      logger.warning("SIR ignored, system is not replaying");
+                    }
+                  } catch (Exception e) {
+                    logger.warning("SIR processing failed", e.getMessage());
+                  }
                 }
                 break;
               }

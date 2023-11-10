@@ -614,7 +614,9 @@ This is the heart of Medusa.`,
         Map<Object, Map> hashes = next.getConsensusHashes();
         try {
           for ( Map<String, MedusaEntry> nodes : hashes.values() ) {
-            if ( nodes.size() >= support.getNodeQuorum() ) {
+            if ( nodes.size() >= support.getNodeQuorum() ||
+                 ( nodes.size() == 1 &&
+                   support.getSir().contains(next.getId()) ) ) {
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
                   // test for parents
