@@ -29,10 +29,12 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.UnverifiedEmailException',
+    'foam.u2.crunch.WizardRunner',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock',
-    'foam.nanos.auth.DuplicateEmailException',
-    'foam.nanos.auth.UnverifiedEmailException'
+    'foam.u2.wizard.WizardType'
   ],
 
   messages: [
@@ -287,12 +289,12 @@ foam.CLASS({
       buttonStyle: 'LINK',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
-        X.stack.push(X.data.StackBlock.create({
-          view: {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.RetrievePassword'
-          }
-        }));
+        const wizardRunner = this.WizardRunner.create({
+          wizardType: this.WizardType.TRANSIENT,
+          source: 'foam.nanos.auth.email.ResetPassword',
+          options: {inline: false, returnCompletionPromise: true}
+        })
+        wizardRunner.launch();
       }
     }
   ]
