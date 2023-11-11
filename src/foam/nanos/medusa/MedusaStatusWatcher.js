@@ -172,26 +172,20 @@ foam.CLASS({
                   ElectoralService electoral = (ElectoralService) x.get("electoralService");
                   electoral.dissolve(x);
                 } else if ( SIR.equals(request) &&
-//                            config.getStatus() == Status.ONLINE &&
                             config.getType() == MedusaType.MEDIATOR ) {
                   try {
-                    ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-                    if ( replaying.getReplaying() ) {
-                      Path file = path.resolve(event.context().toString());
-                      String contents = Files.readAllLines(file).get(0);
-                      logger.info("SIR contents", contents);
-                      if ( ! SafetyUtil.isEmpty(contents) ) {
-                        List<Long> sir =
-                          Arrays.stream(contents
-                           .split(","))
-                           .map(String::trim)
-                           .map(Long::valueOf)
-                           .collect(Collectors.toList());
-                         logger.warning("SIR", sir.toString());
-                         support.setSir(sir);
-                      } else {
-                        ClusterConfigSupport.SIR.clear(support);
-                      }
+                    Path file = path.resolve(event.context().toString());
+                    String contents = Files.readAllLines(file).get(0);
+                    logger.info("SIR contents", contents);
+                    if ( ! SafetyUtil.isEmpty(contents) ) {
+                      List<Long> sir =
+                        Arrays.stream(contents
+                         .split(","))
+                         .map(String::trim)
+                         .map(Long::valueOf)
+                         .collect(Collectors.toList());
+                       logger.warning("SIR", sir.toString());
+                       support.setSir(sir);
                     } else {
                       logger.warning("SIR ignored, system is not replaying");
                     }
