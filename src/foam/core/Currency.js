@@ -13,7 +13,6 @@
 
   javaImports: [
     'foam.core.XLocator',
-    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil'
   ],
 
@@ -226,11 +225,8 @@
         String delimiter = getDelimiter();
         String decimalCharacter = getDecimalCharacter();
         try {
-          TranslationService ts = (TranslationService) x.get("translationService");
-          String locale = (String) x.get("locale.language");
-
-          delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
-          decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+          delimiter = t(x, "Currency.delimiter", this.getDelimiter());
+          decimalCharacter = t(x, "Currency.decimalCharacter", this.getDecimalCharacter());
         } catch (NullPointerException e) {
           foam.nanos.logger.Loggers.logger(x, this).debug(e);
         }

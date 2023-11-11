@@ -20,7 +20,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.core.XLocator',
-    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.List',
@@ -136,19 +135,7 @@ foam.CLASS({
         return msg;
       },
       javaCode: `
-      try {
-        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-        if ( ts != null ) {
-          String locale = (String) XLocator.get().get("locale.language");
-          if ( SafetyUtil.isEmpty(locale) ) {
-            locale = "en";
-          }
-          return renderMessage(ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
-        }
-      } catch (NullPointerException e) {
-        // noop - Expected when not yet logged in, as XLocator is not setup.
-      }
-      return renderMessage(getExceptionMessage());
+      return renderMessage(t(XLocator.get(), getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
      `
     },
     {

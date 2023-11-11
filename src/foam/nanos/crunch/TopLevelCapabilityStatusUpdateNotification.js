@@ -17,12 +17,6 @@ foam.CLASS({
     'translationService'
   ],
 
-  javaImports: [
-    'foam.i18n.TranslationService',
-     'foam.nanos.auth.Subject',
-     'foam.nanos.auth.User'
-  ],
-
   properties: [
     {
       class: 'String',
@@ -44,14 +38,11 @@ foam.CLASS({
       name: 'body',
       transient: true,
       javaGetter: `
-        Subject subject = (foam.nanos.auth.Subject) foam.core.XLocator.get().get("subject");
-        String locale = ((foam.nanos.auth.User) subject.getRealUser()).getLanguage().getCode().toString();
-        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
-
-        String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
-        String capName = ts.getTranslation(locale, getCapabilitySource(), getCapabilityName());
-        String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2) + getJunctionStatus();
-        String status = ts.getTranslation(locale, getJunctionSource(), getJunctionStatus());
+        var x = foam.core.XLocator.get();
+        String t1 = t(x, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
+        String capName = t(x, getCapabilitySource(), getCapabilityName());
+        String t2 = t(x, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2) + getJunctionStatus();
+        String status = t(x, getJunctionSource(), getJunctionStatus());
 
         return t1 + capName + t2 + status;
       `,
