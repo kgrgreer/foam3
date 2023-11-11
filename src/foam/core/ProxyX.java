@@ -35,6 +35,10 @@ public class ProxyX
     return getX().get(x, name);
   }
 
+  public XFactory getFactory(X x, Object name) {
+    return getX().getFactory(x, name);
+  }
+
   public int getInt(Object key) {
     return getInt(key, 0);
   }
