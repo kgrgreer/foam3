@@ -52,7 +52,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'second',
-      value: 0,
+      value: -1,
       min: 0,
       max: 59,
       order: 1,
@@ -94,6 +94,18 @@ foam.CLASS({
       documentation: 'comma seperated hours',
     },
     {
+      documentation: 'deprecated, replaced by monthsOfYear',
+      class: 'Int',
+      name: 'month',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( val > 0 && ! monthsOfYearIsSet_ ) {
+        setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(val) });
+      }
+      `,
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.time.MonthOfYear',
       name: 'monthsOfYear',
@@ -128,6 +140,19 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'deprecated, replaced by daysOfWeek',
+      class: 'Int',
+      name: 'dayOfWeek',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( val > 0 &&
+           ! daysOfWeekIsSet_ ) {
+        setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.forOrdinal(val) });
+      }
+      `,
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.time.DayOfWeek',
       name: 'daysOfWeek',
@@ -142,6 +167,19 @@ foam.CLASS({
           return foam.u2.DisplayMode.RW;
         return foam.u2.DisplayMode.RO;
       }
+    },
+    {
+      documentation: 'deprecated, replaced by daysOfMonth',
+      class: 'Int',
+      name: 'dayOfMonth',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( val > 0 &&
+           ! daysOfMonthIsSet_ ) {
+        setDaysOfMonth(new Integer[] { val });
+      }
+      `,
     },
     {
       class: 'Array',
@@ -211,6 +249,19 @@ foam.CLASS({
         if ( getDaysOfWeek().length > 0 ) {
           time = getNextDayOfWeek(x, zone, last, time);
         }
+      }
+
+      // Default value of second was changed from 0 to -1,
+      // as 0 always applies and interfears with other
+      // time specifiers.  As a result there is no default
+      // schedule and we could fall through to here with
+      // no time adjustment.
+      // Previous behaviour of bumping the minute provides
+      // for a default schedule.
+      if ( from != null &&
+           ! time.isAfter(last) ) {
+        time = time.plusMinutes(1);
+        time = time.withSecond(0);
       }
       return Date.from(time.atZone(zone).toInstant());
       `
