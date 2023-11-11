@@ -54,9 +54,9 @@ public class SessionServerBox
     send(getX(), getDelegate(), authenticate_, msg);
   }
 
-  public void send(X x, Box delegate, boolean authenticate, Message msg) {
+  public static void send(X x, Box delegate, boolean authenticate, Message msg) {
     NSpec   spec       = x.get(NSpec.class);
-    Logger  logger     = Loggers.logger(x, this, spec.getName());
+    Logger  logger     = Loggers.logger(x, null, "SessionServerBox", spec.getName());
     DAO     sessionDAO = (DAO) x.get("localSessionDAO");
     Session session    = null;
     String  sessionID  = null;
@@ -184,12 +184,6 @@ public class SessionServerBox
         logger.warning("Missing permission", group != null ? group.getId() : "NO GROUP");
         msg.replyWithException(e);
         return;
-      }
-
-      // Sub context might have service override for the delegate
-      if ( effectiveContext instanceof SubX ) {
-        ((Skeleton) delegate).setDelegateObject(
-          effectiveContext.get(x.get(NSpec.class).getId()));
       }
 
       msg.getLocalAttributes().put("x", effectiveContext);
