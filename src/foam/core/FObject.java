@@ -623,11 +623,17 @@ public interface FObject
   }
 
   /**
-   * Shortcut method to call translation service with context locale.language.
+   * Shortcut method to call translation service.
    *
-   * For example, when calling inside FObject
+   * Allow for abbreviating
    *
-   *    t(x, "source", "defaultText");
+   *    TranslationService ts = (TranslationService) x.get("translationService");
+   *    String locale = (String) x.get("locale.language");
+   *    String text = ts.getTranslation(locale, source, defaultText);
+   *
+   * by
+   *
+   *    String text = t(x, source, defaultText);
    *
    */
   default String t(X x, String source, String defaultText) {
