@@ -89,19 +89,19 @@ public class NanoRouter
     try {
       if ( spec == null ) {
         logger.warning("Service not found", serviceKey);
-        resp.sendError(resp.SC_NOT_FOUND, "No service found for: "+serviceKey);
+        resp.sendError(resp.SC_NOT_FOUND, "No service found for: " + serviceKey);
         return;
       }
       if ( ! spec.getEnabled() ) {
         logger.info("Service disabled", serviceKey);
-        resp.sendError(resp.SC_NOT_FOUND, "No service found for: "+serviceKey);
+        resp.sendError(resp.SC_NOT_FOUND, "No service found for: " + serviceKey);
         return;
       }
 
       // XLocator could be used by the factory of transient properties during
       // replay of DAO services.
       XLocator.set(getX());
-      WebAgent agent     = getWebAgent(spec);
+      WebAgent agent = getWebAgent(spec);
       if ( agent == null ) {
         logger.warning("Service not found", serviceKey);
         resp.sendError(resp.SC_NOT_FOUND, "No service found for: " + serviceKey);
@@ -156,7 +156,7 @@ public class NanoRouter
         // TODO: create using Context, which should do this automatically
         if ( skeleton instanceof ContextAware ) ((ContextAware) skeleton).setX(getX());
 
-        skeleton.setDelegateObject(getX().get(spec.getName())); // TODO: use getFactory() instead
+        skeleton.setDelegateFactory(getX().getFactory(getX(), spec.getName()));
 
         WebAgent agent = getAgent(skeleton, spec);
 
@@ -205,21 +205,6 @@ public class NanoRouter
 
   protected WebAgent getAgent(Skeleton skeleton, NSpec spec) {
     return new ServiceWebAgent(skeleton, spec.getAuthenticate());
-  }
-
-  protected void informService(Object service, NSpec spec) {
-    Object obj = service;
-    while ( obj != null ) {
-      if ( obj instanceof ContextAware ) ((ContextAware) obj).setX(getX());
-      if ( obj instanceof NSpecAware   ) ((NSpecAware) obj).setNSpec(spec);
-      if ( obj instanceof ProxyDAO ) {
-        obj = ((ProxyDAO) obj).getDelegate();
-      } else if ( obj instanceof ProxyWebAgent ) {
-        obj = ((ProxyWebAgent) obj).getDelegate();
-      } else {
-        obj = null;
-      }
-    }
   }
 
   @Override
