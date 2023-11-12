@@ -15,10 +15,12 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  tableColumns: [ 'id', 'summary', 'owner', 'state', 'starred', 'lastModified' ],
+
   properties:
   [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'id',
       help: 'ID of the issue, unique to this project.'
     },
@@ -35,6 +37,7 @@ foam.CLASS({
       help: 'Person who originally filed this issue.',
       subType: 'IssuePerson'
     },*/
+    /*
     {
       class: 'StringArray',
       name: 'blockedOn',
@@ -45,6 +48,7 @@ foam.CLASS({
       name: 'blocking',
       help: 'References to issues blocking on this issue.'
     },
+    */
     {
       class: 'StringArray',
       name: 'cc',
@@ -87,20 +91,20 @@ foam.CLASS({
       help: 'Reference to the issue this issue was moved from.',
       subType: 'Issue'
     },
-    */
     {
       class: 'StringArray',
       name: 'movedTo',
       help: 'Reference to the issue(s) this issue was moved to.'
     },
-    /*
+    */
     {
       type: 'Reference',
       name: 'owner',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
       subType: 'IssuePerson',
       help: 'Person to whom this issue is currently assigned.',
     },
-    */
     /*
     {
       class: 'Date',
@@ -121,11 +125,13 @@ foam.CLASS({
       help: 'Number of stars this issue has.'
     },
     */
+    /*
     {
       class: 'String',
       name: 'state',
       help: 'State of this issue (open or closed).'
     },
+    */
     {
       class: 'String',
       name: 'status',
