@@ -11,7 +11,7 @@ import foam.core.XFactory;
 
 /**
  * An XFactory which returns a service from the supplied context which is
- * either prefixed with the <spid>/ or just / if no spid is found or that
+ * either suffixed with the _<spid> or just _ if no spid is found or that
  * service isn't found.
  *
  * The purpose of this is so that NSpec's can be scoped by SPID.
