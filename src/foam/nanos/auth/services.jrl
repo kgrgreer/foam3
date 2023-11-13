@@ -381,6 +381,19 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localUserUserDAO",
+  "description":"A filter on localUserDAO that filters out all subclasses of User.",
+  "authenticate": false,
+  "serviceScript":
+  """
+    // Filter in other projects which create new User types.
+    return x.get("localUserDAO");
+  """
+})
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "uniqueUserService",
