@@ -37,5 +37,26 @@ foam.INTERFACE({
       ],
       type: 'String'
     }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.methods.push(`
+          static String t(foam.core.X x, String source, String defaultText) {
+            if ( x == null ) return defaultText;
+
+            var ts = (TranslationService) x.get("translationService");
+            if ( ts == null ) return defaultText;
+
+            var locale = (String) x.get("locale.language");
+            if ( foam.util.SafetyUtil.isEmpty(locale) ) locale = "en";
+
+            return ts.getTranslation(locale, source, defaultText);
+          }
+        `);
+      }
+    }
   ]
 });
