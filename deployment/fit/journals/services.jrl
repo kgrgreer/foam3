@@ -6,7 +6,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foamdev.fit.Issue.getOwnClassInfo())
       .setSeqNo(true)
-      .setName("issues")
+      .setName("issueDAO_")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("issues")
       .build();
@@ -14,16 +14,15 @@ p({
   "client": "{\"of\":\"foamdev.fit.Issue\"}"
 })
 
-
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"issueDAO_foam",
+  "name":"issueDAO_foam1",
   "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foamdev.fit.Issue.getOwnClassInfo())
       .setSeqNo(true)
-      .setName("issues_foam")
+      .setName("issueDAO_foam1")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("issues_foam")
       .build();
@@ -31,6 +30,21 @@ p({
   "client": "{\"of\":\"foamdev.fit.Issue\"}"
 })
 
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"issueDAO_foam2",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foamdev.fit.Issue.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("issueDAO_foam2")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("issues_foam")
+      .build();
+  """,
+  "client": "{\"of\":\"foamdev.fit.Issue\"}"
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -39,7 +53,6 @@ p({
   "serviceScript": "return new foam.nanos.boot.ByServiceProviderFactory();",
   "client": "{\"of\":\"foamdev.fit.Issue\"}"
 })
-
 
 p({
   "class":"foam.nanos.boot.NSpec",
