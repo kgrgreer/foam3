@@ -17,6 +17,10 @@ foam.CLASS({
     'translationService'
   ],
 
+  javaImports: [
+    'static foam.i18n.TranslationService.t'
+  ],
+
   properties: [
     {
       class: 'String',

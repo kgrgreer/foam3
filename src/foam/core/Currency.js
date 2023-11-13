@@ -13,6 +13,7 @@
 
   javaImports: [
     'foam.core.XLocator',
+    'static foam.i18n.TranslationService.t',
     'foam.util.SafetyUtil'
   ],
 

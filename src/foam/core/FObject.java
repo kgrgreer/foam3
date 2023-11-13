@@ -8,13 +8,11 @@ package foam.core;
 
 import foam.crypto.hash.Hashable;
 import foam.crypto.sign.Signable;
-import foam.i18n.TranslationService;
 import foam.lib.json.Outputter;
 import foam.nanos.logger.StdoutLogger;
-import foam.util.SafetyUtil;
 import foam.util.SecurityUtil;
+
 import java.security.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -620,32 +618,6 @@ public interface FObject
     throws UnsupportedOperationException
   {
     if ( isFrozen() ) throw new UnsupportedOperationException("Object is frozen.");
-  }
-
-  /**
-   * Shortcut method to call translation service.
-   *
-   * Allow for abbreviating
-   *
-   *    TranslationService ts = (TranslationService) x.get("translationService");
-   *    String locale = (String) x.get("locale.language");
-   *    String text = ts.getTranslation(locale, source, defaultText);
-   *
-   * by
-   *
-   *    String text = t(x, source, defaultText);
-   *
-   */
-  default String t(X x, String source, String defaultText) {
-    if ( x == null ) return defaultText;
-
-    var ts = (TranslationService) x.get("translationService");
-    if ( ts == null ) return defaultText;
-
-    var locale = (String) x.get("locale.language");
-    if ( SafetyUtil.isEmpty(locale) ) locale = "en";
-
-    return ts.getTranslation(locale, source, defaultText);
   }
 
   default String toSummary() {

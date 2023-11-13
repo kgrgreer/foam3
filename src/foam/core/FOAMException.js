@@ -20,6 +20,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.core.XLocator',
+    'static foam.i18n.TranslationService.t',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.List',

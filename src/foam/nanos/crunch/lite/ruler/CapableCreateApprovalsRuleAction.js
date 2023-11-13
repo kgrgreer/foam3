@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
     'foam.comics.v2.userfeedback.UserFeedbackStatus',
+    'static foam.i18n.TranslationService.t',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',

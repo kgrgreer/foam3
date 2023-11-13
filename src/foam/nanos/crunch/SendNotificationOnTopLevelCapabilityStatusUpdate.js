@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'static foam.i18n.TranslationService.t',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
