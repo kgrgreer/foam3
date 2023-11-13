@@ -26,7 +26,7 @@
         try {
           await data[action]?.call(data, this.__subContext__);
         } catch(e) {
-          console.log(e);
+          throw e;
         }
       }
       await this.delegate.save(data);
