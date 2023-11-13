@@ -130,17 +130,19 @@ foam.CLASS({
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
-            msg = this.USER_NOT_FOUND_ERROR_MSG + this.email;
+            msg = err.data.message =  this.USER_NOT_FOUND_ERROR_MSG + this.email;
           }
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
             this.usernameRequired = true;
-            msg = this.DUPLICATE_ERROR_MSG;
+            msg =  err.data.message = this.DUPLICATE_ERROR_MSG;
           }
-          this.ctrl.add(this.NotificationMessage.create({
-            message: msg,
-            type: this.LogLevel.ERROR,
-            transient: true
-          }));
+          if ( ! X.wizardController?.status == 'IN_PROGRESS' ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: msg,
+              type: this.LogLevel.ERROR,
+              transient: true
+            }));
+          }
           throw err;
         }
       }
