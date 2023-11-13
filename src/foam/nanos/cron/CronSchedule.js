@@ -57,7 +57,8 @@ foam.CLASS({
       max: 59,
       order: 1,
       documentation: `Second to execute the script.
-           Ranges from 0 - 59. -1 for wildcard`
+           Ranges from 0 - 59. If no other time specifiers are set,
+           second will be set to 0, and the job will run once per minute.`
     },
     {
       class: 'Int',
@@ -75,7 +76,7 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaSetter: `
-      if ( val > -1 && ! hoursIsSet_ ) {
+      if ( ! hoursIsSet_ ) {
         setHours(String.valueOf(val));
       }
       `
@@ -84,14 +85,14 @@ foam.CLASS({
       class: 'String',
       name: 'hours',
       order: 3,
-      validationPredicates: [
-        {
-          args: ['hours'],
-          query: 'hours~/[0-9,]/',
-          errorMessage: 'INVALID_HOURS'
-        }
-      ],
-      documentation: 'comma seperated hours',
+      // validationPredicates: [
+      //   {
+      //     args: ['hours'],
+      //     query: 'hours~/[0-9,]/',
+      //     errorMessage: 'INVALID_HOURS'
+      //   }
+      // ],
+      documentation: 'comma seperated hours. -1 for wildcard.',
     },
     {
       documentation: 'deprecated, replaced by monthsOfYear',
@@ -100,8 +101,13 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaSetter: `
-      if ( val > 0 && ! monthsOfYearIsSet_ ) {
-        setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(val) });
+      if ( ! monthsOfYearIsSet_ ) {
+        if ( val == -1 ) {
+          // set all months
+          setMonthsOfYear(foam.time.MonthOfYear.values());
+        } else {
+          setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(val) });
+        }
       }
       `,
     },
@@ -146,9 +152,12 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaSetter: `
-      if ( val > 0 &&
-           ! daysOfWeekIsSet_ ) {
-        setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.forOrdinal(val) });
+      if ( ! daysOfWeekIsSet_ ) {
+        if ( val == -1 ) {
+          setDaysOfWeek(foam.time.DayOfWeek.values());
+        } else {
+          setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.forOrdinal(val) });
+        }
       }
       `,
     },
