@@ -100,9 +100,23 @@ foam.CLASS({
       diff = ChronoUnit.DAYS.between(lastTime, nextTime);
       test ( diff == 7, "DaysOfWeek - next week "+diff );
 
+      // migration dayOfWeek -1 - all
+      sched = new CronSchedule();
+      sched.setDayOfWeek(-1);
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.DAYS.between(lastTime, nextTime);
+      test ( diff == 1, "DayOfWeek (legacy -1) - next day "+diff );
+      next = sched.getNextScheduledTime(x, next);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.DAYS.between(lastTime, nextTime);
+      test ( diff == 2, "DayOfWeek (legacy -1) - next next day "+diff );
+
       // migration dayOfWeek
       sched = new CronSchedule();
-      sched.setDayOfWeek(LocalDateTime.now().getDayOfWeek().getValue() - 1); // day of test run.
+      sched.setDayOfWeek(LocalDateTime.now().getDayOfWeek().getValue()); // day of test run.
       last = sched.getNextScheduledTime(x, null);
       lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
@@ -119,6 +133,22 @@ foam.CLASS({
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
       test ( diff == 12, "Month (legacy) - next month "+diff );
+
+      // legacy - monthOfYear -1
+      sched = new CronSchedule();
+      sched.setMonth(-1);
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      long diffMonths = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      long diffDays = ChronoUnit.DAYS.between(lastTime, nextTime);
+      test ( diffMonths == 0 && diffDays > 0, "Month (legacy -1) - next month "+diff );
+      next = sched.getNextScheduledTime(x, next);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diffMonths = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      diffDays = ChronoUnit.DAYS.between(lastTime, nextTime);
+      test ( diffMonths == 1, "Month (legacy -1) - next next month "+diff );
 
       sched = new CronSchedule();
       sched.setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(LocalDate.now().getMonth().getValue()) });
