@@ -251,6 +251,13 @@ configuration for contacting the primary node.`,
       pm.log(getX());
       return configs;
       `
+    },
+    {
+      documetation: 'Single Index Recovery. A faulty system fallback to deal with system failure and potential data loss. If we find we only have 1 copy of an index, this allows us to instruct the consensus engine to promote the index.',
+      name: 'sir',
+      class: 'List',
+      of: 'Long',
+      javaFactory: 'return new ArrayList<Long>();'
     }
   ],
 
