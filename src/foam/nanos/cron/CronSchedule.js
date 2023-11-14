@@ -92,7 +92,7 @@ foam.CLASS({
       // validationPredicates: [
       //   {
       //     args: ['hours'],
-      //     query: 'hours~/[0-9,]/',
+      //     query: 'hours~/^\\s+$|^-1|[0-9]{1,2}[,]{0,1}/',
       //     errorMessage: 'INVALID_HOURS'
       //   }
       // ],
@@ -109,7 +109,7 @@ foam.CLASS({
         if ( val == -1 ) {
           // set all months
           setMonthsOfYear(foam.time.MonthOfYear.values());
-        } else {
+        } else if ( val > 0 ) {
           setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(val) });
         }
       }
@@ -120,8 +120,7 @@ foam.CLASS({
       of: 'foam.time.MonthOfYear',
       name: 'monthsOfYear',
       order: 4,
-      javaFactory: 'return new foam.time.MonthOfYear[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
       view: { class: 'foam.time.MonthOfYearView' },
       documentation: 'Months to execute script',
     },
@@ -160,7 +159,7 @@ foam.CLASS({
            ! daysOfMonthIsSet_ ) {
         if ( val == -1 ) {
           setDaysOfWeek(foam.time.DayOfWeek.values());
-        } else {
+        } else if ( val > 0 ) {
           setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.forOrdinal(val) });
         }
       }
@@ -171,8 +170,7 @@ foam.CLASS({
       of: 'foam.time.DayOfWeek',
       name: 'daysOfWeek',
       order: 6,
-      javaFactory: 'return new foam.time.DayOfWeek[] {};',
-      javaPreSet: 'if ( val != null ) java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfWeekView' },
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
@@ -200,12 +198,11 @@ foam.CLASS({
       of: 'Int',
       name: 'daysOfMonth',
       order: 6,
-      javaFactory: 'return new Integer[] {};',
-      javaPreSet: 'if ( val != null ) java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfMonthView' },
-      visibility: function(daysOfWeek, weekOfMonth) {
+      visibility: function(daysOfWeek, daysOfMonth, weekOfMonth) {
         if ( weekOfMonth > 0 ||
-             daysOfWeek.length > 0 )
+             ( daysOfWeek.length > 0 && daysOfMonth.length == 0 ) )
           return foam.u2.DisplayMode.HIDDEN;
         if ( this.controllerMode == foam.u2.ControllerMode.EDIT )
           return foam.u2.DisplayMode.RW;
@@ -250,17 +247,17 @@ foam.CLASS({
         time = time.withSecond(getSecond());
       }
 
-      if ( getMonthsOfYear().length > 0 ) {
+      if ( getMonthsOfYear() != null && getMonthsOfYear().length > 0 ) {
         time = getNextMonthOfYear(x, zone, last, time);
       }
-      if ( getDaysOfMonth().length > 0 ) {
+      if ( getDaysOfMonth() != null && getDaysOfMonth().length > 0 ) {
         time = getNextDayOfMonth(x, zone, last, time);
       } else {
         // These two require coordination.
         // if ( getWeekOfMonth() > -1 ) {
         //   time = getNextWeekOfMonth(x, zone,last, time);
         // }
-        if ( getDaysOfWeek().length > 0 ) {
+        if ( getDaysOfWeek() != null && getDaysOfWeek().length > 0 ) {
           time = getNextDayOfWeek(x, zone, last, time);
         }
       }
@@ -354,6 +351,7 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( foam.time.MonthOfYear m : getMonthsOfYear() ) {
+//        for ( foam.time.MonthOfYear m : (foam.time.MonthOfYear[])getMonthsOfYear() ) {
           int month = m.getOrdinal();
           if ( month == time.getMonth().getValue() &&
                time.isAfter(last) ) {
@@ -447,6 +445,7 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( foam.time.DayOfWeek d : getDaysOfWeek() ) {
+//        for ( foam.time.DayOfWeek d : (foam.time.DayOfWeek[])getDaysOfWeek() ) {
           int day = d.getOrdinal();
           if ( day == time.getDayOfWeek().getValue() &&
                time.isAfter(last) ) {
