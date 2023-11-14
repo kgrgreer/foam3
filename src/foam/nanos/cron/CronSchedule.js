@@ -156,7 +156,8 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaSetter: `
-      if ( ! daysOfWeekIsSet_ ) {
+      if ( ! daysOfWeekIsSet_ &&
+           ! daysOfMonthIsSet_ ) {
         if ( val == -1 ) {
           setDaysOfWeek(foam.time.DayOfWeek.values());
         } else {
@@ -201,6 +202,13 @@ foam.CLASS({
       order: 6,
       javaFactory: 'return new Integer[] {};',
       javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPostSet: `
+      if ( daysOfMonthIsSet_ &&
+           daysOfWeekIsSet_ ) {
+        // mutually exclusive
+        clearDaysOfWeek();
+      }
+      `,
       view: { class: 'foam.u2.view.DayOfMonthView' },
       visibility: function(daysOfWeek, weekOfMonth) {
         if ( weekOfMonth > 0 ||
