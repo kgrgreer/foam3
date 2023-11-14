@@ -360,12 +360,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
 
         rtn = new OrX(reset(x));
 
-        // Support hierarchical SPID context
-        var subX = rtn.cd(user.getSpid());
-        if ( subX != null ) {
-          rtn = new OrX(reset(subX));
-        }
-
         Subject subject = null;
         if ( user != null || agent != null ) {
           subject = new Subject();
