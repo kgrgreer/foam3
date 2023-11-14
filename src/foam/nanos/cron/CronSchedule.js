@@ -202,13 +202,6 @@ foam.CLASS({
       order: 6,
       javaFactory: 'return new Integer[] {};',
       javaPreSet: 'java.util.Arrays.sort(val);',
-      javaPostSet: `
-      if ( daysOfMonthIsSet_ &&
-           daysOfWeekIsSet_ ) {
-        // mutually exclusive
-        clearDaysOfWeek();
-      }
-      `,
       view: { class: 'foam.u2.view.DayOfMonthView' },
       visibility: function(daysOfWeek, weekOfMonth) {
         if ( weekOfMonth > 0 ||
@@ -399,7 +392,8 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( Object d : getDaysOfMonth() ) {
-          long day = ((Integer)d).longValue();
+          // FIXME: int in test cases, long from web
+          int day = d instanceof Long ? ((Long)d).intValue() : (int) d;
           if ( day == time.getDayOfMonth() &&
                time.isAfter(last) ) {
             adjusted = true;
