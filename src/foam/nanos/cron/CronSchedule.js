@@ -172,7 +172,7 @@ foam.CLASS({
       name: 'daysOfWeek',
       order: 6,
       javaFactory: 'return new foam.time.DayOfWeek[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) java.util.Arrays.sort(val);',
       view: { class: 'foam.u2.view.DayOfWeekView' },
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
@@ -201,7 +201,7 @@ foam.CLASS({
       name: 'daysOfMonth',
       order: 6,
       javaFactory: 'return new Integer[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) java.util.Arrays.sort(val);',
       view: { class: 'foam.u2.view.DayOfMonthView' },
       visibility: function(daysOfWeek, weekOfMonth) {
         if ( weekOfMonth > 0 ||
