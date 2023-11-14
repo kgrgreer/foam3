@@ -41,6 +41,10 @@ foam.CLASS({
     { name: 'INVALID_HOURS', message: 'Comma seperated list of hours'}
   ],
 
+  javaCode: `
+    final static String[] HOURS_ALL = new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
+  `,
+
   properties: [
     {
       class: 'Reference',
@@ -298,6 +302,9 @@ foam.CLASS({
       javaCode: `
       boolean adjusted = false;
       String[] hours = getHours().split(",");
+      if ( hours.length == 1 && hours[0].equals("-1") ) {
+        hours = HOURS_ALL;
+      }
       for ( String h : hours ) {
         if ( SafetyUtil.isEmpty(h) ) continue;
         int hour = 0;

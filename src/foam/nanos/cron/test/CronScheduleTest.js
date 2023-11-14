@@ -29,7 +29,10 @@ foam.CLASS({
       LocalDateTime lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       Date next = sched.getNextScheduledTime(x, last);
       LocalDateTime nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
-      test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 1, "Hour - next day" );
+      test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 1, "Hour (-1 all) - next hour" );
+      next = sched.getNextScheduledTime(x, next);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 2, "Hour (-1 all) - next next hour" );
 
       sched.setHours("2");
       sched.setMinute(25);
@@ -38,6 +41,14 @@ foam.CLASS({
       next = sched.getNextScheduledTime(x, last);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 1, "Hour/Minute - next day" );
+
+      sched = new CronSchedule();
+      sched.setHour(-1);
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      test ( ChronoUnit.HOURS.between(lastTime, nextTime) == 1, "Hour/Minute - next day" );
 
       sched = new CronSchedule();
       sched.setMinute(5);
