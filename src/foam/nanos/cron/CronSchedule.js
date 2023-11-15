@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.time.*',
     'java.time.temporal.*',
+    'java.util.Arrays',
     'java.util.Date'
   ],
 
@@ -56,13 +57,12 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'second',
-      value: -1,
+      value: 0,
       min: 0,
       max: 59,
       order: 1,
-      documentation: `Second to execute the script.
-           Ranges from 0 - 59. If no other time specifiers are set,
-           second will be set to 0, and the job will run once per minute.`
+      documentation: `Second of minute to execute the script.
+           Ranges from 0 - 59.`
     },
     {
       class: 'Int',
@@ -71,8 +71,11 @@ foam.CLASS({
       min: -1,
       max: 59,
       order: 2,
-      documentation: `Minute to execute script.
-          Ranges from 0 - 59. -1 for wildcard`
+      documentation: `Minute of hour to execute script.
+          Ranges from 0 - 59.
+          -1 acts as a flag to ignore minutes in getNextScheduledTime,
+          the current time minute will be used. The default behaviour
+          is to run every minute.`
     },
     {
       class: 'Int',
@@ -89,14 +92,22 @@ foam.CLASS({
       class: 'String',
       name: 'hours',
       order: 3,
+      // FIXME: regex not yet working to handle: empty, -1, and hours
       // validationPredicates: [
       //   {
       //     args: ['hours'],
-      //     query: 'hours~/^\\s+$|^-1|[0-9]{1,2}[,]{0,1}/',
+      //     query: 'hours~/^\\s+$|(^-1)|(?:([0-9]{1,2})+[,]{0,1})/',
       //     errorMessage: 'INVALID_HOURS'
       //   }
       // ],
-      documentation: 'comma seperated hours. -1 for wildcard.',
+      javaPreSet: `
+      if ( ! SafetyUtil.isEmpty(val) ) {
+        String[] hours = val.split(",");
+        Arrays.sort(hours);
+        val = String.join(",", hours);
+      }
+      `,
+      documentation: 'comma seperated hours. -1 for wildcard.'
     },
     {
       documentation: 'deprecated, replaced by monthsOfYear',
@@ -120,7 +131,7 @@ foam.CLASS({
       of: 'foam.time.MonthOfYear',
       name: 'monthsOfYear',
       order: 4,
-      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.time.MonthOfYearView' },
       documentation: 'Months to execute script',
     },
@@ -170,7 +181,7 @@ foam.CLASS({
       of: 'foam.time.DayOfWeek',
       name: 'daysOfWeek',
       order: 6,
-      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfWeekView' },
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
@@ -198,7 +209,7 @@ foam.CLASS({
       of: 'Int',
       name: 'daysOfMonth',
       order: 6,
-      javaPreSet: 'if ( val != null ) { java.util.Arrays.sort(val); }',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfMonthView' },
       visibility: function(daysOfWeek, daysOfMonth, weekOfMonth) {
         if ( weekOfMonth > 0 ||
@@ -239,11 +250,7 @@ foam.CLASS({
         }
         time = time.withMinute(getMinute());
       }
-      if ( getSecond() > -1 ) {
-        if ( time.getSecond() >= getSecond() &&
-             ! time.isAfter(last) ) {
-          time = time.plusMinutes(1);
-        }
+      if ( getSecond() >= 0 ) {
         time = time.withSecond(getSecond());
       }
 
@@ -262,17 +269,13 @@ foam.CLASS({
         }
       }
 
-      // Default value of second was changed from 0 to -1,
-      // as 0 always applies and interfears with other
-      // time specifiers.  As a result there is no default
-      // schedule and we could fall through to here with
-      // no time adjustment.
-      // Previous behaviour of bumping the minute provides
-      // for a default schedule.
+      // Calculated time has not progressed forward. This
+      // can occur if no time specifiers have been set.
+      // Bump time in 1 minute increments. This also provides
+      // a default behaviour of running every minute.
       if ( from != null &&
            ! time.isAfter(last) ) {
         time = time.plusMinutes(1);
-        time = time.withSecond(0);
       }
       return Date.from(time.atZone(zone).toInstant());
       `
@@ -322,7 +325,8 @@ foam.CLASS({
         }
         // schedule change to earlier in day
         if ( hour < time.getHour() ) {
-          LocalDateTime temp = time.with(ChronoField.HOUR_OF_DAY, hour);
+          // LocalDateTime temp = time.with(ChronoField.HOUR_OF_DAY, hour);
+          LocalDateTime temp = time.withHour(hour);
           if ( temp.isAfter(last) ) {
             time = temp;
             adjusted = true;
