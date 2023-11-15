@@ -65,6 +65,22 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "uniqueUserService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
+  "serviceScript": """
+    ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
+    /*
+    ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
+      .setDelegate(ul)
+      .build();*/
+    return ul;
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "theme",
   "authenticate": false,
   "serve": true,
