@@ -11,8 +11,8 @@ import foam.crypto.sign.Signable;
 import foam.lib.json.Outputter;
 import foam.nanos.logger.StdoutLogger;
 import foam.util.SecurityUtil;
+
 import java.security.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
