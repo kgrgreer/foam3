@@ -31,7 +31,9 @@ foam.CLASS({
     'java.time.*',
     'java.time.temporal.*',
     'java.util.Arrays',
-    'java.util.Date'
+    'java.util.Date',
+    'java.util.stream.Collectors',
+    'java.util.stream.Stream'
   ],
 
   requires: [
@@ -39,7 +41,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_HOURS', message: 'Comma seperated list of hours'}
+    { name: 'INVALID_HOURS', message: 'Comma seperated list of hours in range 0 through 23, or -1 for all hours.'}
   ],
 
   javaCode: `
@@ -89,22 +91,35 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Comma seperated list of hours in range 0 through 23. Or -1 for all hours.',
       class: 'String',
       name: 'hours',
       order: 3,
-      // FIXME: regex not yet working to handle: empty, -1, and hours
-      // validationPredicates: [
-      //   {
-      //     args: ['hours'],
-      //     query: 'hours~/^\\s+$|(^-1)|(?:([0-9]{1,2})+[,]{0,1})/',
-      //     errorMessage: 'INVALID_HOURS'
+      validationPredicates: [
+        {
+          args: ['hours'],
+          query: 'hours~/^\\s*$|^-1$|^(?:(?:[0-9]|1[0-9]|2[0-3]),?)+$/g',
+          errorMessage: 'INVALID_HOURS'
+        }
+      ],
+      // REVIEW: results in endless loop opening DetailView.
+      // preSet: function(o, n) {
+      //   if ( n &&
+      //        /^\\s*$|^-1$|^(?:(?:[0-9]|1[0-9]|2[0-3]),?)+$/g.test(n) ) {
+      //     var hours = n.split(',');
+      //     n = hours.filter(function(h) {
+      //       return parseInt(h,10) >= -1 || parseInt(h,10) <= 23;
+      //     }).sort((a, b) => a.localeCompare(b, undefined, { numeric: true}));
       //   }
-      // ],
+      //   return n;
+      // },
       javaPreSet: `
       if ( ! SafetyUtil.isEmpty(val) ) {
-        String[] hours = val.split(",");
-        Arrays.sort(hours);
-        val = String.join(",", hours);
+        try {
+          val = Stream.of(val.split(",")).map(Integer::valueOf).filter(h -> h >= -1 && h <= 23).sorted().map(String::valueOf).collect(Collectors.joining(","));
+        } catch (NumberFormatException e) {
+          throw new foam.core.ValidationException(INVALID_HOURS);
+        }
       }
       `,
       documentation: 'comma seperated hours. -1 for wildcard.'
@@ -355,7 +370,6 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( foam.time.MonthOfYear m : getMonthsOfYear() ) {
-//        for ( foam.time.MonthOfYear m : (foam.time.MonthOfYear[])getMonthsOfYear() ) {
           int month = m.getOrdinal();
           if ( month == time.getMonth().getValue() &&
                time.isAfter(last) ) {
@@ -449,7 +463,6 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( foam.time.DayOfWeek d : getDaysOfWeek() ) {
-//        for ( foam.time.DayOfWeek d : (foam.time.DayOfWeek[])getDaysOfWeek() ) {
           int day = d.getOrdinal();
           if ( day == time.getDayOfWeek().getValue() &&
                time.isAfter(last) ) {
