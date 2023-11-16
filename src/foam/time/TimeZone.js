@@ -40,7 +40,8 @@ foam.CLASS({
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(getId());
-        if ( ! foam.util.SafetyUtil.isEmpty(getDisplayName()) ) {
+        if ( ! foam.util.SafetyUtil.isEmpty(getDisplayName()) &&
+             ! getId().equals(getDisplayName()) ) {
           sb.append(" - ");
           sb.append(getDisplayName());
         }
