@@ -54,4 +54,4 @@ p({
     "class":"foam.nanos.jetty.HttpServer",
     "welcomeFiles":["/deployment/demo/index.html"]
   }
-});
+})
