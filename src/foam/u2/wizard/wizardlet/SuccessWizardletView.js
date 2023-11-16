@@ -22,7 +22,7 @@ foam.CLASS({
       margin: 2rem 0;
       gap: 2rem;
     }
-    ^image {
+    ^image img{
       width: 8rem;
     }
   `,
