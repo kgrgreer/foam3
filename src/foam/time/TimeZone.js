@@ -23,5 +23,14 @@ foam.CLASS({
       name: 'countryId',
       of: 'foam.nanos.auth.Country'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() { return this.displayName; },
+      javaCode: 'return getDisplayName();'
+    }
   ]
 });
