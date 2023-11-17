@@ -399,3 +399,45 @@ p({
   }
   });  """
 })
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"MDAOCounts",
+  "description":"Report all MDAO sizes",
+  "language":1,
+  "code":
+  """
+import foam.dao.DAO;
+import foam.dao.EasyDAO;
+import foam.dao.NullDAO;
+import foam.mlang.MLang;
+import foam.nanos.boot.NSpec;
+import foam.util.SafetyUtil;
+
+services = x.get("nSpecDAO");
+a = services.select().array;
+for ( s : a ) {
+  ss = s.getServiceScript();
+  if ( SafetyUtil.isEmpty(ss) ) continue;
+  if ( ! ss.contains("EasyDAO") ) continue;
+  d = x.get(s.name);
+  if ( ! ( d instanceof DAO ) ) continue;
+  delegate = d;
+  while ( delegate != null ) {
+    if ( delegate instanceof EasyDAO ) break;
+    if ( delegate instanceof NullDAO ) {
+      delegate = null;
+      break;
+    }
+    delegate = delegate.delegate;
+  }
+
+  if ( delegate == null ) continue;
+  ed = delegate;
+  if ( ed.getNullify() ) continue;
+  if ( ed.getMdao() == null ) continue;
+  m = ed.getMdao();
+  c = m.select(MLang.COUNT());
+  print(s.name + ", "+c.value);
+}
+  """
+})
