@@ -23,5 +23,30 @@ foam.CLASS({
       name: 'countryId',
       of: 'foam.nanos.auth.Country'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        var s = this.id;
+        if ( this.displayName && this.id !== this.displayName ) {
+          s += " - ";
+          s += this.displayName;
+        }
+        return s;
+      },
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        sb.append(getId());
+        if ( ! foam.util.SafetyUtil.isEmpty(getDisplayName()) &&
+             ! getId().equals(getDisplayName()) ) {
+          sb.append(" - ");
+          sb.append(getDisplayName());
+        }
+        return sb.toString();
+      `
+    }
   ]
 });

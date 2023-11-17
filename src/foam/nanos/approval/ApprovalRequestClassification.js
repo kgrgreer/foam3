@@ -12,10 +12,8 @@
     'translationService'
   ],
 
-  javaImports:[
-    'foam.i18n.TranslationService',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User'
+  javaImports: [
+    'static foam.i18n.TranslationService.t'
   ],
 
   properties: [
@@ -41,10 +39,7 @@
         return this.translationService.getTranslation(foam.locale, this.id + ".name", this.name);
       },
       javaCode: `
-        TranslationService ts = (TranslationService) getX().get("translationService");
-        Subject subject = (Subject) getX().get("subject");
-        String locale = (String) getX().get("foam.nanos.auth.LocaleSupport.CONTEXT_KEY");
-        return ts.getTranslation(locale, getId() + ".name", getName());
+        return t(getX(), getId() + ".name", getName());
       `
     }
   ]

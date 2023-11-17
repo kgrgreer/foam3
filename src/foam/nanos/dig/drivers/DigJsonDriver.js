@@ -16,6 +16,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.MapParser',
+    'foam.lib.formatter.FObjectFormatter',
+    'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.parse.ParserContextImpl',
     'foam.lib.parse.StringPStream',
     'foam.lib.parse.PStream',
@@ -31,6 +33,31 @@ foam.CLASS({
     'java.util.Set'
   ],
 
+  javaCode: `
+    protected static final ThreadLocal<JSONFObjectFormatter> formatter_ = new ThreadLocal<JSONFObjectFormatter>() {
+      @Override
+      protected JSONFObjectFormatter initialValue() {
+        var formatter = new JSONFObjectFormatter();
+        formatter.setQuoteKeys(true);
+        formatter.setOutputClassNames(true);
+        formatter.setOutputDefaultValues(true);
+        formatter.setMultiLine(true);
+        formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(
+           new foam.lib.PropertyPredicate[] {
+             new foam.lib.ExternalPropertyPredicate(),
+             new foam.lib.PermissionedPropertyPredicate() }));
+        return formatter;
+      }
+
+      @Override
+      public JSONFObjectFormatter get() {
+        var formatter = super.get();
+        formatter.reset();
+        return formatter;
+      }
+    };
+  `,
+
   properties: [
     {
       name: 'format',
@@ -45,8 +72,9 @@ foam.CLASS({
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
 
-      if ( x.get(HttpParameters.class).getParameter("nameMapping") != null ) {
-        var ret = parseMap(x.get(HttpParameters.class).getParameter("nameMapping"));
+      var p = x.get(HttpParameters.class);
+      if ( p.getParameter("nameMapping") != null ) {
+        var ret = parseMap(p.getParameter("nameMapping"));
         if ( ret.value() != null && ((Map)ret.value()).size() != 0 ) {
           data = new FieldNameMapGrammar().replaceFields(data, (Map) ret.value());
         }
@@ -74,8 +102,8 @@ foam.CLASS({
         list.add(o);
       }
 
-      if ( x.get(HttpParameters.class).getParameter("fieldValue") != null ) {
-        var ret = parseMap(x.get(HttpParameters.class).getParameter("fieldValue"));
+      if ( p.getParameter("fieldValue") != null ) {
+        var ret = parseMap(p.getParameter("fieldValue"));
         if ( ret != null && ((Map)ret.value()).size() != 0 ) {
           Map map  = (Map) ret.value();
           Set keys = map.entrySet();
@@ -93,49 +121,38 @@ foam.CLASS({
         }
       }
 
-      return list;
+      return o instanceof FObject ? o : list;
       `
     },
     {
       name: 'outputFObjects',
       javaCode: `
       PrintWriter out    = x.get(PrintWriter.class);
-      String      output = null;
 
       if ( fobjects == null || fobjects.size() == 0 ) {
         out.println("[]");
         return;
       }
 
-      foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)
-        .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x,
-            new foam.lib.PropertyPredicate[] {
-              new foam.lib.ExternalPropertyPredicate(),
-              new foam.lib.NetworkPropertyPredicate(),
-              new foam.lib.PermissionedPropertyPredicate()}));
-
-      outputterJson.setOutputDefaultValues(true);
-      outputterJson.setOutputClassNames(true);
-
-      HttpParameters p = x.get(HttpParameters.class);
-      if ( p != null && "false".equals(p.getParameter("multiline")) ) {
-        outputterJson.setMultiLine(false);
-      } else {
-        outputterJson.setMultiLine(true);
-      }
-
-      // NOTE: only json output has this one element behaviour
-      if ( fobjects.size() == 1 &&
-          // 'id' property indicates 'find' rather than 'select'
-          ! SafetyUtil.isEmpty(p.getParameter("id")) ) {
-        outputterJson.output(fobjects.get(0));
-      } else {
-        outputterJson.output(fobjects.toArray());
-      }
+      var formatter = getFormatter(x);
+      formatter.output(fobjects.toArray());
 
       // Output the formatted data
-      out.println(outputterJson.toString());
+      out.println(formatter.builder().toString());
+      `
+    },
+    {
+      name: 'outputFObject',
+      javaCode: `
+      PrintWriter out    = x.get(PrintWriter.class);
+
+      if ( obj == null ) return;
+
+      var formatter = getFormatter(x);
+      formatter.output(obj);
+
+      // Output the formatted data
+      out.println(formatter.builder().toString());
       `
     },
     {
@@ -148,6 +165,23 @@ foam.CLASS({
       var mapParser = MapParser.instance();
       var ret = mapParser.parse(mapStr, new ParserContextImpl());
       return ret;
+      `
+    },
+    {
+      name: 'getFormatter',
+      type: 'FObjectFormatter',
+      args: 'Context x',
+      javaCode: `
+        var formatter = formatter_.get();
+        formatter.setX(x);
+
+        var p = x.get(HttpParameters.class);
+        if ( p != null && "false".equals(p.getParameter("multiline")) ) {
+          formatter.setMultiLine(false);
+        } else {
+          formatter.setMultiLine(true);
+        }
+        return formatter;
       `
     }
   ]

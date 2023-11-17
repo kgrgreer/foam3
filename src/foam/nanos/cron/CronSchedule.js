@@ -30,7 +30,10 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.time.*',
     'java.time.temporal.*',
-    'java.util.Date'
+    'java.util.Arrays',
+    'java.util.Date',
+    'java.util.stream.Collectors',
+    'java.util.stream.Stream'
   ],
 
   requires: [
@@ -38,8 +41,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_HOURS', message: 'Comma seperated list of hours'}
+    { name: 'INVALID_HOURS', message: 'Comma seperated list of hours in range 0 through 23, or -1 for all hours.'}
   ],
+
+  javaCode: `
+    final static String[] HOURS_ALL = new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"};
+  `,
 
   properties: [
     {
@@ -56,8 +63,8 @@ foam.CLASS({
       min: 0,
       max: 59,
       order: 1,
-      documentation: `Second to execute the script.
-           Ranges from 0 - 59. -1 for wildcard`
+      documentation: `Second of minute to execute the script.
+           Ranges from 0 - 59.`
     },
     {
       class: 'Int',
@@ -66,8 +73,11 @@ foam.CLASS({
       min: -1,
       max: 59,
       order: 2,
-      documentation: `Minute to execute script.
-          Ranges from 0 - 59. -1 for wildcard`
+      documentation: `Minute of hour to execute script.
+          Ranges from 0 - 59.
+          -1 acts as a flag to ignore minutes in getNextScheduledTime,
+          the current time minute will be used. The default behaviour
+          is to run every minute.`
     },
     {
       class: 'Int',
@@ -75,31 +85,68 @@ foam.CLASS({
       transient: true,
       hidden: true,
       javaSetter: `
-      if ( val > -1 && ! hoursIsSet_ ) {
+      if ( ! hoursIsSet_ ) {
         setHours(String.valueOf(val));
       }
       `
     },
     {
+      documentation: 'Comma seperated list of hours in range 0 through 23. Or -1 for all hours.',
       class: 'String',
       name: 'hours',
       order: 3,
       validationPredicates: [
         {
           args: ['hours'],
-          query: 'hours~/[0-9,]/',
+          query: 'hours~/^\\s*$|^-1$|^(?:(?:[0-9]|1[0-9]|2[0-3]),?)+$/g',
           errorMessage: 'INVALID_HOURS'
         }
       ],
-      documentation: 'comma seperated hours',
+      // REVIEW: results in endless loop opening DetailView.
+      // preSet: function(o, n) {
+      //   if ( n &&
+      //        /^\\s*$|^-1$|^(?:(?:[0-9]|1[0-9]|2[0-3]),?)+$/g.test(n) ) {
+      //     var hours = n.split(',');
+      //     n = hours.filter(function(h) {
+      //       return parseInt(h,10) >= -1 || parseInt(h,10) <= 23;
+      //     }).sort((a, b) => a.localeCompare(b, undefined, { numeric: true}));
+      //   }
+      //   return n;
+      // },
+      javaPreSet: `
+      if ( ! SafetyUtil.isEmpty(val) ) {
+        try {
+          val = Stream.of(val.split(",")).map(Integer::valueOf).filter(h -> h >= -1 && h <= 23).sorted().map(String::valueOf).collect(Collectors.joining(","));
+        } catch (NumberFormatException e) {
+          throw new foam.core.ValidationException(INVALID_HOURS);
+        }
+      }
+      `,
+      documentation: 'comma seperated hours. -1 for wildcard.'
+    },
+    {
+      documentation: 'deprecated, replaced by monthsOfYear',
+      class: 'Int',
+      name: 'month',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( ! monthsOfYearIsSet_ ) {
+        if ( val == -1 ) {
+          // set all months
+          setMonthsOfYear(foam.time.MonthOfYear.values());
+        } else if ( val > 0 ) {
+          setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(val) });
+        }
+      }
+      `,
     },
     {
       class: 'FObjectArray',
       of: 'foam.time.MonthOfYear',
       name: 'monthsOfYear',
       order: 4,
-      javaFactory: 'return new foam.time.MonthOfYear[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.time.MonthOfYearView' },
       documentation: 'Months to execute script',
     },
@@ -128,12 +175,28 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'deprecated, replaced by daysOfWeek',
+      class: 'Int',
+      name: 'dayOfWeek',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( ! daysOfWeekIsSet_ &&
+           ! daysOfMonthIsSet_ ) {
+        if ( val == -1 ) {
+          setDaysOfWeek(foam.time.DayOfWeek.values());
+        } else if ( val > 0 ) {
+          setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.forOrdinal(val) });
+        }
+      }
+      `,
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.time.DayOfWeek',
       name: 'daysOfWeek',
       order: 6,
-      javaFactory: 'return new foam.time.DayOfWeek[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfWeekView' },
       visibility: function(daysOfMonth) {
         if ( daysOfMonth.length > 0 )
@@ -144,16 +207,28 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'deprecated, replaced by daysOfMonth',
+      class: 'Int',
+      name: 'dayOfMonth',
+      transient: true,
+      hidden: true,
+      javaSetter: `
+      if ( val > 0 &&
+           ! daysOfMonthIsSet_ ) {
+        setDaysOfMonth(new Integer[] { val });
+      }
+      `,
+    },
+    {
       class: 'Array',
       of: 'Int',
       name: 'daysOfMonth',
       order: 6,
-      javaFactory: 'return new Integer[] {};',
-      javaPreSet: 'java.util.Arrays.sort(val);',
+      javaPreSet: 'if ( val != null ) { Arrays.sort(val); }',
       view: { class: 'foam.u2.view.DayOfMonthView' },
-      visibility: function(daysOfWeek, weekOfMonth) {
+      visibility: function(daysOfWeek, daysOfMonth, weekOfMonth) {
         if ( weekOfMonth > 0 ||
-             daysOfWeek.length > 0 )
+             ( daysOfWeek.length > 0 && daysOfMonth.length == 0 ) )
           return foam.u2.DisplayMode.HIDDEN;
         if ( this.controllerMode == foam.u2.ControllerMode.EDIT )
           return foam.u2.DisplayMode.RW;
@@ -190,27 +265,32 @@ foam.CLASS({
         }
         time = time.withMinute(getMinute());
       }
-      if ( getSecond() > -1 ) {
-        if ( time.getSecond() >= getSecond() &&
-             ! time.isAfter(last) ) {
-          time = time.plusMinutes(1);
-        }
+      if ( getSecond() >= 0 ) {
         time = time.withSecond(getSecond());
       }
 
-      if ( getMonthsOfYear().length > 0 ) {
+      if ( getMonthsOfYear() != null && getMonthsOfYear().length > 0 ) {
         time = getNextMonthOfYear(x, zone, last, time);
       }
-      if ( getDaysOfMonth().length > 0 ) {
+      if ( getDaysOfMonth() != null && getDaysOfMonth().length > 0 ) {
         time = getNextDayOfMonth(x, zone, last, time);
       } else {
         // These two require coordination.
         // if ( getWeekOfMonth() > -1 ) {
         //   time = getNextWeekOfMonth(x, zone,last, time);
         // }
-        if ( getDaysOfWeek().length > 0 ) {
+        if ( getDaysOfWeek() != null && getDaysOfWeek().length > 0 ) {
           time = getNextDayOfWeek(x, zone, last, time);
         }
+      }
+
+      // Calculated time has not progressed forward. This
+      // can occur if no time specifiers have been set.
+      // Bump time in 1 minute increments. This also provides
+      // a default behaviour of running every minute.
+      if ( from != null &&
+           ! time.isAfter(last) ) {
+        time = time.plusMinutes(1);
       }
       return Date.from(time.atZone(zone).toInstant());
       `
@@ -238,6 +318,9 @@ foam.CLASS({
       javaCode: `
       boolean adjusted = false;
       String[] hours = getHours().split(",");
+      if ( hours.length == 1 && hours[0].equals("-1") ) {
+        hours = HOURS_ALL;
+      }
       for ( String h : hours ) {
         if ( SafetyUtil.isEmpty(h) ) continue;
         int hour = 0;
@@ -257,7 +340,8 @@ foam.CLASS({
         }
         // schedule change to earlier in day
         if ( hour < time.getHour() ) {
-          LocalDateTime temp = time.with(ChronoField.HOUR_OF_DAY, hour);
+          // LocalDateTime temp = time.with(ChronoField.HOUR_OF_DAY, hour);
+          LocalDateTime temp = time.withHour(hour);
           if ( temp.isAfter(last) ) {
             time = temp;
             adjusted = true;
@@ -324,7 +408,8 @@ foam.CLASS({
       boolean adjusted = false;
       while ( ! adjusted ) {
         for ( Object d : getDaysOfMonth() ) {
-          long day = ((Integer)d).longValue();
+          // FIXME: int in test cases, long from web
+          int day = d instanceof Long ? ((Long)d).intValue() : (int) d;
           if ( day == time.getDayOfMonth() &&
                time.isAfter(last) ) {
             adjusted = true;

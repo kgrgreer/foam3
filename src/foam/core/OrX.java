@@ -54,6 +54,11 @@ public class OrX
     return o == NULL ? null : o;
   }
 
+  public XFactory getFactory(X x, Object key) {
+    XFactory o = getX().getFactory(x, key);
+    return ( o == null ) ? parent_.getFactory(x, key) : o;
+  }
+
   public int getInt(X x, Object key, int defaultValue) {
     Object o = getX().get(x, key);
     if ( o == null ) o = parent_.get(x, key);

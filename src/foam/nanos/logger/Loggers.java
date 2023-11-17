@@ -50,10 +50,7 @@ public class Loggers {
       p.addAll(Arrays.asList(prefixes));
     }
     if ( p.size() > 0 ) {
-      logger = new PrefixLogger(
-                                p.toArray(new String[0]),
-                                logger
-                                );
+      logger = new PrefixLogger(p.toArray(new String[0]), logger);
     }
     if ( includeSubject ) {
       logger = new SubjectLogger(x, logger);

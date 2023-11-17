@@ -1,0 +1,36 @@
+p({
+  "class":"foam.nanos.auth.User",
+  "id":1001,
+  "spid":"foam1",
+  "lifecycleState":1,
+  "firstName":"admin",
+  "lastName":"admin",
+  "email":"admin1@foamdev.com",
+  "userName":"admin",
+  "group":"admin",
+  "emailVerified":true,
+  "compliance":1,
+  "onboarded":true,
+  "loginEnabled":true,
+  "passwordExpiry":"2999-04-30T21:06:54.403Z",
+  // "secret"
+  "password":"7A6sKLKsb1k=:i+IBM76zFN2GRuoO7Wv7QcR1xrcOcRl5O9h3waC7uSPTe0EsrrgFq7aog0bL9LavgxTMoclvSMyvFlO2t6bmHg=="
+})
+
+p({
+  "class":"foam.nanos.auth.User",
+  "id":1002,
+  "spid":"foam2",
+  "lifecycleState":1,
+  "firstName":"admin2",
+  "lastName":"admin2",
+  "email":"admin2@foamdev.com",
+  "userName":"admin",
+  "group":"admin",
+  "emailVerified":true,
+  "compliance":1,
+  "onboarded":true,
+  "loginEnabled":true,
+  // "secret"
+  "password":"7A6sKLKsb1k=:i+IBM76zFN2GRuoO7Wv7QcR1xrcOcRl5O9h3waC7uSPTe0EsrrgFq7aog0bL9LavgxTMoclvSMyvFlO2t6bmHg=="
+})

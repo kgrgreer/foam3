@@ -258,7 +258,12 @@ Implementation-Vendor: ${PROJECT.name}
 
 function pom() {
   var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+  var addPom = fn => {
+    if ( ! fs.existsSync(fn + '.js') )
+      error('File not found ' + fn + '.js');
+    else
+      pom[fn] = true;
+  };
 
   if ( POM )
     POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
@@ -288,7 +293,7 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 task('Copy images from src sub directories to BUILD_DIR/images.', [], function jarImages() {
   JAR_INCLUDES += ` -C ${BUILD_DIR} images `;
 
-  execSync(__dirname + `/pmake.js -makers="Image" -pom=${POM} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -makers="Image" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 });
 
 task('Include journals in jar.', [], function jarJournals() {
@@ -302,7 +307,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${pom()}`, {stdio: 'inherit'});
 });
 
 
@@ -365,7 +370,7 @@ task('Cause regeneration of pom.xml and java lib directory.', [ 'cleanLib', 'gen
 });
 
 
-task('Clean build files, include pom.xml and java libraries.', [ 'cleanLib', 'clean' ], function cleanAll() {
+task('Clean build files, include pom.xml and java libraries. Cleaner than clean.', [ 'cleanLib', 'clean' ], function cleanAll() {
   cleanLib();
   clean();
 });
@@ -400,7 +405,7 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 
@@ -756,6 +761,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, '../foam3/deployment/test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {

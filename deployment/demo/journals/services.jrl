@@ -9,6 +9,15 @@ p({
 
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"http",
+  "service":{
+    "class":"foam.nanos.jetty.HttpServer",
+    "welcomeFiles":["/deployment/demo/index.html"]
+  }
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "theme",
   "authenticate": false,
@@ -45,13 +54,5 @@ p({
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z"
 }
-"""})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"http",
-  "service":{
-    "class":"foam.nanos.jetty.HttpServer",
-    "welcomeFiles":["/deployment/demo/index.html"]
-  }
-});
+"""
+})

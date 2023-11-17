@@ -20,6 +20,10 @@ public class InvalidX
     throw exception_;
   }
 
+  public XFactory getFactory(X x, Object key) {
+    throw exception_;
+  }
+
   @Override
   public X put(Object key, Object value) {
     throw exception_;

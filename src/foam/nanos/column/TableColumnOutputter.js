@@ -233,7 +233,7 @@ foam.CLASS({
         case "BOOLEAN":
           return obj;
         case "CURRENCY":
-          return new Long(obj.toString()) / 100.0 ;
+          return Long.valueOf(obj.toString()) / 100.0 ;
         case "DATE":
           return obj.toString().substring(0, 10);
         case "DATETIME":

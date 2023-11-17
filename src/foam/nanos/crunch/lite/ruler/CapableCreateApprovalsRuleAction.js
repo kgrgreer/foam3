@@ -22,7 +22,7 @@ foam.CLASS({
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
     'foam.comics.v2.userfeedback.UserFeedbackStatus',
-    'foam.i18n.TranslationService',
+    'static foam.i18n.TranslationService.t',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
@@ -156,11 +156,8 @@ foam.CLASS({
                   .setIsUsingNestedJournal(true)
                   .setPropertiesToUpdate(propertiesToApprove).build());
 
-                TranslationService ts = (TranslationService) x.get("translationService");
-                Subject subject = (Subject) x.get("subject");
-                String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-                String capName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
-                String objName = ts.getTranslation(locale, obj.getClass().getName() + ".name", obj.getClassInfo().getObjClass().getSimpleName());
+                String capName = t(x, capability.getId() + ".name", capability.getName());
+                String objName = t(x, obj.getClass().getName() + ".name", obj.getClassInfo().getObjClass().getSimpleName());
 
                 ApprovalRequest approvalRequest = new ApprovalRequest.Builder(getX())
                   .setDaoKey("approvableDAO")

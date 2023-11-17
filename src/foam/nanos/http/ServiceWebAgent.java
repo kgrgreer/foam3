@@ -27,6 +27,11 @@ import java.io.PrintWriter;
 import java.net.URL;
 
 @SuppressWarnings("serial")
+/**
+ * A WebAgent which receives HTTP requests and converts them into box messages
+ * which can be send to a supplied Skeleton Box to be demarshalled and converted
+ * into method calls for that Skeleton's service.
+ **/
 public class ServiceWebAgent
   implements WebAgent
 {
@@ -134,7 +139,7 @@ public class ServiceWebAgent
       }
 
       foam.box.Message msg = (foam.box.Message) result;
-      new SessionServerBox(x, skeleton_, authenticate_).send(msg);
+      SessionServerBox.send(x, skeleton_, authenticate_, msg);
     } catch (java.io.IOException t) {
       throw new foam.core.FOAMException(t.getMessage(), t);
     }

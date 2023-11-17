@@ -41,9 +41,7 @@ foam.CLASS({
     {
       name: 'replyWithException',
       type: 'Void',
-      args: [
-        { name: 't', javaType: 'Throwable' }
-      ],
+      args: 'Throwable t',
       javaCode: `
         Box replyBox = (Box) getAttributes().get("replyBox");
 

@@ -13,7 +13,6 @@ import foam.box.Message;
 import foam.box.SessionServerBox;
 import foam.nanos.logger.Logger;
 import foam.nanos.http.ServiceWebAgent;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -30,7 +29,7 @@ public class SocketWebAgent
   public void execute(X x) {
     try {
       Message msg = (Message) x.get("requestMessage");
-      new SessionServerBox(x, skeleton_, authenticate_).send(msg);
+      SessionServerBox.send(x, skeleton_, authenticate_, msg);
     } catch ( Throwable t ) {
       throw new RuntimeException(t.getMessage());
     }

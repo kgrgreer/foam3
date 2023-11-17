@@ -1,0 +1,6 @@
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"foam.nanos.auth.email.ResetPassword",
+  "targetId":"foam.nanos.auth.email.RetrievePassword"
+})

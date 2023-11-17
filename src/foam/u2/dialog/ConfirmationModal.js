@@ -38,10 +38,10 @@ foam.CLASS({
   methods: [
     function addActions() {
       var actions = this.E().startContext({ data: this });
-      actions.tag(this.CONFIRM, { label: this.primaryAction.label, isDestructive: this.modalStyle == 'DESTRUCTIVE' });
       if ( this.showCancel ) {
         actions.tag(this.CANCEL, { label: this.secondaryAction ? this.secondaryAction.label : this.CANCEL_LABEL });
       }
+      actions.tag(this.CONFIRM, { label: this.primaryAction.label, isDestructive: this.modalStyle == 'DESTRUCTIVE' });
       return actions.endContext();
     }
   ],
