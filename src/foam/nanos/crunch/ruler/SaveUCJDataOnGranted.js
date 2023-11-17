@@ -32,6 +32,7 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+            UserCapabilityJunction oldUcj = (UserCapabilityJunction) oldObj;
 
             // NOTE: explicit test for GRANTED, as the same test on
             // the rule predicate fails some capability updates.
@@ -43,11 +44,10 @@ foam.CLASS({
               return;
             }
 
-            UserCapabilityJunction old = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
-            if ( old != null &&
-                 old.getStatus() == CapabilityJunctionStatus.GRANTED &&
-                 ! old.getIsInRenewable() &&
-                 ucj.getData().equals(old.getData()) ) {
+            if ( oldObj != null &&
+                 oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED &&
+                 ! oldUcj.getIsInRenewable() &&
+                 ucj.getData().equals(oldUcj.getData()) ) {
               return;
             }
 
