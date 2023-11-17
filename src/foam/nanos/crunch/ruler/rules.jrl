@@ -338,7 +338,7 @@ p({
   "enabled":true,
   predicate: {
     class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
-    query: '( o !exists || o.status != n.status ) && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
+    query: '(o !exists || o.status != n.status) && n.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED'
   },
   "action":{"class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"},
   "lifecycleState":1,
