@@ -44,7 +44,7 @@ foam.CLASS({
               return;
             }
 
-            if ( oldObj != null &&
+            if ( oldUcj != null &&
                  oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED &&
                  ! oldUcj.getIsInRenewable() &&
                  ucj.getData().equals(oldUcj.getData()) ) {
