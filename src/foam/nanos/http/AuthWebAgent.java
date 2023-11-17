@@ -229,6 +229,7 @@ public class AuthWebAgent
             session.setId(saved.getId());
           }
         }
+        session.setContext(session.applyTo(x));
         session.touch();
 
         try {

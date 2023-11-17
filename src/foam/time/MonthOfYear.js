@@ -19,11 +19,11 @@ foam.ENUM({
 
   values: [
     { name: 'JANUARY',    label: 'January', shortName: 'Jan', ordinal: 1 },
-    { name: 'FEBUARY',    label: 'Febuary', shortName: 'Feb', ordinal: 2 },
+    { name: 'FEBRUARY',   label: 'February', shortName: 'Feb', ordinal: 2 },
     { name: 'MARCH',      label: 'March',   shortName: 'Mar', ordinal: 3 },
     { name: 'APRIL',      label: 'April',   shortName: 'Apr', ordinal: 4 },
     { name: 'MAY',        label: 'May',     shortName: 'May', ordinal: 5 },
-    { name: 'JUNE',      label: 'June',     shortName: 'Jun', ordinal: 6 },
+    { name: 'JUNE',       label: 'June',     shortName: 'Jun', ordinal: 6 },
     { name: 'JULY',       label: 'July',    shortName: 'Jul', ordinal: 7 },
     { name: 'AUGUST',     label: 'August',  shortName: 'Aug', ordinal: 8 },
     { name: 'SEPTEMBER',  label: 'September', shortName: 'Sep', ordinal: 9 },
