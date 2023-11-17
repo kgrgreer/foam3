@@ -9,6 +9,12 @@ foam.CLASS({
   name: 'MaterializedDAO',
   extends: 'foam.dao.ReadOnlyDAO',
 
+  constants: [
+    { type: 'String', name: 'PUT',        value: 'PUT' },
+    { type: 'String', name: 'REMOVE',     value: 'REMOVE' },
+    { type: 'String', name: 'REMOVE_ALL', value: 'REMOVE_ALL' }
+  ],
+
   javaImports: [
     'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
@@ -17,9 +23,32 @@ foam.CLASS({
     'foam.core.Detachable'
   ],
 
-  documentation: 'Create a Materialized View from a source DAO.',
+  javaImplements: [ 'Runnable' ],
+
+  documentation: `
+    Create a Materialized View from a source DAO.
+
+    Uses a dedicated daemon Thread to process updates (put, remove, removeAll)
+    instead of handling immediately because the index updates happen under
+    the MDAO writeLock_. Filtering and adapting objects can take a long time
+    and we don't want to hold the lock while we're performing this work otherwise
+    we would block the source day to updates.
+
+    The queue property is used to communicate to the processing Thread.
+    Object arrays of size 2 are used with the first element being the command,
+    either PUT, REMOVE, or REMOVE_ALL and the second being the FObject being
+    processed in the case of PUT and REMOVE.
+
+    REMOVE_ALL clear()'s the queue to avoid unnecessary work.
+  `,
 
   properties: [
+    {
+      class: 'Object',
+      name: 'queue',
+      javaType: 'java.util.concurrent.BlockingQueue',
+      javaFactory: 'return new java.util.concurrent.LinkedBlockingQueue();'
+    },
     {
       class: 'Boolean',
       name: 'initialized'
@@ -124,6 +153,10 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         if ( ! getInitialized() ) {
+          Thread t = new Thread(this);
+          t.setDaemon(true);
+          t.start();
+
           setInitialized(true);
           AddIndexCommand cmd = new AddIndexCommand();
 
@@ -168,10 +201,9 @@ foam.CLASS({
       type: 'Object',
       args: 'Object state, FObject value',
       javaCode: `
-        if ( getPredicate().f(value) ) {
-          var obj = adapt(value);
-          if ( obj != null )
-            getDelegate().put(obj);
+        try {
+          getQueue().put(new Object[] { PUT, value });
+        } catch (InterruptedException e) {
         }
         return this;
       `
@@ -182,8 +214,9 @@ foam.CLASS({
       type: 'Object',
       args: 'Object state, FObject value',
       javaCode: `
-        if ( getPredicate().f(value) ) {
-          getDelegate().remove(getAdapter().fastAdapt(value));
+        try {
+          getQueue().put(new Object[] { REMOVE, value });
+        } catch (InterruptedException e) {
         }
         return this;
       `
@@ -193,8 +226,47 @@ foam.CLASS({
       name: 'indexRemoveAll',
       type: 'Object',
       javaCode: `
-        getDelegate().removeAll();
+        getQueue().clear();
+        try {
+          getQueue().put(new Object[] { REMOVE_ALL });
+        } catch (InterruptedException e) {
+        }
         return this;
+      `
+    },
+
+    {
+      name: 'run',
+      type: 'void',
+      javaCode: `
+        Object[] cmd;
+        FObject  value;
+
+        while ( true ) {
+          try {
+            cmd = (Object[]) getQueue().take();
+
+            // System.err.println("*********************** MaterializedDAO DEQUEUE " + cmd[0]);
+
+            if ( cmd[0] == PUT ) {
+              value = (FObject) cmd[1];
+
+              if ( getPredicate().f(value) ) {
+                var obj = adapt(value);
+                if ( obj != null )
+                  getDelegate().put(obj);
+              }
+            } else if ( cmd[0] == REMOVE ) {
+              value = (FObject) cmd[1];
+
+              if ( getPredicate().f(value) ) {
+                getDelegate().remove(getAdapter().fastAdapt(value));
+              }
+            } else /* removeAll */ {
+              getDelegate().removeAll();
+            }
+          } catch (InterruptedException e) {}
+        }
       `
     }
 
