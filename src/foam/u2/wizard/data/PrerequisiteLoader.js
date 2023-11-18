@@ -66,7 +66,7 @@ foam.CLASS({
 
       if ( ! prereqWizardlet ) {
         console.error(`prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} not found`);
-        return;
+        return initialData;
       }
 
       if ( ! prereqWizardlet.isAvailable ){
@@ -88,7 +88,7 @@ foam.CLASS({
         console.error(
           `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} has no data`
         );
-        return;
+        return initialData;
       }
 
       let prereqWizardletData = prereqWizardlet.data;
@@ -118,7 +118,7 @@ foam.CLASS({
       }
 
       if ( this.isWrappedInFObjectHolder ) {
-        return this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
+        return this.FObjectHolder.create({ fobject: initialData.copyFrom(clonedPrereqWizardletData) });
       }
 
       if ( this.loadIntoPath ) {
@@ -132,7 +132,7 @@ foam.CLASS({
         return initialData;
       }
 
-      return clonedPrereqWizardletData;
+      return initialData.copyFrom(clonedPrereqWizardletData);
     }
   ]
 });
