@@ -29,7 +29,7 @@ foam.CLASS({
   methods: [
     async function launch(x) {
       let url = new URL(this.window.location.href);
-      this.menus = url.searchParams.get('menus').split(',');
+      this.menus = url.searchParams.get('menus')?.split(',');
       url.searchParams.delete('menus');
       this.window.history.replaceState('', '', url);
       if ( ! this.menus.length ) {
