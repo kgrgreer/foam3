@@ -324,23 +324,10 @@ foam.CLASS({
 
         addJettyShutdownHook(server);
 
-        // Install GzipHandler to transparently gzip .js, .svg and .html files
-        GzipHandler gzipHandler = new GzipHandler();
-        gzipHandler.addIncludedMimeTypes(
-          "application/javascript",
-          "image/svg+xml",
-          "text/html"
-        );
-        gzipHandler.addIncludedMethods("GET");
-        gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-        gzipHandler.setCompressionLevel(9);
-        gzipHandler.setHandler(handler);
-        server.setHandler(gzipHandler);
-
         // IPAccessHandler
         IPAccessHandler ipAccessHandler = new IPAccessHandler();
         ipAccessHandler.setHandler(handler);
-        server.setHandler(ipAccessHandler);
+//        server.setHandler(ipAccessHandler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
 
         // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
@@ -353,6 +340,19 @@ foam.CLASS({
         ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
         // initialilize
         ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));
+
+        // Install GzipHandler to transparently gzip .js, .svg and .html files
+        GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.addIncludedMimeTypes(
+          "application/javascript",
+          "image/svg+xml",
+          "text/html"
+        );
+        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
+        gzipHandler.setCompressionLevel(9);
+        gzipHandler.setHandler(ipAccessHandler);
+        server.setHandler(gzipHandler);
 
         this.configHttps(server);
 
