@@ -55,6 +55,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'cloneValue',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'useInitialData',
+      documentation: `
+        Use when prerequisite data should be copied onto initialData
+        when loadIntoPath is not set.
+      `
     }
   ],
   
@@ -118,7 +126,8 @@ foam.CLASS({
       }
 
       if ( this.isWrappedInFObjectHolder ) {
-        return this.FObjectHolder.create({ fobject: initialData.copyFrom(clonedPrereqWizardletData) });
+        var fobjRet = this.useInitialData ? initialData.copyFrom(clonedPrereqWizardletData) : clonedPrereqWizardletData;
+        return this.FObjectHolder.create({ fobject: fobjRet });
       }
 
       if ( this.loadIntoPath ) {
@@ -132,7 +141,7 @@ foam.CLASS({
         return initialData;
       }
 
-      return initialData.copyFrom(clonedPrereqWizardletData);
+      return this.useInitialData ? initialData.copyFrom(clonedPrereqWizardletData) : clonedPrereqWizardletData;
     }
   ]
 });
