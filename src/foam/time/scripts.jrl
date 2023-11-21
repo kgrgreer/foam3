@@ -1,0 +1,40 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"Build TimeZones Journal",
+  description: "Create TimeZones journal from Java ZoneId Ids.",
+  code:"""
+// Build timezones journal from Java ZoneId ids
+
+d = x.get("timeZoneDAO");
+d.removeAll();
+cd = x.get("countryDAO");
+a = java.time.ZoneId.getAvailableZoneIds();
+int updated = 0;
+int created = 0;
+for ( i : a ) {
+  java.time.ZoneId t = java.time.ZoneId.of(i);
+  id = t.toString();
+  z = d.find(id);
+  if ( z != null ) {
+    z = z.fclone();
+    updated += 1;
+  } else {
+    z = new foam.time.TimeZone(x);
+    z.setId(id);
+    created += 1;
+  }
+  z.setDisplayName(t.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH));
+  cn = id.split("/")[0];
+  s = foam.util.AddressUtil.normalizeCountry(x, cn);
+  c = cd.find(s);
+  if ( c != null ) {
+    z.setCountryId(c.getId());
+  } else {
+    // expected as timezones are regions not countries: Europe, Americas
+    // print("country not found: "+cn);
+  }
+  d.put(z);
+}
+print("done.  created: "+created+", updated:"+updated);
+"""
+})
