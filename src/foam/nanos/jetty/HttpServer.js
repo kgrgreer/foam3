@@ -278,7 +278,7 @@ foam.CLASS({
           ServletHolder holder = handler.addServlet(ProxyServlet.Transparent.class, mapping.getPathSpec());
           holder.setInitOrder(1);
           holder.setInitParameter("proxyTo", mapping.getProxyTo());
-          holder.setInitParameter("prefix", mapping.getPrefix());
+          holder.setInitParameter("prefix",  mapping.getPrefix());
         }
 
         org.eclipse.jetty.servlet.ErrorPageErrorHandler errorHandler =
@@ -327,13 +327,11 @@ foam.CLASS({
         // IPAccessHandler
         IPAccessHandler ipAccessHandler = new IPAccessHandler();
         ipAccessHandler.setHandler(handler);
-//        server.setHandler(ipAccessHandler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
 
         // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
         Object result = ipAccessDAO.cmd(DAO.LAST_CMD);
-        if ( result != null &&
-             result instanceof foam.dao.MDAO ) {
+        if ( result != null && result instanceof foam.dao.MDAO ) {
           ipAccessDAO = (DAO) result;
         }
 
@@ -345,12 +343,14 @@ foam.CLASS({
         GzipHandler gzipHandler = new GzipHandler();
         gzipHandler.addIncludedMimeTypes(
           "application/javascript",
+          "application/json",
+          "application/json;charset=utf-8",
           "image/svg+xml",
           "text/html"
         );
-        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-        gzipHandler.setCompressionLevel(9);
+//        gzipHandler.setCompressionLevel(9);
         gzipHandler.setHandler(ipAccessHandler);
         server.setHandler(gzipHandler);
 
