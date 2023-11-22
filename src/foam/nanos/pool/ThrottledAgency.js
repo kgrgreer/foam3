@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pool',
   name: 'ThrottledAgency',
-  implements: [ 'foam.core.Agency' ],
+  implements: [ 'foam.core.Agency', 'foam.nanos.NanoService' ],
   javaImplements: [ 'Runnable' ],
 
   javaImports: [
@@ -18,8 +18,11 @@ foam.CLASS({
     'foam.core.ProxyX',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
+    'java.util.concurrent.BlockingQueue',
     'java.util.concurrent.LinkedBlockingQueue'
   ],
+
+  documentation: 'A single-threaded throttled Agency which runs queued Agents at a specified rate.',
 
   properties: [
     {
@@ -36,8 +39,8 @@ foam.CLASS({
     {
       class: 'Object',
       name: 'queue',
-      javaType: 'java.util.concurrent.BlockingQueue',
-      javaFactory: 'return new java.util.concurrent.LinkedBlockingQueue();'
+      javaType: 'BlockingQueue',
+      javaFactory: 'return new LinkedBlockingQueue();'
     },
     {
       class: 'Long',
@@ -51,7 +54,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'init',
+      name: 'start',
       javaCode: `
       Thread t = new Thread(this);
       t.setName(getName());
@@ -62,7 +65,6 @@ foam.CLASS({
     {
       name: 'submit',
       javaCode: `
-//      final X y = x;
       setQueued(getQueued() + 1);
       try {
         getQueue().put(new Runnable() { public void run() {
@@ -94,14 +96,17 @@ foam.CLASS({
             setExecuted(getExecuted() + 1);
 
             long start = System.currentTimeMillis();
+
             agent.run();
-            long end = System.currentTimeMillis();
-            long dur = end-start;
-            long delay = (long) Math.floor(1000.0 / getRate()) - dur;
+
+            long end   = System.currentTimeMillis();
+            long dur   = end-start;
+            long delay = ((long) Math.floor(1000.0 / getRate())) - dur;
+
             if ( dur > 0 ) {
-              try { Thread.sleep(dur); } catch (InterruptedException e) {}
+              try { Thread.sleep(delay); } catch (InterruptedException e) { }
             }
-          } catch (InterruptedException e) {}
+          } catch (InterruptedException e) {  }
         }
       `
     }
