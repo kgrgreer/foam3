@@ -42,7 +42,8 @@ foam.CLASS({
       section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       minLength: 10,
       validationPredicates: [
@@ -60,7 +61,8 @@ foam.CLASS({
       section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       validationPredicates: [
         {

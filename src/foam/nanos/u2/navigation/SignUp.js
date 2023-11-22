@@ -107,6 +107,7 @@ foam.CLASS({
           icon: 'images/checkmark-small-green.svg',
           onKey: true,
           isAvailable$: X.data.emailAvailable$,
+          type: 'email',
           inputValidation: /\S+@\S+\.\S+/,
           restrictedCharacters: /^[^\s]$/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
@@ -162,7 +163,8 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
-          passwordIcon: true
+          passwordIcon: true,
+          autocomplete: 'new-password'
         }
       },
       validateObj: function(desiredPassword, passwordAvailable) {
