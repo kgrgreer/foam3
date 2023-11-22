@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.time',
   name: 'TimeZone',
 
+  searchColumns: [
+    'id',
+    'displayName'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -31,8 +36,8 @@ foam.CLASS({
       type: 'String',
       code: function() {
         var s = this.id;
-        if ( this.displayName && this.id !== this.displayName ) {
-          s += " - ";
+        if ( this.displayName ) {
+          s += " ";
           s += this.displayName;
         }
         return s;
@@ -40,9 +45,8 @@ foam.CLASS({
       javaCode: `
         StringBuilder sb = new StringBuilder();
         sb.append(getId());
-        if ( ! foam.util.SafetyUtil.isEmpty(getDisplayName()) &&
-             ! getId().equals(getDisplayName()) ) {
-          sb.append(" - ");
+        if ( ! foam.util.SafetyUtil.isEmpty(getDisplayName()) ) {
+          sb.append(" ");
           sb.append(getDisplayName());
         }
         return sb.toString();

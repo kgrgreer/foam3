@@ -35,12 +35,14 @@ p({
           {
             class: 'foam.u2.wizard.data.PrerequisiteLoader',
             prerequisiteCapabilityId: 'foam.nanos.auth.email.RetrievePassword',
+            useInitialData: true,
             loadIntoPath: 'userName',
             loadFromPath: 'username'
           },
           {
             class: 'foam.u2.wizard.data.PrerequisiteLoader',
             prerequisiteCapabilityId: 'foam.nanos.auth.email.RetrievePassword',
+            useInitialData: true,
             loadIntoPath: 'email',
             loadFromPath: 'email'
           }

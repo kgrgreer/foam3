@@ -113,8 +113,11 @@ foam.CLASS({
       if ( this.placeholder   ) this.setAttribute('placeholder', this.placeholder);
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
-      if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
       if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode);
+      this.setAttribute('autocomplete', this.autocomplete ?
+        (foam.String.isInstance(this.autocomplete) ? this.autocomplete : 'on') :
+        'off'
+      );
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').

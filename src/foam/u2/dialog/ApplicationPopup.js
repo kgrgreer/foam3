@@ -136,7 +136,6 @@ foam.CLASS({
       align-items: center;
       gap: 0.4rem;
       text-align: center;
-      border-top: 1px solid $grey300;
       flex-shrink: 0;
       padding: 0.3em 1em;
       white-space: nowrap;
@@ -178,6 +177,10 @@ foam.CLASS({
       height: 1em;
       display: inline-block;
       vertical-align: sub;
+    }
+    
+    ^footerContainer {
+      padding-top: 0.4rem;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -412,45 +415,48 @@ foam.CLASS({
                 data$: this.primaryActions$
               })
             .end()
-            .add(this.slot(function (dynamicFooter) {
-              if ( ! dynamicFooter ) return;
-              return this.E()
-                .addClass(this.myClass('dynamicFooter'))
-                .tag(dynamicFooter);
-            }))
           .end()
           .callIf((this.footerHTML || this.includeSupport ), function() {
-            this.start()
-              .addClass(self.myClass('footer'), 'p-legal-light')
-              // empty space
-              .start().addClass(self.myClass('footer-left'))
+            this
+            .start().addClass(self.myClass('footerContainer'))
+              .add(self.slot(function (dynamicFooter) {
+                if ( ! dynamicFooter ) return;
+                return this.E()
+                  .addClass(self.myClass('dynamicFooter'))
+                  .tag(dynamicFooter);
+              }))
+              .start()
+                .addClass(self.myClass('footer'), 'p-legal-light')
+                // empty space
+                .start().addClass(self.myClass('footer-left'))
+                  .end()
+                // link
+                .start().addClass(self.myClass('footer-center'))
+                  .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: self.translationService.getTranslation(foam.locale, self.myClass("footerHTML"), self.footerHTML) }))
                 .end()
-              // link
-              .start().addClass(self.myClass('footer-center'))
-                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: self.translationService.getTranslation(foam.locale, self.myClass("footerHTML"), self.footerHTML) }))
-              .end()
-              // support info
-              .start().addClass(self.myClass('footer-right'))
-                .callIf(self.includeSupport, function() {
-                  this
-                    .start()
-                      .start('span')
-                        .addClass('')
-                        .add(self.SUPPORT_TITLE)
-                        .start('a')
-                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
-                          .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
-                          .add(self.theme.supportConfig.supportEmail)
-                        .end()
-                        .add(' | ')
-                        .start('a')
-                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
-                          .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
-                          .add(self.theme.supportConfig.supportPhone)
+                // support info
+                .start().addClass(self.myClass('footer-right'))
+                  .callIf(self.includeSupport, function() {
+                    this
+                      .start()
+                        .start('span')
+                          .addClass('')
+                          .add(self.SUPPORT_TITLE)
+                          .start('a')
+                            .addClass(self.myClass('info-text'), self.myClass('footer-link'))
+                            .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
+                            .add(self.theme.supportConfig.supportEmail)
+                          .end()
+                          .add(' | ')
+                          .start('a')
+                            .addClass(self.myClass('info-text'), self.myClass('footer-link'))
+                            .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
+                            .add(self.theme.supportConfig.supportPhone)
+                          .end()
                         .end()
                       .end()
-                    .end()
-                })
+                  })
+                .end()
               .end()
             .end()
           })

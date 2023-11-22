@@ -109,13 +109,6 @@ foam.CLASS({
       }
 
       return v;
-    },
-
-    function shouldMementoValueBeChanged(mementoValue, mementoHead) {
-      if ( ! mementoValue )
-        return false;
-
-      return ! decodeURI(mementoValue).includes(mementoHead);
     }
   ]
 });
