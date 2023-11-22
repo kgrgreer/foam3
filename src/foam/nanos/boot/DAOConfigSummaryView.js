@@ -197,7 +197,7 @@ foam.CLASS({
       factory: function() {
        var dao = this.data.where(
          this.AND(
-           this.ENDS_WITH(foam.nanos.boot.NSpec.ID, 'DAO'),
+           this.CONTAINS(foam.nanos.boot.NSpec.ID, 'DAO'),
            this.EQ(foam.nanos.boot.NSpec.SERVE,     true)
          ));
 
