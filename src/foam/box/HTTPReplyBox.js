@@ -55,17 +55,20 @@ foam.CLASS({
       swiftCode: 'throw FoamError("unimplemented")',
       javaCode: `
 try {
-  javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) getX().get("httpResponse");
-  response.setContentType("application/json");
+  javax.servlet.http.HttpServletResponse resp = (javax.servlet.http.HttpServletResponse) getX().get("httpResponse");
+  resp.setContentType("application/json");
 
-  java.io.PrintWriter                 writer    = response.getWriter();
+  java.io.PrintWriter                 writer    = resp.getWriter();
   foam.lib.formatter.FObjectFormatter formatter = formatter_.get();
 
   formatter.setX(getX());
   formatter.output(msg);
   formatter.setX(null); // avoid retaining reference to X
 
-  writer.append(formatter.builder());
+  StringBuilder builder = formatter.builder();
+  resp.setContentLengthLong(builder.length());
+
+  writer.append(builder);
   writer.flush();
 } catch(java.io.IOException e) {
   throw new RuntimeException(e);
