@@ -397,6 +397,7 @@ foam.POM({
     { name: "pm/TemperatureCView",                                                        flags: "js" },
     { name: "pm/PMFactory",                                                               flags: "js|java" },
     { name: "pool/ThreadPoolAgency",                                                      flags: "js|java" },
+    { name: "pool/ThrottledAgency",                                                       flags: "js|java" },
     { name: "auth/PMAuthService",                                                         flags: "js|java" },
     { name: "notification/ClientResendNotificationService",                               flags: "js|java" },
     { name: "notification/DAONotificationRuleAction",                                     flags: "js|java" },
