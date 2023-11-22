@@ -93,6 +93,7 @@ foam.CLASS({
     'menuListener',
     'notify',
     'prefersMenuOpen',
+    'pushDefaultMenu',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
@@ -763,6 +764,14 @@ foam.CLASS({
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).limit(1)
         .select().then(a => a.array.length && a.array[0])
         .catch(e => console.error(e.message || e));
+    },
+
+    async function pushDefaultMenu() {
+      var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
+      defaultMenu = defaultMenu != null ? defaultMenu : '';
+      this.purgeMenuDAO(defaultMenu);
+      await this.pushMenu(defaultMenu);
+      return defaultMenu;
     },
 
     function requestLogin() {

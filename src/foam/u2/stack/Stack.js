@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'pushMenu',
+    'pushDefaultMenu',
     'memento_',
     'buildingStack'
   ],
@@ -119,9 +119,9 @@ foam.CLASS({
       }
       // Push a default menu if opening a popup as the first view in a stack
       if ( this.pos == -1 && block.popup ) {
-        let m = this.memento_.str;
+        let m = this.memento_.toString();
         this.buildingStack = true;
-        await this.pushMenu('');
+        await this.pushDefaultMenu();
         this.memento_.str = m;
         return;
       }
