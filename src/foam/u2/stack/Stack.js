@@ -25,9 +25,11 @@ foam.CLASS({
   ],
 
   imports: [
+    'buildingStack',
+    'currentMenu',
+    'menuListener',
     'pushDefaultMenu',
-    'memento_',
-    'buildingStack'
+    'window'
   ],
 
   constants: [
@@ -118,12 +120,14 @@ foam.CLASS({
         });
       }
       // Push a default menu if opening a popup as the first view in a stack
-      if ( this.pos == -1 && block.popup ) {
-        let m = this.memento_.toString();
+      if ( this.pos == -1 && block.popup
+        // Dont render a fallback view in iframes
+         && this.window.top == this.window.self
+      ) {
         this.buildingStack = true;
+        let menu = this.currentMenu;
         await this.pushDefaultMenu();
-        this.memento_.str = m;
-        return;
+        this.menuListener(menu)
       }
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
       if ( this.top && block.id && this.top.id == block.id ) return;
