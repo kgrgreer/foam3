@@ -103,7 +103,7 @@ foam.CLASS({
             long dur   = end-start;
             long delay = ((long) Math.floor(1000.0 / getRate())) - dur;
 
-            if ( dur > 0 ) {
+            if ( delay > 0 ) {
               try { Thread.sleep(delay); } catch (InterruptedException e) { }
             }
           } catch (InterruptedException e) {  }
