@@ -20,9 +20,6 @@ foam.CLASS({
       var self = this;
       X.stack.push(foam.u2.stack.StackBlock.create({ 
         view: () => {
-          // Set the menuId and call the menuListener so that the
-          // hash is updated properly when stack.back() is called.
-          this.pushMenu(menu);
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
         parent: X, id: menu.id, shouldResetBreadcrumbs: true, breadcrumbTitle$: menu.label$ }));

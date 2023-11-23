@@ -280,7 +280,7 @@ If empty then no permissions are required.`
 
     function maybeCall(x, data) {
       var self = this;
-      function call() {
+      async function call() {
         var running = self.getRunning$(data);
         // If action is in progress do not call again. Problem with this is that if action returns a
         // promise that never resolves then the action is stuck in a running state. Not returning does not solves
@@ -292,7 +292,13 @@ If empty then no permissions are required.`
         var ret = self.code.call(data, x, self);
         if ( ret && ret.then ) {
           running.set(true);
-          ret.then(function() { running.set(false); }, function() { running.set(false);});
+          try {
+            ret = await ret;
+            running.set(false);
+          } catch (err) {
+            running.set(false);
+            throw err;
+          }
         }
         // primitive types won't have a pub method
         // Why are we publishing this event anyway? KGR
@@ -307,16 +313,15 @@ If empty then no permissions are required.`
       // No permission check if no auth service or no permissions to check.
       if ( ! x.auth ||
            ! ( this.availablePermissions.length || this.enabledPermissions.length ) ) {
-        call();
-        return;
+        return call();
       }
 
       var permissions = this.availablePermissions.concat(this.enabledPermissions);
 
       permissions = foam.Array.unique(permissions);
-      Promise.all(permissions.map(p => x.auth.check(null, p))).
+      return Promise.all(permissions.map(p => x.auth.check(null, p))).
         then(function(args) {
-          if ( args.every(b => b) ) call();
+          if ( args.every(b => b) ) return call();
         });
     },
 
@@ -327,7 +332,7 @@ If empty then no permissions are required.`
     function installInProto(proto) {
       var action = this;
       proto[this.name] = function(x) {
-        action.maybeCall(x || this.__context__, this);
+        return action.maybeCall(x || this.__context__, this);
       };
     }
   ]

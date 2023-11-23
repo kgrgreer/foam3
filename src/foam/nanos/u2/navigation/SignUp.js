@@ -107,6 +107,7 @@ foam.CLASS({
           icon: 'images/checkmark-small-green.svg',
           onKey: true,
           isAvailable$: X.data.emailAvailable$,
+          type: 'email',
           inputValidation: /\S+@\S+\.\S+/,
           restrictedCharacters: /^[^\s]$/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
@@ -162,7 +163,8 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
-          passwordIcon: true
+          passwordIcon: true,
+          autocomplete: 'new-password'
         }
       },
       validateObj: function(desiredPassword, passwordAvailable) {
@@ -253,6 +255,16 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
+    },
+    {
+      class: 'String',
+      name: 'referralToken',
+      documentation: `Input to associate new user with something.`,
+      factory: function() {
+        var searchParams = new URLSearchParams(location.search);
+        return searchParams.get('referral');
+      },
+      hidden: true
     }
   ],
   actions: [
@@ -271,7 +283,8 @@ foam.CLASS({
           email: this.email,
           desiredPassword: this.desiredPassword,
           signUpToken: this.token_,
-          language: this.defaultUserLanguage()
+          language: this.defaultUserLanguage(),
+          referralCode: this.referralToken
         });
         var user;
         try {

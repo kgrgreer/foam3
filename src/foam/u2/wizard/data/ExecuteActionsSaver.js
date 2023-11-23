@@ -24,9 +24,9 @@
     async function save(data) {
       for ( var action of this.actions ) {
         try {
-          await data[action]?.call(data, this.__subContext__)
+          await data[action]?.call(data, this.__subContext__);
         } catch(e) {
-          console.log(e);
+          throw e;
         }
       }
       await this.delegate.save(data);

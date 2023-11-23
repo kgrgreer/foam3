@@ -560,6 +560,7 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       buttonStyle: 'PRIMARY',
+      isAvailable: () => true,
       isEnabled: function (canGoNext, isLoading_) {
         console.debug('what is canGoNext', canGoNext)
         return canGoNext && ! isLoading_;

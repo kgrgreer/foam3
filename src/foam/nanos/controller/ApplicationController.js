@@ -93,6 +93,7 @@ foam.CLASS({
     'menuListener',
     'notify',
     'prefersMenuOpen',
+    'pushDefaultMenu',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
@@ -548,7 +549,7 @@ foam.CLASS({
 
     async function reloadClient() {
       this.clientReloading.pub();
-      var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
+      var newClient = await this.ClientBuilder.create({}, this.originalSubContext).promise;
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
@@ -765,6 +766,14 @@ foam.CLASS({
         .catch(e => console.error(e.message || e));
     },
 
+    async function pushDefaultMenu() {
+      var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
+      defaultMenu = defaultMenu != null ? defaultMenu : '';
+      this.purgeMenuDAO(defaultMenu);
+      await this.pushMenu(defaultMenu);
+      return defaultMenu;
+    },
+
     function requestLogin() {
       var self = this;
 
@@ -832,6 +841,7 @@ foam.CLASS({
 
       await this.fetchTheme();
       this.initLayout.resolve();
+      this.stack.resetStack();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {

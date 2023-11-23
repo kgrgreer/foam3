@@ -1,0 +1,103 @@
+
+p({
+  class: 'foam.nanos.crunch.Capability',
+  id: 'foam.nanos.auth.email.ResetPassword',
+  name: 'Forgot Password',
+  of: 'foam.nanos.auth.resetPassword.ResetPasswordByCode',
+  wizardlet: {
+    class: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
+    of: 'foam.nanos.auth.resetPassword.ResetPasswordByCode',
+    sections: [
+      {
+        class: "foam.u2.wizard.wizardlet.WizardletSection",
+        modelSectionName: 'verificationCodeSection',
+        customView: {
+          "class": "foam.u2.detail.VerticalDetailView",
+          "useSections": ['verificationCodeSection'],
+          "centered": true
+        }
+      },
+      {
+        class: "foam.u2.wizard.wizardlet.WizardletSection",
+        modelSectionName: 'resetPasswordWizardSection',
+        customView: {
+          "class": "foam.u2.detail.VerticalDetailView",
+          "useSections": ['resetPasswordWizardSection'],
+          "centered": true
+        }
+      }
+    ],
+    wao: {
+      class: 'foam.u2.wizard.wao.SplitWAO',
+      loader: {
+        class: 'foam.u2.wizard.data.EasyLoader',
+        loaders: [
+          {
+            class: 'foam.u2.wizard.data.PrerequisiteLoader',
+            prerequisiteCapabilityId: 'foam.nanos.auth.email.RetrievePassword',
+            useInitialData: true,
+            loadIntoPath: 'userName',
+            loadFromPath: 'username'
+          },
+          {
+            class: 'foam.u2.wizard.data.PrerequisiteLoader',
+            prerequisiteCapabilityId: 'foam.nanos.auth.email.RetrievePassword',
+            useInitialData: true,
+            loadIntoPath: 'email',
+            loadFromPath: 'email'
+          }
+        ]
+      },
+      saver: {
+        class: 'foam.u2.wizard.data.ExecuteActionsSaver',
+        actions: [ 'resetPassword' ]
+      }
+    }
+  },
+  enabled: true
+})
+
+p({
+  class: 'foam.nanos.crunch.Capability',
+  id: 'foam.nanos.auth.email.RetrievePassword',
+  name: 'Retrieve Password - Send Email Code',
+  of: 'foam.nanos.auth.RetrievePassword',
+  wizardlet: {
+    class: 'foam.u2.wizard.wizardlet.AlternateFlowWizardlet',
+    title: 'Forgot Password?',
+    subTitle: 'Enter the email you used to create your account in order to reset your password.',
+    of: 'foam.nanos.auth.RetrievePassword',
+    sections: [
+      {
+        class: "foam.u2.wizard.wizardlet.WizardletSection",
+        modelSectionName: 'resetPasswordWizardSection',
+        customView: {
+          "class": "foam.u2.detail.VerticalDetailView",
+          "useSections": ['resetPasswordWizardSection'],
+          "showTitle": false
+        }
+      }
+    ],
+    wao: {
+      class: 'foam.u2.wizard.wao.SplitWAO',
+      loader: {
+        class: 'foam.u2.wizard.data.EasyLoader',
+        loaders: [
+          {
+            class: 'foam.u2.wizard.data.CreateLoader',
+            updateWithSpec: true,
+            spec: {
+              class: 'foam.nanos.auth.RetrievePassword',
+              resetByCode: true
+            }
+          }
+        ]
+      },
+      saver: {
+        class: 'foam.u2.wizard.data.ExecuteActionsSaver',
+        actions: [ 'sendEmail' ]
+      }
+    }
+  },
+  enabled: true
+})

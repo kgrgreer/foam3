@@ -54,8 +54,9 @@ foam.CLASS({
       cls.extends = 'foam.box.AbstractSkeleton';
 
       foam.core.FObjectProperty.create({
-        name: 'delegate',
-        type: this.of.id
+        name: 'delegateFactory',
+        type: 'foam.core.XFactory'
+//        type: this.of.id
       }).buildJavaClass(cls);
 
       cls.method({
@@ -65,14 +66,16 @@ foam.CLASS({
         args: [ { name: 'message', type: 'foam.box.Message' } ],
         body: this.sendMethodCode()
       });
+      /*
 
       cls.method({
         type: 'void',
         visibility: 'public',
         name: 'setDelegateObject',
-        args: [ { name: 'obj', type: 'Object' } ],
+        args: 'foam.core.XFactory factory',
         body: "setDelegate((" + this.of.id + ") obj);"
       });
+      */
 
       return cls;
     }
@@ -100,7 +103,7 @@ foam.CLASS({
     var m = methods[i];
     var hasReturn = m.javaType && m.javaType !== 'void';%>
         case "<%= m.name %>":
-          <% if ( hasReturn ) { %>result =<% } %> getDelegate().<%= m.name %>(
+          <% if ( hasReturn ) { %>result =<% } %> ((<%= this.of.id %>) (getDelegateFactory().create(getMessageX(message)))).<%= m.name %>(
           <%
     for ( var j = 0 ; j < m.args.length ; j++ ) {
       if ( m.args[j].type == 'Context' ) {

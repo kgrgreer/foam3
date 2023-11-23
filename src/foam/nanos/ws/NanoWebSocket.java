@@ -23,16 +23,15 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
 import java.io.IOException;
 
 @WebSocket
 public class NanoWebSocket
   extends ContextAwareSupport
 {
-  protected Session session_ = null;
-  protected NanoServiceRouter router_ = null;
-  protected Logger logger_= null;
+  protected Session           session_ = null;
+  protected NanoServiceRouter router_  = null;
+  protected Logger            logger_  = null;
 
   public NanoWebSocket(X x) {
     setX(x);
@@ -67,13 +66,13 @@ public class NanoWebSocket
   @OnWebSocketMessage
   public void onWebSocketMessage(String message) {
     try {
-      if (session_ != null && session_.isOpen()) {
-        RemoteEndpoint remote = session_.getRemote();
-        UpgradeRequest upgrade = session_.getUpgradeRequest();
-        String path = upgrade.getRequestURI().getPath();
-        String serviceKey = path.split("/")[2];
-        DAO nSpecDAO = (DAO) getX().get("nSpecDAO");
-        NSpec spec = (NSpec) nSpecDAO.find(serviceKey);
+      if ( session_ != null && session_.isOpen() ) {
+        RemoteEndpoint remote     = session_.getRemote();
+        UpgradeRequest upgrade    = session_.getUpgradeRequest();
+        String         path       = upgrade.getRequestURI().getPath();
+        String         serviceKey = path.split("/")[2];
+        DAO            nSpecDAO   = (DAO) getX().get("nSpecDAO");
+        NSpec          spec       = (NSpec) nSpecDAO.find(serviceKey);
 
         if ( spec == null ) {
           getLogger().warning("Request for non-existent service.", serviceKey);
