@@ -1,7 +1,6 @@
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "daggerService",
-  "serve": false,
   "lazy": false,
   "service": {"class":"foam.nanos.medusa.DefaultDaggerService"}
 })
@@ -51,7 +50,6 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "medusaEntrySupport",
   "lazy": false,
-  "serve": false,
   "authenticate": false,
   "serviceClass": "foam.nanos.medusa.MedusaEntrySupport"
 })
@@ -176,7 +174,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"internalSessionDAO",
-  "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.session.Session.getOwnClassInfo())
@@ -299,23 +296,4 @@ p({
     multicastAddress: "230.22.41.0",
     port: 52241
   }
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"sfTestObjectDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":`
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorize(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("sftestobjects")
-      .setSAF(true)
-      .setFuid(true)
-      .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
-      .build();
-    `,
-  "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
 })
