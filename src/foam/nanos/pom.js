@@ -21,7 +21,7 @@ foam.POM({
     { name: "app/pom"},
     { name: "jetty/pom"},
     { name: "medusa/pom"},
-    { name: "ruler/pom"}
+    { name: "ruler/pom"},
     { name: "referral/pom" }
   ],
   files: [
