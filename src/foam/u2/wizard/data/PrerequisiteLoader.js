@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'PrerequisiteLoader',
   extends: 'foam.u2.wizard.data.ProxyLoader',
 
+  documentation: `
+    Loader for loading the data of a prerequisite capability, with
+    the intent of saving the data as a part of the current wizardlet.
+  `,
+
   issues: [
     'Property "of" needs to specified, which is inconvenient.'
   ],
@@ -59,9 +64,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'useInitialData',
+      value: true,
       documentation: `
-        Use when prerequisite data should be copied onto initialData
-        when loadIntoPath is not set.
+        Should be set to false when loadIntoPath is not set, and prerequisite data should not be copied onto initialData but returned directly,
+        such as when the loaded data is of a different class than or a subclass of currentWizardlet.of
       `
     }
   ],
