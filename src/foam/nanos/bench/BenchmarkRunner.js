@@ -495,7 +495,11 @@ foam.CLASS({
       type: 'foam.nanos.bench.Benchmark',
       javaCode: `
         if ( ! SafetyUtil.isEmpty(getBenchmarkId()) ) {
-          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId()).fclone();
+          Benchmark benchmark = (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId());
+          if ( benchmark != null )
+            return (Benchmark) benchmark.fclone();
+          else if ( SafetyUtil.isEmpty(getCode()) )
+            throw new RuntimeException("Benchmark not found "+getBenchmarkId());
         }
 
         Language l = getLanguage();
