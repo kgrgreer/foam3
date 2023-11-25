@@ -7,7 +7,7 @@ p({
   setupPassword: "adminAb1",
   urls:[
     "https://argus.hughes.lan:8443",
-    "https://hera.hughes.lan:8443",
-    "https://prometheus.hughes.lan:8443"
+    "https://ares.hughes.lan:8443",
+    "https://aphrodite.hughes.lan:8443"
   ]
 })

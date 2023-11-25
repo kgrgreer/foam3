@@ -80,6 +80,7 @@ foam.CLASS({
           is to run every minute.`
     },
     {
+      documentation: 'deprecated, replaced by hours',
       class: 'Int',
       name: 'hour',
       transient: true,
