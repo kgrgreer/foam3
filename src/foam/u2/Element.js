@@ -538,7 +538,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   topics: [
