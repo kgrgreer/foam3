@@ -124,9 +124,9 @@ foam.CLASS({
             synchronized ( this ) {
               Long count = counts.get(m);
               if ( count == null ) {
-                count = new Long(0);
+                count = Long.valueOf(0);
               }
-              count = new Long(count.longValue() + 1);
+              count = Long.valueOf(count.longValue() + 1);
               counts.put(m, count);
             }
           }

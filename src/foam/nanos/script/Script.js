@@ -225,7 +225,8 @@ foam.CLASS({
       value: 'UNSCHEDULED',
       tableWidth: 120,
       storageTransient: true,
-      storageOptional: true
+      storageOptional: true,
+      clusterTransient: true
     },
     {
       class: 'Code',
@@ -370,16 +371,9 @@ foam.CLASS({
     },
     {
       name: 'canRun',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'Boolean',
-      javaCode: `
-        return true;
-      `
+      javaCode: 'return true;'
     },
     {
       name: 'runScript',

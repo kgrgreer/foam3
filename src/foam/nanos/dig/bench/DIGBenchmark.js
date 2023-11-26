@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'setupUrl',
       class: 'String',
-      value: 'https://hera:8443'
+      value: 'https://argus:8443'
     },
     {
       name: 'setupSessionId',
@@ -72,7 +72,11 @@ foam.CLASS({
       javaType: 'int',
       synchronized: true,
       javaCode: `
-      lastServerIndex_ = (lastServerIndex_ + 1) % getUrls().length;
+      if ( getUrls() == null || getUrls().length == 0) {
+        lastServerIndex_ = 0;
+      } else {
+        lastServerIndex_ = (lastServerIndex_ + 1) % getUrls().length;
+      }
       return lastServerIndex_;
       `
     },
