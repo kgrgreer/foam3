@@ -41,7 +41,7 @@ foam.CLASS({
     }
     ^header{
       font-size:3rem;
-      color: #1A6B54;
+      color: $primary500;
       text-align: center;
       font-weight: 900;
     }
