@@ -73,71 +73,24 @@ foam.CLASS({
 
   methods: [
     {
-      documentation: 'listen and clear client and queue caches on cluster changes',
-      name: 'init_',
-      javaCode: `
-      DAO dao = (DAO) getX().get("clusterConfigDAO");
-      dao.listen( new AbstractSink() {
-        @Override
-        public void put(Object obj, Detachable sub) {
-          ClusterConfig config = (ClusterConfig) obj;
-          if ( config.getType() == MedusaType.MEDIATOR ) {
-            synchronized ( this ) {
-              ((Logger) getX().get("logger")).info("MedusaBroadcast2NodesDAO,listener,purge");
-              MedusaBroadcast2NodesDAO.CLIENTS.clear(this);
-              MedusaBroadcast2NodesDAO.QUEUES.clear(this);
-            }
-          }
-        }
-      }, null);
-      `
-    },
-    {
       documentation: `Distribute entry to each node in one bucket. Mod of entry.id and bucket.size selects the bucket to receive the entry.`,
       name: 'put_',
       javaCode: `
       Logger logger = Loggers.logger(x, this);
       MedusaEntry entry = (MedusaEntry) obj;
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
       List<Set> buckets = support.getNodeBuckets();
       int index = (int) (entry.getIndex() % buckets.size());
       Set<String> bucket = buckets.get(index);
       for ( String id : bucket ) {
-        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
-        if ( queue == null ) {
-          synchronized ( id.intern() ) {
-            queue = (AssemblyLine) getQueues().get(id);
-            if ( queue == null ) {
-              // Create one AssemblyLine per node
-              // To be replaced by SAF (Store and Forward)
-
-              // REVIEW: Using Sync rather than Async, as Async has the ability
-              // to consume the threadpool with a Retry client.
-              // Throughput testing does not show a difference between
-              // Sync and Async.
-              // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
-              queue = new SyncAssemblyLine(x);
-              getQueues().put(id, queue);
-
-              ClusterConfig config = support.getConfig(x, id);
-              // TODO: implment java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
-              DAO dao = new RetryClientSinkDAO.Builder(x)
-                       .setName(config.getId())
-                       .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
-                       .setMaxRetryAttempts(getMaxRetryAttempts())
-                       .setMaxRetryDelay(support.getMaxRetryDelay())
-                       .build();
-              getClients().put(id, dao);
-            }
-          }
-        }
         inFlight_.getAndIncrement();
-        queue.enqueue(new AbstractAssembly() {
+        getQueue(x, id).enqueue(new AbstractAssembly() {
           public void executeJob() {
             try {
-              ((DAO) getClients().get(id)).put_(x, entry);
+              DAO client = getClient(x, id);
+              if ( client != null )
+                client.put_(x, entry);
             } catch ( Throwable t ) {
               logger.error("assembly", id, t);
             } finally {
@@ -157,6 +110,59 @@ foam.CLASS({
         return inFlight_.get();
       }
       return getDelegate().cmd_(x, obj);
+      `
+    },
+    {
+      name: 'getQueue',
+      args: 'X x, String id',
+      type: 'AssemblyLine',
+      javaCode: `
+        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
+        if ( queue != null ) return queue;
+        synchronized ( id.intern() ) {
+          queue = (AssemblyLine) getQueues().get(id);
+          if ( queue != null ) return queue;
+
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+
+          // Create one AssemblyLine per mediator
+          // REVIEW : consider SAF (Store and Forward)
+
+          // NOTE: Using Sync rather than Async, as Async has the ability
+          // to consume the threadpool with a Retry client.
+          // Throughput testing does not show a difference between
+          // Sync and Async.
+          // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+          queue = new SyncAssemblyLine(x);
+          getQueues().put(id, queue);
+        }
+        return queue;
+      `
+    },
+    {
+      name: 'getClient',
+      args: 'X x, String id',
+      type: 'foam.dao.DAO',
+      javaCode: `
+        DAO client = (DAO) getClients().get(id);
+        if ( client != null ) return client;
+        synchronized ( id.intern() ) {
+          client = (DAO) getClients().get(id);
+          if ( client != null ) return client;
+
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+          ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+          ClusterConfig config = support.getConfig(x, id);
+          // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+          client = new RetryClientSinkDAO.Builder(x)
+            .setName(config.getId())
+            .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+            .setMaxRetryAttempts(getMaxRetryAttempts())
+            .setMaxRetryDelay(support.getMaxRetryDelay())
+            .build();
+          getClients().put(id, client);
+        }
+        return client;
       `
     }
   ]

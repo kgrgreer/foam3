@@ -764,17 +764,16 @@ TODO: handle node roll failure - or timeout
              return;
           }
 
-          DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
-          // Object nspec = x.get(entry.getNSpecName());
-          //  if ( nspec == null ) {
-          //   logger.warning("NSpec not found", entry.getNSpecName());
-          //   return;
-          // }
-          // if ( ! ( nspec instanceof DAO ) ) {
-          //   logger.warning("NSpec not DAO", entry.getNSpecName());
-          //   return;
-          // }
-          // DAO mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          DAO mdao = null;
+          try {
+            mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage());
+            // Don't throw, the caller can decide if compaction should
+            // be aborted. It is not uncommon for a service entry to
+            // be removed.
+            return;
+          }
           FObject found = mdao.find(entry.getObjectId());
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
