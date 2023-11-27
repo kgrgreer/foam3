@@ -270,7 +270,8 @@ foam.CLASS({
       javaCode: `
       ClusterConfigSupport support = (ClusterConfigSupport) getX().get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
-      if ( config.getStatus() == Status.ONLINE ) {
+      if ( support.canVote(x, config) &&
+           config.getStatus() == Status.ONLINE ) {
         try {
           support.getPrimary(x);
         } catch (MultiplePrimariesException e) {
