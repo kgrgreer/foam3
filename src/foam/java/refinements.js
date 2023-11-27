@@ -2280,6 +2280,7 @@ foam.CLASS({
 
     function writeFileIfUpdated(X, outfile, javaSource) {
       // console.log('[GENJAVA] Updating ', outfile, this.fs_.existsSync(outfile));
+      X.javaFiles.push(outfile);
       if ( ! this.fs_.existsSync(outfile) || this.fs_.readFileSync(outfile).toString() !== javaSource ) {
         // console.log('[GENJAVA] Updating ', outfile);
         var of = outfile.substring(outfile.lastIndexOf('/'));
@@ -2289,7 +2290,6 @@ foam.CLASS({
         // this.fs_.writeFileSync("/tmp/" + of + ".new", this.fs_.readFileSync(outfile).toString());
 
         this.fs_.writeFileSync(outfile, javaSource);
-        X.javaFiles.push(outfile);
       }
     },
 
