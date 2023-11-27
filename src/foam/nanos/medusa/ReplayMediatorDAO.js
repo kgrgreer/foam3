@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `Response to ReplayCmd on Mediators.
-NOTE: Only replay bootstrap as all other entries may have
+TODO: Only replay bootstrap as all other entries may have
 been 'cleaned' (data removed).`,
 
   javaImports: [
