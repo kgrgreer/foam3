@@ -17,7 +17,7 @@ exports.args = [
 ];
 
 
-const fs_                                   = require('fs');
+const fs_                                         = require('fs');
 const { execSync, isExcluded, adaptOrCreateArgs } = require('./buildlib');
 
 exports.init = function() {
@@ -40,6 +40,19 @@ exports.visitFile = function(pom, f, fn) {
 exports.end = function() {
   console.log(`[Javac] END ${X.javaFiles.length} Java files`);
 
+  // Filter out files that aren't newer than their corresponding .class file
+  X.javaFiles = X.javaFiles.filter(f => {
+    var i = f.indexOf('/src/java');
+    var classFile;
+    if ( i != -1 ) {
+      classFile = X.d + f.substring(i+9).replaceAll('.java', '.class');
+    } else {
+      i = f.indexOf('/src/');
+      classFile = X.d + f.substring(i+4).replaceAll('.java', '.class');
+    }
+    return ! fs_.existsSync(classFile) || ( fs_.statSync(classFile).mtime < fs_.statSync(f).mtime );
+  });
+
   fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
   if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
@@ -47,6 +60,7 @@ exports.end = function() {
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
   console.log('[Javac] Compiling', X.javaFiles.length ,'java files:', cmd);
+
   try {
     execSync(cmd, {stdio: 'inherit'});
   } catch(x) {
