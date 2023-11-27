@@ -53,17 +53,20 @@ exports.end = function() {
     return ! fs_.existsSync(classFile) || ( fs_.statSync(classFile).mtime < fs_.statSync(f).mtime );
   });
 
-  fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
+  if ( X.javaFiles.length > 0 ) {
+    fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
-  if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
+    if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
 
-  var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
+    var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
-  console.log('[Javac] Compiling', X.javaFiles.length ,'java files:', cmd);
-
-  try {
-    execSync(cmd, {stdio: 'inherit'});
-  } catch(x) {
-    process.exit(1);
+    console.log('[Javac] Compiling', X.javaFiles.length ,'java files:', cmd);
+    try {
+      execSync(cmd, {stdio: 'inherit'});
+    } catch(x) {
+      process.exit(1);
+    }
+  } else {
+    console.log('[Javac] No Updates');
   }
 }
