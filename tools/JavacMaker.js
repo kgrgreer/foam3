@@ -18,7 +18,7 @@ exports.args = [
 
 
 const fs_                                   = require('fs');
-const { execSync, isExcluded, adaptOrCreateArgs } = require('./buildlib');
+const { execSync, isExcluded, adaptOrCreateArgs, rmdir } = require('./buildlib');
 
 exports.init = function() {
   adaptOrCreateArgs(X, exports.args);
@@ -40,9 +40,23 @@ exports.visitFile = function(pom, f, fn) {
 exports.end = function() {
   console.log(`[Javac] END ${X.javaFiles.length} Java files`);
 
+  var timestampFile = X.builddir + "/javactimestamp";
+
+  var lastCompilation = fs_.existsSync(timestampFile) ? fs_.statSync(timestampFile).mtime : 0
+
+  var latestSourceFile = X.javaFiles.map((f) => fs_.statSync(f).mtime).reduce((a, b) => Math.max(a, b))
+
+  if (lastCompilation >= latestSourceFile) {
+    console.log("[Javac] No changes detected so not compiling")
+    return
+  }
+
   fs_.writeFileSync(X.builddir + '/javacfiles', X.javaFiles.join('\n') + '\n');
 
-  if ( ! fs_.existsSync(X.d) ) fs_.mkdirSync(X.d, {recursive: true});
+  // Delete old class files if present
+  rmdir(X.d)
+  // ensure target directory exists
+  fs_.mkdirSync(X.d, {recursive: true});
 
   var cmd = `javac -parameters ${X.javacParams} -d ${X.d} -classpath "${X.d}:${X.libdir}/*" @${X.builddir}/javacfiles`;
 
@@ -52,4 +66,6 @@ exports.end = function() {
   } catch(x) {
     process.exit(1);
   }
+
+  fs_.writeFileSync(timestampFile, '' + Date.now())
 }
