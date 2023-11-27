@@ -72,26 +72,6 @@ foam.CLASS({
 
   methods: [
     {
-      documentation: 'listen and clear client and queue caches on cluster changes',
-      name: 'init_',
-      javaCode: `
-      DAO dao = (DAO) getX().get("clusterConfigDAO");
-      dao.listen( new AbstractSink() {
-        @Override
-        public void put(Object obj, Detachable sub) {
-          ClusterConfig config = (ClusterConfig) obj;
-          if ( config.getType() == MedusaType.NODE ) {
-            synchronized ( this ) {
-              ((Logger) getX().get("logger")).info("MedusaBroadcastDAO,listener,purge");
-              MedusaBroadcastDAO.CLIENTS.clear(this);
-              MedusaBroadcastDAO.QUEUES.clear(this);
-            }
-          }
-        }
-      }, null);
-      `
-    },
-    {
       name: 'put_',
       javaCode: `
       MedusaEntry entry = (MedusaEntry) obj;
@@ -141,66 +121,28 @@ foam.CLASS({
     {
       documentation: 'Using assembly line, write to mediators',
       name: 'submit',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'Object'
-        },
-        {
-          name: 'dop',
-          type: 'foam.dao.DOP'
-        },
-      ],
+      args: 'X x, Object obj, DOP dop',
       type: 'Object',
       javaCode: `
       final Logger logger = Loggers.logger(x, this);
       // logger.debug("submit", dop.getLabel(), obj.getClass().getSimpleName());
 
-      final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+      ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
       for ( ClusterConfig config : support.getBroadcastMediators() ) {
         String id = config.getId();
         // logger.debug("submit", "job", id, dop.getLabel(), "assembly");
-        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
-        if ( queue == null ) {
-          synchronized ( id.intern() ) {
-            queue = (AssemblyLine) getQueues().get(id);
-            if ( queue == null ) {
-              // Create one AssemblyLine per mediator 
-              // To be replaced by SAF (Store and Forward)
-
-              // TODO: Using Sync rather than Async, as Async has the ability
-              // to consume the threadpool with a Retry client.
-              // Throughput testing does not show a difference between
-              // Sync and Async.
-              // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
-              queue = new SyncAssemblyLine(x);
-              getQueues().put(id, queue);
-
-              // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
-              DAO dao = new RetryClientSinkDAO.Builder(x)
-               .setName(config.getId())
-               .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
-               .setMaxRetryAttempts(getMaxRetryAttempts())
-               .setMaxRetryDelay(support.getMaxRetryDelay())
-               .build();
-              getClients().put(id, dao);
-            }
-          }
-        }
         inFlight_.getAndIncrement();
-        queue.enqueue(new AbstractAssembly() {
+        getQueue(x, id).enqueue(new AbstractAssembly() {
           public void executeJob() {
             try {
-              if ( DOP.PUT == dop ) {
-                ((DAO) getClients().get(id)).put_(x, (FObject) obj);
-              } else if ( DOP.CMD == dop ) {
-                ((DAO) getClients().get(id)).cmd_(x, obj);
+              DAO client = getClient(x, id, config);
+              if ( client != null ) {
+                if ( DOP.PUT == dop ) {
+                  client.put_(x, (FObject) obj);
+                } else if ( DOP.CMD == dop ) {
+                  client.cmd_(x, obj);
+                }
               }
             } catch ( Throwable t ) {
               logger.error("assembly", id, t);
@@ -213,6 +155,58 @@ foam.CLASS({
       }
       return obj;
     `
+    },
+    {
+      name: 'getQueue',
+      args: 'X x, String id',
+      type: 'AssemblyLine',
+      javaCode: `
+        AssemblyLine queue = (AssemblyLine) getQueues().get(id);
+        if ( queue != null ) return queue;
+        synchronized ( id.intern() ) {
+          queue = (AssemblyLine) getQueues().get(id);
+          if ( queue != null ) return queue;
+
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+
+          // Create one AssemblyLine per mediator 
+          // REVIEW : consider SAF (Store and Forward)
+
+          // NOTE: Using Sync rather than Async, as Async has the ability
+          // to consume the threadpool with a Retry client.
+          // Throughput testing does not show a difference between
+          // Sync and Async.
+          // queue = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+          queue = new SyncAssemblyLine(x);
+          getQueues().put(id, queue);
+        }
+        return queue;
+      `
+    },
+    {
+      name: 'getClient',
+      args: 'X x, String id, ClusterConfig config',
+      type: 'foam.dao.DAO',
+      javaCode: `
+        DAO client = (DAO) getClients().get(id);
+        if ( client != null ) return client;
+        synchronized ( id.intern() ) {
+          client = (DAO) getClients().get(id);
+          if ( client != null ) return client;
+
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
+          ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
+          // TODO: implement java send in RetryBox and move this to ClusterConfigSupport getSocketClientBox
+          client = new RetryClientSinkDAO.Builder(x)
+            .setName(config.getId())
+            .setDelegate(support.getBroadcastClientDAO(x, getServiceName(), myConfig, config))
+            .setMaxRetryAttempts(getMaxRetryAttempts())
+            .setMaxRetryDelay(support.getMaxRetryDelay())
+            .build();
+          getClients().put(id, client);
+        }
+        return client;
+      `
     }
   ]
 });
