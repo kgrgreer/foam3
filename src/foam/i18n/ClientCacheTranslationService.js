@@ -63,7 +63,7 @@ foam.CLASS({
               let pArr = [];
               pArr.push(this.loadTheme());
               pArr.push(this.loadVariantTheme());
-              return Promises.all(pArr);
+              return Promise.all(pArr);
             }
           });
         } else {
