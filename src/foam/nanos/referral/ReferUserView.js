@@ -93,7 +93,7 @@ foam.CLASS({
           .addClass(this.myClass('copy-box'))
           .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
           .callIfElse(this.refLink, function() {
-            this.translate(this.COPYTEXT)
+            this.add(this.COPYTEXT)
             .tag('br')
             .tag('br')
             .add(this.refLink);
