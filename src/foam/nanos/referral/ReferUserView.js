@@ -1,19 +1,8 @@
 /**
- * NANOPAY CONFIDENTIAL
- *
- * [2020] nanopay Corporation
- * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of nanopay Corporation.
- * The intellectual and technical concepts contained
- * herein are proprietary to nanopay Corporation
- * and may be covered by Canadian and Foreign Patents, patents
- * in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from nanopay Corporation.
- */
+* @license
+* Copyright 2023 The FOAM Authors. All Rights Reserved.
+* http://www.apache.org/licenses/LICENSE-2.0
+*/
 
 foam.CLASS({
   package: 'foam.nanos.referral',
@@ -32,20 +21,21 @@ foam.CLASS({
     }
     ^copy-box{
       background: $primary50;
-      border-style: dashed;
-      border-color: $primary400;
-      border-width: 2px;
+      border: 1px dashed $primary400;
       padding: 1.5rem;  
       text-align: center;
-      border-width: thin;
+    }
+    ^error^copy-box {
+      background: $destructive50;
+      border-color: $destructive400;
     }
     ^header{
       font-size:3rem;
-      color: $primary500;
+      color: $primary400;
       text-align: center;
       font-weight: 900;
     }
-    img{
+    ^ img{
       height: 5rem;
       width: 5rem;
     }
@@ -75,14 +65,14 @@ foam.CLASS({
     {
       name: 'referralText',
       class: 'String'
-    }
-
+    },
+    'refLink'
   ],
 
   methods: [
     async function render() {
-      let refLink = (await this.subject.user.referralCodes.select()).array[0].url;
-      this.referralText = this.COPYTEXT + '\n\n' + refLink;
+      this.refLink = (await this.subject.user.referralCodes.select()).array[0]?.url;
+      this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
 
       let button = navigator.canShare?.({text: this.referralText}) ? this.SHARE_TEXT : this.COPY_TEXT;
 
@@ -99,13 +89,18 @@ foam.CLASS({
           .add(this.HEADER_2)
         .end()
 
-        .start().addClass(this.myClass('copy-box'))
-          .translate(this.COPYTEXT)
-          .tag('br')
-          .tag('br')
-          .add(refLink)
+        .start()
+          .addClass(this.myClass('copy-box'))
+          .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
+          .callIfElse(this.refLink, function() {
+            this.add(this.COPYTEXT)
+            .tag('br')
+            .tag('br')
+            .add(this.refLink);
+          }, function() {
+            this.add('Something went wrong, please try again');
+          })
         .end()
-        
 
         .startContext({data:this})
           .start(button, { buttonStyle: 'PRIMARY', size: 'LARGE' }).addClass(this.myClass('share-button')).end()
@@ -116,6 +111,7 @@ foam.CLASS({
     {
       name: 'shareText',
       label: 'Share',
+      isAvailable: function(refLink) { return refLink },
       code: async function(_, x) {
        
         var shareData = {
@@ -128,6 +124,7 @@ foam.CLASS({
     {
       name: 'copyText',
       label: 'Copy',
+      isAvailable: function(refLink) { return refLink },
       code: async function() {
         this.copy(this.referralText)
       }

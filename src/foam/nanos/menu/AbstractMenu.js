@@ -17,6 +17,7 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.u2.ViewSpec',
       name: 'popup'
     }
   ],
