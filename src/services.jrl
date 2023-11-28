@@ -439,7 +439,8 @@ p({
   "authenticate": false,
   "serviceScript": """
     fileService = new foam.nanos.blob.FileService(x, x.get("blobStore"));
-    return new foam.nanos.http.SessionWebAgent("service.run.httpFileService", fileService);
+    return fileService;
+    // return new foam.nanos.http.SessionWebAgent("service.run.httpFileService", fileService);
   """
 })
 
