@@ -860,6 +860,7 @@ foam.POM({
     { name: "foam/lib/StorageOptionalPropertyPredicate",              flags: "js|java" },
     { name: "foam/lib/StoragePropertyPredicate",                      flags: "js|java" },
     { name: "foam/lib/AndPropertyPredicate",                          flags: "js|java" },
+    { name: "foam/lib/formatter/test/JSONFObjectFormatterParserTest", flags: "js|java"},
     { name: "foam/lib/json/JSONParser",                               flags: "js|java" },
     { name: "foam/lib/json/OutputterMode",                            flags: "js|java" },
     { name: "foam/lib/json/ClassReferenceParserTest",                 flags: "js|java" },

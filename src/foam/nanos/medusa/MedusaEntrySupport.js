@@ -27,7 +27,6 @@ foam.CLASS({
       protected JSONFObjectFormatter initialValue() {
         JSONFObjectFormatter formatter = new JSONFObjectFormatter();
         formatter.setOutputShortNames(true);
-        formatter.setCalculateDeltaForNestedFObjects(true);
         formatter.setPropertyPredicate(
           new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
             new foam.lib.StoragePropertyPredicate(),
@@ -49,7 +48,6 @@ foam.CLASS({
       protected MedusaTransientJSONFObjectFormatter initialValue() {
         MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
         formatter.setOutputShortNames(true);
-        formatter.setCalculateDeltaForNestedFObjects(true);
         return formatter;
       }
 
