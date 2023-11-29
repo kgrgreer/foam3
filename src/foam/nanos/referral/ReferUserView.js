@@ -71,6 +71,7 @@ foam.CLASS({
 
   methods: [
     async function render() {
+      let self = this;
       this.refLink = (await this.subject.user.referralCodes.select()).array[0]?.url;
       this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
 
@@ -93,10 +94,10 @@ foam.CLASS({
           .addClass(this.myClass('copy-box'))
           .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
           .callIfElse(this.refLink, function() {
-            this.add(this.COPYTEXT)
+            this.add(self.COPYTEXT)
             .tag('br')
             .tag('br')
-            .add(this.refLink);
+            .add(self.refLink);
           }, function() {
             this.add('Something went wrong, please try again');
           })
