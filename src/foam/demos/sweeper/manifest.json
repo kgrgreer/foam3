@@ -5,7 +5,8 @@
   "background_color": "#aaa",
   "description": "A mine sweeper game.",
   "scope": "/",
-  "start_url": "/foam3/src/foam/demos/sweeper/sweep.html",
+  "id": "sweeper",
+  "start_url": "/foam3/src/foam/demos/sweeper/sweep_min3.html",
   "categories": [ "games" ],
   "icons": [
     {
