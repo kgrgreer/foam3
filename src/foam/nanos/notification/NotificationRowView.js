@@ -89,6 +89,7 @@
           .start().addClass(this.myClass('notificationDiv'))
             .on('click', () => {
               this.openModal();
+              this.markAsRead(this.__subContext__);
             })
             .start(this.NotificationCitationView, {
               of:   this.of,
@@ -130,6 +131,7 @@
         name: 'showDetails',
         code: function(X) {
           X.rowView.openModal();
+          X.rowView.markAsRead(X);
         }
       },
       {
