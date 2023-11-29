@@ -243,11 +243,11 @@ foam.CLASS({
         Object[] cmd;
         FObject  value;
 
+        foam.core.XLocator.set(getX());
+
         while ( true ) {
           try {
             cmd = (Object[]) getQueue().take();
-
-            // System.err.println("*********************** MaterializedDAO DEQUEUE " + cmd[0]);
 
             if ( cmd[0] == PUT ) {
               value = (FObject) cmd[1];
