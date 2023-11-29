@@ -262,6 +262,24 @@ foam.CLASS({
           ;
       }
     },
+    {
+      name: 'toGraphAgentWizard',
+      documentation: `
+        Used to convert any sequence to use the new GraphingWizardletAgents, needed for proper XOR MinMax behavior
+        NOTE: this should be the default behaviour since CreateWizardletsAgent and LoadWizardletsAgent are now considered legacy
+      `,
+      code: function(seq) {
+        return seq
+          .addBefore('CreateWizardletsAgent', {
+            class: 'foam.u2.crunch.wizardflow.LoadCapabilityGraphAgent'
+          })
+          .addBefore('CreateWizardletsAgent', {
+            class: 'foam.u2.crunch.wizardflow.GraphWizardletsAgent'
+          })
+          .remove('CreateWizardletsAgent')
+          .remove('LoadWizardletsAgent');
+      }
+    },
 
     // TODO: remove this during NP-8927
     function createUCJInlineWizardSequence (x) {
