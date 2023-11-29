@@ -29,7 +29,6 @@ foam.CLASS({
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
     'foam.lib.NetworkPropertyPredicate',
-    'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.StoragePropertyPredicate',
     'foam.log.LogLevel',
     'foam.nanos.er.EventRecord',
