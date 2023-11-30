@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'LazyScrollManager',
   extends: 'foam.u2.View',
@@ -284,7 +284,7 @@
           if ( self.groupBy ) {
             var group = self.groupBy.f(values.array[i]);
             if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
-              e.tag(self.groupHeaderView, args);
+              e.tag(self.groupHeaderView, { ...args, groupLabel: group });
             }
             self.currGroup_ = group;
           }
