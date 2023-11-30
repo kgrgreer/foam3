@@ -62,9 +62,6 @@ foam.CLASS({
       width: 70,
       displayWidth: 50,
       documentation: 'An unstructured field for the main postal address.',
-      expression: function(structured, streetNumber, streetName) {
-        return structured ? streetNumber + ' ' + streetName : '';
-      },
       validationPredicates: [
         {
           args: ['structured', 'address1'],
@@ -191,6 +188,11 @@ foam.CLASS({
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
       gridColumns: 3,
+      postSet: function(_, n) {
+        if ( this.structured ) {
+          this.address1 = `${n} ${this.streetName}`
+        }
+      },
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
@@ -206,6 +208,11 @@ foam.CLASS({
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
+      postSet: function(_, n) {
+        if ( this.structured ) {
+          this.address1 = `${this.streetNumber} ${n}`
+        }
+      },
       validationPredicates: [
         {
           args: ['structured', 'streetName'],
