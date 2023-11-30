@@ -108,6 +108,12 @@ foam.CLASS({
       value: function(value, ctx, prop) {
         return foam.json.parse(value, prop.of, ctx);
       }
+    },
+    {
+      name: 'indexFunction',
+      class: 'Function',
+      documentation: 'Given an FObject, should return a unique index for objects',
+      value: o => { return o.id }
     }
   ]
 });
