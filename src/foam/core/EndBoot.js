@@ -99,8 +99,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'plural',
-      expression: function(name) {
-        return foam.String.labelize(foam.String.pluralize(name));
+      expression: function(label) {
+        return foam.String.pluralize(label);
       }
     }
   ]
