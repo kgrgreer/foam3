@@ -67,7 +67,7 @@ foam.CLASS({
       justify-content: space-between;
       padding-top: 15px;
       padding-bottom: 15px;
-      border-bottom: 1px solid #e4e3e3;
+      gap: 8px;
     }
 
     ^id {
