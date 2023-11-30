@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.ENUM({
+foam.ENUM({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequestClassificationEnum',
 
@@ -213,6 +213,11 @@
       name: 'UNKNOWN_BUSINESS_LEV',
       label: 'Unknown Business in SecureFact LEV',
       ordinal: 40
+    },
+    {
+      name: 'UNKNOWN_BUSINESS_TYPE_LEV',
+      label: 'Unknown Business Type in SecureFact LEV',
+      ordinal: 41
     }
   ]
 });
