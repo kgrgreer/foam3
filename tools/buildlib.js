@@ -67,15 +67,16 @@ function execSync(cmd, options) {
 }
 
 
-function isExcluded(pom, f) {
+function isExcluded(pom, f, opt_disableWildcard) {
   var ex = pom.excludes;
   if ( ! ex ) return false;
   for ( var i = 0 ; i < ex.length ; i++ ) {
     var p = ex[i];
-    if ( p.endsWith('*') ) p = p.substring(0, p.length-1);
+    if ( p.endsWith('*') && ! opt_disableWildcard ) p = p.substring(0, p.length-1);
 
-    if ( f.endsWith(p) || ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) )
+    if ( f.endsWith(p) || ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) ) {
       return true;
+    }
   }
 
   return false;
