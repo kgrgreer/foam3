@@ -6,7 +6,6 @@
 
 /**
  * TODO:
- * - Add grouping/ordering support
  * - Add Projection support
  */
 foam.CLASS({
@@ -98,7 +97,8 @@ foam.CLASS({
       name: 'loadLatch',
     },
     'groupBy',
-    'order'
+    'order',
+    ['invertGroupingOrder', false]
   ],
 
   classes: [
@@ -110,6 +110,7 @@ foam.CLASS({
         ^ {
           min-height: 20px;
           padding: 8px;
+          color: $grey600;
         }
       `,
 
@@ -149,6 +150,7 @@ foam.CLASS({
             groupHeaderView: { class: 'foam.u2.DAOList.GroupHeader' },
             groupBy$: this.groupBy$,
             order$: this.order$,
+            invertGroupingOrder$: this.invertGroupingOrder$,
             ctx: this
           }, this.scrollEl_$)
         .end()

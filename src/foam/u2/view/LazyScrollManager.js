@@ -146,6 +146,11 @@ foam.CLASS({
       documentation: 'An expression which returns the group title. Can be a Property.'
     },
     {
+      class: 'Boolean',
+      name: 'invertGroupingOrder',
+      documentation: 'GroupBy returns groups in ascending order, use this to flip that behaviour'
+    },
+    {
       class: 'FObjectProperty',
       name: 'order',
       documentation: 'Optional order used to sort citations within a group'
@@ -270,7 +275,7 @@ foam.CLASS({
       var self = this;
       var proxy = this.ProxyDAO.create({ delegate: dao });
       var sortParams = [];
-      if ( this.groupBy ) sortParams.push(this.groupBy)
+      if ( this.groupBy ) sortParams.push(this.invertGroupingOrder ? this.DESC(this.groupBy) : this.groupBy)
       if ( this.order ) sortParams.push(this.order)
       if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
       this.loadingPages_[page] = true;
