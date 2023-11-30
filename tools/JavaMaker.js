@@ -8,8 +8,7 @@
 
 const fs_   = require('fs');
 const path_ = require('path');
-const { processArgs } = require('./buildlib');
-
+const { adaptOrCreateArgs } = require('./buildlib');
 
 exports.description = 'generates .java files from .js models';
 
@@ -24,7 +23,7 @@ exports.args = [
 
 
 exports.init = function() {
-  processArgs(X, exports.args);
+  adaptOrCreateArgs(X, exports.args);
   // Turns on loading of foam/java/* models needed for java code generation.
   flags.genjava   = true;
   flags.loadFiles = true;
@@ -46,7 +45,9 @@ exports.end = function() {
     if ( foam.maybeLookup(key).model_.targetJava(X) ) {
       jCount++;
     }
-  } catch(x) {}
+  } catch(x) {
+    // console.error('[Java] Model error:', x);
+  }
 
   console.log(`[Java]: ${jCount}/${mCount} models processed.`);
 }

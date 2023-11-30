@@ -17,12 +17,12 @@ exports.args = [
 ];
 
 const path_                                                    = require('path');
-const { execSync, ensureDir, processArgs, writeFileIfUpdated } = require('./buildlib');
+const { execSync, ensureDir, adaptOrCreateArgs, writeFileIfUpdated } = require('./buildlib');
 
 const javaDependencies = [];
 
 exports.init = function() {
-  processArgs(X, exports.args);
+  adaptOrCreateArgs(X, exports.args);
   X.libdir = X.builddir + '/lib';
 }
 

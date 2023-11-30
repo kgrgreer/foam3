@@ -28,18 +28,6 @@ elif [[ $OSTYPE =~ $LINUXOS ]]; then
 fi
 
 
-MACOS='darwin*'
-LINUXOS='linux-gnu'
-
-PROFILER_AGENT_PATH=""
-if [[ $OSTYPE =~ $MACOS ]]; then
-    PROFILER_AGENT_PATH="/Applications/JProfiler.app/Contents/Resources/app/bin/macos/libjprofilerti.jnilib"
-elif [[ $OSTYPE =~ $LINUXOS ]]; then
-    PROFILER_AGENT_PATH="/opt/jprofiler12/bin/linux-x64/libjprofilerti.so"
-fi
-
-
-
 export DEBUG=0
 function usage {
     echo "Usage: $0 [OPTIONS]"

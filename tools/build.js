@@ -57,24 +57,21 @@
 //
 // TODO:
 //   - should Makers be responsible for building target directories?
-//   - merge build and target
-//   - explicitly list dependencies and descriptions with tasks
 //   - only add deployments/u when -u specified
-//   - cleanAll
-//
-// diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
-// ln -s /Volumes/RAM_DISK /path/to/project/build2
 
 /*
+diskutil erasevolume HFS+ RAM_Disk $(hdiutil attach -nomount ram://1000000)
+ln -s /Volumes/RAM_DISK /path/to/project/build2
+
 diskutil erasevolume HFS+ 'RAMDisk' `hdiutil attach -nomount ram://848000`
 mkdir /Volumes/RamDisk/build
 rm -rf ~/NANOPAY/build
 ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 */
 
-const fs                = require('fs');
-const { join }          = require('path');
-const { comma, copyDir, copyFile, emptyDir, ensureDir, execSync, rmdir, rmfile, spawn } = require('./buildlib');
+const fs       = require('fs');
+const { join } = require('path');
+const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -96,15 +93,12 @@ var
   GEN_JAVA                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
-//  IS_MAC                    = process.platform === 'darwin',
-//  IS_LINUX                  = process.platform === 'linux',
   JOURNAL_CONFIG            = '',
   MODE                      = '',
   PACKAGE                   = false,
   POM                       = 'pom',
   PROFILER                  = false,
   PROFILER_PORT             = 8849,
-  RESOURCES                 = '',
   RESTART_ONLY              = false,
   RESTART                   = false,
   RUN_JAR                   = false,
@@ -128,9 +122,7 @@ var VERSION;
 // Root POM tasks and exports
 var TASKS, EXPORTS;
 
-// These are different for an unknown historic reason and should be merged.
-var BUILD_DIR  = './build2', TARGET_DIR = './build2';
-// var BUILD_DIR  = './build', TARGET_DIR = './target';
+var BUILD_DIR  = './build';
 
 globalThis.foam = {
   POM: function (pom) {
@@ -197,27 +189,6 @@ function task(desc, dep, f) {
 }
 
 
-function processArgs() {
-  const args = process.argv.slice(2);
-  for ( var i = 0 ; i < args.length ; i++ ) {
-    var arg = args[i];
-    if ( arg.startsWith('-') ) {
-      for ( var j = 1 ; j < arg.length ; j++ ) {
-        var a = arg.charAt(j);
-        var d = ARGS[a];
-        if ( d ) {
-          d[1](arg.substring(j+1));
-          if ( a >= 'A' && a <= 'Z' ) break;
-        } else {
-          console.log('Unknown argument "' + a + '"');
-          ARGS['h'][1]();
-        }
-      }
-    }
-  }
-}
-
-
 function exportEnv(name, value) {
   console.log(`export ${name}="${value}"`);
   process.env[name] = value;
@@ -262,8 +233,8 @@ function error(msg) {
 
 function manifest() {
   versions();
-  var jars = execSync(`find ${TARGET_DIR}/lib -type f -name "*.jar"`).toString()
-      .replaceAll(`${TARGET_DIR}/lib/`, '  ').trim();
+  var jars = execSync(`find ${BUILD_DIR}/lib -type f -name "*.jar"`).toString()
+      .replaceAll(`${BUILD_DIR}/lib/`, '  ').trim();
   var m = `
 Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
@@ -287,7 +258,12 @@ Implementation-Vendor: ${PROJECT.name}
 
 function pom() {
   var pom    = {};
-  var addPom = k => { if ( k && ! pom[k] ) pom[k] = true };
+  var addPom = fn => {
+    if ( ! fs.existsSync(fn + '.js') )
+      error('File not found ' + fn + '.js');
+    else
+      pom[fn] = true;
+  };
 
   if ( POM )
     POM.split(',').forEach(c => addPom(c && `${PROJECT_HOME}/${c}`));
@@ -300,24 +276,26 @@ function pom() {
 
 
 task('Build web root directory for inclusion in JAR.', [], function jarWebroot() {
-  JAR_INCLUDES += ` -C ${TARGET_DIR} webroot `;
+  JAR_INCLUDES += ` -C ${BUILD_DIR} webroot `;
 
-  var webroot = TARGET_DIR + '/webroot';
+  var webroot = BUILD_DIR + '/webroot'; // ???: Why doesResourceMaker uses journals/webroot instead?
   ensureDir(webroot);
-  copyDir('./foam3/webroot', webroot);
 
-  ensureDir(webroot + '/favicon');
-  copyDir('./foam3/favicon', webroot + '/favicon');
+  execSync(__dirname + `/pmake.js -makers="Webroot" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
 });
 
 
-task('Copy images from src sub directories to TARGET_DIR/images.', [], function jarImages() {
-  JAR_INCLUDES += ` -C ${TARGET_DIR} images `;
+task('Copy images from src sub directories to BUILD_DIR/images.', [], function jarImages() {
+  JAR_INCLUDES += ` -C ${BUILD_DIR} images `;
 
-  execSync(__dirname + `/pmake.js -makers="Image" -pom=${POM} -builddir=${TARGET_DIR}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -makers="Image" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
+});
+
+task('Include journals in jar.', [], function jarJournals() {
+  JAR_INCLUDES += ` -C ${BUILD_DIR} journals `;
 });
 
 
@@ -327,7 +305,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${POM}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${pom()}`, {stdio: 'inherit'});
 });
 
 
@@ -370,30 +348,17 @@ task('Deploy journal files from JOURNAL_OUT to JOURNAL_HOME.', [], function depl
   copyDir(JOURNAL_OUT, JOURNAL_HOME);
 });
 
-
-task('Deploy documents, journals and other resources.', [ 'deployDocuments', 'deployJournals', 'deployResources' ], function deploy() {
-  deployDocuments();
-  deployResources();
-  deployJournals(); // should run last
-});
-
-
-task('Copy additional files from RESOURCES directories to be added to Jar file.', [], function deployResources() {
-  RESOURCES.split(',').forEach(res => {
-    if ( ! res )
-      return;
-
-    var resDir = PROJECT_HOME + '/deployment/' + res + '/resources';
-    if ( fs.existsSync(resDir) && fs.lstatSync(resDir).isDirectory() ) {
-      copyDir(resDir, JOURNAL_OUT);
-    }
-  });
+// task('Deploy documents, journals.', [ 'deployDocuments','deployJournals'], function deploy() {
+task('Deploy journals.', [ 'deployJournals'], function deploy() {
+  if ( ! RUN_JAR && ! TEST && ! BENCHMARK ) {
+    deployJournals();
+  }
 });
 
 
 task('Remove pom.xml and java lib directory.', [ ], function cleanLib() {
   rmfile('pom.xml');
-  emptyDir(TARGET_DIR + '/lib');
+  emptyDir(BUILD_DIR + '/lib');
 });
 
 
@@ -403,7 +368,7 @@ task('Cause regeneration of pom.xml and java lib directory.', [ 'cleanLib', 'gen
 });
 
 
-task('Clean build files, include pom.xml and java libraries.', [ 'cleanLib', 'clean' ], function cleanAll() {
+task('Clean build files, include pom.xml and java libraries. Cleaner than clean.', [ 'cleanLib', 'clean' ], function cleanAll() {
   cleanLib();
   clean();
 });
@@ -415,13 +380,13 @@ task('Remove generated files.', [], function clean() {
     emptyDir(`${APP_HOME}/lib`);
   }
 
-  if ( fs.existsSync(TARGET_DIR) ) {
-    var files = fs.readdirSync(TARGET_DIR, {withFileTypes: true});
+  if ( fs.existsSync(BUILD_DIR) ) {
+    var files = fs.readdirSync(BUILD_DIR, {withFileTypes: true});
     files.forEach(f => {
       // Don't remove java libs under ./target/lib
       if ( f.name === 'lib' ) return;
 
-      var fn = TARGET_DIR + '/' + f.name;
+      var fn = BUILD_DIR + '/' + f.name;
       if ( f.isDirectory() ) rmdir(fn);
       if ( f.isFile()      ) rmfile(fn);
     });
@@ -432,14 +397,13 @@ task('Remove generated files.', [], function clean() {
 });
 
 
-task('Copy Java libraries from TARGET_DIR/lib to APP_HOME/lib.', [], function copyLib() {
-  copyDir(join(TARGET_DIR, 'lib'), join(APP_HOME, 'lib'));
+task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function copyLib() {
+  copyDir(join(BUILD_DIR, 'lib'), join(APP_HOME, 'lib'));
 });
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-//  execSync(`node foam3/tools/genjs.js -version="${VERSION}" -flags=xxxverbose -pom=${POM}`, { stdio: 'inherit' });
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${POM}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 
@@ -451,8 +415,14 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc' : 'Maven,Journal,Doc' ;
-  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${TARGET_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  var makers = GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
+  makers += ',Journal,Doc';
+  makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
+  execSync(__dirname + `/pmake.js -makers="Verbose,${makers}" -flags=verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+});
+
+task('Call pmake to collect journals.', [], function genJournals() {
+  execSync(__dirname + `/pmake.js -makers="Journal" -flags=verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
@@ -474,45 +444,43 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
   versions();
   jarWebroot();
   jarImages();
+  jarJournals();
 
   rmfile(JAR_OUT);
-  fs.writeFileSync(TARGET_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${TARGET_DIR}/MANIFEST.MF -C ${APP_HOME} journals -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
+  fs.writeFileSync(BUILD_DIR + '/MANIFEST.MF', manifest());
+  execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
 task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
-  ensureDir(TARGET_DIR + '/package');
-  execSync(`tar -a -cf ${TARGET_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${TARGET_DIR} lib`);
+  ensureDir(BUILD_DIR + '/package');
+  execSync(`tar -a -cf ${BUILD_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${BUILD_DIR} lib`);
 });
 
 
 task('Delete runtime journals.', [], function deleteRuntimeJournals() {
-  if ( DELETE_RUNTIME_JOURNALS ) {
-    info('Runtime journals deleted.');
-    emptyDir(JOURNAL_HOME);
-  }
+  info('Runtime journals deleted.');
+  emptyDir(JOURNAL_HOME);
 });
 
 
 task('Delete runtime logs.', [], function deleteRuntimeLogs() {
-  if ( DELETE_RUNTIME_LOGS ) {
-    info('Runtime logs deleted.');
-    emptyDir(LOG_HOME);
-  }
+  info('Runtime logs deleted.');
+  emptyDir(LOG_HOME);
 });
 
 
 task('Copy required files to APP_HOME deployment directory.', [], function deployToHome() {
   copyDir('./foam3/tools/deploy/bin', join(APP_HOME, 'bin'));
-  copyDir(TARGET_DIR + '/lib', join(APP_HOME, 'lib'));
+  copyDir(BUILD_DIR + '/lib', join(APP_HOME, 'lib'));
 });
 
 
+task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
+  setenv();
 
-task('Start NANOS application server.', [], function startNanos() {
   if ( RUN_JAR ) {
     var OPT_ARGS = ``;
 
@@ -538,7 +506,7 @@ task('Start NANOS application server.', [], function startNanos() {
 
     JAVA_OPTS += ` -Dnanos.webroot=${PROJECT_HOME}`;
 
-    CLASSPATH = `${TARGET_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
+    CLASSPATH = `${BUILD_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
     if ( TEST || BENCHMARK ) {
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
@@ -618,9 +586,9 @@ task('Create empty build and deployment directory structures if required.', [], 
   try {
     // ensureDir(`${PROJECT_HOME}/.foam`); // Only used by foamlink?
     ensureDir(APP_HOME);
-    if ( ensureDir(TARGET_DIR + '/lib') ) {
+    if ( ensureDir(BUILD_DIR + '/lib') ) {
       // Remove stale pom.xml if the /lib dir needed to be created
-      // Wouldn't be necessary if pom.xml were written into the TARGET_DIR but then
+      // Wouldn't be necessary if pom.xml were written into the BUILD_DIR but then
       // you couldn't check it in to get dependbot warnings.
       rmfile('pom.xml');
     }
@@ -637,20 +605,6 @@ task('Create empty build and deployment directory structures if required.', [], 
     error(`Directory is not writable! Please run 'sudo chown -R $USER ${APP_ROOT}' first.`);
   }
 });
-
-
-function buildEnv(m) {
-  globalThis.ENV = m;
-
-  Object.keys(m).forEach(k => {
-    let val = m[k];
-    Object.defineProperty(globalThis, k, {
-      get: function()  { return typeof val === 'function' ? val() : val; },
-      set: function(v) { val = v; }
-    });
-    globalThis[k] = val;
-  });
-}
 
 
 function exportEnvs() {
@@ -688,12 +642,12 @@ buildEnv({
   DOCUMENT_HOME:     () => `${APP_HOME}/documents`,
   LOG_HOME:          () => `${APP_HOME}/logs`,
 
-  JAR_OUT:           () => ( PACKAGE ? `${PROJECT_HOME}/${TARGET_DIR}` : `${APP_HOME}` ) + `/lib/${PROJECT.name}-${VERSION}.jar`,
+  JAR_OUT:           () => ( PACKAGE ? `${PROJECT_HOME}/${BUILD_DIR}` : `${APP_HOME}` ) + `/lib/${PROJECT.name}-${VERSION}.jar`,
 
   // Project resources path
   PROJECT_HOME:      PWD,
-  JOURNAL_OUT:       () => `${PROJECT_HOME}/${TARGET_DIR}/journals`,
-  DOCUMENT_OUT:      () => `${PROJECT_HOME}/${TARGET_DIR}/documents`,
+  JOURNAL_OUT:       () => `${PROJECT_HOME}/${BUILD_DIR}/journals`,
+  DOCUMENT_OUT:      () => `${PROJECT_HOME}/${BUILD_DIR}/documents`,
 
   // Build options and pid
   JAVA_OPTS:         '',
@@ -703,7 +657,7 @@ buildEnv({
 });
 
 
-function setenv() {
+task('Set environmental variables needed by Java.', [], function setenv() {
   if ( TEST || BENCHMARK ) {
     rmdir(APP_HOME);
     JAVA_OPTS = '-enableassertions ' + JAVA_OPTS;
@@ -721,16 +675,11 @@ function setenv() {
     fi
   fi
   */
-}
+});
 
 
-function usage() {
-  console.log('Usage: build.js [OPTIONS]\n\nOptions are:');
-  Object.keys(ARGS).forEach(a => {
-    console.log('  -' + a + ': ' + ARGS[a][0]);
-  });
+function moreUsage() {
   console.log('\nTasks:');
-
   var ts = { ...tasks };
   var depth = 1;
   function printTask(t) {
@@ -747,13 +696,15 @@ function usage() {
   Object.keys(ts).sort().forEach(t => {
     printTask(t);
   });
-  quit(0);
 }
-
 
 const ARGS = {
   b: [ 'run all benchmarks.',
-    () => { BENCHMARK = true; MODE = 'BENCHMARK'; DELETE_RUNTIME_JOURNALS = true; } ],
+    () => {
+      BENCHMARK = true;
+      MODE = 'BENCHMARK';
+      DELETE_RUNTIME_JOURNALS = true;
+    } ],
   B: [ 'benchmarkId1,benchmarkId2,... : Run listed benchmarks.',
     args => { ARGS.b[1](); BENCHMARKS = args; } ],
   c: [ 'Clean generated code before building.  Required if generated classes have been removed.',
@@ -775,7 +726,6 @@ const ARGS = {
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
     () => { statusNanos(); quit(0); } ],
-  h: [ 'Print usage information.', usage ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',
@@ -801,8 +751,6 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
-  R: [ 'deployment directories with resources to add to Jar file',
-    args => RESOURCES = comma(RESOURCES, args) ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
@@ -813,6 +761,7 @@ const ARGS = {
       MODE = 'test';
       DELETE_RUNTIME_JOURNALS = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'test');
+      JOURNAL_CONFIG = comma(JOURNAL_CONFIG, '../foam3/deployment/test');
     } ],
   T: [ 'testId1,testId2,... : Run listed tests.',
     args => {
@@ -823,7 +772,6 @@ const ARGS = {
     () => {
       RUN_JAR = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'u');
-      RESOURCES      = comma(RESOURCES, 'u');
     } ],
   U: [ 'User to run as',
     args => RUN_USER = args ],
@@ -858,9 +806,7 @@ const ARGS = {
       quit(0);
     } ],
   z: [ 'Daemonize into the background, will write PID into $PIDFILE environment variable.',
-    () => DAEMONIZE = true ],
-  '?': [ 'Usage',
-    () => ARGS.h[1]() ]
+    () => DAEMONIZE = true ]
 };
 
 
@@ -880,7 +826,7 @@ function statusNanos() {
 }
 
 
-task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs' ], function stopNanos() {
+task('Stop running NANOS server.', [], function stopNanos() {
   console.log('Stopping Nanos server...');
 
   var pid = readFromPidFile();
@@ -898,9 +844,6 @@ task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs
       error('Error occurred while stopping Nanos server.');
     }
   }
-
-  deleteRuntimeJournals();
-  deleteRuntimeLogs();
 });
 
 
@@ -910,12 +853,16 @@ task('Stop running NANOS server.', [ 'deleteRuntimeJournals', 'deleteRuntimeLogs
 
 task(
 'Build everything specified by flags.',
-[ 'clean', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
+[ 'clean', 'setenv', 'deleteRuntimeJournals', 'deleteRuntimeLogs', 'setupDirs', 'packageFOAM', 'buildJava', 'deploy', 'buildJar', 'deployToHome', 'buildTar', 'startNanos' ],
 function all() {
-  processArgs();
+  processSingleCharArgs(ARGS, moreUsage);
   setenv();
 
   stopNanos();
+
+  if ( DELETE_RUNTIME_JOURNALS ) deleteRuntimeJournals();
+
+  if ( DELETE_RUNTIME_LOGS     ) deleteRuntimeLogs();
 
   if ( STOP_ONLY ) quit(0);
 
@@ -957,10 +904,11 @@ if ( TASKS ) {
 
   // Exports local variables and functions for POM tasks
   EXPORTS = {
+    BUILD_DIR,
     JOURNAL_CONFIG,
-    TARGET_DIR,
     copyDir,
-    copyFile
+    copyFile,
+    execSync
   }
 };
 

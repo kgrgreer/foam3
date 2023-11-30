@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-exports.description = 'Copies image/* files into /target/images';
+exports.description = 'Copies image/* files into /build/images';
 
 const b_ = require('./buildlib');
 

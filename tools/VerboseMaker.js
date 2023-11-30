@@ -17,10 +17,10 @@ exports.args = [
   }
 ];
 
-const { processArgs } = require('./buildlib');
+const { adaptOrCreateArgs } = require('./buildlib');
 
 exports.init = function() {
-  processArgs(X, exports.args);
+  adaptOrCreateArgs(X, exports.args);
   if ( X.showFiles ) flags.loadFiles = true;
 }
 
