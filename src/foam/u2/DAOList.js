@@ -98,6 +98,7 @@ foam.CLASS({
       name: 'loadLatch',
     },
     'groupBy',
+    'order'
   ],
 
   classes: [
@@ -147,6 +148,7 @@ foam.CLASS({
             rootElement: this.listEl_,
             groupHeaderView: { class: 'foam.u2.DAOList.GroupHeader' },
             groupBy$: this.groupBy$,
+            order$: this.order$,
             ctx: this
           }, this.scrollEl_$)
         .end()
