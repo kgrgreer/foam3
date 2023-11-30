@@ -124,7 +124,7 @@ configuration for contacting the primary node.`,
       javaFactory: 'return new HashMap();',
       visibility: 'HIDDEN'
     },
-   {
+    {
       name: 'nodeBuckets',
       class: 'List',
       visibility: 'RO',

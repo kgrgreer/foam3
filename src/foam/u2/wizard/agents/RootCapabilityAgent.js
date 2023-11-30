@@ -20,7 +20,13 @@ foam.CLASS({
   properties: [
     {
       name: 'rootCapability',
-      class: 'String'
+      class: 'String',
+      adapt: function(o, n) {
+        if ( foam.nanos.crunch.Capability.isInstance(n) ) {
+          return n.id;
+        }
+        return n;
+      }
     }
   ],
 

@@ -17,7 +17,6 @@ foam.CLASS({
     'foam.core.ProxyX',
     'foam.core.X',
     'foam.core.AbstractFObjectPropertyInfo',
-    'foam.lib.formatter.FObjectFormatter',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.json.ExprParser',
     'foam.lib.json.JSONParser',
@@ -66,14 +65,15 @@ foam.CLASS({
     protected static ThreadLocal<JSONFObjectFormatter> formatter = new ThreadLocal<JSONFObjectFormatter>() {
       @Override
       protected JSONFObjectFormatter initialValue() {
-        return new JSONFObjectFormatter();
+        JSONFObjectFormatter b = new JSONFObjectFormatter();
+        b.setPropertyPredicate(new StoragePropertyPredicate());
+        b.setOutputShortNames(true);
+        return b;
       }
       @Override
       public JSONFObjectFormatter get() {
         JSONFObjectFormatter b = super.get();
         b.reset();
-        b.setPropertyPredicate(new StoragePropertyPredicate());
-        b.setOutputShortNames(true);
         return b;
       }
     };

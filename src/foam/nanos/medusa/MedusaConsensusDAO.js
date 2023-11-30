@@ -446,10 +446,7 @@ This is the heart of Medusa.`,
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
-              if ( replaying.getReplaying() ) {
-                // report to log
-                getLogger().error("promoter", "Failed to parse", cause.getMessage(), entry.toSummary(), data, cause);
-              }
+              getLogger().error("promoter", "Error parsing", cause.getMessage(), entry.toSummary(), "data", data, cause);
               throw new MedusaException("Failed to parse", cause);
             }
 
@@ -458,6 +455,7 @@ This is the heart of Medusa.`,
               er.setRequestMessage(data);
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              getLogger().error("promoter", "Failed to parse", entry.toSummary(), "data", data);
               throw new MedusaException("Failed to parse");
             }
 
@@ -502,6 +500,7 @@ This is the heart of Medusa.`,
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              getLogger().error("promoter", "Error parsing", cause.getMessage(), entry.toSummary(), "transientData", entry.getTransientData(), cause);
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( tran == null ) {
