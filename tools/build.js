@@ -278,12 +278,10 @@ function pom() {
 task('Build web root directory for inclusion in JAR.', [], function jarWebroot() {
   JAR_INCLUDES += ` -C ${BUILD_DIR} webroot `;
 
-  var webroot = BUILD_DIR + '/webroot';
+  var webroot = BUILD_DIR + '/webroot'; // ???: Why doesResourceMaker uses journals/webroot instead?
   ensureDir(webroot);
-  copyDir('./foam3/webroot', webroot);
 
-  ensureDir(webroot + '/favicon');
-  copyDir('./foam3/favicon', webroot + '/favicon');
+  execSync(__dirname + `/pmake.js -makers="Webroot" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
@@ -417,12 +415,14 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = GEN_JAVA ? 'Java,Maven,Javac,Journal,Doc,Resource' : 'Maven,Journal,Doc,Resource' ;
-  execSync(__dirname + `/pmake.js -makers="${makers}" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  var makers = GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
+  makers += ',Journal,Doc';
+  makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
+  execSync(__dirname + `/pmake.js -makers="Verbose,${makers}" -flags=verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers="Journal" -flags=xxxverbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers="Journal" -flags=verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
