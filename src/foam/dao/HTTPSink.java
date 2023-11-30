@@ -83,6 +83,8 @@ public class HTTPSink
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
       }
+      // override default user-agent (eg. Java/11.0.19) to prevent exposing the backend tech stack
+      conn.addRequestProperty("User-Agent", "Mozilla/5.0");
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
