@@ -22,6 +22,9 @@ exports.init = function() {
 
 exports.visitFile = function(pom, f, fn) {
   if ( f.name.endsWith('.jrl') ) {
+    // Disallow wildcard matching for excluding .jrl files, excluded entries must be exact match
+    if ( b_.isExcluded(pom, fn, true) ) return;
+
     verbose('\t\tjournal source:', fn);
     journalFiles.push(fn);
 

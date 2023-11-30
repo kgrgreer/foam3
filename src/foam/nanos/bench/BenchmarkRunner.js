@@ -337,6 +337,7 @@ foam.CLASS({
                   long passed = 0;
                   for ( int j = 0 ; j < getExecutionCount() ; j++ ) {
                     PM pm = new PM(getId(), benchmark.getId(), "execute", Thread.currentThread().getId());
+                    X savedX = XLocator.get();
                     try {
                       X y = x.put(THREAD, tno).put(EXECUTION, j);
                       XLocator.set(y);
@@ -353,7 +354,7 @@ foam.CLASS({
                       logger.debug(e);
                     } finally {
                       pm.log(x);
-                      XLocator.set(null);
+                      XLocator.set(savedX);
                     }
                   }
                   pass.addAndGet(passed++);
@@ -404,9 +405,12 @@ foam.CLASS({
           br.setPass(pass.get());
           br.setFail(fail.get());
           br.setTotal(pass.get() + fail.get());
-          br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
-          br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
-
+          try {
+            br.setOperationsS(new BigDecimal((complete / duration)).setScale(2, RoundingMode.HALF_UP).floatValue());
+            br.setOperationsST(new BigDecimal((complete / duration) / (float) threads).setScale(2, RoundingMode.HALF_UP).floatValue());
+          } catch (NumberFormatException e) {
+            // occurs on tiny execution times
+          }
           if ( getOneTimeTeardown() && ! teardown ) {
             logger.info("teardown");
             benchmark.teardown(x, br);
@@ -491,7 +495,11 @@ foam.CLASS({
       type: 'foam.nanos.bench.Benchmark',
       javaCode: `
         if ( ! SafetyUtil.isEmpty(getBenchmarkId()) ) {
-          return (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId()).fclone();
+          Benchmark benchmark = (Benchmark) ((DAO) x.get("benchmarkDAO")).find(getBenchmarkId());
+          if ( benchmark != null )
+            return (Benchmark) benchmark.fclone();
+          else if ( SafetyUtil.isEmpty(getCode()) )
+            throw new RuntimeException("Benchmark not found "+getBenchmarkId());
         }
 
         Language l = getLanguage();

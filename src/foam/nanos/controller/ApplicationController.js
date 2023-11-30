@@ -83,7 +83,6 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
-    'isIframe',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
@@ -94,6 +93,7 @@ foam.CLASS({
     'menuListener',
     'notify',
     'prefersMenuOpen',
+    'pushDefaultMenu',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
@@ -766,6 +766,14 @@ foam.CLASS({
         .catch(e => console.error(e.message || e));
     },
 
+    async function pushDefaultMenu() {
+      var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
+      defaultMenu = defaultMenu != null ? defaultMenu : '';
+      this.purgeMenuDAO(defaultMenu);
+      await this.pushMenu(defaultMenu);
+      return defaultMenu;
+    },
+
     function requestLogin() {
       var self = this;
 
@@ -814,14 +822,6 @@ foam.CLASS({
           this.__subSubContext__.notificationDAO.put(clonedNotification);
         }
       }
-    },
-
-    function isIframe() {
-      try {
-        return globalThis.self !== globalThis.top;
-      } catch (e) {
-        return true;
-      }
     }
   ],
 
@@ -841,6 +841,7 @@ foam.CLASS({
 
       await this.fetchTheme();
       this.initLayout.resolve();
+      this.stack.resetStack();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {

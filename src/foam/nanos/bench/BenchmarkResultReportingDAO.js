@@ -30,7 +30,8 @@ foam.CLASS({
     {
       documentation: 'Address of remote server',
       name: 'hostname',
-      class: 'String'
+      class: 'String',
+      javaFactory: 'return System.getProperty("hostname", "localhost");'
     },
     {
       documentation: 'Port of remote server',

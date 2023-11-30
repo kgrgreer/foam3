@@ -692,9 +692,13 @@ NOTE: when using the java client, the first call to a newly started instance may
       Object result = submit(x, DOP.SELECT, sb.toString());
       if ( result == null ) return null;
       if ( result instanceof FObject[] ) {
-        if ( limit == 1 &&
-             ((FObject[]) result).length > 0 ) {
-          return ((FObject[]) result)[0];
+        if ( limit == 1 ) {
+          if (((FObject[]) result).length == 0 ) {
+            return null;
+          }
+          if (((FObject[]) result).length > 0 ) {
+            return ((FObject[]) result)[0];
+          }
         }
         return result;
       }
@@ -816,7 +820,9 @@ NOTE: when using the java client, the first call to a newly started instance may
       javaCode: `
       StringBuilder sb = new StringBuilder();
       String postUrl = getPostURL();
-      if ( SafetyUtil.isEmpty(postUrl) ) {
+      if ( ! SafetyUtil.isEmpty(postUrl) ) {
+        sb.append(postUrl);
+      } else {
         if ( getSecure() ) {
           sb.append("https://");
         } else {

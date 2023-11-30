@@ -6,7 +6,10 @@
 
 (function() {
   var scripts = '';
+  var FILES = [];
   var foam = globalThis.foam = Object.assign({
+    FILES: FILES,
+    CUR_FILES: FILES,
     isServer: false,
     defaultFlags: {
       dev:   true,
@@ -155,8 +158,8 @@
         return root;
       }
     },
-    locale: typeof navigator === 'undefined' ? 'en' : navigator.language,
-    language: typeof navigator === 'undefined' ? 'en' : navigator.language.substring(0, 2),
+    locale:   typeof navigator === 'undefined' || typeof navigator.language === 'undefined' ? 'en' : navigator.language,
+    language: typeof navigator === 'undefined' || typeof navigator.language === 'undefined' ? 'en' : navigator.language.substring(0, 2),
     next$UID: (function() {
       /* Return a unique id. */
       var id = 1;
@@ -179,6 +182,8 @@
     },
     poms: [],
     POM: function(pom) {
+      var FILES = foam.CUR_FILES = [];
+      foam.FILES.push(FILES);
       if ( globalThis.document ) {
         var src  = document.currentScript.src;
         var i    = src.lastIndexOf('/');
@@ -197,6 +202,10 @@
           if ( f.predicate && ! f.predicate() ) return;
 
           foam.currentFlags = f.flags || [];
+          if ( ! isProjects ) {
+//            console.log('*** FILES', name);
+            foam.CUR_FILES.push(name);
+          }
           foam.require(name, ! isProjects, isProjects);
         });
       }

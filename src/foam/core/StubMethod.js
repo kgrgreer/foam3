@@ -15,7 +15,7 @@ foam.CLASS({
     {
       name: 'code',
       factory: function() {
-        var type = this.type;
+        var type              = this.type;
         var isContextOriented = this.args.length >= 1 && this.args[0].type == 'Context'
         var replyPolicyName   = this.replyPolicyName;
         var boxPropName       = this.boxPropName;

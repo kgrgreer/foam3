@@ -505,14 +505,15 @@ foam.CLASS({
           controllerMode: this.ControllerMode.VIEW
         });
       }
-      this.crunchController.createWizardSequence(cap, x)
-        .reconfigure('CheckPendingAgent', { showToast: showToast })
-          .execute().then(() => {
-            this.wizardOpened = false
-          });
+      let runner = foam.u2.crunch.WizardRunner.create({
+        source: cap,
+        wizardType: 'UCJ'
+      }, this);
+      runner.sequence.reconfigure('CheckPendingAgent', { showToast: showToast });
+      await runner.launch();
+      this.wizardOpened = false;
     }
   ],
-
   listeners: [
     {
       name: 'onChange',

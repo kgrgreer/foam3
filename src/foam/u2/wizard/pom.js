@@ -85,6 +85,7 @@ foam.POM({
     { name: "data/ArrayWrapSaver",                     flags: "web" },
     { name: "data/WrapSaver",                          flags: "web" },
     { name: "data/PrerequisiteLoader",                 flags: "web" },
+    { name: "data/CapableLoader",                      flags: "web" },
     { name: "data/EasyLoader",                         flags: "web" },
     { name: "data/CreateLoader",                       flags: "web" },
     { name: "data/DAOArrayLoader",                     flags: "web" },

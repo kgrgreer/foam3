@@ -67,15 +67,16 @@ function execSync(cmd, options) {
 }
 
 
-function isExcluded(pom, f) {
+function isExcluded(pom, f, opt_disableWildcard) {
   var ex = pom.excludes;
   if ( ! ex ) return false;
   for ( var i = 0 ; i < ex.length ; i++ ) {
     var p = ex[i];
-    if ( p.endsWith('*') ) p = p.substring(0, p.length-1);
+    if ( p.endsWith('*') && ! opt_disableWildcard ) p = p.substring(0, p.length-1);
 
-    if ( f.endsWith(p) || ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) )
+    if ( f.endsWith(p) || ( f.endsWith('.js') && f.substring(0, f.length-3).endsWith(p) ) ) {
       return true;
+    }
   }
 
   return false;
@@ -145,6 +146,27 @@ function spawn(s) {
 }
 
 
+function exportEnv(name, value) {
+  console.log(`export ${name}="${value}"`);
+  process.env[name] = value;
+}
+
+
+function exportEnvs() {
+  /** Export environment variables. **/
+  Object.keys(ENV).forEach(k => {
+    var v = globalThis[k];
+    exportEnv(k, v);
+  });
+}
+
+
+function exec(s) {
+  exportEnvs();
+  return execSync(s, { stdio: 'inherit' });
+}
+
+
 function comma(list, value) {
   return list ? list + ',' + value : value;
 }
@@ -194,6 +216,7 @@ exports.copyDir               = copyDir;
 exports.copyFile              = copyFile;
 exports.emptyDir              = emptyDir;
 exports.ensureDir             = ensureDir;
+exports.exec                  = exec;
 exports.execSync              = execSync;
 exports.isExcluded            = isExcluded;
 exports.processSingleCharArgs = processSingleCharArgs;

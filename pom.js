@@ -12,7 +12,11 @@ foam.POM({
         { name: 'src/pom' },
         { name: 'src/foam/nanos/pom' },
         { name: 'src/foam/u2/wizard/pom' },
-        { name: 'src/foam/flow/laminar/pom' }
+        { name: 'src/foam/flow/laminar/pom' },
+        { name: 'webroot/pom' }
+    ],
+    webroot: [
+      'favicon'
     ],
     javaDependencies: [
       'com.authy:authy-java:1.1.0',
@@ -39,9 +43,10 @@ foam.POM({
       'org.apache.commons:commons-text:1.10.0',
       'org.apache.xmlgraphics:batik-codec:1.17',
       'org.apache.xmlgraphics:batik-transcoder:1.17',
-      'org.bouncycastle:bcpg-jdk15on:1.64',
-      'org.bouncycastle:bcpkix-jdk15on:1.64',
-      'org.bouncycastle:bcprov-jdk15on:1.64',
+      'org.bouncycastle:bcpg-jdk18on:1.76',
+      'org.bouncycastle:bcpkix-jdk18on:1.76',
+      'org.bouncycastle:bcprov-jdk18on:1.76',
+      'org.bouncycastle:bcutil-jdk18on:1.76',
       'org.eclipse.jetty:jetty-server:9.4.51.v20230217',
       'org.eclipse.jetty:jetty-util:9.4.51.v20230217',
       'org.eclipse.jetty.websocket:websocket-server:9.4.51.v20230217',

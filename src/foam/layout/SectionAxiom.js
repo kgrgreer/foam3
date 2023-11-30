@@ -30,6 +30,9 @@ foam.CLASS({
       name: 'properties'
     },
     {
+      name: 'actions'
+    },
+    {
       class: 'foam.u2.ViewSpec',
       name: 'view',
       value: { class: 'foam.u2.detail.SectionView' }
@@ -126,9 +129,16 @@ foam.CLASS({
         return m != foam.u2.DisplayMode.HIDDEN;
       }));
 
+      let actions;
       // add check for at least one available action as well (actionAvailSlot)
-      var actions = data.cls_.getAxiomsByClass(foam.core.Action)
-        .filter(a => a.section === this.name);
+      if ( this.hasOwnProperty('actions') ) {
+        actions = this.actions.map(a => {
+          return data.cls_.getAxiomByName(a);
+        });
+      } else {
+        actions = data.cls_.getAxiomsByClass(foam.core.Action)
+          .filter(a => a.section === this.name);
+      }
 
       var actionAvailSlot = foam.core.ArraySlot.create({
         slots: actions.map(

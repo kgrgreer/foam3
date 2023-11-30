@@ -158,9 +158,10 @@ foam.CLASS({
 
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig config = support.getConfig(x, support.getConfigId());
+      // TODO/REVIEW: Presently NERF requires Dagger, restricting to zone 0 and 1, here and in reconfigure
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
-           config.getZone() > 0L ) {
+           config.getZone() > 1L ) {
         logger.debug("start", "exit");
       }
 
@@ -195,7 +196,7 @@ foam.CLASS({
       ClusterConfig config = support.getConfig(x, support.getConfigId());
       if ( config == null ||
            config.getType() == MedusaType.NODE ||
-           config.getZone() > 0L ) {
+           config.getZone() > 1L ) {
         logger.debug("exit");
         return bootstrap;
       }

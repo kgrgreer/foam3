@@ -19,6 +19,7 @@ foam.CLASS({
   package: 'foam.box',
   name: 'RawMessagePortBox',
   implements: [ 'foam.box.Box' ],
+
   requires: [
     'foam.json.Outputter',
     'foam.box.ReplyBox'
@@ -42,6 +43,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function send(message) {
       var replyBox = message.attributes.replyBox;
