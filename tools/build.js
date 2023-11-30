@@ -71,7 +71,7 @@ ln -s /Volumes/RamDisk/build ~/NANOPAY/build
 
 const fs       = require('fs');
 const { join } = require('path');
-const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
+const { buildEnv, comma, copyDir, copyFile, emptyDir, ensureDir, exec, execSync, processSingleCharArgs, rmdir, rmfile, spawn } = require('./buildlib');
 
 
 // Build configs
@@ -107,6 +107,7 @@ var
   TEST                      = false,
   TESTS                     = '',
   WEB_PORT                  = null,
+  VERBOSE                   = '',
   VULNERABILITY_CHECK       = false,
   VULNERABILITY_CHECK_SCORE = 9, // CVSS score (LOW:0..5 , MEDIUM:5..7 , HIGH:7..9 , CRITICAL:9..10, IGNORE:11) to fail the build
   FOAM_REVISION,
@@ -186,12 +187,6 @@ function task(desc, dep, f) {
       rec[1] = dur;
     }
   }
-}
-
-
-function exportEnv(name, value) {
-  console.log(`export ${name}="${value}"`);
-  process.env[name] = value;
 }
 
 
@@ -415,14 +410,15 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
+  var makers = VERBOSE ? 'Verbose' : '';
+  makers += GEN_JAVA ? ',Java,Maven,Javac' : ',Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers="Verbose,${makers}" -flags=not_verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers="${makers}" ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers="Journal" -flags=not_verbose -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers="Journal" ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
@@ -607,21 +603,6 @@ task('Create empty build and deployment directory structures if required.', [], 
 });
 
 
-function exportEnvs() {
-  /** Export environment variables. **/
-  Object.keys(ENV).forEach(k => {
-    var v = globalThis[k];
-    exportEnv(k, v);
-  });
-}
-
-
-function exec(s) {
-  exportEnvs();
-  return execSync(s, { stdio: 'inherit' });
-}
-
-
 function writeToPidFile(pid) {
   fs.writeFileSync(NANOS_PIDFILE, pid.toString());
 }
@@ -699,6 +680,7 @@ function moreUsage() {
 }
 
 const ARGS = {
+  a: [ 'turn on verbose mode', () => VERBOSE = '-flags=verbose' ],
   b: [ 'run all benchmarks.',
     () => {
       BENCHMARK = true;
