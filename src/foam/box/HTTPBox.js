@@ -100,7 +100,7 @@ foam.CLASS({
       javaFactory: `
       HttpServletRequest req = getX().get(HttpServletRequest.class);
       if ( req != null ) {
-        return req.getScheme()+"://"+req.getServerName();
+        return req.getScheme() + "://" + req.getServerName();
       }
       return null;
       `
@@ -282,13 +282,12 @@ task.resume()
       // TODO: Go async and make request in a separate thread.
 
       java.net.HttpURLConnection conn;
-      foam.box.Box replyBox = (foam.box.Box)msg.getAttributes().get("replyBox");
+      foam.box.Box replyBox = (foam.box.Box) msg.getAttributes().get("replyBox");
 
       try {
         conn = getConnection();
         java.io.OutputStreamWriter output =
-          new java.io.OutputStreamWriter(conn.getOutputStream(),
-                                            java.nio.charset.StandardCharsets.UTF_8);
+          new java.io.OutputStreamWriter(conn.getOutputStream(), java.nio.charset.StandardCharsets.UTF_8);
 
         // TODO: Clone message or something when it clones safely.
         msg.getAttributes().put("replyBox", getReplyBox());
@@ -296,13 +295,12 @@ task.resume()
         foam.lib.formatter.FObjectFormatter formatter = formatter_.get();
         formatter.setX(getX());
         formatter.output(msg);
-        output.write(formatter.builder().toString());
-
+        StringBuilder builder = formatter.builder();
+        output.append(builder);
         msg.getAttributes().put("replyBox", replyBox);
         output.close();
 
-        replyBox.send((foam.box.Message)getResponseMessage(conn));
-
+        replyBox.send((foam.box.Message) getResponseMessage(conn));
       } catch(java.io.IOException e) {
         foam.box.Message replyMessage = getX().create(foam.box.Message.class);
         replyMessage.setObject(e);
@@ -360,8 +358,8 @@ task.resume()
       byte[] buf = new byte[8388608];
       java.io.InputStream input = conn.getInputStream();
 
-      int off = 0;
-      int len = buf.length;
+      int off  = 0;
+      int len  = buf.length;
       int read = -1;
       while ( len != 0 && ( read = input.read(buf, off, len) ) != -1 ) {
         off += read;
