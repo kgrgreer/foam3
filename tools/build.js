@@ -410,8 +410,8 @@ task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageF
 
 task('Call pmake to generate & compile java, collect journals, call Maven and copy documents.', [], function genJava() {
 //   commandLine 'bash', './gen.sh', "${project.genJavaDir}", "${project.findProperty("pom")?:"pom" }"
-  var makers = VERBOSE ? 'Verbose' : '';
-  makers += GEN_JAVA ? ',Java,Maven,Javac' : ',Maven' ;
+  var makers = VERBOSE ? 'Verbose,' : '';
+  makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
   execSync(__dirname + `/pmake.js -makers="${makers}" ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
