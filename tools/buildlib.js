@@ -146,6 +146,27 @@ function spawn(s) {
 }
 
 
+function exportEnv(name, value) {
+  console.log(`export ${name}="${value}"`);
+  process.env[name] = value;
+}
+
+
+function exportEnvs() {
+  /** Export environment variables. **/
+  Object.keys(ENV).forEach(k => {
+    var v = globalThis[k];
+    exportEnv(k, v);
+  });
+}
+
+
+function exec(s) {
+  exportEnvs();
+  return execSync(s, { stdio: 'inherit' });
+}
+
+
 function comma(list, value) {
   return list ? list + ',' + value : value;
 }
@@ -195,6 +216,7 @@ exports.copyDir               = copyDir;
 exports.copyFile              = copyFile;
 exports.emptyDir              = emptyDir;
 exports.ensureDir             = ensureDir;
+exports.exec                  = exec;
 exports.execSync              = execSync;
 exports.isExcluded            = isExcluded;
 exports.processSingleCharArgs = processSingleCharArgs;
