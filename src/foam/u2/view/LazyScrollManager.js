@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'LazyScrollManager',
   extends: 'foam.u2.View',
@@ -146,6 +146,11 @@
       documentation: 'An expression which returns the group title. Can be a Property.'
     },
     {
+      class: 'Boolean',
+      name: 'invertGroupingOrder',
+      documentation: 'GroupBy returns groups in ascending order, use this to flip that behaviour'
+    },
+    {
       class: 'FObjectProperty',
       name: 'order',
       documentation: 'Optional order used to sort citations within a group'
@@ -270,7 +275,7 @@
       var self = this;
       var proxy = this.ProxyDAO.create({ delegate: dao });
       var sortParams = [];
-      if ( this.groupBy ) sortParams.push(this.groupBy)
+      if ( this.groupBy ) sortParams.push(this.invertGroupingOrder ? this.DESC(this.groupBy) : this.groupBy)
       if ( this.order ) sortParams.push(this.order)
       if ( sortParams.length ) proxy = proxy.orderBy(sortParams);
       this.loadingPages_[page] = true;
@@ -284,7 +289,7 @@
           if ( self.groupBy ) {
             var group = self.groupBy.f(values.array[i]);
             if ( ! foam.util.equals(group, self.currGroup_) || index == 1 ) {
-              e.tag(self.groupHeaderView, args);
+              e.tag(self.groupHeaderView, { ...args, groupLabel: group });
             }
             self.currGroup_ = group;
           }

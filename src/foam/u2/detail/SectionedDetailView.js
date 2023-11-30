@@ -20,6 +20,14 @@ foam.CLASS({
     ^ .foam-u2-view-ScrollTableView table {
       width: 100%;
     }
+    ^card-container {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+    }
+    ^ .inner-card {
+      height: 100%;
+    }
   `,
 
   properties: [
@@ -68,7 +76,8 @@ foam.CLASS({
 
                 return self.GUnit.create({ columns: s.gridColumns })
                   .addClass(self.myClass('card-container'))
-                  .start('h2')
+                  .start()
+                    .addClass('h600')
                     .add(title$)
                     .show(title$.and(self.showTitle$))
                   .end()
