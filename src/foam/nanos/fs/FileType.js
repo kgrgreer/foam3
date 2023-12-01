@@ -15,22 +15,22 @@ foam.CLASS({
       class: 'String',
       name: 'id',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'type',
-      updateVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'subType',
-      updateVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'abbreviation',
-      updateVisibility: 'RO',
+      updateVisibility: 'RO'
     }
   ],
 
