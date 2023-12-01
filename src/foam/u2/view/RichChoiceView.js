@@ -473,6 +473,13 @@ foam.CLASS({
         });
       }
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'inputView',
+      factory: function() {
+        return foam.u2.tag.Input.create({autofocus: true});
+      }
+    },
     'selectionEl_'
   ],
 
@@ -511,7 +518,8 @@ foam.CLASS({
                   .add(self.FILTER_.clone().copyFrom({ view: {
                     class: 'foam.u2.view.TextField',
                     placeholder: this.searchPlaceholder || 'Search... ',
-                    onKey: true
+                    onKey: true,
+                    view: self.inputView
                   } }))
                 .endContext()
               .end();
@@ -580,6 +588,7 @@ foam.CLASS({
                     self.isOpen_ = ! self.isOpen_;
                     self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
+                    if ( self.inputView.autofocus ) self.inputView.focus();
                   }
                   e.preventDefault();
                   e.stopPropagation();
@@ -718,7 +727,7 @@ foam.CLASS({
         selection by creating that custom view and providing it in place of this
         one by setting the selectionView property on RichChoiceView.
       `,
-      
+
       requires: ['foam.u2.CitationView'],
       imports: [
         'of'

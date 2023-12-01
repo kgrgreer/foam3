@@ -135,6 +135,10 @@ foam.CLASS({
 
       this.initCls();
       this.link();
+      if ( this.autofocus ) {
+        this.focus();
+      }
+
     },
 
     function initCls() {
