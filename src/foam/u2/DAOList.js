@@ -124,7 +124,7 @@ foam.CLASS({
       methods: [
         function render() {
           this
-            .addClass(this.myClass(), 'h500')
+            .addClass(this.myClass(), 'h600')
             .add(this.groupLabel)
           .end()
         }
