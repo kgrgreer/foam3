@@ -84,7 +84,8 @@ foam.CLASS({
   templates: [
     {
       name: 'sendMethodCode',
-      template: `if ( ! ( message.getObject() instanceof foam.box.RPCMessage) ) {
+      template: `
+    if ( ! ( message.getObject() instanceof foam.box.RPCMessage) ) {
       // TODO return an error?
       return;
     }
