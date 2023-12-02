@@ -477,7 +477,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'inputView',
       factory: function() {
-        return foam.u2.tag.Input.create({autofocus: true});
+        return foam.u2.tag.Input.create({focused: true});
       }
     },
     'selectionEl_'
@@ -588,7 +588,7 @@ foam.CLASS({
                     self.isOpen_ = ! self.isOpen_;
                     self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
-                    if ( self.inputView.autofocus ) self.inputView.focus();
+                    self.inputView.focused = true;
                   }
                   e.preventDefault();
                   e.stopPropagation();
