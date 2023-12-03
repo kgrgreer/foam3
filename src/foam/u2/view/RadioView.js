@@ -78,12 +78,13 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.SUPER();
+      // If no item is selected, and data has not been provided, select the 0th
+      // entry.
       this
         .addClass(this.myClass())
         .enableClass(this.myClass('horizontal-radio'), this.isHorizontal);
 
-      // If no item is selected, and data has not been provided, select the 0th
-      // entry.
       if ( ! this.data && ! this.index ) {
         this.index = 0;
       }
