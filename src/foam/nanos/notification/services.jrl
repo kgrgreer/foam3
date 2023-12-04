@@ -87,6 +87,8 @@ p({
       },
       "ttlPurgeTime": 0,
       "ttlSelectPurgeTime": 0,
+      "remoteListenerSupport": true,
+      "serviceName":"service/myNotificationDAO",
       "decorators": [
         { 
           "class":"foam.nanos.notification.ToastNotificationDAO"
