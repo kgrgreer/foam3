@@ -64,7 +64,16 @@ foam.CLASS({
       name: 'verificationCode',
       section: 'verificationCodeSection',
       view: function(_, X) {
-        var delegates = Array(6).fill(X.data.FragmentedTextFieldFragment.create({ maxLength: 1 }, X));
+        var delegates = Array(6).fill().map(() => X.data.FragmentedTextFieldFragment.create({
+          maxLength: 1,
+          view: {
+            class: 'foam.u2.TextField',
+            onKey: true,
+            type: 'number',
+            autocomplete: 'off',
+            inputMode: 'numeric'
+          }
+        }, X));
         delegates = [].concat(...delegates.map(n => [n, ' '])).slice(0, -1);
         return X.data.FragmentedTextField.create({ delegates: delegates }, X);
       },
