@@ -43,6 +43,14 @@ foam.CLASS({
     ^fragment:valid {
       background: $white;
     }
+    ^fragment::-webkit-outer-spin-button,
+    ^fragment::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    ^fragment {
+      -moz-appearance: textfield;
+    }
   `,
 
   constants: [
