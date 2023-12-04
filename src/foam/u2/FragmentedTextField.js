@@ -85,28 +85,29 @@ foam.CLASS({
       var slots = [];
       for ( let i = 0 ; i < this.delegates.length ; i++ ) {
         let e = this.delegates[i];
+        let eView;
         if ( typeof e === 'string' ) {
           this.start().addClass(this.myClass('symbol'))
             .add(e).end();
           continue;
         } else if ( e.cls_ === foam.u2.FragmentedTextFieldFragment ) {
-          e = e.view;
+          eView = e.view;
         }
-        var u2Elem = this.start(e)
+        var u2Elem = this.start(eView, { data$: e.data$ })
         .style({ width: (this.delegates[i].maxLength * 4) + 'rem' })
           .addClass(this.myClass('fragment'))
           .attr('required', true)
         u2Elem.on('focus', () => {
           this.currentIndex = i;
-        })
-        u2Elem.on('keydown', (evt) => {
+        });
+        u2Elem.on('keydown', evt => {
           if ( this.BACKSPACE_OR_DELETE.includes(evt.keyCode) ) {
             evt.preventDefault();
             evt.stopPropagation();
             this.onDelete();
           }
         });
-        slots.push(u2Elem.data$)
+        slots.push(u2Elem.data$);
       }
 
       this.data$ = this.ArraySlot.create({ slots }).map(arr => {
