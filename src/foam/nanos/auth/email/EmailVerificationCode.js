@@ -69,7 +69,6 @@ foam.CLASS({
           view: {
             class: 'foam.u2.TextField',
             onKey: true,
-            type: 'number',
             autocomplete: 'off',
             inputMode: 'numeric'
           }
