@@ -199,13 +199,12 @@ foam.CLASS({
       next = sched.getNextScheduledTime(x, last);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       long diffMonths = ChronoUnit.MONTHS.between(lastTime, nextTime);
-      long diffDays = ChronoUnit.DAYS.between(lastTime, nextTime);
-      test ( diffMonths == 0 && diffDays > 0, "Month (legacy -1) - next month "+diff );
+      LocalDateTime nextMonth = lastTime.plusMonths(1);
+      test ( nextTime.getMonthValue() == nextMonth.getMonthValue(), "Month (legacy -1) - next month 1");
+      nextMonth = nextTime.plusMonths(1);
       next = sched.getNextScheduledTime(x, next);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
-      diffMonths = ChronoUnit.MONTHS.between(lastTime, nextTime);
-      diffDays = ChronoUnit.DAYS.between(lastTime, nextTime);
-      test ( diffMonths == 1, "Month (legacy -1) - next next month "+diff );
+      test ( nextTime.getMonthValue() == nextMonth.getMonthValue(), "Month (legacy -1) - next next month 2");
 
       sched = new CronSchedule();
       sched.setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(LocalDate.now().getMonth().getValue()) });
