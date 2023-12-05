@@ -778,9 +778,11 @@ const ARGS = {
   X: [ 'Execute a list of tasks.',
     args => {
       args.split(',').forEach(t => {
-        var f = globalThis[t];
+        // Support build task with args eg. -XcheckDeps:5 will execute checkDeps(5)
+        var s = t.split(':');
+        var f = globalThis[s[0]];
         if ( f ) {
-          f();
+          f(...s.slice(1));
         } else {
           console.log('Unknown Command:', t);
         }

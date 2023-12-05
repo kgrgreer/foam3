@@ -1,2 +1,3 @@
 p({"class":"foam.lib.json.ClassReferenceParserTest","id":"ClassReferenceParserTest","description":"Tests the Class reference parser"})
 p({"class":"foam.lib.json.PropertyReferenceParserTest","id":"PropertyReferenceParserTest","description":"Tests the Property reference parser"})
+p({"class":"foam.lib.json.StringToStringArrayParserTest","id":"StringToStringArrayParserTest","description":"Tests string data to string array parser"})

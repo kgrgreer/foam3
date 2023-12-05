@@ -73,7 +73,7 @@
         DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
         DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         DUGRule dugRule = (DUGRule) rule;
-        AbstractSink sink = null;
+        HTTPSink sink = null;
         String url = getUrl();
         boolean loopback = "loopback".equals(url);
         if ( loopback ) {
@@ -122,7 +122,8 @@
             );
         }
         sink.setX(agencyX);
-        ((HTTPSink) sink).setLoopback(loopback);
+        sink.setLoopback(loopback);
+        sink.setAuthType(dugRule.getAuthType());
         return sink;
       `
     },
@@ -159,7 +160,7 @@
           return;
       }
       getLogger(x).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
-      
+
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
         PM pm = PM.create(x, true, getClass().getSimpleName(), rule.getDaoKey(), rule.getName());

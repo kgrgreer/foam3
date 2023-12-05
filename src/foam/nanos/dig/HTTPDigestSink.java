@@ -91,7 +91,7 @@ public class HTTPDigestSink extends HTTPSink {
           retryCount--;
         } else {
           return;
-        } 
+        }
       } catch (SocketException e) {
         // create an alarm on connection timeout
         String name = "HTTP DIGEST CONNECTION TIMEOUT";
@@ -142,6 +142,9 @@ public class HTTPDigestSink extends HTTPSink {
       } else {
         throw new RuntimeException(this.getClass().getSimpleName() + ", Unsupported content format");
       }
+      // override default user-agent (eg. Java/11.0.19) to prevent exposing the backend tech stack
+      conn.addRequestProperty("User-Agent", "Mozilla/5.0");
+
       // add hashed payload-digest to request headers
       FObject fobj = (FObject) obj;
       String payload = outputter.get().stringify(fobj);
