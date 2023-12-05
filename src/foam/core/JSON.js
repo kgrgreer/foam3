@@ -799,15 +799,22 @@ foam.LIB({
               }
             }
 
-            var o = c.create(json, opt_ctx);
+            try {
+              var o = c.create(json, opt_ctx);
 
-            /* For debugging:
-            if ( opt_class && ! opt_class.isInstance(o) ) {
-              console.error(
-                '********************************************** JSON: Incompatible specified class. ',
-                o.cls_.id, 'is not a sub-class of', opt_class.id, json);
+              /* For debugging:
+              if ( opt_class && ! opt_class.isInstance(o) ) {
+                console.error(
+                  '********************************************** JSON: Incompatible specified class. ',
+                  o.cls_.id, 'is not a sub-class of', opt_class.id, json);
+              }
+              */
+
+              return o;
+            } catch (x) {
+              console.error(`Error creating object of class ${c.id} from ${json}:`, x);
+//              console.error(`Error creating object of class ${c.id} from ${JSON.stringify(json)}:`, x);
             }
-            */
 
             return o;
           }
