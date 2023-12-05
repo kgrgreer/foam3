@@ -813,7 +813,8 @@ foam.LIB({
 
               return o;
             } catch (x) {
-              console.error(`Error creating object of class ${c.id} from ${JSON.stringify(json)}:`, x);
+              console.error(`Error creating object of class ${c.id} from ${json}:`, x);
+//              console.error(`Error creating object of class ${c.id} from ${JSON.stringify(json)}:`, x);
             }
           }
 
