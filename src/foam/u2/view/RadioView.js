@@ -131,41 +131,5 @@ foam.CLASS({
       this.isDisabled =
         mode === this.DisplayMode.RO || mode === this.DisplayMode.DISABLED;
     }
-  ],
-
-  listeners: [
-    function onChoicesUpdate() {
-      var self = this;
-
-      this.removeAllChildren();
-
-      this.choices.forEach(c => {
-        var isChecked = self.slot(function(data) { return data == c[0]; });
-        var id    = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
-        self.start('div').
-          addClass('p-md', 'choice').
-            callIf(this.columns != -1, function() { this.style({'flex-basis': (100 / self.columns) + '%'}) }).
-          start('input', {id: id}).
-            attrs({
-              type: 'radio',
-              name: self.getAttribute('name') + self.$UID,
-              value: c[1],
-              checked: isChecked,
-              disabled: self.isDisabled$
-            }).
-            on('change', function(evt) { self.data = c[0]; }).
-          end().
-          start('label').
-            attrs({for: id}).
-            start().
-              addClass(self.myClass('radio-outer')).
-              add(self.RadioButton.create({ isSelected$: isChecked, isDisabled$: self.isDisabled$ })).
-            end().
-            start('span').
-              add(c[1]).
-            end().
-          end();
-      });
-    }
   ]
 });
