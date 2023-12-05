@@ -223,39 +223,40 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      if ( ! this.choice && this.choices.length == 1 ) this.data = this.choices[0][0];
+      if (!this.choice && this.choices.length == 1) this.data = this.choices[0][0];
 
       // If no item is selected, and data has not been provided, select the 0th
       // entry.
-      if ( this.data == null && ! this.index ) {
+      if (this.data == null && !this.index) {
         this.index = 0;
       }
 
       this.onDAOUpdate();
-
+      this.renderContent();
+      this.dao$proxy.on.sub(this.onDAOUpdate);
+    },
+      function renderContent() {
       this.add(this.slot(function(mode, text) {
-        if ( mode !== foam.u2.DisplayMode.RO ) {
+        if (mode !== foam.u2.DisplayMode.RO) {
           return self.E()
-            .start(self.selectSpec, {
-              data$:            self.index$,
-              label$:           self.label$,
-              alwaysFloatLabel: self.alwaysFloatLabel,
-              choices$:         self.choices$,
-              placeholder$:     self.placeholder$,
-              mode$:            self.mode$,
-              size$:            self.size$,
-              header$:          self.header$,
-              disabledData$:    self.disabledData$
-            })
+              .start(self.selectSpec, {
+                data$: self.index$,
+                label$: self.label$,
+                alwaysFloatLabel: self.alwaysFloatLabel,
+                choices$: self.choices$,
+                placeholder$: self.placeholder$,
+                mode$: self.mode$,
+                size$: self.size$,
+                header$: self.header$,
+                disabledData$: self.disabledData$
+              })
               .attrs({name: self.name})
               .enableClass('selection-made', self.index$.map((index) => index !== -1))
-            .end();
+              .end();
         }
 
         return text ? self.E().translate(text + '.name', text) : '';
       }));
-
-      this.dao$proxy.on.sub(this.onDAOUpdate);
     },
 
     function findIndexOfChoice(choice) {
