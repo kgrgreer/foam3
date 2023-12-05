@@ -239,20 +239,20 @@ foam.CLASS({
       this.add(this.slot(function(mode, text) {
         if ( mode !== foam.u2.DisplayMode.RO ) {
           return self.E()
-              .start(self.selectSpec, {
-                data$:            self.index$,
-                label$:           self.label$,
-                alwaysFloatLabel: self.alwaysFloatLabel,
-                choices$:         self.choices$,
-                placeholder$:     self.placeholder$,
-                mode$:            self.mode$,
-                size$:            self.size$,
-                header$:          self.header$,
-                disabledData$:    self.disabledData$
-              })
-                .attrs({name: self.name})
-              .enableClass('selection-made', self.index$.map((index) => index !== -1))
-              .end();
+            .start(self.selectSpec, {
+              data$:            self.index$,
+              label$:           self.label$,
+              alwaysFloatLabel: self.alwaysFloatLabel,
+              choices$:         self.choices$,
+              placeholder$:     self.placeholder$,
+              mode$:            self.mode$,
+              size$:            self.size$,
+              header$:          self.header$,
+              disabledData$:    self.disabledData$
+            })
+              .attrs({name: self.name})
+            .enableClass('selection-made', self.index$.map((index) => index !== -1))
+            .end();
         }
 
         return text ? self.E().translate(text + '.name', text) : '';
