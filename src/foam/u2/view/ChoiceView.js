@@ -235,7 +235,7 @@ foam.CLASS({
       this.renderContent();
       this.dao$proxy.on.sub(this.onDAOUpdate);
     },
-      function renderContent() {
+    function renderContent() {
       this.add(this.slot(function(mode, text) {
         if ( mode !== foam.u2.DisplayMode.RO ) {
           return self.E()
@@ -251,7 +251,7 @@ foam.CLASS({
               disabledData$:    self.disabledData$
             })
               .attrs({name: self.name})
-            .enableClass('selection-made', self.index$.map((index) => index !== -1))
+              .enableClass('selection-made', self.index$.map((index) => index !== -1))
             .end();
         }
 
