@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.security.csp',
+  package: 'foam.nanos.http.csp',
   name: 'CSPReportPayload',
 
   documentation: `Represents CSP report payload.
@@ -33,7 +33,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.security.csp.CSPViolation',
+      of: 'foam.nanos.http.csp.CSPViolation',
       name: 'CSPReport',
       shortName: 'csp-report'
     }
@@ -41,7 +41,7 @@ foam.CLASS({
 });
 
 foam.CLASS({
-  package: 'foam.nanos.security.csp',
+  package: 'foam.nanos.http.csp',
   name: 'CSPViolation',
 
   documentation: 'Content Security Policy violation report.',

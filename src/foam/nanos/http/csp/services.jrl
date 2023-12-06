@@ -2,7 +2,7 @@ p({
   class: "foam.nanos.boot.NSpec",
   name: "CSPReportWebAgent",
   authenticate: false,
-  serviceClass: "foam.nanos.security.csp.CSPReportWebAgent"
+  serviceClass: "foam.nanos.http.csp.CSPReportWebAgent"
 })
 
 p({
@@ -15,9 +15,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
       .setJournalName("CSPViolation")
-      .setOf(foam.nanos.security.csp.CSPViolation.getOwnClassInfo())
+      .setOf(foam.nanos.http.csp.CSPViolation.getOwnClassInfo())
       .setCluster(false)
       .build();
     """,
-  client: "{\"of\":\"foam.nanos.security.csp.CSPViolation\"}",
+  client: "{\"of\":\"foam.nanos.http.csp.CSPViolation\"}",
 })

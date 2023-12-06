@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.security.csp',
+  package: 'foam.nanos.http.csp',
   name: 'CSPReportWebAgent',
 
   documentation: 'Service that fetches all of the incoming CSP Violation reports.',

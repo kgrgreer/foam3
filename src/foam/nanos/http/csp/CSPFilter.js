@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.security.csp',
+  package: 'foam.nanos.http.csp',
   name: 'CSPFilter',
 
   documentation: 'Content-Security-Policy servlet filter',
