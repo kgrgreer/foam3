@@ -19,9 +19,11 @@ foam.CLASS({
   package: 'foam.box',
   name: 'BackoffBox',
   extends: 'foam.box.ProxyBox',
+
   imports: [
     'setTimeout'
   ],
+
   properties: [
     {
       class: 'Int',
@@ -37,6 +39,7 @@ foam.CLASS({
       value: 20000
     }
   ],
+
   methods: [
     function send(m) {
       var self = this;
@@ -49,13 +52,16 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.box',
   name: 'RetryReplyBox',
   extends: 'foam.box.ProxyBox',
+
   requires: [
     'foam.core.Exception'
   ],
+
   properties: [
     {
       name: 'attempt',
@@ -75,8 +81,8 @@ foam.CLASS({
     {
       name: 'send',
       code: function send(msg) {
-        if ( this.Exception.isInstance(msg.object) &&
-             ( this.maxAttempts == -1 || this.attempt < this.maxAttempts ) ) {
+        if ( this.Exception.isInstance(msg.object) && ( this.maxAttempts == -1 || this.attempt < this.maxAttempts ) ) {
+          // console.log('********************************************* ATTEMPT', this.attempt);
           this.attempt++;
           this.destination.send(this.message);
           return;
@@ -87,6 +93,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.box',
@@ -115,9 +122,9 @@ foam.CLASS({
         var clone = msg.cls_.create(msg);
 
         replyBox.localBox = this.RetryReplyBox.create({
-          delegate: replyBox.localBox,
+          delegate:    replyBox.localBox,
           maxAttempts: this.maxAttempts,
-          message: clone,
+          message:     clone,
           destination: this.BackoffBox.create({
             delegate: this.delegate
           })
