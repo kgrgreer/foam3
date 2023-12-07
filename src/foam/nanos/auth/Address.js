@@ -741,7 +741,7 @@ foam.CLASS({
         filtered = list.stream() 
           .filter(s -> ! SafetyUtil.isEmpty(s) )
           .collect(Collectors.toList());
-        return String.join(", ",filtered);
+        return String.join(", ", filtered);
       `
     },
     {
