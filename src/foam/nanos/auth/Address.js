@@ -728,16 +728,9 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        var rtn = this.getShortAddress();
-        rtn += ', ';
-        rtn += this.city;
-        rtn += ', ';
-        rtn += this.regionId;
-        rtn += ', ';
-        rtn += this.countryId;
-        rtn += ', ';
-        rtn += this.postalCode;
-        return rtn === ', , , , ' ? '' : rtn;
+        return [this.getShortAddress(), this.city, this.regionId, this.countryId, this.postalCode]
+          .filter(s => s)
+          .join(', ')
       },
       javaCode: `
         StringBuilder sb = new StringBuilder();
