@@ -194,6 +194,14 @@ foam.CLASS({
         return searchParams.get('referral');
       },
       hidden: true
+    },
+    {
+      name: 'disclaimer',
+      value: true,
+      hidden: true,
+      documentation: `
+        Show disclaimer for t&c and privacyPolicy in loginview
+      `
     }
   ],
 

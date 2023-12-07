@@ -18,8 +18,8 @@ foam.CLASS({
   FOOTER_TXT: if exists will be under data,
   FOOTER_LINK: if exists will be under FOOTER and the text associated to footerLink(),
   SUB_FOOTER_TXT: needed an additional option for the forgot password,
-  SUB_FOOTER_LINK: needed an additional option for the forgot password,
-  DISCLAIMER: if exists will be under img defined in imgPath. If imgPath empty, DISCLAIMER under SUB_FOOTER
+  SUB_FOOTER_LINK: needed an additional option for the forgot password
+  DISCLAIMER: If true, add t&c and privacyPolicy under model
 
   METHODs possible for this view:
   footerLink: code associated to footer msg and link,
@@ -131,18 +131,8 @@ foam.CLASS({
     margin-top: 1vw;
   }
 
-  /* DISCLAIMER */
-      /* ON NO IMG SPLIT & IMG SPLIT */
-  ^ .disclaimer-login {
-    width: 35vw;
-    color: #8e9090;
-    margin-left: 12vw;
-    background: transparent;
-  }
-
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
-    /* align img with disclaimer */
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -156,6 +146,12 @@ foam.CLASS({
   }
   ^ .foam-u2-borders-SplitScreenGridBorder-grid {
     grid-gap: 0;
+  }
+  ^tc-link {
+    background: none;
+    border: 1px solid transparent;
+    color: $primary400;
+    text-decoration: none;
   }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
@@ -253,7 +249,8 @@ foam.CLASS({
 
   messages: [
     { name: 'GO_BACK', message: 'Go to ' },
-    { name: 'MODE1', message: 'SignUp' }
+    { name: 'MODE1', message: 'SignUp' },
+    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' }
   ],
 
   methods: [
@@ -308,7 +305,7 @@ foam.CLASS({
         .end()
         .tag(this.data.LOGIN)
         .add(
-          this.slot(function(data$showAction) {
+          this.slot(function(data$showAction, data$disclaimer, appConfig) {
             return self.E().callIf(data$showAction, function() {
               this
                 .start()
@@ -326,6 +323,30 @@ foam.CLASS({
                     .end()
                   .end()
                   .endContext()
+                  .start()
+                    .callIf(data$disclaimer && appConfig, function() {
+                      this.start()
+                        .add(self.DISCLAIMER_TEXT)
+                        .start('a')
+                          .addClasses([self.myClass('tc-link'), 'h600'])
+                          .add(appConfig.termsAndCondLabel)
+                          .attrs({
+                            href: appConfig.termsAndCondLink,
+                            target: '_blank'
+                          })
+                        .end()
+                        .add(' and ')
+                        .start('a')
+                          .addClasses([self.myClass('tc-link'), 'h600'])
+                          .add(appConfig.privacy)
+                          .attrs({
+                            href: appConfig.privacyUrl,
+                            target: '_blank'
+                          })
+                        .end()
+                      .end();
+                    })
+                  .end()
                 .end();
             })
           })
@@ -348,8 +369,6 @@ foam.CLASS({
             xlColumns: 8
           }});
         split.rightPanel.add(right);
-      } else {
-        right.addClass('centerVertical').start().addClass('p-xs', 'disclaimer-login').add(this.data.DISCLAIMER).end();
       }
 
       // RENDER EVERYTHING ONTO PAGE
@@ -380,13 +399,6 @@ foam.CLASS({
                 .addClass(self.myClass('image-one'))
                 .attr('src', this.imgPath$)
               .end()
-              .callIf( !! this.data.disclaimer , () => {
-                // add a disclaimer under img
-                split.leftPanel.start('p')
-                  .addClass('disclaimer-login').addClass('disclaimer-login-img')
-                  .add(this.data.DISCLAIMER)
-                .end();
-              });
           } else {
             split.leftPanel.tag(this.leftView);
           }
