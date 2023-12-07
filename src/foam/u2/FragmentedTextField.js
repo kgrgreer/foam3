@@ -11,7 +11,7 @@ foam.CLASS({
 
   documentation: `
     FormattedTextField should now be prefered over this view.
-    
+
     FragmentedTextField displays a text input made of multiple text fields
     separated by read-only strings. This can be used for formatted inputs.
   `,
@@ -101,7 +101,7 @@ foam.CLASS({
         } else if ( e.cls_ === foam.u2.FragmentedTextFieldFragment ) {
           eView = e.view;
         }
-        var u2Elem = this.start(eView, { data$: e.data$ })
+        var u2Elem = this.start(eView)
         .style({ width: (this.delegates[i].maxLength * 4) + 'rem' })
           .addClass(this.myClass('fragment'))
           .attr('required', true)
