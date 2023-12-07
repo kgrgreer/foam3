@@ -28,7 +28,9 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.*',
+    'java.util.stream.Collectors'
   ],
 
   messages: [
@@ -730,21 +732,16 @@ foam.CLASS({
       code: function() {
         return [this.getShortAddress(), this.city, this.regionId, this.countryId, this.postalCode]
           .filter(s => s)
-          .join(', ')
+          .join(', ');
       },
       javaCode: `
-        StringBuilder sb = new StringBuilder();
-        sb.append(getShortAddress());
-        sb.append(", ");
-        sb.append(this.getCity());
-        sb.append(", ");
-        sb.append(getRegionId());
-        sb.append(", ");
-        sb.append(getCountryId());
-        sb.append(", ");
-        sb.append(getPostalCode());
-        String rtn = sb.toString();
-        return rtn.equals(", , , , ") ? "" : rtn;
+        List<String> list = Arrays.asList(getShortAddress(), getCity(), getRegionId(), getCountryId(), getPostalCode()); 
+        List<String> filtered;
+
+        filtered = list.stream() 
+          .filter(s -> ! SafetyUtil.isEmpty(s) )
+          .collect(Collectors.toList());
+        return String.join(", ", filtered);
       `
     },
     {
