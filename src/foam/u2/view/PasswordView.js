@@ -97,7 +97,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var typingTimer;
-      var doneTypingInterval = 400; 
+      var doneTypingInterval = 400;
 
       this.addClass()
         .start(this.TextField, {
@@ -146,9 +146,8 @@ foam.CLASS({
     },
     function checkAvailability() {
       this.theme?.passwordPolicy.validate(this.data)
-        .then((pw) => {
-          this.isAvailable = !pw;
-        });
+        .then(x  => this.isAvailable = true)
+        .catch(x => this.isAvailable = false);
     }
   ]
 });
