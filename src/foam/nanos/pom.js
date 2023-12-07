@@ -734,6 +734,9 @@ foam.POM({
     { name: 'auth/email/ServerEmailVerificationService',                                  flags: 'js|java' },
     { name: 'auth/email/VerifyEmail',                                                     flags: 'js|java' },
     { name: 'auth/email/VerificationCodeException',                                       flags: 'js|java' },
-    { name: 'auth/email/wizard/EmailVerificationCodeLoader',                              flags: 'web' }
+    { name: 'auth/email/wizard/EmailVerificationCodeLoader',                              flags: 'web' },
+    { name: "http/csp/CSPFilter",                                                         flags: "java" },
+    { name: "http/csp/CSPReportWebAgent",                                                 flags: "java" },
+    { name: "http/csp/CSPViolation",                                                      flags: "js|java" }
   ]
 });
