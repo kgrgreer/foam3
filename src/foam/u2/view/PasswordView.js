@@ -146,7 +146,7 @@ foam.CLASS({
     },
     function checkAvailability() {
       this.theme?.passwordPolicy.validate(this.data)
-        .then(x  => this.isAvailable = true)
+        .then(x  => this.isAvailable = ! x)
         .catch(x => this.isAvailable = false);
     }
   ]
