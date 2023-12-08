@@ -83,7 +83,7 @@ foam.CLASS({
       code: function(o1, o2) {
         let a1 = new Date(o1?.created);
         let a2 = new Date(o2?.created);
-        return foam.Date.compare(a1, a2);
+        return foam.util.compare(a1, a2);
       },
       javaCode: `
         java.util.Date date1 = (java.util.Date) o1.getCreated();
