@@ -86,8 +86,10 @@ foam.CLASS({
         return foam.util.compare(a1, a2);
       },
       javaCode: `
-        java.util.Date date1 = (java.util.Date) o1.getCreated();
-        java.util.Date date2 = (java.util.Date) o2.getCreated();
+        CreatedAware c1 = (CreatedAware) o1;
+        CreatedAware c2 = (CreatedAware) o2;
+        java.util.Date date1 = (java.util.Date) c1.getCreated();
+        java.util.Date date2 = (java.util.Date) c2.getCreated();
         return date1.compareTo(date2);
       `
     }
