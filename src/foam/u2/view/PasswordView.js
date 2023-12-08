@@ -90,6 +90,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'autocomplete'
+    },
+    {
+      class: 'Boolean',
+      name: 'validationEnabled',
+      documentation: 'Should to set to false when entering old passwords and true when selecting a new one.',
+      value: true
     }
   ],
 
@@ -107,13 +113,15 @@ foam.CLASS({
           autocomplete: this.autocomplete
         })
           .addClass('full-width-input-password')
-          .on('keyup', () => {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(this.checkAvailability, doneTypingInterval);
-          })
-          .on('keydown', () => {
-            clearTimeout(typingTimer);
-            this.isAvailable = true;
+          .callIf(this.validationEnabled, function() {
+            this.on('keyup', () => {
+              clearTimeout(typingTimer);
+              typingTimer = setTimeout(this.checkAvailability, doneTypingInterval);
+            })
+            .on('keydown', () => {
+              clearTimeout(typingTimer);
+              this.isAvailable = true;
+            });
           })
         .end()
 
