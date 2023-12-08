@@ -86,9 +86,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.crunch.EasyCrunchWizard',
       factory: function () {
-        return this.EasyCrunchWizard.create({
-          popup: false
-        });
+        return this.EasyCrunchWizard.create();
       }
     },
     {
