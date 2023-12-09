@@ -186,7 +186,7 @@ foam.CLASS({
         .attrs({
           type: 'file',
           accept: this.getSupportedTypes(),
-          multiple: this.isMultipleFiles ? 'multiple' : ''
+          multiple: this.isMultipleFiles ? 'multiple' : false
         })
         .on('change', this.onChange)
       .end()
