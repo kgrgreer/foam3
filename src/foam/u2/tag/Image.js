@@ -83,6 +83,10 @@ foam.CLASS({
               .end();
           }
 
+          // support receiving file data
+          if ( foam.nanos.fs.File.isInstance(data) )
+            data = this.getImagePath(data);
+
           if ( this.embedSVG && data?.endsWith('svg') ) {
             var e = this.E();
             this.requestWithCache(data).then(data => {
@@ -104,6 +108,13 @@ foam.CLASS({
               })
             .end();
         }));
+    },
+
+    function getImagePath(file) {
+      if ( file.data && foam.blob.BlobBlob.isInstance(file.data) )
+        return URL.createObjectURL(file.data.blob);
+
+      return file.dataString || ('/service/file/' + file.id);
     }
   ]
 });
