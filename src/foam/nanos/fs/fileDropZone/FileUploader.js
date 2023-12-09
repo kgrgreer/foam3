@@ -68,7 +68,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.data$.follow(this.files$);
+      this.data$.linkFrom(this.files$.at(0));
       var self = this;
       this
         .addClass()
