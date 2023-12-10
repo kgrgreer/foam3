@@ -74,6 +74,8 @@ foam.CLASS({
         if ( value ) {
           date = Date.parse(value);
           if ( isNaN(date) ) date = undefined;
+        } else {
+          date = undefined;
         }
 
         self.data = date;
