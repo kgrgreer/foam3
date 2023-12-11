@@ -173,10 +173,10 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
-      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles, controllerMode) {
+      var visibilitySlot = this.slot(function(isMultipleFiles, controllerMode) {
           let cm = controllerMode != foam.u2.ControllerMode.VIEW;
           if ( isMultipleFiles && cm ) return true;
-          return ! hasFiles && cm;
+          return cm;
         });
 
       this.start('input')
@@ -186,7 +186,7 @@ foam.CLASS({
         .attrs({
           type: 'file',
           accept: this.getSupportedTypes(),
-          multiple: this.isMultipleFiles ? 'multiple' : ''
+          multiple: this.isMultipleFiles ? 'multiple' : false
         })
         .on('change', this.onChange)
       .end()

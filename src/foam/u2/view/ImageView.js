@@ -18,15 +18,27 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'ImageView',
-  extends: 'foam.u2.Element',
-  properties: [
-    'data',
-    ['nodeName', 'img']
-  ],
+  extends: 'foam.u2.View',
+
   methods: [
     function render() {
-      this.SUPER();
-      this.attrs({ src: this.data$ });
+      this
+        .start({
+          class: 'foam.u2.tag.Image',
+          embedSVG: true,
+          data$: this.slot(function(data) {
+            return foam.nanos.fs.File.isInstance(data)
+              ? this.getImagePath(data) : data;
+          })
+        })
+        .end();
+    },
+
+    function getImagePath(file) {
+      if ( file.data && foam.blob.BlobBlob.isInstance(file.data) )
+        return URL.createObjectURL(file.data.blob);
+
+      return file.dataString || ('/service/file/' + file.id);
     }
   ]
 });
