@@ -148,5 +148,6 @@ foam.POM({
     { name: "wizardflow/EditWizardlet",                flags: "web" },
     { name: "wizardflow/RemoveWizardlets",             flags: "web" },
     { name: "wizardflow/Predicated",                   flags: "web" },
+    { name: "data/UcjDataLoader",                      flags: "web" }
   ]
 });
