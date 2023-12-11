@@ -110,6 +110,10 @@ foam.CLASS({
   ^center-footer > ^signupLink {
     margin-bottom: 2rem;
   }
+  ^disclaimer {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 
   /* TOP-TOP BAR NAV to go with backLink_ */
   ^ .top-bar-nav {
@@ -306,51 +310,56 @@ foam.CLASS({
         .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction, data$disclaimer, appConfig) {
-            return self.E().callIf(data$showAction, function() {
-              this
-                .start()
-                  .startContext({ data: self.data })
-                  .addClass(self.myClass('center-footer'))
-                  // first footer
+            var disclaimer = self.E().callIf(data$disclaimer && appConfig, function() {
+              this.start()
+                .addClass(self.myClass('disclaimer'))
+                .add(self.DISCLAIMER_TEXT)
+                .start('a')
+                  .addClasses([self.myClass('tc-link'), 'h600'])
+                  .add(appConfig.termsAndCondLabel)
+                  .attrs({
+                    href: appConfig.termsAndCondLink,
+                    target: '_blank'
+                  })
+                .end()
+                .add(' and ')
+                .start('a')
+                  .addClasses([self.myClass('tc-link'), 'h600'])
+                  .add(appConfig.privacy)
+                  .attrs({
+                    href: appConfig.privacyUrl,
+                    target: '_blank'
+                  })
+                .end()
+              .end();
+            });
+            return self.E().callIfElse(data$showAction,
+              function() {
+                this
                   .start()
-                    .addClass(self.myClass('signupLink'))
-                    .start('span')
-                      .addClass('text-with-pad')
-                      .add(self.data.FOOTER_TXT)
+                    .startContext({ data: self.data })
+                    .addClass(self.myClass('center-footer'))
+                    // first footer
+                    .start()
+                      .addClass(self.myClass('signupLink'))
+                      .start('span')
+                        .addClass('text-with-pad')
+                        .add(self.data.FOOTER_TXT)
+                      .end()
+                      .start('span')
+                        .add(self.data.FOOTER)
+                      .end()
                     .end()
-                    .start('span')
-                      .add(self.data.FOOTER)
-                    .end()
+                    .endContext()
                   .end()
-                  .endContext()
-                  .start()
-                    .callIf(data$disclaimer && appConfig, function() {
-                      this.start()
-                        .add(self.DISCLAIMER_TEXT)
-                        .start('a')
-                          .addClasses([self.myClass('tc-link'), 'h600'])
-                          .add(appConfig.termsAndCondLabel)
-                          .attrs({
-                            href: appConfig.termsAndCondLink,
-                            target: '_blank'
-                          })
-                        .end()
-                        .add(' and ')
-                        .start('a')
-                          .addClasses([self.myClass('tc-link'), 'h600'])
-                          .add(appConfig.privacy)
-                          .attrs({
-                            href: appConfig.privacyUrl,
-                            target: '_blank'
-                          })
-                        .end()
-                      .end();
-                    })
-                  .end()
-                .end();
-            })
+                  .add(disclaimer);
+              },
+              function() {
+                this.start().add(disclaimer).end()
+              }
+            )
           })
-        )
+        );
         
 
       // CREATE SPLIT VIEW
