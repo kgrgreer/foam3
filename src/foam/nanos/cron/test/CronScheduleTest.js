@@ -24,6 +24,9 @@ foam.CLASS({
       // default cron should run every minute at the second the first
       // schedule is created
       CronSchedule sched = new CronSchedule();
+      var startOfDayTime = LocalDate.ofInstant(new Date().toInstant(), ZoneOffset.UTC).atStartOfDay();
+      Date startOfDayDate = Date.from(startOfDayTime.atZone(ZoneOffset.UTC).toInstant());
+
       Date last = sched.getNextScheduledTime(x, null);
       LocalDateTime lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       Date next = sched.getNextScheduledTime(x, last);
@@ -51,12 +54,14 @@ foam.CLASS({
       // hours
       sched = new CronSchedule();
       sched.setHours("23,1");
-      last = sched.getNextScheduledTime(x, null);
+      last = sched.getNextScheduledTime(x, startOfDayDate);
       lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.HOURS.between(startOfDayTime, lastTime);
+      test ( diff == 1, "Hour {23, 1} same day. diff: "+diff+" last: "+startOfDayTime.toString()+ " next: "+lastTime.toString() );
       next = sched.getNextScheduledTime(x, last);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       diff = ChronoUnit.HOURS.between(lastTime, nextTime);
-      test ( diff == 22, "Hour {23, 1} same day. diff: "+diff+" last: "+lastTime.toString()+ " next: "+nextTime.toString() );
+      test ( diff == 22, "Hour {23, 1} next same day. diff: "+diff+" last: "+lastTime.toString()+ " next: "+nextTime.toString() );
 
       next = sched.getNextScheduledTime(x, next);
       nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
