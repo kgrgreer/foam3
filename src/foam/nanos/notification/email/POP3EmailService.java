@@ -1,15 +1,15 @@
 package foam.nanos.notification.email;
 
-import com.sun.mail.imap.IMAPFolder;
+import org.eclipse.angus.mail.imap.IMAPFolder;
 import foam.core.ContextAwareSupport;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
 // import foam.support.model.Ticket;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -201,7 +201,7 @@ public class POP3EmailService
     props.put("mail.smtp.host", host);
     props.put("mail.smtp.port", "25");
     Session session = Session.getInstance(props,
-      new javax.mail.Authenticator() {
+      new Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
           return new PasswordAuthentication(username, password);
         }
