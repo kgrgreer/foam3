@@ -15,8 +15,8 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailServiceConfig',
     'foam.nanos.notification.email.Status',
-    'javax.mail.Session', // satisfy javagen/compilation
-    'javax.mail.Transport' // satisfy javagen/compilation
+    'jakarta.mail.Session', // satisfy javagen/compilation
+    'jakarta.mail.Transport' // satisfy javagen/compilation
   ],
 
   methods: [
