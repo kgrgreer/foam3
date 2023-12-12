@@ -248,7 +248,7 @@ foam.CLASS({
 
       LocalDateTime last = null;
       if ( from == null ) {
-        last = LocalDate.now(zone).atStartOfDay();
+        last = LocalDateTime.now(zone);
       } else {
         last = LocalDateTime.ofInstant(from.toInstant(), zone);
       }
