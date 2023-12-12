@@ -22,7 +22,13 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
       name: 'capabilityId'
+    },
+    {
+      class: 'foam.u2.wizard.PathProperty',
+      name: 'loadFromPath',
+      documentation: 'Path property of ucj data to return, if not set (default) return ucj data itself'
     }
   ],
 
@@ -31,7 +37,8 @@ foam.CLASS({
       const ucj = await (this.subject ? this.crunchService.getJunctionFor(
         null, this.capabilityId, this.subject.user, this.subject.realUser
       ) : this.crunchService.getJunction(null, this.capabilityId));
-      return ucj.data;
+
+      return this.loadFromPath ? this.loadFromPath.f(ucj.data) : ucj.data;
     }
   ]
 });

@@ -50,6 +50,9 @@ foam.CLASS({
       const target = await this.delegate.load(...a);
       const objectToSet = this.isHolder ? target.value : target;
       for ( const k in this.args ) {
+        // don't override existing value, skip the loader
+        if ( objectToSet[k] ) continue;
+
         let loader = this.args[k];
         // If it's not an FObject, parse it
         if ( ! foam.core.FObject.isInstance(loader) ) {
