@@ -42,16 +42,16 @@ foam.CLASS({
     'java.util.Map',
     'java.util.Properties',
     'java.util.Timer',
-    'javax.activation.DataHandler',
-    'javax.activation.DataSource',
-    'javax.mail.*',
-    'javax.mail.internet.*',
-    'javax.mail.util.ByteArrayDataSource',
+    'jakarta.activation.DataHandler',
+    'jakarta.activation.DataSource',
+    'jakarta.mail.*',
+    'jakarta.mail.internet.*',
+    'jakarta.mail.util.ByteArrayDataSource',
     'org.apache.commons.lang3.StringUtils',
   ],
 
   javaCode: `
-    private class SMTPAuthenticator extends javax.mail.Authenticator {
+    private class SMTPAuthenticator extends jakarta.mail.Authenticator {
       protected String username_;
       protected String password_;
 
@@ -104,11 +104,13 @@ foam.CLASS({
       javaFactory: `
         Properties props = new Properties();
         EmailServiceConfig config = findId(getX());
+        props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.smtp.auth", config.getAuthenticate() ? "true" : "false");
         props.setProperty("mail.smtp.starttls.enable", config.getStarttls() ? "true" : "false");
         props.setProperty("mail.smtp.host", config.getHost());
         props.setProperty("mail.smtp.port", config.getPort());
         if ( config.getAuthenticate() ) {
+          // props.setProperty("mail.smtp.ssl.trust", config.getHost());
           return Session.getInstance(props, new SMTPAuthenticator(config.getUsername(), config.getPassword()));
         }
         return Session.getInstance(props);
