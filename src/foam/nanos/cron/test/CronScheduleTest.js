@@ -22,82 +22,118 @@ foam.CLASS({
 
       javaCode: `
       CronSchedule sched = new CronSchedule();
-
       LocalDateTime time = LocalDateTime.now();
       time = time.minusHours(1);
-      sched.setHour(time.getHour());
+      sched.setHours(String.valueOf(time.getHour()));
       Date last = sched.getNextScheduledTime(x, null);
-      LocalDateTime lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      LocalDateTime lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       Date next = sched.getNextScheduledTime(x, last);
-      LocalDateTime nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      LocalDateTime nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 1, "Hour - next day" );
 
-      sched.setHour(2);
+      sched.setHours("2");
       sched.setMinute(25);
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.DAYS.between(lastTime, nextTime) == 1, "Hour/Minute - next day" );
 
-      sched.setHour(-1);
+      sched = new CronSchedule();
       sched.setMinute(5);
-      sched.setSecond(-1);
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      CronSchedule.SECOND.clear(sched);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.HOURS.between(lastTime, nextTime) == 1, "Minute - next hour" );
 
-      sched.setHour(-1);
-      sched.setMinute(-1);
+      sched = new CronSchedule();
       sched.setSecond(30);
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.MINUTES.between(lastTime, nextTime) == 1, "Second - next minute" );
 
       // next called twice with same last, should give same results
-      sched.setHour(-1);
+      sched = new CronSchedule();
       sched.setMinute(5);
-      sched.setSecond(-1);
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       Date next2 = sched.getNextScheduledTime(x, last);
-      LocalDateTime nextTime2 = LocalDateTime.ofInstant(next2.toInstant(), ZoneId.systemDefault());
+      LocalDateTime nextTime2 = LocalDateTime.ofInstant(next2.toInstant(), ZoneOffset.UTC);
       test ( ChronoUnit.MINUTES.between(nextTime, nextTime2) == 0, "Call twice - same result" );
 
-      sched.setHour(-1);
-      sched.setMinute(-1);
-      sched.setSecond(-1);
+      sched = new CronSchedule();
+      sched.setDaysOfMonth(new Integer[] {15});
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      // If nextTime month changes DST/EST, then month delta will be zero as it's an hour short of a full month.
+      // long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      long diff = Math.abs(nextTime.getMonthValue() - lastTime.getMonthValue());
+      test ( diff == 1 || diff == 11, "DaysOfMonth - next month "+diff );
+
+      // migration test of dayOfMonth
+      sched = new CronSchedule();
       sched.setDayOfMonth(15);
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
-      long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
-      test ( diff == 1, "DayOfMonth - next month "+diff );
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      // If nextTime month changes DST/EST, then month delta will be zero as it's an hour short of a full month.
+      // long diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      diff = Math.abs(nextTime.getMonthValue() - lastTime.getMonthValue());
+      test ( diff == 1 || diff == 11, "DayOfMonth (legacy) - next month "+diff );
 
-      sched.setHour(-1);
-      sched.setMinute(-1);
-      sched.setSecond(-1);
-      sched.setDayOfMonth(-1);
-      sched.setDayOfWeek(LocalDateTime.now().getDayOfWeek().getValue()); // day of test run.
+
+      sched = new CronSchedule();
+      sched.setDaysOfWeek(new foam.time.DayOfWeek[] { foam.time.DayOfWeek.values()[LocalDateTime.now().getDayOfWeek().getValue() - 1] }); // day of test run.
       last = sched.getNextScheduledTime(x, null);
-      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneId.systemDefault());
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
       next = sched.getNextScheduledTime(x, last);
-      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneId.systemDefault());
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
       diff = ChronoUnit.DAYS.between(lastTime, nextTime);
-      test ( diff == 7, "DayOfWeek - next week "+diff );
+      test ( diff == 7, "DaysOfWeek - next week "+diff );
 
+      // migration dayOfWeek
+      sched = new CronSchedule();
+      sched.setDayOfWeek(LocalDateTime.now().getDayOfWeek().getValue() - 1); // day of test run.
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.DAYS.between(lastTime, nextTime);
+      test ( diff == 7, "DayOfWeek (legacy) - next week "+diff );
 
-      sched.setDayOfWeek(-1);
-      sched.setHour(2);
+      // legacy - monthOfYear
+      sched = new CronSchedule();
+      sched.setMonth(LocalDate.now().getMonth().getValue());
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      test ( diff == 12, "Month (legacy) - next month "+diff );
+
+      sched = new CronSchedule();
+      sched.setMonthsOfYear(new foam.time.MonthOfYear[] { foam.time.MonthOfYear.forOrdinal(LocalDate.now().getMonth().getValue()) });
+      last = sched.getNextScheduledTime(x, null);
+      lastTime = LocalDateTime.ofInstant(last.toInstant(), ZoneOffset.UTC);
+      next = sched.getNextScheduledTime(x, last);
+      nextTime = LocalDateTime.ofInstant(next.toInstant(), ZoneOffset.UTC);
+      diff = ChronoUnit.MONTHS.between(lastTime, nextTime);
+      test ( diff == 12, "MonthsOfYear - next month "+diff+" "+lastTime+" "+nextTime );
+
+      // TimeZone
+      sched = new CronSchedule();
+      sched.setHours("2");
       sched.setMinute(25);
-      sched.setTimezone("America/Toronto"); // EST
+      sched.setTimeZone("America/Toronto"); // EST
       ZoneId zoneId = ZoneId.of("America/Toronto");
       last = sched.getNextScheduledTime(x, null);
       lastTime = LocalDateTime.ofInstant(last.toInstant(), zoneId);
