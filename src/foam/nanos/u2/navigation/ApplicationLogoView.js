@@ -27,12 +27,16 @@ foam.CLASS({
       display: flex;
       align-items: center;
       cursor: pointer;
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
     }
     ^ img, ^ svg {
       height: 25px;
       max-height: 40px;
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
+      
     }
   `,
 
