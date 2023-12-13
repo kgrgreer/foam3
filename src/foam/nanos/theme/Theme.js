@@ -936,7 +936,7 @@ foam.CLASS({
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( prop.compare(t1, t2) != 0 && prop.compare(t2, new Theme()) != 0 ) {
+        } else if ( prop.compare(t1, t2) != 0 && prop.isSet(t2) ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 
