@@ -38,6 +38,13 @@ foam.CLASS({
       width: unset;
       
     }
+    @media only screen and (min-width:  /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^ {
+        position: static;
+        left: auto;
+        transform: none;
+      }
+    }
   `,
 
   properties: [
