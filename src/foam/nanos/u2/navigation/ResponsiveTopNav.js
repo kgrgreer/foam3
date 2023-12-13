@@ -66,7 +66,6 @@ foam.CLASS({
         display: flex;
         flex: 1;
         gap: 8px;
-
       }
       ^right {
         justify-content: flex-end;
