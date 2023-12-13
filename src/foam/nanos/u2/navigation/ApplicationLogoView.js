@@ -33,7 +33,6 @@ foam.CLASS({
       max-height: 40px;
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
-      
     }
   `,
 
