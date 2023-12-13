@@ -75,7 +75,7 @@ foam.CLASS({
       display: flex;
       max-height: 40px;
       /* remove and override any image styling to preserve aspect ratio */
-      width: 100%;
+      width: unset;
     }
 
   `,
