@@ -92,7 +92,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'maxWidth',
-      value: '45vw'
+      value: 'min(90vw, 400px)'
     },
     {
       class: 'Enum',

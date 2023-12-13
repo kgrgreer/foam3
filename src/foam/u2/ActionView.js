@@ -158,8 +158,9 @@ foam.CLASS({
           let modal = this.action.confirmationView(this.__subContext__, this.data);
           if ( ! modal ) {
             this.action && this.action.maybeCall(this.__subContext__, this.data);
-          }
-          else {
+          } else if ( foam.u2.Element.isInstance(modal) ) {
+            this.ctrl.add(modal);
+          } else {
             (async () => {
               this.ctrl.add(this.ConfirmationModal.create({
                 primaryAction: this.action,
