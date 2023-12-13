@@ -70,14 +70,6 @@ foam.CLASS({
       align-items: center;
       flex-direction: column;
     }
-
-    ^logo img, ^logo svg {
-      display: flex;
-      max-height: 40px;
-      /* remove and override any image styling to preserve aspect ratio */
-      width: unset;
-    }
-
   `,
 
   properties: [
