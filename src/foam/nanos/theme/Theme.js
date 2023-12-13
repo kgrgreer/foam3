@@ -928,14 +928,15 @@ foam.CLASS({
         var name = prop.name;
 
         if ( ! t1.hasOwnProperty(name) ) t1[name] = t2[name];
-        else if ( prop.compare(t1, t2) != 0 ) {
+        else if ( prop.compare(t1, t2) != 0 &&
+                  prop.compare(t2, foam.nanos.theme.Theme.create({}, this)) != 0 ) {
           t1[name].copyFrom(t2[name]);
         }
       },
       javaCode: `
         if ( ! prop.isSet(t1) ) {
           prop.set(t1, prop.get(t2));
-        } else if ( prop.compare(t1, t2) != 0 ) {
+        } else if ( prop.compare(t1, t2) != 0 && prop.isSet(t2) ) {
           var value1 = (FObject) prop.get(t1);
           var value2 = (FObject) prop.get(t2);
 
