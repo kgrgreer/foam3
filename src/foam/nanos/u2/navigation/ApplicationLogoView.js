@@ -27,9 +27,6 @@ foam.CLASS({
       display: flex;
       align-items: center;
       cursor: pointer;
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
     }
     ^ img, ^ svg {
       height: 25px;
@@ -37,13 +34,6 @@ foam.CLASS({
       /* remove and override any image styling to preserve aspect ratio */
       width: unset;
       
-    }
-    @media only screen and (min-width:  /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^ {
-        position: static;
-        left: auto;
-        transform: none;
-      }
     }
   `,
 

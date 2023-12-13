@@ -56,8 +56,9 @@ foam.CLASS({
       justify-content: flex-start;
     }
     ^logo {
-      flex: 1;
-      justify-content: center;
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     @media (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -65,13 +66,15 @@ foam.CLASS({
         display: flex;
         flex: 1;
         gap: 8px;
+
       }
       ^right {
         justify-content: flex-end;
       }
       ^logo {
-        flex: unset;
-        justify-content: flex-start;
+        position: static;
+        left: auto;
+        transform: none;
       }
     }
   `,
