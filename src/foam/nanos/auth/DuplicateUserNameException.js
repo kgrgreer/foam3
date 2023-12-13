@@ -14,7 +14,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'UserName already in use'
+      value: 'Username already in use'
     }
   ],
 
