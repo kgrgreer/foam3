@@ -20,6 +20,11 @@ foam.CLASS({
   name: 'HTTPReplyBox',
   implements: ['foam.box.Box'],
 
+  javaImports: [
+    'java.nio.charset.StandardCharsets'
+  ],
+
+
   imports: [
     // Optional import.
     //    'httpResponse'
@@ -66,7 +71,7 @@ try {
   formatter.setX(null); // avoid retaining reference to X
 
   StringBuilder builder = formatter.builder();
-  resp.setContentLengthLong(builder.length());
+  resp.setContentLengthLong(builder.toString().getBytes(StandardCharsets.UTF_8).length);
 
   writer.append(builder);
   writer.flush();
