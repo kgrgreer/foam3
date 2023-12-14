@@ -70,14 +70,6 @@ foam.CLASS({
       align-items: center;
       flex-direction: column;
     }
-
-    ^logo img, ^logo svg {
-      display: flex;
-      max-height: 40px;
-      /* remove and override any image styling to preserve aspect ratio */
-      width: unset;
-    }
-
   `,
 
   properties: [
@@ -108,12 +100,7 @@ foam.CLASS({
           .end()
           .start()
             .addClass(this.myClass('header-center'))
-            .start(this.Image, {
-              data$: this.theme$?.dot('topNavLogo'),
-              embedSVG: true
-            })
-              .addClass(this.myClass('logo'))
-            .end()
+            .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
           .end()
         .end()
         .start(this.ScrollBorder)
