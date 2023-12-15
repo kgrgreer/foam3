@@ -45,7 +45,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.PasswordView',
         passwordIcon: true,
-        autocomplete: 'current-password'
+        autocomplete: 'current-password',
+        validationEnabled: false // don't need to validate old password
       },
       validationPredicates: [
         {
