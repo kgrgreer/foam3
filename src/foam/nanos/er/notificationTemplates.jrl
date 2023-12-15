@@ -1,7 +1,8 @@
 p({
   class:"foam.nanos.notification.Notification",
-  id: 39109516,
+  id: 3,
   template: "foam-nanos-er-EventRecordNotificationTemplate",
   emailName:"foam-nanos-er-EventRecordEmailTemplate",
-  groupId: "noc"
+  groupId: "noc",
+  notificationType: "NOC"
 })
