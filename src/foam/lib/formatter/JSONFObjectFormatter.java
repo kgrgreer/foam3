@@ -193,9 +193,15 @@ public class JSONFObjectFormatter
   }
 
   protected void outputProperty(FObject o, PropertyInfo p) {
+    try {
     outputKey(getPropertyName(p));
     append(':');
     p.formatJSON(this, o);
+  } catch (Throwable t) {
+    System.err.println("***************************************************** error outputting " + getPropertyName(p));
+    System.err.println("" + p.get(o));
+    t.printStackTrace();
+  }
   }
 
 
@@ -297,7 +303,7 @@ public class JSONFObjectFormatter
     } else if ( value instanceof List ) {
       output((List) value);
     } else {
-      System.err.println(this.getClass().getSimpleName()+".output, Unexpected value type: "+value.getClass().getName());
+      System.err.println(this.getClass().getSimpleName() + ".output, Unexpected value type: " + value.getClass().getName());
       append("null");
     }
   }

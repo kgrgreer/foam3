@@ -42,8 +42,12 @@ public class ModelParserFactory {
     int      i               = 0;
 
     while ( iter.hasNext() ) {
-      propertyParsers[i] = PropertyParser.create((PropertyInfo) iter.next());
-      i++;
+      PropertyInfo pi = (PropertyInfo) iter.next();
+      // If javaJSONParser: null, then don't add a PropertyParser for this field
+      if ( pi.jsonParser() != null ) {
+        propertyParsers[i] = PropertyParser.create(pi);
+        i++;
+      }
     }
 
     // Prevents failure to parse if unknown property found
