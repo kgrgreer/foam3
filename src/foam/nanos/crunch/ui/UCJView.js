@@ -114,10 +114,8 @@ foam.CLASS({
       }
       if ( ! user ) user = realUser;
       var subject = this.Subject.create({ user: user, realUser: realUser });
-      var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
         wizardSubject: subject,
-        stack: stack,
         controllerMode:
           this.mode == this.DisplayMode.RW
             ? this.ControllerMode.EDIT
@@ -166,18 +164,6 @@ foam.CLASS({
       }
       this.config.applyTo(sequence);
       sequence.execute();
-
-      // add back button and 'View Reference' title
-      this.addClass()
-        .startContext({ data: this })
-          .tag(this.BACK, {
-            buttonStyle: foam.u2.ButtonStyle.LINK,
-            themeIcon: 'back',
-            label: this.BACK_LABEL
-          })
-        .endContext()
-        .addClass(this.myClass('stack-container'))
-          .tag(this.StackView.create({ data: stack, showActions: false }, x));
     },
 
     async function onSave(isValid, ucj) {

@@ -68,7 +68,13 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.data$.follow(this.files$);
+
+      // load initial data into files if present
+      if ( this.data ) this.files = [ this.data ];
+
+      // this is a single file uploader, link data and files[0]
+      this.data$.linkFrom(this.files$.at(0));
+
       var self = this;
       this
         .addClass()

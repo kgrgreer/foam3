@@ -147,6 +147,6 @@ foam.POM({
     { name: "wizardflow/AddWizardlet",                flags: "web" },
     { name: "wizardflow/EditWizardlet",                flags: "web" },
     { name: "wizardflow/RemoveWizardlets",             flags: "web" },
-    { name: "wizardflow/Predicated",                   flags: "web" },
+    { name: "wizardflow/Predicated",                   flags: "web" }
   ]
 });

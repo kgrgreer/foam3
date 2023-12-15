@@ -75,18 +75,10 @@ foam.CLASS({
         }
       },
       minLength: 10,
-      validationPredicates: [
-        {
-          args: ['newPassword'],
-          query: 'newPassword.len>=10',
-          errorMessage: 'PASSWORD_LENGTH_10_ERROR'
-        },
-        {
-          args: ['passwordAvailable'],
-          query: 'passwordAvailable==true',
-          errorMessage: 'WEAK_PASSWORD_ERR'
-        }
-      ]
+      validateObj: function(newPassword, passwordAvailable) {
+        if ( newPassword.length < 10 ) return this.PASSWORD_LENGTH_10_ERROR;
+        if ( passwordAvailable != true ) return this.WEAK_PASSWORD_ERR;
+       }
     },
     {
       class: 'Password',

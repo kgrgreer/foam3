@@ -40,10 +40,10 @@ foam.CLASS({
     'java.util.List',
     'java.util.Properties',
     'java.util.Timer',
-    'javax.mail.*',
-    'javax.mail.Message',
-    'javax.mail.internet.MimeBodyPart',
-    'javax.mail.search.FlagTerm'
+    'jakarta.mail.*',
+    'jakarta.mail.Message',
+    'jakarta.mail.internet.MimeBodyPart',
+    'jakarta.mail.search.FlagTerm'
   ],
 
   properties: [
@@ -192,9 +192,9 @@ foam.CLASS({
     },
     {
       name: 'buildEmailMessage',
-      args: 'X x, javax.mail.Message message',
+      args: 'X x, jakarta.mail.Message message',
       type: 'foam.nanos.notification.email.EmailMessage',
-      javaThrows: [ 'javax.mail.MessagingException', 'java.io.IOException' ],
+      javaThrows: [ 'jakarta.mail.MessagingException', 'java.io.IOException' ],
       javaCode: `
         EmailServiceConfig config = findId(x);
         EmailMessage emailMessage = new EmailMessage();
