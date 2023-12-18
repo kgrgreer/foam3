@@ -232,7 +232,10 @@ foam.CLASS({
       }
 
       this.onDAOUpdate();
-
+      this.renderContent();
+      this.dao$proxy.on.sub(this.onDAOUpdate);
+    },
+    function renderContent() {
       this.add(this.slot(function(mode, text) {
         if ( mode !== foam.u2.DisplayMode.RO ) {
           return self.E()
@@ -254,8 +257,6 @@ foam.CLASS({
 
         return text ? self.E().translate(text + '.name', text) : '';
       }));
-
-      this.dao$proxy.on.sub(this.onDAOUpdate);
     },
 
     function findIndexOfChoice(choice) {
