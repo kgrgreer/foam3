@@ -236,6 +236,7 @@ foam.CLASS({
       this.dao$proxy.on.sub(this.onDAOUpdate);
     },
     function renderContent() {
+      var self = this;
       this.add(this.slot(function(mode, text) {
         if ( mode !== foam.u2.DisplayMode.RO ) {
           return self.E()
