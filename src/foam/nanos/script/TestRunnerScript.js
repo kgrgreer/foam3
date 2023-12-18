@@ -81,8 +81,12 @@ foam.CLASS({
         loggerFilter.setLogInfo(false);
         loggerFilter.setLogWarning(false);
 
+        String testSuite = null;
         TestRunnerConfig config = (TestRunnerConfig) x.get("testRunnerConfig");
-        String testSuite = config != null ? config.getTestSuite() : null;
+        if ( config != null &&
+             ! SafetyUtil.isEmpty(config.getTestSuite()) ) {
+          testSuite = config.getTestSuite();
+        }
 
         List<String> explicitTests = new ArrayList<String>();
         if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ) {
