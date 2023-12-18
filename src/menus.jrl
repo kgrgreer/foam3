@@ -274,6 +274,7 @@ p({
       "hideQueryBar": true,
       "summaryView":{
         "class":"foam.u2.GroupingDAOList",
+        "showEmptyMessage": true,
         "order":{
           "class": "foam.mlang.order.Desc",
           "arg1": {
