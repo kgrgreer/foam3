@@ -33,7 +33,7 @@ foam.CLASS({
             handler: {
               class: 'foam.nanos.menu.LinkMenu',
               link$: this.slot(function(appConfig$termsAndCondLink) {
-                if ( appConfig$termsAndCondLink.includes("https") )
+                if ( appConfig$termsAndCondLink.startsWith("http") )
                   return appConfig$termsAndCondLink;
                 return this.window.location.origin + appConfig$termsAndCondLink;
               }),
@@ -49,7 +49,7 @@ foam.CLASS({
             handler: {
               class: 'foam.nanos.menu.LinkMenu',
               link$: this.slot(function(appConfig$privacyUrl) {
-                if ( appConfig$privacyUrl.includes("https") )
+                if ( appConfig$privacyUrl.startsWith("http") )
                   return appConfig$privacyUrl;
                 return this.window.location.origin + appConfig$privacyUrl;
               }),
