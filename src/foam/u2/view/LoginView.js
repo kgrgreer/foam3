@@ -432,6 +432,7 @@ foam.CLASS({
     },
     function onKeyPressed(e) {
       e.preventDefault();
+      if ( this.document.hasFocus() ) return;
       var key = e.key || e.keyCode;
       if ( key === 'Enter' || key === 13 ) {
           this.data.login();
