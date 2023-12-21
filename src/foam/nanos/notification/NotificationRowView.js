@@ -150,7 +150,7 @@
       {
         name: 'hideNotificationType',
         isAvailable: async function() {
-          return ctrl.__subContext__.auth.check(null, 'notification.hideNotificationType');
+          return ctrl.__subContext__.auth.check(null, 'notification.showHideNotificationTypeAction');
         },
         code: function(X) {
           var self = X.rowView;
