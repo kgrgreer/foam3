@@ -149,8 +149,8 @@
       },
       {
         name: 'hideNotificationType',
-        isAvailable: function(notificationType) {
-          return ! this.__subContext__.subject.user.disabledTopics.includes(notificationType);
+        isAvailable: async function() {
+          return this.auth.check(null, 'notification.hideNotificationType');
         },
         code: function(X) {
           var self = X.rowView;
