@@ -18,6 +18,7 @@
     ],
 
     imports: [
+      'auth',
       'myNotificationDAO',
       'notificationDAO',
       'notify',
