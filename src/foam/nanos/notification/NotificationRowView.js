@@ -18,7 +18,6 @@
     ],
 
     imports: [
-      'auth',
       'myNotificationDAO',
       'notificationDAO',
       'notify',
@@ -151,7 +150,7 @@
       {
         name: 'hideNotificationType',
         isAvailable: async function() {
-          return this.auth.check(null, 'notification.hideNotificationType');
+          return ctrl.__subContext__.auth.check(null, 'notification.hideNotificationType');
         },
         code: function(X) {
           var self = X.rowView;
