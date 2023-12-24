@@ -740,6 +740,8 @@ name: 'NANOS',
           }
         }
       }
+      if ( commit.author.indexOf('dependabot') != -1 ) return;
+      console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
