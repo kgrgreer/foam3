@@ -67,3 +67,4 @@ p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.Us
 p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.approval.ApprovalRequestClassification",description:"referenceDetailView.foam.nanos.approval.ApprovalRequestClassification"})
 p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.Group",description:"referenceDetailView.foam.nanos.auth.Group"})
 p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.ServiceProvider",description:"referenceDetailView.foam.nanos.auth.ServiceProvider"})
+p({class:"foam.nanos.auth.Permission",id:"notification.showHideNotificationTypeAction",description:"Permission to access the hideNotificationType action in NotificationRowView. Allows users to hide notifications of a certain Type. Users do not have the permission by default and should be granted to spid/groups as needed."})

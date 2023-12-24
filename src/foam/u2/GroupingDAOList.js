@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO', message: 'no' }
+    { name: 'NO', message: 'No' }
   ],
 
   css: `
