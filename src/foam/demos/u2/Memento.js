@@ -163,25 +163,11 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'foam.u2.Controller',
 
-  exports: [ 'memento_', 'window' ],
-
   mixins: [
     'foam.u2.memento.Memorable'
   ],
 
   properties: [
-    /*
-    {
-      name: 'memento_',
-      hidden: true,
-      factory: function() { return WindowHashMemento.create({obj: null, memento_: this.parentMemento_}); }
-    },*/
-    {
-      name: 'window',
-      factory: function() {
-        return window;
-      }
-    },
     {
       name: 'skip',
       shortName: 's',
