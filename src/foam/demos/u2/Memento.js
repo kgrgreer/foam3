@@ -15,10 +15,7 @@ foam.CLASS({
   properties: [
     {
       name: 'route',
-      memorable: true,
-      postSet: function(_, m) {
-        this.controller = Controller.create({daoKey: m}, this);
-      }
+      memorable: true
     }
   ],
 
@@ -27,11 +24,11 @@ foam.CLASS({
       this.br();
       this.start('h1').add("MENU").end();
       this.br();
+      this.add('version: ', this.memento_.version$);
+      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Menu/Route: ', this.ROUTE);
       this.add(this.slot(route => Controller.create({daoKey: route}, this)));
@@ -64,11 +61,11 @@ foam.CLASS({
       this.br();
       this.start('h1').add("CONTROLLER: ", this.daoKey).end();
       this.br();
+      this.add('version: ', this.memento_.version$);
+      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Mode/Route: ', this.ROUTE);
       this.add(this.route$.map((mode) => { return ( mode == 'browse' ) ? Table.create({}, this) : Detail.create({}, this);}));
@@ -112,11 +109,11 @@ foam.CLASS({
       this.br();
       this.start('h1').add("TABLE").end();
       this.br();
+      this.add('version: ', this.memento_.version$);
+      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('Skip: ',    this.SKIP);
       this.add('Columns: ', this.COLUMNS);
@@ -147,11 +144,11 @@ foam.CLASS({
       this.br();
       this.start('h1').add("DETAIL").end();
       this.br();
+      this.add('version: ', this.memento_.version$);
+      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.add('ID: ',    this.ROUTE);
     }
@@ -199,16 +196,17 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.memento_.str = 'menu1/browse/123?q=foobar';
+//      this.memento_.str = 'menu1/browse/123?q=foobar';
 
+this.memento_.str = 'menu1/browse?s=11&columns=&q=foobar&s=11&columns=a,b,c&q=question';
       // this.subMemento.str = 'q=something';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br().br();
+      this.add('version: ', this.memento_.version$);
+      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
       this.br();
       this.br();
       this.add('skip: ', this.SKIP);
