@@ -687,7 +687,7 @@ function moreUsage() {
 const ARGS = {
   a: [ 'turn on build verbose mode', () => VERBOSE = '-flags=verbose' ],
   A: [ 'in combination with tTbB, set JVM log level (one of: ERROR, WARN, INFO, DEBUG)',
-       args => { ARGS.a[1]; LOG_LEVEL = args; }
+       args => { LOG_LEVEL = args; }
      ],
   b: [ 'run all benchmarks.',
     () => {
