@@ -24,8 +24,6 @@ foam.CLASS({
       this.br();
       this.start('h1').add("MENU").end();
       this.br();
-      this.add('version: ', this.memento_.version$);
-      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
@@ -60,8 +58,6 @@ foam.CLASS({
     function render() {
       this.br();
       this.start('h1').add("CONTROLLER: ", this.daoKey).end();
-      this.br();
-      this.add('version: ', this.memento_.version$);
       this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
@@ -109,8 +105,6 @@ foam.CLASS({
       this.br();
       this.start('h1').add("TABLE").end();
       this.br();
-      this.add('version: ', this.memento_.version$);
-      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
@@ -143,8 +137,6 @@ foam.CLASS({
     function render() {
       this.br();
       this.start('h1').add("DETAIL").end();
-      this.br();
-      this.add('version: ', this.memento_.version$);
       this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
@@ -184,9 +176,6 @@ foam.CLASS({
       memorable: true
     },
     {
-      name: 'abc'
-    },
-    {
       class: 'FObjectProperty',
       name: 'menu',
       of: 'Menu',
@@ -196,14 +185,10 @@ foam.CLASS({
 
   methods: [
     function render() {
-//      this.memento_.str = 'menu1/browse/123?q=foobar';
 
-this.memento_.str = 'menu1/browse?s=11&columns=&q=foobar&s=11&columns=a,b,c&q=question';
-      // this.subMemento.str = 'q=something';
+      this.memento_.str = 'menu1/browse?s=10&columns=&q=foobar&s=20&columns=a,b,c&q=question';
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
       this.br().br();
-      this.add('version: ', this.memento_.version$);
-      this.br();
       this.add('str: ', this.memento_.str$);
       this.br();
       this.add('tailStr: ', this.memento_.tailStr$);
@@ -212,6 +197,8 @@ this.memento_.str = 'menu1/browse?s=11&columns=&q=foobar&s=11&columns=a,b,c&q=qu
       this.add('skip: ', this.SKIP);
       this.br();
       this.add('query: ', this.QUERY);
+      this.br();
+      this.add('columns: ', this.COLUMNS);
       this.br();
       this.add(this.menu);
     }
