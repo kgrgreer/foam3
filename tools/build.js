@@ -685,10 +685,8 @@ function moreUsage() {
 }
 
 const ARGS = {
-  a: [ 'turn on build verbose mode', () => VERBOSE = '-flags=verbose' ],
-  A: [ 'in combination with tTbB, set JVM log level (one of: ERROR, WARN, INFO, DEBUG)',
-       args => { LOG_LEVEL = args; }
-     ],
+  a: [ 'Delete runtime logs.',
+    () => DELETE_RUNTIME_LOGS = true ],
   b: [ 'run all benchmarks.',
     () => {
       BENCHMARK = true;
@@ -727,8 +725,10 @@ const ARGS = {
     } ],
   k: [ 'Package up a deployment tarball.',
     () => { BUILD_ONLY = PACKAGE = true; } ],
-  l: [ 'Delete runtime logs.',
-    () => DELETE_RUNTIME_LOGS = true ],
+  l: [ 'turn on build logging/verbose mode', () => VERBOSE = '-flags=verbose' ],
+  L: [ 'in combination with tTbB, set JVM log level (one of: ERROR, WARN, INFO, DEBUG)',
+       args => { LOG_LEVEL = args; }
+     ],
   m: [ "Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue",
     () => CLUSTER = true ],
   N: [ `NAME : start another instance with given instance name. Deployed to /opt/${PROJECT.name}_NAME.`,
