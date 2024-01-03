@@ -107,12 +107,8 @@ foam.CLASS({
     text-align: end;
   }
 
-  ^center-footer > ^signupLink {
-    margin-bottom: 2rem;
-  }
   ^disclaimer {
     text-align: center;
-    margin-bottom: 2rem;
   }
 
   /* TOP-TOP BAR NAV to go with backLink_ */
@@ -156,6 +152,11 @@ foam.CLASS({
     border: 1px solid transparent;
     color: $primary400;
     text-decoration: none;
+  }
+  ^playLink {
+    display: block;
+    width: min(140px, 100%);
+    margin: auto;
   }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
@@ -306,7 +307,7 @@ foam.CLASS({
         .tag(this.data.LOGIN)
         .add(
           this.slot(function(data$showAction, data$disclaimer, appConfig) {
-            var disclaimer = self.E().callIf(data$disclaimer && appConfig, function() {
+            var disclaimer = self.E().style({ display: 'contents' }).callIf(data$disclaimer && appConfig, function() {
               this.start()
                 .addClass(self.myClass('disclaimer'))
                 .add(self.DISCLAIMER_TEXT)
@@ -329,7 +330,7 @@ foam.CLASS({
                 .end()
               .end();
             });
-            return self.E().callIfElse(data$showAction,
+            return self.E().style({ display: 'contents' }).callIfElse(data$showAction,
               function() {
                 this
                   .start()
@@ -353,9 +354,15 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            )
+            ).callIf(appConfig.playLink && data$showAction, function() {
+              this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
+              .start('img')
+                .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
+              .end().end();
+            })
           })
-        );
+        )
+        
         
 
       // CREATE SPLIT VIEW
