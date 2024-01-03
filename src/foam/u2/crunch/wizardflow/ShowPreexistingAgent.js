@@ -21,7 +21,7 @@ foam.CLASS({
       for ( let wizardlet of this.wizardlets ){
         if (
           foam.nanos.crunch.ui.MinMaxCapabilityWizardlet.isInstance(wizardlet) &&
-          wizardlet.data.selectedData.length > 0
+          wizardlet.data.selectedData?.length > 0
         ){
           var selectedDataCapabilityIds = wizardlet.data.selectedData;
 

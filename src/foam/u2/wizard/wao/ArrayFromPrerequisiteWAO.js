@@ -129,7 +129,7 @@
     function grabSelectedWizardletFromMinMax(minMaxWizardlet){
       const minMaxSelectedData = minMaxWizardlet.data.selectedData;
 
-      if ( minMaxSelectedData.length != 1 ){
+      if ( minMaxSelectedData?.length != 1 ){
         console.error(
           `Cannot apply XOR to MinMaxCapabilityId: ${minMaxWizardlet.id}`
         );

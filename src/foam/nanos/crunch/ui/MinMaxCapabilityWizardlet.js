@@ -162,7 +162,7 @@ foam.CLASS({
         var selectedData = finalData;
 
         // to account for previously selected data
-        if ( this.data.selectedData.length > 0 ){
+        if ( this.data.selectedData?.length > 0 ){
           var savedSelectedDataIds = [
             ...this.data.selectedData
           ];
@@ -288,7 +288,7 @@ foam.CLASS({
 
 
         // Update lifted choices based on their availability
-        let newSelectedData = [...this.data.selectedData];
+        let newSelectedData = [...this.data.selectedData || []];
         for ( const w of liftedWizardlets ) {
           if ( w.isAvailable ) newSelectedData.push(w.capability);
           else foam.Array.remove(newSelectedData, w.capability);
@@ -312,7 +312,7 @@ foam.CLASS({
     },
 
     function isPrereqSelected(prereqWizardlet){
-      for ( var i = 0 ; i < this.data.selectedData.length ; i++ ) {
+      for ( var i = 0 ; i < this.data.selectedData?.length ; i++ ) {
         var currentData = this.data.selectedData[i];
 
         let idToCompare;

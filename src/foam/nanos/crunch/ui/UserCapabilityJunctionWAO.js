@@ -75,7 +75,6 @@ foam.CLASS({
     function load(wizardlet) {
       if ( wizardlet.loading ) return;
 
-      wizardlet.loading = true;
       let p = this.subject ? this.crunchService.getJunctionFor(
         null, wizardlet.capability.id, this.subject.user, this.subject.realUser
       ) : this.crunchService.getJunction(
@@ -116,7 +115,6 @@ foam.CLASS({
 
       // No 'of'? No problem
       if ( ! wizardlet.of ) {
-        wizardlet.loading = false;
         return;
       }
 
@@ -135,10 +133,6 @@ foam.CLASS({
       } else {
         wizardlet.data = loadedData.clone(wizardlet.__subSubContext__);
       }
-
-      foam.u2.wizard.Slot.blockFramed().then(() => {
-        wizardlet.loading = false;
-      });
     },
     function cancelSave_(w) {
       w.loadingLevel = this.LoadingLevel.IDLE;
