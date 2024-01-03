@@ -153,9 +153,6 @@ foam.CLASS({
         if ( ! user.getEnabled() ) {
           throw new AccessDeniedException();
         }
-        if ( ! user.getEmailVerified() ) {
-          throw new UnverifiedEmailException();
-        }
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
           throw new AccessDeniedException();
@@ -168,6 +165,9 @@ foam.CLASS({
         }
         if ( ! Password.verify(password, user.getPassword()) ) {
           throw new InvalidPasswordException();
+        }
+        if ( ! user.getEmailVerified() ) {
+          throw new UnverifiedEmailException();
         }
         try {
           group.validateCidrWhiteList(x);
