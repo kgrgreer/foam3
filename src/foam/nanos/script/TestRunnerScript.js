@@ -82,11 +82,11 @@ foam.CLASS({
         if ( logLevel.getOrdinal() <= LogLevel.DEBUG.getOrdinal() ) {
           loggerFilter.setLogDebug(true);
         }
-        if ( logLevel.getOrdinal() <= LogLevel.INFO.getOrdinal() ) {
-          loggerFilter.setLogInfo(true);
+        if ( logLevel.getOrdinal() > LogLevel.INFO.getOrdinal() ) {
+          loggerFilter.setLogInfo(false);
         }
-        if ( logLevel.getOrdinal() <= LogLevel.WARN.getOrdinal() ) {
-          loggerFilter.setLogWarning(true);
+        if ( logLevel.getOrdinal() > LogLevel.WARN.getOrdinal() ) {
+          loggerFilter.setLogWarning(false);
         }
 
         String testSuite = null;
