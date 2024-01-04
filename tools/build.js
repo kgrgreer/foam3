@@ -94,6 +94,7 @@ var
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
   JOURNAL_CONFIG            = '',
+  LOG_LEVEL                 = null,
   MODE                      = '',
   PACKAGE                   = false,
   POM                       = 'pom',
@@ -505,6 +506,10 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
     CLASSPATH = `${BUILD_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
     if ( TEST || BENCHMARK ) {
+      if ( LOG_LEVEL ) {
+        JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
+      }
+
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
@@ -680,7 +685,8 @@ function moreUsage() {
 }
 
 const ARGS = {
-  a: [ 'turn on verbose mode', () => VERBOSE = '-flags=verbose' ],
+  a: [ 'Delete runtime logs.',
+    () => DELETE_RUNTIME_LOGS = true ],
   b: [ 'run all benchmarks.',
     () => {
       BENCHMARK = true;
@@ -719,8 +725,10 @@ const ARGS = {
     } ],
   k: [ 'Package up a deployment tarball.',
     () => { BUILD_ONLY = PACKAGE = true; } ],
-  l: [ 'Delete runtime logs.',
-    () => DELETE_RUNTIME_LOGS = true ],
+  l: [ 'turn on build logging/verbose mode', () => VERBOSE = '-flags=verbose' ],
+  L: [ 'in combination with tTbB, set JVM log level (one of: ERROR, WARN, INFO, DEBUG)',
+       args => { LOG_LEVEL = args; }
+     ],
   m: [ "Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue",
     () => CLUSTER = true ],
   N: [ `NAME : start another instance with given instance name. Deployed to /opt/${PROJECT.name}_NAME.`,

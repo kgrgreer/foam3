@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.log.LogLevel',
     'foam.nanos.script.Language',
     'foam.nanos.script.TestRunnerConfig',
     'foam.nanos.test.Test',
@@ -73,13 +74,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-//        foam.core.XLocator.set(x);
-
-        // turn off logging to get rid of clutter.
+        // Control logging level with JVM parameter -Dlog.level=
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
-        loggerFilter.setLogDebug(false);
-        loggerFilter.setLogInfo(false);
-        loggerFilter.setLogWarning(false);
+        LogLevel logLevel = LogLevel.valueOf(System.getProperty("log.level", "ERROR"));
+        loggerFilter.setLogDebug(logLevel.getOrdinal() <= LogLevel.DEBUG.getOrdinal());
+        loggerFilter.setLogInfo(logLevel.getOrdinal() <= LogLevel.INFO.getOrdinal());
+        loggerFilter.setLogWarning(logLevel.getOrdinal() <= LogLevel.WARN.getOrdinal());
 
         String testSuite = null;
         TestRunnerConfig config = (TestRunnerConfig) x.get("testRunnerConfig");
