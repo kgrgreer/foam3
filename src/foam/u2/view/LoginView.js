@@ -287,7 +287,7 @@ foam.CLASS({
       var self = this;
 
       let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
-
+      let showPlayBadge = this.appConfig.playLink && this.data.showAction && (! navigator.standalone);
       // CREATE DATA VIEW
       var right = this.E()
       // Header on-top of rendering data
@@ -363,7 +363,7 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            ).callIf(appConfig.playLink && data$showAction, function() {
+            ).callIf(showPlayBadge, function() {
               this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
               .start('img')
                 .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
@@ -391,7 +391,7 @@ foam.CLASS({
         split.rightPanel
           .style({ position: 'relative' })
           .add(right)
-          .callIf(this.appConfig.playLink && this.data.showAction, function() {
+          .callIf(showPlayBadge, function() {
             this.start()
             .addClass('p-legal', self.myClass('legal'))
             .add(self.GPLAY_LEGAL)
