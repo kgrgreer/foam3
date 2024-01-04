@@ -158,6 +158,14 @@ foam.CLASS({
     width: min(140px, 100%);
     margin: auto;
   }
+  ^legal {
+    position: absolute;
+    bottom: 1.2rem;
+    margin: 0 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    width: 100%;
+  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
@@ -255,7 +263,8 @@ foam.CLASS({
   messages: [
     { name: 'GO_BACK', message: 'Go to ' },
     { name: 'MODE1', message: 'SignUp' },
-    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' }
+    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' },
+    { name: 'GPLAY_LEGAL', message: 'Google Play and the Google Play logo are trademarks of Google LLC.'}
   ],
 
   methods: [
@@ -363,7 +372,6 @@ foam.CLASS({
           })
         )
         
-        
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
@@ -380,7 +388,15 @@ foam.CLASS({
             lgColumns: 8,
             xlColumns: 8
           }});
-        split.rightPanel.add(right);
+        split.rightPanel
+          .style({ position: 'relative' })
+          .add(right)
+          .callIf(this.appConfig.playLink && this.data.showAction, function() {
+            this.start()
+            .addClass('p-legal', self.myClass('legal'))
+            .add(self.GPLAY_LEGAL)
+            .end();
+          })
       }
 
       // RENDER EVERYTHING ONTO PAGE
