@@ -26,6 +26,7 @@ foam.CLASS({
       padding: 8px 16px;
       align-items: center;
       justify-content: flex-end;
+      z-index: 100;
     }
     ^body {
       flex: 1;
