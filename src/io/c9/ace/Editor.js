@@ -8,19 +8,23 @@ foam.CLASS({
   package: 'io.c9.ace',
   name: 'Editor',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.u2.DetailView',
     'foam.u2.tag.TextArea',
     'io.c9.ace.Config'
   ],
+
   imports: [
     'warn'
   ],
+
   reactions: [
     ['container', 'onload', 'renderditor'],
     ['config', 'propertyChange', 'updateEditor'],
     ['', 'propertyChange.data', 'dataToEditor']
   ],
+
   properties: [
     {
       class: 'Boolean',
@@ -45,6 +49,7 @@ foam.CLASS({
       name: 'showConfig'
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -85,12 +90,12 @@ foam.CLASS({
     function renderditor() {
       var self = this;
       io.c9.ace.Lib.ACE().then(function(ace) {
-        self.editor = ace.edit(self.container.id);
+        self.editor = ace.edit(self.container.el_());
         self.editor.session.on('change', self.editorToData);
         self.updateEditor();
         self.dataToEditor();
-      }).catch(function() {
-        self.warn('Unable to load ace editor.');
+      }).catch(function(x) {
+        self.warn('Unable to load ace editor.', x);
       });
     },
     {
@@ -116,7 +121,7 @@ foam.CLASS({
       this.editor.setTheme(this.config.theme.path);
       this.editor.setReadOnly(this.config.isReadOnly);
       this.editor.resize();
-      this.editor.session.setMode(this.config.mode.path); 
+      this.editor.session.setMode(this.config.mode.path);
       this.editor.setKeyboardHandler(this.config.keyBinding.path);
     }
   ]
