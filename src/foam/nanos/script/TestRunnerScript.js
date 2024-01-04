@@ -74,20 +74,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-//        foam.core.XLocator.set(x);
-
-        // turn off logging to get rid of clutter.
+        // Control logging level with JVM parameter -Dlog.level=
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
         LogLevel logLevel = LogLevel.valueOf(System.getProperty("log.level", "ERROR"));
-        if ( logLevel.getOrdinal() <= LogLevel.DEBUG.getOrdinal() ) {
-          loggerFilter.setLogDebug(true);
-        }
-        if ( logLevel.getOrdinal() > LogLevel.INFO.getOrdinal() ) {
-          loggerFilter.setLogInfo(false);
-        }
-        if ( logLevel.getOrdinal() > LogLevel.WARN.getOrdinal() ) {
-          loggerFilter.setLogWarning(false);
-        }
+        loggerFilter.setLogDebug(logLevel.getOrdinal() <= LogLevel.DEBUG.getOrdinal());
+        loggerFilter.setLogInfo(logLevel.getOrdinal() <= LogLevel.INFO.getOrdinal());
+        loggerFilter.setLogWarning(logLevel.getOrdinal() <= LogLevel.WARN.getOrdinal());
 
         String testSuite = null;
         TestRunnerConfig config = (TestRunnerConfig) x.get("testRunnerConfig");
