@@ -479,7 +479,7 @@ foam.CLASS({
     {
       name: 'onChange',
       isMerged: true,
-      mergeDelay: 100,
+      mergeDelay: 2000,
       code: async function() {
         let a = await this.crunchService.getEntryCapabilities();
         this.visibleCapabilityDAO = this.ArrayDAO.create({
