@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.ControllerMode',
+    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.Element',
     'foam.u2.Tab',
     'foam.u2.Tabs',
@@ -469,6 +470,7 @@ foam.CLASS({
         wizardType: 'UCJ'
       }, this);
       runner.sequence.reconfigure('CheckPendingAgent', { showToast: showToast });
+      runner.sequence.add(this.CapabilityStoreAgent);
       await runner.launch();
       this.wizardOpened = false;
     }
@@ -477,7 +479,7 @@ foam.CLASS({
     {
       name: 'onChange',
       isMerged: true,
-      mergeDelay: 2000,
+      mergeDelay: 100,
       code: async function() {
         let a = await this.crunchService.getEntryCapabilities();
         this.visibleCapabilityDAO = this.ArrayDAO.create({
