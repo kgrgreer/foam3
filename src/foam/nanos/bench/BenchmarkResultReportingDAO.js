@@ -55,22 +55,25 @@ foam.CLASS({
            SafetyUtil.isEmpty(getHostname()) ) {
         return result;
       }
-      DAO dao = new ClientDAO.Builder(x)
-        .setOf(BenchmarkResult.getOwnClassInfo())
-        .setDelegate(new SessionClientBox.Builder(x)
-          .setSessionID(getSessionId())
-          .setDelegate(new SocketClientBox.Builder(x)
-            .setHost(getHostname())
-            .setPort(getPort())
-            .setServiceName(getServiceName())
-            .build())
-          .build())
-        .build();
-      try {
-        dao.put(result);
-      } catch (Throwable t) {
-        foam.nanos.logger.Loggers.logger(x, this).warning(t);
-      }
+      // DAO service = (DAO) x.get(getServiceName());
+      // if ( service != null ) {
+      //   DAO dao = new ClientDAO.Builder(x)
+      //     .setOf(BenchmarkResult.getOwnClassInfo())
+      //     .setDelegate(new SessionClientBox.Builder(x)
+      //       .setSessionID(getSessionId())
+      //       .setDelegate(new SocketClientBox.Builder(x)
+      //         .setHost(getHostname())
+      //         .setPort(getPort())
+      //         .setServiceName(getServiceName())
+      //         .build())
+      //       .build())
+      //     .build();
+      //   try {
+      //     dao.put(result);
+      //   } catch (Throwable t) {
+      //     foam.nanos.logger.Loggers.logger(x, this).warning(t);
+      //   }
+      // }
 
       return result;
       `
