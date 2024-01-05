@@ -79,7 +79,7 @@ foam.CLASS({
           this.capabilitiesList = (
             await this.capabilityDAO.where(this.AND(
               this.IN(this.Capability.ID, this.ucjPropertyList.map(u => u.targetId)),
-              this.NEQ(this.Capability.OF, null))).select()
+              this.HAS(this.Capability.OF))).select()
           ).array;
           return this.UCJView.create({
             isSettingCapabilities: true,
