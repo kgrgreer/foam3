@@ -99,7 +99,7 @@ foam.CLASS({
     {
       name: 'of',
       expression: function (obj) {
-        return obj?.cls_;
+        return obj?.cls_ || null;
       }
     },
     'prop',
