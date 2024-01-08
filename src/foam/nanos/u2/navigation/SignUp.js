@@ -323,8 +323,7 @@ foam.CLASS({
       label: 'Sign in',
       buttonStyle: 'TEXT',
       code: function(X) {
-        X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.pushMenu('sign-in');
       }
     },
     {

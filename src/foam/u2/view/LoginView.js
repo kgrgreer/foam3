@@ -287,7 +287,8 @@ foam.CLASS({
       var self = this;
 
       let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
-      let showPlayBadge = this.appConfig.playLink && this.data.showAction && (! navigator.standalone);
+      let showPlayBadge = this.appConfig.playLink && this.data.showAction 
+        && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
       var right = this.E()
       // Header on-top of rendering data
