@@ -97,8 +97,8 @@ foam.CLASS({
     },
     {
       class: 'String',
+      documentation: 'Link to Google play store for the app, used in LoginView. Configure in themes.jrl for each app per theme.',
       name: 'playLink',
-      value: 'https://play.google.com/store?hl=en',
       visibility: 'HIDDEN'
     },
     {
