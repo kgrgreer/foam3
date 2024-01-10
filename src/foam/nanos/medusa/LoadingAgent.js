@@ -24,6 +24,16 @@ Future compaction requires all transaction versions are retained. Hithertoo this
 Process:
 Replay each file journal through a MedusaAdaptorDAO.
 Given any regularly configured medusa cluster, for each DAO nspec that has a journal, create a JDAO which delegates to MedusaAdapterDAO.  This feeds all 'put's from the journal into medusa as any other.
+
+Using LoadingAgent
+From the primary of a completely ONLINE new medusa cluster:
+1. copy all journals to be processed, except that of transactions, into the journal folder of the primary
+2. execute LoadingAgent
+3. remove all processed journals
+4. copy the transaction journal into th journal folder of the primary
+5. execute LoadingAgent
+6. remove the transactions journal
+7. No restart is required, the cluster is viable.
 `,
 
   javaImports: [
@@ -31,6 +41,7 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.EasyDAO',
+    'foam.dao.F3FileJournal',
     'foam.dao.JournalType',
     'foam.dao.ProxyDAO',
     'foam.dao.java.JDAO',
@@ -45,8 +56,12 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
     'foam.util.concurrent.AbstractAssembly',
     'foam.util.concurrent.AssemblyLine',
     'foam.util.concurrent.AsyncAssemblyLine',
+    'foam.util.concurrent.SyncAssemblyLine',
     'java.time.Duration',
+    'java.util.HashMap',
     'java.util.List',
+    'java.util.Map',
+    'java.util.stream.Collectors'
   ],
 
   methods: [
@@ -80,11 +95,16 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
 
         // load
         logger.info("load");
-        long loadTime = load(x);
+        Map<String, String> report = load(x);
 
-        logger.info("end");
         er.setMessage("complete");
+        String message = report.keySet()
+          .stream()
+          .map(key -> key + " " +report.get(key))
+          .collect(Collectors.joining("\\n"));
+        er.setResponseMessage(message);
         ((DAO) x.get("eventRecordDAO")).put(er);
+        logger.info("report", message);
       } catch (Throwable t) {
         er.setMessage(t.getMessage());
         er.setSeverity(LogLevel.ERROR);
@@ -128,22 +148,34 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
     {
       name: 'load',
       args: 'X x',
-      type: 'Long',
+      type: 'Map',
       javaCode: `
       final Logger logger = Loggers.logger(x, this, "loading");
+      final HashMap report = new HashMap();
       logger.info("start");
       final long startTime = System.currentTimeMillis();
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
-      AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+
+      // NOTE: to use AsyncAssemblyLine, we have to manually determine
+      // when all have been processed, as the JDAO replay is itself a
+      // AsyncAssemblyLine, so it returns immediately.
+      // AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
+      AssemblyLine line = new SyncAssemblyLine(x);
       DAO serviceDAO = new JDAO(x, new foam.dao.MDAO(NSpec.getOwnClassInfo()), "services", false);
       List<NSpec> services = (List) ((ArraySink) serviceDAO.select(new ArraySink())).getArray();
       for ( NSpec service : services ) {
-        final EasyDAO easyDAO = getEasyDAO(x, service);
-        if ( easyDAO == null ) continue;
-
         line.enqueue(new AbstractAssembly() {
           public void executeJob() {
             logger.info("load", "start", service.getId());
+            EasyDAO easyDAO = null;
+            try {
+              easyDAO = getEasyDAO(x, service);
+              if ( easyDAO == null ) return;
+            } catch (Throwable e) {
+              logger.info(service.getId(), "skipped", e.getMessage());
+              report.put(service.getId(), e.getMessage());
+              return;
+            }
             DAO delegate = null;
             if ( easyDAO.getSAF() ) {
               delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(x)
@@ -177,22 +209,35 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
             }
             jdao.setReadOnly(true);
             jdao.setRuntimeOnly(true);
+
             // this will trigger replay
-            jdao.setDelegate(delegate);
-            logger.info("load", "end", service.getId());
+            long loadStartTime = System.currentTimeMillis();
+            try {
+              jdao.setDelegate(delegate);
+              F3FileJournal journal = (F3FileJournal) jdao.getJournal();
+              if ( journal.getPassCount() + journal.getFailCount() > 0 ) {
+                report.put(service.getId(), "processed "+journal.getPassCount()+" of "+(journal.getFailCount()+journal.getPassCount()));
+              } else {
+                logger.info(service.getId(), "skipped", "empty journal");
+              }
+              logger.info("load", "end", service.getId());
+            } catch (Throwable t) {
+              logger.error("load", "end", service.getId(), t);
+              report.put(service.getId(), t.getMessage());
+            }
           }
         });
       }
-      logger.info("shutdown,wait");
       line.shutdown();
       logger.info("end");
-      return System.currentTimeMillis() - startTime;
+      return report;
       `
     },
     {
       name: 'getEasyDAO',
       args: 'X x, NSpec service',
       type: 'foam.dao.EasyDAO',
+      javaThrows: ['Throwable'],
       javaCode: `
       Compaction compaction = (Compaction) ((DAO) x.get("compactionDAO")).find(service.getId());
       if ( compaction != null &&
@@ -218,20 +263,20 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
           EasyDAO easyDAO = (EasyDAO) dao;
           if ( easyDAO.getNullify() ) {
             Loggers.logger(x, this).info("getEasyDAO", service.getId(), "nullify");
-            return null;
+            break;
           }
           if ( ! easyDAO.getCluster() ) {
             if ( ! service.getServiceScript().contains("MedusaAdapterDAO") ) {
               // custom nspec may explicitly setup clustering
               Loggers.logger(x, this).info("getEasyDAO", service.getId(), "not clustered");
-              return null;
+              break;
             }
           }
           if ( ! easyDAO.getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
             if ( ! service.getServiceScript().contains("JDAO") ) {
               // custom nspec may explicitly setup journalling
-              Loggers.logger(x, this).info("getEasyDAO", service.getId(), "no journal");
-              return null;
+              Loggers.logger(x, this).info("getEasyDAO", service.getId(), "no journal/jdao");
+              break;
             }
           }
           return easyDAO;
@@ -239,10 +284,10 @@ Given any regularly configured medusa cluster, for each DAO nspec that has a jou
         if ( dao instanceof ProxyDAO ) {
           dao = ((ProxyDAO) dao).getDelegate();
         } else {
+          Loggers.logger(x, this).warning("getEasyDAO", service.getId(), "not found");
           break;
         }
       }
-      Loggers.logger(x, this).warning("getEasyDAO", service.getId(), "not found");
       return null;
       `
     },

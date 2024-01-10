@@ -21,6 +21,7 @@ foam.CLASS({
     'foam.util.concurrent.AssemblyLine',
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
+    'java.time.Duration',
     'java.util.concurrent.atomic.AtomicInteger'
   ],
 
@@ -33,6 +34,16 @@ foam.CLASS({
       documentation: 'Perform replay synchronously. Manual workaround for deadlock with AsyncAssemblyLine',
       class: 'Boolean',
       name: 'syncReplay'
+    },
+    {
+      documentation: 'Report of successfully processed lines during last replay',
+      class: 'Int',
+      name: 'passCount'
+    },
+    {
+      documentation: 'Report of unsuccessfully processed lines during last replay',
+      class: 'Int',
+      name: 'failCount'
     }
   ],
 
@@ -46,7 +57,8 @@ foam.CLASS({
       ],
       javaCode: `
         // count number of entries successfully read
-        AtomicInteger successReading = new AtomicInteger();
+        AtomicInteger passCount = new AtomicInteger();
+        AtomicInteger failCount = new AtomicInteger();
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
@@ -79,6 +91,7 @@ foam.CLASS({
                 public void endJob(boolean isLast) {
                   if ( obj == null ) {
                     getLogger().error("Parse error in the jrl file " + getFilename(), getParsingErrorMessage(strEntry), "entry Object is: ", strEntry);
+                    failCount.incrementAndGet();
                     return;
                   }
                   switch ( operation ) {
@@ -91,7 +104,7 @@ foam.CLASS({
                       dao.remove(obj);
                       break;
                   }
-                  successReading.incrementAndGet();
+                  passCount.incrementAndGet();
                 }
               });
             } catch ( Throwable t ) {
@@ -99,11 +112,17 @@ foam.CLASS({
             }
           }
         } catch ( Throwable t) {
-          getLogger().error("Failed to read journal", dao.getOf().getId(), t);
+          getLogger().error("Failed to read journal", dao.getOf().getId(), getFilename(), t);
         } finally {
+          setPassCount(passCount.get());
+          setFailCount(failCount.get());
           assemblyLine.shutdown();
           pm.log(x);
-          getLogger().log("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
+          if ( getFailCount() == 0 ) {
+            getLogger().info("Replay complete", getFilename(), "processed", getPassCount(), "of", getFailCount()+getPassCount(), "in", Duration.ofMillis(pm.getTime()));
+          } else {
+            getLogger().warning("Replay complete", getFilename(), "processed", getPassCount(), "of", getFailCount()+getPassCount(), "in", Duration.ofMillis(pm.getTime()));
+          }
         }
       `
     }
