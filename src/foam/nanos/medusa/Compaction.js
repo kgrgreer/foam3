@@ -66,6 +66,25 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.dao.Sink',
       view: { class: 'foam.u2.view.JSONTextView' }
+    },
+    {
+      documentation: 'An nspec is eligible for reading into a medusa system for bootstrapping.',
+      name: 'loadable',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      documentation: 'Name for JDAO creation during loading. Default is best gues. Required when nspec has JDAO setup outside of EasyDAO.',
+      name: 'journalName',
+      class: 'String',
+      javaFactory: `
+      var name = getNSpec();
+      name = name.replace("DAO", "");
+      name = name.replace("local", "");
+      name = name.toLowerCase();
+      name = name + "s";
+      return name;
+      `
     }
   ]
 });

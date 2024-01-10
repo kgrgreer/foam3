@@ -36,3 +36,22 @@ try {
 }
   """
 })
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaLoad",
+  description:"Initiate MedusaEntryDAO Loading",
+  code:"""
+import foam.nanos.medusa.LoadingAgent;
+try {
+  a = new LoadingAgent(x);
+  a.execute(x);
+  print("INFO: Loading complete. System OK");
+} catch (IllegalStateException e) {
+  print(e.getMessage());
+  print("WARNING: Loading aborted. System OK");
+} catch (Throwable t) {
+  print(t.getMessage());
+  print("ERROR: Loading failed.  System OFFLINE. Intervention required.");
+}
+  """
+})

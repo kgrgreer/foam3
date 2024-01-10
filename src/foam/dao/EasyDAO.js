@@ -907,6 +907,7 @@ model from which to test ServiceProvider ID (spid)`,
             jdao.setFilename(getJournalName());
             jdao.setCluster(getCluster() && !getSAF());
             jdao.setWaitReplay(getWaitReplay());
+            // Setting of delegate must be last as it triggers replay
             jdao.setDelegate(delegate);
             delegate = jdao;
           }
