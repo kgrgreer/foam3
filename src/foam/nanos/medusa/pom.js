@@ -66,6 +66,8 @@ foam.POM({
       flags: "js|java" },
     { name: "ElectoralServiceServer",
       flags: "js|java" },
+    { name: "LoadingAgent",
+      flags: "js|java" },
     { name: "MedusaEntryRefinement",
       flags: "js|java" },
     { name: "MedusaEntryNoRemoveDAO",

@@ -77,6 +77,18 @@ In this current implementation setDelegate must be called last.`,
       value: true
     },
     {
+      documentation: 'Filesystem is read-only, journals updates are factilitated through some other means such as medusa.',
+      class: 'Boolean',
+      name: 'readOnly',
+      javaFactory: 'return "ro".equals(System.getProperty("FS", "rw"));'
+    },
+    {
+      documentation: 'Only load the runtime generated journal file.  Used by Medusa to bootstrap a system with existing data.',
+      class: 'Boolean',
+      name: 'runtimeOnly',
+      value: false
+    },
+    {
       name: 'delegate',
       class: 'foam.dao.DAOProperty',
       javaFactory: 'return new MDAO(getOf());',
@@ -86,11 +98,12 @@ In this current implementation setDelegate must be called last.`,
             if ( getCluster() ) {
               setJournal(new NullJournal.Builder(getX()).build());
             } else {
-              if ( "ro".equals(System.getProperty("FS")) ) {
+              if ( getReadOnly() ) {
                 setJournal(new ReadOnlyF3FileJournal.Builder(getX())
+                  .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(true)
-                  .setDao(delegate)
+                  .setSyncReplay(getSyncReplay())
                   .build());
               } else {
                 setJournal(new F3FileJournal.Builder(getX())
@@ -110,6 +123,12 @@ In this current implementation setDelegate must be called last.`,
                   new ResourceStorage(System.getProperty("resource.journals.dir")));
             }
 
+          Journal[] journals = null;
+          if ( getRuntimeOnly() ) {
+            journals = new Journal[] {
+              getJournal()
+            };
+          } else {
             // Repo Journal
             F3FileJournal journal0 = new ReadOnlyF3FileJournal.Builder(resourceStorageX)
               .setFilename(getFilename() + ".0")
@@ -120,7 +139,6 @@ In this current implementation setDelegate must be called last.`,
             NSpec nspec = (NSpec)getX().get(NSpec.NSPEC_CTX_KEY);
 
             String nSpecName = getFilename();
-            Journal[] journals = null;
 
             if ( nspec != null ) {
               nSpecName = nspec.getName();
@@ -129,14 +147,14 @@ In this current implementation setDelegate must be called last.`,
                 new NDiffJournal.Builder(resourceStorageX)
                 .setDelegate(journal0)
                 .setNSpecName(nSpecName)
-                .setRuntimeOrigin(false) 
+                .setRuntimeOrigin(false)
                 .build(),
 
                 // replays the runtime journal
                 new NDiffJournal.Builder(getX())
                 .setDelegate(getJournal())
                 .setNSpecName(nSpecName)
-                .setRuntimeOrigin(true) 
+                .setRuntimeOrigin(true)
                 .build()
               };
             } else {
@@ -145,6 +163,7 @@ In this current implementation setDelegate must be called last.`,
                     getJournal()
               };
             }
+          }
             final Journal jnl = new CompositeJournal.Builder(resourceStorageX)
               .setDelegates(journals)
               .build();
@@ -153,7 +172,7 @@ In this current implementation setDelegate must be called last.`,
               jnl.replay(resourceStorageX, delegate);
             } else {
               final X y = resourceStorageX;
-              final String name = nSpecName;
+              final String name = getFilename();
               Agency agency = (Agency) getX().get("threadPool");
               agency.submit(getX(), new ContextAgent() {
                 public void execute(X x) {
