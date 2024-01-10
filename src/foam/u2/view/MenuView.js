@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'isEnabled',
       documentation: 'Function to determine if button is enabled.',
       value: null
-    },
+    }
   ],
 
   methods: [
@@ -53,6 +53,7 @@ foam.CLASS({
   listeners: [
     function click(evt) {
       this.SUPER(evt);
+      if ( evt.detail && evt.detail > 1 ) return;
       let ret = this.menu.launch_(this.__subContext__, this);
       if ( ret && ret.then ) {
         this.loading_ = true;
