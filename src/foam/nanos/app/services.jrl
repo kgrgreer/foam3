@@ -65,3 +65,12 @@ p({
     class: "foam.nanos.app.HealthHeartbeatMonitor",
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appDownloadBadgeService",
+  "serve":true,
+  "lazyClient": false,
+  "authenticate":false,
+  "client":"{ \"class\": \"foam.nanos.app.AppDownloadBadgeService\" }"
+})
