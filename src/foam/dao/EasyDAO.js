@@ -399,7 +399,7 @@ foam.CLASS({
       name: 'pipelinePm'
     },
     {
-      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutuallyexclusive.',
+      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive.',
       class: 'Boolean',
       name: 'seqNo'
     },
