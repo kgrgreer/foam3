@@ -732,7 +732,7 @@ TODO: handle node roll failure - or timeout
       name: 'NSpecSink',
       extends: 'foam.dao.ProxySink',
 
-      documentation: 'Creates new MedusaEntry for current Object',
+      documentation: `Creates new MedusaEntry for current Object. Consults Compaction entries to determine if this nspec should be compacted.`,
 
       javaCode: `
         public NSpecSink(X x, CompactionDAO self, ProxySink delegate) {
@@ -865,7 +865,7 @@ TODO: handle node roll failure - or timeout
       name: 'CompactibleSink',
       extends: 'foam.dao.ProxySink',
 
-      documentation: 'Skip entries which are not compactible',
+      documentation: 'Skip MedusaEntries which are not compactible:true. This is flag is seperate from the Compaction model which acts at the nspec level.',
 
       properties: [
         {
