@@ -898,6 +898,7 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        await this.reloadClient();
         return true;
       }
     },
