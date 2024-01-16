@@ -177,6 +177,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
     package:'foam.u2',
     name: 'RowWrapper',
@@ -184,7 +185,7 @@ foam.CLASS({
     documentation: 'A wrapper view that adds click functionality to the list rows',
 
     mixins: ['foam.comics.v2.Clickable'],
-    imports: ['theme'],
+    imports: ['theme?'],
     css: `
       ^ {
         display: flex;
@@ -228,12 +229,13 @@ foam.CLASS({
           .call(this.insertClick.bind(self), [this.data])
         .end()
         .start().addClass(self.myClass('svg-wrapper'))
-          .start({ class: 'foam.u2.tag.Image', glyph: self.theme.glyphs.next, role: 'presentation' })
+          .start({ class: 'foam.u2.tag.Image', glyph: self.theme?.glyphs.next, role: 'presentation' })
           .end()
         .end();
       }
     ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.view',
