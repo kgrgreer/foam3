@@ -34,6 +34,7 @@ foam.CLASS({
       justify-content: center;
       gap: 1rem;
       align-items: center;
+      text-align: center;
     }
     ^playLink img {
       max-width: max(18rem, 10vw);
