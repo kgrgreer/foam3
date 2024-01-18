@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.XLocator',
     'foam.core.ProxyX',
+    'foam.nanos.om.OMLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'java.util.concurrent.BlockingQueue',
@@ -55,12 +56,18 @@ foam.CLASS({
   methods: [
     {
       name: 'incrQueued',
-      javaCode: 'setQueued(getQueued() + 1);',
+      javaCode: `
+        setQueued(getQueued() + 1);
+        ((OMLogger) getX().get("OMLogger")).log(getName(), "queued");
+      `,
       synchronized: true
     },
     {
       name: 'incrExecuted',
-      javaCode: 'setExecuted(getExecuted() + 1);',
+      javaCode: `
+        setExecuted(getExecuted() + 1);
+        ((OMLogger) getX().get("OMLogger")).log(getName(), "executed");
+      `,
       synchronized: true
     },
     {
