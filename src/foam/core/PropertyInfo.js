@@ -52,7 +52,7 @@ foam.INTERFACE({
     'Object get(Object obj)',
     'void set(Object obj, Object value)',
     'void clear(Object obj)',
-    'Parser jsonParser()',
+    'Parser jsonParser()', // Specify parser to use for Java JSON parsing. Set javaJSONParser: 'null' (String literal) to remove parsing support.
     'Parser queryParser()',
     'Parser csvParser()',
     'void toJSON(foam.lib.json.Outputter outputter, Object value) { outputter.output(value); }',
@@ -77,9 +77,9 @@ foam.INTERFACE({
         // If value is Object reference, only compare reference. (AbstractObjectPropertyInfo will override hardDiff method)
         // use to compare String and primitive type
         int same = comparePropertyToValue(this.get(o1), this.get(o2));
-        //return the value of o2 if o1 and o2 are different
+        // return the value of o2 if o1 and o2 are different
         if ( same != 0 ) {
-          //set o2 prop into diff
+          // set o2 prop into diff
           this.set(diff, this.get(o2));
           return true;
         }
