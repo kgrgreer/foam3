@@ -54,6 +54,16 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'incrQueued',
+      javaCode: 'setQueued(getQueued() + 1);',
+      synchronized: true
+    },
+    {
+      name: 'incrExecuted',
+      javaCode: 'setExecuted(getExecuted() + 1);',
+      synchronized: true
+    },
+    {
       name: 'start',
       javaCode: `
       Thread t = new Thread(this);
@@ -65,7 +75,7 @@ foam.CLASS({
     {
       name: 'submit',
       javaCode: `
-      setQueued(getQueued() + 1);
+      incrQueued();
       try {
         getQueue().put(new Runnable() { public void run() {
           X oldX = ((ProxyX) XLocator.get()).getX();
@@ -93,7 +103,7 @@ foam.CLASS({
           try {
             Runnable agent = (Runnable) getQueue().take();
 
-            setExecuted(getExecuted() + 1);
+            incrExecuted();
 
             long start = System.currentTimeMillis();
 
