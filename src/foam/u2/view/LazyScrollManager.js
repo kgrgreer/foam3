@@ -193,7 +193,12 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.onDetach(this.data$proxy.listen(this.FnSink.create({fn: this.updateCount})));
+      this.onDetach(this.data$proxy.listen(this.FnSink.create({
+        fn: () => {
+          this.data$proxy.cmd(foam.dao.DAO.PURGE_CMD);
+          this.updateCount();
+        }
+      })));
       this.updateCount();
     },
 
