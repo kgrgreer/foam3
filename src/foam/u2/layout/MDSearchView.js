@@ -59,7 +59,7 @@ foam.CLASS({
     function render() {
       var self = this;
       self.addClass()
-      this.start().addClass('container-search')
+      this.start().addClass('md-text', 'container-search')
         .start(self.TextSearchView, {
              richSearch: true,
              of: this.dao.of.id,
@@ -72,7 +72,7 @@ foam.CLASS({
           .addClass('general-field')
         .end()
       .end()
-      .start().addClass('clear-btn')
+      .start().addClass('md-button', 'clear-btn')
         .add(this.CLEAR)
       .end()
     },
@@ -116,14 +116,12 @@ foam.CLASS({
     ^ .clear-btn i {
       background-color: unset;
       color: white;
-      font-size: 3.5rem;
     }
 
     ^ input {
       background-color: unset;
       border: none;
       border-bottom: solid 1px white;
-      font-size: 3rem;
       color: white;
       right: 0;
       width: 0%;

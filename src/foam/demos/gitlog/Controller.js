@@ -88,7 +88,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      this.react(function(data) {
+      this.add(self.dynamic(function(data) {
         // this.add('data: ', data);
         if ( ! data ) return;
         this.
@@ -100,7 +100,7 @@ foam.CLASS({
           }
         ).br().
         start('b').add('Diff:  ').end().tag({class: 'foam.demos.gitlog.DiffView'}, {data: data.diff});
-      });
+      }));
     }
   ]
 });
@@ -341,6 +341,15 @@ foam.CLASS({
       'spacing',
     ],
     AUTHOR_MAP: {
+      'dependabot[bot]': 'dependabot[bot]',
+      'Mritunjay Chauhan': 'Mritunjay Chauhan',
+      'Mritunjay': 'Mritunjay Chauhan',
+      'mritunjay51': 'Mritunjay Chauhan',
+      'kiana-nanopay': 'Kiana Omoerah',
+      'Kiana Omoerah': 'Kiana Omoerah',
+      'Bipin': 'Bipinjot Kaur',
+      'BipinjotKaur': 'Bipinjot Kaur',
+      'Bipinjot Kaur': 'Bipinjot Kaur',
       'Adam Fox': 'Adam Fox',
       'Alexey Greer': 'Alexey Greer',
       'AlexeyGreer': 'Alexey Greer',
@@ -376,6 +385,7 @@ foam.CLASS({
       'kristina': 'Kristina Smirnova',
       'Lenore Chen': 'Lenore Chen',
       'LenoreChen': 'Lenore Chen',
+      'Mahimaa Jayaprakash': 'Mahimaa Jayaprakash',
       'Mahimaa': 'Mahimaa Jayaprakash',
       'Mayowa Olurin': 'Mayowa Olurin',
       'mayowa': 'Mayowa Olurin',
@@ -417,6 +427,7 @@ foam.CLASS({
       'Ruby Zhang': 'Ruby Zhang',
       'Ruby': 'Ruby Zhang',
       'Sarthak Marwaha': 'Sarthak Marwaha',
+      'sarthakmarwaha55': 'Sarthak Marwaha',
       'sarthak-marwaha': 'Sarthak Marwaha',
       'sarthak': 'Sarthak Marwaha',
       'Scott Head': 'Scott Head',
@@ -429,6 +440,16 @@ foam.CLASS({
       'yij793': 'Garfiled Jian'
     },
     PROJECT_RULES: [
+      {
+        name: 'Hybrid-Blockchain',
+        keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
+        paths: [ 'medusa', 'cluster', 'sf' ]
+      },
+      {
+        name: 'NANOS',
+        keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
+        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar' ]
+      },
       {
 //        name: 'Core',
         name: 'NANOS',
@@ -485,6 +506,11 @@ name: 'NANOS',
         name: 'NANOS',
         keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
         paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
+      },
+      {
+        name: 'Test',
+        keywords: [ 'test', 'tests' ],
+        paths: [ 'test', 'tests' ]
       }
     ]
   },
@@ -505,7 +531,7 @@ name: 'NANOS',
       value: '2021',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: [
-          [0, '-- All --'], [ 2021, '2021' ], [ 2022, '2022' ]
+          [0, '-- All --'], [ 2021, '2021' ], [ 2022, '2022' ], [ 2023, '2023' ]
         ]}, X);
       }
     },
@@ -616,7 +642,7 @@ name: 'NANOS',
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
-              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
+//              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
@@ -656,19 +682,12 @@ name: 'NANOS',
     function init() {
       this.SUPER();
       // TODO: make this configurable
-      const year = 2022;
+      this.loadYear(2023);
+    },
 
-      if ( year == 2021 ) {
-        this.loadData('data2021.log');
-        this.loadData('np2021.log');
-      } else if ( year == 2022 ) {
-        this.loadData('data2022.log');
-        this.loadData('np2022.log');
-
-        this.loadData('data2021.log');
-        this.loadData('np2021.log');
-      }
-
+    function loadYear(year) {
+      this.loadData(`data/data${year}.log`);
+      this.loadData(`data/np${year}.log`);
     },
 
     function loadData(f) {
@@ -690,7 +709,7 @@ name: 'NANOS',
             commit = this.Commit.create({id: line.substring(7)});
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
-            commit.author = line.substring(8, line.indexOf('<')).trim();
+            commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
           } else if ( line.startsWith('Date: ') ) {
             commit.date = new Date(line.substring(6).trim());
             i++;
@@ -721,6 +740,8 @@ name: 'NANOS',
           }
         }
       }
+      if ( commit.author.indexOf('dependabot') != -1 ) return;
+      console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
@@ -798,7 +819,7 @@ name: 'NANOS',
 
     function searchPane(self) {
       this.start('').
-        add('Year: ',             self.YEAR).br().
+//        add('Year: ',             self.YEAR).br().
         add('Keyword: ',          self.QUERY).br().
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().

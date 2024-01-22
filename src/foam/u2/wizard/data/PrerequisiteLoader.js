@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'PrerequisiteLoader',
   extends: 'foam.u2.wizard.data.ProxyLoader',
 
+  documentation: `
+    Loader for loading the data of a prerequisite capability, with
+    the intent of saving the data as a part of the current wizardlet.
+  `,
+
   issues: [
     'Property "of" needs to specified, which is inconvenient.'
   ],
@@ -55,6 +60,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'cloneValue',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'useInitialData',
+      value: true,
+      documentation: `
+        Should be set to false when loadIntoPath is not set, and prerequisite data should not be copied onto initialData but returned directly,
+        such as when the loaded data is of a different class than or a subclass of currentWizardlet.of
+      `
     }
   ],
   
@@ -66,7 +80,7 @@ foam.CLASS({
 
       if ( ! prereqWizardlet ) {
         console.error(`prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} not found`);
-        return;
+        return initialData;
       }
 
       if ( ! prereqWizardlet.isAvailable ){
@@ -88,7 +102,7 @@ foam.CLASS({
         console.error(
           `prerequisiteCapabilityId: ${this.prerequisiteCapabilityId} has no data`
         );
-        return;
+        return initialData;
       }
 
       let prereqWizardletData = prereqWizardlet.data;
@@ -118,7 +132,8 @@ foam.CLASS({
       }
 
       if ( this.isWrappedInFObjectHolder ) {
-        return this.FObjectHolder.create({ fobject: clonedPrereqWizardletData });
+        var fobjRet = this.useInitialData ? initialData.copyFrom(clonedPrereqWizardletData) : clonedPrereqWizardletData;
+        return this.FObjectHolder.create({ fobject: fobjRet });
       }
 
       if ( this.loadIntoPath ) {
@@ -132,7 +147,7 @@ foam.CLASS({
         return initialData;
       }
 
-      return clonedPrereqWizardletData;
+      return this.useInitialData ? initialData.copyFrom(clonedPrereqWizardletData) : clonedPrereqWizardletData;
     }
   ]
 });

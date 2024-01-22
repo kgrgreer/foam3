@@ -14,7 +14,8 @@ foam.CLASS({
     'foam.u2.layout.MDDAOController',
     'foam.u2.layout.MDLoginView',
     'foam.u2.layout.MDNotificationMessage',
-    'foam.u2.layout.MDStackView'
+    'foam.u2.layout.MDStackView',
+    'foam.u2.md.ActionView'
   ],
 
   exports: [
@@ -57,8 +58,6 @@ foam.CLASS({
     }
     ^ toolbar .title {
       padding-left: 4rem;
-      font-weight: 500;
-      font-size: 3.5rem;
       width: 100%;
     }
     ^ toolbar .foam-u2-ActionView {
@@ -93,31 +92,28 @@ foam.CLASS({
       await this.clientPromise;
       await this.fetchTheme();
 
-      this.client.nSpecDAO.find('appConfig').then(config => {
-      this.appConfig.copyFrom(config.service);
-
+      this.__subContext__.register(this.ActionView,            'foam.u2.ActionView');
       this.__subContext__.register(this.MDDAOController,       'foam.comics.v2.DAOBrowseControllerView');
       this.__subContext__.register(this.MDDAOController,       'foam.comics.BrowserView');
       this.__subContext__.register(this.MDLoginView,           'foam.u2.view.LoginView');
       this.__subContext__.register(this.MDNotificationMessage, 'foam.u2.dialog.NotificationMessage');
 
       this.themeInstalled.resolve();
-    });
 
-    await this.themeInstalled;
+      await this.themeInstalled;
 
-    this
-      .addClass(this.myClass())
-      .start()
-        .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
-        .start('div')
-          .tag({ class: 'foam.u2.layout.MDSideNavigation' })
-        .end()
-        .tag(this.MDStackView.create({
-            data: this.stack,
-            showActions: false
-          }))
-      .end()
+      this
+        .addClass(this.myClass())
+        .start()
+          .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
+          .start('div')
+            .tag({ class: 'foam.u2.layout.MDSideNavigation' })
+          .end()
+          .tag(this.MDStackView.create({
+              data: this.stack,
+              showActions: false
+            }))
+        .end();
     }
   ]
 });

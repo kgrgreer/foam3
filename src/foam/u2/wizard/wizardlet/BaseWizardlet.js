@@ -371,6 +371,7 @@ foam.CLASS({
     },
     async function save(options) {
       this.indicator = this.WizardletIndicator.SAVING;
+      this.normalizeObj();
       var ret = await this.wao.save(this, options);
       this.clearProperty('indicator');
       this.saveEvent.pub(ret);

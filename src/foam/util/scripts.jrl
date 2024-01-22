@@ -6,7 +6,9 @@ p({
   code:"""
     import foam.util.AUIDGenerator;
     g = new AUIDGenerator(x, "benchmarkDAO");
-    print("id: "+g.getNextString());
+    for ( i = 0; i < 20; i++ ) {
+      print("id: "+g.getNextString());
+    }
   """
 })
 p({

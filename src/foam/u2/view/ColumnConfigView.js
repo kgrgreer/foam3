@@ -540,8 +540,6 @@ foam.CLASS({
   }
   ^some-padding {
     text-align: left;
-    font-size: 1.4rem;
-    line-height: 24px;
     padding: 4px 16px;
     display: flex;
     align-items: center;
@@ -589,7 +587,7 @@ foam.CLASS({
       this
         .on('click', this.toggleExpanded)
           .start()
-            .addClass(this.myClass('some-padding'))
+            .addClass('p', this.myClass('some-padding'))
             .style({
               'padding-left': self.data.level * 16 + 8 + 'px',
               'padding-right': '8px'
@@ -635,12 +633,11 @@ foam.CLASS({
               .show(this.data.hasSubProperties)
               .style({
                 'vertical-align': 'middle',
-                'font-weight':    'bold',
                 'visibility':     'visible',
-                'font-size':      '16px',
                 'float':          'right',
                 'transform':      this.data.expanded$.map(function(c) { return c ? 'rotate(180deg)' : 'rotate(90deg)'; })
               })
+              .addClass('h500')
               .on('click', this.toggleExpanded)
               .add('\u2303')
             .end()
@@ -804,9 +801,7 @@ foam.CLASS({
       name: 'hasSubProperties',
       class: 'Boolean',
       expression: function(subProperties) {
-        if ( subProperties.length === 0 )
-          return false;
-        return true;
+        return subProperties.length > 0;
       }
     },
     {
@@ -824,7 +819,7 @@ foam.CLASS({
       expression: function(prop) {
         if ( ! this.of || ! this.of.getAxiomByName )
           return [];
-        if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
+        if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || ( foam.core.Reference.isInstance(prop) && prop.showSubColumns ) ) )
           return prop.of.getAxiomsByClass(foam.core.Property).map(p => { if ( ! foam.dao.DAOProperty.isInstance(p) )  return [p.name, this.columnHandler.returnAxiomHeader(p)] }).filter(e => e != undefined);
         return [];
       }

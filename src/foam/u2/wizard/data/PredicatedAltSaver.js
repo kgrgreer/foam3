@@ -12,6 +12,8 @@
   documentation: `
     Used to execute an alternateflow upon saving a wizardlet.
     When using should set wizardlet.goNextOnSave to false
+
+    Note: when capability id set, predicate is ignored
   `,
 
   imports: [
@@ -30,6 +32,10 @@
       name: 'capability'
     },
     {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.AlternateFlow',
       name: 'thenFlow'
@@ -44,9 +50,15 @@
   methods: [
     async function save(...a) {
       const returnValue = this.delegate.save(...a);
-
-      const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
-      if ( ucj.status !== this.CapabilityJunctionStatus.AVAILABLE ) {
+      let res;
+      if ( this.capability ) {
+        const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
+        res = ucj.status !== this.CapabilityJunctionStatus.AVAILABLE;
+      } else {
+        res = this.predicate.f(a[0]);
+      }
+      
+      if ( res ) {
         await this.thenFlow.execute(this.__subContext__);
       } else {
         await this.elseFlow.execute(this.__subContext__);

@@ -1,0 +1,57 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaCompaction",
+  description:"Initiate MedusaEntryDAO Compaction",
+  code:"""
+import foam.nanos.medusa.CompactionDAO;
+d = x.get("medusaEntryMediatorDAO");
+try {
+  d.cmd(CompactionDAO.COMPACTION_CMD);
+  print("INFO: Compaction complete. System OK");
+} catch (IllegalStateException e) {
+  print(e.getMessage());
+  print("WARNING: Compaction aborted. System OK");
+} catch (Throwable t) {
+  print(t.getMessage());
+  print("ERROR: Compaction failed.  System OFFLINE. Intervention required.");
+}
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaCompactionDryRun",
+  description:"Initiate MedusaEntryDAO Compaction DryRun",
+  code:"""
+import foam.nanos.medusa.CompactionDAO;
+d = x.get("medusaEntryMediatorDAO");
+try {
+  d.cmd(CompactionDAO.COMPACTION_DRY_RUN_CMD);
+  print("INFO: Compaction Dry Run complete. System OK");
+} catch (IllegalStateException e) {
+  print(e.getMessage());
+  print("WARNING: Compaction Dry Run aborted. System OK");
+} catch (Throwable t) {
+  print(t.getMessage());
+  print("ERROR: Compaction Dry Run failed.  System OFFLINE. Intervention required.");
+}
+  """
+})
+p({
+  class:"foam.nanos.script.Script",
+  id:"MedusaLoad",
+  description:"Initiate MedusaEntryDAO Loading",
+  code:"""
+import foam.nanos.medusa.LoadingAgent;
+try {
+  a = new LoadingAgent(x);
+  a.execute(x);
+  print("INFO: Loading complete. System OK");
+} catch (IllegalStateException e) {
+  print(e.getMessage());
+  print("WARNING: Loading aborted. System OK");
+} catch (Throwable t) {
+  print(t.getMessage());
+  print("ERROR: Loading failed.  System OFFLINE. Intervention required.");
+}
+  """
+})

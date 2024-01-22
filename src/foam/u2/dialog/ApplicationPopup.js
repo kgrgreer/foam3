@@ -19,11 +19,8 @@ foam.CLASS({
 
   imports: [
     'displayWidth?',
-    'theme'
-  ],
-
-  exports: [
-    'as controlBorder'
+    'theme',
+    'translationService'
   ],
 
   requires: [
@@ -55,10 +52,11 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       flex: 1;
-      padding: 0 4rem;
+      gap: 1.6rem;
       align-self: center;
       width: 100%;
       overflow: auto;
+      padding: 2rem 2rem;
     }
     ^actionBar {
       padding: 2.4rem;
@@ -71,7 +69,7 @@ foam.CLASS({
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 12px;
+      padding: 0.6rem;
     }
     ^header.showBorder {
       border-bottom: 1px solid $grey300;
@@ -97,19 +95,28 @@ foam.CLASS({
     }
 
     ^body {
-      max-height: 90vh;
-      overflow: auto;
+      width: 100%;
+      /*
+        Temporarily remove scroll border
+        max-height: 90vh;
+        overflow: auto;
+      */
       display: flex;
       align-items: center;
       flex-direction: column;
     }
+    ^body > * {
+      width: 100%;
+    }
     ^fullHeightBody {
+      height: auto;
+    }
+    ^fullHeightBody > *{
       flex-grow: 1;
     }
 
     ^fullscreen ^bodyWrapper {
       max-height: var(--max-height, 100vh);
-      padding: 0 2rem;
     }
 
     ^logo img, ^logo svg {
@@ -128,10 +135,9 @@ foam.CLASS({
       grid-template-columns: auto;
       align-items: center;
       gap: 0.4rem;
-      padding: 1em;
       text-align: center;
-      border-top: 1px solid $grey300;
       flex-shrink: 0;
+      padding: 0.3em 1em;
       white-space: nowrap;
     }
     ^footer-right, ^footer-left {
@@ -149,20 +155,16 @@ foam.CLASS({
     ^footer-center a:hover {
       text-decoration: underline;
     }
-
-    ^inner-title {
+    ^inner-title, ^inner-title-small {
       display: flex;
       flex-direction: column;
-      justify-contents: center;
-      padding: 2.4rem 0;
-      text-align: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      line-height: 1.25;
       transition: all 150ms;
+      text-align: center;
     }
-
-    ^inner-title-small {
-      padding: 1.2rem 0;
-    }
-
+    
     ^footer.p-legal-light {
       color: #6F6F6F;
     }
@@ -174,27 +176,30 @@ foam.CLASS({
     ^footer-center img {
       height: 1em;
       display: inline-block;
+      vertical-align: sub;
     }
-
-    ^dialogActionsView-with-footer .foam-u2-dialog-DialogActionsView-actions {
-      padding: 1.2rem 0 0 0;
-    }
-
-    @media only screen and (max-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^bodyWrapper {
-        padding: 0 2rem;
-      }
+    
+    ^footerContainer {
+      padding-top: 0.4rem;
     }
 
     @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^header {
+        padding: 12px;
+      }
       ^:not(^fullscreen) ^inner {
-        width: 65vw;
+        width: min(50rem, 100%);
       }
       ^fullscreen ^bodyWrapper {
-        width: 56%;
+        width: min(100rem, 100%);
+      }
+      ^inner-title {
+        text-align: center;
+        font-size: 2.4rem;
       }
       ^footer {
         grid-template-columns: 1fr auto 1fr;
+        padding: 0.6em 1em;
       }
       ^footer-right {
         justify-content: flex-end;
@@ -202,13 +207,14 @@ foam.CLASS({
       ^footer-left {
         justify-content: flex-start;
       }
-    }
-    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 986px) {
-      ^:not(^fullscreen) ^inner {
-        width: 35vw;
+      ^bodyWrapper{
+        padding: 2.4rem 4rem;
+        gap: 2rem;
       }
-      ^fullscreen ^bodyWrapper {
-        width: 36%;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.XL%*/ 1280px) {
+      ^:not(^fullscreen) ^inner {
+        width: min(120rem, 100%);
       }
     }
   `,
@@ -256,7 +262,13 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
-      name: 'dynamicFooter'
+      name: 'dynamicFooter',
+      documentation: 'Content rendered below the body content. Still a part of the body and can change based on the content of the body'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'dynamicHeader',
+      documentation: 'Content rendered above the body content. Still a part of the body and can change based on the content of the body'
     },
     [ 'forceFullscreen', false ],
     [ 'includeSupport', false ],
@@ -363,6 +375,13 @@ foam.CLASS({
           }))
           .start()
             .addClass(this.myClass('bodyWrapper'))
+            // .enableClass(this.myClass('removeFlex'), this.forceFullHeightBody$)
+            .add(this.slot(function (dynamicHeader) {
+              if ( ! dynamicHeader ) return;
+              return this.E()
+                .addClass(this.myClass('dynamicFooter'))
+                .tag(dynamicHeader);
+            }))
             .add(this.slot(function(content$childNodes) {
               if ( ! content$childNodes ) return;
               this.forceFullHeightBody = false;
@@ -377,14 +396,18 @@ foam.CLASS({
                 .addClass(self.myClass('inner-title'))
                 .addClass('h300')
                 .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
+                .enableClass(self.myClass('inner-title-small'), this.isScrolled$)
                 .enableClass('h500', this.isScrolled$)
                 .show(titleSlot)
                 .add(titleSlot);
             }))
-            .start(this.ScrollBorder, { topShadow$: this.isScrolled$ })
+            .start(
+              // Temporarilty remove scrollborder till we can use it in a more reliable way on mobile
+              // this.ScrollBorder, { topShadow$: this.isScrolled$, disableScroll$: this.forceFullHeightBody$ }
+              )
               .addClass(this.myClass('body'))
               .enableClass(this.myClass('fullHeightBody'), this.forceFullHeightBody$.or(this.fullscreen$.or(this.forceFullscreen$).not()))
-              .call(function() { content = this.content; })
+              .tag('', {}, this.content$)
             .end()
             .start()
               .enableClass(this.myClass('dialogActionsView-with-footer'), this.dynamicFooter$.map(footer => !! footer))
@@ -392,51 +415,52 @@ foam.CLASS({
                 data$: this.primaryActions$
               })
             .end()
-            .add(this.slot(function (dynamicFooter) {
-              if ( ! dynamicFooter ) return;
-              return this.E()
-                .addClass(this.myClass('dynamicFooter'))
-                .tag(dynamicFooter);
-            }))
           .end()
           .callIf((this.footerHTML || this.includeSupport ), function() {
-            this.start()
-              .addClass(self.myClass('footer'), 'p-legal-light')
-              // empty space
-              .start().addClass(self.myClass('footer-left'))
-              .end()
-              // link
-              .start().addClass(self.myClass('footer-center'))
-                .tag(foam.u2.HTMLView.create({ nodeName: 'div', data$: self.footerHTML$ })) 
-              .end()
-              // support info
-              .start().addClass(self.myClass('footer-right'))
-                .callIf(self.includeSupport, function() {
-                  this
-                    .start()
-                      .start('span')
-                        .addClass('')
-                        .add(self.SUPPORT_TITLE)
-                        .start('a')
-                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
-                          .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
-                          .add(self.theme.supportConfig.supportEmail)
-                        .end()
-                        .add(' | ')
-                        .start('a')
-                          .addClass(self.myClass('info-text'), self.myClass('footer-link'))
-                          .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
-                          .add(self.theme.supportConfig.supportPhone)
+            this
+            .start().addClass(self.myClass('footerContainer'))
+              .add(self.slot(function (dynamicFooter) {
+                if ( ! dynamicFooter ) return;
+                return this.E()
+                  .addClass(self.myClass('dynamicFooter'))
+                  .tag(dynamicFooter);
+              }))
+              .start()
+                .addClass(self.myClass('footer'), 'p-legal-light')
+                // empty space
+                .start().addClass(self.myClass('footer-left'))
+                  .end()
+                // link
+                .start().addClass(self.myClass('footer-center'))
+                  .tag(foam.u2.HTMLView.create({ nodeName: 'div', data: self.translationService.getTranslation(foam.locale, self.myClass("footerHTML"), self.footerHTML) }))
+                .end()
+                // support info
+                .start().addClass(self.myClass('footer-right'))
+                  .callIf(self.includeSupport, function() {
+                    this
+                      .start()
+                        .start('span')
+                          .addClass('')
+                          .add(self.SUPPORT_TITLE)
+                          .start('a')
+                            .addClass(self.myClass('info-text'), self.myClass('footer-link'))
+                            .attrs({ href: `mailto:${self.theme.supportConfig.supportEmail}`})
+                            .add(self.theme.supportConfig.supportEmail)
+                          .end()
+                          .add(' | ')
+                          .start('a')
+                            .addClass(self.myClass('info-text'), self.myClass('footer-link'))
+                            .attrs({ href: `tel:${self.theme.supportConfig.supportPhone}`})
+                            .add(self.theme.supportConfig.supportPhone)
+                          .end()
                         .end()
                       .end()
-                    .end()
-                })
+                  })
+                .end()
               .end()
             .end()
           })
         .end();
-
-      this.content = content;
     }
   ]
 });

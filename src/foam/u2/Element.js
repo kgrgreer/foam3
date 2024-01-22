@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'Entity',
@@ -333,7 +335,11 @@ foam.CLASS({
     },
     function onRemoveChild(child, index) {
       if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
+        var c = this.el_().childNodes;
+        // Can happen of adjacent text nodes are merged
+        if ( c.length > index ) {
+          c[index].remove();
+        }
       } else {
         child.remove();
       }
@@ -444,7 +450,7 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var batch = ++this.batch;
-        var self = this;
+        var self  = this;
 
         if ( ! foam.dao.DAO.isInstance(this.dao) ) {
           throw new Exception("You must set the 'dao' property of RenderSink.");
@@ -525,13 +531,14 @@ foam.CLASS({
   imports: [
     'document',
     'elementValidator',
+    'error',
     'framed',
     'getElementById',
     'translationService?'
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   topics: [
@@ -1011,7 +1018,7 @@ foam.CLASS({
     },
 
     function el_() {
-      return this.getElementById(this.id);
+      return this.elId_ || ( this.elId_ = this.getElementById(this.id) );
     },
 
     function findChildForEvent(e) {
@@ -1343,7 +1350,7 @@ foam.CLASS({
           self.addClass_(lastValue, v);
           lastValue = v;
         };
-        this.onDetach(cls.sub(l));
+        this.onDetach(cls.dedup().sub(l));
         l();
       } else if ( typeof cls === 'string' ) {
         this.addClass_(null, cls);
@@ -1370,7 +1377,7 @@ foam.CLASS({
         var self = this;
         var value = enabled;
         var l = function() { self.enableClass(cls, value.get(), opt_negate); };
-        this.onDetach(value.sub(l));
+        this.onDetach(value.dedup().sub(l));
         l();
       } else {
         enabled = negate(enabled, opt_negate);
@@ -1484,9 +1491,16 @@ foam.CLASS({
       var translationService = this.translationService;
       if ( translationService ) {
         /* Add the translation of the supplied source to the Element as a String */
-        var translation = this.translationService.getTranslation(foam.locale, source, opt_default);
+        let xmsgObj, translation;
+        if ( foam.core.Slot.isInstance(source) ) {
+          translation = source.map(v => this.translationService.getTranslation(foam.locale, v, opt_default || v))
+          xmsgObj = {source$: source, data$: translation };
+        } else {
+          translation = this.translationService.getTranslation(foam.locale, source, opt_default || source);
+          xmsgObj = {source: source, data: translation };
+        }
         if ( foam.xmsg ) {
-          return this.tag({class: 'foam.i18n.InlineLocaleEditor', source: source, defaultText: opt_default, data: translation});
+          return this.tag({ ...xmsgObj, class: 'foam.i18n.InlineLocaleEditor', defaultText: opt_default });
         }
         return this.add(translation);
       }
@@ -1528,14 +1542,20 @@ foam.CLASS({
 
       /* Add Children to this Element. */
       var es = [];
-      var Y = this.__subSubContext__;
-
+      // var Y = this.__subSubContext__;
+      var Y = parentNode.__subSubContext__;
       for ( var i = 0 ; i < cs.length ; i++ ) {
         var c = cs[i];
 
         // Remove null values
         if ( c === undefined || c === null ) {
           // nop
+        } else if ( foam.Function.isInstance(c) ) {
+          this.add_([(parentNode.__context__.data || parentNode).dynamic({code: c, self: this})], parentNode);
+        } else if ( foam.core.DynamicFunction.isInstance(c) ) {
+          //this.add('TODO DYNAMIC FUNCTION');
+          c.pre  = () => { this.removeAllChildren(); };
+          c.self = this;
         } else if ( c.toE ) {
           var e = c.toE(null, Y);
           if ( foam.core.Slot.isInstance(e) ) {
@@ -1558,8 +1578,6 @@ foam.CLASS({
           }
         } else if ( c.then ) {
           this.add(this.PromiseSlot.create({ promise: c }));
-        } else if ( typeof c === 'function' ) {
-          console.warn('Unsupported use of add(function).');
         } else {
           // String or Number
           es.push(c);
@@ -1599,6 +1617,8 @@ foam.CLASS({
       while ( cs.length ) {
         this.removeChild(cs[0]);
       }
+      var e = this.el_();
+      if ( e ) e.innerHTML = '';
       return this;
     },
 
@@ -1654,6 +1674,8 @@ foam.CLASS({
      * the DAO
      */
     function select(dao, f, update, opt_comparator) {
+      // foam.Function.assertNotArrow(f); // TODO in U3
+
       var es   = {};
       var self = this;
 
@@ -1690,35 +1712,40 @@ foam.CLASS({
           es[o.id] = e;
         },
         cleanup: function() {
-          for ( var key in es ) es[key] && es[key].remove();
+          for ( var key in es ) {
+            es[key] && es[key].remove();
+          }
 
           es = {};
         }
       }, this);
 
-      listener = this.MergedResetSink.create({
-        delegate: listener
-      }, this);
-
+      listener.paint();
       this.onDetach(dao.listen(listener));
-      listener.delegate.paint();
 
       return this;
     },
 
     function call(f, args) {
+      foam.Function.assertNotArrow(f);
+
       f.apply(this, args);
 
       return this;
     },
 
     function callIf(bool, f, args) {
+      foam.Function.assertNotArrow(f);
+
       if ( bool ) f.apply(this, args);
 
       return this;
     },
 
     function callIfElse(bool, iff, elsef, args) {
+      foam.Function.assertNotArrow(iff);
+      foam.Function.assertNotArrow(elsef);
+
       (bool ? iff : elsef).apply(this, args);
 
       return this;
@@ -1731,6 +1758,8 @@ foam.CLASS({
      * @param {Function} fn A function to call for each item in the given array.
      */
     function forEach(array, fn) {
+      foam.Function.assertNotArrow(fn);
+
       if ( foam.core.Slot.isInstance(array) ) {
         this.add(array.map(a => this.E().forEach(a, fn)));
       } else {
@@ -1846,7 +1875,7 @@ foam.CLASS({
       /* Set an attribute based off of a dynamic Value. */
       var self = this;
       var l = function() { self.setAttribute(key, value.get()); };
-      this.onDetach(value.sub(l));
+      this.onDetach(value.dedup().sub(l));
       l();
     },
 
@@ -1854,7 +1883,7 @@ foam.CLASS({
       /* Set a CSS style based off of a dynamic Value. */
       var self = this;
       var l = function(value) { self.style_(key, v.get()); };
-      this.onDetach(v.sub(l));
+      this.onDetach(v.dedup().sub(l));
       l();
     },
 
@@ -1904,7 +1933,7 @@ foam.CLASS({
       }
 
       var e = nextE();
-      var l = this.framed(function() {
+      var l = function() {
         if ( self.state !== self.LOADED ) {
           return;
         }
@@ -1930,9 +1959,9 @@ foam.CLASS({
         self.insertBefore(e2, tmp);
         tmp.remove();
         e = e2;
-      });
+      };
 
-      this.onDetach(slot.sub(l));
+      this.onDetach(slot.framed().sub(l));
 
       return e;
     },
@@ -2370,6 +2399,22 @@ foam.CLASS({
       value: {
         class: 'foam.u2.view.StringView',
         writeView: { class: 'foam.u2.TextField', type: 'email' }
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'PhoneNumberViewRefinement',
+  refines: 'foam.core.PhoneNumber',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'tel' }
       }
     }
   ]

@@ -28,7 +28,7 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = ((DAO) x.get("localUserUserDAO")).where(
+        DAO userDAO = ((DAO) getX().get("localUserUserDAO")).where(
           OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
             EQ(User.USER_NAME, identifier)));

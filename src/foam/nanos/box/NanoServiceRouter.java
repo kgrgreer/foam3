@@ -16,13 +16,12 @@ import foam.nanos.boot.NSpec;
 import foam.nanos.boot.NSpecAware;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
-
 import javax.servlet.http.HttpServlet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class NanoServiceRouter
-  extends HttpServlet
+  extends    HttpServlet
   implements NanoService, ContextAware
 {
   protected X x_;
@@ -34,10 +33,9 @@ public class NanoServiceRouter
     Logger        logger   = (Logger)getX().get("logger");
 
     try {
-      Object      service  = getX().get(serviceKey);
       DAO         nSpecDAO = (DAO) getX().get("nSpecDAO");
       NSpec       spec     = (NSpec) nSpecDAO.find(serviceKey);
-      foam.box.Box box     = getServiceBox(spec, service);
+      foam.box.Box box     = getServiceBox(spec);
 
       if ( box == null ) {
         logger.warning("No service found for", serviceKey);
@@ -53,36 +51,34 @@ public class NanoServiceRouter
     }
   }
 
-  protected foam.box.Box getServiceBox(NSpec spec, Object service) {
+  protected foam.box.Box getServiceBox(NSpec spec) {
     if ( spec == null ) return null;
 
     if ( ! serviceMap_.containsKey(spec.getName()) ) {
-      serviceMap_.put(spec.getName(), createServiceBox(spec, service));
+      serviceMap_.put(spec.getName(), createServiceBox(spec));
     }
 
     return serviceMap_.get(spec.getName());
   }
 
-  protected foam.box.Box createServiceBox(NSpec spec, Object service) {
-    Logger      logger   = (Logger)getX().get("logger");
+  protected foam.box.Box createServiceBox(NSpec spec) {
+    Logger logger = (Logger)getX().get("logger");
 
     if ( ! spec.getServe() ) {
       logger.warning(this.getClass(), "Request attempted for disabled service", spec.getName());
       return null;
     }
 
-    informService(service, spec);
-
     try {
       foam.box.Box result = null;
       Class cls = spec.getBoxClass() != null && spec.getBoxClass().length() > 0 ?
         Class.forName(spec.getBoxClass()) :
         DAOSkeleton.class ;
-      Skeleton skeleton = (Skeleton)getX().create(cls);
+      Skeleton skeleton = (Skeleton) getX().create(cls);
       result = skeleton;
 
       informService(skeleton, spec);
-      skeleton.setDelegateObject(service);
+      skeleton.setDelegateFactory(getX().getFactory(getX(), spec.getName()));
 
       foam.core.X x = getX().put(NSpec.class, spec);
 
@@ -92,6 +88,7 @@ public class NanoServiceRouter
     } catch (ClassNotFoundException ex) {
       logger.error(this.getClass(), "Unable to create NSpec servlet: ", spec.getName(), "error: ", ex);
     }
+
     return null;
   }
 

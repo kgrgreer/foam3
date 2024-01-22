@@ -15,7 +15,9 @@ foam.INTERFACE({
       documentation: 'Last modified date',
       storageOptional: true,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      section: 'userInformation',
+      gridColumns: 6
     }
   ]
 });

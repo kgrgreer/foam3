@@ -179,6 +179,23 @@ foam.CLASS({
 
   methods: [
     function installInClass(cls) {
+      if ( foam.Undefined.isInstance(this.ordinal) ) {
+        var next = 0;
+        cls.getAxiomsByClass(foam.core.internal.EnumValueAxiom).forEach(a => {
+          if ( a.ordinal >= next ) next = a.ordinal + 1;
+        });
+        this.ordinal = next;
+      } else {
+        /*
+        cls.getAxiomsByClass(foam.core.internal.EnumValueAxiom).forEach(a => {
+          if ( a.ordinal == this.ordinal ) {
+            throw cls.id +
+              ' Enum error: duplicate ordinal found ' + a.name + ' ' +
+              this.name + ' both have an ordinal of ' + a.ordinal;
+          }
+        });
+        */
+      }
       var e = cls.create(this.definition);
       cls.installConstant(this.name, e);
       cls.VALUES.push(e);
@@ -208,9 +225,6 @@ foam.CLASS({
         return values.map(function(v) { return v.definition; });
       },
       adapt: function(_, v) {
-        var used = {}; // map of ordinals used to check for duplicates
-
-        var next = 0;
         for ( var i = 0 ; i < v.length ; i++ ) {
           var def = v[i];
 
@@ -223,19 +237,6 @@ foam.CLASS({
             this.EnumValueAxiom.create({definition: def});
 
           v[i] = def;
-
-          if ( def.definition.ordinal == undefined ) {
-            def.ordinal = next;
-          }
-          next = Math.max(def.ordinal + 1, next);
-
-          if ( used[def.ordinal] ) {
-            throw this.id +
-              ' Enum error: duplicate ordinal found ' + def.name + ' ' +
-              used[def.ordinal] + ' both have an ordinal of ' + def.ordinal;
-          }
-
-          used[def.ordinal] = def.name;
         }
 
         return v;

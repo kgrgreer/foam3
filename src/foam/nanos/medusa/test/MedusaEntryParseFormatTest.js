@@ -26,7 +26,7 @@ foam.CLASS({
       @Override
       protected foam.lib.formatter.JSONFObjectFormatter initialValue() {
         foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
-        formatter.setQuoteKeys(true);
+        formatter.setOutputShortNames(true);
         formatter.setPropertyPredicate(new foam.lib.ClusterPropertyPredicate());
         return formatter;
       }
@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-      MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+      MedusaEntrySupport entrySupport = new MedusaEntrySupport(x);
 
       String value = "nu";
 
@@ -161,6 +161,17 @@ foam.CLASS({
       test ( entry != null, "MedusaEntry (update) deserialized");
 
       validate(entry, true);
+
+      // test an object with a predicate
+      String json = entrySupport.data(x, new foam.nanos.ruler.RuleGroup.Builder(x).setId("id").build(), null, DOP.PUT);
+      test ( ! json.contains(":,"), "valid json "+json);
+      JSONParser parser = parser_.get();
+      try {
+        Object o = parser.parseString(json);
+        test ( o != null, "json parsed");
+      } catch ( Throwable t ) {
+        test ( false, "Error parsing: "+t.getMessage());
+      }
       `
     },
     {

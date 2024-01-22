@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.box.Message',
     'foam.dao.*',
     'foam.core.FObject',
-    'foam.mlang.sink.Max;',
+    'foam.mlang.sink.Max',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.fs.Storage',
@@ -29,7 +29,6 @@ foam.CLASS({
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
     'foam.lib.NetworkPropertyPredicate',
-    'foam.lib.formatter.JSONFObjectFormatter',
     'foam.lib.StoragePropertyPredicate',
     'foam.log.LogLevel',
     'foam.nanos.er.EventRecord',
@@ -149,7 +148,7 @@ foam.CLASS({
                                   .setFilename(getFilePrefix() + fileName)
                                   .setCreateFile(false)
                                   .setDao(new foam.dao.NullDAO())
-                                  .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
+                                  .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, foam.nanos.logger.StdoutLogger.instance()))
                                   .build();
         if ( journal.getFileExist() == false ) {
           journal.createJournalFile();

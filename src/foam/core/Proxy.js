@@ -309,14 +309,14 @@ if (oldValue as? Bool ?? false) != newValue {
     {
       name: 'init',
       code: function() {
-        this.onDetach(foam.Function.bind(function() {
+        this.onDetach(() => {
           this.subscription && this.subscription.detach();
 
           if ( this.parent ) {
             this.parent.removeChild(this);
             this.parent.active = true;
           }
-        }, this));
+        });
       },
       swiftCode: `
 onDetach(Subscription(detach: { [weak self] in

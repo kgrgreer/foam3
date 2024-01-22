@@ -20,7 +20,6 @@ foam.INTERFACE({
   name: 'Exception',
   swiftImplements: ['Error'],
 
-  // TOOD: methods implied by properties not supported for Java
   properties: [
     {
       name: 'isClientException',

@@ -31,11 +31,6 @@ foam.CLASS({
       align-self: flex-start;
     }
 
-    ^account-name {
-      font-size: 3.6rem;
-      font-weight: 600;
-    }
-
     ^actions-header .foam-u2-ActionView {
       margin-right: 24px;
       line-height: 1.5
@@ -99,24 +94,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'primary',
-      expression: function(config$of, data) {
-        var allActions = config$of.getAxiomsByClass(foam.core.Action);
-        var defaultAction = allActions.filter((a) => a.isDefault);
-        var acArray = defaultAction.length >= 1
-          ? defaultAction
-          : allActions.length >= 1
-            ? allActions
-            : null;
-        if ( acArray && acArray.length ) {
-          let res;
-          acArray.forEach(a => {
-            var aSlot = a.createIsAvailable$(this.__subContext__, data);
-            if (aSlot.get()) res = a;
-          });
-          return res;
-        }
-      }
+      name: 'primary'
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -322,6 +300,7 @@ foam.CLASS({
         .add(self.slot(function(data, config$viewBorder, viewView) {
           // If data doesn't exist yet return
           if ( ! data ) return;
+          this.populatePrimaryAction(self.config.of, data);
           return self.E()
             .start(self.Rows)
               .start(self.Rows)
@@ -332,10 +311,14 @@ foam.CLASS({
                 .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
                   .start()
                     .add(data && data.toSummary() ? data.toSummary() : '')
-                    .addClass(self.myClass('account-name'))
+                    .addClass('dao-title')
                     .addClass('truncate-ellipsis')
                   .end()
-                  .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
+                  .startContext({ data })
+                  .add(this.slot(function(primary) {
+                    return this.E().tag(primary, { buttonStyle: 'PRIMARY' })
+                  }))
+                  .endContext()
                 .end()
               .end()
 
@@ -367,6 +350,28 @@ foam.CLASS({
               .end()
             .end();
         }));
+      }
+    },
+    async function populatePrimaryAction(of, data) {
+      var allActions = of.getAxiomsByClass(foam.core.Action);
+      var defaultAction = allActions.filter((a) => a.isDefault);
+      var acArray = defaultAction.length >= 1
+        ? defaultAction
+        : allActions.length >= 1
+          ? allActions
+          : null;
+      if ( acArray && acArray.length ) {
+        let res;
+        for ( let a of acArray ) {
+          var aSlot = a.createIsAvailable$(this.__subContext__, data);
+          let b = aSlot.get();
+          if ( aSlot.promise ) {
+            await aSlot.promise;
+            b = aSlot.get();
+          }
+          if (b) res = a;
+        }
+        this.primary = res;
       }
     }
   ]

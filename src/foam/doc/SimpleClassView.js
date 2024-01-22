@@ -15,6 +15,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Implements',
+    'foam.core.Model',
     'foam.doc.dao.AxiomDAO',
     'foam.doc.AxiomListView',
     'foam.doc.AxiomSummaryView',
@@ -22,6 +23,8 @@ foam.CLASS({
     'foam.doc.MethodAxiom',
     'foam.doc.PropertyAxiom'
   ],
+
+  imports: [ 'modelDAO' ],
 
   css: `
     ^commaseparated span:after {
@@ -42,10 +45,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
       this.SUPER();
 
-      var cls = this.data;
+      var cls   = this.data;
       var model = cls.model_;
       var impls = cls.getAxiomsByClass(this.Implements);
 
@@ -55,6 +58,8 @@ foam.CLASS({
         m = foam.lookup(m.model_.extends);
         exts.push(m);
       }
+
+      var subs = (await this.modelDAO.where(this.EQ(this.Model.EXTENDS, cls.id)).orderBy(this.Model.NAME).select()).array;
 
       var ClassLink = this.ClassLink;
 
@@ -66,6 +71,13 @@ foam.CLASS({
           add('Class ').
           add(model.name).
         end().
+        callIf(model.documentation, function() {
+          this.start('b').
+            add(model.documentation).
+            br().
+            br().
+          end();
+        }).
         start('div').
           forEach([cls].concat(exts).reverse(), function(e, i) {
             this.
@@ -80,6 +92,7 @@ foam.CLASS({
               end();
           }).
         end().
+        /*
         callIf(impls.length, function() {
           this.
             start('h4').
@@ -94,8 +107,7 @@ foam.CLASS({
                   end()
               }).
             end()
-        }).
-        // TODO Direct Known Subclasses? Javadoc has this.
+        }).*/
         start('hr').end().
         start('code').
           add('public class ').
@@ -113,9 +125,17 @@ foam.CLASS({
                   start(ClassLink, { data: impl.path }).end()
               })
           }).
-        end().
-        start('div').
-          add(model.documentation).
+          callIf(subs.length, function() {
+            this.
+              br().
+              br().
+              add('Direct Subclasses: ').
+              forEach(subs, function(impl, i) {
+                this.
+                  callIf(i > 0, function() { this.add(', ') }).
+                  start(ClassLink, { data: impl.id }).end()
+              })
+          }).
         end().
 
         add(this.AxiomSummaryView.create({
@@ -129,7 +149,7 @@ foam.CLASS({
               of: this.PropertyAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Properties inherited from ').
                     start(this.ClassLink, { data: id }).
                     end()
@@ -142,6 +162,7 @@ foam.CLASS({
           title: 'Method Summary',
           of: this.MethodAxiom,
           modelId: model.id,
+          sort: true
         })).
         forEach(exts.map(function(e) { return e.id }).concat(impls.map(function(i) { return i.path })), function(id) {
           this.
@@ -149,10 +170,9 @@ foam.CLASS({
               of: this.MethodAxiom,
               modelId: id,
               titleFn: function() {
-                  return this.E('h3').
+                  return this.E('h4').
                     add('Methods inherited from ').
-                    start(this.ClassLink, { data: id }).
-                    end()
+                    tag(this.ClassLink, { data: id });
               }.bind(this),
             }).
             end()

@@ -6,7 +6,10 @@
 
 (function() {
   var scripts = '';
+  var FILES = [];
   var foam = globalThis.foam = Object.assign({
+    FILES: FILES,
+    CUR_FILES: FILES,
     isServer: false,
     defaultFlags: {
       dev:   true,
@@ -15,7 +18,7 @@
       js:    true,
       node:  false,
       swift: false,
-      web:   true  // Needed because flinks code uses but needs to be compiled to java
+      web:   true
     },
     setupFlags: function() {
       var flags        = globalThis.foam.flags;
@@ -24,6 +27,22 @@
       for ( var key in defaultFlags )
         if ( ! flags.hasOwnProperty(key) )
           flags[key] = defaultFlags[key];
+
+
+      if ( ! globalThis.document ) return;
+
+      // Allow flags to be set in loading script tag.
+      // Ex.: <script language="javascript" src="../../../foam.js" flags="u3,-debug"></script>
+      var sflags = document.currentScript.getAttribute('flags');
+      if ( sflags ) {
+        sflags.split(',').forEach(f => {
+          if ( f.startsWith('-') ) {
+            flags[f.substring(1)] = false;
+          } else {
+            flags[f] = true;
+          }
+        });
+      }
     },
     setup: function() {
       foam.setupFlags();
@@ -34,16 +53,32 @@
         globalThis.foam.flags[pair[0]] = (pair[1] == 'true');
       }
 
-      var path = document.currentScript && document.currentScript.src;
+      var src  = document.currentScript && document.currentScript.src;
+      var path = src && new URL(src).pathname || '';
 
-      path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
+      [path, globalThis.FOAM_BIN] = /^\/foam-bin(.)*\.js$/.test(path)
+        ? ['/', path]
+        : [path.substring(0, path.lastIndexOf('/foam.js') + 1)];
+
       if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
 
       foam.cwd = path;
       foam.main();
     },
     main: function() {
-      foam.require(document.currentScript.getAttribute("project") || 'pom', false, true);
+      // main() only runs when this foam.js file is added to an html page via
+      // <script> tag. The <script> tag may contain project attribute to specify
+      // which pom files to be loaded on startup.
+      //
+      // If the project pom is provided then pom.js files relative to the html
+      // file will be loaded otherwise it will by default load pom.js that
+      // resided in the same directory as the foam.js file.
+      var poms = (document.currentScript.getAttribute("project") || globalThis.FOAM_ROOT + 'pom').split(',');
+
+      foam.cwd = '';
+      poms.forEach(pom => {
+        foam.require(pom, false, true);
+      });
     },
     checkFlags: function(flags) {
       if ( ! flags ) return true;
@@ -62,7 +97,7 @@
       }
       return false;
     },
-    require: function(fn, batch, isProject) {
+    require: function(fn /* filename */, batch, isProject) {
       if ( fn ) {
         fn = foam.cwd + fn;
         if ( ! isProject && foam.seen(fn) ) return;
@@ -85,6 +120,7 @@
     },
     flags:       {},
     loaded:      {},
+    excluded:    {},
     seen:        function(fn) {
       if ( foam.loaded[fn] ) {
         console.warn(`Duplicated load of '${fn}'`);
@@ -122,7 +158,8 @@
         return root;
       }
     },
-    language: typeof navigator === 'undefined' ? 'en' : navigator.language,
+    locale:   typeof navigator === 'undefined' || typeof navigator.language === 'undefined' ? 'en' : navigator.language,
+    language: typeof navigator === 'undefined' || typeof navigator.language === 'undefined' ? 'en' : navigator.language.substring(0, 2),
     next$UID: (function() {
       /* Return a unique id. */
       var id = 1;
@@ -145,16 +182,16 @@
     },
     poms: [],
     POM: function(pom) {
+      var FILES = foam.CUR_FILES = [];
+      foam.FILES.push(FILES);
       if ( globalThis.document ) {
-        var src = document.currentScript.src;
-        var i = src.lastIndexOf('/');
+        var src  = document.currentScript.src;
+        var i    = src.lastIndexOf('/');
         foam.cwd = src.substring(0, i+1);
       }
-      foam.poms.push({
-        path: foam.sourceFile,
-        location: foam.cwd,
-        pom: pom
-      });
+      pom.location = foam.cwd;
+      pom.path     = foam.sourceFile;
+      foam.poms.push(pom);
       function loadFiles(files, isProjects) {
         files && files.forEach(f => {
           var name = f.name;
@@ -165,9 +202,19 @@
           if ( f.predicate && ! f.predicate() ) return;
 
           foam.currentFlags = f.flags || [];
+          if ( ! isProjects ) {
+//            console.log('*** FILES', name);
+            foam.CUR_FILES.push(name);
+          }
           foam.require(name, ! isProjects, isProjects);
         });
       }
+
+      pom.exclude && pom.exclude.forEach(f => {
+        var path = foam.cwd + '/' + f + ".js";
+        console.log('**************** EXCLUDING', path);
+        foam.excluded[path] = true;
+      });
 
       // TODO: requireModule vs requireFile -> require
       (foam.loadModules || loadFiles)(pom.projects, true);

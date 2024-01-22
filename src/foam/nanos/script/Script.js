@@ -225,7 +225,8 @@ foam.CLASS({
       value: 'UNSCHEDULED',
       tableWidth: 120,
       storageTransient: true,
-      storageOptional: true
+      storageOptional: true,
+      clusterTransient: true
     },
     {
       class: 'Code',
@@ -271,14 +272,18 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       includeInDigest: true,
-      documentation: 'User who last modified script'
+      documentation: 'User who last modified script',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
       includeInDigest: true,
-      documentation: 'Agent acting user who last modified script'
+      documentation: 'Agent acting user who last modified script',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',
@@ -366,16 +371,9 @@ foam.CLASS({
     },
     {
       name: 'canRun',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
+      args: 'Context x',
       type: 'Boolean',
-      javaCode: `
-        return true;
-      `
+      javaCode: 'return true;'
     },
     {
       name: 'runScript',
@@ -391,17 +389,13 @@ foam.CLASS({
           return Promise.reject(err);
         }
       },
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
+      args: 'Context x',
       javaCode: `
-        RuntimeException thrown      = null;
-        Language         l           = getLanguage();
-        ByteArrayOutputStream baos   = new ByteArrayOutputStream();
-        PrintStream            ps    = new PrintStream(baos);
-        PM                     pm    = new PM(this.getClass(), getId());
+        RuntimeException thrown    = null;
+        Language         l         = getLanguage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream            ps  = new PrintStream(baos);
+        PM                     pm  = new PM(this.getClass(), getId());
 
         try {
           Thread.currentThread().setPriority(getPriority());

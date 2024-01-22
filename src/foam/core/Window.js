@@ -143,11 +143,11 @@ foam.CLASS({
 
     function delayed(l, delay) {
       /* Decorate a listener so that events are delivered 'delay' ms later. */
-      return foam.Function.bind(function() {
+      return () => {
         this.setTimeout(
           function() { l.apply(this, arguments); },
           delay);
-      }, this);
+      };
     },
 
     function merged(l, opt_delay) {

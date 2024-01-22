@@ -16,12 +16,14 @@ foam.CLASS({
   javaImports: [
     'foam.blob.Blob',
     'foam.core.X',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.TRUE',
     'foam.nanos.fs.File',
     'foam.nanos.fs.ResourceStorage',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.logger.StdoutLogger',
     'foam.nanos.jetty.JettyThreadPoolConfig',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.StdoutLogger',
     'foam.nanos.security.KeyStoreManager',
     'foam.net.Port',
     'java.io.ByteArrayInputStream',
@@ -31,14 +33,18 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.PrintStream',
     'java.security.KeyStore',
-    'java.util.Set',
-    'java.util.HashSet',
     'java.util.Arrays',
+    'java.util.HashSet',
+    'java.util.Set',
     'org.apache.commons.io.IOUtils',
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
+    'org.eclipse.jetty.proxy.ProxyServlet',
+    'org.eclipse.jetty.proxy.ProxyServlet.Transparent',
     'org.eclipse.jetty.server.*',
-    'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.server.handler.IPAccessHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
+    'org.eclipse.jetty.server.handler.StatisticsHandler',
+    'org.eclipse.jetty.servlet.ServletHolder',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
@@ -71,6 +77,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enableMTLS',
       documentation: 'Enable mTLS on this server connection'
+    },
+    {
+      class: 'Boolean',
+      name: 'isResourceStorage',
+      documentation: `If set to true, generate index file from jar file resources.`,
+      value: false
     },
     {
       name: 'keystoreFileName',
@@ -121,6 +133,12 @@ foam.CLASS({
       javaFactory: 'return new foam.nanos.servlet.FilterMapping[0];'
     },
     {
+      class: 'FObjectArray',
+      of: 'foam.nanos.servlet.ProxyMapping',
+      name: 'proxyMappings',
+      javaFactory: `return new foam.nanos.servlet.ProxyMapping[0];`
+    },
+    {
       documentation: 'hold reference to server for dumpStats',
       class: 'Object',
       name: 'server',
@@ -139,6 +157,12 @@ foam.CLASS({
           this.getClass().getSimpleName()
         }, (Logger) getX().get("logger"));
       `
+    },
+    {
+      class: 'String',
+      name: 'imageDirs',
+      value: 'images',
+      documentation: 'Colon separated list of image directories.'
     }
   ],
 
@@ -217,11 +241,22 @@ foam.CLASS({
         handler.setAttribute("X", getX());
         handler.setAttribute("httpServer", this);
 
+        // Install an ImageServlet
+        if ( getImageDirs().length() > 0 ) {
+          if ( getIsResourceStorage() ) {
+            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ResourceImageServlet.class, "/images/*");
+            imgServ.setInitParameter("paths", getImageDirs());
+          } else {
+            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
+            imgServ.setInitParameter("paths", getImageDirs());
+          }
+        }
+
         for ( foam.nanos.servlet.ServletMapping mapping : getServletMappings() ) {
-          org.eclipse.jetty.servlet.ServletHolder holder;
+          ServletHolder holder;
 
           if ( mapping.getServletObject() != null ) {
-            holder = new org.eclipse.jetty.servlet.ServletHolder(mapping.getServletObject());
+            holder = new ServletHolder(mapping.getServletObject());
             handler.addServlet(holder, mapping.getPathSpec());
           } else {
             holder = handler.addServlet(
@@ -231,9 +266,19 @@ foam.CLASS({
           java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
 
           while ( iter.hasNext() ) {
-            String key = (String)iter.next();
+            String key = (String) iter.next();
             holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
           }
+          if ( getIsResourceStorage() ) {
+            holder.setInitParameter("isResourceStorage", "true");
+          }
+        }
+
+        for ( foam.nanos.servlet.ProxyMapping mapping : getProxyMappings() ) {
+          ServletHolder holder = handler.addServlet(ProxyServlet.Transparent.class, mapping.getPathSpec());
+          holder.setInitOrder(1);
+          holder.setInitParameter("proxyTo", mapping.getProxyTo());
+          holder.setInitParameter("prefix",  mapping.getPrefix());
         }
 
         org.eclipse.jetty.servlet.ErrorPageErrorHandler errorHandler =
@@ -279,17 +324,34 @@ foam.CLASS({
 
         addJettyShutdownHook(server);
 
+        // IPAccessHandler
+        IPAccessHandler ipAccessHandler = new IPAccessHandler();
+        ipAccessHandler.setHandler(handler);
+        DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
+
+        // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
+        Object result = ipAccessDAO.cmd(DAO.LAST_CMD);
+        if ( result != null && result instanceof foam.dao.MDAO ) {
+          ipAccessDAO = (DAO) result;
+        }
+
+        ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
+        // initialilize
+        ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));
+
         // Install GzipHandler to transparently gzip .js, .svg and .html files
         GzipHandler gzipHandler = new GzipHandler();
         gzipHandler.addIncludedMimeTypes(
           "application/javascript",
+          "application/json",
+          "application/json;charset=utf-8",
           "image/svg+xml",
           "text/html"
         );
-        gzipHandler.addIncludedMethods("GET");
+        gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-        gzipHandler.setCompressionLevel(9);
-        gzipHandler.setHandler(handler);
+//        gzipHandler.setCompressionLevel(9);
+        gzipHandler.setHandler(ipAccessHandler);
         server.setHandler(gzipHandler);
 
         this.configHttps(server);
@@ -410,9 +472,9 @@ foam.CLASS({
           // NOTE: Enabling these will fail self-signed certificate use.
           if ( getEnableMTLS() ) {
             sslContextFactory.setWantClientAuth(true);
-            sslContextFactory.setNeedClientAuth(true);  
+            sslContextFactory.setNeedClientAuth(true);
           }
-          
+
           getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),

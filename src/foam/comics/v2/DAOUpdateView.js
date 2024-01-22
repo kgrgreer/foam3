@@ -37,11 +37,6 @@ foam.CLASS({
       align-self: flex-start;
     }
 
-    ^account-name {
-      font-size: 3.6rem;
-      font-weight: 600;
-    }
-
     ^actions-header .foam-u2-ActionView {
       margin-right: 24px;
       line-height: 1.5
@@ -64,7 +59,7 @@ foam.CLASS({
     'ctrl',
     'currentControllerMode',
     'currentMenu?',
-    'setControllerMode',
+    'setControllerMode?',
     'stack',
     'translationService'
   ],
@@ -164,7 +159,11 @@ foam.CLASS({
     function render() {
       var self = this;
       this.SUPER();
-      this.setControllerMode('edit');
+
+      // setControllerMode can be undefined when NOT coming from
+      // DAOBrowserControllerView eg. when manually pushing DAOSummaryView to
+      // the stack.
+      this.setControllerMode?.('edit');
 
 
       this
@@ -186,7 +185,7 @@ foam.CLASS({
                 .start(self.Cols).style({ 'align-items': 'center' })
                   .start()
                     .add(data && data.toSummary() ? data.toSummary() : '')
-                    .addClass(this.myClass('account-name'))
+                    .addClass('dao-title')
                     .addClass('truncate-ellipsis')
                   .end()
                   .startContext({ data: self }).tag(self.SAVE, { buttonStyle: 'PRIMARY' }).endContext()

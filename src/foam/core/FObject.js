@@ -796,6 +796,13 @@ foam.CLASS({
       return slot;
     },
 
+    function normalizeObj() {
+      /** Normalize all properties that provide a normalize function. **/
+      this.cls_.getAxiomsByClass(foam.core.Property).forEach(p => {
+        if ( p.normalize && ! p.hasDefaultValue(this) )
+          p.set(this, p.normalize(p.get(this), p));
+      });
+    },
 
     /************************************************
      * Destruction
@@ -855,7 +862,7 @@ foam.CLASS({
 
       // FUTURE: check 'id' first
       // FUTURE: order properties
-      var ps = this.cls_.getAxiomsByClass(foam.core.Property).filter((p) => {
+      var ps = this.cls_.getAxiomsByClass(foam.core.Property).filter(p => {
         return ! foam.dao.DAOProperty.isInstance(p)
           && ! foam.dao.ManyToManyRelationshipProperty.isInstance(p);
       });

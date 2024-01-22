@@ -3,3 +3,11 @@ p({"class":"foam.nanos.auth.test.ServiceProviderAwareTest","id":"ServiceProvider
 p({"class":"foam.nanos.auth.test.UserAndGroupPermissionTest","id":"UserAndGroupPermissionTest","description":""})
 p({"class":"foam.nanos.auth.test.PreventPrivilegeEscalationTest","id":"PreventPrivilegeEscalationTest"})
 p({"class":"foam.nanos.auth.test.ServiceProviderAuthorizerTest","id":"ServiceProviderAuthorizerTest"})
+p({
+  class:"foam.nanos.auth.test.GroupResetSessionTest",
+  id:"GroupResetSessionTest"
+})
+p({
+  class:"foam.nanos.auth.test.GroupURLSessionTest",
+  id:"GroupURLSessionTest"
+})

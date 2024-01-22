@@ -1104,6 +1104,7 @@ p({class:"foam.nanos.auth.Region",code:"PK-PB","isoCode":"PB",name:"Punjab",coun
 p({class:"foam.nanos.auth.Region",code:"PK-SD","isoCode":"SD",name:"Sindh",countryId:"PK"})
 p({class:"foam.nanos.auth.Region",code:"PK-JK","isoCode":"JK",name:"Azad Jammu and Kashmir",countryId:"PK","alternativeNames":["Āzād Jammūñ o Kashmīr"]})
 p({class:"foam.nanos.auth.Region",code:"PK-GB","isoCode":"GB",name:"Gilgit-Baltistan",countryId:"PK","alternativeNames":["Gilgit-Baltistān"]})
+p({class:"foam.nanos.auth.Region",code:"PK-IS","isoCode":"IS",name:"Islamabad Capital Territory ",countryId:"PK"})
 
 //Ukrain
 p({class:"foam.nanos.auth.Region",code:"UA-71","isoCode":"71",name:"Cherkaska",countryId:"UA",alternativeNames:["Cherkashchyna"]})

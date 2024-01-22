@@ -18,8 +18,8 @@ public abstract class AbstractFObjectFormatter
   implements FObjectFormatter
 {
 
-  protected X                 x_;
-  protected StringBuilder     b_ = new StringBuilder();
+  protected X             x_;
+  protected StringBuilder b_ = new StringBuilder();
 
   // Used to filter properties that are being outputted.
   protected PropertyPredicate propertyPredicate_;

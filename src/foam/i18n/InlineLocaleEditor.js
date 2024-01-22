@@ -45,7 +45,7 @@ foam.CLASS({
     function onDataUpdate() {
       console.log('**********', this.source, this.defaultText, this.data);
       var l = this.Locale.create({
-        locale:  foam.lang,
+        locale:  foam.language,
         variant: foam.variant,
         source:  this.source,
         target:  this.data

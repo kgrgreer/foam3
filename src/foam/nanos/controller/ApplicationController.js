@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
+    'foam.nanos.controller.Fonts',
     'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
@@ -50,6 +51,7 @@ foam.CLASS({
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
+    'foam.u2.LoadingSpinner',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
     'foam.u2.crunch.WizardRunner',
@@ -91,6 +93,7 @@ foam.CLASS({
     'menuListener',
     'notify',
     'prefersMenuOpen',
+    'pushDefaultMenu',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
@@ -104,7 +107,6 @@ foam.CLASS({
     'subject',
     'theme',
     'user',
-    'webApp',
     'wrapCSS as installCSS'
   ],
 
@@ -396,7 +398,6 @@ foam.CLASS({
     },
     'currentMenu',
     'lastMenuLaunched',
-    'webApp',
     {
       name: 'languageDefaults_',
       factory: function() { return []; }
@@ -448,7 +449,7 @@ foam.CLASS({
         globalThis.MLang = foam.mlang.Expressions.create();
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.locale;
 
         await client.translationService.initLatch;
         self.installLanguage();
@@ -467,7 +468,12 @@ foam.CLASS({
 
         await self.fetchGroup();
 
-        await self.maybeReinstallLanguage(self.client);
+        // For anonymous users, we shouldn't reinstall the language
+        // because the user's language setting isn't meaningful.
+        if ( self?.subject?.realUser && ! ( await client.auth.isAnonymous() ) ) {
+          await self.maybeReinstallLanguage(self.client);
+        }
+
         self.languageInstalled.resolve();
         // add user and agent for backward compatibility
         Object.defineProperty(self, 'user', {
@@ -535,35 +541,15 @@ foam.CLASS({
       this.updateDisplayWidth();
 
 
+      self.AppStyles.create();
+      self.Fonts.create();
 
-//      this.__subSubContext__.notificationDAO.where(
-//        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
-//      ).on.put.sub((sub, on, put, obj) => {
-//        if ( obj.toastState == this.ToastState.REQUESTED ) {
-//          this.add(this.NotificationMessage.create({
-//            message: obj.toastMessage,
-//            type: obj.severity,
-//            description: obj.toastSubMessage
-//          }));
-//          var clonedNotification = obj.clone();
-//          clonedNotification.toastState = this.ToastState.DISPLAYED;
-//          this.__subSubContext__.notificationDAO.put(clonedNotification);
-//        }
-//      });
-
-      this.clientPromise.then(() => {
-        this.fetchTheme().then(() => {
-          // Work around to ensure wrapCSS is exported into context before
-          // calling AppStyles which needs theme replacement
-          self.AppStyles.create();
-          self.addMacroLayout();
-        });
-      });
+      self.addMacroLayout();
     },
 
     async function reloadClient() {
       this.clientReloading.pub();
-      var newClient = await this.ClientBuilder.create({}, this.originalSubContex).promise;
+      var newClient = await this.ClientBuilder.create({}, this.originalSubContext).promise;
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
@@ -596,29 +582,28 @@ foam.CLASS({
     },
 
     async function maybeReinstallLanguage(client) {
-      if (
-        this.subject &&
-        this.subject.realUser &&
-        this.subject.realUser.language.toString() != foam.locale
-      ) {
+      // Is only called if the user exists and isn't the SPID's anonymousUser
+      if ( this.subject.realUser.language.toString() != foam.locale ) {
         let languages = (await client.languageDAO
           .where(foam.mlang.predicate.Eq.create({
             arg1: foam.nanos.auth.Language.ENABLED,
             arg2: true
           })).select()).array;
 
-        let userPreferLanguage = languages.find( e => e.id.compareTo(this.subject.realUser.language) === 0 )
+        let userPreferLanguage = languages.find(e => e.id.compareTo(this.subject.realUser.language) === 0);
+        // TODO: don't update language setting for anonymous users
+        // Can tell if a user is anonymous if their id === their spid's.anonymousUser
         if ( ! userPreferLanguage ) {
           foam.locale = this.defaultLanguage.toString()
-          let user = this.subject.realUser
-          user.language = this.defaultLanguage.id
-          await client.userDAO.put(user)
+          let user = this.subject.realUser;
+          user.language = this.defaultLanguage.id;
+          await client.userDAO.put(user);
         } else if ( foam.locale != userPreferLanguage.toString() ) {
-          foam.locale = userPreferLanguage.toString()
+          foam.locale = userPreferLanguage.toString();
         }
-        client.translationService.maybeReload()
-        await client.translationService.initLatch
-        this.installLanguage()
+        client.translationService.maybeReload();
+        await client.translationService.initLatch;
+        this.installLanguage();
       }
     },
 
@@ -655,7 +640,7 @@ foam.CLASS({
       /* A short-form macros is of the form %PRIMARY_COLOR%. */
       const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false);
+      var val = this.theme ? foam.util.path(this.theme, prop, false) : undefined;
 
       // NOTE: We add a negative lookahead for */, which is used to close a
       // comment in CSS. We do this because if we don't, then when a developer
@@ -675,7 +660,7 @@ foam.CLASS({
       // A long-form macros is of the form "/*%PRIMARY_COLOR%*/ blue".
       const M = m.toUpperCase();
       var prop = m.startsWith('DisplayWidth') ? m + '.minWidthString' : m
-      var val = foam.util.path(this.theme, prop, false);
+      var val = this.theme ? foam.util.path(this.theme, prop, false) : undefined;
       return val ? css.replace(
         new RegExp('/\\*%' + M + '%\\*/[^);!]*', 'g'),
         '/*%' + M + '%*/ ' + val) : css;
@@ -781,6 +766,14 @@ foam.CLASS({
         .catch(e => console.error(e.message || e));
     },
 
+    async function pushDefaultMenu() {
+      var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
+      defaultMenu = defaultMenu != null ? defaultMenu : '';
+      this.purgeMenuDAO(defaultMenu);
+      await this.pushMenu(defaultMenu);
+      return defaultMenu;
+    },
+
     function requestLogin() {
       var self = this;
 
@@ -848,6 +841,7 @@ foam.CLASS({
 
       await this.fetchTheme();
       this.initLayout.resolve();
+      this.stack.resetStack();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
@@ -862,7 +856,8 @@ foam.CLASS({
     // TODO: simplify in NP-8928
     async function checkGeneralCapability() {
       var groupDAO = this.__subContext__.groupDAO;
-      var group = await groupDAO.find(this.subject.user.group);
+      if ( ! this.subject.realUser || ! groupDAO ) return false;
+      var group = await groupDAO.find(this.subject.realUser.group);
 
       if ( ! group || ! group.generalCapability ) return true;
 
@@ -903,11 +898,14 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        await this.reloadClient();
         return true;
       }
     },
 
     function addMacroLayout() {
+      var theme = this.document.querySelector(`meta[name='theme-color']`);
+      var color = theme ? theme.getAttribute('content') : 'red';
       this
         .addClass(this.myClass())
         .tag(this.NavigationController, {
@@ -915,8 +913,15 @@ foam.CLASS({
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',
             data: this.stack,
+            stackDefault: {
+              class:     'foam.u2.LoadingSpinner',
+              size:      32,
+              text:      'Loading...',
+              showText:  true,
+              color:     color
+            },
             showActions: false,
-            nodeName: 'main'
+            nodeName:    'main'
           },
           footer$: this.footerView_$,
           sideNav$: this.sideNav_$

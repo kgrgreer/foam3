@@ -8,6 +8,7 @@ foam.CLASS({
   name: 'ClientRuntimeException',
   package: 'foam.core',
   extends: 'foam.core.FOAMException',
+
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 

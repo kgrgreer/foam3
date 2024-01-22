@@ -57,9 +57,10 @@ foam.CLASS({
                 typeof a === 'number'   ? String(a)                :
                 a && a.toString         ? a.toString()             :
                                           ''                       ;
-        return p.trim ? s.trim() : s;
+        return s;
       }
     },
+    [ 'normalize', function(value, p) { return p.trim ? value.trim() : value; } ],
     [ 'type', 'String' ],
     [ 'value', '' ]
   ]
@@ -383,6 +384,15 @@ foam.CLASS({
       function() {}
     ],
     [
+      'adapt',
+      function(o, n, prop) {
+        // if boolean, return a function that returns the same boolean
+        // Useful for overriding functions with no-op in jrls and JSON
+        if ( ( foam.Undefined.isInstance(n) || foam.Null.isInstance(n) ) && foam.Boolean.isInstance(n) ) { return () => n }
+        return n;
+      }
+    ],
+    [
       'assertValue',
       function(value, prop) {
         foam.assert(typeof value === 'function', prop.name, 'Cannot set to non function type.');
@@ -626,10 +636,11 @@ foam.CLASS({
   label: 'Email address',
   properties: [
     [ 'displayWidth', 50 ],
+    [ 'trim', true ],
     [
       'preSet',
       function(_, v) {
-        return v.toLowerCase().trim();
+        return v.toLowerCase();
       }
     ]
   ]
@@ -934,6 +945,12 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'Boolean',
+      name: 'showSubColumns',
+      documentation: 'Allow for selection of referenced columns in table views.',
+      value: true
+    },
+    {
       name: 'menuKeys',
       documentation: `
         A list of menu ids.
@@ -989,7 +1006,10 @@ foam.CLASS({
 
       Object.defineProperty(proto, daoName, {
         get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+          var dao = this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+          if ( ! dao )
+            console.warn(`Missing Reference DAO: ${self.targetDAOKey} for property ${proto.cls_.id}.${self.name}`);
+          return dao;
         },
         configurable: true
       });

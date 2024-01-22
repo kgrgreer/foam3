@@ -27,7 +27,6 @@ foam.CLASS({
       color: #444;
       display: block;
       float: left;
-      font-size: 1.5rem;
       padding: 4px 32px 4px 6px;
       text-align: left;
       vertical-align: top;
@@ -38,7 +37,6 @@ foam.CLASS({
     }
     .foam-u2-PropertyView-units  {
       color: #444;
-      font-size: 1.2rem;
       padding: 4px;
       text-align: right;
     }
@@ -68,14 +66,14 @@ foam.CLASS({
             this.addClass().
             addClass('foam-u2-PropertyView').
             addClass('foam-u2-PropertyView-prop-' + prop.name).
-            start('td').addClass('foam-u2-PropertyView-label').add(this.label).end().
+            start('td').addClass('p-md', 'foam-u2-PropertyView-label').add(this.label).end().
             start('td').addClass('foam-u2-PropertyView-view').
             callIf( ! this.label, function() {
               this.style({'width': '100%'});
             }).
             add(
               prop,
-              prop.units && this.E('span').addClass('foam-u2-PropertyView-units').add(' ', prop.units)).
+              prop.units && this.E('span').addClass('p-legal-light', 'foam-u2-PropertyView-units').add(' ', prop.units)).
             end();
           })
       }));

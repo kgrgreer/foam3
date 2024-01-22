@@ -21,6 +21,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
+    'auth',
+    'ctrl',
     'subject'
   ],
 
@@ -54,11 +56,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
+      this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
       this.addClass(this.myClass(), 'h200')
         .start()
-          .add(this.slot(function(subject$user) {
-            return this.title + ((this.subject.user != null) ? ', ' + this.subject.user.firstName : '');
+          .add(this.slot(function(subject$realUser) {
+            return this.title + (this.subject.realUser.firstName ? ', ' + this.subject.realUser.firstName : '') ;
           }))
         .end();
     }

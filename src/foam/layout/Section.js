@@ -55,7 +55,9 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
-    'foam.core.Property'
+    'foam.core.Property',
+    'foam.layout.PathPropertyHolder',
+    'foam.layout.SectionAxiom'
   ],
 
   properties: [
@@ -79,6 +81,11 @@ foam.CLASS({
     {
       documentation: 'function and string',
       name: 'help'
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'view',
+      value: { class: 'foam.u2.detail.SectionView' }
     },
     {
       class: 'FObjectArray',
@@ -126,18 +133,31 @@ foam.CLASS({
     },
 
     function fromSectionAxiom(a, cls) {
+      // If a isnt already a section axiom, make it one
+      if ( ! this.SectionAxiom.isInstance(a) ) {
+        a = this.SectionAxiom.create(a);
+      }
       this.copyFrom(a);
       this.copyFrom({
         createIsAvailableFor: a.createIsAvailableFor.bind(a),
-        fromClass: a.sourceCls_.name,
+        fromClass: a.sourceCls_?.name || cls.name,
         actions: cls.getAxiomsByClass(this.Action)
           .filter(action => action.section == a.name)
       });
 
       if ( a.hasOwnProperty('properties') ) {
         this.properties = a.properties.map(p => {
-          if ( foam.String.isInstance(p) ) return cls.getAxiomByName(p);
-          if ( p.name ) return cls.getAxiomByName(p.name).clone().copyFrom(p);
+          if ( foam.String.isInstance(p) ) {
+            if ( p.indexOf('.') == -1 )
+              return cls.getAxiomByName(p);
+            return this.PathPropertyHolder.create({ name: p.split('.').pop(), value: p });
+          }
+          if ( p.name?.indexOf('.') != -1 ) {
+            let p2 = Object.assign({}, p);
+            delete p2.name;
+            return this.PathPropertyHolder.create({ name: p.name.split('.').pop(), value: p.name, config: p2 });
+          }
+          return cls.getAxiomByName(p.name).clone().copyFrom(p);
         }).sort(foam.core.Property.ORDER.compare);
       } else {
         this.properties = cls.getAxiomsByClass(foam.core.Property)

@@ -35,7 +35,7 @@
 
   properties: [
     {
-      class: 'URL',
+      class: 'String',
       name: 'url'
     },
     {
@@ -46,6 +46,11 @@
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format'
+    },
+    {
+      class: 'String',
+      name: 'loopbackPath',
+      value: 'service/dugLoopback'
     }
   ],
 
@@ -68,10 +73,24 @@
         DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
         DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
         DUGRule dugRule = (DUGRule) rule;
-        AbstractSink sink = null;
-        if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
+        HTTPSink sink = null;
+        String url = getUrl();
+        boolean loopback = "loopback".equals(url);
+        if ( loopback ) {
+            StringBuilder sb = new StringBuilder();
+            // TODO: what to test to know running https
+            sb.append("http://");
+            sb.append(System.getProperty("hostname", "localhost"));
+            sb.append(":");
+            sb.append(System.getProperty("http.port", "8080"));
+            sb.append("/");
+            sb.append(getLoopbackPath());
+            url = sb.toString();
+        }
+        if ( dugDigestConfig != null &&
+             dugDigestConfig.getEnabled() ) {
             sink = new HTTPDigestSink(
-              dugRule.getUrl(),
+              url,
               dugRule.evaluateBearerToken(),
               dugDigestConfig,
               dugRule.getFormat(),
@@ -86,9 +105,9 @@
               true,
               true
             );
-          } else {
+        } else {
             sink = new HTTPSink(
-              dugRule.getUrl(),
+              url,
               dugRule.evaluateBearerToken(),
               dugRule.getFormat(),
               new foam.lib.AndPropertyPredicate(
@@ -101,9 +120,11 @@
               ),
               true
             );
-          }
-          sink.setX(agencyX);
-          return sink;
+        }
+        sink.setX(agencyX);
+        sink.setLoopback(loopback);
+        sink.setAuthType(dugRule.getAuthType());
+        return sink;
       `
     },
     {
@@ -139,7 +160,7 @@
           return;
       }
       getLogger(x).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
-      
+
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
         PM pm = PM.create(x, true, getClass().getSimpleName(), rule.getDaoKey(), rule.getName());

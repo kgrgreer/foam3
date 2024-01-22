@@ -13,7 +13,8 @@ foam.ENUM({
       documentation: 'Our team is currently reviewing. Approvals may take up to 24 hours',
       background: '#FFFFFF',
       color: '#865300',
-      glyph: 'pending'
+      glyph: 'pending',
+      ordinal: 0
     },
     {
       name: 'GRANTED',
@@ -21,29 +22,34 @@ foam.ENUM({
       documentation: 'The information you provided has been approved',
       background: '#FFFFFF',
       color: '#007328',
-      glyph: 'checkmark'
+      glyph: 'checkmark',
+      ordinal: 1
     },
     {
       name: 'EXPIRED',
       label: { en: 'expired', pt: 'expirada'},
       documentation: 'The information required has changed, or your inputs are no longer valid',
       background: '#A00B0B',
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      ordinal: 2
     },
     {
       name: 'ACTION_REQUIRED',
       label: { en: 'action required', pt: 'ação requerida'},
       documentation: 'Information is missing for required fields',
       background: '#D57D11',
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      ordinal: 3
     },
     {
       name: 'AVAILABLE',
       label: { en: 'available', pt: 'acessível'},
       documentation: 'You are ready to get started',
       background: '#00B03E',
-      color: '#FFFFFF'
+      color: '#FFFFFF',
+      ordinal: 4
     },
+    // NOTE: 5 removed
     {
       name: 'APPROVED',
       label: { en: 'approved', pt: 'aprovada'},
@@ -58,7 +64,8 @@ foam.ENUM({
       label: { en: 'pending review', pt: 'revisão pendente' },
       documentation: 'The information you provided is pending review',
       background: '#FFFFFF',
-      color: '$warn700'
+      color: '$warn700',
+      ordinal: 7
     },
     {
       name: 'REJECTED',
@@ -68,7 +75,8 @@ foam.ENUM({
       Capable object junctions.`,
       background: '#FFFFFF',
       color: '$destructive500',
-      glyph: 'exclamation'
+      glyph: 'exclamation',
+      ordinal: 8
     },
   ]
 });

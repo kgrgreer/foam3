@@ -124,7 +124,7 @@ configuration for contacting the primary node.`,
       javaFactory: 'return new HashMap();',
       visibility: 'HIDDEN'
     },
-   {
+    {
       name: 'nodeBuckets',
       class: 'List',
       visibility: 'RO',
@@ -251,6 +251,13 @@ configuration for contacting the primary node.`,
       pm.log(getX());
       return configs;
       `
+    },
+    {
+      documetation: 'Single Index Recovery. A faulty system fallback to deal with system failure and potential data loss. If we find we only have 1 copy of an index, this allows us to instruct the consensus engine to promote the index.',
+      name: 'sir',
+      class: 'List',
+      of: 'Long',
+      javaFactory: 'return new ArrayList<Long>();'
     }
   ],
 
@@ -891,6 +898,27 @@ configuration for contacting the primary node.`,
       }
       return true;
      `
+    },
+    {
+      documentation: 'test if system is replaying',
+      name: 'isReplaying',
+      args: 'Context x',
+      type: 'Boolean',
+      javaCode: `
+      return ((ReplayingInfo) x.get("replayingInfo")).getReplaying();
+      `
+    },
+    {
+      documentation: `Decorate the root serviceDAO to 'cluster' serviceDAO updates`,
+      name: 'clusterServiceDAO',
+      args: 'Context x, foam.dao.DAO delegate',
+      type: 'foam.dao.DAO',
+      javaCode: `
+      return new foam.nanos.medusa.MedusaAdapterDAO.Builder(x)
+        .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("nSpecDAO").build())
+        .setDelegate(delegate)
+        .build();
+      `
     },
     {
       name: 'getMdao',

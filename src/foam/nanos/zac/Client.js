@@ -4,7 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// Access with: http://localhost:8080/foam3/src/foam/nanos/zac/index.html
+// Access with:
+// http://localhost:8080/foam3/src/foam/nanos/zac/index.html (embedded)
+// http://localhost:8080/src/foam/nanos/zac/index.html       (stand alone)
 
 /*
 group in foam.box.SessionReplyBox
@@ -21,7 +23,7 @@ foam.CLASS({
   name: 'MissingStuff',
 
   exports: [
-    'group', 'loginSuccess', 'requestLogin', 'sessionTimer', 'crunchController', 'pushMenu'
+    'group', 'loginSuccess', 'requestLogin', 'sessionTimer', 'crunchController'
   ],
 
   properties: [
@@ -36,9 +38,6 @@ foam.CLASS({
     },
     function requestLogin() {
       debugger;
-    },
-    function pushMenu() {
-      debugger;
     }
   ]
 });
@@ -52,7 +51,9 @@ foam.CLASS({
   documentation: 'Zero-Admin Client',
 
   requires: [
-    'foam.nanos.client.ClientBuilder'
+    'foam.nanos.auth.Subject',
+    'foam.nanos.client.ClientBuilder',
+    'foam.u2.stack.Stack'
   ],
 
   implements: [
@@ -65,11 +66,26 @@ foam.CLASS({
   ],
 
   exports: [
+    'stack',
     'as ctrl',
-    'sessionID'
+    'sessionID',
+    'subject',
+    'currentMenu',
+    'pushMenu'
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'currentMenu',
+      postSet: function(o, n) {
+        console.log('***** CURRENT MENU:', n);
+      }
+    },
+    {
+      name: 'stack',
+      factory: function() { return this.Stack.create(); }
+    },
     {
       class: 'String',
       name: 'sessionName',
@@ -91,19 +107,34 @@ foam.CLASS({
       }
     },
     {
-      name: 'client'
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.nanos.auth.Subject',
+      name: 'subject',
+      factory: function() { return this.Subject.create(); }
+    },
+    {
+      name: 'client',
+      postSet: function(o, n) { globalThis.x = n; }
     }
  ],
 
   methods: [
     async function render() {
-      this.add('Building Client...');
+      this.SUPER();
+
+      this.tag({
+        class: 'foam.u2.stack.DesktopStackView',
+        data: this.stack,
+        showActions: false
+      });
+
       var cls = await this.ClientBuilder.create({authenticate: false}, this).promise;
       this.client = cls.create(null, this);
 
       if ( ! globalThis.client ) globalThis.client = this.client;
-
-      this.add('built.');
+    },
+    function pushMenu(menu) {
+      menu && menu.launch && menu.launch(this.__subContext__);
     }
   ]
 });

@@ -62,3 +62,9 @@ p({"class":"foam.nanos.auth.Permission","id":"exportdriverregistry.read.PDFGoogl
 p({"class":"foam.nanos.auth.Permission","id":"exportdriverregistry.read.XML"})
 p({"class":"foam.nanos.auth.Permission","id":"spid.default.allowDuplicateEmails","description":"Allows a user to have the same email address as another user."})
 p({class:"foam.nanos.auth.Permission",id:"emailmessage.create",description:"create permission for emailMessageDAO"})
+
+p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.User",description:"referenceDetailView.foam.nanos.auth.User"})
+p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.approval.ApprovalRequestClassification",description:"referenceDetailView.foam.nanos.approval.ApprovalRequestClassification"})
+p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.Group",description:"referenceDetailView.foam.nanos.auth.Group"})
+p({class:"foam.nanos.auth.Permission",id:"referenceDetailView.foam.nanos.auth.ServiceProvider",description:"referenceDetailView.foam.nanos.auth.ServiceProvider"})
+p({class:"foam.nanos.auth.Permission",id:"notification.showHideNotificationTypeAction",description:"Permission to access the hideNotificationType action in NotificationRowView. Allows users to hide notifications of a certain Type. Users do not have the permission by default and should be granted to spid/groups as needed."})

@@ -89,7 +89,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-detail-SectionedDetailPropertyView .property-filter {
-      font-size: 1.4rem;
       padding-left: 16px;
     }
 

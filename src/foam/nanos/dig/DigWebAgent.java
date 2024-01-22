@@ -34,7 +34,7 @@ public class DigWebAgent extends ContextAwareSupport
     String              daoName = p.getParameter("dao");
     PM                  pm      = PM.create(x, true, getClass().getSimpleName(), p.getParameter("dao"), command.getName(), format);
 
-    logger.debug("data", p.get("data"));
+    logger.debug("command", command, "daoName", daoName, "data", p.get("data"));
     try {
       // Find the operation
       DAO digFormatDAO = (DAO) x.get("digFormatDAO");

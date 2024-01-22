@@ -154,7 +154,7 @@ foam.CLASS({
         delete this.cache[obj.id];
       }
 
-      this.SUPER(x, obj);
+      return this.src.cmd_(x, obj);
     }
   ],
 
@@ -188,12 +188,16 @@ foam.CLASS({
 
       self.delegate
         .orderBy(this.DESC(self.pollingProperty))
-        .limit(1)
+        .limit(1) 
         .select().then(function(data) {
           if ( data.array.length === 1 ) {
             self.src
               .where(self.GT(self.pollingProperty, self.pollingProperty.f(data.array[0])))
               .select(self.QuickSink.create({ putFn: self.onSrcPut }));
+          } else {
+            // if there was nothing in the cache to delegate dao to
+            // begin with, should also poll from src to get newly added objs
+            self.src.select(self.QuickSink.create({ putFn: self.onSrcPut }))
           }
         });
     }

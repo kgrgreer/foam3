@@ -60,6 +60,7 @@ foam.POM({
     { name: "axiom/NullWizardAction",                  flags: "web" },
     { name: "axiom/AlternateFlowAction",               flags: "web" },
     { name: "axiom/GoToMenuAction",                    flags: "web" },
+    { name: "axiom/WizardletDataAction",               flags: "web" },
     { name: "WizardStatus",                            flags: "web" },
     { name: "WizardletIndicator",                      flags: "js|java" },
     { name: "DynamicActionWizardlet",                  flags: "js|java" },
@@ -86,6 +87,7 @@ foam.POM({
     { name: "data/ArrayWrapSaver",                     flags: "web" },
     { name: "data/WrapSaver",                          flags: "web" },
     { name: "data/PrerequisiteLoader",                 flags: "web" },
+    { name: "data/CapableLoader",                      flags: "web" },
     { name: "data/EasyLoader",                         flags: "web" },
     { name: "data/CreateLoader",                       flags: "web" },
     { name: "data/DAOArrayLoader",                     flags: "web" },
@@ -147,6 +149,6 @@ foam.POM({
     { name: "wizardflow/AddWizardlet",                flags: "web" },
     { name: "wizardflow/EditWizardlet",                flags: "web" },
     { name: "wizardflow/RemoveWizardlets",             flags: "web" },
-    { name: "wizardflow/Predicated",                   flags: "web" },
+    { name: "wizardflow/Predicated",                   flags: "web" }
   ]
 });

@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.session.Session',
     'foam.mlang.predicate.Predicate',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
@@ -87,12 +88,12 @@ foam.CLASS({
       name: 'verifyByCode',
       javaCode: `
         User user = findUser(x, identifier, userName);
-        sendCode(x, user, emailTemplate);
+        return sendCode(x, user, emailTemplate);
       `
     },
     {
       name: 'sendCode',
-      type: 'Void',
+      type: 'String',
       args: 'Context x, User user, String emailTemplate',
       javaCode: `
         if ( SafetyUtil.isEmpty(emailTemplate) ) emailTemplate = this.VERIFY_EMAIL_TEMPLATE;
@@ -121,6 +122,7 @@ foam.CLASS({
         args.put("template", emailTemplate);
         message.setTemplateArguments(args);
         ((DAO) getX().get("emailMessageDAO")).put(message);
+        return user.getEmail();
       `
     },
     {
@@ -130,9 +132,18 @@ foam.CLASS({
 
         processCode(x, user, verificationCode);
 
-        user = (User) user.fclone();
-        user.setEmailVerified(true);
-        ((DAO) x.get("localUserDAO")).put(user);
+        if ( ! user.getEmailVerified() ) {
+          user = (User) user.fclone();
+          user.setEmailVerified(true);
+          ((DAO) x.get("localUserDAO")).put(user);
+        }
+
+        if ( signIn ) {
+          var session = x.get(Session.class);
+          session.setUserId(user.getId());
+          session.setContext(session.applyTo(session.getContext()));
+          ((DAO) x.get("localSessionDAO")).put(session);
+        }
         return true;
       `
     },

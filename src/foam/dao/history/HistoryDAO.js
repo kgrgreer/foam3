@@ -117,9 +117,23 @@ foam.CLASS({
       `
     },
     {
+      name: 'createRecord',
+      visibility: 'protected',
+      type: 'HistoryRecord',
+      args: 'X x, Object objectId, Subject subject',
+      javaCode: `
+        HistoryRecord historyRecord = new HistoryRecord();
+        historyRecord.setObjectId(objectId);
+        historyRecord.setTimestamp(new Date());
+        historyRecord.setSubject(subject);
+        return historyRecord;
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
-      if ( ! getPutPredicate().f(x.put("NEW", obj)) ) return super.put_(x, obj);
+      FObject current = this.find_(x, obj);
+      if ( ! getPutPredicate().f(x.put("NEW", obj).put("OLD", current)) ) return super.put_(x, obj);
 
       Subject subject = (Subject) x.get("subject");
       if ( x.get(Session.class) != null &&
@@ -128,26 +142,16 @@ foam.CLASS({
         subject = (Subject) ((Session) x.get(Session.class)).getContext().get("subject");
       }
 
-      FObject current = this.find_(x, obj);
-      Object objectId = obj.getProperty("id");
-
       if ( current == null ) {
         // do "put" first if it is "create" action.
         FObject persistObject = super.put_(x, obj);
-        objectId = persistObject.getProperty("id");
-        HistoryRecord historyRecord = new HistoryRecord();
-        historyRecord.setObjectId(objectId);
-        historyRecord.setTimestamp(new Date());
-        historyRecord.setSubject(subject);
+        HistoryRecord historyRecord = createRecord(x, obj.getProperty("id"), subject);
         getHistoryDAO().put_(x, historyRecord);
         return persistObject;
       } else {
         try {
           // add new history record
-          HistoryRecord historyRecord = new HistoryRecord();
-          historyRecord.setObjectId(objectId);
-          historyRecord.setTimestamp(new Date());
-          historyRecord.setSubject(subject);
+          HistoryRecord historyRecord = createRecord(x, obj.getProperty("id"), subject);
           FObjectFormatter formatter = formatter__.get();
           if ( ! formatter.maybeOutputDelta(current, obj) ) {
             return super.put_(x, obj);

@@ -232,7 +232,7 @@ throw new UnsupportedOperationException();
         return this.listen_(this.__context__, sink, undefined);
       },
       swiftCode: 'return try listen_(__context__, sink)',
-      javaCode: `this.listen_(this.getX(), sink, predicate);`,
+      javaCode: 'this.listen_(this.getX(), sink, predicate);',
     },
 
     /**
@@ -518,8 +518,18 @@ return this.find_(this.getX(), id);
         return undefined;
       },
       javaCode: `
-// null return indicates cmd not handled.
-return null;
+      if ( obj != null && obj instanceof String ) {
+        String s = (String) obj;
+        if ( s.startsWith("CLASS? ") ) {
+          try {
+            if ( Class.forName(s.substring(7)).isAssignableFrom(getClass()) ) return true;
+          } catch (ClassNotFoundException e) {
+          }
+        }
+      }
+
+      // null return indicates cmd not handled.
+      return null;
       `,
     },
 

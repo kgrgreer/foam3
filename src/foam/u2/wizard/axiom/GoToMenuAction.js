@@ -36,7 +36,7 @@ foam.CLASS({
         wizardController.onClose = function() {
           // Maybe make forcepush a prop
           x.pushMenu?.(action.menu, true);
-          temp?.call(wizardController);
+          return temp?.call(wizardController);
         }
         wizardController.goNext();
       }
@@ -49,7 +49,9 @@ foam.CLASS({
         if ( this.menu ) {
           return Promise.resolve(`${this.GO_TO} ${this.menu.label}`);
         }
-        return this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => `${this.GO_TO} ${v.label}`);
+        return this.ctrl.findDefaultMenu(this.__subContext__.menuDAO).then(v => 
+          foam.u2.Element.create({}, this).addClass('h600').add(`${this.GO_TO} ${v.label}`)
+        );
       }       
     }
   ]

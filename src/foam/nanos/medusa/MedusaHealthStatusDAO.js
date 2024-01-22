@@ -36,6 +36,7 @@ foam.CLASS({
       MedusaHealth nu = (MedusaHealth) obj;
       MedusaHealth old = (MedusaHealth) getDelegate().find_(x, nu.getId());
       nu = (MedusaHealth) getDelegate().put_(x, nu);
+
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
@@ -58,6 +59,20 @@ foam.CLASS({
         // Loggers.logger(x, this).debug("agency", "ClusterConfigMonitorAgent", config.getId());
         agency.submit(x, agent, this.getClass().getSimpleName());
       }
+
+      if ( config != null && 
+           config.getType() == MedusaType.MEDIATOR &&
+           config.getStatus() == Status.ONLINE && 
+           nu.getIndex() > 0 &&
+           old != null &&
+           old.getIndex() != nu.getIndex() &&
+           old.getIndex() > 0 ) {
+        long delta = nu.getIndex() - old.getIndex();
+        // if ( old != null ) delta -= old.getIndex();
+        // explicit fold manager, fold for state
+        ((foam.nanos.analytics.FoldManager) getX().get("ccomFoldManager"/*getFoldManagerContextKey()*/)).foldForState("medusa.index."+nu.getId(), new java.util.Date(nu.getHeartbeatTime()), delta);
+      }
+
       return nu;
       `
     }

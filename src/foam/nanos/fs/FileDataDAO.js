@@ -33,6 +33,37 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       File file = (File) obj;
+      DAO fileTypeDAO = (DAO) x.get("fileTypeDAO");
+      FileType fileType;
+      String type = "";
+
+      if ( SafetyUtil.isEmpty(file.getMimeType()) ) {
+        fileType = (FileType) fileTypeDAO.find(file.getFileType());
+
+         if ( fileType != null ) {
+          type = fileType.toSummary();
+          file.setMimeType(type);
+        }
+
+        if ( SafetyUtil.isEmpty(type) ) {
+          String fileExtention = "";
+          if ( ! SafetyUtil.isEmpty(file.getFilename()) &&
+               file.getFilename().lastIndexOf(".") != -1 &&
+               file.getFilename().lastIndexOf(".") != 0 ) {
+            fileExtention = file.getFilename().substring(file.getFilename().lastIndexOf(".")+1);
+          }
+
+          if ( ! SafetyUtil.isEmpty(fileExtention) ) fileType = (FileType) fileTypeDAO.find(EQ(FileType.ABBREVIATION, fileExtention.toUpperCase()));
+
+          if ( fileType != null ) {
+            file.setMimeType(fileType.toSummary());
+          } else {
+            throw new foam.core.FOAMException(
+              SafetyUtil.isEmpty(fileExtention) ? "Can not find file extention from file: " + file.getFilename() : "File type not supported: " + fileExtention
+            );
+          }
+        }
+      }
       if ( ! SafetyUtil.isEmpty(file.getDataString()) ) {
         return getDelegate().put_(x, obj);
       }
@@ -42,38 +73,13 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       }
 
+      if ( file.getFilesize() != blob.getSize() ) file.setFilesize(blob.getSize());
       // save to data string
       if ( file.getFilesize() <= getMaxStringDataSize() ) {
         try {
           java.io.ByteArrayOutputStream os = new java.io.ByteArrayOutputStream((int) file.getFilesize());
           blob.read(os, 0, file.getFilesize());
           String encodedString = java.util.Base64.getEncoder().encodeToString(os.toByteArray());
-          String type = file.getMimeType();
-          DAO fileTypeDAO = (DAO) x.get("fileTypeDAO");
-          FileType fileType = (FileType) fileTypeDAO.find(file.getFileType());
-          if ( fileType != null ) {
-            type = fileType.toSummary();
-            file.setMimeType(type);
-          }
-          // Find MimeType from file extension.
-          if ( SafetyUtil.isEmpty(type) ) {
-            String fileExtention = "";
-            if ( ! SafetyUtil.isEmpty(file.getFilename()) &&
-                 file.getFilename().lastIndexOf(".") != -1 &&
-                 file.getFilename().lastIndexOf(".") != 0 ) {
-              fileExtention = file.getFilename().substring(file.getFilename().lastIndexOf(".")+1);
-            }
-
-            if ( ! SafetyUtil.isEmpty(fileExtention) ) fileType = (FileType) fileTypeDAO.find(EQ(FileType.ABBREVIATION, fileExtention.toUpperCase()));
-
-            if ( fileType != null ) {
-              file.setMimeType(fileType.toSummary());
-            } else {
-              throw new foam.core.FOAMException(
-                SafetyUtil.isEmpty(fileExtention) ? "Can not find file extention from file: " + file.getFilename() : "File type not supported: " + fileExtention
-              );
-            }
-          }
           file.setDataString("data:"+file.getMimeType()+";base64," + encodedString);
           file.clearData();
           return getDelegate().put_(x, file);

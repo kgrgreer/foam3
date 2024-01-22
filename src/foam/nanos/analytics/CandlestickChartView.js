@@ -63,6 +63,10 @@ foam.CLASS({
                   E.OR(
                     E.CONTAINS_IC(foam.nanos.boot.NSpec.NAME, "candlestick"),
                     E.IN(foam.nanos.boot.NSpec.NAME, [
+                      'com1MinuteDAO',
+                      'com5MinuteDAO',
+                      'comHourlyDAO',
+                      'comDailyDAO',
                       'om1MinuteDAO',
                       'om5MinuteDAO',
                       'omHourlyDAO',
@@ -156,6 +160,34 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Key for third Line dataset.',
+      name: 'candlestickKey3',
+      class: 'String',
+      memorable: true,
+      view: function(_, X) {
+        var dao = X.data.slot(function(candlestickDAOKey) {
+          if ( candlestickDAOKey ) {
+            return this.FilteredDAO.create({
+              delegate: ctrl.__subContext__[candlestickDAOKey].
+                orderBy(this.Candlestick.KEY),
+              predicate: this.CandlestickUniqueKeyPredicate.create()
+            });
+          }
+          return this.ArrayDAO.create();
+        });
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: dao,
+          placeholder: '--'
+        });
+      },
+       postSet: function(oldValue, newValue) {
+        this.rebuild();
+      }
+    },
+    {
       name: 'canvas',
       factory: function() {
         return this.Box.create({
@@ -222,6 +254,7 @@ foam.CLASS({
         .add(this.CANDLESTICK_DAOKEY.__)
         .add(this.CANDLESTICK_KEY1.__)
         .add(this.CANDLESTICK_KEY2.__)
+        .add(this.CANDLESTICK_KEY3.__)
         .end()
         .endContext()
         .end();
@@ -242,11 +275,13 @@ foam.CLASS({
 
       if ( this.candlestickDAOKey &&
            ( this.candlestickKey1 ||
-             this.candlestickKey2 ) ) {
+             this.candlestickKey2 ||
+             this.candlestickKey3 ) ) {
         var dao = ctrl.__subContext__[this.candlestickDAOKey];
         dao = dao.where(this.OR(
           this.EQ(this.Candlestick.KEY, this.candlestickKey1 || ''),
-          this.EQ(this.Candlestick.KEY, this.candlestickKey2 || '')
+          this.EQ(this.Candlestick.KEY, this.candlestickKey2 || ''),
+          this.EQ(this.Candlestick.KEY, this.candlestickKey3 || '')
         ));
         dao = dao.orderBy(this.Candlestick.CLOSE_VALUE_TIME);
 
@@ -264,7 +299,7 @@ foam.CLASS({
               data: [],
               labels: [],
               fill: false,
-              borderColor: 'hsl('+(300/(i+1))+',100%,50%)',
+              borderColor: 'hsl('+(359/(i+1))+',100%,50%)',
               tension: 0.1
             }
             datasets.set(c.key, dataset);

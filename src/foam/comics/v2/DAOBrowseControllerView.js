@@ -19,8 +19,7 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'stack',
-    'translationService'
+    'stack'
   ],
 
   exports: [
@@ -95,6 +94,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'translationService',
+      factory: function() {
+        return this.__context__.translationService || foam.i18n.NullTranslationService.create(); }
+    },
+    {
       name: 'route',
       documentation: 'Current controller mode',
       memorable: true,
@@ -149,6 +153,7 @@ foam.CLASS({
             console.warn('Missing stack, can not push view');
             return;
           }
+          this.__subContext__.setControllerMode('view');
           (this.stack || this.__subContext__.stack).push(foam.u2.stack.StackBlock.create({
           view: {
             class: 'foam.comics.v2.DAOSummaryView',
@@ -187,19 +192,15 @@ foam.CLASS({
         if ( ! this.stack ) return;
 
         if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView' ) {
-          if ( this.config.createPopup && this.config.redirectMenu ) {
-            x.pushMenu(this.config.redirectMenu);
-          } else {
-            this.stack.push(this.StackBlock.create({
-              view: {
-                class: this.config.createController.class,
-                data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
-                config$: this.config$,
-                of: this.data.of
-              }, parent: this,
-              popup: this.config.createPopup
-            }));
-          }
+          this.stack.push(this.StackBlock.create({
+            view: {
+              class: this.config.createController.class,
+              data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
+              config$: this.config$,
+              of: this.data.of
+            }, parent: this,
+            popup: this.config.createPopup
+          }));
         } else if ( this.config.createControllerView ) {
           this.stack.push(this.StackBlock.create({ view: this.config.createControllerView, parent: this, popup: this.config.createPopup }));
         } else {
@@ -229,6 +230,7 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+      var translationService = this.translationService;
 
       // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
       // Right now each view controls it's own controller mode
@@ -293,7 +295,7 @@ foam.CLASS({
                     .callIf( ! config.detailView && ! ( config.createControllerView || config$primaryAction ), function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
-                            label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
+                            label: translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
                             size: 'LARGE'
                         })
@@ -302,13 +304,18 @@ foam.CLASS({
                     .callIf( config.createControllerView, function() {
                       this.startContext({ data: self })
                         .tag(self.CREATE, {
-                            label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
+                            label: translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
                             buttonStyle: foam.u2.ButtonStyle.PRIMARY,
                         })
                       .endContext();
                     })
                     .callIf( config$primaryAction, function() {
                       this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
+                    })
+                    .callIf( config.createMenu, async function() {
+                      let menu = await config.createMenu$find;
+                      if ( ! menu ) return;
+                      this.startContext({ data: self }).tag(menu, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
                     })
                   .end()
                 .end()

@@ -52,11 +52,17 @@ public class ThreadsWebAgent
     Set<Thread>        threadSet   = Thread.getAllStackTraces().keySet();
     Session            session      = x.get(Session.class);
     Thread[]           threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+    boolean            showAll     = "y".equals(req.getParameter("showAll"));
 
     out.println("<HTML>");
     out.println("<HEAD><TITLE>Threads</TITLE></HEAD>\n");
     out.println("<BODY>");
-    out.println("<H1>Threads</H1>\n");
+    if ( showAll ) {
+     out.println("<a href=\"?showAll=n&sessionId=" + session.getId() + "\">Hide parked threads.</a>");
+    } else {
+      out.println("<a href=\"?showAll=y&sessionId=" + session.getId() + "\">Show parked threads.</a>");
+    }
+    out.println("<br><H1>Threads</H1>\n");
     out.println("<pre>");
 
     int parkedThreads    = 0;
@@ -79,7 +85,7 @@ public class ThreadsWebAgent
         switch ( methodName ) {
           case "park":
             parkedThreads += 1;
-            continue;
+            if ( showAll ) { break; } else { continue; }
           case "sleep":
             sleepingThreads += 1;
             methodName = getMethodName(elements);
@@ -94,15 +100,15 @@ public class ThreadsWebAgent
 
       out.println("<tr>");
       out.println("<td>");
-      out.println("<a href=\"threads?id="+ thread.getId() + "&sessionId="+session.getId() + "\">" + thread.toString() +"</a>");
+      out.println("<a href=\"threads?id=" + thread.getId() + "&sessionId=" + session.getId() + "\">" + thread.toString() + "</a>");
       out.println("</td>");
       out.println("<td>");
       out.println(thread.getState());
       Integer count = threadsInState.get(thread.getState());
       if ( count == null ) {
-        threadsInState.put(thread.getState(), new Integer(1));
+        threadsInState.put(thread.getState(), Integer.valueOf(1));
       } else {
-        threadsInState.put(thread.getState(), new Integer(count.intValue() + 1));
+        threadsInState.put(thread.getState(), Integer.valueOf(count.intValue() + 1));
       }
       out.println("</td>");
       out.println("<td>");
@@ -113,7 +119,7 @@ public class ThreadsWebAgent
     out.println("</table>");
 
     out.println("<br><br><H2>Summary</H2>\n");
-    out.format("Total Threads : %d ; Parked Threads (not listed) : %d ; Sleeping Threads : %d ; Other Threads : %d", threadArray.length, parkedThreads, sleepingThreads, (threadArray.length - parkedThreads - sleepingThreads));
+    out.format("Total Threads : %d ; Parked Threads : %d ; Sleeping Threads : %d ; Other Threads : %d", threadArray.length, parkedThreads, sleepingThreads, (threadArray.length - parkedThreads - sleepingThreads));
     out.format("<br>");
     out.println(threadsInState.keySet().stream().map(key -> key + " : " + threadsInState.get(key)).collect(Collectors.joining(" ; ")));
 

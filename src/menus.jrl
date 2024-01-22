@@ -1,5 +1,30 @@
 // admin
 p({"class":"foam.nanos.menu.Menu","id":"admin","label":"Admin","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":""})
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "admin.dashboard",
+  keywords: ["dashboard","cron","alarm","er","health"],
+  label: "Ops Dashboard",
+  themeIcon: "dashboard",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.DashboardView",
+      title: "Ops Dashboard",
+      main: true,
+      widgets: {
+        "foam.nanos.cron.cronJobWidget": "6/1",
+        "foam.nanos.alarming.alarmWidget": "6/1",
+        "foam.nanos.er.eventRecordWidget": "6/1",
+        "foam.nanos.medusa.medusaHealthWidget": "6/1",
+        "foam.nanos.logger.logMessageWidget": "12/1",
+        "foam.nanos.medusa.medusaIndexChartWidget": "12/1"
+      }
+    }
+  },
+  parent:"admin"
+})
+//        "foam.nanos.er.logMessageWidget": "6/1",
 p({"class":"foam.nanos.menu.Menu","id":"user-config","label":"User Config","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"settings","label":"Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"user-config"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.all-views","label":"All Views","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.demos.u2.AllViews"}},"parent":"admin"})
@@ -159,7 +184,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"doc",
   "label":"Documentation",
-  icon: "images/icons8-questions-64.png",
+  icon: "/images/icons8-questions-64.png",
   keywords: ["doc", "documentation", "flow", "help", "question"],
   "handler":{"class":"foam.nanos.menu.SubMenu"},
   "parent":""
@@ -225,7 +250,7 @@ p({
   },
   "parent":"integration"
 })
-p({"class":"foam.nanos.menu.Menu","id":"integration.model-doc","label":"UML API Models","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser","allowedModels":{"net.nanopay.fx.afex.AFEXLog":true}}},"parent":"integration"})
+p({"class":"foam.nanos.menu.Menu","id":"integration.model-doc","label":"UML API Models","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser"}},"parent":"integration"})
 
 // settings
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"settings"})
@@ -249,6 +274,7 @@ p({
       "hideQueryBar": true,
       "summaryView":{
         "class":"foam.u2.GroupingDAOList",
+        "showEmptyMessage": true,
         "order":{
           "class": "foam.mlang.order.Desc",
           "arg1": {
@@ -299,4 +325,14 @@ p({
     "view":{"class":"foam.u2.view.FUIDSearch"}}
   },
   "parent":"admin"
+})
+
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"redirect",
+  authenticate: false,
+  parent: 'hidden',
+  handler:{
+    class:"foam.nanos.menu.RedirectMenu"
+  }
 })

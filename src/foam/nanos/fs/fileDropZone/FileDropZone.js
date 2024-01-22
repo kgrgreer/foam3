@@ -71,7 +71,6 @@ foam.CLASS({
       justify-content: center;
     }
     ^caption {
-      font-size: 1rem;
       color: #525455;
     }
     ^browse-container{
@@ -101,7 +100,8 @@ foam.CLASS({
     { name: 'LABEL_MAX_SIZE',      message: 'Max size:' },
     { name: 'ERROR_FILE_TITLE',    message: 'Error' },
     { name: 'ERROR_FILE_TYPE',     message: 'Invalid file type' },
-    { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' }
+    { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' },
+    { name: 'NO_FILES',            message: 'No files' }
   ],
 
   properties: [
@@ -173,10 +173,10 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
-      var visibilitySlot = this.slot(function(hasFiles, isMultipleFiles, controllerMode) {
+      var visibilitySlot = this.slot(function(isMultipleFiles, controllerMode) {
           let cm = controllerMode != foam.u2.ControllerMode.VIEW;
           if ( isMultipleFiles && cm ) return true;
-          return ! hasFiles && cm;
+          return cm;
         });
 
       this.start('input')
@@ -186,7 +186,7 @@ foam.CLASS({
         .attrs({
           type: 'file',
           accept: this.getSupportedTypes(),
-          multiple: this.isMultipleFiles ? 'multiple' : ''
+          multiple: this.isMultipleFiles ? 'multiple' : false
         })
         .on('change', this.onChange)
       .end()
@@ -215,11 +215,11 @@ foam.CLASS({
         .start().addClass(this.myClass('caption-container'))
         .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
           .start()
-            .start('p').addClass(this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
-            .start('p').addClass(self.myClass('caption')).add(this.getSupportedTypes(true)).end()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
+            .start('p').addClass('p-xs', self.myClass('caption')).add(this.getSupportedTypes(true)).end()
           .end()
           .start()
-            .start('p').addClass(this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
           .end()
         .end()
       .end()
@@ -229,6 +229,8 @@ foam.CLASS({
       .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); })
       .add(this.slot(function(files) {
         var e = this.E().addClass(self.myClass('fileCards'));
+        if ( ! visibilitySlot.get() )
+          return e.add(self.NO_FILES);
         for ( var i = 0; i < files.length; i++ ) {
           e.tag({
             class: 'foam.nanos.fs.fileDropZone.FileCard',

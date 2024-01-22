@@ -21,8 +21,6 @@ foam.CLASS({
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: xx-large;
 }
 `,
   methods: [
@@ -34,7 +32,7 @@ foam.CLASS({
           width: this.visualizationWidth$.map(function(w) { return w + 'px'; }),
           height: this.visualizationHeight$.map(function(h) { return h + 'px'; })
         }).
-        addClass(this.myClass()).
+        addClass('h100', this.myClass()).
         add(this.slot(function(data$data) {
           return this.E('span').
             add(data$data.value);

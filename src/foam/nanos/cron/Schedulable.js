@@ -160,7 +160,7 @@ foam.CLASS({
       gridColumns: 4,
       order: 2,
       javaFactory: `
-        Date d = getSchedule().getNextScheduledTime(getX(), new Date());
+        Date d = getSchedule().getNextScheduledTime(foam.core.XLocator.get(), new Date());
         return d != null ? d : null;
       `
     },

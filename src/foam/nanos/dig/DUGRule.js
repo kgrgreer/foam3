@@ -32,7 +32,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.Base64'
   ],
 
   sections: [
@@ -69,7 +70,13 @@ foam.CLASS({
         name: 'evaluateBearerToken',
         type: 'String',
         javaCode: `
-        return getBearerToken();
+          switch ( getAuthType() ) {
+            case BASIC:
+              return Base64.getEncoder().encodeToString((getUserName()+":"+getPassword()).getBytes());
+            case BEARER:
+            default:
+              return getBearerToken();
+          }
         `
     }
   ],
@@ -155,15 +162,46 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'URL',
+      class: 'String', // 'URL','Website', - neither of these accept a complete URI.
       name: 'url',
       label: 'URL',
       section: 'dugInfo'
     },
     {
+      class: 'Enum',
+      of: 'foam.box.HTTPAuthorizationType',
+      name: 'authType',
+      section: 'dugInfo',
+    },
+    {
       class: 'String',
       name: 'bearerToken',
-      section: 'dugInfo'
+      section: 'dugInfo',
+      visibility: function(authType) {
+        return authType == foam.box.HTTPAuthorizationType.BEARER ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'String',
+      name: 'userName',
+      section: 'dugInfo',
+      visibility: function(authType) {
+        return authType == foam.box.HTTPAuthorizationType.BASIC ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Password',
+      name: 'password',
+      section: 'dugInfo',
+      visibility: function(authType) {
+        return authType == foam.box.HTTPAuthorizationType.BASIC ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'foam.core.Enum',

@@ -23,11 +23,11 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'setDelegateObject',
+      name: 'setDelegateFactory',
       args: [
         {
-          name: 'obj',
-          type: 'Object'
+          name: 'factory',
+          type: 'foam.core.XFactory'
         }
       ]
     }

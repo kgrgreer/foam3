@@ -236,3 +236,208 @@ x.nSpecDAO.select(ns => {
 });
 """
 })
+p({
+class:"foam.nanos.script.Script",
+id:"DAOSecurityReport",
+description:"List DAO's with potential security issues.",
+language:0,
+code:"""
+if ( ! globalThis.test ) globalThis.test = function(pass, msg) {
+  console.log(pass ? 'SUCCESS' : 'FAILURE', msg);
+}
+
+var COLUMNS = [
+  'Warning',
+  'DAO',
+  'Authenticated',
+  'Authorizer',
+  'Permissioned',
+  'Read-Only',
+  'SPID Aware',
+  'Groups',
+  'Capabilities',
+  'Notes'
+];
+
+var IGNORED_GROUPS = {
+  'msp-admin': true,
+  admin: true,
+  system: true,
+  liquidBasic: true,
+  'fraud-ops-permissions': true,
+  'support-ops-permissions': true,
+  'support-base': true,
+  'payment-ops': true,
+  'operations-support': true,
+};
+
+var data = [];
+
+var groups = await x.groupDAO.select(); groups = groups.array;
+var caps = await x.capabilityDAO.select(); caps = caps.array;
+
+function table(data, columns) {
+  console.table(data);
+  var output = columns.join('|') + '\n';
+  output += data.map(a => a.join('|')).join('\n');
+  console.log(output);
+}
+
+var array = await x.nSpecDAO.select();
+array = array.array;
+for ( var i = 0 ; i < array.length ; i++ ) {
+  var n = array[i];
+  if ( n.name.indexOf('DAO') == -1 ) continue;
+  if ( ! n.serve )  continue;
+  if ( ! n.enabled )  continue;
+
+  let authorizer = '';
+  let permissioned = false;
+  let readOnly   = false;
+  let nullDAO    = false;
+  let spidAware   = false;
+try {
+readOnly   = !! await x[n.name].cmd('CLASS? foam.dao.ReadOnlyDAO');
+} catch (x) { }
+try {
+nullDAO   = !! await x[n.name].cmd('CLASS? foam.dao.NullDAO');
+} catch (x) { }
+try { authorizer = await x[n.name].cmd('AUTHORIZER?'); } catch (x) { }
+try { permissioned = !! await x[n.name].cmd('CLASS? foam.nanos.auth.PermissionedPropertyDAO'); } catch (x) { }
+try { spidAware = !! await x[n.name].cmd('CLASS? foam.nanos.auth.ServiceProviderAwareDAO'); } catch (x) { }
+
+if ( authorizer ) {
+ authorizer = authorizer.replace('foam.nanos.auth.', '');
+ authorizer = authorizer.replace('Authorizer', '');
+}
+
+var pgroups = [];
+for ( var j = 0 ; j < groups.length ; j++ ) {
+  var g = groups[j];
+    if ( ! IGNORED_GROUPS[g.id] && await g.implies(x, 'service.' + n.name) ) {
+      pgroups.push(g.id);
+    }
+}
+
+var pcaps = [];
+for ( var j = 0 ; j < caps.length ; j++ ) {
+  var c = caps[j];
+   var granted =  c.permissionsGranted.find(p => {
+      return p === 'service.' + n.name;
+    });
+   if ( granted ) {
+      pcaps.push(c.name);
+    }
+}
+
+let warning = '';
+if  ( ! authorizer && ! readOnly && ! n.authenticate && ! nullDAO ) {
+  warning = 'alert';
+  test(false, 'DAO Security Audit: ' + n.name + ' ALERT');
+} else if ( ! authorizer && pgroups.length && ! readOnly && ! nullDAO ) {
+  warning = 'warning';
+  test(!! n.authNotes, 'DAO Security Audit: ' + n.name + ' WARNING');
+} else {
+    test(true, 'DAO Security Audit: ' + n.name);
+}
+if ( warning == 'warning' && n.authNotes ) warning = 'PASSED*';
+
+  data.push( [
+     warning || 'PASSED',
+     n.name,
+     n.authenticate,
+     authorizer || '',
+     permissioned ? 'permissioned' : '',
+     readOnly ? 'read-only' : nullDAO ? 'null' : '',
+     spidAware ? 'spid-aware' : '',
+     pgroups.join(', '),
+     pcaps.join(', '),
+     n.authNotes
+   ]);
+}
+
+table(data, COLUMNS);
+""",
+notes:"",
+lastModifiedBy:1348,lastModified:1697222596604
+})
+p({
+  class: "foam.nanos.script.Script",
+  id: "BeanShell JConsole",
+  code:
+  """
+  import bsh.util.JConsole;
+  import javax.swing.*;
+
+  appConfig = x.get("appConfig");
+
+  if ( appConfig.getMode() != foam.nanos.app.Mode.DEVELOPMENT ) {
+    print("Can only be run in DEVELOPMENT mode.");
+    return;
+  }
+
+  SwingUtilities.invokeLater(new Runnable() { public void run() {
+  JFrame      f       = new JFrame();
+  JConsole    console = new JConsole();
+
+  f.setContentPane(console);
+
+  Interpreter shell   = new Interpreter(console);
+
+  shell.eval("import foam.core.*;");
+  shell.eval("import foam.mlang.MLang;");
+  shell.eval("import foam.dao.*;");
+  shell.set("x", x);
+
+  new Thread(shell).start();
+
+  f.setVisible(true);
+  f.setResizable(true);
+  f.setSize(800, 600);
+  f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+  f.setTitle("BeanShell JConsole");
+  }
+  });  """
+})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"MDAOCounts",
+  "description":"Report all MDAO sizes",
+  "language":1,
+  "code":
+  """
+import foam.dao.DAO;
+import foam.dao.EasyDAO;
+import foam.dao.NullDAO;
+import foam.mlang.MLang;
+import foam.nanos.boot.NSpec;
+import foam.util.SafetyUtil;
+
+services = x.get("nSpecDAO");
+a = services.select().array;
+for ( s : a ) {
+  ss = s.getServiceScript();
+  if ( SafetyUtil.isEmpty(ss) ) continue;
+  if ( ! ss.contains("EasyDAO") ) continue;
+  d = x.get(s.name);
+  if ( ! ( d instanceof DAO ) ) continue;
+  delegate = d;
+  while ( delegate != null ) {
+    if ( delegate instanceof EasyDAO ) break;
+    if ( delegate instanceof NullDAO ) {
+      delegate = null;
+      break;
+    }
+    delegate = delegate.delegate;
+  }
+
+  if ( delegate == null ) continue;
+  ed = delegate;
+  if ( ed.getNullify() ) continue;
+  if ( ed.getMdao() == null ) continue;
+  m = ed.getMdao();
+  c = m.select(MLang.COUNT());
+  print(s.name + ", "+c.value);
+}
+  """
+})

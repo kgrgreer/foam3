@@ -69,8 +69,8 @@ foam.CLASS({
   methods: [
     function validate() {
       foam.assert(
-        ! this.isMerged || ! this.isFramed,
-        "Listener can't be both isMerged and isFramed: ",
+        ! this.isMerged || ! this.isFramed || ! this.isIdled,
+        "Listener can't be more than one of isMerged, isIdled and isFramed: ",
         this.name);
     }
   ]
@@ -159,14 +159,14 @@ foam.SCRIPT({
   foam.core.FObject.describe = function(opt_name) {
     console.log('CLASS:  ', this.name);
     console.log('extends:', this.model_.extends);
-    console.log('Axiom Type           Source Class   Name                 Source Path');
-    console.log('-------------------------------------------------------------------------------------------------');
+    console.log('Axiom Type             Source Class   Name                                          Source Path');
+    console.log('----------------------------------------------------------------------------------------------------------------------------');
     for ( var key in this.axiomMap_ ) {
       var a = this.axiomMap_[key];
       console.log(
-        foam.String.pad(a.cls_ ? a.cls_.name : 'anonymous', 20),
+        foam.String.pad(a.cls_ ? a.cls_.name : 'anonymous', 22),
         foam.String.pad((a.sourceCls_ && a.sourceCls_.name) || 'unknown', 14),
-        foam.String.pad(a.name, 20),
+        foam.String.pad(a.name, 45),
         a.source || '');
     }
     console.log('\n');
@@ -422,6 +422,7 @@ foam.CLASS({
 
         if ( imp.required && ! this.__context__[imp.key + '$'] ) {
           var m = 'Missing required import: ' + imp.key + ' in ' + this.cls_.id;
+          if ( this.cls_.id == 'foam.core.Currency' ) debugger;
           foam.assert(false, m);
         }
       }
@@ -486,6 +487,24 @@ foam.LIB({
   name: 'foam.debug',
 
   methods: [
+    function getAxiomsByClass(cls, opt_f) {
+      var as = [];
+      for ( var i in { ...foam.USED, ...foam.UNUSED } ) {
+        try {
+          m = foam.maybeLookup(i);
+          if ( m ) {
+            m.getAxiomsByClass(cls).forEach(a => {
+              if ( ! opt_f || opt_f(a, m, i) ) {
+                as.push([i, a.name]);
+              }
+            });
+          }
+        } catch (x) {}
+      }
+
+      return as;
+    },
+
     function showCreates() {
       var lastCounts_ = this.lastCounts_ || ( this.lastCounts_ = {} );
 
@@ -503,6 +522,48 @@ foam.LIB({
               c.count_-lc);
         }
       }
+    },
+
+    function usageReport() {
+      var errors             = {};
+      var unusedFiles        = {};
+      var partiallyUsedFiles = {};
+      var unusedModels = Object.keys(foam.UNUSED);
+      var usedModels   = Object.keys(foam.USED);
+
+      unusedModels.forEach(m => {
+        try {
+          var cls = foam.maybeLookup(m);
+          if ( cls ) {
+            var s = cls.model_.source;
+//            console.log('UNUSED', s);
+            unusedFiles[s] = true;
+          }
+        } catch (x) {
+          errors[m] = true;
+        }
+      });
+      usedModels.forEach(m => {
+        try {
+          var cls = foam.maybeLookup(m);
+          if ( cls ) {
+            var s = cls.model_.source;
+//            console.log('USED',s );
+            if ( unusedFiles[s] ) {
+              delete unusedFiles[s];
+              partiallyUsed[s] = true;
+            }
+          }
+        } catch (x) {
+          errors[m] = true;
+        }
+      });
+
+      return {
+        unused: Object.keys(unusedFiles),
+        partiallyUsed: Object.keys(partiallyUsedFiles),
+        errors: Object.keys(errors)
+      };
     }
   ]
 });

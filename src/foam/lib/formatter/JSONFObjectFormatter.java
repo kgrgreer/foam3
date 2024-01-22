@@ -193,9 +193,15 @@ public class JSONFObjectFormatter
   }
 
   protected void outputProperty(FObject o, PropertyInfo p) {
+    try {
     outputKey(getPropertyName(p));
     append(':');
     p.formatJSON(this, o);
+  } catch (Throwable t) {
+    System.err.println("***************************************************** error outputting " + getPropertyName(p));
+    System.err.println("" + p.get(o));
+    t.printStackTrace();
+  }
   }
 
 
@@ -297,7 +303,7 @@ public class JSONFObjectFormatter
     } else if ( value instanceof List ) {
       output((List) value);
     } else {
-      System.err.println(this.getClass().getSimpleName()+".output, Unexpected value type: "+value.getClass().getName());
+      System.err.println(this.getClass().getSimpleName() + ".output, Unexpected value type: " + value.getClass().getName());
       append("null");
     }
   }
@@ -343,9 +349,7 @@ public class JSONFObjectFormatter
     if ( ! outputDefaultValues_ && ! prop.isSet(fo) ) return false;
 
     Object value = prop.get(fo);
-    if ( value == null ||
-         ( isArray(value) && Array.getLength(value) == 0 ) ||
-         ( value instanceof FObject && value.equals(fo) ) ) {
+    if ( value == null || ( isArray(value) && Array.getLength(value) == 0 ) || ( value instanceof FObject && value.equals(fo) ) ) {
       return false;
     }
 
@@ -465,7 +469,9 @@ public class JSONFObjectFormatter
       return;
     }
 
-    ClassInfo info = o.getClassInfo();
+    int       len   = builder().length(); // Safe pos in case we want to undo
+    int       props = 0;
+    ClassInfo info  = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
 
@@ -483,9 +489,16 @@ public class JSONFObjectFormatter
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
       outputComma = maybeOutputProperty(o, prop, outputComma) || outputComma;
+      if ( outputComma ) props++;
     }
-    addInnerNewline();
-    append('}');
+
+    if ( props > 0 || outputDefaultClassNames_ ) {
+      addInnerNewline();
+      append('}');
+    } else {
+      // skip outputting just class:
+      builder().setLength(len);
+    }
   }
 
   public void output(PropertyInfo prop) {

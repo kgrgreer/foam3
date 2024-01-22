@@ -66,6 +66,8 @@ public class AuthWebAgent
       PrintWriter out = x.get(PrintWriter.class);
       out.println("Access denied. Need permission: " + permission_);
       ((foam.nanos.logger.Logger) x.get("logger")).debug("Access denied, requires permission", permission_,"subject", x.get("subject"));
+      HttpServletResponse response = x.get(HttpServletResponse.class);
+      response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 
@@ -219,8 +221,15 @@ public class AuthWebAgent
           if ( ! SafetyUtil.isEmpty(sessionId) ) {
             session.setId(sessionId);
           }
-          session = (Session) sessionDAO.put(session);
+          // NOTE: don't use returned session. This fails in
+          // clustered environment as session.context is
+          // clusterTransient and null after put.
+          Session saved = (Session) sessionDAO.put(session);
+          if ( SafetyUtil.isEmpty(session.getId()) ) {
+            session.setId(saved.getId());
+          }
         }
+        session.setContext(session.applyTo(x));
         session.touch();
 
         try {

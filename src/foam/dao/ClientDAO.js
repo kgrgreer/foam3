@@ -81,6 +81,7 @@ foam.CLASS({
     {
       name: 'put_',
       code: function put_(x, obj) {
+        obj.normalizeObj();
         return this.SUPER(null, obj);
       },
       javaCode: 'return super.put_(null, obj);',

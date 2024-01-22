@@ -14,16 +14,40 @@ import foam.dao.DAO;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static foam.mlang.MLang.*;
-
 
 public class AddressUtil {
 
   protected static final Pattern SUITE_PATTERN = Pattern.compile("/\\d+/g");
   protected static final Pattern REPLACE_PATTERN = Pattern.compile("/[#\"]/g");
+  public static final Map<String, String> caPostalCodeToRegionCodeMap = new HashMap<>();
+
+  static {
+    // https://www150.statcan.gc.ca/n1/pub/92-195-x/2011001/other-autre/pc-cp/tbl/tbl9-eng.htm
+    caPostalCodeToRegionCodeMap.put("A", "CA-NL");
+    caPostalCodeToRegionCodeMap.put("B", "CA-NS");
+    caPostalCodeToRegionCodeMap.put("C", "CA-PE");
+    caPostalCodeToRegionCodeMap.put("E", "CA-NB");
+    caPostalCodeToRegionCodeMap.put("G", "CA-QC");
+    caPostalCodeToRegionCodeMap.put("H", "CA-QC");
+    caPostalCodeToRegionCodeMap.put("J", "CA-QC");
+    caPostalCodeToRegionCodeMap.put("K", "CA-ON");
+    caPostalCodeToRegionCodeMap.put("L", "CA-ON");
+    caPostalCodeToRegionCodeMap.put("M", "CA-ON");
+    caPostalCodeToRegionCodeMap.put("N", "CA-ON");
+    caPostalCodeToRegionCodeMap.put("P", "CA-ON");
+    caPostalCodeToRegionCodeMap.put("R", "CA-MB");
+    caPostalCodeToRegionCodeMap.put("S", "CA-SK");
+    caPostalCodeToRegionCodeMap.put("T", "CA-AB");
+    caPostalCodeToRegionCodeMap.put("V", "CA-BC");
+    //caPostalCodeToRegionCodeMap.put("X", null); // belong to both Northwest Territories and Nunavut
+    caPostalCodeToRegionCodeMap.put("Y", "CA-YT");
+  }
 
   /*
    * Splits an address into the number and name, in that order, into an array
@@ -69,48 +93,89 @@ public class AddressUtil {
     return new String[] { streetNumber, streetName };
   }
 
-  public static String normalizeRegion(X x, String country, String regionCode) {
-    if ( SafetyUtil.isEmpty(regionCode) || SafetyUtil.isEmpty(country) ) {
-      return regionCode;
-    }
-    
-    String normalizedRegion = country + "-" + regionCode;
+  // TODO: country defaults to CA if not given. Remove when we can.
+  public static String normalizeRegion(X x, String country, String region) {
+    if ( SafetyUtil.isEmpty(region) ) return region;
 
-    DAO regionDAO = (DAO) x.get("regionDAO");
-    Region region = (Region) regionDAO.find(AND(
-      EQ(Region.COUNTRY_ID, country),
-      OR(
-        EQ(Region.ISO_CODE, regionCode),
-        EQ(Region.CODE, regionCode),
-        IN(regionCode.toUpperCase(), Region.ALTERNATIVE_NAMES)
-      )
-    ));
-
-    if ( region != null ) {
-      normalizedRegion = region.getCode();
+    if ( SafetyUtil.isEmpty(country) ) {
+      country = "CA";
     }
-    
-    return normalizedRegion;
+
+    country = country.trim();
+    region = region.trim();
+
+    Region regionObject = lookupRegion(x, country, region);
+    if ( regionObject != null ) {
+      return regionObject.getCode();
+    } else {
+      return country + "-" + region;
+    }
   }
 
-  public static String normalizeCountry(X x, String countryCode) {
-    if ( SafetyUtil.isEmpty(countryCode) ) {
-      return countryCode;
+  // TODO: country defaults to CA if not given. Remove when we can.
+  public static String normalizeRegion(X x, String country, String region, String postalCode) {
+    if ( SafetyUtil.isEmpty(country) ) {
+      country = "CA";
     }
-    
-    String normalizedCountry = countryCode;
+
+    country = country.trim();
+    if ( ! SafetyUtil.isEmpty(region) ) region = region.trim();
+    if ( ! SafetyUtil.isEmpty(postalCode) ) postalCode = postalCode.trim();
+
+    if ( ! SafetyUtil.isEmpty(region) ) {
+      Region regionObject = lookupRegion(x, country, region);
+      if ( regionObject != null ) return regionObject.getCode();
+    }
+
+    if ( ! SafetyUtil.isEmpty(postalCode) ) {
+      String regionCode = lookupRegionCodeWithPostalCode(x, country, postalCode);
+      if ( ! SafetyUtil.isEmpty(regionCode) ) return regionCode; 
+    }
+
+    return SafetyUtil.isEmpty(region) ? region : country + "-" + region;
+  }
+
+  private static Region lookupRegion(X x, String country, String region) {
+    return (Region) ((DAO) x.get("regionDAO")).find(AND(
+      EQ(Region.COUNTRY_ID, country),
+      OR(
+        EQ(Region.ISO_CODE, region),
+        EQ(Region.CODE, region),
+        IN(region.toUpperCase(), Region.ALTERNATIVE_NAMES)
+      )
+    ));
+  }
+  
+  private static String lookupRegionCodeWithPostalCode(X x, String country, String postalCode) {
+    if ( SafetyUtil.isEmpty(postalCode) ) return "";
+
+    switch(country) {
+      case "CA":
+        return caPostalCodeToRegionCodeMap.get(postalCode.substring(0, 1).toUpperCase());
+      default: 
+        return "";
+    }
+  }
+
+  // TODO: country defaults to CA if not given. Remove when we can.
+  public static String normalizeCountry(X x, String country) {
+    if ( SafetyUtil.isEmpty(country) ) {
+      return "CA";
+    }
+
+    country = country.trim();
 
     DAO countryDAO = (DAO) x.get("countryDAO");
-    Country country = (Country) countryDAO.find(OR(
-      EQ(Country.ISO31661CODE, countryCode),
-      EQ(Country.CODE, countryCode),
-      IN(countryCode.toUpperCase(), Country.ALTERNATIVE_NAMES)
+    Country countryObject = (Country) countryDAO.find(OR(
+      EQ(Country.ISO31661CODE, country),
+      EQ(Country.CODE, country),
+      IN(country.toUpperCase(), Country.ALTERNATIVE_NAMES)
     ));
 
-    if ( country != null ) {
-      normalizedCountry = country.getCode();
+    if ( countryObject != null ) {
+      return countryObject.getCode();
+    } else {
+      return country;
     }
-
-    return normalizedCountry;
   }
 }

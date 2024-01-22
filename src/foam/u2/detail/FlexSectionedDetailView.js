@@ -60,8 +60,9 @@ foam.CLASS({
                 if ( ! isAvailable ) return self.E().style({ display: 'none' });
 
                 return self.border.create()
-                  .tag(self.SectionView, {
+                  .tag(section.view, {
                     data$: self.data$,
+                    of$: self.of$,
                     showTitle: self.showTitle,
                     section
                   });

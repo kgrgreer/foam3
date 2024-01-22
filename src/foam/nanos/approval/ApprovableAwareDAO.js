@@ -173,8 +173,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      if ( ! ( obj instanceof LifecycleAware ) )
-      {
+      if ( ! ( obj instanceof LifecycleAware ) ) {
         return super.put_(x, obj);
       }
 
@@ -185,7 +184,7 @@ foam.CLASS({
       LifecycleAware lifecycleObj = (LifecycleAware) obj;
 
       DAO approvalRequestDAO = getApprovalRequestDAO();
-      DAO dao = (DAO) x.get(getDaoKey());
+      DAO dao                = (DAO) x.get(getDaoKey());
 
       FObject currentObjectInDAO = null;
       Object id = obj.getProperty("id");

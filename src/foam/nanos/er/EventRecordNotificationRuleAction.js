@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
@@ -105,24 +106,56 @@ foam.CLASS({
       args.put("summary", er.toSummary());
       args.put("eventRecord", er.getId());
 
-      StringBuilder sb = new StringBuilder();
-      sb.append(obj.getClass().getSimpleName());
-      sb.append(" ");
-      sb.append(rule.getOperation());
-      sb.append(" ");
-      sb.append(er.toSummary());
-      sb.append(" ");
-      AppConfig appConfig = (AppConfig) x.get("appConfig");
-      sb.append(appConfig.getUrl());
-      sb.append("/#er?id=");
-      sb.append(er.getId());
-
+      StringBuilder body = new StringBuilder();
+      Alarm alarm = (Alarm) ((DAO) x.get("alarmDAO")).find(er.getAlarm());
+      if ( alarm != null ) {
+        body.append("[");
+        body.append(alarm.getHostname());
+        body.append("] ");
+        body.append(alarm.getSeverity().getLabel().toUpperCase());
+        body.append(" - ");
+        body.append(alarm.getName());
+        body.append("\\nname: ");
+        body.append(alarm.getName());
+        body.append("\\nstatus: ");
+        body.append(alarm.getIsActive() ? "Active": "Cleared");
+        body.append("\\nseverity: ");
+        body.append(alarm.getSeverity().getLabel());
+        body.append("\\nreason: ");
+        body.append(alarm.getReason().getLabel());
+        body.append("\\nhost: ");
+        body.append(alarm.getHostname());
+        body.append("\\nstarted: ");
+        body.append(alarm.getCreated().toString());
+        if ( ! alarm.getIsActive() ) {
+          body.append("\\ncleared: ");
+          body.append(alarm.getLastModified().toString());
+        }
+        body.append("\\ninfo: ");
+        body.append(alarm.getNote());
+        if ( alarm.getEventRecord() != null ) {
+          body.append("\\neventRecord: ");
+          body.append("/#er?id="+alarm.getEventRecord());
+        }
+      } else {
+        body.append(obj.getClass().getSimpleName());
+        body.append(" ");
+        body.append(rule.getOperation());
+        body.append(" ");
+        body.append(er.toSummary());
+        body.append(" ");
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        body.append(appConfig.getUrl());
+        body.append("/#er?id=");
+        body.append(er.getId());
+      }
       Notification notification = new Notification();
-      notification.setBody(sb.toString());
+      notification.setBody(body.toString());
       notification.setEmailArgs(args);
       notification.setSpid(rule.getSpid());
       notification.setTemplate(getNotificationTemplate());
       notification.setClusterable(er.getClusterable());
+
       ((DAO) ruler.getX().get("notificationDAO")).put_(ruler.getX(), notification);
       `
     }

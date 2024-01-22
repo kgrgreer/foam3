@@ -18,8 +18,8 @@ foam.CLASS({
   FOOTER_TXT: if exists will be under data,
   FOOTER_LINK: if exists will be under FOOTER and the text associated to footerLink(),
   SUB_FOOTER_TXT: needed an additional option for the forgot password,
-  SUB_FOOTER_LINK: needed an additional option for the forgot password,
-  DISCLAIMER: if exists will be under img defined in imgPath. If imgPath empty, DISCLAIMER under SUB_FOOTER
+  SUB_FOOTER_LINK: needed an additional option for the forgot password
+  DISCLAIMER: If true, add t&c and privacyPolicy under model
 
   METHODs possible for this view:
   footerLink: code associated to footer msg and link,
@@ -86,12 +86,6 @@ foam.CLASS({
     height: 4vh;
   }
 
-  /* TITLE TXT ON DATA */
-  ^ .title-top {
-    font-size: 2.5em;    
-    font-weight: bold;
-  }
-
   /* ON DATA */
   ^content-form {
     width: 75%;
@@ -99,6 +93,7 @@ foam.CLASS({
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    align-self: center;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -112,8 +107,8 @@ foam.CLASS({
     text-align: end;
   }
 
-  ^center-footer > ^signupLink {
-    margin-bottom: 2rem;
+  ^disclaimer {
+    text-align: center;
   }
 
   /* TOP-TOP BAR NAV to go with backLink_ */
@@ -136,20 +131,8 @@ foam.CLASS({
     margin-top: 1vw;
   }
 
-  /* DISCLAIMER */
-      /* ON NO IMG SPLIT & IMG SPLIT */
-  ^ .disclaimer-login {
-    width: 35vw;
-    font-size: 0.75em;
-    color: #8e9090;
-    margin-left: 12vw;
-    line-height: 1.5;
-    background: transparent;
-  }
-
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
-    /* align img with disclaimer */
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -164,6 +147,25 @@ foam.CLASS({
   ^ .foam-u2-borders-SplitScreenGridBorder-grid {
     grid-gap: 0;
   }
+  ^tc-link {
+    background: none;
+    border: 1px solid transparent;
+    color: $primary400;
+    text-decoration: none;
+  }
+  ^playLink {
+    display: block;
+    width: min(140px, 100%);
+    margin: auto;
+  }
+  ^legal {
+    position: absolute;
+    bottom: 1.2rem;
+    margin: 0 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    width: 100%;
+  }
   @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
     .topBar-logo-Back {
       display: flex;
@@ -172,11 +174,6 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView-image-one {
       width: 28vw;
-    }
-  }
-  @media (min-width: /*%DISPLAYWIDTH.SM%*/ 576px ) {
-    ^content-form {
-      align-self: center;
     }
   }
   `,
@@ -265,7 +262,9 @@ foam.CLASS({
 
   messages: [
     { name: 'GO_BACK', message: 'Go to ' },
-    { name: 'MODE1', message: 'SignUp' }
+    { name: 'MODE1', message: 'SignUp' },
+    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' },
+    { name: 'GPLAY_LEGAL', message: 'Google Play and the Google Play logo are trademarks of Google LLC.'}
   ],
 
   methods: [
@@ -287,12 +286,9 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.document.addEventListener('keyup', this.onKeyPressed);
-      this.onDetach(() => {
-        this.document.removeEventListener('keyup', this.onKeyPressed);
-      });
       let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
-
+      let showPlayBadge = this.appConfig.playLink && this.data.showAction 
+        && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
       var right = this.E()
       // Header on-top of rendering data
@@ -308,7 +304,7 @@ foam.CLASS({
           }))
         .end()
         // Title txt and Data
-        .callIf(self.showTitle, function() { this.start().addClass('title-top').add(self.data.TITLE).end(); })
+        .callIf(self.showTitle, function() { this.start().addClass('h300').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .start()
@@ -320,25 +316,59 @@ foam.CLASS({
         .end()
         .tag(this.data.LOGIN)
         .add(
-          this.slot(function(data$showAction) {
-            return self.E().callIf(data$showAction, function() {
-              this
-                .start()
-                  .startContext({ data: self.data })
-                  .addClass(self.myClass('center-footer'))
-                  // first footer
+          this.slot(function(data$showAction, data$disclaimer, appConfig) {
+            var disclaimer = self.E().style({ display: 'contents' }).callIf(data$disclaimer && appConfig, function() {
+              this.start()
+                .addClass(self.myClass('disclaimer'))
+                .add(self.DISCLAIMER_TEXT)
+                .start('a')
+                  .addClasses([self.myClass('tc-link'), 'h600'])
+                  .add(appConfig.termsAndCondLabel)
+                  .attrs({
+                    href: appConfig.termsAndCondLink,
+                    target: '_blank'
+                  })
+                .end()
+                .add(' and ')
+                .start('a')
+                  .addClasses([self.myClass('tc-link'), 'h600'])
+                  .add(appConfig.privacy)
+                  .attrs({
+                    href: appConfig.privacyUrl,
+                    target: '_blank'
+                  })
+                .end()
+              .end();
+            });
+            return self.E().style({ display: 'contents' }).callIfElse(data$showAction,
+              function() {
+                this
                   .start()
-                    .addClass(self.myClass('signupLink'))
-                    .start('span')
-                      .addClass('text-with-pad')
-                      .add(self.data.FOOTER_TXT)
+                    .startContext({ data: self.data })
+                    .addClass(self.myClass('center-footer'))
+                    // first footer
+                    .start()
+                      .addClass(self.myClass('signupLink'))
+                      .start('span')
+                        .addClass('text-with-pad')
+                        .add(self.data.FOOTER_TXT)
+                      .end()
+                      .start('span')
+                        .add(self.data.FOOTER)
+                      .end()
                     .end()
-                    .start('span')
-                      .add(self.data.FOOTER)
-                    .end()
+                    .endContext()
                   .end()
-                  .endContext()
-                .end();
+                  .add(disclaimer);
+              },
+              function() {
+                this.start().add(disclaimer).end()
+              }
+            ).callIf(showPlayBadge, function() {
+              this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
+              .start('img')
+                .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
+              .end().end();
             })
           })
         )
@@ -359,9 +389,15 @@ foam.CLASS({
             lgColumns: 8,
             xlColumns: 8
           }});
-        split.rightPanel.add(right);
-      } else {
-        right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.data.DISCLAIMER).end();
+        split.rightPanel
+          .style({ position: 'relative' })
+          .add(right)
+          .callIf(showPlayBadge, function() {
+            this.start()
+            .addClass('p-legal', self.myClass('legal'))
+            .add(self.GPLAY_LEGAL)
+            .end();
+          })
       }
 
       // RENDER EVERYTHING ONTO PAGE
@@ -384,7 +420,7 @@ foam.CLASS({
           .end()
         .end()
       // deciding to render half screen with img and data or just centered data
-        .callIfElse( this.imgPath && this.leftView && split, () => {
+        .callIfElse( (this.imgPath || this.leftView) && split, () => {
           if ( ! this.leftView ) {
             split.leftPanel
               .addClass('cover-img-block1')
@@ -392,13 +428,6 @@ foam.CLASS({
                 .addClass(self.myClass('image-one'))
                 .attr('src', this.imgPath$)
               .end()
-              .callIf( !! this.data.disclaimer , () => {
-                // add a disclaimer under img
-                split.leftPanel.start('p')
-                  .addClass('disclaimer-login').addClass('disclaimer-login-img')
-                  .add(this.data.DISCLAIMER)
-                .end();
-              });
           } else {
             split.leftPanel.tag(this.leftView);
           }
@@ -419,13 +448,6 @@ foam.CLASS({
         } else {
           this.shouldResize = false;
         }
-      }
-    },
-    function onKeyPressed(e) {
-      e.preventDefault();
-      var key = e.key || e.keyCode;
-      if ( key === 'Enter' || key === 13 ) {
-          this.data.login();
       }
     }
   ]

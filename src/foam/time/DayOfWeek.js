@@ -16,13 +16,14 @@ foam.ENUM({
       name: 'shortName'
     }
   ],
+
   values: [
-    { name: 'MONDAY',    label: 'Monday', shortName: 'Mon' },
-    { name: 'TUESDAY',   label: 'Tuesday', shortName: 'Tue' },
-    { name: 'WEDNESDAY', label: 'Wednesday', shortName: 'Wed' },
-    { name: 'THURSDAY',  label: 'Thursday', shortName: 'Thu' },
-    { name: 'FRIDAY',    label: 'Friday', shortName: 'Fri' },
-    { name: 'SATURDAY',  label: 'Saturday', shortName: 'Sat' },
-    { name: 'SUNDAY',    label: 'Sunday', shortName: 'Sun' }
+    { name: 'MONDAY',    label: 'Monday', shortName: 'Mon', ordinal: 1 },
+    { name: 'TUESDAY',   label: 'Tuesday', shortName: 'Tue', ordinal: 2 },
+    { name: 'WEDNESDAY', label: 'Wednesday', shortName: 'Wed', ordinal: 3 },
+    { name: 'THURSDAY',  label: 'Thursday',  shortName: 'Thu', ordinal: 4 },
+    { name: 'FRIDAY',    label: 'Friday',    shortName: 'Fri', ordinal: 5 },
+    { name: 'SATURDAY',  label: 'Saturday',  shortName: 'Sat', ordinal: 6 },
+    { name: 'SUNDAY',    label: 'Sunday',    shortName: 'Sun', ordinal: 7 }
   ]
 });

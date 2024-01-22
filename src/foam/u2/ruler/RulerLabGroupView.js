@@ -11,12 +11,9 @@ foam.CLASS({
 
   css: `
     ^heading {
-      height: 2.4rem;
-      font-size: 1.6rem;
       background-color: rgb(47, 61, 143);
       padding: 0 0.8rem;
       color: #FFF;
-      font-weight: 600;
     }
 
     ^border {
@@ -55,7 +52,7 @@ foam.CLASS({
       this
         .addClass()
         .start()
-          .addClass(this.myClass('heading'))
+          .addClass('h500', this.myClass('heading'))
           .add(this.data$.dot('id'))
         .end()
         .start()

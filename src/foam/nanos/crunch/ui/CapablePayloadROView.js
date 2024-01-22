@@ -10,29 +10,17 @@ foam.CLASS({
   extends: 'foam.u2.View',
   documentation: 'A view for displaying capable objects',
 
-  requires: [
-    'foam.u2.detail.FlexSectionedDetailView'
-  ],
   properties: [
     {
-      name: 'capableObj',
-      documentation: 'a capable object'
+      class: 'foam.u2.ViewSpec',
+      name:'viewView',
+      value: { class: 'foam.u2.detail.VerticalDetailView' }
     }
   ],
-
   methods: [
-    async function render() {
+    function render() {
       this.SUPER();
-      this.wizardlets = [];
-      var view = this.start().addClass(this.myClass());
-      for ( let i = 0; i < this.capableObj?.capablePayloads?.length; i++ ) {
-        var t = (await this.capableObj.capablePayloads[i].capability$find)?.name;
-        if ( !! t ) view.start('h3').add(t).end();
-        view.tag(this.FlexSectionedDetailView, {
-          data: this.capableObj.capablePayloads[i].data
-        });
-      }
-      return view.end();
+      this.tag({...this.viewView, data$: this.data.data$ });
     }
   ]
 });

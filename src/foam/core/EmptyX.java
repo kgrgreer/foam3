@@ -64,7 +64,7 @@ abstract class AbstractX
   }
 
   public Object create(String clsName, Map<String, Object> args) {
-    return ((FacetManager)get("facetManager")).create(clsName, args, this);
+    return ((FacetManager) get("facetManager")).create(clsName, args, this);
   }
 
   public X cd(String path) {
@@ -75,6 +75,7 @@ abstract class AbstractX
     sb.append("[context]");
   }
 }
+
 
 abstract class AbstractXI
   extends    AbstractX
@@ -124,9 +125,11 @@ abstract class AbstractXI
   }
 }
 
+
 /** Default implementation of X interface. Stores one key-value binding. **/
 class XI
-  extends AbstractXI
+  extends    AbstractXI
+  implements XFactory
 {
   final String key_;
   final Object value_;
@@ -140,12 +143,23 @@ class XI
   @Override
   protected String getKey() { return key_; }
 
+  // Implement XFactory
+  public Object create(X x) { return value_; }
+
   public Object get(X x, Object key) {
     String skey = key.toString();
     int comp = skey.compareTo(key_);
     if ( comp == 0 ) return value_;
     if ( comp < 0  ) return getLeftChild().get(x, skey);
     return getRightChild().get(x, skey);
+  }
+
+  public XFactory getFactory(X x, Object key) {
+    String skey = key.toString();
+    int comp = skey.compareTo(key_);
+    if ( comp == 0 ) return this;
+    if ( comp < 0  ) return getLeftChild().getFactory(x, skey);
+    return getRightChild().getFactory(x, skey);
   }
 
   /**
@@ -183,6 +197,14 @@ class FactoryXI
     return getRightChild().get(x, skey);
   }
 
+  public XFactory getFactory(X x, Object key) {
+    String skey = key.toString();
+    int comp = skey.compareTo(key_);
+    if ( comp == 0 ) return factory_;
+    if ( comp < 0  ) return getLeftChild().getFactory(x, skey);
+    return getRightChild().getFactory(x, skey);
+  }
+
   @Override
   public String toString() {
     return getLeftChild().toString() + ( "{Key: " + key_ + ", XFactory: "  + factory_ + "}\n" ) + getRightChild().toString();
@@ -201,6 +223,8 @@ public class EmptyX
   public static X instance() { return x_; }
 
   public Object get(X x, Object key) { return null; }
+
+  public XFactory getFactory(X x, Object key) { return null; }
 
   public X put(Object key, Object value) {
     return new XI(this, this, key, value);

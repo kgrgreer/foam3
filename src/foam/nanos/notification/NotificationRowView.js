@@ -89,6 +89,7 @@
           .start().addClass(this.myClass('notificationDiv'))
             .on('click', () => {
               this.openModal();
+              this.markAsRead(this.__subContext__);
             })
             .start(this.NotificationCitationView, {
               of:   this.of,
@@ -130,6 +131,7 @@
         name: 'showDetails',
         code: function(X) {
           X.rowView.openModal();
+          X.rowView.markAsRead(X);
         }
       },
       {
@@ -145,35 +147,35 @@
           return true;
         },
       },
-      function hideNotificationType(X) {
-        var self = X.rowView;
-
-        if ( self.subject.user.disabledTopics.includes(self.data.notificationType) ) {
-          self.notify('Disabled already exists for this notification something went wrong.', '', self.LogLevel.ERROR, true);
-          return;
-        }
-
-        var userClone = self.subject.user.clone();
-
-        // check if disabledTopic already exists
-        userClone.disabledTopics.push(self.data.notificationType);
-        self.userDAO.put(userClone).then(user => {
-          self.finished.pub();
-          self.subject.user = user;
-          X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
-        }).catch(e => {
-          self.throwError.pub(e);
-
-          if ( e.exception && e.exception.userFeedback  ) {
-            var currentFeedback = e.exception.userFeedback;
-            while ( currentFeedback ) {
-              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
-              currentFeedback = currentFeedback.next;
+      {
+        name: 'hideNotificationType',
+        isAvailable: async function() {
+          return ctrl.__subContext__.auth.check(null, 'notification.showHideNotificationTypeAction');
+        },
+        code: function(X) {
+          var self = X.rowView;
+          var userClone = self.subject.user.clone();
+  
+          // check if disabledTopic already exists
+          userClone.disabledTopics.push(self.data.notificationType);
+          self.userDAO.put(userClone).then(user => {
+            self.finished.pub();
+            self.subject.user = user;
+            X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          }).catch(e => {
+            self.throwError.pub(e);
+  
+            if ( e.exception && e.exception.userFeedback  ) {
+              var currentFeedback = e.exception.userFeedback;
+              while ( currentFeedback ) {
+                this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+                currentFeedback = currentFeedback.next;
+              }
+            } else {
+              this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
             }
-          } else {
-            this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
-          }
-        });
+          });
+        }
       },
       {
         name: 'markAsRead',
@@ -187,7 +189,6 @@
             self.notificationDAO.put(self.data).then(_ => {
               self.finished.pub();
               self.ctrl.notify(self.MARK_AS_READ_MSG, '', this.LogLevel.INFO, true);
-              X.myNotificationDAO.cmd(foam.dao.DAO.PURGE_CMD);
             }).catch((e) => {
               self.data.read = false;
               self.ctrl.notify(self.FAILED_MARK_AS_READ_MSG, e.message, this.LogLevel.ERROR, true);

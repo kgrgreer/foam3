@@ -90,6 +90,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'autocomplete'
+    },
+    {
+      class: 'Boolean',
+      name: 'validationEnabled',
+      documentation: 'Should to set to false when entering old passwords and true when selecting a new one.',
+      value: true
     }
   ],
 
@@ -97,7 +103,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var typingTimer;
-      var doneTypingInterval = 400; 
+      var doneTypingInterval = 400;
 
       this.addClass()
         .start(this.TextField, {
@@ -107,13 +113,15 @@ foam.CLASS({
           autocomplete: this.autocomplete
         })
           .addClass('full-width-input-password')
-          .on('keyup', () => {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(this.checkAvailability, doneTypingInterval);
-          })
-          .on('keydown', () => {
-            clearTimeout(typingTimer);
-            this.isAvailable = true;
+          .callIf(this.validationEnabled, function() {
+            this.on('keyup', () => {
+              clearTimeout(typingTimer);
+              typingTimer = setTimeout(this.checkAvailability, doneTypingInterval);
+            })
+            .on('keydown', () => {
+              clearTimeout(typingTimer);
+              this.isAvailable = true;
+            });
           })
         .end()
 
@@ -146,9 +154,8 @@ foam.CLASS({
     },
     function checkAvailability() {
       this.theme?.passwordPolicy.validate(this.data)
-        .then((pw) => {
-          this.isAvailable = !pw;
-        });
+        .then(x  => this.isAvailable = ! x)
+        .catch(x => this.isAvailable = false);
     }
   ]
 });

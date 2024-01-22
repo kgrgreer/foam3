@@ -13,10 +13,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'crunchService',
     'wizardController?'
   ],
 
   requires: [
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.wizard.WizardPosition'
   ],
 
@@ -34,12 +36,24 @@ foam.CLASS({
         If a contextPredicate is given, the alternate flow will only be executed
         if this returns true.
       `
+    },
+    {
+      class: 'String',
+      name: 'capability',
+      documentation:`
+        When capability id set, predicate is ignored and instead
+        the ucj the user has of the capability is checked
+      `
     }
   ],
 
   methods: [
     async function execute() {
-      if ( this.contextPredicate ) {
+
+      if ( this.capability ) {
+        const ucj = await this.crunchService.getJunction(this.__subContext__, this.capability);
+        if ( ucj.status == this.CapabilityJunctionStatus.AVAILABLE ) return;
+      } else if ( this.contextPredicate ) {
         const check = this.contextPredicate.f(this.__context__);
         if ( ! check ) return;
       }

@@ -1,0 +1,120 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"issueDAO_",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foamdev.fit.Issue.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("issueDAO_")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("issues")
+      .build();
+  """,
+  "client": "{\"of\":\"foamdev.fit.Issue\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"issueDAO_foam1",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foamdev.fit.Issue.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("issueDAO_foam1")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("issues_foam")
+      .build();
+  """,
+  "client": "{\"of\":\"foamdev.fit.Issue\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"issueDAO_foam2",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foamdev.fit.Issue.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("issueDAO_foam2")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("issues_foam")
+      .build();
+  """,
+  "client": "{\"of\":\"foamdev.fit.Issue\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"issueDAO",
+  "serve": true,
+  "serviceScript": "return new foam.nanos.boot.ByServiceProviderFactory();",
+  "client": "{\"of\":\"foamdev.fit.Issue\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"http",
+  "service":{
+    "class":"foam.nanos.jetty.HttpServer",
+    "welcomeFiles":["/deployment/fit/index.html"]
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "uniqueUserService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
+  "serviceScript": """
+    ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
+    /*
+    ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
+      .setDelegate(ul)
+      .build();*/
+    return ul;
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "theme",
+  "authenticate": false,
+  "serve": true,
+  "client":"""
+{
+  "class":"foam.nanos.theme.Theme",
+  "id":"79B87FC0-C622-417A-A14A-2A04DD348CBD",
+  "spid":"foam",
+  "name":"foam",
+  "appName":"FOAM",
+  "description":"The default FOAM theme.",
+  "topNavigation":"foam.nanos.u2.navigation.ResponsiveTopNav",
+  "defaultMenu": ["admin.data"],
+  "logo":"/images/foam_red.png",
+  "loginView":"foam.u2.view.LoginView",
+  "font1":"Arial",
+  "primaryColor":"#1e1f21",
+  "secondaryColor":"#406dea",
+  "secondaryHoverColor":"#2d59d2",
+  "secondaryDisabledColor":"#a7beff",
+  "destructiveColor":"#d9170e",
+  "destructiveHoverColor":"#c4140b",
+  "destructiveDisabledColor":"#f79393",
+  "tableColor":"#f5f7fa",
+  "tableHoverColor":"#3cffa6",
+  "accentColor":"#e5f1fc",
+  "backgroundColor":"#f5f7fa",
+  "headerColor":"#202341",
+  "tertiaryColor":"#5e6061",
+  "tertiaryHoverColor":"#406dea",
+  "tertiaryDisabledColor":"#b4b4b4",
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z"
+}
+"""
+})

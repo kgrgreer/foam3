@@ -243,12 +243,12 @@ foam.CLASS({
 
         .start('div')
           .start(self.ScrollCView.create({
-            value$:   self.gSkip$,
             extent$:  self.filteredCols$.map(m => Math.min(self.COLS, m)),
+            size$:    self.filteredCols$,
+            value$:   self.gSkip$,
             width$:   self.filteredCols$.map(m => m * 26),
             vertical: false,
-            height:   26,
-            size$:    self.filteredCols$
+            height:   26
           }))
           .end()
           .style({float: 'right', 'padding-right': '26px'})
@@ -263,7 +263,7 @@ foam.CLASS({
         .addClass(this.myClass('table-wrapper'))
         .start('table')
           .style({ 'width': '100%', 'flex': '1' })
-          .on('wheel', this.onWheel, {passive: true})
+          .on('wheel', this.onWheel)
           .start('thead')
             .start('tr')
               .start('th')
@@ -274,7 +274,7 @@ foam.CLASS({
             .end()
             .start('tr')
               .start('th')
-                .style({minWidth: '510px'})
+                .style({width: '510px'})
               .end()
               .call(function() { self.tableColumns.call(this, gs, self); })
             .end()
@@ -282,11 +282,11 @@ foam.CLASS({
           .add(this.slot(this.tableBody))
         .end()
         .start(self.ScrollCView.create({
-          value$: self.skip$,
           extent: self.ROWS,
+          size$: self.filteredRows$.map(function(m){return m-1;}),
+          value$: self.skip$,
           height: self.ROWS*25,
-          width: 26,
-          size$: self.filteredRows$.map(function(m){return m-1;})
+          width: 26
         }))
           .style({gridColumn: '2/span 1', gridRow: '2/span 2', 'margin-top':'236px'})
         .end()
@@ -474,7 +474,6 @@ foam.CLASS({
   listeners: [
     {
       name: 'onWheel',
-      isFramed: true,
       code: function(e) {
         function process(skip, delta) {
           var negative = delta < 0;

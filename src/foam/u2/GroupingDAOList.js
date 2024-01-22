@@ -27,6 +27,10 @@ foam.CLASS({
     'selection? as importSelection'
   ],
 
+  messages: [
+    { name: 'NO', message: 'No' }
+  ],
+
   css: `
     ^ {
       padding: 32px 24px;
@@ -62,6 +66,11 @@ foam.CLASS({
       name: 'order',
       documentation: 'Optional order used to sort citations within a group'
     },
+    {
+      class: 'Boolean',
+      name: 'showEmptyMessage',
+      documentation: 'Causes a "no <of.plural>" message to be shown when list is empty'
+    },
     'selection',
     'hoverSelection'
   ],
@@ -83,10 +92,12 @@ foam.CLASS({
       code: function() {
         var curGroup;
         var dao = this.order ? this.data.orderBy(this.order) : this.data;
+        var hasChildren = false;
 
         this.removeAllChildren();
 
         dao.select(obj => {
+          hasChildren = true;
           var group = this.groupExpr.f(obj);
           if ( group !== curGroup ) {
             this.start().
@@ -99,6 +110,10 @@ foam.CLASS({
           this.start(this.rowView, { data: obj })
             .addClass(this.myClass('row'))
           .end();
+        }).then(() => {
+          if ( this.showEmptyMessage && ! hasChildren ) {
+            this.add(this.NO, ' ', this.data.of.model_.plural);
+          }
         });
       }
     }

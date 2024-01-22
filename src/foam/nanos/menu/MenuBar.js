@@ -28,7 +28,6 @@ foam.CLASS({
     }
     ^ ul {
       margin-top: 20px;
-      font-size: 1.3rem;
       list-style-type: none;
     }
     ^ li {
@@ -56,6 +55,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .start('ul')
+            .addClass('p')
             .select(this.menuDAO
                 .where(this.EQ(this.Menu.ENABLED, true))
                 .where(this.EQ(this.Menu.PARENT, this.menuName)), function(menu) {

@@ -87,7 +87,6 @@ foam.CLASS({
     }
     ^ .foam-u2-DetailView tr {
       display: inline;
-      font-size: 1.6rem;
     }
   `,
 
@@ -134,12 +133,14 @@ foam.CLASS({
         start('table').
           addClass(this.myClass('list')).
           start('tr').
+            addClass('p-md').
             start('th').add('Description').end().
             start('th').add('URL').end().
             start('th').end().
           end().
           select(this.dao, function(r) {
             return this.E('tr').
+              addClass('p-md').
               start('td').
                 start('div').add(r.DESCRIPTION).end().
               end().

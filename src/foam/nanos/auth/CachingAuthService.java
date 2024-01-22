@@ -26,7 +26,10 @@ import static foam.mlang.MLang.TRUE;
  * Decorator to add Caching to AuthService.
  * Stores cache in user Session so that memory is freed when user logs out.
  **/
-public class CachingAuthService extends ProxyAuthService implements NanoService, ContextAgent {
+public class CachingAuthService
+  extends ProxyAuthService
+  implements NanoService, ContextAgent
+{
   private static final String CACHE_NAME = "UserPermissionCache";
   private static final int    CACHE_SIZE = 2500;
   private static final long   INITIAL_TIMER_DELAY = 0L;

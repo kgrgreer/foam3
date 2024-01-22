@@ -109,7 +109,12 @@ foam.CLASS({
   // TODO: store the proxy node instead of element_ so it can be properly detached
 
   properties: [
-    'slot',
+    {
+      name: 'slot',
+      preSet: function(o, n) {
+        return n.framed();
+      }
+    },
     {
       name: 'node',
       factory: function() { return foam.u2.Text.create({text: 'filler'}, this); }
@@ -136,7 +141,6 @@ foam.CLASS({
   listeners: [
     {
       name: 'update',
-//      isFramed: true,
       code: function() {
         var update_ = val => {
           var n;
@@ -178,7 +182,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
-    'fn',
+    'fn', // a foam.core.DynamicFunction
     {
       name: 'element_',
       factory: function() { return this.document.createDocumentFragment(); }
@@ -198,10 +202,10 @@ foam.CLASS({
         this.childNodes.forEach(n => {
           nextSibling = n.element_.nextSibling;
           n.element_.remove();
-//          n.element_.parentNode.removeChild(n.element_);
         });
         this.childNodes = [];
         this.element_   = undefined;
+        this.add(''); // needed to preserve proper location in DOM
       };
 
       this.fn.post = () => {
@@ -1023,7 +1027,7 @@ foam.CLASS({
           self.addClass_(lastValue, v);
           lastValue = v;
         };
-        this.onDetach(cls.sub(l));
+        this.onDetach(cls.dedup().sub(l));
         l();
       } else if ( typeof cls === 'string' ) {
         this.addClass_(null, cls);
@@ -1050,7 +1054,7 @@ foam.CLASS({
         var self = this;
         var value = enabled;
         var l = function() { self.enableClass(cls, value.get(), opt_negate); };
-        this.onDetach(value.sub(l));
+        this.onDetach(value.dedup().sub(l));
         l();
       } else {
         enabled = negate(enabled, opt_negate);
@@ -1143,12 +1147,7 @@ foam.CLASS({
     function start(spec, args, slot) {
       /* Create a new Element and add it as a child. Return the child. */
       var c = this.createChild_(spec, args);
-      /*
-      if ( this.content ) {
-        this.content.addChild_(c, this);
-      } else {
-        this.addChild_(c, this);
-      }*/
+
       this.add(c);
 
       if ( slot ) slot.set(c);
@@ -1164,9 +1163,16 @@ foam.CLASS({
       var translationService = this.translationService;
       if ( translationService ) {
         /* Add the translation of the supplied source to the Element as a String */
-        var translation = this.translationService.getTranslation(foam.locale, source, opt_default);
+        let xmsgObj, translation;
+        if ( foam.core.Slot.isInstance(source) ) {
+          translation = source.map(v => this.translationService.getTranslation(foam.locale, v, opt_default ||v))
+          xmsgObj = {source$: source, data$: translation };
+        } else {
+          translation = this.translationService.getTranslation(foam.locale, source, opt_default || source);
+          xmsgObj = {source: source, data: translation };
+        }
         if ( foam.xmsg ) {
-          return this.tag({class: 'foam.i18n.InlineLocaleEditor', source: source, defaultText: opt_default, data: translation});
+          return this.tag({ ...xmsgObj, class: 'foam.i18n.InlineLocaleEditor', defaultText: opt_default});
         }
         return this.add(translation);
       }
@@ -1177,7 +1183,7 @@ foam.CLASS({
 
     function add() {
       if ( this.content ) {
-        this.content.add(arguments, this);
+        this.content.add_(arguments, this);
         return this;
       }
       return this.add_(arguments, this);
@@ -1410,7 +1416,7 @@ foam.CLASS({
       /* Set an attribute based off of a dynamic Value. */
       var self = this;
       var l = function() { self.setAttribute(key, value.get()); };
-      this.onDetach(value.sub(l));
+      this.onDetach(value.dedup().sub(l));
       l();
     },
 
@@ -1418,7 +1424,7 @@ foam.CLASS({
       /* Set a CSS style based off of a dynamic Value. */
       var self = this;
       var l = function(value) { self.style_(key, v.get()); };
-      this.onDetach(v.sub(l));
+      this.onDetach(v.dedup().sub(l));
       l();
     },
 
@@ -1782,6 +1788,22 @@ foam.CLASS({
   requires: [ 'foam.u2.view.ArrayView' ],
   properties: [
     [ 'view', { class: 'foam.u2.view.ArrayView' } ]
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'PhoneNumberViewRefinement',
+  refines: 'foam.core.PhoneNumber',
+  requires: [ 'foam.u2.view.StringView' ],
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.StringView',
+        writeView: { class: 'foam.u2.TextField', type: 'tel' }
+      }
+    }
   ]
 });
 
@@ -2332,14 +2354,13 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.update();
-      this.data$.sub(this.update);
+      this.data$.framed().sub(this.update);
     }
   ],
 
   listeners: [
     {
       name: 'update',
-      isFramed: true,
       code: function() {
         // TODO: add validation
         this.element_.innerHTML = this.data;

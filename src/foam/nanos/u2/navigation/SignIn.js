@@ -29,10 +29,12 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.DuplicateEmailException',
+    'foam.nanos.auth.UnverifiedEmailException',
+    'foam.u2.crunch.WizardRunner',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.stack.StackBlock',
-    'foam.nanos.auth.DuplicateEmailException',
-    'foam.nanos.auth.UnverifiedEmailException'
+    'foam.u2.wizard.WizardType'
   ],
 
   messages: [
@@ -88,6 +90,7 @@ foam.CLASS({
       },
       view: {
         class: 'foam.u2.TextField',
+        type: 'email',
         focused: true
       },
       visibility: function(disableIdentifier_, usernameRequired) {
@@ -100,7 +103,11 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       required: true,
-      view: { class: 'foam.u2.view.PasswordView', passwordIcon: true },
+      view: { 
+        class: 'foam.u2.view.PasswordView', 
+        passwordIcon: true,
+        autocomplete: 'current-password'
+      },
       validationTextVisible: false
     },
     {
@@ -161,11 +168,10 @@ foam.CLASS({
               data: {
                 class: 'foam.nanos.auth.email.EmailVerificationCode',
                 email: email,
-                userName: username,
-                showAction: true
+                userName: username
               }
             }]
-          }
+          }, parent: this
         }, this));
       }
     },
@@ -228,11 +234,14 @@ foam.CLASS({
               if ( ! this.pureLoginFunction ) await this.nextStep();
             }
 
-            this.loginSuccess = true;
-            await this.ctrl.reloadClient();
-            // Temp fix to prevent breaking wizard sign in since that also calls this function
-            if ( ! this.pureLoginFunction )
-              await this.ctrl.onUserAgentAndGroupLoaded();
+            // Reload only if it wasn't done by the 'nextStep()' call
+            if ( ! this.loginSuccess ) {
+              this.loginSuccess = true;
+              await this.ctrl.reloadClient();
+              // Temp fix to prevent breaking wizard sign in since that also calls this function
+              if ( ! this.pureLoginFunction )
+                await this.ctrl.onUserAgentAndGroupLoaded();
+            }
           } catch (err) {
             this.loginFailed = true;
             let e = err && err.data ? err.data.exception : err;
@@ -274,8 +283,7 @@ foam.CLASS({
       buttonStyle: 'TEXT',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
-        X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignUp', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.pushMenu('sign-up');
       }
     },
     {
@@ -285,12 +293,12 @@ foam.CLASS({
       buttonStyle: 'LINK',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
-        X.stack.push(X.data.StackBlock.create({
-          view: {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.RetrievePassword'
-          }
-        }));
+        const wizardRunner = this.WizardRunner.create({
+          wizardType: this.WizardType.TRANSIENT,
+          source: 'foam.nanos.auth.email.ResetPassword',
+          options: {inline: false, returnCompletionPromise: true}
+        })
+        wizardRunner.launch();
       }
     }
   ]

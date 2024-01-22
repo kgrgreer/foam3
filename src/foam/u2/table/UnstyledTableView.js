@@ -162,10 +162,9 @@ foam.CLASS({
       name: 'columns',
       documentation:  `Stores an Array of preferred columns defined in the tableColumns
       axiom on the model, if undefined this acts as an alias for allColumns`,
-      expression: function(of, allColumns) {
+      expression: function(of, config) {
         if ( ! of ) return [];
-        var tc = of.getAxiomByName('tableColumns');
-        return tc ? tc.columns : allColumns;
+        return config?.tableColumns;
       }
     },
     {

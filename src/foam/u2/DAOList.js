@@ -6,7 +6,6 @@
 
 /**
  * TODO:
- * - Add grouping/ordering support
  * - Add Projection support
  */
 foam.CLASS({
@@ -97,6 +96,44 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loadLatch',
     },
+    'groupBy',
+    'order',
+    ['invertGroupingOrder', false]
+  ],
+
+  classes: [
+    {
+      name: 'GroupHeader',
+      extends: 'foam.u2.View',
+
+      css: `
+        ^ {
+          min-height: 20px;
+          padding: 8px;
+          color: $grey600;
+        }
+      `,
+
+      properties: [
+        {
+          class: 'String',
+          name: 'groupLabel'
+        }
+      ],
+
+      methods: [
+        function render() {
+          this
+            .addClass(this.myClass(), 'h600')
+            .add(this.groupLabel)
+          .end()
+        }
+      ]
+    }
+  ],
+
+  messages: [
+    { name: 'MESSAGE_OF', message: 'of'}
   ],
 
   methods: [
@@ -110,6 +147,10 @@ foam.CLASS({
             data$: this.data$,
             rowView: this.rowView_,
             rootElement: this.listEl_,
+            groupHeaderView: { class: 'foam.u2.DAOList.GroupHeader' },
+            groupBy$: this.groupBy$,
+            order$: this.order$,
+            invertGroupingOrder$: this.invertGroupingOrder$,
             ctx: this
           }, this.scrollEl_$)
         .end()
@@ -136,6 +177,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
     package:'foam.u2',
     name: 'RowWrapper',
@@ -143,10 +185,33 @@ foam.CLASS({
     documentation: 'A wrapper view that adds click functionality to the list rows',
 
     mixins: ['foam.comics.v2.Clickable'],
-
+    imports: ['theme?'],
     css: `
       ^ {
+        display: flex;
+        padding: 8px;
+        gap: 8px;
         min-height: 20px;
+        border-radius: $inputBorderRadius;
+      }
+      ^ > div {
+        padding: 0;
+      }
+      ^ > :first-child {
+        flex: 1;
+      }
+      ^:hover {
+        background: $grey50;
+        cursor: pointer;
+      }
+      ^svg-wrapper{
+        display: flex;
+        align-items: center;
+      }
+      ^svg-wrapper svg {
+        width: 1.1em;
+        height: 1.1em;
+        fill: black;
       }
     `,
 
@@ -160,13 +225,17 @@ foam.CLASS({
     methods: [
       function render() {
         var self = this;
-        this.start(this.rowView, { data: this.data }) 
-          .addClass(this.myClass())
+        this.addClass().start(this.rowView, { data: this.data })
           .call(this.insertClick.bind(self), [this.data])
         .end()
+        .start().addClass(self.myClass('svg-wrapper'))
+          .start({ class: 'foam.u2.tag.Image', glyph: self.theme?.glyphs.next, role: 'presentation' })
+          .end()
+        .end();
       }
     ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.view',

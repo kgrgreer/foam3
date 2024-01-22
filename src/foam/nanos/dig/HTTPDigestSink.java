@@ -37,6 +37,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
+import foam.dao.HTTPSink;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.Outputter;
 import foam.lib.PropertyPredicate;
@@ -47,14 +48,9 @@ import foam.nanos.http.Format;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
-public class HTTPDigestSink extends AbstractSink {
+public class HTTPDigestSink extends HTTPSink {
 
-  protected String url_;
-  protected String bearerToken_;
   protected DUGDigestConfig dugDigestConfig_;
-  protected Format format_;
-  protected PropertyPredicate propertyPredicate_;
-  protected boolean outputDefaultValues_;
   protected boolean removeWhitespacesInPayloadDigest_;
 
   private static final ThreadLocal<Outputter> outputter = new ThreadLocal<>();
@@ -95,7 +91,7 @@ public class HTTPDigestSink extends AbstractSink {
           retryCount--;
         } else {
           return;
-        } 
+        }
       } catch (SocketException e) {
         // create an alarm on connection timeout
         String name = "HTTP DIGEST CONNECTION TIMEOUT";
@@ -146,6 +142,9 @@ public class HTTPDigestSink extends AbstractSink {
       } else {
         throw new RuntimeException(this.getClass().getSimpleName() + ", Unsupported content format");
       }
+      // override default user-agent (eg. Java/11.0.19) to prevent exposing the backend tech stack
+      conn.addRequestProperty("User-Agent", "Mozilla/5.0");
+
       // add hashed payload-digest to request headers
       FObject fobj = (FObject) obj;
       String payload = outputter.get().stringify(fobj);

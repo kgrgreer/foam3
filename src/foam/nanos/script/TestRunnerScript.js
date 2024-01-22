@@ -12,13 +12,15 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.log.LogLevel',
     'foam.nanos.script.Language',
     'foam.nanos.script.TestRunnerConfig',
     'foam.nanos.test.Test',
     'java.util.*',
     'foam.nanos.logger.LogLevelFilterLogger',
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.IN'
   ],
   constants: [
     {
@@ -72,50 +74,49 @@ foam.CLASS({
         }
       ],
       javaCode: `
-//        foam.core.XLocator.set(x);
-
-        // turn off logging to get rid of clutter.
+        // Control logging level with JVM parameter -Dlog.level=
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
-        loggerFilter.setLogDebug(false);
-        loggerFilter.setLogInfo(false);
-        loggerFilter.setLogWarning(false);
+        LogLevel logLevel = LogLevel.valueOf(System.getProperty("log.level", "ERROR"));
+        loggerFilter.setLogDebug(logLevel.getOrdinal() <= LogLevel.DEBUG.getOrdinal());
+        loggerFilter.setLogInfo(logLevel.getOrdinal() <= LogLevel.INFO.getOrdinal());
+        loggerFilter.setLogWarning(logLevel.getOrdinal() <= LogLevel.WARN.getOrdinal());
 
+        String testSuite = null;
         TestRunnerConfig config = (TestRunnerConfig) x.get("testRunnerConfig");
-        String testSuite = config != null ? config.getTestSuite() : null;
+        if ( config != null &&
+             ! SafetyUtil.isEmpty(config.getTestSuite()) ) {
+          testSuite = config.getTestSuite();
+        }
 
+        List<String> explicitTests = new ArrayList<String>();
+        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ) {
+          explicitTests = Arrays.asList(System.getProperty("foam.tests").split(","));
+        }
         DAO testDAO = (DAO) x.get("testDAO");
+        if ( explicitTests.size() > 0 ) {
+          testDAO = testDAO.where(IN(Test.ID, explicitTests));
+        }
+
         ArraySink tests = testSuite == null ?
           (ArraySink) testDAO.select(new ArraySink()) :
           (ArraySink) testDAO.where(foam.mlang.MLang.EQ(Test.TEST_SUITE, testSuite)).select(new ArraySink());
         List testArray = tests.getArray();
 
-        List<String> selectedTests = null;
-        if ( ! SafetyUtil.isEmpty(System.getProperty("foam.tests")) ){
-          String t = System.getProperty("foam.tests");
-          selectedTests = Arrays.asList(t.split(","));
-        }
-
         for ( int i = 0; i < testArray.size(); i ++ ) {
           Test test = (Test) testArray.get(i);
           test = (Test) test.fclone();
-          if ( ! test.getEnabled() ) {
+          if ( ! test.getEnabled() &&
+               ( explicitTests.size() == 0 ||
+                 ! explicitTests.contains(test.getId()) ) ) {
             continue;
           }
 
-          if ( selectedTests != null ) {
-            if ( selectedTests.contains(test.getId()) ) {
-              runTests(x, test);
-            } else {
-              continue;
-            }
-          } else {
-            runTests(x, test);
-          }
+          runTests(x, test);
         }
 
         System.out.println("DONE RUNNING " + testArray.size() + " TESTS");
-        System.out.println("TEST SUITE: " + (testSuite == null ? "full" : 
-                                             testSuite.isEmpty() ? "main" : 
+        System.out.println("TEST SUITE: " + (testSuite == null ? "full" :
+                                             testSuite.isEmpty() ? "main" :
                                              testSuite));
 
         printBold(GREEN_COLOR + " " +  "PASSED: " + Integer.toString(getPassedTests()) + " " + RESET_COLOR);
@@ -153,7 +154,7 @@ foam.CLASS({
         if ( test.getLanguage() == Language.BEANSHELL ||
              test.getLanguage() == Language.JSHELL ) {
           runServerSideTest(x, test);
-        } else { 
+        } else {
           // TODO: Run client side tests in a headless browser.
         }
       `

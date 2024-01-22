@@ -190,8 +190,7 @@ foam.CLASS({
           delegate = new foam.dao.GUIDDAO(getX(), delegate);
         }
 
-        if ( getMdao() != null &&
-             getLastDao() == null ) {
+        if ( getMdao() != null && getLastDao() == null ) {
           setLastDao(delegate);
         }
 
@@ -202,20 +201,8 @@ foam.CLASS({
           );
         }
 
-        if ( getCluster() &&
-             getMdao() != null ) {
-          if ( getSAF() ) {
-            delegate = new foam.nanos.medusa.sf.SFBroadcastDAO.Builder(getX())
-            .setNSpec(getNSpec())
-            .setDelegate(delegate)
-            .build();
-          } else {
-            logger.debug(getName(), "cluster", "delegate", delegate.getClass().getSimpleName());
-            delegate = new foam.nanos.medusa.MedusaAdapterDAO.Builder(getX())
-              .setNSpec(getNSpec())
-              .setDelegate(delegate)
-              .build();
-          }
+        if ( getCluster() && getMdao() != null ) {
+          delegate = getClusterDelegate(delegate);
         }
 
         if ( getSubdomainAware() ) {
@@ -297,13 +284,13 @@ foam.CLASS({
           indexes.add((foam.core.PropertyInfo) getOf().getAxiomByName("lifecycleState"));
        }
 
-        if ( getDeletedAware() ) {
-          System.out.println("DEPRECATED: Will be completely removed after services journal migration script. No functionality as of now.");
-        }
-
         if ( getRuler() ) {
           String name = foam.util.SafetyUtil.isEmpty(getRulerDaoKey()) ? getName() : getRulerDaoKey();
-          delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
+          if ( ((foam.nanos.app.AppConfig)getX().get("appConfig")).getMode() == foam.nanos.app.Mode.TEST ) {
+            delegate = new foam.nanos.ruler.test.TestRulerDAO(getX(), delegate, name);
+          } else {
+            delegate = new foam.nanos.ruler.RulerDAO(getX(), delegate, name);
+          }
         }
 
         if ( getCreatedAware() ) {
@@ -412,7 +399,7 @@ foam.CLASS({
       name: 'pipelinePm'
     },
     {
-      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutuallyexclusive.',
+      documentation: 'Have EasyDAO use a sequence number to index items. Note that .seqNo, .guid and .fuid features are mutually exclusive.',
       class: 'Boolean',
       name: 'seqNo'
     },
@@ -567,6 +554,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'journalName'
+    },
+    {
+      documentation: `See JDAO.  Force caller to wait on nspec initailzation. The first call to 'get' for an nspec (x.get(servicename)) will have the calling thread wait on reply of service. This is the default behaviour and should be used for all essential services.  Also this should be used if the model is using SeqNo or NUID for id generation.`,
+      class: 'Boolean',
+      name: 'waitReplay',
+      value: true
     },
     {
       class: 'FObjectProperty',
@@ -909,10 +902,25 @@ model from which to test ServiceProvider ID (spid)`,
           if ( getWriteOnly() ) {
             delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
           } else {
-            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster() && !getSAF());
+            foam.dao.java.JDAO jdao = new foam.dao.java.JDAO();
+            jdao.setX(x);
+            jdao.setFilename(getJournalName());
+            jdao.setCluster(getCluster() && !getSAF());
+            jdao.setWaitReplay(getWaitReplay());
+            // Setting of delegate must be last as it triggers replay
+            jdao.setDelegate(delegate);
+            delegate = jdao;
           }
         }
         return delegate;
+      `
+    },
+    {
+      name: 'getClusterDelegate',
+      args: 'foam.dao.DAO delegate',
+      type: 'foam.dao.DAO',
+      javaCode: `
+      return delegate;
       `
     },
     {
@@ -1276,16 +1284,7 @@ model from which to test ServiceProvider ID (spid)`,
     // ProxyDAO operations
     {
       name: 'cmd_',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'Object'
-        }
-      ],
+      args: 'Context x, Object obj',
       type: 'Object',
       code: function cmd_(x, obj) {
         return this.delegate.cmd_(x, obj);

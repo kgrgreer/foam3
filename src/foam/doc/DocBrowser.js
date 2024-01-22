@@ -26,10 +26,10 @@ foam.CLASS({
 
   css: `
     ^ {
-         border-radius: 3px;
-         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
-         display: inline-block;
-         width:100%;
+      border-radius: 3px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+      display: inline-block;
+      width:100%;
     }
     ^title { padding: 6px; align-content: center; background: #c8e2f9; }
     ^info { float: right; font-size: smaller; }
@@ -77,22 +77,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'documentation',
-      tableCellFormatter: function(value, obj, axiom) {
-        this.add(value);
-      }
-    },
-    {
-      name: 'cls',
-      label: 'Source',
-      tableCellView: function(o, e) {
-        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
-      },
-      tableCellFormatter: function(value, obj, axiom) {
-        this.tag(foam.doc.LinkView, { data: value });
-      }
-    },
-    {
       name: 'type',
       tableCellView: function(o, e) {
         return o.type ?
@@ -118,6 +102,22 @@ foam.CLASS({
         } else {
           this.add(value);
         }
+      }
+    },
+    {
+      name: 'cls',
+      label: 'Source',
+      tableCellView: function(o, e) {
+        return foam.doc.LinkView.create({data: o.cls}, e.__subSubContext__);
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.tag(foam.doc.LinkView, { data: value });
+      }
+    },
+    {
+      name: 'documentation',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.add(value);
       }
     }
   ]
@@ -159,94 +159,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.doc',
-  name: 'ClassList',
-  extends: 'foam.u2.View',
-
-  requires: [
-    'foam.doc.ClassLink',
-    'foam.doc.DocBorder'
-  ],
-
-  css: `
-    ^ a {
-      display: inline-block;
-      padding: 2px;
-      width: 200px;
-    }
-    ^package {
-      font-weight: 700;
-    }
-    ^indent {
-      margin-left: 30px;
-    }
-  `,
-
-  properties: [
-    'title',
-    {
-      name: 'info',
-      expression: function (data) {
-        return data && data.length;
-      }
-    },
-    {
-      of: 'Boolean',
-      name: 'showPackage',
-      value: true
-    },
-    {
-      of: 'Boolean',
-      name: 'showSummary'
-    }
-  ],
-
-  methods: [
-    function render() {
-      this.SUPER();
-      var self = this;
-      var pkg  = '';
-
-      this.
-        addClass(this.myClass()).
-        start(this.DocBorder, {title: this.title, info$: this.info$}).
-          start('div').
-            add(this.slot(function (data) {
-              return self.E('span').forEach(data, function(d) {
-                if ( ! this.showPackage ) {
-                  if ( d.package !== pkg ) {
-                    pkg = d.package;
-                    this.start('div').addClass(self.myClass('package')).add(pkg).end();
-                  }
-                }
-
-                this.start('div')
-                  .start(self.ClassLink, {data: d, showPackage: this.showPackage}).
-                    addClass(this.showPackage ? null : self.myClass('indent')).
-                  end().
-                  call(function(f) {
-                    if ( d.model_ && self.showSummary ) {
-                      this.add(' ', self.summarize(d.model_.documentation));
-                    }
-                  }).
-                end();
-              });
-            })).
-          end().
-        end();
-    },
-
-    function summarize(txt) {
-      if ( ! txt ) return null;
-      var i = txt.indexOf('.');
-      if ( i < 60 ) return txt.substring(0, i+1);
-      return txt.substring(0, 56) + ' ...';
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.doc',
   name: 'ClassDocViewEnumValue',
   extends: 'foam.u2.View',
 
@@ -265,10 +177,12 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var data = this.data;
+      var self = this;
+
       this.
-          start('b').add(data.id).end().
-          br().
-          add('extends: ');
+        start('b').add(data.id).end().
+        br().
+        add('extends: ');
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
@@ -280,7 +194,7 @@ foam.CLASS({
       this.br();
       this.tag(foam.u2.HTMLView, {data: data.model_.documentation});
 
-      this.add( this.slot(function () {
+      this.add(this.slot(function () {
         var axs = [];
         for ( var key in data.model_.values ) {
           var a  = data.model_.values[key];
@@ -291,10 +205,11 @@ foam.CLASS({
           });
           axs.push(ai);
         }
+
         return this.TableView.create({
           of: this.EnumInfo,
           data: this.ArrayDAO.create({array: axs}),
-          hoverSelection$: this.selectedAxiom$
+          hoverSelection$: self.selectedAxiom$
         });
       }));
     }
@@ -321,6 +236,10 @@ foam.CLASS({
     'showOnlyProperties'
   ],
 
+  css: `
+    ^ .foam-u2-view-TableView-row { height: auto; }
+  `,
+
   methods: [
     function render() {
       this.SUPER();
@@ -328,9 +247,10 @@ foam.CLASS({
       var data = this.data;
 
       this.
-          start('b').add(data.id).end().
-          start('span').style({float:'right','font-size':'smaller'}).add(data.count_, ' created').end().br().
-          add('extends: ');
+        addClass(this.myClass()).
+        start('b').add(data.id).end().
+        start('span').style({float:'right','font-size':'smaller'}).add(data.count_, ' created').end().br().
+        add('extends: ');
 
       var cls = data;
       for ( var i = 0 ; cls ; i++ ) {
@@ -422,10 +342,12 @@ foam.CLASS({
   documentation: 'FOAM documentation browser.',
 
   requires: [
+    'foam.dao.ArrayDAO',
     'foam.doc.ClassDocView',
     'foam.doc.ClassDocViewEnumValue',
     'foam.doc.ClassList',
     'foam.doc.DocBorder',
+    'foam.doc.SimpleClassView',
     'foam.doc.UMLDiagram'
   ],
 
@@ -437,19 +359,14 @@ foam.CLASS({
     'conventionalUML',
     'path as browserPath',
     'showInherited',
-    'showOnlyProperties'
+    'showOnlyProperties',
+    'modelDAO'
   ],
 
   css: `
-    ^ {
-      color: #555;
-    }
-    ^ th {
-      color: #555;
-    }
-    ^ td {
-      padding-right: 12px;
-    }
+    ^ { color: #555; }
+    ^ th { color: #555; }
+    ^ td { padding-right: 12px; }
   `,
 
   constants: [
@@ -463,6 +380,30 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'modelDAO',
+      factory: function(/*nSpecDAO, allowedModels*/) {
+        var self = this;
+        var dao  = self.ArrayDAO.create({of: self.Model}).orderBy(foam.core.Model.ID);
+        var all = [];
+        var packages = { '--All--': all };
+        function addModel(m) {
+          try {
+          var c = foam.maybeLookup(m);
+          if ( c ) {
+            var mdl = c.model_;
+            (packages[mdl.package] || ( packages[mdl.package] = [])).push(mdl);
+            all.push(mdl);
+            dao.put(mdl);
+          }
+        } catch (x) {}
+        }
+        Object.keys(foam.USED).forEach(addModel);
+        Object.keys(foam.UNUSED).forEach(addModel);
+        this.packages = packages;
+        return dao;
+      }
+    },
     {
       class: 'String',
       name: 'path',
@@ -491,10 +432,9 @@ foam.CLASS({
       name: 'subClasses',
       expression: function (path) {
         return Object.values(foam.USED).
-            filter(function(cls) {
-              if ( ! cls.model_ ) return false;
-              return cls.model_.extends == path || 'foam.core.' + cls.model_.extends == path;
-            }).
+          filter(function(cls) {
+            return cls.extends === path || 'foam.core.' + cls.extends === path;
+          }).
           sort(this.MODEL_COMPARATOR);
       }
     },
@@ -502,18 +442,18 @@ foam.CLASS({
       name: 'requiredByClasses',
       expression: function (path) {
         return Object.values(foam.USED).
-            filter(function(cls) {
-              if ( ! cls.model_ ) return false;
-              return cls.model_.requires && cls.model_.requires.map(
-                  function(r) { return r.path; }).includes(path);
-            }).
-            sort(this.MODEL_COMPARATOR);
+          filter(function(cls) {
+            return cls.requires && cls.requires.includes(path);
+          }).
+          sort(this.MODEL_COMPARATOR);
       }
     },
     {
       name: 'relationshipClasses',
       expression: function (path) {
-        return [];
+        var cls = foam.lookup(path);
+        var rs  = cls.getAxiomsByClass(foam.core.Reference);
+        return rs.map(r => r.of.model_).sort(this.MODEL_COMPARATOR);
       }
     },
     'subClassCount',
@@ -549,14 +489,18 @@ foam.CLASS({
         start('table').
           start('tr').
             start('td').
+              style({'vertical-align': 'top', 'min-width': '700px'}).
+              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
+            end().
+            start('td').
               style({'vertical-align': 'top'}).
               start(this.DocBorder, {
-                title: 'UML ++',
+                title: 'UML',
                 info$: this.slot(function(selectedClass) {
                   return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length;
                 })
               }).
-                add( 'Conventional UML : ' ).tag( this.CONVENTIONAL_UML, { data$: this.conventionalUML$ } ).
+                add( 'Conventional UML : ' ).tag(this.CONVENTIONAL_UML, {data$: this.conventionalUML$}).
                 add(this.slot(function(selectedClass, conventionalUML) {
                   if ( ! selectedClass ) return '';
                   return this.UMLDiagram.create({
@@ -567,10 +511,19 @@ foam.CLASS({
             end().
             start('td').
               style({'vertical-align': 'top'}).
-              tag(this.ClassList, {title: 'Class List', showPackages: false, showSummary: true, data: classListData}).
+              start(this.DocBorder, {
+                title: 'ModelDoc'
+              }).
+                add(this.slot(function(selectedClass) {
+                  if ( ! selectedClass ) return '';
+                  return this.SimpleClassView.create({
+                    data: selectedClass
+                  });
+                })).
+              end().
             end().
             start('td').
-              style({'vertical-align': 'top'}).
+              style({'vertical-align': 'top', 'min-width': '800px'}).
               start(this.DocBorder, {title: 'Class Definition', info$: this.slot(function(selectedClass) { return selectedClass.getOwnAxioms().length + ' / ' + selectedClass.getAxioms().length; })}).
                 add( 'Show just properties : ' ).
                 tag( this.SHOW_ONLY_PROPERTIES, { data$: this.showOnlyProperties$ } ).
@@ -583,7 +536,8 @@ foam.CLASS({
             start('td').
               style({'vertical-align': 'top'}).
               start(this.DocBorder, {title: 'Axiom Definition'}).
-                add(this.slot(function (axiom) { return axiom && foam.u2.DetailView.create({data: axiom.axiom}); })).
+                style({'min-width': '500px'}).
+                add(this.dynamic(function (axiom) { this.add(axiom && foam.u2.DetailView.create({data: axiom.axiom, controllerMode: foam.u2.ControllerMode.VIEW})); })).
               end().
             end().
             start('td').
@@ -802,7 +756,6 @@ foam.CLASS({
       this.className  = this.data.name;
       this.elementMap = new Map();
       this.properties = this.getAllProperties( data );
-
       this.canvas.height = this.conventionalUML && this.properties.length >= 15 ? this.properties.length * 30 + this.height : this.height;
 
       var heightCenterBox = (this.conventionalUML ? this.properties.length : nbrOfPropInNonConventionalDiag) * propertyHeight;

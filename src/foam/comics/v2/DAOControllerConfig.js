@@ -359,7 +359,8 @@ foam.CLASS({
     {
       name: 'browseContext',
       documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
-      value: null
+      value: null,
+      cloneProperty: function() { }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -379,7 +380,8 @@ foam.CLASS({
         var lastIndex = o.lastIndexOf('.');
         var classObj = foam.lookup(o.substring(0, lastIndex));
         return classObj[o.substring(lastIndex + 1)];
-      }
+      },
+      cloneProperty: function() { }
     },
     {
       class: 'Map',
@@ -394,8 +396,17 @@ foam.CLASS({
       name: 'preSelectedCannedQuery'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
+      name: 'createMenu',
+      documentation: 'Used as the menu to create a new object for this DAO',
+    },
+    // Legacy support
+    {
       class: 'String',
-      name: 'redirectMenu'
+      name: 'redirectMenu',
+      getter: function() { return this.createMenu; },
+      setter: function(v) { this.createMenu = v; }
     }
   ]
 });

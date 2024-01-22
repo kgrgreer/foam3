@@ -19,15 +19,16 @@ foam.CLASS({
     'foam.nanos.notification.broadcast.BroadcastNotification'
   ],
   messages: [
-    { name: 'GROUP_REQUIRED', message: 'Group is required' },
-    { name: 'BODY_REQUIRED', message: 'Notification body is required' },
-    { name: 'TOAST_REQUIRED', message: 'Toast Message is required when showing toast' },
-    { name: 'NOTIFICATION_SENT', message: 'Notification Sent' },
+    { name: 'GROUP_REQUIRED',       message: 'Group is required' },
+    { name: 'BODY_REQUIRED',        message: 'Notification body is required' },
+    { name: 'TOAST_REQUIRED',       message: 'Toast Message is required when showing toast' },
+    { name: 'NOTIFICATION_SENT',    message: 'Notification Sent' },
     { name: 'NOTIFICAITON_SUMMARY', message: 'notification to ' },
-    { name: 'NOTIFICATION_ERROR', message: 'Notification Error' }
+    { name: 'NOTIFICATION_ERROR',   message: 'Notification Error' }
   ],
   properties: [
-    foam.nanos.notification.Notification.GROUP_ID.clone().copyFrom({
+    {
+      __copyFrom__: 'foam.nanos.notification.Notification.GROUP_ID',
       label: 'Send To',
       validateObj: function(groupId) {
         if ( ! groupId ) {
@@ -42,8 +43,9 @@ foam.CLASS({
         dao = dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
         return { class: 'foam.u2.view.ReferenceView', dao: dao };
       }
-    }),
-    foam.nanos.notification.Notification.BODY.clone().copyFrom({
+    },
+    {
+      __copyFrom__: 'foam.nanos.notification.Notification.BODY',
       label: 'Notification Body',
       view: { class: 'foam.u2.view.RichTextView' },
       validateObj: function(body) {
@@ -51,13 +53,14 @@ foam.CLASS({
           return this.BODY_REQUIRED;
         }
       }
-    }),
+    },
     {
       class: 'Boolean',
       name: 'showToast',
       postSet: function(_, n) { if ( ! n ) this.toastMessage = ''; }
     },
-    foam.nanos.notification.Notification.TOAST_MESSAGE.clone().copyFrom({
+    {
+      __copyFrom__: 'foam.nanos.notification.Notification.TOAST_MESSAGE',
       onKey: true,
       createVisibility: function(showToast) {
         return showToast ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -67,7 +70,7 @@ foam.CLASS({
           return this.TOAST_REQUIRED;
         }
       }
-    })
+    }
   ],
 
   methods: [

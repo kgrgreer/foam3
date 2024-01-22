@@ -6,12 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.crunch.lite',
-  name: 'CapableObjectData',
-
-  imports: [
-    'auth?',
-    'crunchController?'
-  ],
+  name: 'CapableObjectDataProperties',
 
   properties: [
     {
@@ -22,36 +17,63 @@ foam.CLASS({
       columnPermissionRequired: true,
       section: 'capabilityInformation',
       autoValidate: true,
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       name: 'userCapabilityRequirements',
       class: 'StringArray',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
-      columnPermissionRequired: true
+      columnPermissionRequired: true,
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       name: 'isWizardIncomplete',
       class: 'Boolean',
       section: 'systemInformation',
       transient: true,
-      hidden: true
+      externalTransient: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'StringArray',
       name: 'capabilityIds',
       columnPermissionRequired: true,
-      section: 'capabilityInformation'
+      section: 'capabilityInformation',
+      externalTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'DAOKey',
       columnPermissionRequired: true,
       section: 'capabilityInformation',
+      externalTransient: true,
       visibility: 'HIDDEN'
     }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.nanos.crunch.lite',
+  name: 'CapableObjectData',
+
+  imports: [
+    'auth?',
+    'crunchController?'
   ],
+
+  mixins: [ 'foam.nanos.crunch.lite.CapableObjectDataProperties' ],
 
   methods: [
     {
@@ -71,9 +93,7 @@ foam.CLASS({
       name: 'getCapablePayloadDAO',
       flags: ['web'],
       code: function () {
-        return this.CapableAdapterDAO.create({
-          capable: this
-        });
+        return this.CapableAdapterDAO.create({capable: this});
       }
     }
   ],

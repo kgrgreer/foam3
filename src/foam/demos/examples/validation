@@ -147,6 +147,13 @@ foam.CLASS({
 });
 
 var f = Flight.create();
+
+add(foam.u2.detail.SectionedDetailView.create({data: f}));
+
+f.errors_$.dedup().sub(() => {
+  log('Sub:', f.errors_ || 'no errors');
+});
+
 function validateFlight() {
   if ( f.errors_ ) {
     log('Errors: ', (f.errors_ || []).map(e => e[1]).join(', '));
@@ -199,10 +206,12 @@ foam.CLASS({
       class: 'Int',
       name: 'age',
       validationPredicates: [
-        args: [ 'age' ],
-        query: 'age>=18&&age<=25',
-        errorString: 'Age must be between 18 and 25'
-        // errorMessage:
+        {
+          args: [ 'age' ],
+          query: 'age>=18&&age<=25',
+          errorString: 'Age must be between 18 and 25'
+          // errorMessage:
+        }
       ]
     }
   ]

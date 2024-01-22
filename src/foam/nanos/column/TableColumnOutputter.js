@@ -18,6 +18,14 @@ foam.CLASS({
 
   documentation: 'Class for returning 2d-array ( ie table ) for array of values ',
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'sheetsCompatibleDates',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'returnStringValueForProperty',
@@ -68,15 +76,21 @@ foam.CLASS({
     },
 
     function dateToString(d) {
-      return d.toLocaleDateString('en-us');
+      return this.sheetsCompatibleDates ?
+        d.toLocaleDateString('en-us') :
+        d.toLocaleDateString(foam.locale) ;
     },
 
     function timeToString(d) {
-      return d.toLocaleTimeString('en-us');
+      return this.sheetsCompatibleDates ?
+        d.toLocaleTimeString('en-us') :
+        d.toString().substring(0, 8) ;
     },
 
     function dateTimeToString(dt) {
-      return dt.toLocaleDateString('en-us') + ' ' + dt.toLocaleTimeString('en-us');
+      return this.sheetsCompatibleDates ?
+        dt.toLocaleDateString('en-us') + ' ' + dt.toLocaleTimeString('en-us') :
+        dt.toString() ;
     },
 
     {
@@ -219,7 +233,7 @@ foam.CLASS({
         case "BOOLEAN":
           return obj;
         case "CURRENCY":
-          return new Long(obj.toString()) / 100.0 ;
+          return Long.valueOf(obj.toString()) / 100.0 ;
         case "DATE":
           return obj.toString().substring(0, 10);
         case "DATETIME":

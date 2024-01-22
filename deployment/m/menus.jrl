@@ -1,0 +1,148 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"medusa",
+  "label":"Medusa / Clustering",
+  "handler":{"class":"foam.nanos.menu.SubMenu"},
+  "parent":"",
+  "icon":"images/parent-menu-icon.png",
+  "parent":"admin"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"medusa.clusterConfig",
+  "label":"Cluster Config",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"clusterConfigDAO",
+      "browseViews":[{
+        "name":"Table",
+        "view":{
+          "class":"foam.u2.table.TableView"
+        }
+      }]
+    }
+  },
+  "parent":"medusa"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"medusa.medusaEntry",
+  "label":"Medusa Entry",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"medusaEntryDAO",
+      "browseViews":[{
+        "name":"Table",
+        "view":{
+          "class":"foam.u2.table.TableView"
+        }
+      }]
+    }
+  },
+  "parent":"medusa"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"admin.hosts",
+  "label":"Hosts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"hostsDAO",
+      "browseViews":[{
+        "name":"Table",
+        "view":{
+          "class":"foam.u2.table.TableView"
+        }
+      }]
+    }
+  },
+  "parent":"admin"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "medusa.clusterTopology",
+  "label": "Cluster Topology",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "foam.nanos.medusa.ClusterTopologyView"
+    }
+  },
+  "parent":"medusa"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"medusa.clusterTopologyDAO",
+  "label":"Cluster Topology DAO",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"clusterTopologyDAO",
+      "browseViews":[{
+        "name":"Table",
+        "view":{
+          "class":"foam.u2.table.TableView"
+        }
+      }]
+    }
+  },
+  "parent":"medusa"
+})
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.medusa.medusaHealthWidget",
+  label: "Medusa Health",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Medusa Health",
+      currentView: {
+        class: "foam.dashboard.view.DAOTable",
+        dao: "healthDAO",
+        predicate: {
+          class: "foam.mlang.predicate.FScriptPredicate",
+          query: 'instanceof foam.nanos.medusa.MedusaHealth && medusaType == foam.nanos.medusa.MedusaType.MEDIATOR'
+        },
+        citationView: "foam.nanos.medusa.MedusaHealthCitationView",
+        viewMore: true,
+        emptyTitle: "No activity"
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})
+p({
+  class: "foam.nanos.menu.Menu",
+  id: "foam.nanos.medusa.medusaIndexChartWidget",
+  label: "Medusa Index",
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: "foam.dashboard.view.CardWrapper",
+      title: "Medusa Index",
+      currentView: {
+        class: "foam.nanos.analytics.CandlestickChartCitationView",
+        candlestickDAOKey: 'com5MinuteDAO',
+        candlestickKey1: 'medusa.index.aphrodite',
+        candlestickKey2: 'medusa.index.argus',
+        candlestickKey3: 'medusa.index.dionysus'
+      },
+      mode: "config"
+    }
+  },
+  parent:"hidden"
+})

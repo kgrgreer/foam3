@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'DateGroupingExpr',
   extends: 'foam.mlang.AbstractExpr',
 
-  implements: [ 'foam.core.Serializable' ],
+  implements: [ 'foam.core.Serializable', 'foam.mlang.order.Comparator' ],
 
   documentation: `
     An expr whose value is the date/month/year of a date grouping.
@@ -76,6 +76,21 @@ foam.CLASS({
           }
         }
         return "Unknown Range";
+      `
+    },
+    {
+      name: 'compare',
+      code: function(o1, o2) {
+        let a1 = new Date(o1?.created);
+        let a2 = new Date(o2?.created);
+        return foam.util.compare(a1, a2);
+      },
+      javaCode: `
+        CreatedAware c1 = (CreatedAware) o1;
+        CreatedAware c2 = (CreatedAware) o2;
+        java.util.Date date1 = (java.util.Date) c1.getCreated();
+        java.util.Date date2 = (java.util.Date) c2.getCreated();
+        return date1.compareTo(date2);
       `
     }
   ]

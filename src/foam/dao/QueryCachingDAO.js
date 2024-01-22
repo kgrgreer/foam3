@@ -3,6 +3,7 @@
  * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 foam.CLASS({
   package: 'foam.dao',
   name: 'QueryCachingDAO',
@@ -10,15 +11,13 @@ foam.CLASS({
 
   documentation: 'Javascript DAO Decorator which adds select caching to a delegate DAO.',
 
-  requires: ['foam.dao.FnSink'],
+  requires: [ 'foam.dao.FnSink' ],
 
   properties: [
     {
       // The cache for local storage and fast access
       name: 'cache',
-      factory: function() {
-        return {};
-      }
+      factory: function() { return {}; }
     }
   ],
 
@@ -26,8 +25,14 @@ foam.CLASS({
     function init() {
       // if anything changes in the delegate -> clear cache
       // Can happen if the dao is modified outside the DAOController (for eg. in wizards)
-      this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.cache = {} })));
+      this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.purgeCache() })));
     },
+
+    function purgeCache() {
+      this.cache = {};
+      this.on.reset.pub();
+    },
+
     function detach() {
       this.SUPER();
       this.cache = {};
@@ -35,7 +40,7 @@ foam.CLASS({
 
     // Put invalidates cache and is forwarded to the source.
     function put_(x, o) {
-      this.cache = {};
+      this.purgeCache();
       return this.delegate.put_(x, o);
     },
 
@@ -67,7 +72,7 @@ foam.CLASS({
 
 
           // Return data from cache
-          // only add elements from cache that werent fetched directly from the dao
+          // only add elements from cache that weren't fetched directly from the dao
           for ( let idx = requestStartIdx ; idx < endIdx ; idx++ ) {
             if ( foam.dao.ArraySink.isInstance(sink) ) {
               if ( ! sink.array[idx-requestStartIdx] )
@@ -87,19 +92,19 @@ foam.CLASS({
 
     // Remove invalidates cache and is forwarded to the source.
     function remove_(x, o) {
-      this.cache = {};
+      this.purgeCache();
       return this.delegate.remove_(x, o);
     },
 
     // RemoveAll invalidates cache and is forwarded to the source.
     function removeAll_(x, skip, limit, order, predicate) {
-      this.cache = {};
+      this.purgeCache();
       this.delegate.removeAll_(x, skip, limit, order, predicate);
     },
 
     function cmd_(x, obj) {
       if ( foam.dao.DAO.PURGE_CMD === obj ) {
-        this.cache = {};
+        this.purgeCache();
       }
 
       this.SUPER(x, obj);
@@ -143,7 +148,6 @@ foam.CLASS({
         // console.log('******** QUERYCACHE*** HAS MISSING DATA ***: predicte: ' + predicate + ' startIdx: ' + startIdx + ' endIdx: ' + endIdx);
         let self = this;
         return this.delegate.select_(x, sink, startIdx, endIdx - startIdx, order, predicate).then(function(result) {
-
           if ( foam.dao.ArraySink.isInstance(sink) ) {
             // ArraySink
             // Update cache with missing data

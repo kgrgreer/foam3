@@ -120,7 +120,7 @@ foam.CLASS({
                 disabled: true,
                 heading: 'Disabled users',
                 hideIfEmpty: true,
-                dao: X.userDAO.where(this.EQ(foam.nanos.auth.User.STATUS, this.AccountStatus.DISABLED)),
+                dao: X.userDAO.where(this.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, this.LifecycleState.DISABLED)),
               },
             ]
           };
@@ -180,10 +180,6 @@ foam.CLASS({
 
     ^heading {
       border-bottom: 1px solid #f4f4f9;
-      font-size: 1.2rem;
-      font-weight: 900;
-      line-height: 24px;
-      font-size: 1.4rem;
       color: #333;
       padding: 6px 16px;
     }
@@ -194,9 +190,7 @@ foam.CLASS({
       justify-content: space-between;
       width: 100%;
       position: relative;
-      height: $inputHeight;
-      padding-left: $inputHorizontalPadding;
-      padding-right: $inputHorizontalPadding;
+      min-height: $inputHeight;
       border: 1px solid $grey400;
       color: $black;
       background-color: $white;
@@ -206,15 +200,20 @@ foam.CLASS({
       border-radius: 4px;
       -webkit-appearance: none;
       cursor: pointer;
-      font-size: 1.4rem;
-
-      background: #ffffff url(/images/dropdown-icon.svg) no-repeat;
-      background-position: right 0.5em top 50%
+    }
+    ^dropdown {
+      padding: 0 0.8rem;
+    }
+    ^dropdown svg {
+      height: 1em;
+      fill: currentColor;
+      aspect-ratio: 1;
     }
 
     ^selection-view:hover,
     ^selection-view:hover ^clear-btn {
       border-color: $grey500;
+      background: $grey50;
     }
 
     ^:focus {
@@ -247,7 +246,6 @@ foam.CLASS({
     ^search img {
       top: 8px;
       width: 15px;
-      margin-left: 8px;
     }
 
     ^search {
@@ -506,13 +504,13 @@ foam.CLASS({
             return this.E()
               .start()
                 .start('img')
-                  .attrs({ src: 'images/ic-search.svg' })
+                  .attrs({ src: '/images/ic-search.svg' })
                 .end()
                 .startContext({ data: self })
                   .addClass(self.myClass('search'))
                   .add(self.FILTER_.clone().copyFrom({ view: {
                     class: 'foam.u2.view.TextField',
-                    placeholder: this.searchPlaceholder,
+                    placeholder: this.searchPlaceholder || 'Search... ',
                     onKey: true
                   } }))
                 .endContext()
@@ -528,8 +526,8 @@ foam.CLASS({
               return this.E().forEach(sections, function(section) {
                 this.addClass(self.myClass('setAbove'))
                   .start().hide(!! section.hideIfEmpty && resp[index].value <= 0 || ! section.heading)
-                    .addClass(self.myClass('heading'))
-                    .translate(section.heading, section.heading)
+                    .addClass('p', 'bolder', self.myClass('heading'))
+                    .translate(section.heading$)
                   .end()
                   .start()
                     .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
@@ -593,6 +591,9 @@ foam.CLASS({
                       fullObject$: self.fullObject_$,
                       defaultSelectionPrompt$: this.choosePlaceholder$
                     })
+                .end()
+                .start({ class: 'foam.u2.tag.Image', glyph: 'dropdown' })
+                  .addClass(self.myClass('dropdown'))
                 .end()
                 .add(this.slot(function(allowClearingSelection) {
                   if ( ! allowClearingSelection ) return null;
@@ -717,11 +718,18 @@ foam.CLASS({
         selection by creating that custom view and providing it in place of this
         one by setting the selectionView property on RichChoiceView.
       `,
-
+      
+      requires: ['foam.u2.CitationView'],
       imports: [
         'of'
       ],
 
+      css:`
+        ^paddingWrapper {
+          padding-left: $inputHorizontalPadding;
+          padding-right: $inputHorizontalPadding;
+        }
+      `,
       properties: [
         {
           name: 'data',
@@ -744,20 +752,20 @@ foam.CLASS({
 
       methods: [
         function render() {
+          let self = this;
           this.style({
             'overflow': 'hidden',
             'white-space': 'nowrap',
-            'text-overflow': 'ellipsis'
+            'text-overflow': 'ellipsis',
+            'border-radius': '4px'
           });
 
-          this.add(this.slot(function(fullObject) {
-            let summary;
+          this.add(this.dynamic(function(fullObject) {
             if ( fullObject ) {
-              summary = fullObject.toSummary();
+              this.tag(self.CitationView, { data: fullObject });
             } else {
-              summary = this.defaultSelectionPrompt;
+              this.start().addClass(self.myClass('paddingWrapper')).add(this.defaultSelectionPrompt).end();
             }
-            return summary;
           }));
         }
       ]
@@ -778,7 +786,6 @@ foam.CLASS({
           border-top: 1px solid #f4f4f9;
           color: $primary400;
           display: flex;
-          font-size: 1.2rem;
           justify-content: flex-start;
           text-align: left;
           width: 100%;

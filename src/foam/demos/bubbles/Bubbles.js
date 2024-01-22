@@ -55,13 +55,13 @@ foam.CLASS({
           this.engine.add(c);
           this.add(c);
 
-          this.timer.i$.sub(foam.Function.bind(function circleBoundOnWalls(c) {
+          this.timer.i$.sub((function circleBoundOnWalls(c) {
             if ( c.y > 1/this.scaleY*this.height+50 ) {
               c.y = -50;
             }
             if ( c.x < 0          ) c.vx =  Math.abs(c.vx)+0.1;
             if ( c.x > this.width ) c.vx = -Math.abs(c.vx)-0.1;
-          }, this, c));
+          }).bind(this, c));
         }
       }
 
@@ -80,12 +80,12 @@ foam.CLASS({
         this.engine.add(b);
         this.add(b);
 
-        this.timer.i$.sub(foam.Function.bind(function bubbleWrap(b) {
+        this.timer.i$.sub((function bubbleWrap(b) {
           if ( b.y < 1 ) {
             b.y = this.height;
             b.x = this.width * Math.random();
           }
-        }, this, b));
+        }).bind(this, b));
       }
 
       this.timer.i$.sub(this.invalidated.pub)

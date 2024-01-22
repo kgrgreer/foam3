@@ -118,7 +118,7 @@ foam.CLASS({
       const wizardType = this.wizardType;
 
       if ( isInline && wizardType == this.WizardType.UCJ ) {
-        const seq = this.crunchController.createUCJInlineWizardSequence(x);
+        const seq = this.crunchController.toGraphAgentWizard(this.crunchController.createUCJInlineWizardSequence(x));
         seq.addBefore('CapabilityAdaptAgent', {
           class: 'foam.u2.wizard.agents.RootCapabilityAgent',
           rootCapability: this.source
@@ -127,7 +127,7 @@ foam.CLASS({
       }
 
       if ( ! isInline && wizardType == this.WizardType.UCJ ) {
-        return this.crunchController
+        let seq = this.crunchController
           .createTransientWizardSequence(this.__subContext__)
           .addBefore('ConfigureFlowAgent', {
             class: 'foam.u2.wizard.agents.RootCapabilityAgent',
@@ -136,11 +136,12 @@ foam.CLASS({
           .reconfigure('WAOSettingAgent', {
             waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.UCJ
           })
-          .remove('RequirementsPreviewAgent')
+          .remove('RequirementsPreviewAgent');
+        return this.crunchController.toGraphAgentWizard(seq)
       }
 
       if ( wizardType == this.WizardType.TRANSIENT ) {
-        return this.crunchController
+        let seq = this.crunchController
           .createTransientWizardSequence(this.__subContext__)
           .addBefore('ConfigureFlowAgent', {
             class: 'foam.u2.wizard.agents.RootCapabilityAgent',
@@ -150,6 +151,7 @@ foam.CLASS({
             waoSetting: foam.u2.crunch.wizardflow.WAOSettingAgent.WAOSetting.CAPABLE
           })
           .remove('RequirementsPreviewAgent')
+        return this.crunchController.toGraphAgentWizard(seq);
       }
       console.error(
         '%cAre you configuring a new wizard?%c%s',

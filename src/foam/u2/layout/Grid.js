@@ -8,12 +8,9 @@ foam.CLASS({
   package: 'foam.u2.layout',
   name: 'Grid',
   extends: 'foam.u2.Element',
+  mixins: ['foam.u2.layout.ContainerWidth'],
 
   documentation: 'A grid of responsive elements',
-
-  imports: [
-    'displayWidth?'
-  ],
 
   requires: [
     'foam.u2.layout.GUnit'
@@ -27,25 +24,22 @@ foam.CLASS({
   `,
 
   methods: [
-    function render() {
+    async function render() {
       this.SUPER();
       this.addClass();
-
-      if ( this.displayWidth ) {
-        this.onDetach(this.displayWidth$.sub(this.resizeChildren));
-        this.style(
-          { 'grid-template-columns': this.displayWidth$.map((dw) => {
-              dw = dw || foam.u2.layout.DisplayWidth.XL;
-              return `repeat(${dw.cols}, 1fr)`;
-            })
-          }
-        );
-//         this.shown = false;
-      }
+      this.initContainerWidth();
+      this.onDetach(this.containerWidth$.sub(this.resizeChildren));
+      this.style(
+        { 'grid-template-columns': this.containerWidth$.map(dw => {
+            dw = dw || foam.u2.layout.DisplayWidth.XL;
+            return `repeat(${dw.cols}, 1fr)`;
+          })
+        }
+      );
     },
 
     function add_() {
-      this.SUPER.apply(this, arguments);
+      this.SUPER(...arguments);
       this.resizeChildren();
       return this;
     }
@@ -60,10 +54,10 @@ foam.CLASS({
         var currentWidth = 0;
         this.children.forEach(ret => {
           var cols = 12, width = 12;
-          if ( this.displayWidth ) {
-            cols = this.displayWidth.cols;
+          if ( this.containerWidth ) {
+            cols = this.containerWidth.cols;
             width = Math.min(this.GUnit.isInstance(ret) && ret.columns &&
-              ret.columns[`${this.displayWidth.name.toLowerCase()}Columns`] ||
+              ret.columns[`${this.containerWidth.name.toLowerCase()}Columns`] ||
               cols, cols);
           }
           var startCol = currentWidth + 1;

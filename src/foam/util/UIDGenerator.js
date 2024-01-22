@@ -88,12 +88,21 @@ foam.CLASS({
       args: [
         { name: 'id', type: 'String' }
       ],
+      documentation: `Calculate checksum of the id.
+
+        checksum is a three hex digits to be appended to the id so that the hash
+        of the final id will equal to the hash of the salt of the uid generator.
+        This allows for checking a uid against a uid generator that could have
+        generated it.`,
       javaCode: `
         var targetMod = getHashKey();
+        // Take the mod of "id" + "000" (ie, appending three digits to the id).
         // Breaking the multiplication to avoid overflow before mod-ing,
         // (ab mod m) = ((a mod m) * (b mod m)) mod m.
-        var idMod     = mod(mod(Long.parseLong(id, 16)) * mod(0x1000));
+        var idMod     = mod(mod16(id) * mod(0x1000));
 
+        // Calculate the checksum to add to the id so that the hash of the final
+        // id (id * 0x1000 + checksum) is the same as the targetMod.
         return (int) (UIDSupport.CHECKSUM_MOD - idMod + targetMod);
       `
     },

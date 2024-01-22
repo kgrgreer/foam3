@@ -48,11 +48,20 @@ p({
         "class":"foam.nanos.servlet.ServletMapping",
         "className":"foam.nanos.http.NanoRouter",
         "pathSpec":"/service/*"
-      }, {
+      },
+      {
         "class":"foam.nanos.servlet.ServletMapping",
         "className":"org.eclipse.jetty.servlet.DefaultServlet",
         "pathSpec":"/*",
         "initParameters":{"dirAllowed":"true","redirectWelcome":"true"}
+      },
+      {
+        "class": "foam.nanos.servlet.ServletMapping"
+        "className": "foam.nanos.servlet.ImageServlet",
+        "pathSpec": "/favicon/*",
+        "initParameters": {
+          "paths": "/"
+        }
       }
     ]
   }
@@ -62,67 +71,6 @@ p({"class":"foam.nanos.boot.NSpec", "name":"httprouter",                        
 
 p({"class":"foam.nanos.boot.NSpec", "name":"websockets",                       "lazy":false, "serviceClass":"foam.nanos.ws.NanoWebSocketServer"})
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "auth",
-  "serve": true,
-  "authenticate": false,
-  "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
-  "serviceScript": """
-    auth = new foam.nanos.auth.UserAndGroupAuthService(x);
-    auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.CachingAuthService(auth);
-    auth = new foam.nanos.auth.SubjectAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.PMAuthService.Builder(x)
-      .setLabel("uncached")
-      .setDelegate(auth)
-      .build();
-    auth = new foam.nanos.auth.SystemAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
-    return auth;
-  """,
-  "client":"""
-    {
-      "class": "foam.nanos.auth.AuthorizeAnonymousClientDecorator",
-      "delegate":
-      {
-        "class":"foam.nanos.auth.CachedAuthServiceProxy",
-        "delegate":{
-          "class":"foam.nanos.auth.ClientLoginAuthService"
-        }
-      }
-    }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "uniqueUserService",
-  "serve": true,
-  "authenticate": true,
-  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
-  "serviceScript": """
-    ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
-    ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
-      .setDelegate(ul)
-      .build();
-    return ul;
-  """
-})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -151,173 +99,6 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "localUserDAO",
-  "serve": false,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setPm(true)
-      .setFuid(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("users")
-      .build();
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"userDAO",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setInnerDAO(x.get("localUserDAO"))
-      .setOf(foam.nanos.auth.User.getOwnClassInfo())
-      .setPermissioned(true)
-      .setDecorator(
-        new foam.dao.ValidatingDAO(x,
-          new foam.nanos.auth.UserPasswordHashingDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()),
-          new foam.nanos.auth.validators.UserGroupAndSpidValidator()
-        )
-      )
-      .build();
-  """,
-  "client":"""
-    {
-      "of":"foam.nanos.auth.User",
-      "ttlSelectPurgeTime": 15000,
-      "ttlPurgeTime": 0,
-      "decorators": [{"class":"foam.nanos.fs.FileDAODecorator"}]
-    }
-  """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localGroupDAO",
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("groups")
-      .setOf(foam.nanos.auth.Group.getOwnClassInfo())
-      .setAuthorize(false)
-      .build();
-  """,
-  "client":"{\"of\":\"foam.nanos.auth.Group\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"groupDAO",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setInnerDAO(x.get("localGroupDAO"))
-      .setOf(foam.nanos.auth.Group.getOwnClassInfo())
-      .build();
-  """,
-  "client":"{\"of\":\"foam.nanos.auth.Group\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "localCountryDAO",
-  "description": "A DAO which contains information about countries.",
-  "serve": false,
-  "authenticate": false,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("countryDAO"))
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("countries")
-      .setOf(foam.nanos.auth.Country.getOwnClassInfo())
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Country.NAME})
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ISO31661CODE })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Country.ALTERNATIVE_NAMES });
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "countryDAO",
-  "serve": true,
-  "authenticate": false,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.Country.getOwnClassInfo())
-      .setName("countries")
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("countryDAO"))
-      .setInnerDAO(x.get("localCountryDAO"))
-      .build();
-  """,
-  "client":
-  """
-    {
-      "of": "foam.nanos.auth.Country",
-      "cache": true,
-      "ttlSelectPurgeTime": 0,
-      "ttlPurgeTime": 0
-    }
-  """,
-  "authNotes": "The \"authenticate\" flag is explicitly set to false because we want to be able to use the countryDAO to populate a dropdown in the sign up form. The DAO is decorated with an AuthenticatedDAO decorator with \"authenticateRead\" set to false so that anyone can read from countryDAO but only those with permission can write to or remove from it."
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"countryService",
-  "serve":false,
-  "serviceClass":"foam.nanos.auth.CountryService"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"languageDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":`
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorize(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("languages")
-      .setOf(foam.nanos.auth.Language.getOwnClassInfo())
-      .build();
-    `,
-  "client":"{\"of\":\"foam.nanos.auth.Language\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "regionDAO",
-  "description": "A DAO which contains information about regions in countries. A region is a province or a state, for example.",
-  "serve": true,
-  "authenticate": false,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("regionDAO"))
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"regions\")
-      .setOf(foam.nanos.auth.Region.getOwnClassInfo())
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.auth.Region.NAME})
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.NAME })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.COUNTRY_ID })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ISO_CODE })
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.Region.ALTERNATIVE_NAMES });
-  """,
-  "client": "{\"of\":\"foam.nanos.auth.Region\"}",
-  "documentation": "A DAO which contains information about regions in countries. A region is a province or a state, for example.",
-  "authNotes": "The \"authenticate\" flag is explicitly set to false because we want to be able to use the regionDAO to populate a dropdown in the sign up form. The DAO is decorated with an AuthenticatedDAO decorator with \"authenticateRead\" set to false so that anyone can read from regionDAO but only those with permission can write to or remove from it."
-})
-p({"class":"foam.nanos.boot.NSpec", "name":"regionService",                      "serve":false, "serviceClass":"foam.nanos.auth.RegionService"})
-
-p({
   "class":"foam.nanos.boot.NSpec",
   "name":"exportDriverRegistryDAO",
   "description": "DAO which provides a reference to data type drivers which are used to export data in various types",
@@ -334,33 +115,6 @@ p({
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.export.ExportDriverRegistry\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localPermissionDAO",
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setAuthorize(false)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("permissions")
-      .setOf(foam.nanos.auth.Permission.getOwnClassInfo())
-      .build();
-    """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"permissionDAO",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.Permission.getOwnClassInfo())
-      .setInnerDAO((foam.dao.DAO) x.get("localPermissionDAO"))
-      .build();
-  """,
-  "client":"{\"of\":\"foam.nanos.auth.Permission\"}"
 })
 
 p({
@@ -430,7 +184,8 @@ p({
   "authenticate": false,
   "serviceScript": """
     fileService = new foam.nanos.blob.FileService(x, x.get("blobStore"));
-    return new foam.nanos.http.SessionWebAgent("service.run.httpFileService", fileService);
+    return fileService;
+    // return new foam.nanos.http.SessionWebAgent("service.run.httpFileService", fileService);
   """
 })
 
@@ -456,11 +211,7 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"resetPasswordToken",                 "serve":true,  "authenticate": false, "serviceClass":"foam.nanos.auth.resetPassword.ResetPasswordTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
-
 p({"class":"foam.nanos.boot.NSpec", "name":"demoObjectDAO",                      "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"demoObjects\").setGuid(true).setOf(foam.nanos.demo.DemoObject.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.demo.DemoObject\", \"remoteListenerSupport\": false}"})
-
-p({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler",                      "lazy":false,  "serve":false, "authenticate": false, "serviceClass":"foam.nanos.http.LiveScriptBundler"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"twofactor",                          "serve":true,  "authenticate": false, "boxClass":"foam.nanos.auth.twofactor.OTPAuthServiceSkeleton", "serviceClass":"foam.nanos.auth.twofactor.GoogleTOTPAuthService", "client":"{\"class\":\"foam.nanos.auth.twofactor.ClientOTPAuthService\"}"})
 p({
@@ -504,23 +255,6 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec","name":"appConfigService",                   "serve":true, "authenticate": false, "boxClass":"foam.nanos.app.AppConfigServiceSkeleton", "service":{"class":"foam.nanos.app.ContextLookupAppConfigService"}, "client":"{\"class\":\"foam.nanos.app.ClientAppConfigService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\",\"url\":\"service/appConfigService\"}}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"agentAuth",                        "lazy":false, "serve":true, "authenticate": false, "description":"Permits users to act as others if permitted. Places user as an agent of the system.", "boxClass":"foam.nanos.auth.AgentAuthServiceSkeleton", "serviceScript":"return new foam.nanos.auth.AgentUserAuthService(x);", "client": "{\"class\":\"foam.nanos.auth.AgentAuthClient\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientAgentAuthService\"}}"})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "agentJunctionDAO",
-  "lazy": false,
-  "serve": true,
-  "description": "DAO responsible for storing agent authentication permission information.",
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"agentJunctions\")
-      .setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo())
-      .build();
-  """,
-  "client": "{\"of\":\"foam.nanos.auth.UserUserJunction\", \"remoteListenerSupport\": false}"
-})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -550,54 +284,7 @@ p({
   "client": "{\"of\":\"foam.flow.Document\"\}"
 })
 
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"supportEmailDAO",
-  "serve":true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setPm(true)
-      .setSeqProperty(true)
-      .setOf(foam.support.model.SupportEmail.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("supportEmails")
-      .build();
-  """,
-  "client":"{\"of\":\"foam.support.model.SupportEmail\"}"
-})
-
 p({"class":"foam.nanos.boot.NSpec", "name":"serializationTestEchoService", "boxClass": "foam.nanos.test.EchoServiceSkeleton",  "serve":true, "serviceClass":"foam.nanos.test.SerializationTestEchoService", "client":"{\"class\":\"foam.nanos.test.ClientEchoService\",\"delegate\":{\"class\":\"foam.box.SessionClientBox\",\"delegate\":{\"class\":\"foam.box.HTTPBox\",\"method\":\"POST\",\"url\":\"service/serializationTestEchoService\"}}}"})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"localGroupPermissionJunctionDAO",
-  "description":"The junction DAO for the many-to-many relationship between groups and permissions",
-  "serviceScript":"""
-    dao = new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.GroupPermissionJunction.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("groupPermissionJunctions")
-      .setPm(true)
-      .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.GroupPermissionJunction.SOURCE_ID });
-    return dao;
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"groupPermissionJunctionDAO",
-  "description":"The junction DAO for the many-to-many relationship between groups and permissions. NOTE: authorization is setup on local dao.",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.auth.GroupPermissionJunction.getOwnClassInfo())
-      .setAuthorize(false)
-      .setInnerDAO((foam.dao.DAO) x.get("localGroupPermissionJunctionDAO"))
-    .build();""",
-  "client":"{\"of\": \"foam.nanos.auth.GroupPermissionJunction\"}"
-})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -654,28 +341,6 @@ p({
       "cache": true,
       "ttlSelectPurgeTime": 0,
       "ttlPurgeTime": 0
-    }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "userQueryService",
-  "serve": true,
-  "serviceClass": "foam.nanos.auth.SimpleUserQueryService",
-  "boxClass": "foam.nanos.auth.UserQueryServiceSkeleton",
-  "client":
-  """
-    {
-      "class":"foam.nanos.auth.ClientUserQueryService",
-      "delegate": {
-        "class":"foam.box.SessionClientBox",
-        "delegate": {
-          "class":"foam.box.HTTPBox",
-          "url":
-          "service/userQueryService"
-        }
-      }
     }
   """
 })
@@ -762,7 +427,7 @@ p({
   "serve": true,
   "authenticate": true,
   "boxClass": "foam.nanos.google.api.sheets.views.GoogleSheetsDataImportServiceSkeleton",
-  "serviceClass": "foam.nanos.google.api.sheets.GoogleSheetsTransactionsDataImportServiceImpl",
+  "serviceClass": "foam.nanos.google.api.sheets.views.GoogleSheetsTransactionsDataImportServiceImpl",
   "client":"""
     {
       "class": "foam.nanos.google.api.sheets.views.ClientGoogleSheetsDataImportService",
@@ -787,7 +452,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("reportTemplates")
       .setAuthorize(true)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("reportTemplateDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("reporttemplate"))
       .build();
   """,
   "client":
@@ -847,7 +512,7 @@ p({
   "serve":true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("addressConfigDAO"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("addressconfig"))
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("addressConfig")
       .setOf(foam.nanos.auth.AddressConfig.getOwnClassInfo())

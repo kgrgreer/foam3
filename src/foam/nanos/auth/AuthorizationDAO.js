@@ -48,8 +48,8 @@ foam.CLASS({
       javaCode: `
    if ( obj == null ) throw new RuntimeException("Cannot put null.");
 
-    Object id = obj.getProperty("id");
-    FObject oldObj = getDelegate().find(id);
+    Object  id       = obj.getProperty("id");
+    FObject oldObj   = getDelegate().find(id);
     boolean isCreate = id == null || oldObj == null;
 
     if ( isCreate ) {
@@ -75,7 +75,7 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
     if ( id == null ) return null;
-    if ( getAuthorizer().checkGlobalRead(x, null) ) return super.find_(x, id);
+    if ( getAuthorizer().checkGlobalFind(x) ) return super.find_(x, id);
 
     FObject obj = super.find_(x, id);
     try {
@@ -127,6 +127,16 @@ foam.CLASS({
       ) :
       newPredicate;
  `
-    }
+  },
+  {
+    name: 'cmd_',
+    javaCode: `
+      if ( "AUTHORIZER?".equals(obj) ) {
+        return getAuthorizer().getClass().getName();
+      }
+
+      return super.cmd_(x, obj);
+    `
+  }
   ]
 });

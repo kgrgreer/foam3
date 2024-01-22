@@ -161,14 +161,16 @@ foam.CLASS({
       if ( this.showTitle != null ) showTitle = this.showTitle;
       else if ( this.showWizardletSectionTitles != null ) showTitle = this.showWizardletSectionTitles;
 
-      return this.SectionView.create({
-        section: this.section,
-        data$: this.wizardlet.data$,
-        ...opt_spec,
-        // ...(showTitle != null ? { showTitle: showTitle } : {})
-        // this line is equivalent to commented code above
-        ...(showTitle != null ? { showTitle } : {})
-      }, ctx);
+      return this.ViewSpec.createView(this.section.view,
+        { 
+          section: this.section,
+          data$: this.wizardlet.data$,
+          of$: this.wizardlet.data$.map(d => d.cls_),
+          ...opt_spec,
+          // ...(showTitle != null ? { showTitle: showTitle } : {})
+          // this line is equivalent to commented code above
+          ...(showTitle != null ? { showTitle } : {})
+        }, this, ctx);
     }
   ]
 });

@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    /* Still show outline when focused as read-only to help accessibility *
+    /* Still show outline when focused as read-only to help accessibility */
     ^:read-only:focus { outline: 1px solid rgb(238, 238, 238); }
   `,
 
@@ -68,6 +68,7 @@ foam.CLASS({
     'placeholder',
     'ariaLabel',
     [ 'autocomplete', true ],
+    'inputMode', // Allows a browser to display an appropriate virtual keyboard
     {
       name: 'choices',
       documentation: `Array of [value, text] choices. You can pass in just
@@ -112,7 +113,11 @@ foam.CLASS({
       if ( this.placeholder   ) this.setAttribute('placeholder', this.placeholder);
       if ( this.ariaLabel     ) this.setAttribute('aria-label',  this.ariaLabel);
       if ( this.maxLength > 0 ) this.setAttribute('maxlength',   this.maxLength);
-      if ( ! this.autocomplete ) this.setAttribute('autocomplete', 'off');
+      if ( this.inputMode     ) this.setAttribute('inputmode',   this.inputMode);
+      this.setAttribute('autocomplete', this.autocomplete ?
+        (foam.String.isInstance(this.autocomplete) ? this.autocomplete : 'on') :
+        'off'
+      );
       if ( this.choices && this.choices.length ) {
         this.
           setAttribute('list', this.id + '-datalist').
@@ -150,6 +155,10 @@ foam.CLASS({
       }
       if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;
+
+      if ( p.normalize ) {
+        this.on('blur', () => this.data$.set(p.normalize(this.data$.get(), p)));
+      }
     },
 
     function updateMode_(mode) {

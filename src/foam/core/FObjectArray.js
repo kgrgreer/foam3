@@ -98,7 +98,7 @@ foam.CLASS({
     [ 'adaptArrayElement', function(o, obj) {
       // FUTURE: replace 'foam.' with '(this.__subContext__ || foam).' ?
       var ctx = obj.__subContext__ || foam;
-      var of  = o.class || this.of;
+      var of  = o?.class || this.of;
       var cls = ctx.lookup(of);
       if ( cls == null ) cls = obj[of];
       return cls.isInstance(o) ? o : cls.create(o, ctx);
@@ -108,6 +108,12 @@ foam.CLASS({
       value: function(value, ctx, prop) {
         return foam.json.parse(value, prop.of, ctx);
       }
+    },
+    {
+      name: 'indexFunction',
+      class: 'Function',
+      documentation: 'Given an FObject, should return a unique index for objects',
+      value: o => { return o.id }
     }
   ]
 });

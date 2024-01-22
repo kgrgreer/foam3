@@ -10,6 +10,15 @@ foam.CLASS({
 
   documentation: 'Reset Password Base Model',
 
+  imports: [
+    'pushMenu',
+    'window'
+  ],
+
+  requires: [
+    'foam.u2.stack.StackBlock'
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Reset your password' },
     { name: 'INSTRUCTION', message: 'Create a new password for your account' },
@@ -33,7 +42,8 @@ foam.CLASS({
       section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       minLength: 10,
       validationPredicates: [
@@ -51,7 +61,8 @@ foam.CLASS({
       section: 'resetPasswordSection',
       view: {
         class: 'foam.u2.view.PasswordView',
-        passwordIcon: true
+        passwordIcon: true,
+        autocomplete: 'new-password'
       },
       validationPredicates: [
         {
@@ -93,8 +104,8 @@ foam.CLASS({
     {
       name: 'finalRedirectionCall',
       code: function() {
-        window.history.replaceState(null, null, window.location.origin);
-        location.reload();
+        this.window.history.replaceState(null, null, this.window.location.origin);
+        this.pushMenu("sign-in");
       }
     }
   ]

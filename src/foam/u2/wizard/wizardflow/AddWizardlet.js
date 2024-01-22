@@ -35,6 +35,14 @@ foam.CLASS({
       `
     },
     {
+      class: 'String',
+      name: 'wizardletCls'
+    },
+    {
+      class: 'String',
+      name: 'waoCls'
+    },
+    {
       name: 'wizardlet_'
     }
   ],
@@ -42,22 +50,28 @@ foam.CLASS({
   methods: [
     function getWizardlet_(x) {
       if ( this.wizardlet_ ) return this.wizardlet_;
+      var wizardletCls = this.BaseWizardlet;
+      if ( this.wizardletCls ) wizardletCls = foam.lookup(this.wizardletCls) || wizardletCls;
 
-      const newWizardlet = this.BaseWizardlet.create({}, x);
-      newWizardlet.wao = this.SplitWAO.create();
+      var waoCls = this.SplitWAO;
+      if ( this.waoCls ) waoCls = foam.lookup(this.waoCls) || waoCls;
+
+      const newWizardlet = wizardletCls.create({}, x);
+      newWizardlet.wao = waoCls.create({}, x);
       newWizardlet.isAvailable = true;
       newWizardlet.isVisible = true;
       newWizardlet.id = this.wizardletId;
       newWizardlet.title = this.wizardletId;
-      newWizardlet.sections = [
-        this.WizardletSection.create({
-          title: newWizardlet.title,
-          isAvailable: true,
-          customView: {
-            class: 'foam.u2.detail.FlexSectionedDetailView'
-          }
-        }, x)
-      ];
+      if ( ! newWizardlet.sections.length )
+        newWizardlet.sections = [
+          this.WizardletSection.create({
+            title: newWizardlet.title,
+            isAvailable: true,
+            customView: {
+              class: 'foam.u2.detail.FlexSectionedDetailView'
+            }
+          }, x)
+        ];
 
       if ( this.before ) {
         let i = x.wizardlets.findIndex(w => w.id == this.before);

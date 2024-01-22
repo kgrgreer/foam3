@@ -18,15 +18,15 @@ foam.CLASS({
   properties: [
     {
       name: 'label',
-      expression: function(menu) { return menu.label || ''; }
+      expression: function(menu) { return ( menu && menu.label ) || ''; }
     },
     {
       name: 'icon',
-      expression: function(menu) { return menu.icon || ''; }
+      expression: function(menu) { return ( menu && menu.icon ) || ''; }
     },
     {
       name: 'themeIcon',
-      expression: function(menu) { return menu.themeIcon || ''; }
+      expression: function(menu) { return ( menu && menu.themeIcon ) || ''; }
     },
     {
       class: 'Function',
@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'isEnabled',
       documentation: 'Function to determine if button is enabled.',
       value: null
-    },
+    }
   ],
 
   methods: [
@@ -46,13 +46,14 @@ foam.CLASS({
     function createIsEnabled$(x, data) {
       return this.isEnabled ?
       data.slot(this.isEnabled ) :
-      foam.core.ConstantSlot.create({ value: true });      
+      foam.core.ConstantSlot.create({ value: true });
     }
   ],
 
   listeners: [
     function click(evt) {
       this.SUPER(evt);
+      if ( evt.detail && evt.detail > 1 ) return;
       let ret = this.menu.launch_(this.__subContext__, this);
       if ( ret && ret.then ) {
         this.loading_ = true;

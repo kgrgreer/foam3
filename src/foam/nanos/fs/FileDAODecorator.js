@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.dao.AbstractDAODecorator',
 
   imports: [
-    'fileDAO'
+    'fileDAO?'
   ],
 
   properties: [
@@ -27,6 +27,8 @@ foam.CLASS({
 
   methods: [
     function write(X, dao, obj, existing) {
+      if ( ! this.fileDAO ) return this.SUPER(X, dao, obj, existing);
+
       var self = this;
       var i = 0;
       var props = obj.cls_.getAxiomsByClass(foam.nanos.fs.FileProperty);

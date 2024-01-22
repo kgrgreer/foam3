@@ -67,26 +67,6 @@ foam.CLASS({
       color: #9ba1a6;
     }
 
-    ^card-description {
-      margin-top: 9px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.43;
-      letter-spacing: normal;
-      color: #5e6061;
-      cursor: pointer;
-
-      /* normalize for transitions */
-      border: solid 1px rgba(255,255,255,0);
-
-      /* Card highlight transition */
-      transition: background 200ms ease-in, border 200ms ease-in;
-      -webkit-transition: background 200ms ease-in, border 200ms ease-in;
-      -moz-transition: background 200ms ease-in, border 200ms ease-in;
-    }
-
     ^.state-hover {
       cursor: pointer;
     }
@@ -94,16 +74,6 @@ foam.CLASS({
     ^mode-card.state-hover {
       background-color: rgba(255,255,255,0.5);
       border: solid 1px #e7eaec;
-    }
-
-    ^mode-card.state-hover ^card-description {
-      position: relative;
-      left: -15px;
-      width: calc(250px - (2*24px)/3 + 30px);
-    }
-    ^mode-circle.state-hover ^card-description {
-      width: auto;
-      height: auto;
     }
 
     ^icon-circle {

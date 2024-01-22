@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'Capability',
 
   implements: [
+    // See CapabilityRefinement for additional implements
     'foam.nanos.auth.LifecycleAware'
   ],
 
@@ -28,6 +29,7 @@ foam.CLASS({
     'foam.nanos.crunch.edit.EditBehaviour',
     'foam.nanos.crunch.edit.NullEditBehaviour',
     'foam.nanos.logger.Logger',
+    'java.time.*',
     'java.util.Date',
     'java.util.List',
     'javax.security.auth.AuthPermission',
@@ -136,10 +138,18 @@ foam.CLASS({
     },
     {
       name: 'price',
-      class: 'Long',
+      class: 'UnitValue',
+      unitPropName: 'denomination',
       includeInDigest: true
     },
     {
+      class: 'String',
+      name: 'denomination',
+      value: 'CAD',
+      visibility: 'HIDDEN',
+      includeInDigest: true
+    },
+     {
       name: 'keywords',
       class: 'StringArray',
       includeInDigest: false
@@ -147,30 +157,6 @@ foam.CLASS({
     {
       name: 'version',
       class: 'String',
-      includeInDigest: true,
-    },
-    {
-      name: 'expiry',
-      class: 'DateTime',
-      documentation: `Datetime of when capability is no longer valid`,
-      includeInDigest: true,
-    },
-    {
-      name: 'duration',
-      class: 'Int',
-      documentation: `To be used in the case where expiry is duration-based, represents the number of DAYS a junction is valid for before expiring.
-      The UserCapabilityJunction object will have its expiry configured to a DateTime based on the lower value of the two, expiry and duration`,
-      includeInDigest: true,
-    },
-    {
-      name: 'gracePeriod',
-      class: 'Int',
-      value: 0,
-      documentation: `To be used in the case where expiry is duration based, represents the number of DAYS the user can keep permissions
-      granted by this capability after the duration runs out.
-      If the gracePeriod is greater than 0, the UserCapabilityJunction will set isInGracePeriod property to true
-      and set gracePeriod property to be equals to this. Otherwise, the UserCapabilityJunction will
-      go into EXPIRED status.`,
       includeInDigest: true,
     },
     {
@@ -425,19 +411,6 @@ foam.CLASS({
       return false;`
     },
     {
-      name: 'isExpired',
-      type: 'Boolean',
-      documentation: `check if a given capability is expired.`,
-      javaCode: `
-      if ( getExpiry() == null ) return false;
-
-      Date today = new Date();
-      Date capabilityExpiry = getExpiry();
-
-      return today.after(capabilityExpiry);
-      `
-    },
-    {
       name: 'getPrereqsChainedStatus',
       type: 'CapabilityJunctionStatus',
       args: [
@@ -604,7 +577,6 @@ foam.CLASS({
 
 foam.RELATIONSHIP({
   package: 'foam.nanos.crunch',
-  extends:'foam.nanos.crunch.Renewable',
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'foam.nanos.crunch.Capability',
   ids: [ 'id' ],

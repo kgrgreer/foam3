@@ -20,7 +20,7 @@ This is the heart of Medusa.`,
 
   javaImports: [
     'foam.core.Agency',
-    'foam.core.AgencyTimerTask',
+    'foam.core.ThreadTimerTask',
     'foam.core.ContextAgent',
     'foam.core.ContextAgentTimerTask',
     'foam.core.FObject',
@@ -282,7 +282,7 @@ This is the heart of Medusa.`,
       Timer timer = new Timer(this.getClass().getSimpleName());
       setTimer(timer);
       timer.schedule(
-        new AgencyTimerTask(getX(), support.getThreadPoolName(), this),
+        new ThreadTimerTask(getX(), this),
         getInitialTimerDelay());
       `
     },
@@ -446,10 +446,7 @@ This is the heart of Medusa.`,
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
-              if ( replaying.getReplaying() ) {
-                // report to log
-                getLogger().error("promoter", "Failed to parse", cause.getMessage(), entry.toSummary(), data, cause);
-              }
+              getLogger().error("promoter", "Error parsing", cause.getMessage(), entry.toSummary(), "data", data, cause);
               throw new MedusaException("Failed to parse", cause);
             }
 
@@ -458,6 +455,7 @@ This is the heart of Medusa.`,
               er.setRequestMessage(data);
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              getLogger().error("promoter", "Failed to parse", entry.toSummary(), "data", data);
               throw new MedusaException("Failed to parse");
             }
 
@@ -502,6 +500,7 @@ This is the heart of Medusa.`,
               er.setResponseMessage(cause.getMessage());
               er.setClusterable(false);
               ((DAO) x.get("eventRecordDAO")).put(er);
+              getLogger().error("promoter", "Error parsing", cause.getMessage(), entry.toSummary(), "transientData", entry.getTransientData(), cause);
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( tran == null ) {
@@ -614,7 +613,9 @@ This is the heart of Medusa.`,
         Map<Object, Map> hashes = next.getConsensusHashes();
         try {
           for ( Map<String, MedusaEntry> nodes : hashes.values() ) {
-            if ( nodes.size() >= support.getNodeQuorum() ) {
+            if ( nodes.size() >= support.getNodeQuorum() ||
+                 ( nodes.size() > 0 &&
+                   support.getSir().contains(next.getId()) ) ) {
               if ( entry == null ) {
                 for ( MedusaEntry e : nodes.values() ) {
                   // test for parents

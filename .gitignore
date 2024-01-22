@@ -17,6 +17,7 @@ local.properties
 *.iml
 tools/cp.txt
 /nanos
+build2/*
 build/*
 .*-build
 .*-gensrcs
@@ -30,3 +31,6 @@ src/cronjobs
 src/notifications
 src/ruleHistory
 src/agentJunctions
+pom.xml
+tools/pom.xml
+**/data/*.log

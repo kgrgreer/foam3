@@ -16,7 +16,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.support.model.SupportEmail',
     'foam.support.modal.NewEmailSupportConfirmationModal',
     'foam.u2.ModalHeader',
     'foam.log.LogLevel',
@@ -43,12 +42,6 @@ foam.CLASS({
       margin-left: 20px;
       width: 198px;
       height: 40px;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: left;
       color: #ffffff;
     }
@@ -65,12 +58,6 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
     }
     ^ .Rectangle-8 {
@@ -79,12 +66,6 @@ foam.CLASS({
       border-radius: 2px;
       background-color: #59a5d5;
       float: right;
-      font-size: 1.4rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
     }

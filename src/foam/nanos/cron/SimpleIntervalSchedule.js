@@ -328,7 +328,7 @@ foam.CLASS({
           value += `Your ${ordinal} scheduled deposit is on ${obj.formatDate(nextDates[i])}.`;
           value += '\n';
         }
-        this.addClass('note').add(value);
+        this.addClass('p-label', 'note').add(value);
       }
     },
     {

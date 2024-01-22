@@ -11,7 +11,10 @@ p({
   "operation":3,
   "after":true,
   "enabled":false,
-  "predicate":{"class":"foam.nanos.crunch.IsUserCapabilityJunctionStatusUpdate","includeRenewalStatus":false},
+  "predicate":{
+    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
+    query: 'o != exists || o.status != n.status'
+  },
   "action":{"class":"foam.nanos.crunch.SendNotificationOnTopLevelCapabilityStatusUpdate"},
   "lifecycleState":1
 })

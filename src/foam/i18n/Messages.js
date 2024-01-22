@@ -89,7 +89,7 @@ foam.CLASS({
         var msg = this.message_;
         if ( foam.Undefined.isInstance(msg) ) {
           if ( foam.locale )
-            msg = this.messageMap[foam.locale] || this.messageMap[foam.lang];
+            msg = this.messageMap[foam.locale] || this.messageMap[foam.language];
 
           msg = msg || this.messageMap.en;
 
@@ -102,7 +102,7 @@ foam.CLASS({
         return msg;
       },
       setter: function(m) {
-        this.messageMap[foam.locale] = m;
+        this.messageMap[foam.locale] = this.messageMap[foam.language] = m;
         this.message_ = undefined;
       }
     },
@@ -120,7 +120,10 @@ foam.CLASS({
         this.name,
         {
           get: function() { return self.message; },
-          set: function(v) { self.messageMap[foam.locale] = v; self.message_ = undefined; },
+          set: function(v) {
+            self.messageMap[foam.locale] = self.messageMap[foam.language] = v;
+            self.message_ = undefined;
+          },
           configurable: false
         });
     },
@@ -131,7 +134,7 @@ foam.CLASS({
         proto,
         this.name,
         {
-          get: function() { return this.cls_[name] },
+          get: function() { return this.cls_[name]; },
           configurable: false
         });
     }

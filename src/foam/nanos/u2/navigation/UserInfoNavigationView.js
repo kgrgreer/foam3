@@ -120,7 +120,10 @@ foam.CLASS({
 
   documentation: '',
 
-  imports: [ 'subject' ],
+  imports: [
+    'ctrl',
+    'subject'
+  ],
 
   css: `
     ^name-container {
@@ -133,14 +136,6 @@ foam.CLASS({
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    ^userName {
-      font-weight: 600;
-      font-size: 1.2rem;
-    }
-    ^agentName{
-      font-weight: 400;
-      font-size: 1.1rem;
-    }
     ^label-container {
       display: flex;
       flex-direction: column;
@@ -148,25 +143,24 @@ foam.CLASS({
   `,
 
   methods: [
-    function render() {
+    async function render() {
       var self = this;
+      this.subject = await ctrl.__subContext__.auth.getCurrentSubject(null);
       this
         .addClass(this.myClass('label-container'))
-        .add(this.slot( subject$user => {
-        if ( ! this.subject.user ) return;
-        return this.E().addClass(self.myClass('name-container'))
-            .start('span')
-              .addClass(this.myClass('userName'))
-              .addClass('p')
-              .add(this.subject.user.toSummary())
-            .end();
+        .add(this.slot(function(subject$user) {
+          if ( ! this.subject.user ) return;
+          return this.E().addClass(self.myClass('name-container'))
+              .start('span')
+                .addClass('p-label')
+                .add(this.subject.user.toSummary())
+              .end();
         }))
-        .add(this.slot( (subject$realUser, subject$user) => {
+        .add(this.slot(function(subject$realUser, subject$user) {
           if ( ! this.subject.realUser || this.subject.user.id == this.subject.realUser.id ) return;
           return this.E().addClass(self.myClass('name-container'))
               .start('span')
-                .addClass(this.myClass('agentName'))
-                .addClass('p')
+                .addClass('p-legal-light', this.myClass('agentName'))
                 .add( this.subject.realUser.toSummary() )
               .end();
         }));

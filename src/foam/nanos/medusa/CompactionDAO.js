@@ -42,6 +42,7 @@ TODO: handle node roll failure - or timeout
     'foam.nanos.NanoService',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Loggers',
     'foam.nanos.logger.Logger',
     'foam.nanos.er.EventRecord',
@@ -64,6 +65,12 @@ TODO: handle node roll failure - or timeout
       name: 'COMPACTION_CMD',
       type: 'String',
       value: 'COMPACTION_CMD'
+    },
+    {
+      documentation: 'Initiate Compaction process',
+      name: 'COMPACTION_DRY_RUN_CMD',
+      type: 'String',
+      value: 'COMPACTION_DRY_RUN_CMD'
     },
     {
       name: 'ALARM_NAME',
@@ -102,6 +109,11 @@ TODO: handle node roll failure - or timeout
       name: 'notFound',
       class: 'Map',
       javaFactory: 'return new HashMap();'
+    },
+    {
+      name: 'dryRun',
+      class: 'Boolean',
+      value: false
     }
   ],
 
@@ -122,7 +134,18 @@ TODO: handle node roll failure - or timeout
         if ( ! config.getIsPrimary() ) {
           throw new IllegalStateException("Compaction not allowed from Secondaries");
         }
-
+        setDryRun(false);
+        execute(x);
+        return obj;
+      }
+      if ( COMPACTION_DRY_RUN_CMD.equals(obj) ) {
+        ((foam.nanos.om.OMLogger) x.get("OMLogger")).log(obj.toString());
+        ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
+        if ( replaying.getReplaying() ) {
+          Loggers.logger(x, this, "cmd").warning("Compaction not allowed during replay");
+          throw new IllegalStateException("Compaction not allowed during Replay");
+        }
+        setDryRun(true);
         execute(x);
         return obj;
       }
@@ -154,47 +177,56 @@ TODO: handle node roll failure - or timeout
         logger.info("health");
         health(x);
 
-        // setup
-        logger.info("stopServices");
-        stopServices(x);
+        if ( getDryRun() ) {
 
-        // block
-        logger.info("block");
-        setBlocking(true);
+          // compaction
+          logger.info("compaction");
+          long compactionTime = compaction(x);
 
-        // wait
-        logger.info("in-flight");
-        try {
-          inFlight(x);
-        } catch (Throwable t) {
+        } else {
+
+          // setup
+          logger.info("stopServices");
+          stopServices(x);
+
+          // block
+          logger.info("block");
+          setBlocking(true);
+
+          // wait
+          logger.info("in-flight");
+          try {
+            inFlight(x);
+          } catch (Throwable t) {
+            setBlocking(false);
+            throw t;
+          }
+
+          // nodes
+          logger.info("roll");
+          roll(x);
+
+          // dagger
+          logger.info("dagger");
+          long oldGlobalIndex = dagger(x);
+
+          // unblock
+          logger.info("unblock");
           setBlocking(false);
-          throw t;
+          super.unblock(x);
+
+          // compaction
+          logger.info("compaction");
+          long compactionTime = compaction(x);
+
+          // purge
+          logger.info("purge");
+          purge(x, oldGlobalIndex, compactionTime);
+
+          // startServices
+          logger.info("startServices");
+          startServices(x);
         }
-
-        // nodes
-        logger.info("roll");
-        roll(x);
-
-        // dagger
-        logger.info("dagger");
-        long oldGlobalIndex = dagger(x);
-
-        // unblock
-        logger.info("unblock");
-        setBlocking(false);
-        super.unblock(x);
-
-        // compaction
-        logger.info("compaction");
-        long compactionTime = compaction(x);
-
-        // purge
-        logger.info("purge");
-        purge(x, oldGlobalIndex, compactionTime);
-
-        // startServices
-        logger.info("startServices");
-        startServices(x);
 
         // report
         logger.info("report");
@@ -336,13 +368,13 @@ TODO: handle node roll failure - or timeout
               cmd = (FileRollCmd) client.cmd(new FileRollCmd());
               replies.put(cfg.getId(), cmd);
               if ( ! foam.util.SafetyUtil.isEmpty(cmd.getError()) ) {
-                logger.error("cmd", cfg.getId(), cmd.getError());
+                logger.error("node,failed", cfg.getId(), cmd.getError());
                 failures.put(cfg.getId(), cmd);
               } else {
-                logger.debug("cmd", cfg.getId(), cmd.getRolledFilename());
+                logger.info("node,complete", cfg.getId(), cmd.getRolledFilename());
               }
             } catch (RuntimeException e) {
-              logger.error("cmd", cfg.getId(), e.getMessage());
+              logger.error("node,failed", cfg.getId(), e.getMessage());
               failures.put(cfg.getId(), null);
             }
           }
@@ -430,8 +462,9 @@ TODO: handle node roll failure - or timeout
             try {
               Object response = client.put(bs);
               replies.put(cfg.getId(), response);
+              logger.info("secondary,reconfigure,complete", cfg.getId());
             } catch (RuntimeException e) {
-              logger.error("secondary, reconfigure, failed", cfg.getId(), e.getMessage());
+              logger.error("secondary,reconfigure,failed", cfg.getId(), e.getMessage());
               failures.put(cfg.getId(), e.getMessage());
             }
           }
@@ -494,12 +527,13 @@ TODO: handle node roll failure - or timeout
                     new CompactionSink(x,
                     new UniqueSink(x,
                     new NSpecSink(x, this,
+                    new DaggerSink(x, this,
                     new Sequence.Builder(x)
                       .setArgs(new Sink[] {
                         compacted,
-                        new NodeSink(x) })
+                        new NodeSink(x, this) })
                       .build()
-                    ))));
+                    )))));
       final Sink sink = new Sequence.Builder(x)
                      .setArgs(new Sink[] {
                        processed,
@@ -528,7 +562,6 @@ TODO: handle node roll failure - or timeout
           break;
         }
       }
-      double ratio = ((Long) processed.getValue()) / ((Long) compacted.getValue()).doubleValue();
       double compressed = ((((Long) processed.getValue()) - ((Long) compacted.getValue())) / ((Long) processed.getValue()).doubleValue()) * 100.0;
       long compactionTime = System.currentTimeMillis() - startTime;
       double seconds = compactionTime / 1000.0;
@@ -537,7 +570,7 @@ TODO: handle node roll failure - or timeout
       double promotedS = ((Long) compacted.getValue()) / seconds;
       double min100K = minutes / ( (Long) compacted.getValue() / 100000.0 );
       StringBuilder report = new StringBuilder();
-      report.append("instance,processed,compacted,duration s,ratio,compressed,date");
+      report.append("instance,processed,compacted,duration s,compressed,date");
       report.append("\\n");
       report.append(System.getProperty("hostname", "loalhost"));
       report.append(",");
@@ -546,8 +579,6 @@ TODO: handle node roll failure - or timeout
       report.append(compacted.getValue());
       report.append(",");
       report.append(Math.round(seconds));
-      report.append(",");
-      report.append(String.format("%.2f", ratio));
       report.append(",");
       report.append(String.format("%.2f%%", compressed));
       report.append(",");
@@ -590,8 +621,9 @@ TODO: handle node roll failure - or timeout
               try {
                 Object response = client.cmd(cmd);
                 replies.put(cfg.getId(), response);
+                logger.info("secondary,purge,complete", cfg.getId());
               } catch (RuntimeException e) {
-                logger.error("secondary, purge, failed", cfg.getId(), e.getMessage());
+                logger.error("secondary,purge,failed", cfg.getId(), e.getMessage());
                 failures.put(cfg.getId(), e.getMessage());
               }
             }
@@ -700,7 +732,7 @@ TODO: handle node roll failure - or timeout
       name: 'NSpecSink',
       extends: 'foam.dao.ProxySink',
 
-      documentation: 'Creates new MedusaEntry for current Object',
+      documentation: `Creates new MedusaEntry for current Object. Consults Compaction entries to determine if this nspec should be compacted.`,
 
       javaCode: `
         public NSpecSink(X x, CompactionDAO self, ProxySink delegate) {
@@ -723,6 +755,7 @@ TODO: handle node roll failure - or timeout
           javaCode: `
           X x = getX();
           Logger logger = Loggers.logger(x, this, "put");
+          ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
           MedusaEntry entry = (MedusaEntry) obj;
           if ( entry.getObjectId() == null ) {
              if ( ! "bootstrap".equals(entry.getNSpecName()) ) {
@@ -731,17 +764,17 @@ TODO: handle node roll failure - or timeout
              return;
           }
 
-          Object nspec = x.get(entry.getNSpecName());
-           if ( nspec == null ) {
-            logger.warning("NSpec not found", entry.getNSpecName());
+          DAO mdao = null;
+          try {
+            mdao = (DAO) support.getMdao(x, entry.getNSpecName());
+          } catch (IllegalArgumentException e) {
+            logger.warning(e.getMessage());
+            // Don't throw, the caller can decide if compaction should
+            // be aborted. It is not uncommon for a service entry to
+            // be removed.
             return;
           }
-          if ( ! ( nspec instanceof DAO ) ) {
-            logger.warning("NSpec not DAO", entry.getNSpecName());
-            return;
-          }
-
-          FObject found = ((DAO) nspec).find(entry.getObjectId());
+          FObject found = mdao.find(entry.getObjectId());
           if ( found == null ) {
             if ( entry.getDop().equals(DOP.REMOVE) ) {
               // OK
@@ -784,8 +817,6 @@ TODO: handle node roll failure - or timeout
               MedusaEntry.OBJECT.clear(me);
               MedusaEntry.HASH.clear(me);
               me.setData(data);
-              DaggerService dagger = (DaggerService) x.get("daggerService");
-              me = dagger.link(x, me);
               getDelegate().put(me, sub);
             }
           }
@@ -794,10 +825,47 @@ TODO: handle node roll failure - or timeout
       ]
     },
     {
+      name: 'DaggerSink',
+      extends: 'foam.dao.ProxySink',
+
+      documentation: 'Links new MedusaEntry',
+
+      javaCode: `
+        public DaggerSink(X x, CompactionDAO self, ProxySink delegate) {
+          super(x, delegate);
+          setSelf(self);
+        }
+      `,
+
+      properties: [
+        {
+          name: 'self',
+          class: 'foam.dao.DAOProperty',
+          of: 'foam.nanos.medusa.CompactionDAO'
+        }
+      ],
+
+      methods: [
+        {
+          name: 'put',
+          javaCode: `
+          X x = getX();
+          Logger logger = Loggers.logger(x, this, "put");
+          MedusaEntry entry = (MedusaEntry) obj;
+          if ( ! getSelf().getDryRun() ) {
+            DaggerService dagger = (DaggerService) x.get("daggerService");
+            entry = dagger.link(x, entry);
+          }
+          getDelegate().put(entry, sub);
+          `
+        }
+      ]
+    },
+    {
       name: 'CompactibleSink',
       extends: 'foam.dao.ProxySink',
 
-      documentation: 'Skip entries which are not compactible',
+      documentation: 'Skip MedusaEntries which are not compactible:true. This is flag is seperate from the Compaction model which acts at the nspec level.',
 
       properties: [
         {
@@ -834,11 +902,28 @@ TODO: handle node roll failure - or timeout
 
       documentation: 'Sends MedusaEntry to nodes',
 
+      javaCode: `
+        public NodeSink(X x, CompactionDAO self) {
+          setX(x);
+          setSelf(self);
+        }
+      `,
+
       properties: [
+        {
+          name: 'self',
+          class: 'foam.dao.DAOProperty',
+          of: 'foam.nanos.medusa.CompactionDAO'
+        },
         {
           class: 'foam.dao.DAOProperty',
           name: 'dao',
-          javaFactory: 'return new MedusaBroadcast2NodesDAO(getX());'
+          javaFactory: `
+          if ( getSelf().getDryRun() )
+            return new foam.dao.NullDAO(getX(), MedusaEntry.getOwnClassInfo());
+
+          return new MedusaBroadcast2NodesDAO(getX());
+          `
         }
       ],
 

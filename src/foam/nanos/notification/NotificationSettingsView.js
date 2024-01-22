@@ -45,19 +45,12 @@ foam.CLASS({
     }
     ^ h1{
       opacity: 0.6;
-      font-size: 2.0rem;
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: 0.3px;
       text-align: left;
       color: $black;
       display: inline-block;
     }
     ^ h2{
       width: 150px;
-      font-size: 1.4rem;
-      font-weight: 300;
-      letter-spacing: 0.2px;
       text-align: left;
       color: $black;
       display: inline-block;
@@ -66,9 +59,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-size: 1.4rem;
       line-height: 2.86;
-      letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
       cursor: pointer;
@@ -89,17 +80,6 @@ foam.CLASS({
       margin-right: 20px;
       position: relative;
     }
-    ^ .status-Text{
-      width: 90px;
-      height: 14px;
-      font-size: 1.2rem;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #a4b3b8;
-      margin-left: 20px;
-      margin-right: 770px;
-      display: inline-block;
-    }
     ^ .personalProfile-Text{
       margin-top:20px;
       height: 20px;
@@ -119,10 +99,6 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-size: 1.2rem;
-      font-weight: normal;
-      display: inline-block;
-      letter-spacing: 0.2px;
       margin-left: 20px;
       color: $black;
       padding-bottom: 10px;
@@ -161,7 +137,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start('h1')
               .add(this.NotificationPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('title-light', 'personalProfile-Text')
             .end()
             .start()
               .addClass('checkbox')
@@ -174,7 +150,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start('h1')
               .add(this.EmailPreferencesHeading)
-              .addClass('personalProfile-Text')
+              .addClass('title-light', 'personalProfile-Text')
             .end()
             .start()
               .addClass('checkbox')
@@ -210,7 +186,7 @@ foam.CLASS({
                     checked: ! self.subject.user.disabledTopics.includes(key)
                   })
                 .end()
-                .start().addClass('checkBox-Text').add(key).end();
+                .start().addClass('p-legal-light', 'checkBox-Text').add(key).end();
             }
           }
       });
@@ -238,7 +214,7 @@ foam.CLASS({
                   name: 'notifsEmail',
                   value: key,
                   checked: ! self.subject.user.disabledTopicsEmail.includes(key)
-                }).end().start().addClass('checkBox-Text').add(key).end();
+                }).end().start().addClass('p-legal-light', 'checkBox-Text').add(key).end();
             }
           }
       });

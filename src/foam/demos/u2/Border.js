@@ -137,7 +137,7 @@ foam.CLASS({
         tab.style({display: tab.selected$.map(function(s) { return s ? '' : 'none'; })});
       }
 
-      this.SUPER(tab);
+      return this.SUPER.apply(this, arguments);
     }
   ]
 });

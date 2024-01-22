@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'FOAMException',
   implements: ['foam.core.Exception'],
   javaExtends: 'RuntimeException',
+
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
@@ -19,7 +20,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.core.XLocator',
-    'foam.i18n.TranslationService',
+    'static foam.i18n.TranslationService.t',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.List',
@@ -115,7 +116,8 @@ foam.CLASS({
       name: 'isClientException',
       class: 'Boolean',
       value: false,
-      hidden: true
+      hidden: true,
+      externalTransient: true
     }
   ],
 
@@ -134,30 +136,13 @@ foam.CLASS({
         return msg;
       },
       javaCode: `
-      try {
-        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-        if ( ts != null ) {
-          String locale = (String) XLocator.get().get("locale.language");
-          if ( SafetyUtil.isEmpty(locale) ) {
-            locale = "en";
-          }
-          return renderMessage(ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
-        }
-      } catch (NullPointerException e) {
-        // noop - Expected when not yet logged in, as XLocator is not setup.
-      }
-      return renderMessage(getExceptionMessage());
+      return renderMessage(t(XLocator.get(), getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
      `
     },
     {
       documentation: 'Perform template replacement on msg. Provides server side exceptionMessage template rendering, without translation.',
       name: 'renderMessage',
-      args: [
-        {
-          name: 'msg',
-          type: 'String'
-        }
-      ],
+      args: 'String msg',
       type: 'String',
       javaCode: `
       if ( SafetyUtil.isEmpty(msg) ) {

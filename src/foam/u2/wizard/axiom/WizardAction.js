@@ -14,8 +14,23 @@ foam.CLASS({
   `,
   properties: [
     {
+      name: 'label',
+      expression: null
+      // Overrride the factory so it doesn't automatically use name as the preferred default name
+      // comes from the wizard controller for wizard actions
+    },
+    {
+      name: 'message',
+      type: 'String'
+    },
+    {
       name: 'code',
-      value: function (slot) {
+      value: function (slot, X) {
+        if (X.message)
+          slot.analyticsAgent?.pub('event', {
+            name: X.message,
+            tags: ['wizard']
+          });
         const wizardController = slot.data$.get();
         wizardController.goNext();
       }

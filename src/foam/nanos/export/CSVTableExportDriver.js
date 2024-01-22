@@ -20,10 +20,15 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'sheetsCompatibleDates',
+      value: true
+    },
+    {
       name: 'outputter',
       hidden: true,
-      factory: function() {
-        return this.CSVTableOutputter.create();
+      expression: function(sheetsCompatibleDates) {
+        return this.CSVTableOutputter.create({sheetsCompatibleDates: sheetsCompatibleDates});
       }
     },
     {

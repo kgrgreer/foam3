@@ -7,8 +7,9 @@ p({
       .setGuid(true)
       .setJournalName("sessions")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setSAF(true)
       .setAuthorize(false)
-      .setDecorator(new foam.dao.ValidatingDAO(x, null))
+      .setDecorator(new foam.dao.ValidatingDAO(x, new foam.dao.NullDAO(x, foam.nanos.session.Session.getOwnClassInfo())))
       .build();
   """
 })

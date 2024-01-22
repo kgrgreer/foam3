@@ -25,7 +25,10 @@ foam.CLASS({
     'foam.parse.FScriptParser',
     'java.util.Date',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
+    'java.time.LocalDate',
+    'java.time.LocalDateTime',
+    'java.time.ZoneId'
   ],
 
   methods: [
@@ -45,13 +48,6 @@ foam.CLASS({
     StringPStream sps    = new StringPStream();
     PStream ps = sps;
     ParserContext px = new ParserContextImpl();
-
-    // var parser2 = new FScriptParser(net.nanopay.payroll.PayrollTransaction.getOwnClassInfo());
-    // net.nanopay.payroll.PayrollTransaction tx = new net.nanopay.payroll.PayrollTransaction();
-    // tx.setPayPeriods(2);
-    // sps.setString("1.2 * (24000 / payPeriods)");
-    // var r = ((Double)((Expr) parser2.parse(sps, px).value()).f(tx));
-    // test(((Double)((Expr) parser2.parse(sps, px).value()).f(tx))==10000.0, "expected: 1.2 * (24000/2) == 14400.0, found: "+r);
 
     var parser = new FScriptParser(FScriptParserTestUser.FIRST_NAME);
     sps.setString("address==null");
@@ -239,6 +235,70 @@ foam.CLASS({
     sps.setString("birthday>" + new SimpleDateFormat("yyyy-MM-dd").format(oldDate));
     test(((Predicate) parser.parse(sps, px).value()).f(user), "birthday>"+today.toString());
 
+    var birthday = Date.from(LocalDate.now().minusYears(20).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(birthday);
+
+    sps.setString("YEARS(birthday) > 18");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "YEARS(now-20y)>18");
+
+    sps.setString("YEARS(birthday) == 20");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "YEARS(now-20y)==20");
+
+    sps.setString("YEARS(birthday) < 21");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "YEARS(now-20y)<21");
+
+    // just under 20 years
+    birthday = Date.from(LocalDate.now().minusYears(20).plusMonths(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(birthday);
+
+    sps.setString("YEARS(birthday) == 19");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "YEARS(now-(20y +1m))==19");
+
+    var month = Date.from(LocalDate.now().minusMonths(14).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(month);
+
+    sps.setString("MONTHS(birthday) == 14");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MONTHS(now - 14m)==14");
+
+    sps.setString("DAYS(birthday) >= 425 && DAYS(birthday) <= 427");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "DAYS(now - 14m)~=426");
+
+    month = Date.from(LocalDate.now().minusMonths(14).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(month);
+
+    sps.setString("MONTHS(birthday) == 13");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MONTHS(now - 14m + 1d)==13");
+
+    var day = Date.from(LocalDate.now().minusDays(365).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(day);
+
+    sps.setString("DAYS(birthday) == 365");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "DAYS(now - 365d)==365");
+
+    var hour = Date.from(LocalDateTime.now().minusDays(2).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(hour);
+
+    sps.setString("HOURS(birthday) == 48");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "HOURS(now - 2d)==48");
+
+    hour = Date.from(LocalDateTime.now().minusDays(2).plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(hour);
+
+    sps.setString("HOURS(birthday) == 47");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "HOURS(now - 2d + 30m)==47");
+
+    var minute = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(minute);
+
+    sps.setString("MINUTES(birthday) == 120");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MINUTES(now - 2h)==120");
+
+    minute = Date.from(LocalDateTime.now().minusHours(2).plusSeconds(30).atZone(ZoneId.systemDefault()).toInstant());
+    user.setBirthday(minute);
+
+    sps.setString("MINUTES(birthday) == 119");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "MINUTES(now - 2h + 30s)==119");
+
     sps.setString("emailVerified==false");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "emailVerified==false");
 
@@ -301,13 +361,28 @@ foam.CLASS({
     test("Toronto".equals(result.toString()), "if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }"+result.toString()+" class "+result.getClass().getName());
 
     sps.setString("address instanceof foam.nanos.auth.Address");
-    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instanceof foam.nanos.auth.Address");
 
     sps.setString("!(address instanceof foam.nanos.auth.User)");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "!(address instanceof foam.nanos.auth.User)");
 
     sps.setString("address instanceof foam.nanos.auth.Address");
-    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instance foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address instanceof foam.nanos.auth.Address");
+
+    sps.setString("address classof foam.nanos.auth.Address");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address classOf foam.nanos.auth.Address");
+
+    sps.setString("address classof foam.nanos.auth.PKAddress");
+    test(! ( ((Predicate) parser.parse(sps, px).value()).f(user)), "! address classOf foam.nanos.auth.PKAddress");
+
+    user.setAddress(new foam.nanos.auth.PKAddress.Builder(x).build());
+    sps.setString("address classof foam.nanos.auth.PKAddress");
+    test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "address classOf foam.nanos.auth.PKAddress");
+
+    sps.setString("address classof foam.nanos.auth.Address");
+    test( ! ( ((Predicate) parser.parse(sps, px).value()).f(user)), "! address classOf foam.nanos.auth.Address");
+
+    user.setAddress(addr);
 
     sps.setString("SYSTEM_USER_ID==1");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "SYSTEM_USER_ID==1");

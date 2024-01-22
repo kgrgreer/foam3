@@ -120,7 +120,6 @@ foam.CLASS({
     }
 
     ^link-mode {
-      font-size: 1.4rem;
       margin-left: 16px;
       cursor: pointer;
     }
@@ -539,7 +538,7 @@ foam.CLASS({
         // clear all filters
         if ( this.filterController.isAdvanced ) return;
         this.filterController.clearAll();
-        this.generalSearchField.view.data = '';
+        if ( this.generalSearchField ) this.generalSearchField.view.data = '';
         this.mementoString = '';
       }
     },

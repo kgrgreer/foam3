@@ -13,7 +13,7 @@
 
   javaImports: [
     'foam.core.XLocator',
-    'foam.i18n.TranslationService',
+    'static foam.i18n.TranslationService.t',
     'foam.util.SafetyUtil'
   ],
 
@@ -226,11 +226,8 @@
         String delimiter = getDelimiter();
         String decimalCharacter = getDecimalCharacter();
         try {
-          TranslationService ts = (TranslationService) x.get("translationService");
-          String locale = (String) x.get("locale.language");
-
-          delimiter = ts.getTranslation(locale, "Currency.delimiter", this.getDelimiter());
-          decimalCharacter = ts.getTranslation(locale, "Currency.decimalCharacter", this.getDecimalCharacter());
+          delimiter = t(x, "Currency.delimiter", this.getDelimiter());
+          decimalCharacter = t(x, "Currency.decimalCharacter", this.getDecimalCharacter());
         } catch (NullPointerException e) {
           foam.nanos.logger.Loggers.logger(x, this).debug(e);
         }
@@ -259,6 +256,8 @@
     },
     {
       name: 'formatPrecision',
+      args: 'Long amount',
+      type: 'String',
       documentation: `
         Given a number, display it as a currency using the appropriate
         precision. Use a period '.' for the decimal place and do not
@@ -266,21 +265,24 @@
         Suitable for use when exporting to CSV.
       `,
       code: function(amount) {
-        return (amount/Math.pow(10, this.precision)).toFixed(this.precision);
+        return this.floatAmount(amount).toFixed(this.precision);
       },
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          class: 'foam.core.UnitValue',
-          name: 'amount'
-        }
-      ],
-      type: 'String',
       javaCode: `
-        return String.format("%." + getPrecision() + "f", amount/Math.pow(10, getPrecision()));
+        return String.format("%." + getPrecision() + "f", floatAmount(amount));
+      `
+    },
+    {
+      name: 'floatAmount',
+      args: 'Long amount',
+      type: 'Double',
+      documentation: `
+        Convert from internal long format to that of the currency
+      `,
+      code: function(amount) {
+        return amount / Math.pow(10, this.precision);
+      },
+      javaCode: `
+        return Double.valueOf(amount) / (double) Math.pow(10, getPrecision());
       `
     }
   ]

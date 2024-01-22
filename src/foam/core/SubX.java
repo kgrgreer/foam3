@@ -65,7 +65,7 @@ public class SubX extends ProxyX {
   @Override
   public X put(Object key, Object value) {
     if ( getX() instanceof ProxyX ) {
-      getX().put(key, value);
+      setX(getX().put(key, value));
       serviceKeys_.add(key);
       return this;
     }
@@ -75,7 +75,7 @@ public class SubX extends ProxyX {
   @Override
   public X putFactory(Object key, XFactory factory) {
     if ( getX() instanceof ProxyX ) {
-      getX().putFactory(key, factory);
+      setX(getX().putFactory(key, factory));
       serviceKeys_.add(key);
       return this;
     }

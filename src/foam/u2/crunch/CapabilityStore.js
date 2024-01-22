@@ -5,46 +5,6 @@
  */
 
 foam.CLASS({
-  class: 'foam.core.Model',
-
-  package: 'foam.u2.crunch',
-  name: 'TestView',
-  extends: 'foam.u2.View',
-
-  properties: [
-    {
-      name: 'something',
-      factory: () => ({ a: 1 })
-    },
-    {
-      class: 'String',
-      name: 'company',
-      value: 'Nanopay',
-      view: {
-        // Also read only, but usually don't favour this over ControllerMode
-        // but... really useful for custom views
-        class: 'foam.u2.view.ValueView'
-      }
-    }
-  ],
-
-  methods: [
-    function render() {
-      this.something.a = 2;
-      this
-        .start('h1').add('hello').end() // <h1>hello</h1>
-        .start()
-          .start('p')
-            .startContext({ data: this, controllerMode: foam.u2.ControllerMode.VIEW /* read only */ })
-              .start(this.COMPANY).end()
-            .endContext()
-          .end()
-        .end()
-    }
-  ]
-});
-
-foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'CapabilityStore',
   extends: 'foam.u2.View',
@@ -62,6 +22,7 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.ControllerMode',
+    'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
     'foam.u2.Element',
     'foam.u2.Tab',
     'foam.u2.Tabs',
@@ -105,8 +66,6 @@ foam.CLASS({
     }
 
     ^label-title {
-      font-weight: 900;
-      font-size: 3.2rem;
       margin: 24px 16px;
       margin-bottom: 8px;
     }
@@ -115,7 +74,6 @@ foam.CLASS({
       margin: 16px;
       margin-top: 0;
       color: #9ba1a6;
-      font-size: 1.8rem;
     }
 
     ^category {
@@ -252,18 +210,17 @@ foam.CLASS({
       this.SUPER();
       this.onDetach(this.crunchService.sub('grantedJunction', this.onChange));
       var self = this;
-      globalThis.cstore = self;
 
       self
         .addClass(self.myClass())
-        .start('p').addClass(this.myClass('label-title'))
+        .start('p').addClass('h100', this.myClass('label-title'))
           .add(this.TITLE)
         .end()
-        .start('p').addClass(this.myClass('label-subtitle'))
+        .start('p').addClass('p-lg', this.myClass('label-subtitle'))
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
         .add(this.slot(async function(junctions, featuredCapabilities, themeDomain) {
-          var themeCaps =  await self.themeDomainDAO.find(self.window.location.hostname).then(function(ret) {
+          var themeCaps =  await themeDomain?.then(function(ret) {
             return ret?.getCapabilities(self.ctrl.__subContext__).dao.select();
           });
           if ( themeCaps?.array?.length != 0 ) return self.renderFeatured(themeCaps.array);
@@ -508,14 +465,16 @@ foam.CLASS({
           controllerMode: this.ControllerMode.VIEW
         });
       }
-      this.crunchController.createWizardSequence(cap, x)
-        .reconfigure('CheckPendingAgent', { showToast: showToast })
-          .execute().then(() => {
-            this.wizardOpened = false
-          });
+      let runner = foam.u2.crunch.WizardRunner.create({
+        source: cap,
+        wizardType: 'UCJ'
+      }, this);
+      runner.sequence.reconfigure('CheckPendingAgent', { showToast: showToast });
+      runner.sequence.add(this.CapabilityStoreAgent);
+      await runner.launch();
+      this.wizardOpened = false;
     }
   ],
-
   listeners: [
     {
       name: 'onChange',

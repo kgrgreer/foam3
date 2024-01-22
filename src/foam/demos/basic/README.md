@@ -2,6 +2,8 @@
 
 A simple BASIC to JS compiler.
 
+[Try it Online](https://codepen.io/kgr/details/yLQyLjR)
+
 Designed to run BASIC games from the classic book [BASIC Computer Games](https://www.amazon.com/BASIC-Computer-Games-Microcomputer-David/dp/0894800523). Source code for the games is available from the [Vintage Basic Website](http://vintage-basic.net/games.html) or from this [Github Repo](https://github.com/GReaperEx/bcg).
 
 If the compiled code produces a syntax error, you can find out more information by pasting the code into this [Online Validator](https://esprima.org/demo/validate.html).
@@ -17,7 +19,6 @@ If the compiled code produces a syntax error, you can find out more information 
 
 ## TODO:
   * Make work on command-line with NodeJS
-  * [Give More Retro Display](http://aleclownes.com/2017/02/01/crt-display.html)
   * Maybe add graphics and sound support to run old Vic 20 or [MC-10](https://mymc10.tripod.com/software.htm) games
   * More [BASIC Programs](https://mymc10.tripod.com/commonbasic.htm)
   * Fix ACE editor to provide syntax highlighting

@@ -143,7 +143,7 @@ foam.CLASS({
       },
       preSet: function(o, n) {
         if ( n?.wizardletIndex != o?.wizardletIndex )
-          this.wizardlets[n.wizardletIndex].load({});
+          this.tryWizardletLoad(this.wizardlets[n.wizardletIndex], n);
         return n;
       },
       postSet: function (o, n) {
@@ -220,7 +220,7 @@ foam.CLASS({
             goNextAction.buttonStyle = 'PRIMARY';
 
             // Copy defaults from original NEXT action
-            const copyProperties = ['isAvailable', 'isEnabled'];
+            const copyProperties = ['isAvailable', 'isEnabled', 'label'];
             for ( const k of copyProperties ) {
               if ( ! goNextAction[k] ) goNextAction[k] = this.GO_NEXT[k];
             }
@@ -279,6 +279,7 @@ foam.CLASS({
         if ( ! wizardlet.isVisible ) continue;
 
         if (
+          wizardlet.isAvailable &&
           wizardlet.sections.length > 0 &&
           wizardlet.sections[p.sectionIndex].isAvailable
         ) return p;
@@ -559,6 +560,7 @@ foam.CLASS({
       name: 'goNext',
       label: 'Next',
       buttonStyle: 'PRIMARY',
+      isAvailable: () => true,
       isEnabled: function (canGoNext, isLoading_) {
         console.debug('what is canGoNext', canGoNext)
         return canGoNext && ! isLoading_;

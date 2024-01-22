@@ -44,6 +44,10 @@ foam.CLASS({
     {
       name: 'resetPasswordSection',
       help: 'Enter your account email and we will send you an email with a link to create a new one.'
+    },
+    {
+      name: 'resetPasswordWizardSection',
+      properties: [ 'email', 'username' ]
     }
   ],
 
@@ -88,12 +92,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'showSubmitAction',
-      value: true,
-      hidden: true
-    },
-    {
-      class: 'Boolean',
       name: 'resetByCode',
       hidden: true
     }
@@ -105,9 +103,6 @@ foam.CLASS({
       label: 'Submit',
       buttonStyle: 'PRIMARY',
       section: 'resetPasswordSection',
-      isAvailable: function(showSubmitAction) {
-        return showSubmitAction
-      },
       isEnabled: function(errors_) {
         return ! errors_;
       },
@@ -131,21 +126,23 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
+          if ( ! this.resetByCode ) this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
-            msg = this.USER_NOT_FOUND_ERROR_MSG + this.email;
+            msg = err.data.message =  this.USER_NOT_FOUND_ERROR_MSG + this.email;
           }
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
             this.usernameRequired = true;
-            msg = this.DUPLICATE_ERROR_MSG;
+            msg =  err.data.message = this.DUPLICATE_ERROR_MSG;
           }
-          this.ctrl.add(this.NotificationMessage.create({
-            message: msg,
-            type: this.LogLevel.ERROR,
-            transient: true
-          }));
+          if ( ! X.wizardController?.status == 'IN_PROGRESS' ) {
+            this.ctrl.add(this.NotificationMessage.create({
+              message: msg,
+              type: this.LogLevel.ERROR,
+              transient: true
+            }));
+          }
           throw err;
         }
       }

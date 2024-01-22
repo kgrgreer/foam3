@@ -1,0 +1,175 @@
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "bootstrap"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "alarmDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localAlarmDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localAnalyticEventDAO",
+  loadable: true
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "analyticEventDAO",
+  loadable: true
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "benchmarkResultDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localBenchmarkResultDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "capabilityPayloadDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "capabilityPayloadRecordDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "cronJobEventDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec:  "localCronJobEventDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "CSPViolationsDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "counterDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localEmailMessageDAO",
+  loadable: true
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "emailMessageDAO",
+  loadable: true
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "eventRecordDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localEventRecordDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "medusaTestObjectDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "monitorReportDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localNotificationDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "notificationDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "omNameDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "bareOmNameDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ruleHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "scriptEventDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localScriptEventDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localSessionDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "sessionDAO",
+  loadable: false
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketDAO",
+  compactible: true,
+  sink: {
+    class: "foam.nanos.ticket.TicketCompactionSink",
+    predicate: {
+      class: "foam.mlang.predicate.FScriptPredicate",
+      query: 'status != "CLOSED"'
+    }
+  }
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketCommentDAO",
+  compactible: true,
+  sink: {
+    class: "foam.nanos.ticket.TicketCommentCompactionSink",
+    predicate: {
+      class: "foam.mlang.predicate.FScriptPredicate",
+      query: 'status != "CLOSED"'
+    }
+  }
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ticketHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "localTicketCommentHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "ticketCommentHistoryDAO"
+})
+p({
+  class: "foam.nanos.medusa.Compaction",
+  nSpec: "userCapabilityJunctionHistoryDAO"
+})

@@ -13,11 +13,6 @@ foam.CLASS({
 
   cssTokens: [
     {
-      name: 'fontFamily',
-      value: '$font1',
-      fallback: ' -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif'
-    },
-    {
       name: 'background',
       value: '$grey50',
       fallback: 'white'
@@ -25,16 +20,10 @@ foam.CLASS({
   ],
   css: `
     :root{
-      font-size: 62.5%; /* sets default to 10px so 14px would be 1.4rem */
-      --max-height: calc(100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0))
+      --max-height: calc(100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0));
     }
 
     body {
-      background: $background;
-      color: $black;
-      font-family: $fontFamily;
-      font-size: 1.4rem;
-      letter-spacing: 0.014em;
       margin: 0;
       padding-top: env(safe-area-inset-top, 0);
       padding-right: env(safe-area-inset-right, 0);
@@ -49,99 +38,6 @@ foam.CLASS({
       margin: 0;
       margin-left: 2ch;
       padding-left: 1ch;
-    }
-
-    /* TYPOGRAPHY */ 
-    .h100{
-      font-style: normal;
-      font-weight: 700;
-      font-size: 3.5rem;
-      line-height: 1.14;
-      margin: 0;
-    }
-    .h200{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 3rem;
-      line-height: 1.1;
-      margin: 0;
-    }
-    .h300{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2.4rem;
-      line-height: 1.17;
-      margin: 0;
-    }
-    .h400{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2rem;
-      line-height: 1.2;
-      margin: 0;
-    }
-    .h500{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 1.6rem;
-      line-height: 1.25;
-      margin: 0;
-    }
-    .h600{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 1.4rem;
-      line-height: 1.29;
-      margin: 0;
-    }
-    .p{
-      font-style: normal;
-      font-weight: normal;
-      font-size: 1.4rem;
-      line-height: 1.71;
-      margin: 0;
-    }
-    .p-lg{
-      font-size: 1.8rem;
-      font-style: normal;
-      font-weight: normal;
-      line-height: 1.78;
-      margin: 0;
-    }
-    .p-semiBold{
-      font-size: 1.4rem;
-      font-style: normal;
-      font-weight: 600;
-      line-height: 1.71;
-      margin: 0;
-    }
-    .p-bold{
-      font-style: normal;
-      font-weight: 700;
-      font-size: 1.4rem;
-      line-height: 1.71;
-      margin: 0;
-    }
-    .p-legal{
-      font-style: normal;
-      font-weight: 500;
-      font-size: 1.2rem;
-      line-height: 1.17;
-      margin: 0;
-    }
-    .p-legal-light {
-      font-style: normal;
-      font-weight: 400;
-      font-size: 1.2rem;
-      line-height: 1.17;
-      margin: 0;
-    }
-    .p-label{
-      font-style: normal;
-      font-weight: 600;
-      font-size: 1.2rem;
-      line-height: 1.17;
-      margin: 0;
     }
 
     /* SHADOWS */
@@ -199,17 +95,6 @@ foam.CLASS({
       border-radius: 100px;
       background-color: #a4b3b8;
     }
-    ^ .generic-status {
-      display: inline-block;
-      font-size: 1.2rem;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.67;
-      letter-spacing: 0.017em;
-      text-align: center;
-      color: #ffffff;
-    }
     textarea:focus{
       outline: none;
     }
@@ -265,14 +150,6 @@ foam.CLASS({
     display: block;
   }
 
-  /* Inherit fonts for inputs and buttons */
-  input,
-  button,
-  textarea,
-  select {
-    font: inherit;
-  }
-
   /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
   @media (prefers-reduced-motion: reduce) {
     html:focus-within {
@@ -289,35 +166,10 @@ foam.CLASS({
     }
   }
 
-  .larger-line-height {
-    line-height: 1.67;
-  }
-
-  .large-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 2.8rem;
-  }
-
   .flexCenter {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  /* mobile */
-  @media only screen and (min-width: 321px) {
-    .large-title { font-size: 3.5rem; }
-  }
-
-  /* tablet */
-  @media only screen and (min-width: 768px) {
-    .large-title { font-size: 6.4rem; }
-  }
-
-  /* desktop */
-  @media only screen and (min-width: 960px) {
-    .large-title { font-size: 8.4rem; }
   }
   `
 });

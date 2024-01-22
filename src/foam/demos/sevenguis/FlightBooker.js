@@ -29,7 +29,6 @@ foam.CLASS({
 
   css: `
     ^ { padding: 10px; }
-    ^title { font-size: 1.8rem; }
     ^title, ^ button, ^ input,  ^ select {
       width: 210px; height: 28px; margin-top: 16px; display: flex;
     }
@@ -79,7 +78,7 @@ foam.CLASS({
       this.SUPER();
       this.
         addClass(this.myClass()).
-        start('div').addClass(this.myClass('title')).add('Book Flight').end().
+        start('div').addClass('p-lg', this.myClass('title')).add('Book Flight').end().
         add(this.IS_RETURN.__).
         add(this.DEPART_DATE.__).
         add(this.RETURN_DATE.__).

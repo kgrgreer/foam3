@@ -1,0 +1,457 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaConsensusMonitor",
+  "lazy":false,
+  "service": {
+    "class":"foam.nanos.medusa.MedusaConsensusMonitor"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"electoralService",
+  "serve":true,
+  "boxClass":"foam.nanos.medusa.ElectoralServiceSkeleton",
+  "authenticate": true,
+  "serviceScript":"""
+    return new foam.nanos.medusa.ElectoralServiceServer.Builder(x)
+      .build();
+  """,
+  "client":"{ \"class\":\"foam.nanos.medusa.ClientElectoralService\" }"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaRegistry",
+  "lazy":false,
+  "service": {"class":"foam.nanos.medusa.MedusaRegistryService"}
+})
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"promotedPurgeAgent",
+//   "lazy": false,
+//   "serviceClass":"foam.nanos.medusa.PromotedPurgeAgent"
+// })
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"promotedClearAgent",
+  "lazy": false,
+  "serviceClass":"foam.nanos.medusa.PromotedClearAgent"
+})
+
+// NOTE: see MedusaInternalDAO for access to this DAO.
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "internalMedusaDAO",
+  "authenticate": false,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setGuid(true)
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.INDEX
+      })
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.HASH
+      })
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.CONSENSUS_COUNT
+      })
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.PROMOTED
+      })
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.INDEX,
+        foam.nanos.medusa.MedusaEntry.CONSENSUS_COUNT
+      })
+      .addPropertyIndex(new foam.core.PropertyInfo[] {
+        foam.nanos.medusa.MedusaEntry.INDEX,
+        foam.nanos.medusa.MedusaEntry.PROMOTED
+      });
+   `
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntryDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(x.get("internalMedusaDAO"))
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setEnableInterfaceDecorators(false)
+      .setDecorator(new foam.nanos.medusa.ReplayMediatorDAO.Builder(x)
+        .setDelegate(new foam.nanos.medusa.MedusaEntryNoRemoveDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+          .build())
+        .build())
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.medusa.MedusaEntry.ID) })
+      .build();
+  `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntryMediatorDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.nanos.medusa.ReplayingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.CompactionDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.SecondaryMediatorDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.PrimaryMediatorDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcast2NodesDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+      .build())
+      .build())
+      .build())
+      .build())
+      .build())
+      .build();
+   `
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaMediatorDAO",
+  "serve": true,
+  "lazy": false,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setEnableInterfaceDecorators(false)
+      .setDecorator(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaSetNodeDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcastNARegionNodesDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+      .build())
+      .build())
+      .build())
+      .build())
+      .build())
+      .build()
+   `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "compactionDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.Compaction.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("compactions")
+      .setRuler(false)
+      .build()
+      .orderBy(foam.mlang.MLang.DESC(foam.nanos.medusa.Compaction.ID));
+  """,
+  "client": "{\"of\":\"foam.nanos.medusa.Compaction\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"healthDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(foam.nanos.medusa.MedusaHealth.getOwnClassInfo())
+    .setDecorator(new foam.nanos.medusa.MedusaHealthStatusDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaHealth.getOwnClassInfo())).build())
+    .setCluster(false)
+    .build()
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.medusa.MedusaHealth"
+  }
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaHealthDAO",
+  "serve":true,
+  "documentation":"Intended for Analytics charting",
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(foam.nanos.medusa.MedusaHealth.getOwnClassInfo())
+    .setInnerDAO(x.get("healthDAO"))
+    .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.medusa.MedusaHealth"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"ruleHistoryDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.ruler.RuleHistory.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.NO_JOURNAL)
+      .setJournalName("ruleHistory")
+      .setSAF(true)
+      .setRuler(false)
+      .setPm(true)
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(foam.nanos.ruler.RuleHistory.CREATED))
+        .setSize(100000)
+        .build())
+      .build();
+    """,
+    "client":"{\"of\":\"foam.nanos.ruler.RuleHistory\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sfManager",
+  "lazy": false,
+  "service": {
+    "class": "foam.nanos.medusa.sf.MedusaSFManager",
+    "replayStrategy": 30
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sfBroadcastReceiverDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.box.sf.SFEntry.getOwnClassInfo())
+      .setNullify(true)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setDelegate(new foam.nanos.medusa.sf.SFBroadcastReceiverDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.box.sf.SFEntry.getOwnClassInfo()))
+      .build())
+      .build();
+   `
+})
+
+// Clustered OMs
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "CCOMLogger",
+  "description":"Clustered Candlestick OM Logger",
+  "service": {
+    class:"foam.nanos.om.OMLogger",
+    foldManagerContextKey: "ccomFoldManager"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCcom1MinuteDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .setSAF(true)
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "com1MinuteDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setInnerDAO(x.get("localCcom1MinuteDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.analytics.Candlestick.COUNT) })
+      .build();
+  """,
+  "client": """
+    {
+      "of":"foam.nanos.analytics.Candlestick"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCcom5MinuteDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .setSAF(true)
+      .setDecorator(new foam.nanos.alarming.CandlestickAlarmDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.analytics.Candlestick.getOwnClassInfo())).build())
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "com5MinuteDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setInnerDAO(x.get("localCcom5MinuteDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.analytics.Candlestick.COUNT) })
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCcomHourlyDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .setSAF(true)
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "comHourlyDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setInnerDAO(x.get("localCcomHourlyDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.analytics.Candlestick.OPEN_VALUE_TIME) })
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCcomDailyDAO",
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("comDaily")
+      .setSAF(true)
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "comDailyDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
+      .setInnerDAO(x.get("localCcomDailyDAO"))
+      .setOrder(new foam.mlang.order.Comparator[] { foam.mlang.MLang.DESC(foam.nanos.analytics.Candlestick.OPEN_VALUE_TIME) })
+      .build();
+  """,
+  "client": "{\"of\":\"foam.nanos.analytics.Candlestick\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ccomFoldManager",
+  "serviceScript": """
+    return new foam.nanos.analytics.DAOFoldManager.Builder(x)
+      .setDao((foam.dao.DAO) x.get("localCcom1MinuteDAO"))
+      .setPeriodLengthMs(60*1000)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "com5MinuteReduceManager",
+  "serviceScript": """
+    return new foam.nanos.analytics.DAOReduceManager.Builder(x)
+      .setSourceDAO((foam.dao.DAO) x.get("localCcom1MinuteDAO"))
+      .setDestDAO((foam.dao.DAO) x.get("localCcom5MinuteDAO"))
+      .setPeriodLengthMs(5*60*1000)
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "comHourlyReduceManager",
+  "serviceScript": """
+    return new foam.nanos.analytics.DAOReduceManager.Builder(x)
+      .setSourceDAO((foam.dao.DAO) x.get("localCcom5MinuteDAO"))
+      .setDestDAO((foam.dao.DAO) x.get("localCcomHourlyDAO"))
+      .setPeriodLengthMs(60*60*1000)
+      .build();
+  """
+})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "comDailyReduceManager",
+  "serviceScript": """
+    return new foam.nanos.analytics.DAOReduceManager.Builder(x)
+      .setSourceDAO((foam.dao.DAO) x.get("localCcomHourlyDAO"))
+      .setDestDAO((foam.dao.DAO) x.get("localCcomDailyDAO"))
+      .setPeriodLengthMs(24*60*60*1000)
+      .build();
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaTestObjectDAO",
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.test.MedusaTestObject.getOwnClassInfo())
+      .setFuid(true)
+      .setPm(true)
+      .build();
+    `,
+  "client":"{\"of\":\"foam.nanos.medusa.test.MedusaTestObject\"}"
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sfTestObjectDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("sftestobjects")
+      .setSAF(true)
+      .setFuid(true)
+      .setOf(foam.box.sf.SFTestObject.getOwnClassInfo())
+      .build();
+    `,
+  "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
+})

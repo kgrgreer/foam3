@@ -40,8 +40,6 @@ foam.CLASS({
 
     ^ .action-button {
       border-radius: 10px;
-      font-size: 2.0rem;
-      font-weight: bold;
       padding: 5px;
       width: 100px;
     }
@@ -77,12 +75,12 @@ foam.CLASS({
           });
 
           return self.E()
-            .add(arraySlot.map((visibilities) => {
+            .add(arraySlot.map(visibilities => {
               self.visibleSections = sections.filter((s, i) => visibilities[i]);
               return this.E()
                 .startContext({ controllerMode: 'EDIT' })
                   .start().addClass('choicePosition')
-                    .start('button').addClass('action-button').add('<').on('click', () => {
+                    .start('button').addClass('h400', 'action-button').add('<').on('click', () => {
                       this.currentIndex -= 1;
                     })
                     .attrs({
@@ -94,7 +92,7 @@ foam.CLASS({
                       choices: self.visibleSections.map((s, i) => [i, s.title]),
                       data$: self.currentIndex$
                     }).addClass('tag-Select')
-                    .start('button').addClass('action-button').add('>').on('click', () => {
+                    .start('button').addClass('h400', 'action-button').add('>').on('click', () => {
                       this.currentIndex += 1;
                     })
                     .attrs({
@@ -105,10 +103,12 @@ foam.CLASS({
                   .end()
                 .endContext()
                 .add(this.slot(function(currentIndex) {
+                  let section = self.visibleSections[currentIndex];
                   return this.E()
-                    .tag(self.SectionView, {
+                    .tag(section.view, {
                       data$: self.data$,
-                      section: this.visibleSections[this.currentIndex],
+                      of$: self.of$,
+                      section: section,
                       showTitle: true
                     });
                 }));

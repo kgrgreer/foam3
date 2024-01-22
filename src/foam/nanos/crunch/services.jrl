@@ -88,8 +88,10 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
       .setPm(true)
-      .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
+      .setDecorator(new foam.nanos.crunch.UserCapabilityJunctionExpiredDAO.Builder(x)
+        .setDelegate(new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()))
+          .build())
         .build())
       .build();
   """,
@@ -268,6 +270,7 @@ p({
   "name":"capabilityPayloadDAO",
   "lazy":true,
   "serve":true,
+  "authNotes":"A NullDAO which disables put() and delegates find() and select() to localCapabilityDAO.",
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)

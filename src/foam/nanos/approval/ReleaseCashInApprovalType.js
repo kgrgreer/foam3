@@ -11,20 +11,21 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.ServiceProviderAware'
   ],
+
   properties: [
-	{
-		class: 'String',
-		name: 'id'
-	},
-	{
-		class: 'Reference',
-		of: 'foam.nanos.approval.ApprovalRequestClassification',
-		name: 'classification'
-	},
-	{
-		class: 'Reference',
-		of: 'foam.nanos.auth.ServiceProvider',
-		name: 'spid'
-	}
+  	{
+  		class: 'String',
+  		name: 'id'
+  	},
+  	{
+  		class: 'Reference',
+  		of: 'foam.nanos.approval.ApprovalRequestClassification',
+  		name: 'classification'
+  	},
+  	{
+  		class: 'Reference',
+  		of: 'foam.nanos.auth.ServiceProvider',
+  		name: 'spid'
+  	}
   ]
 });

@@ -38,12 +38,6 @@ foam.CLASS({
       documentation: `Custom host mapping that will directly serve the index file for the specified virtual host.`
     },
     {
-      class: 'Boolean',
-      name: 'isResourceStorage',
-      documentation: `If set to true, generate index file from jar file resources.`,
-      value: false
-    },
-    {
       class: 'String',
       name: 'defaultHost'
     },
@@ -93,6 +87,8 @@ foam.CLASS({
       HashMap    headConfig          = (HashMap)   theme.getHeadConfig();
       AppConfig  appConfig           = (AppConfig) x.get("appConfig");
       String     queryString         = ((HttpServletRequest)request).getQueryString();
+      HttpServer server              = (HttpServer) this.getServletConfig().getServletContext().getAttribute("httpServer");
+
       Boolean    customFavIconFailed = false;
       Boolean    customScriptsFailed = false;
       Boolean    customFontsFailed   = false;
@@ -145,20 +141,14 @@ foam.CLASS({
 
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
-        if ( this.getIsResourceStorage() ) {
+        if ( server.getIsResourceStorage() ) {
           // jar file deployment
-          out.print("<script language=\\"javascript\\" src=\\"/foam-bin-");
+          out.print("<script async language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
         } else {
           // development
-          if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
-          } else {
-            out.println("<script language=\\"javascript\\" src=\\"/service/liveScriptBundler?");
-            if ( ! SafetyUtil.isEmpty(queryString) ) out.println(queryString);
-            out.println("\\"></script>");
-          }
+          out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
         }
       }
 
@@ -236,7 +226,15 @@ foam.CLASS({
         out.println("<!-- App Color Scheme, Logo, & Web App Name -->");
         out.print("<foam\\nclass=\\""+ getController() +"\\"\\nid=\\"ctrl\\"\\nwebApp=\\"");
         out.print(theme.getAppName());
-        out.println("\\">\\n</foam>");
+        out.println("\\">");
+
+        out.print("<div style=\\" text-align:center;height:100%;display: flex;vertical-align:middle;width: 100%;flex-direction: column;justify-content: center;align-items: center; \\">");
+        out.print("<img style=\\" max-width: 400px; \\" src=\\"");
+        out.print(theme.getLargeLogo());
+        out.println("\\"></img>");
+        out.print("<h3 style=\\"font-family: system-ui, sans-serif; \\">Loading....</h3>");
+        out.println("</div>");
+        out.println("</foam>");
 
         out.println("</body>");
         out.println("</html>");

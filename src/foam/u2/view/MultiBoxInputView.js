@@ -34,7 +34,6 @@ foam.CLASS({
       height: 48px;
       text-align: center;
       margin: 8px 14px 8px 0;
-      font-size: 2.2rem;
     }
     ^ .wrong-code {
       border-color: #f91c1c;
@@ -80,7 +79,7 @@ foam.CLASS({
         let v = this.TextField.create({ onKey: true });
         v.setAttribute('maxlength', 1);
         v.setAttribute('autofocus', isFirstElement);
-        v.addClass('input').enableClass('wrong-code', this.incorrectCode$ );
+        v.addClass('p-xl', 'input').enableClass('wrong-code', this.incorrectCode$ );
         v.on('focus', () => {
           self.currentIndex = i;
         });

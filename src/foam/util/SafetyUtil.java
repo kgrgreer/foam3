@@ -28,7 +28,7 @@ public class SafetyUtil {
   }
 
   public static boolean equalsIgnoreCase(String o1, String o2) {
-    if ( o1 == o2 )  return true;
+    if ( o1 == o2 )   return true;
     if ( o1 == null ) return false;
     return o1.equalsIgnoreCase(o2);
   }
@@ -61,8 +61,8 @@ public class SafetyUtil {
       double d1 = ((Number) o1).doubleValue();
       double d2 = ((Number) o2).doubleValue();
 
-      if ( d1 == d2 ) return  0;
-      if ( d1 > d2  ) return  1;
+      if ( d1 == d2 ) return 0;
+      if ( d1 > d2  ) return 1;
       return -1;
     }
 
@@ -81,7 +81,7 @@ public class SafetyUtil {
 
     if ( o1.equals(o2) ||
       ! ( o1 instanceof Comparable || o2 instanceof Comparable ) ) return 0;
-    if ( ! (o2 instanceof Comparable) ) return 1;
+    if ( ! (o2 instanceof Comparable) ) return  1;
     if ( ! (o1 instanceof Comparable) ) return -1;
 
     return ((Comparable) o1).compareTo(o2);

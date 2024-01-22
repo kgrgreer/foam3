@@ -127,10 +127,9 @@ foam.CLASS({
             .start(this.CheckBox).call(function() { cb = this; }).end()
         .end();
 
-        this.selectionQuery$.sub(foam.Function.bind(this.selectionUpdate, this,
-            cb, obj));
+        this.selectionQuery$.sub(this.selectionUpdate.bind(this, cb, obj));
         this.selectionUpdate(cb, obj);
-        cb.data$.sub(foam.Function.bind(this.selectionClick, this, obj));
+        cb.data$.sub(this.selectionClick.bind(this, obj));
       }
 
       for ( var j = 0 ; j < this.columns_.length ; j++ ) {
@@ -326,7 +325,7 @@ foam.CLASS({
         if ( tableColumns ) return tableColumns.columns;
 
         return this.of.getAxiomsByClass(foam.core.Property)
-            .filter(function(p) { return ! p.hidden; })
+            .filter(p => ! p.hidden)
             .map(foam.core.Property.NAME.f);
       }
     },

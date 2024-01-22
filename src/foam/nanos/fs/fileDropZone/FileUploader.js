@@ -59,12 +59,22 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'owner'
-    }
+    },
+    [ 'showLabel', true ],
+    [ 'showAction', true],
+    'supportedFormats'
   ],
 
   methods: [
     function render() {
       this.SUPER();
+
+      // load initial data into files if present
+      if ( this.data ) this.files = [ this.data ];
+
+      // this is a single file uploader, link data and files[0]
+      this.data$.linkFrom(this.files$.at(0));
+
       var self = this;
       this
         .addClass()
@@ -73,16 +83,20 @@ foam.CLASS({
             .add(this.LABEL_TITLE)
           .end();
         })
-        .tag(this.FileDropZone, { files$: this.files$, isMultipleFiles: false })
+        .tag(this.FileDropZone, { files$: this.files$, isMultipleFiles: false, supportedFormats: self.supportedFormats })
         .start()
+          .show(this.showLabel$)
           .addClass('h600')
           .add(this.LABEL_FILE_GROUP)
         .end()
-        .tag({
-          class: 'foam.u2.view.ReferenceView',
-          dao: this.fileLabelDAO,
-          data$: this.label$
-          })
+        .start()
+          .show(this.showLabel$)
+          .tag({
+            class: 'foam.u2.view.ReferenceView',
+            dao: this.fileLabelDAO,
+            data$: this.label$
+            })
+        .end()
         .startContext({ data: self })
           .start(this.UPLOAD, { buttonStyle: foam.u2.ButtonStyle.PRIMARY })
             .addClass(this.myClass('button'))
@@ -94,6 +108,7 @@ foam.CLASS({
   actions: [
     {
       name: 'upload',
+      isAvailable: function(showAction) { return showAction; },
       code: async function(X) {
         if ( this.files[0] && !! this.label ) {
           this.files[0].label = this.label;

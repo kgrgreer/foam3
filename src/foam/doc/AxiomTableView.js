@@ -7,34 +7,12 @@
 foam.CLASS({
   package: 'foam.doc',
   name: 'AxiomTableView',
-  extends: 'foam.u2.view.UnstyledTableView',
+  extends: 'foam.u2.view.TableView',
 
   css: `
-    ^ {
-      border-collapse: collapse;
-      width: 100%;
-      font-size: 1.4rem;
-    }
-    ^ thead {
-      background-color: #dee3e9;
-    }
-    ^ th {
-      text-align: left;
-      padding: 8px 3px 3px 7px;
-    }
-    ^ tbody > tr:nth-child(odd) {
-      background-color: #f6f9f9;
-    }
-    ^ tbody > tr:nth-child(even) {
-      background-color: $white;
-    }
-    ^ td {
-      vertical-align: top;
-      padding: 8px 3px 3px 7px;
-    }
-    ^documentation {
-      margin: 3px 10px 2px 0px;
-    }
+    ^ { border-collapse: collapse; height: auto; }
+    ^ th { text-align: left; }
+    ^ td { vertical-align: top; }
   `,
 
   properties: [
@@ -50,11 +28,11 @@ foam.CLASS({
 
   methods: [
     function render() {
-      /** Temporary implementation while CSS is broken for UnstyledTableView. Remove when fixed. **/
+      this.addClass(this.myClass());
       this.start('table').
-        start('tr').start('td').attrs({width: '250px'}).add('Class').end().start('td').add('Name').end().end().
+        start('tr').start('th').attrs({width: '250px'}).add('Class').end().start('th').add('Name').end().start('th').add('Description').end().end().
         select(this.data, function(a) {
-          this.start('tr').start('td').add(a.cls_.name).end().start('td').add(a.name).end().end();
+          this.start('tr').start('td').add(a.axiom.cls_.name).end().start('td').add(a.name).end().start('td').style({overflow: 'hidden', 'text-wrap':'pretty'}).add(a.documentation).end().end();
         }).
       end();
     }

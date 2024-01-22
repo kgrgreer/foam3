@@ -41,9 +41,9 @@ foam.CLASS({
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
-    { name: 'EMAIL_ERR', message: 'Valid email required' },
+    { name: 'EMAIL_ERR', message: 'Required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
-    { name: 'USERNAME_EMPTY_ERR', message: 'Username required' },
+    { name: 'USERNAME_EMPTY_ERR', message: 'Required' },
     { name: 'USERNAME_AVAILABILITY_ERR', message: 'This username is taken. Please try another.' },
     //TODO: Find out better way to deal with PASSWORD_ERR
     { name: 'PASSWORD_ERR', message: 'Password should be at least 10 characters' },
@@ -107,6 +107,7 @@ foam.CLASS({
           icon: 'images/checkmark-small-green.svg',
           onKey: true,
           isAvailable$: X.data.emailAvailable$,
+          type: 'email',
           inputValidation: /\S+@\S+\.\S+/,
           restrictedCharacters: /^[^\s]$/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
@@ -162,7 +163,8 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
-          passwordIcon: true
+          passwordIcon: true,
+          autocomplete: 'new-password'
         }
       },
       validateObj: function(desiredPassword, passwordAvailable) {
@@ -182,6 +184,24 @@ foam.CLASS({
       name: 'pureLoginFunction',
       documentation: 'Set to true, if we just want to login without application redirecting.',
       hidden: true
+    },
+    {
+      class: 'String',
+      name: 'referralToken',
+      documentation: `Input to associate new user with something.`,
+      factory: function() {
+        var searchParams = new URLSearchParams(location.search);
+        return searchParams.get('referral');
+      },
+      hidden: true
+    },
+    {
+      name: 'disclaimer',
+      value: true,
+      hidden: true,
+      documentation: `
+        Show disclaimer for t&c and privacyPolicy in loginview
+      `
     }
   ],
 
@@ -235,12 +255,11 @@ foam.CLASS({
                   class: 'foam.nanos.auth.email.EmailVerificationCode',
                   email: user.email,
                   userName: user.userName,
-                  showAction: true,
                   signinOnSubmit: true
                 }
               }]
-            }
-          }));
+            }, parent: this
+          }, this));
         }
       }
     },
@@ -256,6 +275,7 @@ foam.CLASS({
       }
     }
   ],
+
   actions: [
     {
       name: 'login',
@@ -272,7 +292,8 @@ foam.CLASS({
           email: this.email,
           desiredPassword: this.desiredPassword,
           signUpToken: this.token_,
-          language: this.defaultUserLanguage()
+          language: this.defaultUserLanguage(),
+          referralCode: this.referralToken
         });
         var user;
         try {
@@ -302,8 +323,7 @@ foam.CLASS({
       label: 'Sign in',
       buttonStyle: 'TEXT',
       code: function(X) {
-        X.window.history.replaceState(null, null, X.window.location.origin);
-        X.stack.push(X.data.StackBlock.create({ view: { ...(X.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn', topBarShow_: X.topBarShow_, param: X.param }, parent: X }));
+        X.pushMenu('sign-in');
       }
     },
     {

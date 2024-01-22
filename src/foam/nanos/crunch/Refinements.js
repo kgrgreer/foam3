@@ -12,60 +12,7 @@ foam.CLASS({
   implements: [
     'foam.mlang.Expressions',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
-  ],
-
-  properties: [
-    {
-      name: 'lastModified',
-      class: 'DateTime',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
-    },
-    {
-      name: 'lastModifiedBy',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO
-          .where(obj.EQ(foam.nanos.auth.User.ID, value))
-          .limit(1)
-          .select(obj.PROJECTION(foam.nanos.auth.User.LEGAL_NAME))
-          .then(function(result) {
-            if ( ! result || result.array.size < 1 || ! result.array[0]) {
-              this.add(value);
-              return;
-            }
-            this.add(result.array[0]);
-          }.bind(this));
-      }
-    },
-    {
-      name: 'lastModifiedByAgent',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      section: '_defaultSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO
-          .where(obj.EQ(foam.nanos.auth.User.ID, value))
-          .limit(1)
-          .select(obj.PROJECTION(foam.nanos.auth.User.LEGAL_NAME))
-          .then(function(result) {
-            if ( ! result || result.array.size < 1 || ! result.array[0]) {
-              this.add(value);
-              return;
-            }
-            this.add(result.array[0]);
-          }.bind(this));
-      }
-    }
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.crunch.Renewable'
   ]
 });

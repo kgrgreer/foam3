@@ -9,7 +9,7 @@ package foam.blob;
 import java.io.*;
 
 public class InputStreamBlob
-    extends AbstractBlob
+  extends foam.blob.AbstractBlob
 {
   public static final int BUFFER_SIZE = 4096;
 

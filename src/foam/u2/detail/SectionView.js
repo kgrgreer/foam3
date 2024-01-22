@@ -37,6 +37,9 @@ foam.CLASS({
     ^actionDiv {
       justify-content: end;
     }
+    ^grid {
+      grid-gap: 16px 12px;
+    }
   `,
 
   properties: [
@@ -53,6 +56,20 @@ foam.CLASS({
         var of = data.cls_;
         var a = of.getAxiomByName(sectionName);
         return this.Section.create().fromSectionAxiom(a, of);
+      },
+      adapt: function(o, n) {
+        if ( ! this.Section.isInstance(n) && n ) {
+          foam.assert(this.of, `${this.cls_.name} needs of in order to create transient sections`)
+          return this.Section.create().fromSectionAxiom(n, this.of);
+        }
+        return n;
+      }
+    },
+    {
+      name: 'of',
+      class: 'Class',
+      expression: function(data) {
+        return data?.cls_;
       }
     },
     {
@@ -133,10 +150,10 @@ foam.CLASS({
                   code: section.title
                 });
                 if ( slot$.value ) {
-                  this.start().add(slot$.value.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
+                  this.start().add(slot$.value.toUpperCase()).addClass('h600', self.myClass('section-title')).end();
                 }
               } else {
-                this.start('h5').add(section.title.toUpperCase()).addClass('h500', self.myClass('section-title')).end();
+                this.start().add(section.title.toUpperCase()).addClass('h600', self.myClass('section-title')).end();
               }
             })
             .callIf(section$subTitle, function() {
@@ -154,7 +171,7 @@ foam.CLASS({
               }
             })
             .add(this.slot(function(loadLatch) {
-              var view = this.E().start(self.Grid).style({ 'grid-gap': '16px 12px' });
+              var view = this.E().start(self.Grid).addClass(self.myClass('grid'));
 
               if ( loadLatch ) {
                 view.forEach(section.properties, function(p, index) {
@@ -169,13 +186,10 @@ foam.CLASS({
                     }
                   }
                   var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode != self.DisplayMode.HIDDEN);
-                  this.start(self.GUnit, { columns: p.gridColumns })
+                  this.start(self.GUnit, { columns$: p.gridColumns$ })
                     .show(shown$)
                     .add(shown$.map(shown => {
-                      return shown ? self.PropertyBorder.create({
-                        prop: p,
-                        data$: self.data$
-                      }) :
+                      return shown ? p.toPropertyView({ data$: self.data$ }, self.__subContext__) :
                       self.E();
                     }))
                   .end();

@@ -13,7 +13,6 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.EnabledAware',
-    'foam.nanos.auth.HumanNameTrait',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.auth.LifecycleAware',
@@ -170,7 +169,7 @@ foam.CLASS({
       order: 20,
       gridColumns: 6,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'Boolean',
@@ -182,7 +181,7 @@ foam.CLASS({
       value: true,
       section: 'userInformation',
       order: 30,
-      gridColumns: 6,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
@@ -224,10 +223,11 @@ foam.CLASS({
       documentation: 'The first name of the User.',
       section: 'userInformation',
       order: 70,
-      gridColumns: 6,
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true,
+      tableWidth: 160
    },
     {
       class: 'String',
@@ -235,11 +235,11 @@ foam.CLASS({
       documentation: 'The middle name of the User.',
       section: 'userInformation',
       order: 80,
-      gridColumns: 6,
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'String',
@@ -248,10 +248,11 @@ foam.CLASS({
       documentation: 'The last name of the User.',
       section: 'userInformation',
       order: 90,
-      gridColumns: 6,
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true,
+      tableWidth: 160
     },
     {
       class: 'String',
@@ -264,7 +265,30 @@ foam.CLASS({
       includeInDigest: false,
       containsPII: true,
       columnPermissionRequired: true,
-      trim:true
+      trim: true,
+      transient: true,
+      expression: function(firstName, middleName, lastName) {
+        return [firstName, middleName, lastName].filter(name => name).join(' ');
+      },
+      javaGetter: `
+        String firstName = getFirstName();
+        String middleName = getMiddleName();
+        String lastName = getLastName();
+
+        StringBuilder sb = new StringBuilder();
+
+        if ( ! SafetyUtil.isEmpty(firstName) ) sb.append(firstName);
+        if ( ! SafetyUtil.isEmpty(middleName) ) {
+          if ( sb.length() > 0 ) sb.append(' ');
+          sb.append(middleName);
+        }
+        if ( ! SafetyUtil.isEmpty(lastName) ) {
+          if( sb.length() > 0 ) sb.append(' ');
+          sb.append(lastName);
+        }
+
+        return sb.toString();
+      `
     },
     {
       class: 'Date',
@@ -425,7 +449,7 @@ foam.CLASS({
         defaulting to a placeholder picture.`,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/ic-placeholder.png'
+        placeholderImage: '/images/ic-placeholder.png'
       },
       section: 'userInformation',
       order: 230,
@@ -446,25 +470,16 @@ foam.CLASS({
       name: 'created',
       includeInDigest: true,
       documentation: 'The date and time of when the User was created in the system.',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      section: 'userInformation',
-      order: 250,
-      gridColumns: 6,
-      includeInDigest: true
+      readPermissionRequired: true,
+      order: 250
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       includeInDigest: true,
       documentation: 'The date and time the User was last modified.',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      storageOptional: true,
-      section: 'userInformation',
       readPermissionRequired: true,
-      order: 260,
-      gridColumns: 6
+      order: 260
     },
     {
       class: 'String',
@@ -514,20 +529,6 @@ foam.CLASS({
       section: 'businessInformation',
       order: 30,
       gridColumns: 6,
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
-            dao: X.jobTitleDAO,
-            objToChoice: function(a) {
-              return [a.name, a.label];
-            }
-          }
-        };
-      },
       tableCellFormatter: function(val) {
         this.translate(`${val}.label`, val);
       }
@@ -669,7 +670,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       section: 'systemInformation',
       order: 130,
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      javaCompare: 'return 0;'
     },
     {
       class: 'Object',
@@ -760,42 +762,32 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnUpdate',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'oldObj', type: 'foam.core.FObject' }
-      ],
-      javaThrows: ['AuthorizationException'],
+      args: 'Context x, foam.core.FObject oldObj',
+      javaThrows: [ 'AuthorizationException' ],
       javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-        User oldUser = (User) oldObj;
+        Subject     subject      = (Subject)     x.get("subject");
+        AuthService auth         = (AuthService) x.get("auth");
+        User        oldUser      = (User)        oldObj;
+        User        user         = subject.getUser();
+        User        agent        = subject.getRealUser();
+        boolean     updatingSelf =
+          ( user  != null && SafetyUtil.equals(this.getId(), user.getId()) ) ||
+          ( agent != null && SafetyUtil.equals(this.getId(), agent.getId()) );
 
-        Subject subject = (Subject) x.get("subject");
-        User agent = subject.getRealUser();
-        boolean updatingSelf =
-          ( user != null &&
-            SafetyUtil.equals(this.getId(), user.getId()) ) ||
-          ( agent != null &&
-            SafetyUtil.equals(agent.getId(), this.getId()) );
-        boolean hasUserEditPermission = auth.check(x, "user.update." + this.getId());
-
-        if (
-          ! updatingSelf &&
-          ! hasUserEditPermission
-        ) {
+        if ( ! updatingSelf && ! auth.check(x, "user.update." + this.getId()) ) {
           throw new AuthorizationException("You do not have permission to update this user.");
         }
 
         // Prevent privilege escalation by only allowing a user's group to be
         // changed under appropriate conditions.
         if ( ! SafetyUtil.equals(oldUser.getGroup(), this.getGroup()) ) {
-          boolean hasOldGroupUpdatePermission = auth.check(x, "group.update." + oldUser.getGroup());
-          boolean hasNewGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
           if ( updatingSelf ) {
             throw new AuthorizationException("You cannot change your own group.");
-          } else if ( ! hasUserEditPermission ) {
+          }
+          if ( ! auth.check(x, "user.update." + this.getId()) ) {
             throw new AuthorizationException("You do not have permission to change that user's group.");
-          } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
+          }
+          if ( ! auth.check(x, "group.update." + oldUser.getGroup()) || ! auth.check(x, "group.update." + this.getGroup()) ) {
             throw new AuthorizationException("You do not have permission to change that user's group to '" + this.getGroup() + "'.");
           }
         }
@@ -803,10 +795,8 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnDelete',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      javaThrows: ['AuthorizationException'],
+      args: 'Context x',
+      javaThrows: [ 'AuthorizationException' ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
@@ -852,7 +842,7 @@ foam.CLASS({
       javaCode: `
 
         // check if user enabled
-        if ( ! this.getEnabled() ) {
+        if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
 

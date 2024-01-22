@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.i18n.TranslationService',
+    'static foam.i18n.TranslationService.t',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.TopLevelCapabilityStatusUpdateNotification',
@@ -47,10 +47,8 @@ foam.CLASS({
 
           User user = (User) subject.getRealUser();
 
-          TranslationService ts = (TranslationService) x.get("translationService");
-          String locale = user.getLanguage().getCode().toString();
-          String capabilityName = ts.getTranslation(locale, cap.getId() + ".name", cap.getName());
-          String junctionStatus = ts.getTranslation(locale, "foam.nanos.crunch.CapabilityJunctionStatus." + junction.getStatus().getName() + ".label", junction.getStatus().getLabel());
+          String capabilityName = t(x, cap.getId() + ".name", cap.getName());
+          String junctionStatus = t(x, "foam.nanos.crunch.CapabilityJunctionStatus." + junction.getStatus().getName() + ".label", junction.getStatus().getLabel());
 
           HashMap<String, Object> args = new HashMap<>();
           args.put("capNameEn", cap.getName());

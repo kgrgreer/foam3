@@ -122,6 +122,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          choosePlaceholder: 'Choose Service...',
           sections: [
             {
               heading: 'Service',
@@ -137,7 +138,6 @@ foam.CLASS({
       },
       postSet: function() {
         var service = this.__context__[this.serviceKey];
-
         if ( ! service ) return;
 
         if ( ! service.cls_.getAxiomByName('delegate') ) {
@@ -156,8 +156,8 @@ foam.CLASS({
         var methodNames = methods.map(function(m) { return m.name; }).sort();
 
         if ( methodNames.length > 0 ) {
-            methods.find((item) => {
-              if ( item.name == methodNames[0] ) {
+            methods.find(item => {
+              if ( item.name === methodNames[0] ) {
                 this.currentMethod = item.name;
                 this.argumentInfo  = item.args;
               }
@@ -181,7 +181,9 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ChoiceView',
           choices$: X.data.serviceKey$.map(serviceKey => {
-            var service = this.__context__[serviceKey];
+            if ( ! serviceKey ) return [];
+
+            var service = X[serviceKey];
 
             if ( ! service ) return;
 

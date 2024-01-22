@@ -42,7 +42,7 @@ foam.CLASS({
   extends: 'FObject',
 
   requires: [
-    'foam.core.internal.PropertySlot',
+    'foam.core.internal.PropertySlot'
   ],
 
   properties: [
@@ -112,6 +112,14 @@ foam.CLASS({
       postSet is called after the Property's value has been updated.
     */
     'postSet',
+
+    /**
+      A function of the form:
+        Object function(value, property)
+      that normalizes an property value in some way. Like postSet but only
+      called when done editing a property.
+    */
+    'normalize',
 
     /**
       A dynamic function which defines this Property's value.
@@ -681,11 +689,10 @@ if ( eFactory && (
     function createChildProperty_(child) {
       var prop = this.clone();
 
-      if ( child.cls_ !== foam.core.Property &&
-           child.cls_ !== this.cls_ )
+      if ( child.cls_ !== foam.core.Property && child.cls_ !== this.cls_ )
       {
         if ( this.cls_ !== foam.core.Property ) {
-          this.__context__.warn('Unsupported change of property type from', this.cls_.id, 'to', child.cls_.id, 'property name', this.name);
+          this.__context__.warn('Unsupported change of property type from', this.cls_.id, 'to', child.cls_.id, 'property name', this.name,'in model',child.sourceCls_.id);
         }
 
         return child;

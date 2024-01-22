@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class RuleEngine extends ContextAwareSupport {
-  private DAO                      delegate_         = null;
-  private DAO                      ruleHistoryDAO_   = null;
-  private AtomicBoolean            stops_            = new AtomicBoolean(false);
-  private Map<String, Object>      results_          = new HashMap<>();
-  private Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
-  private X                        userX_;
-  private ExecutorService          asyncExecutor_    = Executors.newSingleThreadExecutor();
+  protected DAO                      delegate_         = null;
+  protected DAO                      ruleHistoryDAO_   = null;
+  protected AtomicBoolean            stops_            = new AtomicBoolean(false);
+  protected Map<String, Object>      results_          = new HashMap<>();
+  protected Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
+  protected X                        userX_;
+  protected CompoundContextAgency    asyncAgency_      = new CompoundContextAgency();
 
   public RuleEngine(X x, X systemX, DAO delegate) {
     setX(systemX);
@@ -81,6 +81,12 @@ public class RuleEngine extends ContextAwareSupport {
       } finally {
         pm.log(x_);
       }
+    }
+
+    if ( asyncAgency_.getAgents().size() > 0 ) {
+      // TODO: make a better description which includes objectID and ruleGroupID
+      String desc = "Async rule group";
+      ((Agency) getX().get("ruleThreadPool")).submit(userX_, asyncAgency_,  desc);
     }
 
     try {
@@ -171,7 +177,7 @@ public class RuleEngine extends ContextAwareSupport {
     return results_.get(ruleId);
   }
 
-  private void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
+  protected void applyRule(Rule rule, FObject obj, FObject oldObj, Agency agency) {
     if ( rule.getAsync() ) {
       applyAsyncRule(rule, obj, oldObj);
     } else {
@@ -180,29 +186,32 @@ public class RuleEngine extends ContextAwareSupport {
     }
   }
 
-  private void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
-    asyncExecutor_.submit(new ContextAgentRunnable(userX_, x -> {
-      if ( stops_.get() ) return;
+  protected void applyAsyncRule(Rule rule, FObject obj, FObject oldObj) {
+    asyncAgency_.submit(userX_, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          if ( stops_.get() ) return;
 
-      // Reload the "obj" as it might be stale by the time the async rule is
-      // executed. Re-run the rule predicate on the reloaded object to ensure
-      // the eligibility to execute the rule action.
-      //
-      // NOTE: There is no need to reload the "rule" object and re-check
-      // isActive and permission as it was the rule at the time RuleEngine.execute()
-      // is called that the rule engine honors and should commit to, not the
-      // future version of the same rule.
-      var nu = rule.getOperation() != Operation.REMOVE ? reloadObject(obj) : obj;
-      if ( ! rule.f(x, nu, oldObj) ) return;
+          // Reload the "obj" as it might be stale by the time the async rule is
+          // executed. Re-run the rule predicate on the reloaded object to ensure
+          // the eligibility to execute the rule action.
+          //
+          // NOTE: There is no need to reload the "rule" object and re-check
+          // isActive and permission as it was the rule at the time RuleEngine.execute()
+          // is called that the rule engine honors and should commit to, not the
+          // future version of the same rule.
+          var nu = rule.getOperation() != Operation.REMOVE ? reloadObject(obj) : obj;
+          if ( ! rule.f(x, nu, oldObj) ) return;
 
-      PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
-      var before = rule.getOperation() != Operation.REMOVE ? nu.fclone() : obj;
-      rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
-      if ( rule.getOperation() != Operation.REMOVE && ! before.equals(nu) ) {
-        getDelegate().put_(userX_, nu);
-      }
-      pm.log(getX());
-    }, "Async apply rule id: " + rule.getId()));
+          PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), "ASYNC", rule.getDaoKey(), rule.getId());
+          var before = rule.getOperation() != Operation.REMOVE ? nu.fclone() : obj;
+          rule.asyncApply(x, nu, oldObj, RuleEngine.this, rule);
+          if ( rule.getOperation() != Operation.REMOVE && ! before.equals(nu) ) {
+            getDelegate().put_(userX_, nu);
+          }
+          pm.log(getX());
+        }
+      }, "Async apply rule id: " + rule.getId());
   }
 
   /**
@@ -214,13 +223,13 @@ public class RuleEngine extends ContextAwareSupport {
    * @param rule    rule object to check
    * @return true if the rule is ACTIVE, false otherwise
    */
-  private boolean isRuleActive(Rule rule) {
+  protected boolean isRuleActive(Rule rule) {
     return rule.getEnabled() &&
            rule.getLifecycleState() == LifecycleState.ACTIVE &&
            rule.getAction() != null;
   }
 
-  private boolean checkPermission(Rule rule, FObject obj) {
+  protected boolean checkPermission(Rule rule, FObject obj) {
     var user = rule.getUser(getX(), obj);
 
     if ( user != null ) {

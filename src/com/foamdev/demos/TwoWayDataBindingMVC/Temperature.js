@@ -12,17 +12,17 @@ foam.CLASS({
     { class: 'Float', name: 'f' , view: { class: 'foam.u2.TextField', onKey: true, className: 'fahrenheit' } },
     { class: 'Float', name: 'c' , view: { class: 'foam.u2.TextField', onKey: true, className: 'celsius' } }
   ],
-  
+
   methods: [
-    function render() {
+    function init() {
       this.f$.relateTo(
         this.c$,
         function f2c(c) {
-          console.log('f2c', c); 
+          console.log('f2c', c);
           return 5/9 * ( c - 32 );
         },
         function c2f(f) {
-          console.log('c2f', f); 
+          console.log('c2f', f);
           return 9/5 * f + 32;
         }
       );

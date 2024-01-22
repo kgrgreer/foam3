@@ -38,24 +38,52 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showActions',
       value: true
-    }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'stackDefault',
+      documentation: 'Default view for the stack, rendered when the stack is empty'
+    },
+    'defaultView_'
   ],
 
-  css: '%CUSTOMCSS%',
+  css: `
+    %CUSTOMCSS%
+    ^pos {
+      height:100%;
+    }
+    ^pos > * {
+      height: 100%;
+    }
+  `,
 
   methods: [
     // TODO: Why is this init() instead of render()? Investigate and maybe fix.
     function init() {
       this.addClass();
-      this.addClass('foam-u2-stack-StackView');
+      this.addClass('foam-u2-stack-StackView')
+        .enableClass(this.myClass('pos'), this.data.pos$.map(v => v < 0));
 
       if ( this.showActions ) {
         this.start('actions')
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
         .end();
       }
+      this.maybeAddDefault();
+      this.data.pos$.sub(() => { 
+        if ( this.data.pos >= 0 && this.defaultView_) {
+          this.defaultView_.remove();
+          return;
+        }
+        this.maybeAddDefault();
+      });
 
       this.listenStackView();
+    },
+    function maybeAddDefault() {
+      if ( this.data.pos < 0 && this.stackDefault) {
+        this.tag(this.stackDefault, {}, this.defaultView_$);
+      }
     },
     function listenStackView() {
       this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
@@ -81,13 +109,6 @@ foam.CLASS({
       }
 
       return v;
-    },
-
-    function shouldMementoValueBeChanged(mementoValue, mementoHead) {
-      if ( ! mementoValue )
-        return false;
-
-      return ! decodeURI(mementoValue).includes(mementoHead);
     }
   ]
 });

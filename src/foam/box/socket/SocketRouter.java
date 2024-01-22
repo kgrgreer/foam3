@@ -30,7 +30,6 @@ import foam.nanos.om.OMLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMWebAgent;
 import foam.nanos.NanoService;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -41,21 +40,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Handle socket recieve events.
  * Determine the appropriate SocketWebAgent and route them
- * through the SessionServerBox 
+ * through the SessionServerBox
  */
 public class SocketRouter
   extends NanoRouter
-  implements ContextAware
 {
   protected Logger logger_;
 
-  protected static ThreadLocal<SessionServerBox> sessionServerBox_ = new ThreadLocal<SessionServerBox>() {
-      @Override
-      protected SessionServerBox initialValue() {
-        return new SessionServerBox();
-      }
-    };
-  
   public SocketRouter(X x) {
     setX(x);
     nSpecDAO_ = (DAO) getX().get("nSpecDAO");
@@ -66,7 +57,7 @@ public class SocketRouter
         handlerMap_.remove(sp.getName());
       }
     }, null);
-    
+
     logger_ = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName(),
       }, (Logger) getX().get("logger"));
@@ -82,7 +73,7 @@ public class SocketRouter
     x_ = x;
   }
 
-  public void service(Message msg) 
+  public void service(Message msg)
     throws IOException {
     PM pm = null;
     String serviceKey = (String) msg.getAttributes().get("serviceKey");
@@ -91,11 +82,10 @@ public class SocketRouter
     }
 
     try {
-      Object service = getX().get(serviceKey);
       NSpec spec = (NSpec) nSpecDAO_.find(serviceKey);
       if ( spec == null ) {
         logger_.error("Service not found", serviceKey);
-        throw new IOException("Service not found: "+serviceKey);
+        throw new IOException("Service not found: " + serviceKey);
       }
 
       X requestContext = getX()
@@ -104,13 +94,13 @@ public class SocketRouter
               spec.getName()
             }, (Logger) getX().get("logger")))
         .put(NSpec.class, spec);
-      SocketWebAgent agent = (SocketWebAgent) getWebAgent(spec, service);
+      SocketWebAgent agent = (SocketWebAgent) getWebAgent(spec);
       if ( agent == null ) {
         logger_.error("Agent not found", serviceKey);
         throw new IOException("Service not found: "+serviceKey);
       }
       try {
-        sessionServerBox_.get().send(requestContext, agent.getSkeletonBox(), agent.getAuthenticate(), msg);
+        SessionServerBox.send(requestContext, agent.getSkeletonBox(), agent.getAuthenticate(), msg);
       } catch (Exception e) {
         logger_.error("Error serving", serviceKey, e);
         if ( pm != null ) pm.error(getX(), e);
@@ -124,8 +114,7 @@ public class SocketRouter
   protected WebAgent getAgent(Skeleton skeleton, NSpec spec) {
     ((OMLogger) getX().get("OMLogger")).log("socket.router.agent");
     WebAgent agent = new SocketWebAgent(skeleton, spec.getAuthenticate());
-    informService(agent, spec);
+//    informService(agent, spec);
     return agent;
   }
 }
-

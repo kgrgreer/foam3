@@ -33,15 +33,15 @@ foam.CLASS({
 
   messages: [
     { name: 'CITY_REQUIRED', message: 'Required' },
-    { name: 'COUNTRY_REQUIRED', message: 'Country required' },
+    { name: 'COUNTRY_REQUIRED', message: 'Required' },
     { name: 'INVALID_COUNTRY', message: 'Invalid country' },
     { name: 'REGION_REQUIRED', message: 'Required' },
     { name: 'INVALID_REGION', message: 'Invalid region. Please provide valid ISO-3166-2 region.' },
     { name: 'INVALID_ADDRESS_1_REQUIRED', message: 'Required' },
-    { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
+    { name: 'INVALID_POSTAL_CODE', message: 'Required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Required' },
-    { name: 'STREET_NAME_REQUIRED', message: 'Street Name required' },
-    { name: 'STREET_NUMBER_REQUIRED', message: 'Street number required' }
+    { name: 'STREET_NAME_REQUIRED', message: 'Required' },
+    { name: 'STREET_NUMBER_REQUIRED', message: 'Required' }
   ],
 
   properties: [
@@ -62,9 +62,6 @@ foam.CLASS({
       width: 70,
       displayWidth: 50,
       documentation: 'An unstructured field for the main postal address.',
-      expression: function(structured, streetNumber, streetName) {
-        return structured ? streetNumber + ' ' + streetName : '';
-      },
       validationPredicates: [
         {
           args: ['structured', 'address1'],
@@ -191,6 +188,11 @@ foam.CLASS({
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
       gridColumns: 3,
+      postSet: function(_, n) {
+        if ( this.structured ) {
+          this.address1 = `${n} ${this.streetName}`
+        }
+      },
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
@@ -206,6 +208,11 @@ foam.CLASS({
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
+      postSet: function(_, n) {
+        if ( this.structured ) {
+          this.address1 = `${this.streetNumber} ${n}`
+        }
+      },
       validationPredicates: [
         {
           args: ['structured', 'streetName'],
@@ -219,12 +226,7 @@ foam.CLASS({
       name: 'city',
       documentation: 'The city of the postal address.',
       required: true,
-      gridColumns: 6,
-      validateObj: function(city) {
-        if ( city.length === 0 ) {
-          return this.CITY_REQUIRED;
-        }
-      }
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -697,7 +699,7 @@ foam.CLASS({
       name: 'postalCodeLabel',
       expression: function(countryId) {
         let translatedPostalCodeLabel = this.translationService.getTranslation(foam.locale, `${countryId.toLowerCase()}.postalCode.label`);
-        return translatedPostalCodeLabel ? translatedPostalCodeLabel : this.translationService.getTranslation(foam.locale, 'postalCode.label');
+        return translatedPostalCodeLabel ? translatedPostalCodeLabel : this.translationService.getTranslation(foam.locale, 'postalCode.label', 'Postal Code');
       },
       hidden: true
     },
@@ -726,16 +728,9 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        var rtn = this.getShortAddress();
-        rtn += ', ';
-        rtn += this.city;
-        rtn += ', ';
-        rtn += this.regionId;
-        rtn += ', ';
-        rtn += this.countryId;
-        rtn += ', ';
-        rtn += this.postalCode;
-        return rtn === ', , , , ' ? '' : rtn;
+        return [this.getShortAddress(), this.city, this.regionId, this.countryId, this.postalCode]
+          .filter(s => s)
+          .join(', ')
       },
       javaCode: `
         StringBuilder sb = new StringBuilder();

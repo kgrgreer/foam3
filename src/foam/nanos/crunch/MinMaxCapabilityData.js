@@ -30,7 +30,8 @@ foam.CLASS({
     {
       name: 'selectedData',
       class: 'StringArray',
-      javaFactory: 'return new String[0];',
+      javaFactory: 'return null;',
+      factory: null,
       adaptArrayElement: function(o, prop) {
         if ( foam.nanos.crunch.Capability.isInstance(o) ) return o.id;
         return o;

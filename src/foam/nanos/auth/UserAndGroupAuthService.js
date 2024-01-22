@@ -83,7 +83,7 @@ foam.CLASS({
 
         User anonymousUser = (User) ((DAO) x.get("localUserDAO")).find(serviceProvider.getAnonymousUser());
         if ( anonymousUser == null ) {
-          throw new AuthorizationException("Unable to find anonymous user: '" + serviceProvider.getAnonymousUser() + "'");
+          throw new AuthorizationException("Anonymous user not found. spid: "+serviceProvider.getId()+" user: "+serviceProvider.getAnonymousUser());
         }
 
         if ( session.getUserId() == anonymousUser.getId() ) return ((Subject) x.get("subject"));
@@ -104,7 +104,7 @@ foam.CLASS({
         try {
           authorizeAnonymous(x);
         } catch ( AuthorizationException e ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(e);
+          ((foam.nanos.logger.Logger) x.get("logger")).warning(e.getMessage());
         }
         Session session = x.get(Session.class);
         // fetch context and check if not null or user id is 0
@@ -150,11 +150,8 @@ foam.CLASS({
         }
         user.validateAuth(x);
         // check if user enabled
-        if ( ! user.getEnabled() ) {
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AccessDeniedException();
-        }
-        if ( ! user.getEmailVerified() ) {
-          throw new UnverifiedEmailException();
         }
         // check if user login enabled
         if ( ! user.getLoginEnabled() ) {
@@ -168,6 +165,9 @@ foam.CLASS({
         }
         if ( ! Password.verify(password, user.getPassword()) ) {
           throw new InvalidPasswordException();
+        }
+        if ( ! user.getEmailVerified() ) {
+          throw new UnverifiedEmailException();
         }
         try {
           group.validateCidrWhiteList(x);
@@ -329,7 +329,7 @@ foam.CLASS({
         // check that the user is active
         assertUserIsActive(user);
         // check if user enabled
-        if ( ! user.getEnabled() ) {
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
         // check if user login enabled

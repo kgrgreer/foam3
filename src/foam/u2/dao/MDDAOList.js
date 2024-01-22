@@ -64,8 +64,6 @@ foam.CLASS({
     color: $grey700;
     height: 150px;
     padding: 3rem;
-    font-size: 2.5rem;
-    font-weight: 300;
     border-bottom: 1px solid $grey400;
   }
 

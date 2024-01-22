@@ -24,6 +24,14 @@ foam.CLASS({
     'foam.u2.stack.StackBlock'
   ],
 
+  imports: [
+    'buildingStack',
+    'currentMenu',
+    'menuListener',
+    'pushDefaultMenu',
+    'window'
+  ],
+
   constants: [
     { name: 'BCRMB_ID', value: 'b' },
     { name: 'ACTION_ID', value: 'a' },
@@ -48,7 +56,7 @@ foam.CLASS({
       value: -1,
       preSet: function(_, p) {
         if ( isNaN(p) || p > this.depth ) return this.depth - 1;
-        if ( p < 0 ) return 0;
+        if ( p < 0 ) return -1;
         return p;
       }
     },
@@ -89,11 +97,16 @@ foam.CLASS({
       });
     },
 
+    function resetStack() {
+      this.stack_ = [];
+      this.pos = -1;
+    },
+
     function at(i) {
       return i < 0 ? this.stack_[this.pos + i + 1] : this.stack_[i];
     },
 
-    function push(block) {
+    async function push(block) {
       // Temporary code to mutate old function calls to stackBlock object
       if ( ! foam.u2.stack.StackBlock.isInstance(block) ) {
         console.warn('This function has been changed. Please pass in a StackBlock FObject');
@@ -106,7 +119,16 @@ foam.CLASS({
           breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
         });
       }
-
+      // Push a default menu if opening a popup as the first view in a stack
+      if ( this.pos == -1 && block.popup
+        // Dont render a fallback view in iframes
+         && this.window.top == this.window.self
+      ) {
+        this.buildingStack = true;
+        let menu = this.currentMenu;
+        await this.pushDefaultMenu();
+        this.menuListener(menu)
+      }
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
       if ( this.top && block.id && this.top.id == block.id ) return;
 
@@ -167,7 +189,7 @@ foam.CLASS({
     {
       name: 'back',
       // icon: 'arrow_back',
-      isEnabled: function(pos) { return pos > 0; },
+      isEnabled: function(pos) { return pos >= 0; },
       code: function(X) {
         this.jump(this.pos-1, X);
       }

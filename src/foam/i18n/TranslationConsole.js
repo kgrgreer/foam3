@@ -30,10 +30,9 @@ foam.CLASS({
 
       foam.core.I18NString.GETTER__ = function(proto, prop, obj, key) {
         if ( obj.sourceCls_ ) {
-          var source = obj.sourceCls_.id + '.' + obj.name + '.' + prop.name;
+          var source      = obj.sourceCls_.id + '.' + obj.name + '.' + prop.name;
           var translation = v.translationService.getTranslation(v.locale, source, '');
           v.onTranslation(null, null, foam.locale, source, translation, obj.instance_[key]);
-          console.log('**************************** ', source, obj.instance_[key]);
         }
         return obj.instance_[key];
       };
@@ -155,7 +154,6 @@ foam.CLASS({
       class: 'String',
       name: 'locale',
       factory: function() { return foam.locale.substring(0,2); }
-//          view: 'net.nanopay.ui.topNavigation.LanguageChoiceView'
     }
   ],
 

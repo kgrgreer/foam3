@@ -6,6 +6,7 @@
 
 package foam.dao;
 
+import foam.box.HTTPAuthorizationType;
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.lib.Outputter;
@@ -13,6 +14,7 @@ import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.PropertyPredicate;
 import foam.nanos.http.Format;
+import foam.nanos.logger.Loggers;
 import foam.util.SafetyUtil;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +31,11 @@ public class HTTPSink
   protected Format format_;
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
+  protected boolean loopback_ = false;
+  protected HTTPAuthorizationType authType_ = HTTPAuthorizationType.BEARER;
+
+  protected HTTPSink() {
+  }
 
   public HTTPSink(String url, Format format) {
     this(url, "", format, null, false);
@@ -42,6 +49,14 @@ public class HTTPSink
     outputDefaultValues_ = outputDefaultValues;
   }
 
+  public void setLoopback(boolean loopback) {
+    loopback_ = loopback;
+  }
+
+  public void setAuthType(HTTPAuthorizationType authType) {
+    authType_ = authType;
+  }
+
   @Override
   public void put(Object obj, Detachable sub) {
     HttpURLConnection conn = null;
@@ -50,13 +65,14 @@ public class HTTPSink
       conn = (HttpURLConnection) new URL(url_).openConnection();
       conn.setRequestMethod("POST");
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
-        conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
+        var type = authType_ == HTTPAuthorizationType.BASIC ? "Basic " : "Bearer ";
+        conn.setRequestProperty("Authorization", type + bearerToken_);
       }
-      
+
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {
-        outputter = 
+        outputter =
           propertyPredicate_ == null ?
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
@@ -67,11 +83,17 @@ public class HTTPSink
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
       }
+      // override default user-agent (eg. Java/11.0.19) to prevent exposing the backend tech stack
+      conn.addRequestProperty("User-Agent", "Mozilla/5.0");
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
-          writer.write(outputter.stringify((FObject)obj));
+          String data = outputter.stringify((FObject)obj);
+          if ( loopback_ ) {
+            Loggers.logger(getX(), this).info("sending", url_, data);
+          }
+          writer.write(data);
           writer.flush();
         }
       }

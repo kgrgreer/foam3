@@ -18,7 +18,7 @@ foam.CLASS({
     'capabilityDAO',
     'group',
     'subject',
-    'userCapabilityJunctionDAO',
+    'userCapabilityJunctionDAO?',
     'loginSuccess?'
   ],
 
@@ -36,7 +36,7 @@ foam.CLASS({
       if ( this.loginSuccess$ ) {
         this.onDetach(this.loginSuccess$.sub(this.resetCache));
       }
-      this.loginSuccess && this.onDetach(this.userCapabilityJunctionDAO.on.sub(
+      this.loginSuccess && this.userCapabilityJunctionDAO && this.onDetach(this.userCapabilityJunctionDAO.on.sub(
         (sub, _on, event, ucj) => {
           if ( event !== 'put' && event !== 'remove' ) return;
           this.capabilityDAO.find(ucj.targetId).then(cap => {

@@ -2278,22 +2278,32 @@ foam.CLASS({
       }
     },
 
-    function writeFileIfUpdated(outfile, javaSource) {
-      if ( ! ( this.fs_.existsSync(outfile) && (this.fs_.readFileSync(outfile).toString() === javaSource))) {
+    function writeFileIfUpdated(X, outfile, javaSource) {
+      // console.log('[GENJAVA] Updating ', outfile, this.fs_.existsSync(outfile));
+      X.javaFiles.push(outfile);
+
+      if ( ! this.fs_.existsSync(outfile) || this.fs_.readFileSync(outfile).toString() !== javaSource ) {
+        // console.log('[GENJAVA] Updating ', outfile);
+        var of = outfile.substring(outfile.lastIndexOf('/'));
+
+        // Uncomment next two lines if you would like to do a diff to see where a file changed.
+        // this.fs_.writeFileSync("/tmp/" + of + ".old", javaSource);
+        // this.fs_.writeFileSync("/tmp/" + of + ".new", this.fs_.readFileSync(outfile).toString());
+
         this.fs_.writeFileSync(outfile, javaSource);
       }
     },
 
-    function outputJavaClass(outdir, javaClass) {
+    function outputJavaClass(X, outdir, javaClass) {
       var outfile = outdir + this.sep + javaClass.id.replace(/\./g, this.sep) + '.java';
       this.ensurePath(outfile);
-      this.writeFileIfUpdated(outfile, javaClass.toJavaSource());
+      this.writeFileIfUpdated(X, outfile, javaClass.toJavaSource());
     },
 
     function targetJava(X) {
       if ( ! this.flags || ! foam.checkForFlag(this.flags, 'java') ) return false;
       var cls = foam.lookup(this.id);
-      this.outputJavaClass(X.outdir, cls.buildJavaClass());
+      this.outputJavaClass(X, X.outdir, cls.buildJavaClass());
       return true;
     }
   ]
@@ -2310,9 +2320,77 @@ foam.CLASS({
       if ( ! this.SUPER(X) ) return;
 
       if ( this.skeleton )
-        this.outputJavaClass(X.outdir, foam.java.Skeleton.create({of: this.id}).buildJavaClass());
+        this.outputJavaClass(X, X.outdir, foam.java.Skeleton.create({of: this.id}).buildJavaClass());
 
       return true;
+    }
+  ]
+});
+
+
+
+foam.CLASS({
+  package: 'foam.java',
+  name: 'StubMethodJavaRefinement',
+  refines: 'foam.core.StubMethod',
+
+  methods: [
+    {
+      name: 'buildJavaClass',
+      flags: [ 'java' ],
+      code: function buildJavaClass(cls) {
+        if ( ! this.javaSupport ) return;
+
+        var name = this.name;
+        var args = this.args;
+        var boxPropName = foam.String.capitalize(this.boxPropName);
+
+        var code =
+`foam.box.Message message = getX().create(foam.box.Message.class);
+foam.box.RPCMessage rpc = getX().create(foam.box.RPCMessage.class);
+rpc.setName("${name}");
+Object[] args = { ${ args.map( a => a.name ).join(',') } };
+rpc.setArgs(args);
+
+message.setObject(rpc);
+foam.box.RPCReturnBox replyBox = getX().create(foam.box.RPCReturnBox.class);
+message.getAttributes().put("replyBox", replyBox);
+get${boxPropName}().send(message);
+try {
+  replyBox.getSemaphore().acquire();
+} catch (Throwable t) {
+  throw new RuntimeException(t);
+}
+
+Object result = replyBox.getMessage().getObject();
+`;
+
+        if ( this.javaType && this.javaType !== 'void' ) {
+          code += `if ( result instanceof foam.box.RPCReturnMessage )
+  return (${this.javaType})((foam.box.RPCReturnMessage)result).getData();
+`;
+        }
+
+        code += `if ( result instanceof java.lang.Throwable )
+  throw new RuntimeException((java.lang.Throwable)result);
+
+if ( result instanceof foam.box.RPCErrorMessage ) {
+  foam.box.RPCErrorMessage error = (foam.box.RPCErrorMessage) result;
+  if ( error.getData() != null ) {
+    throw new RuntimeException(error.getData().toString());
+  }
+  throw new RuntimeException(error.getMessage());
+}
+`;
+
+        if ( this.javaType && this.javaType !== 'void') {
+          code += `throw new RuntimeException("Invalid response type: " + result.getClass());`;
+        }
+
+        this.javaCode = code;
+
+        this.SUPER(cls);
+      }
     }
   ]
 });

@@ -25,7 +25,7 @@ public class SessionDAOSkeleton
     }
 
     RPCMessage rpc = (RPCMessage) message.getObject();
-    String n = rpc.getName();
+    String     n   = rpc.getName();
 
          if ( "put".equals(n)       ) { rpc.setName("put_"); }
     else if ( "remove".equals(n)    ) { rpc.setName("remove_"); }
@@ -37,12 +37,14 @@ public class SessionDAOSkeleton
     else if ( "cmd".equals(n)       ) { rpc.setName("cmd_"); }
 
     if ( "put_".equals(n) ) {
+      DAO delegate = (DAO) getDelegateFactory().create(getMessageX(message));
+
       synchronized ( this ) {
         FObject obj = (foam.core.FObject)(rpc.getArgs() != null && rpc.getArgs().length > 1 ? rpc.getArgs()[1] : null);
-        if ( ! getDelegate().getOf().isInstance(obj) )
-          throw new ClassCastException(obj.getClass() + " isn't instance of " + getDelegate().getOf());
+        if ( ! delegate.getOf().isInstance(obj) )
+          throw new ClassCastException(obj.getClass() + " isn't instance of " + delegate.getOf());
         if ( obj != null ) {
-          FObject oldObj = getDelegate().find(obj);
+          FObject oldObj = delegate.find(obj);
           if ( oldObj != null ) {
             rpc.getArgs()[1] = oldObj.fclone().copyFrom(obj);
           }

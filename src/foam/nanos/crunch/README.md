@@ -76,6 +76,3 @@ A notable difference between this decorator and other AuthService decorators is 
 - IsUserCapabilityJunctionStatusUpdate (Predicate)
 - SendNotificationOnTopLevelCapabilityStatusUpdate
 - RemoveJunctionsOnUserRemoval
-
-#### Crons
-- ExpireUserCapabilityJunctionsCron

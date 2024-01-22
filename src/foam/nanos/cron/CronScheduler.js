@@ -36,8 +36,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
     'foam.nanos.NanoService',
-    'foam.nanos.medusa.ClusterConfigSupport',
-    'foam.nanos.medusa.ReplayingInfo',
     'foam.nanos.script.ScriptStatus',
     'java.util.Date',
     'java.util.Timer'
@@ -105,9 +103,9 @@ foam.CLASS({
     final Logger logger = Loggers.logger(x, this);
     try {
       // Wait until Medusa Replay is complete
-      ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
-      if ( replaying != null &&
-           replaying.getReplaying() ) {
+      foam.nanos.medusa.MedusaSupport support = (foam.nanos.medusa.MedusaSupport) x.get("medusaSupport");
+      if ( support != null &&
+           support.isReplaying(x) ) {
         logger.debug("execute", "replaying");
         Timer timer = new Timer(this.getClass().getSimpleName());
         timer.schedule(

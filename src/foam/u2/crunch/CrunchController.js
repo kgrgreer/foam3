@@ -70,6 +70,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.wizard.agents.NullEventHandlerAgent',
+    'foam.u2.wizard.debug.WizardInspector',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
     'foam.u2.borders.SpacingBorder',
@@ -116,7 +117,9 @@ foam.CLASS({
     {
       name: 'openWizardInspector',
       code: function() {
-        this.lastActiveWizard.OPEN_WIZARD_INSPECTOR.code.call(this.lastActiveWizard);
+        this.WizardInspector.OPEN({}, this.__subContext__.createSubContext({
+          wizardController$: this.lastActiveWizard$
+        }));
       }
     },
     {
@@ -259,6 +262,24 @@ foam.CLASS({
           ;
       }
     },
+    {
+      name: 'toGraphAgentWizard',
+      documentation: `
+        Used to convert any sequence to use the new GraphingWizardletAgents, needed for proper XOR MinMax behavior
+        NOTE: this should be the default behaviour since CreateWizardletsAgent and LoadWizardletsAgent are now considered legacy
+      `,
+      code: function(seq) {
+        return seq
+          .addBefore('CreateWizardletsAgent', {
+            class: 'foam.u2.crunch.wizardflow.LoadCapabilityGraphAgent'
+          })
+          .addBefore('CreateWizardletsAgent', {
+            class: 'foam.u2.crunch.wizardflow.GraphWizardletsAgent'
+          })
+          .remove('CreateWizardletsAgent')
+          .remove('LoadWizardletsAgent');
+      }
+    },
 
     // TODO: remove this during NP-8927
     function createUCJInlineWizardSequence (x) {
@@ -369,10 +390,13 @@ foam.CLASS({
         return false;
       }
       for ( const capable of intercept.capables ) {
-        for ( const capabilityId of capable.capabilityIds ) {
+        for ( let i = 0; i < capable.capabilityIds.length; i++ ) {
+          // for capable intercepts with multiple capability ids
+          // only do put on last wizardlet
+          var doPut = i == capable.capabilityIds.length - 1;
           await this.doInlineIntercept(
-            wizardController, capable, capabilityId, intercept,
-            { put: true }
+            wizardController, capable, capable.capabilityIds[i], intercept,
+            { put: doPut }
           );
         }
       }
@@ -430,12 +454,14 @@ foam.CLASS({
         }
       }
 
-      await this.inlineWizardFromSequence(wizardController, seq, options);
+      // for multiple capabilityIds: pass in start index before any wizardlets are added
+      const wi = wizardController.activePosition.wizardletIndex;
+      await this.inlineWizardFromSequence(wizardController, seq, options, wi);
 
       if ( opt_intercept ) opt_intercept.resolve(capable);
     },
 
-    async function inlineWizardFromSequence(wizardController, seq, options) {
+    async function inlineWizardFromSequence(wizardController, seq, options, startWi) {
       options = options || {};
 
       if ( ! wizardController ) wizardController = this.lastActiveWizard;
@@ -457,14 +483,17 @@ foam.CLASS({
       }
 
       const wi = wizardController.activePosition.wizardletIndex;
+      startWi = startWi || wi;
+
       console.log('splicing at wizard position', wi);
       // Remove intercept wizardlets if user goes back beyond th intercept
       wizardController.wizardlets[wi].wao = this.TopicWAO.create({
         delegate: wizardController.wizardlets[wi].wao
       });
-      wizardController.onDetach(wizardController.wizardlets[wi].wao.saving.sub(
+
+      wizardController.onDetach(wizardController.wizardlets[startWi].wao.saving.sub(
         foam.events.oneTime(() => {
-          wizardController.wizardlets$splice(wi + 1, x.wizardlets.length)
+          wizardController.wizardlets$splice(startWi + 1, x.wizardlets.length)
         })
       ));
       wizardController.wizardlets$splice(wi + 1, 0, ...x.wizardlets);

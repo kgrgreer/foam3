@@ -34,7 +34,7 @@ foam.CLASS({
   `,
 
   properties: [
-    { 
+    {
       name: 'maxHead',
       documentation: 'maximum number of breadcrumbs to be displayed before the dropdown',
       value: 3
@@ -93,9 +93,9 @@ foam.CLASS({
           } else {
             self.actionArray.push(jumpAction);
           }
-          self.callIf(navStack.length != 1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ), () => {
+          if ( navStack.length != 1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
             self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
-          });
+          }
           if ( ! this.stack.stack_[index].breadcrumbTitle )
             console.warn('Missing Title for BreadcrumbView ' + navStack[i].view);
         });
