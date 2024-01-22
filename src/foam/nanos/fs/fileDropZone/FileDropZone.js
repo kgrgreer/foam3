@@ -21,6 +21,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'subject',
+    'fileDAO',
     'fileTypeDAO'
   ],
 
@@ -159,10 +160,23 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showHelp'
+    },
+    {
+      class: 'StringArray',
+      name: 'data',
+      adapt: function(_, v) {
+        if ( Array.isArray(v) ) return v;
+        return [v];
+      }
     }
   ],
 
   methods: [
+    function init() {
+      this.onDetach(this.data$.sub(this.dataChanged));
+      this.dataChanged();
+    },
+
     async function render() {
       this.SUPER();
       var self = this;
@@ -329,6 +343,15 @@ foam.CLASS({
     function highlight(atIndex) {
       this.selected = atIndex;
       this.files = this.files;
+    },
+
+    function maybeUpdateFile(index, fileId) {
+      var self = this;
+      if ( this.files[index]?.id != fileId ) {
+        this.fileDAO.find(fileId).then(file => {
+          if ( file ) self.files$splice(index, 1, file);
+        });
+      }
     }
   ],
 
@@ -376,6 +399,13 @@ foam.CLASS({
       // Remove all temporary files in the element.target.files
       this.document.querySelector('.' + this.instanceClass(`input`)).value = null;
       this.onFilesChanged();
+    },
+
+    function dataChanged() {
+      for ( var i = 0; i < this.data.length; i++ ) {
+        const fileId = this.data[i].replace('/service/file/', '');
+        this.maybeUpdateFile(i, fileId);
+      }
     }
   ],
 
