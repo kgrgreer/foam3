@@ -337,7 +337,7 @@ foam.CLASS({
               this.selected = files.length - 1;
       this.files = files;
       this.document.querySelector('.' + this.instanceClass(`input`)).value = null;
-
+      this.onFilesChanged(this.files);
     },
 
     function highlight(atIndex) {
@@ -398,7 +398,7 @@ foam.CLASS({
       this.addFiles(files);
       // Remove all temporary files in the element.target.files
       this.document.querySelector('.' + this.instanceClass(`input`)).value = null;
-      this.onFilesChanged();
+      this.onFilesChanged(this.files);
     },
 
     function dataChanged() {
