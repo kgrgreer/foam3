@@ -88,10 +88,16 @@ foam.CLASS({
       preSet: function(_, n) {
         return n.trim();
       },
-      view: {
-        class: 'foam.u2.TextField',
-        type: 'email',
-        focused: true
+      view: function(_, X) {
+        var e = foam.u2.TextField.create({
+          type: 'email',
+          focused: true
+        }, X);
+        e.addEventListener('keyup', X.data.loginOnEnter)      
+        this.onDetach(() => {
+          e.removeEventListener('keyup', X.data.loginOnEnter);
+        });
+        return e;
       },
       visibility: function(disableIdentifier_, usernameRequired) {
         return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
@@ -103,10 +109,16 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       required: true,
-      view: { 
-        class: 'foam.u2.view.PasswordView', 
-        passwordIcon: true,
-        autocomplete: 'current-password'
+      view: function(_, X) {
+        var e = foam.u2.view.PasswordView.create({
+          passwordIcon: true,
+          autocomplete: 'current-password'
+        }, X);
+        e.addEventListener('keyup', X.data.loginOnEnter)      
+        this.onDetach(() => {
+          e.removeEventListener('keyup', X.data.loginOnEnter);
+        });
+        return e;
       },
       validationTextVisible: false
     },
@@ -192,6 +204,13 @@ foam.CLASS({
       name: 'emailVerifiedListener',
       code: function() {
         this.login();
+      }
+    },
+    function loginOnEnter(e) {
+      e.preventDefault();
+      var key = e.key || e.keyCode;
+      if ( key === 'Enter' || key === 13 ) {
+          this.login();
       }
     }
   ],
