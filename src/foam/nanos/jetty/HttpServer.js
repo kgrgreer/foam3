@@ -105,6 +105,12 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
+      name: 'excludedGzipPaths',
+      documentation: 'Jetty style paths to exclude from gzipping: https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/gzip/GzipHandler.html#addExcludedPaths(java.lang.String...)',
+      javaFactory: 'return new String[] { "^.*/manifest.json" };' // java regex format
+    },
+    {
+      class: 'StringArray',
       name: 'forwardedForProxyWhitelist'
     },
     {
@@ -348,9 +354,9 @@ foam.CLASS({
           "image/svg+xml",
           "text/html"
         );
+        gzipHandler.addExcludedPaths(getExcludedGzipPaths());
         gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-//        gzipHandler.setCompressionLevel(9);
         gzipHandler.setHandler(ipAccessHandler);
         server.setHandler(gzipHandler);
 
