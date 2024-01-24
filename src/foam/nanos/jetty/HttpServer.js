@@ -107,7 +107,7 @@ foam.CLASS({
       class: 'StringArray',
       name: 'excludedGzipPaths',
       documentation: 'Jetty style paths to exclude from gzipping: https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/gzip/GzipHandler.html#addExcludedPaths(java.lang.String...)',
-      javaFactory: 'return new String[] { "^.*/manifest.json" };' // java regex format
+      javaFactory: 'return new String[] { "^.*/manifest.json", "^.*/logo.svg" };' // java regex format
     },
     {
       class: 'StringArray',
