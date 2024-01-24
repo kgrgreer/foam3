@@ -550,7 +550,7 @@ task('Extract project git hash.', [], function getProjectGitHash() {
   var out = 'Unversioned';
 
   try {
-    out = execSync('git describe --exact-match HEAD', {stdio: 'ignore'});
+    out = execSync('git describe --exact-match HEAD');
   } catch (x) {
     try {
       out = execSync('git rev-parse --short HEAD');
