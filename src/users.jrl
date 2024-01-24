@@ -1,9 +1,20 @@
 p({
   "class":"foam.nanos.auth.User",
+  "id":1,
+  "spid":"foam",
+  "lifecycleState":1,
+  "group":"system",
+  "firstName":"foam",
+  "middleName":"",
+  "lastName":"system",
+  "loginEnabled":false
+})
+p({
+  "class":"foam.nanos.auth.User",
   "id":42,
   "spid":"foam",
   "lifecycleState":1,
-  "group":"admin",
+  "group":"system",
   "firstName":"foam",
   "middleName":"",
   "lastName":"admin",
