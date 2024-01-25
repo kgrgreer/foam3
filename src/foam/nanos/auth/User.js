@@ -76,7 +76,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'USERNAME_REQUIRED', message: 'Username required' }
+    { name: 'USERNAME_REQUIRED', message: 'Username required' },
+    { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name.' },
+    { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name.' },
+    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name.' }
   ],
 
   sections: [
@@ -170,7 +173,7 @@ foam.CLASS({
       order: 20,
       gridColumns: 6,
       columnPermissionRequired: true,
-      trim:true
+      trim: true
     },
     {
       class: 'Boolean',
@@ -182,7 +185,7 @@ foam.CLASS({
       value: true,
       section: 'userInformation',
       order: 30,
-      gridColumns: 6,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
@@ -224,10 +227,18 @@ foam.CLASS({
       documentation: 'The first name of the User.',
       section: 'userInformation',
       order: 70,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true,
+      tableWidth: 160,
+      validationPredicates: [
+        {
+          args: ['firstName'],
+          query: 'firstName.len==0||firstName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_FIRST_NAME'
+        }
+      ]
    },
     {
       class: 'String',
@@ -235,11 +246,18 @@ gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       documentation: 'The middle name of the User.',
       section: 'userInformation',
       order: 80,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
-      trim:true
+      trim: true,
+      validationPredicates: [
+        {
+          args: ['middleName'],
+          query: 'middleName.len==0||middleName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_MIDDLE_NAME'
+        }
+      ]
     },
     {
       class: 'String',
@@ -248,10 +266,18 @@ gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       documentation: 'The last name of the User.',
       section: 'userInformation',
       order: 90,
-gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
       includeInDigest: true,
       containsPII: true,
-      trim:true
+      trim: true,
+      tableWidth: 160,
+      validationPredicates: [
+        {
+          args: ['lastName'],
+          query: 'lastName.len==0||lastName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_LAST_NAME'
+        }
+      ]
     },
     {
       class: 'String',
