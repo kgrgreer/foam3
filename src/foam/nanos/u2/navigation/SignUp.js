@@ -102,7 +102,8 @@ foam.CLASS({
       name: 'email',
       placeholder: 'example@example.com',
       view: function(_, X) {
-        var e = foam.u2.view.UserPropertyAvailabilityView.create({
+        return {
+          class: 'foam.u2.view.UserPropertyAvailabilityView',
           icon: 'images/checkmark-small-green.svg',
           onKey: true,
           isAvailable$: X.data.emailAvailable$,
@@ -110,12 +111,7 @@ foam.CLASS({
           inputValidation: /\S+@\S+\.\S+/,
           restrictedCharacters: /^[^\s]$/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
-        }, X);
-        e.addEventListener('keyup', X.data.signUpOnEnter)      
-        this.onDetach(() => {
-          e.removeEventListener('keyup', X.data.signUpOnEnter);
-        });
-        return e;
+        };
       },
       validateObj: function(email, emailAvailable) {
         // Empty Check
@@ -137,18 +133,14 @@ foam.CLASS({
       label: 'Username',
       placeholder: 'example123',
       view: function(_, X) {
-        var e = foam.u2.view.UserPropertyAvailabilityView.create({
+        return {
+          class: 'foam.u2.view.UserPropertyAvailabilityView',
           icon: 'images/checkmark-small-green.svg',
           onKey: true,
           isAvailable$: X.data.usernameAvailable$,
           inputValidation: /^[^\s\/]+$/,
           restrictedCharacters: /^[^\s\/]$/
-        }, X);
-        e.addEventListener('keyup', X.data.signUpOnEnter)      
-        this.onDetach(() => {
-          e.removeEventListener('keyup', X.data.signUpOnEnter);
-        });
-        return e;
+        };
       },
       validateObj: function(userName, usernameAvailable) {
         // Empty Check
@@ -168,16 +160,12 @@ foam.CLASS({
       name: 'desiredPassword',
       label: 'Password',
       view: function(_, X) {
-        var e = foam.u2.view.PasswordView.create({
+        return {
+          class: 'foam.u2.view.PasswordView',
           isAvailable$: X.data.passwordAvailable$,
           passwordIcon: true,
           autocomplete: 'new-password'
-        }, X)
-        e.addEventListener('keyup', X.data.signUpOnEnter)      
-        this.onDetach(() => {
-          e.removeEventListener('keyup', X.data.signUpOnEnter);
-        });
-        return e;
+        }
       },
       validateObj: function(desiredPassword, passwordAvailable) {
         if ( ! desiredPassword || desiredPassword.length < 10 ) return this.PASSWORD_ERR;
@@ -231,13 +219,6 @@ foam.CLASS({
           this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
         }
-      }
-    },
-    function signUpOnEnter(e) {
-      e.preventDefault();
-      var key = e.key || e.keyCode;
-      if ( key === 'Enter' || key === 13 ) {
-          this.login();
       }
     }
   ],
