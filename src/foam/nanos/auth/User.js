@@ -75,7 +75,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'USERNAME_REQUIRED', message: 'Username required' }
+    { name: 'USERNAME_REQUIRED', message: 'Username required' },
+    { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name.' },
+    { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name.' },
+    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name.' }
   ],
 
   sections: [
@@ -227,7 +230,14 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       trim: true,
-      tableWidth: 160
+      tableWidth: 160,
+      validationPredicates: [
+        {
+          args: ['firstName'],
+          query: 'firstName.len==0||firstName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_FIRST_NAME'
+        }
+      ]
    },
     {
       class: 'String',
@@ -239,7 +249,14 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
-      trim: true
+      trim: true,
+      validationPredicates: [
+        {
+          args: ['middleName'],
+          query: 'middleName.len==0||middleName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_MIDDLE_NAME'
+        }
+      ]
     },
     {
       class: 'String',
@@ -252,7 +269,14 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       trim: true,
-      tableWidth: 160
+      tableWidth: 160,
+      validationPredicates: [
+        {
+          args: ['lastName'],
+          query: 'lastName.len==0||lastName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
+          errorMessage: 'INVALID_LAST_NAME'
+        }
+      ]
     },
     {
       class: 'String',
