@@ -20,7 +20,12 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.tag({...this.viewView, data$: this.data.data$ });
+      if ( Array.isArray(this.data) ) {
+        this.data.forEach ( a => {
+          this.tag({...this.viewView, data$: a.data$ });
+        })
+      }
+      else this.tag({...this.viewView, data$: this.data.data$ });
     }
   ]
 });
