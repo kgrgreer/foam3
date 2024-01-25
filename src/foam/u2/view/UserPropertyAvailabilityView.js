@@ -102,6 +102,7 @@ foam.CLASS({
         })
           .addClass(this.myClass('input'))
           .attr('name', this.fromPropertyName + 'Input')
+          .attr('autocapitalize', 'none')
           .on('blur', this.checkAvailability )
           .on('keyup', (e) => {
             if ( this.restrictedCharacters && ! this.restrictedCharacters.test(e.key) ) {
