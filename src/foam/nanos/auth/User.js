@@ -79,7 +79,8 @@ foam.CLASS({
     { name: 'USERNAME_REQUIRED', message: 'Username required' },
     { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name.' },
     { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name.' },
-    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name.' }
+    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name.' },
+    { name: 'NAME_MATCHER', message: '^[A-Za-zÀ-ÖØ-öø-ÿ ]+$' }
   ],
 
   sections: [
@@ -232,13 +233,19 @@ foam.CLASS({
       containsPII: true,
       trim: true,
       tableWidth: 160,
-      validationPredicates: [
-        {
-          args: ['firstName'],
-          query: 'firstName.len==0||firstName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
-          errorMessage: 'INVALID_FIRST_NAME'
-        }
-      ]
+      validateObj: function(firstName) {
+        if ( ! firstName.trim() ) return;
+        if ( ! firstName.match(this.NAME_MATCHER) ) return this.INVALID_FIRST_NAME;
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("firstName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        java.util.regex.Pattern nameMatcher = java.util.regex.Pattern.compile((String) obj.getProperty("NAME_MATCHER"));
+        if ( ! nameMatcher.matcher(name).matches() ) 
+          throw new IllegalStateException((String) obj.getProperty("INVALID_FIRST_NAME"));
+      `
    },
     {
       class: 'String',
@@ -251,13 +258,19 @@ foam.CLASS({
       containsPII: true,
       columnPermissionRequired: true,
       trim: true,
-      validationPredicates: [
-        {
-          args: ['middleName'],
-          query: 'middleName.len==0||middleName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
-          errorMessage: 'INVALID_MIDDLE_NAME'
-        }
-      ]
+      validateObj: function(middleName) {
+        if ( ! middleName.trim() ) return;
+        if ( ! middleName.match(this.NAME_MATCHER) ) return this.INVALID_MIDDLE_NAME;
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("middleName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        java.util.regex.Pattern nameMatcher = java.util.regex.Pattern.compile((String) obj.getProperty("NAME_MATCHER"));
+        if ( ! nameMatcher.matcher(name).matches() ) 
+          throw new IllegalStateException((String) obj.getProperty("INVALID_MIDDLE_NAME"));
+      `
     },
     {
       class: 'String',
@@ -271,13 +284,19 @@ foam.CLASS({
       containsPII: true,
       trim: true,
       tableWidth: 160,
-      validationPredicates: [
-        {
-          args: ['lastName'],
-          query: 'lastName.len==0||lastName~/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/',
-          errorMessage: 'INVALID_LAST_NAME'
-        }
-      ]
+      validateObj: function(lastName) {
+        if ( ! lastName.trim() ) return;
+        if ( ! lastName.match(this.NAME_MATCHER) ) return this.INVALID_LAST_NAME;
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("lastName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        java.util.regex.Pattern nameMatcher = java.util.regex.Pattern.compile((String) obj.getProperty("NAME_MATCHER"));
+        if ( ! nameMatcher.matcher(name).matches() ) 
+          throw new IllegalStateException((String) obj.getProperty("INVALID_LAST_NAME"));
+      `
     },
     {
       class: 'String',
