@@ -158,6 +158,8 @@ foam.CLASS({
 
           paren: seq1(1, '(', sym('expr'), ')'),
 
+          form_paren: seq1(1, '(', sym('formula'), ')'),
+
           negate: seq(literal('!'), sym('expr')),
 
           comparison: seq(
@@ -212,6 +214,7 @@ foam.CLASS({
 
           form_expr: seq(
             alt(
+              sym('form_paren'),
               sym('number'),
               sym('field'),
               sym('fieldLen')
@@ -224,6 +227,7 @@ foam.CLASS({
                     literal('/', this.DIV)
                   ),
                   alt(
+                    sym('form_paren'),
                     sym('number'),
                     sym('fieldLen'),
                     sym('field')
