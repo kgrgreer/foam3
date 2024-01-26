@@ -129,7 +129,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'infoSection',
       order: 2,
       tableWidth: 100,
@@ -219,7 +220,7 @@ foam.CLASS({
       section: 'infoSection',
       validationPredicates: [
         {
-          args: ['title', 'type'],
+          args: ['title'],
           query: 'title!=""',
           errorString: 'Please provide a summary of the Ticket.'
         }
@@ -235,8 +236,8 @@ foam.CLASS({
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          args: ['id', 'comment', 'externalComment'],
+          query: 'id==""||(id!=""&&(comment!=""||externalComment!=""))',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -280,7 +281,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       section: 'metaSection',
     },
@@ -288,7 +290,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
@@ -304,7 +307,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
@@ -319,7 +323,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'metaSection',
       tableWidth: 150
     },
@@ -327,7 +332,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
@@ -342,7 +348,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
@@ -454,8 +461,8 @@ foam.CLASS({
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          args: ['id', 'comment', 'externalComment'],
+          query: 'id==""||(id!=""&&(comment!=""||externalComment!=""))',
           errorString: 'Please provide a comment.'
         }
       ],
