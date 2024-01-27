@@ -24,11 +24,26 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'menus'
+    },
+    {
+      class: 'String',
+      name: 'serviceName'
     }
   ],
   methods: [
     async function launch(x) {
       let url = new URL(this.window.location.href);
+      this.serviceName = url.searchParams.get('service');
+      url.searchParams.delete('service');
+
+      // service redirect from client via redirect menu
+      if ( this.serviceName ) {
+        url.pathname = '/service/' + this.serviceName;
+        this.window.location.href = url;
+        return;
+      }
+
+      // menu redirect
       this.menus = url.searchParams.get('menus')?.split(',');
       url.searchParams.delete('menus');
       this.window.history.replaceState('', '', url);
