@@ -22,7 +22,7 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     visibility: 'RO',
-    section: 'infoSection',
+    section: 'metaSection',
     tableCellFormatter: function(value) {
       this.add(this.__subSubContext__.userDAO.find(value)
         .then((user) => user && user.legalName ? user.legalName : value));
@@ -41,16 +41,14 @@ foam.RELATIONSHIP({
   targetDAOKey: 'ticketCommentDAO',
   unauthorizedTargetDAOKey: 'localTicketCommentDAO',
   targetProperty: {
-    visibiltiy: 'RO',
-    section: 'infoSection'
+    createVisibiltiy: 'HIDDEN',
+    visibiltiy: 'RO'
   },
-  // REVIEW: placing comments in section breaks accessing the detail
-  // view of the comment. While not placing them in section
-  // puts them in section 'uncatagorized'.
-  // sourceProperty: {
-  //   visibility: 'RO',
-  //   section: 'commentSection'
-  // }
+  sourceProperty: {
+    visibility: 'RO',
+    section: 'commentsSection',
+    view: { class:  'foam.comics.InlineBrowserView', createEnabled: false, editEnabled: false, selectEnabled: false, exportEnabled: false }
+  }
 });
 
 foam.RELATIONSHIP({
