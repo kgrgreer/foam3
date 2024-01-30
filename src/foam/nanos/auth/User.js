@@ -79,7 +79,8 @@ foam.CLASS({
     { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name: ' },
     { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name: ' },
     { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name: ' },
-    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" }
+    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" },
+    { name: 'NAME_MATCHER', message: "^[\\p{Letter}\\s\\-.']+$" }
   ],
 
   sections: [
