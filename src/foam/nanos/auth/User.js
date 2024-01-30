@@ -76,10 +76,10 @@ foam.CLASS({
 
   messages: [
     { name: 'USERNAME_REQUIRED', message: 'Username required' },
-    { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name.' },
-    { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name.' },
-    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name.' },
-    { name: 'NAME_MATCHER', message: '^[A-Za-zÀ-ÖØ-öø-ÿ ]+$' }
+    { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name: ' },
+    { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name: ' },
+    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name: ' },
+    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" }
   ],
 
   sections: [
@@ -234,7 +234,13 @@ foam.CLASS({
       tableWidth: 160,
       validateObj: function(firstName) {
         if ( ! firstName.trim() ) return;
-        if ( ! firstName.match(this.NAME_MATCHER) ) return this.INVALID_FIRST_NAME;
+
+        var invalidMatcher = new RegExp(this.INVALID_MATCHER, 'ug');
+        var invalidMatch = firstName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return this.INVALID_FIRST_NAME + invalidChars;
+        }
       },
       javaValidateObj: `
         foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
@@ -259,7 +265,13 @@ foam.CLASS({
       trim: true,
       validateObj: function(middleName) {
         if ( ! middleName.trim() ) return;
-        if ( ! middleName.match(this.NAME_MATCHER) ) return this.INVALID_MIDDLE_NAME;
+
+        var invalidMatcher = new RegExp(this.INVALID_MATCHER, 'ug');
+        var invalidMatch = middleName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return this.INVALID_MIDDLE_NAME + invalidChars;
+        }
       },
       javaValidateObj: `
         foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
@@ -285,7 +297,13 @@ foam.CLASS({
       tableWidth: 160,
       validateObj: function(lastName) {
         if ( ! lastName.trim() ) return;
-        if ( ! lastName.match(this.NAME_MATCHER) ) return this.INVALID_LAST_NAME;
+
+        var invalidMatcher = new RegExp(this.INVALID_MATCHER, 'ug');
+        var invalidMatch = lastName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return this.INVALID_LAST_NAME + invalidChars;
+        }
       },
       javaValidateObj: `
         foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
