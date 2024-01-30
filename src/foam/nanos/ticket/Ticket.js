@@ -62,8 +62,7 @@ foam.CLASS({
   tableColumns: [
     'id',
     'type',
-    // REVIEW: view fails to display when owner in tableColumn, the 2nd entry in allColumns is undefined.
-    // 'owner',
+    'owner.legalName',
     'assignedToSummary',
     'createdBy.legalName',
     'lastModified',
@@ -71,7 +70,7 @@ foam.CLASS({
     'title',
     'comment',
     'dateCommented',
-    'createdFor'
+    'createdFor.legalName'
   ],
 
   searchColumns: [
@@ -108,28 +107,40 @@ foam.CLASS({
     {
       name: 'infoSection',
       title: 'Ticket',
+      order: 0
+    },
+    {
+      name: 'commentsSection',
+      isAvailable: function(id) {
+        return !! id;
+      },
+      title: 'Comments',
+      order: 1
     },
     {
       name: 'metaSection',
       isAvailable: function(id) {
-        return id != 0;
+        return !! id;
       },
       title: 'Audit',
+      order: 3
     },
     {
-      // NOTE: if a section is name: commentSection
-      // then navigating to a comment detail view
-      // does not work.
       name: '_defaultSection',
-      title: 'Comments'
-    },
+      isAvailable: function(id) {
+        return !! id;
+      },
+      title: 'Other',
+      order: 4
+    }
   ],
 
   properties: [
     {
       class: 'String',
       name: 'id',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'infoSection',
       order: 2,
       tableWidth: 100,
@@ -219,7 +230,7 @@ foam.CLASS({
       section: 'infoSection',
       validationPredicates: [
         {
-          args: ['title', 'type'],
+          args: ['title'],
           query: 'title!=""',
           errorString: 'Please provide a summary of the Ticket.'
         }
@@ -235,8 +246,8 @@ foam.CLASS({
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          args: ['id', 'comment', 'externalComment'],
+          query: 'id==""||(id!=""&&(comment!=""||externalComment!=""))',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -259,9 +270,9 @@ foam.CLASS({
       class: 'String',
       name: 'dateCommented',
       value: '',
-      storageTransient: true,
+      transient: true,
       visibility: 'RO',
-      section: 'infoSection',
+      section: 'metaSection', // In metaSection as only neded for table view
       projectionSafe: false,
       tableCellFormatter: function(_, obj) {
         obj.ticketCommentDAO
@@ -280,7 +291,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       section: 'metaSection',
     },
@@ -288,38 +300,27 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(user) {
-          if ( user ) {
-            this.add(user.legalName);
-          }
-        }.bind(this));
-      },
       section: 'metaSection'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       includeInDigest: true,
       projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(user) {
-          if ( user ) {
-            this.add(user.legalName);
-          }
-        }.bind(this));
-      },
       section: 'metaSection',
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       section: 'metaSection',
       tableWidth: 150
     },
@@ -327,30 +328,18 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(user) {
-          if ( user ) {
-            this.add(user.legalName);
-          }
-        }.bind(this));
-      },
       section: 'metaSection',
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       projectionSafe: false,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(user) {
-          if ( user ) {
-            this.add(user.legalName);
-          }
-        }.bind(this));
-      },
       section: 'metaSection',
     },
     {
@@ -388,7 +377,7 @@ foam.CLASS({
       section: 'infoSection',
       postSet: function(_, n) {
         if ( n != 0 ) {
-          this.assignedToGroup = '';
+          this.clearProperty('assignedToGroup');
         }
       },
       javaPostSet: `
@@ -410,16 +399,19 @@ foam.CLASS({
       name: 'assignedToSummary',
       storageTransient: true,
       createVisibility: 'HIDDEN',
-      visibility: 'RO',
+      updateVisibility: 'RO',
+      section: 'metaSection', // In metaSection as only neded for table view
       javaGetter: `
+      if ( getAssignedTo() != 0 ) {
         DAO userDAO = (DAO) foam.core.XLocator.get().get("localUserDAO");
         if ( userDAO != null ) {
           User user = (User) userDAO.find(getAssignedTo());
           if ( user != null ) {
-            return user.getLegalName();
+            return user.toSummary();
           }
         }
-        return null;
+      }
+      return getAssignedToGroup();
       `
     },
     {
@@ -428,8 +420,8 @@ foam.CLASS({
       name: 'assignedToGroup',
       section: 'infoSection',
       postSet: function(_, n) {
-        if ( n !== '' ) {
-          this.assignedTo = 0;
+        if ( n != '' ) {
+          this.clearProperty('assignedTo');
         }
       },
       order: 8,
@@ -454,8 +446,8 @@ foam.CLASS({
       readVisibility: 'HIDDEN',
       validationPredicates: [
         {
-          args: ['id', 'title', 'comment', 'externalComment'],
-          query: 'id==0&&title!=""||comment!=""||externalComment!=""',
+          args: ['id', 'comment', 'externalComment'],
+          query: 'id==""||(id!=""&&(comment!=""||externalComment!=""))',
           errorString: 'Please provide a comment.'
         }
       ],
@@ -464,6 +456,23 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.type + " - " + this.title + " (" + this.status + ")";
+      },
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      sb.append(getType());
+      sb.append(" - ");
+      sb.append(getTitle());
+      sb.append(" (");
+      sb.append(getStatus());
+      sb.append(")");
+      return sb.toString();
+      `
+    },
     {
       name: 'createExternalCommentNotification',
       args: [
@@ -635,6 +644,7 @@ foam.CLASS({
       code: function(X) {
         var assignedTicket = this.clone();
         assignedTicket.assignedTo = X.subject.user.id;
+        assignedTicket.clearProperty('assignedToGroup');
 
         this.ticketDAO.put(assignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
@@ -661,7 +671,8 @@ foam.CLASS({
       },
       code: function(X) {
         var unassignedTicket = this.clone();
-        unassignedTicket.assignedTo = 0;
+        unassignedTicket.clearProperty('assignedTo');
+        unassignedTicket.clearProperty('assignedToGroup');
 
         this.ticketDAO.put(unassignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);

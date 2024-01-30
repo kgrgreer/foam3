@@ -267,13 +267,21 @@ foam.CLASS({
       columnPermissionRequired: true,
       trim: true,
       transient: true,
-      expression: function(firstName, middleName, lastName) {
+      expression: function(firstName, middleName, lastName, businessName) {
+        if ( ! firstName && ! lastName ) return businessName;
         return [firstName, middleName, lastName].filter(name => name).join(' ');
       },
       javaGetter: `
         String firstName = getFirstName();
         String middleName = getMiddleName();
         String lastName = getLastName();
+
+        // Many table columns use user.legalName which is empty for businesses.
+        if ( SafetyUtil.isEmpty(firstName) &&
+             SafetyUtil.isEmpty(lastName) &&
+             ! SafetyUtil.isEmpty(getBusinessName()) ) {
+          return getBusinessName();
+        }
 
         StringBuilder sb = new StringBuilder();
 
@@ -313,7 +321,7 @@ foam.CLASS({
       order: 130,
       gridColumns: 6,
       factory: function() {
-        return foam.nanos.auth.LanguageId.create({code: 'en'})
+        return foam.nanos.auth.LanguageId.create({code: 'en'});
       },
       javaFactory: `
         return new foam.nanos.auth.LanguageId.Builder(null).setCode("en").build();
