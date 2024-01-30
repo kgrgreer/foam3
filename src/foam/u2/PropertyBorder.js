@@ -84,7 +84,7 @@ foam.CLASS({
       width: 100%;
       gap: 0.2rem
     }
-    ^propHolder > :first-child{
+    ^propHolder > :first-child {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -111,14 +111,13 @@ foam.CLASS({
           INVALID: config$: someLabelSlot$.map(v => { return {label: v} }) --> Will not update prop label
       `
     },
-    ['helpEnabled', false]
+    [ 'helpEnabled', false ]
   ],
 
   methods: [
     function render() {
       var self = this;
-      this.prop = this.prop.clone().copyFrom(this.config);
-      var prop = this.prop;
+      var prop = this.prop = this.prop.clone().copyFrom(this.config);
 
       this.SUPER();
 
@@ -135,9 +134,9 @@ foam.CLASS({
         this.ConstantSlot.create({ value: null });
         */
 
-        var errorSlot = prop.validateObj && prop.validationTextVisible ?
-          data.slot(prop.validateObj) :
-          this.ConstantSlot.create({ value: null });
+      var errorSlot = prop.validateObj && prop.validationTextVisible ?
+        data.slot(prop.validateObj) :
+        this.ConstantSlot.create({ value: null });
 
       var modeSlot = this.prop.createVisibilityFor(
         this.data$,
@@ -147,32 +146,44 @@ foam.CLASS({
       var visibilitySlot = modeSlot.map(m => m != foam.u2.DisplayMode.HIDDEN)
 
       var colorSlot = this.data$.dot(prop.name).map(v => !! v);
+
+      var labelSlot = this.slot(function(prop$reserveLabelSpace, prop$label){
+        let el = this.E().addClass(this.myClass('label'), this.myClass('label' + '-' + prop.name), 'p-light');
+        return prop$label ?
+          el.call(prop.labelFormatter, [data, prop]) :
+          ( prop$reserveLabelSpace ? el : this.E().style({ display: 'contents' }) )
+      });
+
+      var viewSlot = prop.view$.map(v => {
+        // Add the Property's View
+        return this.E().add(prop.toE({
+          ...self.viewArgs,
+          mode$: modeSlot
+        }, this.__subContext__ ))
+          .style({ 'flex-grow': 1,'max-width': '100%' })
+          .enableClass('error', errorSlot.and(colorSlot));
+      });
+
+      this.layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot);
+    },
+
+    function layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot) {
+      var self = this;
+
       this.
         addClass().
         show(visibilitySlot).
-        add(this.slot(function(prop$reserveLabelSpace, prop$label){
-          let el = this.E().addClass(this.myClass('label'), this.myClass('label' + '-' + prop.name), 'p-light');
-          return prop$label ?
-            el.call(prop.labelFormatter, [data, prop]) :
-            ( prop$reserveLabelSpace ? el : this.E().style({ display: 'contents' }) )
-        })).
+        add(labelSlot).
         start().
           addClass(this.myClass('propHolder')).
-          start().
-            add(prop.view$.map(v => {
-              // Add the Property's View
-              return this.E().add(prop.toE({
-                ...self.viewArgs,
-                mode$: modeSlot
-              }, this.__subContext__ ))
-                .style({ 'flex-grow': 1,'max-width': '100%' })
-                .enableClass('error', errorSlot.and(colorSlot));
-            })).
-            add(prop.units$).
+          start('span').
+            addClass(this.myClass('propHolderInner')).
+            add(viewSlot).
+            start('span').addClass(self.myClass('units')).add(prop.units$).end().
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
-              .start('', { tooltip: self.LEARN_MORE })
+              .start('', { tooltip: prop.help.length < 60 ? prop.help : self.LEARN_MORE })
                 .start(self.CircleIndicator, {
                   icon: self.theme ? self.theme.glyphs.helpIcon.getDataUrl({ fill: self.theme.black }) : '/images/question-icon.svg',
                   size: 20
@@ -194,7 +205,7 @@ foam.CLASS({
            */
           addClass('p-legal-light', this.myClass('errorText')).
           enableClass(this.myClass('colorText'), colorSlot).
-           show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
+          show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
           // Using the line below we can reserve error text space instead of shifting layouts
           // show(modeSlot.map(m => m == foam.u2.DisplayMode.RW)).
           start({
@@ -203,8 +214,8 @@ foam.CLASS({
             embedSVG: true
           }).show(errorSlot.and(colorSlot)).end().
           add(' ', errorSlot).
-        end()
-        .callIf(prop.help, function() {
+        end().
+        callIf(prop.help, function() {
           this
             .start(self.ExpandableBorder, { expanded$: self.helpEnabled$, title: self.HELP })
               .style({ 'flex-basis': '100%', width: '100%' })
