@@ -82,7 +82,7 @@ foam.CLASS({
         .start()
           .style({ width: foam.core.Int.isInstance(this.size) ? this.size+'px' : this.size })
           .start('svg')
-            .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet', 
+            .attrs({ width: '100%', viewBox: '0 0 24 24', 'transform-origin': 'center', preserveAspectRatio: 'xMidYMid meet',
                     fill: this.color$
                   })
             .start('g')
