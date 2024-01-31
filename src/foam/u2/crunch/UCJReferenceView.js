@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'UCJReferenceView',
   extends: 'foam.u2.View',
+
   documentation: `
     Render the UCJ specified by 'data' in an inline CRUNCH wizard. The default
     WAO setting is APPROVAL, which means UCJ changes will generate approvals
