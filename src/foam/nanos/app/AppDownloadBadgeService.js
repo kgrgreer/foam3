@@ -20,6 +20,7 @@ foam.CLASS({
     'appConfig',
     'document',
     'loginSuccess',
+    'initLayout',
     'theme'
   ],
   messages: [
@@ -68,36 +69,41 @@ foam.CLASS({
     function init() {
       if ( localStorage.getItem('showDownloadPrompt') == 'NO' ) return;
       this.loginSuccess$.sub(() => {
-        if ( ! this.loginSuccess ) return;
-        // Needed since ctrl sometimes rebuilds this
-        // Prevents duplicate popups, check again after ZAC
-        let existing = this.document.querySelector(`.${this.myClass('appDownloadPopup')}`);
-        if ( this.referralToken && this.appConfig.playLink && ! existing ) {
-          this.popup = this.StyledModal.create();
-          this.popup.start().addClass(this.myClass('appDownloadPopup'))
-          .start('img')
-            .attr('src', this.theme.logo)
-            .addClass(this.myClass('logo'))
-          .end()
+        this.initLayout.then(() => {
+          if ( ! this.loginSuccess ) return;
+          // Needed since ctrl sometimes rebuilds this
+          // Prevents duplicate popups, check again after ZAC
+          let existing = this.document.querySelector(`.${this.myClass('appDownloadPopup')}`);
+          if ( this.referralToken && this.appConfig.playLink && ! existing ) {
+            this.popup = this.StyledModal.create();
+            this.popup.start().addClass(this.myClass('appDownloadPopup'))
+            .start('img')
+              .attr('src', this.theme.logo)
+              .addClass(this.myClass('logo'))
+            .end()
+  
+            .start().addClass(this.myClass('header'),'h400')
+              .add(this.APP_DOWNLOAD_TITLE)
+            .end()
+            .add(this.APP_DOWNLOAD_SUB)
+            .start('a').addClass(this.myClass('playLink')).attrs({ href: this.appConfig.playLink })
+            .start('img')
+              .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
+            .end().end()
+            .startContext({ data: this })
+            .tag(this.DONT_SHOW_AGAIN, { size: 'SMALL' })
+            .endContext()
+            .start()
+              .addClass('p-legal', this.myClass('legal'))
+              .add(this.GPLAY_LEGAL)
+            .end();
+            this.popup.write();
 
-          .start().addClass(this.myClass('header'),'h400')
-            .add(this.APP_DOWNLOAD_TITLE)
-          .end()
-          .add(this.APP_DOWNLOAD_SUB)
-          .start('a').addClass(this.myClass('playLink')).attrs({ href: this.appConfig.playLink })
-          .start('img')
-            .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
-          .end().end()
-          .startContext({ data: this })
-          .tag(this.DONT_SHOW_AGAIN, { size: 'SMALL' })
-          .endContext()
-          .start()
-            .addClass('p-legal', this.myClass('legal'))
-            .add(this.GPLAY_LEGAL)
-          .end();
-          this.popup.write();
+            // Remove the referral token from the URL
+            window.history.replaceState('', '', window.location.origin + '/' + window.location.hash);
+          }})
         }
-      });
+      );
     }
   ],
   actions: [
