@@ -19,8 +19,8 @@ foam.CLASS({
   imports: [
     'appConfig',
     'document',
-    'loginSuccess',
     'initLayout',
+    'loginSuccess',
     'theme'
   ],
   messages: [
