@@ -100,7 +100,10 @@ foam.CLASS({
             this.popup.write();
 
             // Remove the referral token from the URL
-            window.history.replaceState('', '', window.location.origin + '/' + window.location.hash);
+            let url = new URL(window.location.href);
+            url.searchParams.delete('referral');
+            window.history.replaceState('', '', url);
+
           }})
         }
       );
