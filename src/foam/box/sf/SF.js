@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.box.Message',
     'foam.dao.*',
     'foam.core.FObject',
-    'foam.mlang.sink.Max;',
+    'foam.mlang.sink.Max',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.fs.Storage',
