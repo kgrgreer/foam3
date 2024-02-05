@@ -307,14 +307,19 @@ foam.CLASS({
         .callIf(self.showTitle, function() { this.start().addClass('h300').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
         .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
-        .start()
+        .start('form')
+          .setID('login')
           .startContext({ data: this }).tag(this.DATA).endContext()
           .start()
             .addClass('align-end')
-            .tag(this.data.SUB_FOOTER)
+            .start(this.data.SUB_FOOTER)
+              .attr('type', 'button')
+            .end()
           .end()
         .end()
-        .tag(this.data.LOGIN)
+        .start(this.data.LOGIN)
+          .attrs({ type: 'submit', form: 'login' })
+        .end()
         .add(
           this.slot(function(data$showAction, data$disclaimer, appConfig) {
             var disclaimer = self.E().style({ display: 'contents' }).callIf(data$disclaimer && appConfig, function() {

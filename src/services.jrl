@@ -42,7 +42,7 @@ p({
     "class":"foam.nanos.jetty.HttpServer",
     "port":8080,
     "forwardedForProxyWhitelist":[],
-    "welcomeFiles":["/src/foam/nanos/controller/index.html"],
+    "welcomeFiles":["/foam3/src/foam/nanos/controller/index.html"],
     "servletMappings":[
       {
         "class":"foam.nanos.servlet.ServletMapping",

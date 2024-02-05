@@ -164,9 +164,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.ruler.RuleAction',
       name: 'action',
-      view: { class: 'foam.u2.view.JSONTextView' },
       documentation: 'The action to be executed if predicates returns true for passed object.',
-      javaCloneProperty: 'set(dest, get(source));'
+      javaCloneProperty: 'set(dest, get(source));' // NOTE: without this, many test cases fail with permission issues.
     },
     {
       name: 'enabled',

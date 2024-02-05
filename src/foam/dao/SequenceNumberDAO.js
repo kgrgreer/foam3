@@ -125,7 +125,7 @@ foam.CLASS({
         return try delegate.put_(x, obj)
       `,
       javaCode: `
-        synchronized (this) {
+        synchronized ( this ) {
           long id = (long) getProperty_().get(obj);
           if ( id == 0 ) {
             getProperty_().set(obj, getValue_());

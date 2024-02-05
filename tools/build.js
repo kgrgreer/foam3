@@ -555,7 +555,7 @@ task('Extract project git hash.', [], function getProjectGitHash() {
   var out = 'Unversioned';
 
   try {
-    out = execSync('git describe --exact-match HEAD', {stdio: 'ignore'});
+    out = execSync('git describe --exact-match HEAD');
   } catch (x) {
     try {
       out = execSync('git rev-parse --short HEAD');
@@ -758,7 +758,7 @@ const ARGS = {
       ARGS.t[1]();
       TESTS = args;
     } ],
-  u: [ 'Run from jar. Intented for Production deployments.',
+  u: [ 'Run from jar. Intented for Production deployments. Connect to https://localhost:8443/',
     () => {
       RUN_JAR = true;
       JOURNAL_CONFIG = comma(JOURNAL_CONFIG, 'u');

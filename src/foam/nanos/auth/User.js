@@ -38,6 +38,7 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.HashSet',
     'java.util.List',
+    'java.util.regex.Pattern',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -71,11 +72,20 @@ foam.CLASS({
       name: 'SYSTEM_USER_ID',
       value: 1,
       type: 'Long'
+    },
+    {
+      name: 'NAME_MATCHER',
+      type: 'Regex',
+      javaValue: `Pattern.compile("^[\\\\p{L}\\\\s-.']+$", Pattern.UNICODE_CASE)`
     }
   ],
 
   messages: [
-    { name: 'USERNAME_REQUIRED', message: 'Username required' }
+    { name: 'USERNAME_REQUIRED', message: 'Username required' },
+    { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name: ' },
+    { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name: ' },
+    { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name: ' },
+    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" }
   ],
 
   sections: [
@@ -227,8 +237,26 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       trim: true,
-      tableWidth: 160
-   },
+      tableWidth: 160,
+      validateObj: function(firstName) {
+        if ( ! firstName.trim() ) return;
+
+        var invalidMatcher = new RegExp(foam.nanos.auth.User.INVALID_MATCHER, 'ug');
+        var invalidMatch = firstName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return foam.nanos.auth.User.INVALID_FIRST_NAME + invalidChars;
+        }
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("firstName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+          throw new IllegalStateException(foam.nanos.auth.User.INVALID_FIRST_NAME + name);
+      `
+    },
     {
       class: 'String',
       name: 'middleName',
@@ -239,7 +267,25 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       columnPermissionRequired: true,
-      trim: true
+      trim: true,
+      validateObj: function(middleName) {
+        if ( ! middleName.trim() ) return;
+
+        var invalidMatcher = new RegExp(foam.nanos.auth.User.INVALID_MATCHER, 'ug');
+        var invalidMatch = middleName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return foam.nanos.auth.User.INVALID_MIDDLE_NAME + invalidChars;
+        }
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("middleName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+          throw new IllegalStateException(foam.nanos.auth.User.INVALID_MIDDLE_NAME + name);
+      `
     },
     {
       class: 'String',
@@ -252,7 +298,25 @@ foam.CLASS({
       includeInDigest: true,
       containsPII: true,
       trim: true,
-      tableWidth: 160
+      tableWidth: 160,
+      validateObj: function(lastName) {
+        if ( ! lastName.trim() ) return;
+
+        var invalidMatcher = new RegExp(foam.nanos.auth.User.INVALID_MATCHER, 'ug');
+        var invalidMatch = lastName.match(invalidMatcher)
+        if ( invalidMatch ) {
+          var invalidChars = [...new Set(invalidMatch.join(''))].join(', ')
+          return foam.nanos.auth.User.INVALID_LAST_NAME + invalidChars;
+        }
+      },
+      javaValidateObj: `
+        foam.nanos.app.AppConfig appConfig = (foam.nanos.app.AppConfig) x.get("appConfig");
+        String name = (String) obj.getProperty("lastName");
+        if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
+
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+          throw new IllegalStateException(foam.nanos.auth.User.INVALID_LAST_NAME + name);
+      `
     },
     {
       class: 'String',
@@ -267,13 +331,21 @@ foam.CLASS({
       columnPermissionRequired: true,
       trim: true,
       transient: true,
-      expression: function(firstName, middleName, lastName) {
+      expression: function(firstName, middleName, lastName, businessName) {
+        if ( ! firstName && ! lastName ) return businessName;
         return [firstName, middleName, lastName].filter(name => name).join(' ');
       },
       javaGetter: `
         String firstName = getFirstName();
         String middleName = getMiddleName();
         String lastName = getLastName();
+
+        // Many table columns use user.legalName which is empty for businesses.
+        if ( SafetyUtil.isEmpty(firstName) &&
+             SafetyUtil.isEmpty(lastName) &&
+             ! SafetyUtil.isEmpty(getBusinessName()) ) {
+          return getBusinessName();
+        }
 
         StringBuilder sb = new StringBuilder();
 
@@ -313,7 +385,7 @@ foam.CLASS({
       order: 130,
       gridColumns: 6,
       factory: function() {
-        return foam.nanos.auth.LanguageId.create({code: 'en'})
+        return foam.nanos.auth.LanguageId.create({code: 'en'});
       },
       javaFactory: `
         return new foam.nanos.auth.LanguageId.Builder(null).setCode("en").build();

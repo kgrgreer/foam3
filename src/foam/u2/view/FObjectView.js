@@ -64,7 +64,8 @@ foam.CLASS({
       // circular definition where FObjectView has an FObjectProperty which gets
       // rendered as an FObjectView, which leads to infinite recursion.
       preSet: function(o, n) { return n || o; },
-      view: 'foam.u2.detail.SectionedDetailView'
+//      view: 'foam.u2.detail.SectionedDetailView'
+view: 'foam.u2.detail.SimpleDetailView'
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -162,7 +163,8 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'detailView',
-      value: { class: 'foam.u2.detail.VerticalDetailView' }
+//      value: { class: 'foam.u2.detail.VerticalDetailView' }
+value: { class: 'foam.u2.detail.SimpleDetailView' }
     },
     {
       class: 'Map',
@@ -259,9 +261,11 @@ foam.CLASS({
         this.onDetach(this.of$.sub(this.updateChoices));
         this.updateChoices();
         await this.choicesLoaded;
-        if ( this.state == this.UNLOADED ) return;
-        if ( this.state == this.OUTPUT ) {
-          await new Promise(resolve => this.onload.sub(resolve))
+        if ( this.UNLOADED ) { // detect U2, TODO: remove once switched to U3
+          if ( this.state == this.UNLOADED ) return;
+          if ( this.state == this.OUTPUT ) {
+            await new Promise(resolve => this.onload.sub(resolve))
+          }
         }
       }
 
@@ -281,6 +285,7 @@ foam.CLASS({
           show(this.OBJECT_CLASS.createVisibilityFor(foam.core.SimpleSlot.create({ value: this }), this.controllerMode$).map(function(m) {
             return m != foam.u2.DisplayMode.HIDDEN;
           })).
+          style({'margin-bottom': '6px'}).
         end().
         start().
           show(this.objectClass$).
