@@ -216,7 +216,7 @@ Thread t = new Thread(this);
       javaCode: `
         try {
           getQueue().put(new Object[] { REMOVE, value });
-} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
         }
         return this;
       `
