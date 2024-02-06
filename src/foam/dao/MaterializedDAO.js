@@ -43,7 +43,7 @@ foam.CLASS({
   `,
 
   properties: [
-    {
+{
       class: 'Object',
       name: 'queue',
       javaType: 'java.util.concurrent.BlockingQueue',
@@ -97,11 +97,10 @@ foam.CLASS({
       type: 'foam.nanos.auth.Authorizer',
       name: 'authorizer',
       javaFactory: `
-      String sourceClass = getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
-      if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getOf().getObjClass()) ) {
-        return new foam.nanos.auth.AuthorizableAuthorizer(sourceClass);
+      if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getSourceDAO().getOf().getObjClass()) ) {
+        return new foam.nanos.auth.AuthorizableAuthorizer(getPermissionPrefix());
       }
-      return new foam.nanos.auth.StandardAuthorizer(sourceClass);
+      return new foam.nanos.auth.StandardAuthorizer(getPermissionPrefix());
       `
     },
     {
@@ -153,7 +152,7 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         if ( ! getInitialized() ) {
-          Thread t = new Thread(this);
+Thread t = new Thread(this);
           t.setName("MaterializedDAO Processor: " + getDelegate());
           t.setDaemon(true);
           t.start();
@@ -204,7 +203,7 @@ foam.CLASS({
       javaCode: `
         try {
           getQueue().put(new Object[] { PUT, value });
-        } catch (InterruptedException e) {
+          } catch (InterruptedException e) {
         }
         return this;
       `
@@ -217,7 +216,7 @@ foam.CLASS({
       javaCode: `
         try {
           getQueue().put(new Object[] { REMOVE, value });
-        } catch (InterruptedException e) {
+} catch (InterruptedException e) {
         }
         return this;
       `
@@ -230,11 +229,11 @@ foam.CLASS({
         getQueue().clear();
         try {
           getQueue().put(new Object[] { REMOVE_ALL });
-        } catch (InterruptedException e) {
+} catch (InterruptedException e) {
         }
         return this;
       `
-    },
+},
 
     {
       name: 'run',
