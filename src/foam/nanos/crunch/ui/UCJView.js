@@ -10,6 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
+    'agentJunctionDAO',
     'approvalRequestDAO',
     'capabilityDAO',
     'crunchController',
@@ -31,10 +32,15 @@ foam.CLASS({
     });
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.ControllerMode',
     'foam.u2.crunch.EasyCrunchWizard',
@@ -106,13 +112,18 @@ foam.CLASS({
 
   methods: [
     async function render() {
-      var user = undefined;
       if ( ! this.data ) return;
-      var realUser = await this.userDAO.find(this.data.sourceId);
+      let user = await this.userDAO.find(this.data.sourceId);
+      let realUser;
       if ( this.data.effectiveUser ) {
-        user = await this.userDAO.find(this.data.effectiveUser);
+        realUser = await this.userDAO.find(this.data.effectiveUser);
+      } else {
+        let junction = await this.agentJunctionDAO.find(this.EQ(this.UserUserJunction.TARGET_ID, this.data.sourceId));
+        if ( junction?.sourceId ) {
+          realUser = await this.userDAO.find(junction.sourceId);
+        }
       }
-      if ( ! user ) user = realUser;
+      if ( ! realUser ) realUser = user;
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
