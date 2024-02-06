@@ -203,7 +203,7 @@ Thread t = new Thread(this);
       javaCode: `
         try {
           getQueue().put(new Object[] { PUT, value });
-          } catch (InterruptedException e) {
+        } catch (InterruptedException e) {
         }
         return this;
       `
