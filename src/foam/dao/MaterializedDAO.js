@@ -152,7 +152,7 @@ foam.CLASS({
       synchronized: true,
       javaCode: `
         if ( ! getInitialized() ) {
-Thread t = new Thread(this);
+        Thread t = new Thread(this);
           t.setName("MaterializedDAO Processor: " + getDelegate());
           t.setDaemon(true);
           t.start();
