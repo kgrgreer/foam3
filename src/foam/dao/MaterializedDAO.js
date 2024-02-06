@@ -233,7 +233,7 @@ Thread t = new Thread(this);
         }
         return this;
       `
-},
+    },
 
     {
       name: 'run',
