@@ -68,11 +68,10 @@ foam.CLASS({
       type: 'foam.nanos.auth.Authorizer',
       name: 'authorizer',
       javaFactory: `
-      String sourceClass = getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
-      if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getOf().getObjClass()) ) {
-        return new foam.nanos.auth.AuthorizableAuthorizer(sourceClass);
+      if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getSourceDAO().getOf().getObjClass()) ) {
+        return new foam.nanos.auth.AuthorizableAuthorizer(getPermissionPrefix());
       }
-      return new foam.nanos.auth.StandardAuthorizer(sourceClass);
+      return new foam.nanos.auth.StandardAuthorizer(getPermissionPrefix());
       `
     },
     {
