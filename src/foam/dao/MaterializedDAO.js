@@ -43,7 +43,7 @@ foam.CLASS({
   `,
 
   properties: [
-{
+    {
       class: 'Object',
       name: 'queue',
       javaType: 'java.util.concurrent.BlockingQueue',
