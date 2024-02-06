@@ -229,7 +229,7 @@ Thread t = new Thread(this);
         getQueue().clear();
         try {
           getQueue().put(new Object[] { REMOVE_ALL });
-} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
         }
         return this;
       `
