@@ -720,7 +720,13 @@ foam.CLASS({
     async function pushMenu_(realMenu, menu, opt_forceReload) {
       dao = this.client.menuDAO;
       let m = this.memento_.str;
-      realMenu = await dao.find(realMenu);
+      let stringMenu = menu && foam.String.isInstance(menu);
+      // No need to check for menu in DAO if user already has access to menu obj
+      if ( stringMenu ) {
+        realMenu = await dao.find(realMenu);
+      } else {
+        realMenu = menu;
+      }
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
           await this.fetchSubject();
@@ -733,13 +739,13 @@ foam.CLASS({
         return;
       }
       const preserveMem = this.buildingStack || (
-        typeof menu === 'string' ?
+        stringMenu ?
         foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
         foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
       );
       if ( ! preserveMem )
         this.memento_.removeMementoTail();
-      if ( typeof menu == 'string' && ! menu.includes('/') )
+      if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;
       return menu && menu.launch && menu.launch(this.__subContext__);
