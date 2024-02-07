@@ -113,11 +113,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'permissionPrefix',
-      factory: function() {
-        return this.of.name.toLowerCase();
-      },
       javaFactory: `
-      return getOf().getObjClass().getSimpleName().toLowerCase();
+      return getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
      `
     },
     {
