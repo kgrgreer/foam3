@@ -135,7 +135,7 @@ foam.CLASS({
           throw clientE;
         }
       }
-      ((foam.nanos.logger.Logger) getMessageX(message).get("logger")).debug("returning skeleton exception", t);
+      ((foam.nanos.logger.Logger) getMessageX(message).get("logger")).debug("returning skeleton exception", t.toString());
       // NOTE: this is required for SocketClientReplyBox to find the socket that this request arrived on.  The localAttributes 'x' does not have access to the socket.
       message.setX(getX());
       message.replyWithException(t);
