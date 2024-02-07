@@ -99,7 +99,7 @@ foam.CLASS({
       documentation: `
         Checks read access to the sourceDAO.
         If the class of the materializedDAO is Authorizable, use its custom authorization
-        logic to check access to the sourceDAO.
+        logic to check access to objects in the materializedDAO.
         Otherwise, use a StandardAuthorizer to explicitly check the read permission of the
         sourceDAO objects.
       `,
