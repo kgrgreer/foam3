@@ -12,6 +12,10 @@ foam.CLASS({
     public ExternalAPIException(String message) {
       super(message);
     }
+
+    public ExternalAPIException(String message, Exception e) {
+      super(message, e);
+    }
   `,
 
   properties: [
