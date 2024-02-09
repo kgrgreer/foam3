@@ -37,7 +37,8 @@ foam.CLASS({
         foam.lib.formatter.JSONFObjectFormatter formatter = new foam.lib.formatter.JSONFObjectFormatter();
         // Needed because JS JSON parser doesn't support unquoted keys.
         formatter.setQuoteKeys(true);
-        formatter.setOutputShortNames(true);
+        // TODO: investigate why shortname breaks projection on the client side
+        formatter.setOutputShortNames(false);
         formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {new foam.lib.NetworkPropertyPredicate(), new foam.lib.PermissionedPropertyPredicate()}));
         return formatter;
       }
