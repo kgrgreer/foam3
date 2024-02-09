@@ -42,6 +42,7 @@ foam.CLASS({
         formatter.setOutputClassNames(true);
         formatter.setOutputDefaultValues(true);
         formatter.setMultiLine(true);
+        formatter.setOutputShortNames(true);
         formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(
            new foam.lib.PropertyPredicate[] {
              new foam.lib.ExternalPropertyPredicate(),
@@ -176,12 +177,22 @@ foam.CLASS({
         formatter.setX(x);
 
         var p = x.get(HttpParameters.class);
-        if ( p != null && "false".equals(p.getParameter("multiline")) ) {
-          formatter.setMultiLine(false);
-        } else {
-          formatter.setMultiLine(true);
+        if ( p != null ) {
+          if ( isSetToDisabled(p.getParameter("multiline")) ) formatter.setMultiLine(false);
+          if ( isSetToDisabled(p.getParameter("shortname")) ) formatter.setOutputShortNames(false);
         }
         return formatter;
+      `
+    },
+    {
+      name: 'isSetToDisabled',
+      type: 'boolean',
+      args: 'String value',
+      javaCode: `
+        if ( SafetyUtil.isEmpty(value) ) return false;
+
+        value = value.trim().toLowerCase();
+        return "false".equals(value) || "f".equals(value) || "0".equals(value) || "no".equals(value) || "n".equals(value) || "off".equals(value);
       `
     }
   ]
