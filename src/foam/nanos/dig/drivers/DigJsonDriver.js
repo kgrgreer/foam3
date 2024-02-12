@@ -42,7 +42,6 @@ foam.CLASS({
         formatter.setOutputClassNames(true);
         formatter.setOutputDefaultValues(true);
         formatter.setMultiLine(true);
-        formatter.setOutputShortNames(true);
         formatter.setPropertyPredicate(new foam.lib.AndPropertyPredicate(
            new foam.lib.PropertyPredicate[] {
              new foam.lib.ExternalPropertyPredicate(),
@@ -136,6 +135,7 @@ foam.CLASS({
       }
 
       var formatter = getFormatter(x);
+      formatter = configurePropNamesMapping(x, formatter);
       formatter.output(fobjects.toArray());
 
       // Output the formatted data
@@ -150,6 +150,7 @@ foam.CLASS({
       if ( obj == null ) return;
 
       var formatter = getFormatter(x);
+      formatter = configurePropNamesMapping(x, formatter);
       formatter.output(obj);
 
       // Output the formatted data
@@ -170,7 +171,7 @@ foam.CLASS({
     },
     {
       name: 'getFormatter',
-      type: 'FObjectFormatter',
+      type: 'JSONFObjectFormatter',
       args: 'Context x',
       javaCode: `
         var formatter = formatter_.get();
@@ -179,7 +180,6 @@ foam.CLASS({
         var p = x.get(HttpParameters.class);
         if ( p != null ) {
           if ( isSetToDisabled(p.getParameter("multiline")) ) formatter.setMultiLine(false);
-          if ( isSetToDisabled(p.getParameter("shortname")) ) formatter.setOutputShortNames(false);
         }
         return formatter;
       `
@@ -193,6 +193,20 @@ foam.CLASS({
 
         value = value.trim().toLowerCase();
         return "false".equals(value) || "f".equals(value) || "0".equals(value) || "no".equals(value) || "n".equals(value) || "off".equals(value);
+      `
+    },
+    {
+      name: 'configurePropNamesMapping',
+      type: 'JSONFObjectFormatter',
+      args: 'Context x, JSONFObjectFormatter formatter',
+      javaCode: `
+        var p = x.get(HttpParameters.class);
+        if ( p.getParameter("nameMapping") != null ) {
+          var ret = parseMap(p.getParameter("nameMapping"));
+          if ( ret.value() != null )
+            return formatter.setPropNamesMapping((Map) ret.value());
+        }
+        return formatter;
       `
     }
   ]
