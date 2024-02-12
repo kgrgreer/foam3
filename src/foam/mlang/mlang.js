@@ -1414,6 +1414,7 @@ return ( s1 instanceof String && ((String) s1).toUpperCase().contains(s2) );`
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'Find',
