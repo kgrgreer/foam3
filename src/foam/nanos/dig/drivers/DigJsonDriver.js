@@ -178,7 +178,7 @@ foam.CLASS({
         var p = x.get(HttpParameters.class);
         if ( p != null ) {
           var multiline = (String) p.getParameter("multiline");
-          if ( SafetyUtil.isEmpty(multiline) ) formatter.setMultiLine(isEnabled(multiline));
+          if ( ! SafetyUtil.isEmpty(multiline) ) formatter.setMultiLine(isEnabled(multiline));
         }
         return formatter;
       `
