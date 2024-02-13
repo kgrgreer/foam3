@@ -149,8 +149,8 @@ foam.CLASS({
     {
       class: 'Code',
       name: 'client',
-      value: '{}',
-      authNotes: 'Do not define shortName since the ClientBuilder uses projection for nSpecDAO.select and shortName will be returned if defined but the ClientBuilder promise only looks for spec.client to build the client services.' ,
+      shortName: 'c',
+      value: '{}'
     },
     {
       class: 'String',
