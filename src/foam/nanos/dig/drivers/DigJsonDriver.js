@@ -176,12 +176,20 @@ foam.CLASS({
         formatter.setX(x);
 
         var p = x.get(HttpParameters.class);
-        if ( p != null && "false".equals(p.getParameter("multiline")) ) {
-          formatter.setMultiLine(false);
-        } else {
-          formatter.setMultiLine(true);
+        if ( p != null ) {
+          var multiline = (String) p.getParameter("multiline");
+          if ( SafetyUtil.isEmpty(multiline) ) formatter.setMultiLine(isEnabled(multiline));
         }
         return formatter;
+      `
+    },
+    {
+      name: 'isEnabled',
+      type: 'boolean',
+      args: 'String value',
+      javaCode: `
+        value = value.trim().toLowerCase();
+        return "true".equals(value) || "t".equals(value) || "1".equals(value) || "yes".equals(value) || "y".equals(value) || "on".equals(value);
       `
     }
   ]
