@@ -517,7 +517,7 @@ public class JSONFObjectFormatter
     append(',');
     outputKey("name");
     append(':');
-    output(getPropertyName(prop));
+    output(prop.getName());
 //    if ( quoteKeys_ ) {
 //      output(getPropertyName(prop));
 //    } else {
