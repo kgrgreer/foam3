@@ -19,6 +19,7 @@ foam.CLASS({
   package: 'foam.box',
   name: 'RPCErrorMessage',
   implements: ['foam.core.Exception'],
+
   properties: [
     {
       class: 'Object',
@@ -29,7 +30,7 @@ foam.CLASS({
       name: 'message',
       transient: true,
       getter: function() {
-        return this.data && this.data.message;
+        return this.data && ( this.data.message || this.data.id );
       }
     }
   ]
