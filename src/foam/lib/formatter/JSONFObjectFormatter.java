@@ -559,7 +559,7 @@ public class JSONFObjectFormatter
   }
 
   public JSONFObjectFormatter setOutputShortNames(boolean outputShortNames) {
-   // outputShortNames_ = outputShortNames;
+    outputShortNames_ = outputShortNames;
     return this;
   }
 
