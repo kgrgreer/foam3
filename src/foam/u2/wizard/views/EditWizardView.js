@@ -47,12 +47,10 @@ foam.CLASS({
   }
   `,
 
-  sections: [
+  properties: [
     {
-      name: 'editWizardSection',
-      title: function() {
-        return this.EDIT_WIZARD_TITLE
-      }
+      name: 'title',
+      class: 'String'
     }
   ],
 
@@ -60,9 +58,9 @@ foam.CLASS({
     function render () {
       const self = this
       this
-        .react(function (data$wizardlets) {
+        .dynamic(function (data$wizardlets) {
           this
-          .start().addClass('h300', this.myClass('menu-header')).add(this.wizardController.title$).end()
+          .start().addClass('h300', this.myClass('menu-header')).add(this.title$).end()
           .addClass()
           .forEach(data$wizardlets, function (wizardlet) {
             wizardlet.load()
