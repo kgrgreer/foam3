@@ -31,13 +31,17 @@ foam.CLASS({
             parent: this.id,
             label: this.TERMS_AND_CONDITIONS_TITLE,
             handler: {
-              class: 'foam.nanos.menu.LinkMenu',
-              link$: this.slot(function(appConfig$termsAndCondLink) {
-                if ( appConfig$termsAndCondLink.startsWith("http") )
-                  return appConfig$termsAndCondLink;
-                return this.window.location.origin + appConfig$termsAndCondLink;
-              }),
-              openNewTab: true
+              class: 'foam.nanos.menu.ViewMenu',
+              shouldResetBreadcrumbs: false,
+              view: {
+                class: 'foam.u2.IFrameDocView',
+                src$: this.slot(function(appConfig$termsAndCondLink) {
+                  if ( appConfig$termsAndCondLink.startsWith("http") )
+                    return appConfig$termsAndCondLink;
+                  // return this.window.location.origin + appConfig$termsAndCondLink;
+                  return this.window.location.origin + '/service/file/11d13e7c-692b-eb6c-22a0-647b4f3ca94e';
+                })
+              }
             }
           }));
         }
@@ -47,13 +51,16 @@ foam.CLASS({
             parent: this.id,
             label: this.PRIVACY_TITLE,
             handler: {
-              class: 'foam.nanos.menu.LinkMenu',
-              link$: this.slot(function(appConfig$privacyUrl) {
-                if ( appConfig$privacyUrl.startsWith("http") )
-                  return appConfig$privacyUrl;
-                return this.window.location.origin + appConfig$privacyUrl;
-              }),
-              openNewTab: true
+              class: 'foam.nanos.menu.ViewMenu',
+              shouldResetBreadcrumbs: false,
+              view: {
+                class: 'foam.u2.IFrameDocView',
+                src$: this.slot(function(appConfig$privacyUrl) {
+                  if ( appConfig$privacyUrl.startsWith("http") )
+                    return appConfig$privacyUrl;
+                  return this.window.location.origin + appConfig$privacyUrl;
+                })
+              }
             }
           }));
         }
@@ -62,4 +69,3 @@ foam.CLASS({
     }
   ]
 });
-
