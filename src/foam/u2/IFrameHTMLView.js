@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    iframe {
+    ^ iframe {
       border: 1px solid $grey300;
       padding: 8px;
       max-width: 100%;
