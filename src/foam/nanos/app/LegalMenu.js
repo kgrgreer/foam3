@@ -38,8 +38,7 @@ foam.CLASS({
                 src$: this.slot(function(appConfig$termsAndCondLink) {
                   if ( appConfig$termsAndCondLink.startsWith("http") )
                     return appConfig$termsAndCondLink;
-                  // return this.window.location.origin + appConfig$termsAndCondLink;
-                  return this.window.location.origin + '/service/file/11d13e7c-692b-eb6c-22a0-647b4f3ca94e';
+                  return this.window.location.origin + appConfig$termsAndCondLink;
                 })
               }
             }
