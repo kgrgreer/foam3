@@ -131,6 +131,7 @@ foam.CLASS({
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
             msg = err.data.message =  this.USER_NOT_FOUND_ERROR_MSG + this.email;
+            err.data.title = 'Invalid Email';
           }
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
             this.usernameRequired = true;
