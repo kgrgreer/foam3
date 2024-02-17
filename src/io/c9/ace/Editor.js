@@ -19,6 +19,10 @@ foam.CLASS({
     'warn'
   ],
 
+  axioms: [
+    foam.u2.JsLib.create({src: '/node_modules/ace-builds/src-min-noconflict/ace.js'})
+  ],
+
   reactions: [
     ['container', 'onload', 'renderditor'],
     ['config', 'propertyChange', 'updateEditor'],
@@ -86,6 +90,7 @@ foam.CLASS({
         .end();
     }
   ],
+
   listeners: [
     function renderditor() {
       var self = this;
