@@ -7,9 +7,11 @@
 foam.CLASS({
   package: 'io.c9.ace',
   name: 'Config',
+
   imports: [
     'controllerMode?'
   ],
+
   properties: [
     {
       class: 'Int',
