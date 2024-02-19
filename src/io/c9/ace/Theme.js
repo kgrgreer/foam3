@@ -7,6 +7,7 @@
 foam.ENUM({
   package: 'io.c9.ace',
   name: 'Theme',
+
   values: [
     {
       path: 'ace/theme/chrome',
@@ -157,6 +158,7 @@ foam.ENUM({
       name: 'VIBRANT_INK'
     }
   ],
+
   properties: [
     'path'
   ]
