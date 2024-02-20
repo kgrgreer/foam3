@@ -37,7 +37,7 @@ foam.CLASS({
     { name: 'REDIRECTION_TO',           message: 'Back to Sign in' },
     { name: 'DUPLICATE_ERROR_MSG',      message: 'This account requires username' },
     { name: 'ERROR_MSG',                message: 'Issue resetting your password. Please try again' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'Unabled to find user with email: '},
+    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'Unable to find user with email: '},
     { name: 'USER_NOT_FOUND_ERROR_TITLE', message: 'Invalid Email'}
   ],
 
