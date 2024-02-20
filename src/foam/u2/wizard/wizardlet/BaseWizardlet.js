@@ -276,7 +276,7 @@ foam.CLASS({
             // message displayed to the user.
             if ( x.event == self.WizardEventType.WIZARDLET_SAVE )  {
               self.notify(
-               x.exception.title,
+                x.exception.data.title,
                 x.exception.message,
                 self.LogLevel.ERROR,
                 true

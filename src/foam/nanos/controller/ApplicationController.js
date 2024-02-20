@@ -456,6 +456,8 @@ foam.CLASS({
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
+        self.subToNotifications();
+
         let ret = await self.initMenu();
         if ( ret ) return;
 
@@ -525,8 +527,7 @@ foam.CLASS({
           // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
           // use the route instead of the menu so that the menu could be re-created under the updated context
           this.pushMenu(menu.id);
-          this.languageInstalled.resolve();
-          this.subToNotifications();
+          this.languageInstalled.resolve();   
           return 1;
         }
       }
@@ -553,6 +554,7 @@ foam.CLASS({
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
+      this.subToNotifications();
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
