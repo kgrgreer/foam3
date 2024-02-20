@@ -17,7 +17,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Fonts',
-    'foam.u2.DetailPropertyView',
     'foam.u2.borders.Block'
   ],
 
