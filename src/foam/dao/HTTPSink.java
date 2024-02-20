@@ -24,7 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class HTTPSink
-    extends AbstractSink
+  extends AbstractSink
 {
   protected String url_;
   protected String bearerToken_;

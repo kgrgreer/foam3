@@ -165,8 +165,6 @@ foam.CLASS({
     'foam.u2.stack.StackBlock'
   ],
 
-  implements: [ 'foam.mlang.Expressions' ],
-
   imports: [
     'nSpecDAO',
     'stack'

@@ -8,9 +8,9 @@
 
 exports.description = 'Copy resources into the webroot directory.';
 
-const fs_    = require('fs');
-const path_  = require('path');
-const b_     = require('./buildlib');
+const fs_   = require('fs');
+const path_ = require('path');
+const b_    = require('./buildlib');
 
 exports.init = function() {
   X.webrootdir = X.builddir + '/webroot';

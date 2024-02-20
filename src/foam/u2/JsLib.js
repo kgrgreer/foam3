@@ -43,9 +43,10 @@ foam.CLASS({
         var self = this;
         this.LOADED[this.name] = new Promise(function(resolve, reject) {
           var id = foam.next$UID();
-          let e  = document.createElement('script')
-          e.setAttribute('id', id)
-          e.setAttribute('src', self.src)
+          let e  = document.createElement('script');
+          e.setAttribute('id',   id);
+          e.setAttribute('type', 'text/javascript');
+          e.setAttribute('src',  self.src);
           document.body.appendChild(e);
           e.onload = function() {
             resolve(true);

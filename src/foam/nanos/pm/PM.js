@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PM',
 
-  documentation: `A Performance Measure which captures the count and duration of some event.`,
+  documentation: 'A Performance Measure which captures the count and duration of some event.',
 
   implements: [
     'foam.nanos.analytics.Foldable',

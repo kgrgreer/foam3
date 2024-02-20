@@ -64,7 +64,7 @@ foam.CLASS({
       // circular definition where FObjectView has an FObjectProperty which gets
       // rendered as an FObjectView, which leads to infinite recursion.
       preSet: function(o, n) { return n || o; },
-     view: 'foam.u2.detail.SectionedDetailView'
+      view: 'foam.u2.detail.SectionedDetailView'
 // view: 'foam.u2.detail.SimpleDetailView'
     },
     {
@@ -163,7 +163,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'detailView',
-     value: { class: 'foam.u2.detail.VerticalDetailView' }
+      value: { class: 'foam.u2.detail.VerticalDetailView' }
 // value: { class: 'foam.u2.detail.SimpleDetailView' }
     },
     {

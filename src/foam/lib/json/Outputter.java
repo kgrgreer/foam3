@@ -460,7 +460,7 @@ public class Outputter
     writer_.append(",");
     outputString("name");
     writer_.append(":");
-    outputString(getPropertyName(prop));
+    outputString(prop.getName()); // always use long name here
     writer_.append("}");
   }
 

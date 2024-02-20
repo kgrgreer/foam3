@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2022 The FOAM Authors. All Rights Reserved.
@@ -387,6 +388,8 @@ foam.POM({
     { name: "auth/ClientAgentAuthService",                                                flags: "js|java" },
     { name: "auth/UniqueUserService",                                                     flags: "js|java" },
     { name: "om/DAOOMLogger",                                                             flags: "js|java" },
+    { name: "cm/CM",                                                                      flags: "js|java" },
+    { name: "cm/CMUpdateDAO",                                                             flags: "java" },
     { name: "pm/PMTemperatureCellFormatter",                                              flags: "js" },
     { name: "pm/NullPM",                                                                  flags: "js|java" },
     { name: "pm/PM",                                                                      flags: "js|java" },

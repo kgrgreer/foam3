@@ -39,6 +39,10 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'displayWidth'
+    },
+    {
+      class: 'String',
+      name: 'units'
     }
   ],
 
@@ -56,6 +60,28 @@ foam.CLASS({
 
       if ( ! this.size ) {
         this.size = this.displayWidth;
+      }
+
+      if ( ! this.units ) {
+        this.units = prop.units;
+      }
+    },
+
+    function load() {
+      this.SUPER();
+
+      if ( this.units ) {
+        var parent = this.parentNode;
+        var self   = this;
+
+        this.el().then(e => {
+          var span = parent.start('span').style({display: 'inline-block', position: 'relative', 'font-weight': '300'}).add(self.units, ' ');
+          span.el().then(e => {
+            var w = Math.ceil(e.getBoundingClientRect().width);
+            span.style({left: '-' + (4) + 'px'});
+            self.style({'padding-right': (w+6) + 'px', 'margin-right': (-w) + 'px'});
+          });
+        });
       }
     }
   ]

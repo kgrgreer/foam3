@@ -81,6 +81,7 @@ foam.CLASS({
   reactions: [
     ['', 'propertyChange.data', 'updateWorkingData'],
   ],
+
   listeners: [
     {
       name: 'updateWorkingData',
@@ -88,8 +89,9 @@ foam.CLASS({
       code: function() {
         this.workingData = this.data && this.data.clone();
       }
-    },
+    }
   ],
+
   methods: [
     function render() {
       this.SUPER();
