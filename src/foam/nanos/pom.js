@@ -400,6 +400,7 @@ foam.POM({
     { name: "pm/TemperatureCView",                                                        flags: "js" },
     { name: "pm/PMFactory",                                                               flags: "js|java" },
     { name: "pool/ThreadPoolAgency",                                                      flags: "js|java" },
+    { name: "pool/Throttle",                                                              flags: "js|java" },
     { name: "pool/ThrottledAgency",                                                       flags: "js|java" },
     { name: "pool/test/ThrottledAgencyTest",                                              flags: "java" },
     { name: "auth/PMAuthService",                                                         flags: "js|java" },
