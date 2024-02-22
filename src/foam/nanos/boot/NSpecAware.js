@@ -21,7 +21,7 @@ foam.INTERFACE({
 
 foam.CLASS({
   package: 'foam.nanos.boot',
-  name: 'EasyDAONSpecAwareRefinemtn',
+  name: 'EasyDAONSpecAwareRefinement',
   refines: 'foam.dao.EasyDAO',
 
   implements: [
