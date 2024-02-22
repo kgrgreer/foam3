@@ -54,15 +54,6 @@ foam.CLASS({
       box-shadow: 0 0px 5px 4px #2e2379;
     }
 
-    ^ .foam-u2-detail-SectionedDetailPropertyView input {
-        height: 4rem;
-        border: none;
-        border-bottom: 1px solid black;
-      }
-    ^ .foam-u2-detail-SectionedDetailPropertyView input:focus {
-      border-bottom: 2px solid blue;
-    }
-
     ^ .content-form {
       width: 75%;
       padding: 3rem;
