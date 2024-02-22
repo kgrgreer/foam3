@@ -13,7 +13,6 @@ foam.CLASS({
 
   requires: [
     'foam.core.Property',
-    'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.Tabs'
   ],
@@ -284,7 +283,7 @@ foam.CLASS({
 
               p = p.clone();
               p.label = '';
-              tab.start('table').tag(self.DetailPropertyView, { prop: p });
+              tab.tag(self.PropertyBorder, { prop: p });
               tabs.add(tab);
             } else {
               this.tag(self.PropertyBorder, { prop: p, nodeName: 'TR' });
