@@ -25,11 +25,6 @@ foam.CLASS({
   footerLink: code associated to footer msg and link,
   subfooterLink: code associated to subfooter msg
 
-  DEPENDING ON PASSED IN ARGUMENTS:
-
-  Property functionality:
-  imgPath: if present view uses SplitScreenGridBorder (-USED to toggle splitScreen - picked up from ApplicationController)
-  backLink_: if on data uses string link from data, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
   `,
 
   imports: [
@@ -55,40 +50,14 @@ foam.CLASS({
     width: 100%;
   }
 
-  /* ON RIGHT SIDE ALL **** */
-  ^ .centerVertical {
-    padding-top: 3vh;
-    max-width: 30vw;
-    margin: 0 auto;
-  }
-
-
   .foam-u2-dialog-ApplicationPopup ^content-form {
     width: 100%;
     padding: 2vw 0;
   }
-  .foam-u2-dialog-ApplicationPopup ^ .centerVertical {
-    max-width: 100vw;
-  }
-
-  /* SET ABOVE DATA */
-  ^.topBar-logo-Back {
-    display: none;
-  }
-
-  /* SET ON LOGO IMG */
-  ^ .logoCenterVertical {
-    margin: 0 auto;
-    text-align: center;
-    display: block;
-  }
-  ^ .top-bar-img {
-    height: 4vh;
-  }
 
   /* ON DATA */
   ^content-form {
-    width: 75%;
+    width: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -111,26 +80,6 @@ foam.CLASS({
     text-align: center;
   }
 
-  /* TOP-TOP BAR NAV to go with backLink_ */
-  ^ .top-bar-nav {
-    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
-    width: 100%;
-    height: 4vh;
-    border-bottom: solid 1px #e2e2e3
-  }
-  /* ON TXT IN TOP-TOP NAV */
-  ^ .topBar-txt-link {
-    cursor: pointer;
-    font-size: 2.5vh;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
-    color: #8e9090;
-    margin-left: 2vw;
-    margin-top: 1vw;
-  }
-
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
     display: flex;
@@ -141,8 +90,9 @@ foam.CLASS({
     border-radius: 8px;
   }
   ^image-one {
-    width: 48vw;
+    width: 80%;
     padding-bottom: 8rem;
+    max-width: 400px;
   }
   ^ .foam-u2-borders-SplitScreenGridBorder-grid {
     grid-gap: 0;
@@ -166,27 +116,9 @@ foam.CLASS({
     font-size: 0.8rem;
     width: 100%;
   }
-  @media (min-width: /*%DISPLAYWIDTH.LG%*/ 960px ) {
-    .topBar-logo-Back {
-      display: flex;
-      justify-content: center;
-      height: 6vh;
-    }
-    .foam-u2-view-LoginView-image-one {
-      width: 28vw;
-    }
-  }
   `,
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'topBarShow_',
-      factory: function() {
-        return !! this.backLink_;
-      },
-      hidden: true
-    },
     {
       name: 'data',
       factory: () => {
@@ -209,7 +141,7 @@ foam.CLASS({
       class: 'String',
       name: 'imgPath',
       expression: function(loginVariables) {
-        return loginVariables.imgPath || '';
+        return loginVariables.imgPath || (this.theme.largeLogo ?? this.theme.logo);
       }
     },
     {
@@ -219,26 +151,6 @@ foam.CLASS({
       factory: function() {
         return this.ctrl?.loginView?.leftView;
       }
-    },
-    {
-      class: 'String',
-      name: 'backLinkTxt_',
-      factory: function() {
-        let temp = this.backLink_.includes('www.') ?
-          this.backLink_.substring(this.backLink_.indexOf('www.') + 4) :
-          this.backLink_;
-        return temp.includes('://') ?
-          temp.substring(temp.indexOf('://') + 3) :
-          temp;
-      }
-    },
-    {
-      class: 'String',
-      name: 'backLink_',
-      factory: function() {
-        return this.data.backLink_ || this.appConfig.externalUrl || undefined;
-      },
-      hidden: true
     },
     { class: 'Boolean', name: 'shouldResize' },
     { class: 'Boolean', name: 'fullScreenLoginImage' },
@@ -286,23 +198,10 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
       let showPlayBadge = this.appConfig.playLink && this.data.showAction 
         && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
       var right = this.E()
-      // Header on-top of rendering data
-        .start()
-          .add(
-            this.slot(function(shouldResize) {
-              return self.E().show( self.showLogo && ( shouldResize || self.fullScreenLoginImage || ! self.imgPath ) )
-              .addClass('topBar-logo-Back')
-              .start('img')
-                .attr('src', logo)
-                .addClass('top-bar-img')
-              .end(); 
-          }))
-        .end()
         // Title txt and Data
         .callIf(self.showTitle, function() { this.start().addClass('h300').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
@@ -395,7 +294,7 @@ foam.CLASS({
             xlColumns: 8
           }});
         split.rightPanel
-          .style({ position: 'relative' })
+          .style({ position: 'relative', padding: '0 2rem' })
           .add(right)
           .callIf(showPlayBadge, function() {
             this.start()
@@ -403,43 +302,24 @@ foam.CLASS({
             .add(self.GPLAY_LEGAL)
             .end();
           })
+      } else {
+        this.add(right);
+        return;
       }
 
       // RENDER EVERYTHING ONTO PAGE
-      this.addClass()
-      // full width bar with navigation to app landing page
-        .start().addClass('top-bar-nav').show(this.topBarShow_)
-          .start()
-            .start().addClass('topBar-txt-link')
-              .start('span')
-                .addClass('horizontal-flip')
-                .addClass('inline-block')
-                .add('➔')
-              .end()
-              .start('span').add(this.GO_BACK).add(this.backLinkTxt_)
-                .on('click', () => {
-                  window.location = this.backLink_;
-                })
-              .end()
-            .end()
+      this.addClass();
+      if ( ! this.leftView ) {
+        split.leftPanel
+          .addClass('cover-img-block1')
+          .start('img')
+            .addClass(self.myClass('image-one'))
+            .attr('src', this.imgPath$)
           .end()
-        .end()
-      // deciding to render half screen with img and data or just centered data
-        .callIfElse( (this.imgPath || this.leftView) && split, () => {
-          if ( ! this.leftView ) {
-            split.leftPanel
-              .addClass('cover-img-block1')
-              .start('img')
-                .addClass(self.myClass('image-one'))
-                .attr('src', this.imgPath$)
-              .end()
-          } else {
-            split.leftPanel.tag(this.leftView);
-          }
-          this.add(split);
-        }, function() {
-          this.add(right);
-        });
+      } else {
+        split.leftPanel.tag(this.leftView);
+      }
+      this.add(split);
     }
   ],
 
