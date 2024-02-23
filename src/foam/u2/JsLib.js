@@ -48,11 +48,12 @@ foam.CLASS({
           e.setAttribute('type', 'text/javascript');
           e.setAttribute('src',  self.src);
           document.body.appendChild(e);
-          e.onload = function() {
-            resolve(true);
-          };
+          // On a failure to load the library we still want to resolve the
+          // promise so that the object can still be created.
+          e.onload = e.onerror = () => resolve(true);
         });
       }
+
       return this.LOADED[this.name];
     }
   ]
