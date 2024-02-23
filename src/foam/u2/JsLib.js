@@ -10,6 +10,11 @@ foam.CLASS({
 
   documentation: 'Axiom to install a JS Library on demand.',
 
+  // If a Content Security Policy (CSP) is being used, and the library is from
+  // another site, like a CDN, then the library will needed to be added
+  // to the CSP's 'script-src'. In NANOS, this is done in the HttpServer
+  // config.
+
   constants: {
     LOADED: {} // loaded libraries
   },
