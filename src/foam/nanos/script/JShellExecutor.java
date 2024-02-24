@@ -6,6 +6,10 @@
 
 package foam.nanos.script;
 
+import foam.core.X;
+import foam.nanos.logger.Logger;
+import foam.nanos.script.jShell.EvalInstruction;
+import foam.nanos.script.jShell.InstructionPresentation;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -13,22 +17,18 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import foam.core.X;
-import foam.nanos.logger.Logger;
-import foam.nanos.script.jShell.EvalInstruction;
-import foam.nanos.script.jShell.InstructionPresentation;
-import jdk.jshell.JShell;
+import javax.script.ScriptException;
 import jdk.jshell.execution.DirectExecutionControl;
+import jdk.jshell.JShell;
 import jdk.jshell.spi.ExecutionControl;
 import jdk.jshell.spi.ExecutionControlProvider;
 import jdk.jshell.spi.ExecutionEnv;
-import javax.script.ScriptException;
+
 
 public class JShellExecutor {
-  public static final Object[] X_HOLDER = new X[1];
+  public static final Object[] X_HOLDER      = new X[1];
   public static final Object[] OBJECT_HOLDER = new Object[1];
-  
+
   public Object runExecutor(X x, PrintStream ps, String serviceScript ) throws IOException  {
 
     JShell jShell = createJShell(ps);
@@ -43,10 +43,10 @@ public class JShellExecutor {
 
   // extracted because IOException is thrown in a way that doesn't make it
   // easy to have one try-catch block.
-  private List<String> readScript(String script) throws IOException { 
+  private List<String> readScript(String script) throws IOException {
     List<String> l1 = new ArrayList<String>();
     // nullcheck on script to prevent IOException in loop
-    try ( BufferedReader rdr = new BufferedReader(new StringReader(script != null ? script : "")) ) { 
+    try ( BufferedReader rdr = new BufferedReader(new StringReader(script != null ? script : "")) ) {
       for ( String line = rdr.readLine() ; line != null ; line = rdr.readLine() ) {
         l1.add(line);
       }
@@ -61,7 +61,7 @@ public class JShellExecutor {
     } catch(IOException e) {
       // we're using a StringReader. it should be impossible for
       // this to happen while readScript() is running
-      throw new IllegalStateException("Unexpected IOException reading script",e); 
+      throw new IllegalStateException("Unexpected IOException reading script",e);
     }
 
     List<String> instructionList = new InstructionPresentation(jShell).parseToInstruction(l1);
