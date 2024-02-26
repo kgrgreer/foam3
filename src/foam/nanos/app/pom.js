@@ -3,6 +3,6 @@ foam.POM({
   files: [
     { name: "HealthRemoveDAO",                    flags: "js|java" },
     { name: "AppDownloadBadgeService",            flags: "web" },
-    { name: "AppBadgeView",                       flags: "web" },
+    { name: "AppBadgeView",                       flags: "web" }
   ]
 })

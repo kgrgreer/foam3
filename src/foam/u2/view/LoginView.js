@@ -262,8 +262,10 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            )
-            .tag(self.AppBadgeView, {showAction: this.data.showAction, isReferral: this.data.referralToken})
+            ).callIf(self.data.showAction, function () {
+              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
+            }) 
+            
           })
         )
         
