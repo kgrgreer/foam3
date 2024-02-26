@@ -47,7 +47,8 @@ foam.CLASS({
     'foam.u2.Element',
     'foam.u2.borders.SplitScreenGridBorder',
     'foam.nanos.u2.navigation.SignIn',
-    'foam.nanos.u2.navigation.SignUp'
+    'foam.nanos.u2.navigation.SignUp',
+    'foam.nanos.app.AppBadgeView'
   ],
 
   css: `
@@ -152,11 +153,6 @@ foam.CLASS({
     border: 1px solid transparent;
     color: $primary400;
     text-decoration: none;
-  }
-  ^playLink {
-    display: block;
-    width: min(140px, 100%);
-    margin: auto;
   }
   ^legal {
     position: absolute;
@@ -287,8 +283,6 @@ foam.CLASS({
       var self = this;
 
       let logo = self.imgPath || (this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo);
-      let showPlayBadge = this.appConfig.playLink && this.data.showAction 
-        && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
       var right = this.E()
       // Header on-top of rendering data
@@ -300,7 +294,7 @@ foam.CLASS({
               .start('img')
                 .attr('src', logo)
                 .addClass('top-bar-img')
-              .end(); 
+              .end();
           }))
         .end()
         // Title txt and Data
@@ -369,15 +363,11 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            ).callIf(showPlayBadge, function() {
-              this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
-              .start('img')
-                .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
-              .end().end();
-            })
+            )
+            .tag(self.AppBadgeView, {showAction: this.data.showAction, isReferral: this.data.referralToken})
           })
         )
-        
+
 
       // CREATE SPLIT VIEW
       if ( this.imgPath || this.leftView ) {
@@ -387,8 +377,8 @@ foam.CLASS({
             columns: 6,
             lgColumns: 4,
             xlColumns: 4
-          }, 
-          columnsConfigLeft: { 
+          },
+          columnsConfigLeft: {
             class: 'foam.u2.layout.GridColumns',
             columns: 6,
             lgColumns: 8,
@@ -397,12 +387,9 @@ foam.CLASS({
         split.rightPanel
           .style({ position: 'relative' })
           .add(right)
-          .callIf(showPlayBadge, function() {
-            this.start()
-            .addClass('p-legal', self.myClass('legal'))
-            .add(self.GPLAY_LEGAL)
-            .end();
-          })
+      } else {
+        this.add(right);
+        return;
       }
 
       // RENDER EVERYTHING ONTO PAGE
