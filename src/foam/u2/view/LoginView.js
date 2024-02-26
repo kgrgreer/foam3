@@ -366,7 +366,6 @@ foam.CLASS({
             ).callIf(self.data.showAction, function () {
               this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
             }) 
-            
           })
         )
 
