@@ -42,7 +42,8 @@ foam.CLASS({
     'foam.u2.Element',
     'foam.u2.borders.SplitScreenGridBorder',
     'foam.nanos.u2.navigation.SignIn',
-    'foam.nanos.u2.navigation.SignUp'
+    'foam.nanos.u2.navigation.SignUp',
+    'foam.nanos.app.AppBadgeView'
   ],
 
   css: `
@@ -102,11 +103,6 @@ foam.CLASS({
     border: 1px solid transparent;
     color: $primary400;
     text-decoration: none;
-  }
-  ^playLink {
-    display: block;
-    width: min(140px, 100%);
-    margin: auto;
   }
   ^legal {
     position: absolute;
@@ -198,8 +194,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      let showPlayBadge = this.appConfig.playLink && this.data.showAction 
-        && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
       var right = this.E()
         // Title txt and Data
@@ -268,12 +262,8 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            ).callIf(showPlayBadge, function() {
-              this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
-              .start('img')
-                .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
-              .end().end();
-            })
+            )
+            .tag(self.AppBadgeView, {showAction: this.data.showAction, isReferral: this.data.referralToken})
           })
         )
         
@@ -296,12 +286,6 @@ foam.CLASS({
         split.rightPanel
           .style({ position: 'relative', padding: '0 2rem' })
           .add(right)
-          .callIf(showPlayBadge, function() {
-            this.start()
-            .addClass('p-legal', self.myClass('legal'))
-            .add(self.GPLAY_LEGAL)
-            .end();
-          })
       } else {
         this.add(right);
         return;
