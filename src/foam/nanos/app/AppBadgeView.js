@@ -25,15 +25,14 @@ foam.CLASS({
     display: flex;
     gap: 2rem;
     justify-content: center;
-    
   }
   ^appStoreBadge > img {
-      width: 108px;
-      height: 54px;
+    width: 108px;
+    height: 54px;
   }
   ^playStoreBadge > img {
-      width: 108px;
-      height: 54px;
+    width: 108px;
+    height: 54px;
   }
   ^legal {
     display: flex;
