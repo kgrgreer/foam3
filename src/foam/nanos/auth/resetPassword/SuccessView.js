@@ -14,6 +14,7 @@ foam.CLASS({
   imports: [
     'loginView?',
     'notify',
+    'pushMenu',
     'stack'
   ],
 
@@ -92,8 +93,7 @@ foam.CLASS({
             .start().addClass('Back-Button')
               .add('Back to Sign In')
               .on('click', function() {
-                window.location.href = '#';
-                self.stack.push({ ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, self);
+                this.pushMenu('sign-in');
               })
             .end()
           .end()

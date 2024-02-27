@@ -797,7 +797,12 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({
+          view: { 
+            ...(self.loginView ?? { class: 'BaseUnAuthBorder' }), 
+            children: [ { class: 'foam.u2.view.LoginView', mode_: 'SignIn' } ]
+          },
+          parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
