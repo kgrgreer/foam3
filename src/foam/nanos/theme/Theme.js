@@ -761,6 +761,11 @@ foam.CLASS({
       class: 'String',
       name: 'emailLinkRedirect',
       javaValue: `"/"`
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.menu.XRegistration',
+      name: 'registrations'
     }
   ],
 
