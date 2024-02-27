@@ -54,10 +54,6 @@ foam.CLASS({
       left: 0;
     }
   }
-
-  @media only screen and (min-width: /*%DISPLAYWIDTH.SM%*/ 320px) {
-
-  }
   `,
   properties: [
     { 
