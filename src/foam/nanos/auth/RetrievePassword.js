@@ -13,6 +13,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'loginView?',
+    'pushMenu',
     'resetPasswordService',
     'resetPasswordToken',
     'stack',
@@ -126,7 +127,7 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          if ( ! this.resetByCode ) this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
+          if ( ! this.resetByCode ) this.pushMenu('sign-in')
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
