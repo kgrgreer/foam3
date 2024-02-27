@@ -68,6 +68,7 @@ foam.CLASS({
     {
       name: 'route',
       value: 'edit',
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'browse', 'edit' ] },
       memorable: true
     }
   ],
