@@ -113,6 +113,11 @@ Later themes:
 
         if ( theme ) {
           if ( theme.customRefinement ) await x.__subContext__.classloader.load(theme.customRefinement, []);
+          if ( theme.registrations ) {
+            theme.registrations.forEach(r => {
+              x.__subContext__.register(this.__subContext__.lookup(r.className), r.targetName);
+            });
+          }
           return theme;
         }
 

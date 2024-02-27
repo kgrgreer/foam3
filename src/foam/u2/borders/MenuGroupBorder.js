@@ -12,6 +12,8 @@ foam.CLASS({
 
   imports: ['menuDAO'],
 
+  requires: ['foam.nanos.u2.navigation.ApplicationLogoView'],
+
   css: `
     ^ {
       display: flex;
@@ -23,14 +25,19 @@ foam.CLASS({
       top: 0;
       display: flex;
       width: 100%;
-      padding: 8px 16px;
+      padding: 16px;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       z-index: 100;
     }
     ^body {
       flex: 1;
       height: 100%;
+    }
+    @media only screen and (min-width: /*%DISPLAYWIDTH.LG%*/ 960px) {
+      ^logo svg {
+        height: 32px;
+      }
     }
   `,
   properties: [
@@ -56,6 +63,9 @@ foam.CLASS({
       .addClass()
       .start()
         .addClass(this.myClass('header'))
+        .start(this.ApplicationLogoView)
+          .addClass(this.myClass('logo'))
+        .end()
         .add(this.slot(function(menuArray_) {
           let el = this.E();
           for ( i of menuArray_ ) {

@@ -42,7 +42,8 @@ foam.CLASS({
     'foam.u2.Element',
     'foam.u2.borders.SplitScreenGridBorder',
     'foam.nanos.u2.navigation.SignIn',
-    'foam.nanos.u2.navigation.SignUp'
+    'foam.nanos.u2.navigation.SignUp',
+    'foam.nanos.app.AppBadgeView'
   ],
 
   css: `
@@ -63,6 +64,7 @@ foam.CLASS({
     flex-direction: column;
     gap: 2rem;
     align-self: center;
+    padding: 2rem;
   }
 
   /* ON ALL FOOTER TEXT */
@@ -80,33 +82,11 @@ foam.CLASS({
     text-align: center;
   }
 
-/* ON LEFT SIDE IMG */
-  ^ .cover-img-block1 {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: center;
-    background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
-    border-radius: 8px;
-  }
-  ^image-one {
-    width: 80%;
-    padding-bottom: 8rem;
-    max-width: 400px;
-  }
-  ^ .foam-u2-borders-SplitScreenGridBorder-grid {
-    grid-gap: 0;
-  }
   ^tc-link {
     background: none;
     border: 1px solid transparent;
     color: $primary400;
     text-decoration: none;
-  }
-  ^playLink {
-    display: block;
-    width: min(140px, 100%);
-    margin: auto;
   }
   ^legal {
     position: absolute;
@@ -139,23 +119,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'imgPath',
-      expression: function(loginVariables) {
-        return loginVariables.imgPath || (this.theme.largeLogo ?? this.theme.logo);
-      }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'leftView',
-      documentation: 'Allows using U2 views as left half of the login page, takes precedence over imgPath',
-      factory: function() {
-        return this.ctrl?.loginView?.leftView;
-      }
-    },
-    { class: 'Boolean', name: 'shouldResize' },
-    { class: 'Boolean', name: 'fullScreenLoginImage' },
-    {
-      class: 'String',
       name: 'modelCls_',
       documentation: `
         If modelCls_ is provided, the data can be created directly from this instead of mode
@@ -168,15 +131,12 @@ foam.CLASS({
         }
       }
     },
-    { class: 'Boolean', name: 'showLogo', value: true },
     { class: 'Boolean', name: 'showTitle', value: true }
   ],
 
   messages: [
-    { name: 'GO_BACK', message: 'Go to ' },
     { name: 'MODE1', message: 'SignUp' },
-    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' },
-    { name: 'GPLAY_LEGAL', message: 'Google Play and the Google Play logo are trademarks of Google LLC.'}
+    { name: 'DISCLAIMER_TEXT', message: 'By signing up, you accept our ' }
   ],
 
   methods: [
@@ -198,14 +158,11 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      let showPlayBadge = this.appConfig.playLink && this.data.showAction 
-        && (! navigator.standalone) && (! this.data.referralToken);
       // CREATE DATA VIEW
-      var right = this.E()
+      this
         // Title txt and Data
         .callIf(self.showTitle, function() { this.start().addClass('h300').add(self.data.TITLE).end(); })
         .addClass(self.myClass('content-form'))
-        .callIf(self.displayWidth, function() { this.onDetach(self.displayWidth$.sub(self.resize)); })
         .start('form')
           .setID('login')
           .startContext({ data: this }).tag(this.DATA).endContext()
@@ -268,72 +225,12 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            ).callIf(showPlayBadge, function() {
-              this.start('a').addClass(self.myClass('playLink')).attrs({ href: appConfig.playLink })
-              .start('img')
-                .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
-              .end().end();
-            })
+            ).callIf(self.data.showAction, function () {
+              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
+            }) 
           })
         )
         
-
-      // CREATE SPLIT VIEW
-      if ( this.imgPath || this.leftView ) {
-        var split = this.SplitScreenGridBorder.create({
-          columnsConfigRight: {
-            class: 'foam.u2.layout.GridColumns',
-            columns: 6,
-            lgColumns: 4,
-            xlColumns: 4
-          }, 
-          columnsConfigLeft: { 
-            class: 'foam.u2.layout.GridColumns',
-            columns: 6,
-            lgColumns: 8,
-            xlColumns: 8
-          }});
-        split.rightPanel
-          .style({ position: 'relative', padding: '0 2rem' })
-          .add(right)
-          .callIf(showPlayBadge, function() {
-            this.start()
-            .addClass('p-legal', self.myClass('legal'))
-            .add(self.GPLAY_LEGAL)
-            .end();
-          })
-      } else {
-        this.add(right);
-        return;
-      }
-
-      // RENDER EVERYTHING ONTO PAGE
-      this.addClass();
-      if ( ! this.leftView ) {
-        split.leftPanel
-          .addClass('cover-img-block1')
-          .start('img')
-            .addClass(self.myClass('image-one'))
-            .attr('src', this.imgPath$)
-          .end()
-      } else {
-        split.leftPanel.tag(this.leftView);
-      }
-      this.add(split);
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'resize',
-      isFramed: true,
-      code: function() {
-        if ( this.displayWidth == 'MD' || this.displayWidth == 'SM' ||this.displayWidth == 'XS' || this.displayWidth == 'XXS' ) {
-          this.shouldResize = true;
-        } else {
-          this.shouldResize = false;
-        }
-      }
     }
   ]
 });
