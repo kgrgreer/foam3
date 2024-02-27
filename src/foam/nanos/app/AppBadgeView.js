@@ -39,9 +39,6 @@ foam.CLASS({
     font-size: 0.8rem;
     width: 100%;
   }
-  ^legal-container{
-    position: relative;
-  }
 
   @media only screen and (min-width:  /*%DISPLAYWIDTH.MD%*/ 768px) {
     ^appStoreBadge > img, ^playStoreBadge > img {
