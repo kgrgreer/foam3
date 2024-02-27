@@ -35,15 +35,12 @@ foam.CLASS({
     justify-content: center;
     flex-direction: column;
     gap: 0.8rem;
-    margin: 0 1rem;
     text-align: center;
     font-size: 0.8rem;
     width: 100%;
   }
   ^legal-container{
-    position: absolute;
-    bottom: 1.2rem;
-    left: 0;
+    position: relative;
   }
 
   @media only screen and (min-width:  /*%DISPLAYWIDTH.MD%*/ 768px) {
@@ -51,6 +48,15 @@ foam.CLASS({
       width: 125px;
       height: 62px;
     }
+    ^legal-container {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0;
+    }
+  }
+
+  @media only screen and (min-width: /*%DISPLAYWIDTH.SM%*/ 320px) {
+
   }
   `,
   properties: [
