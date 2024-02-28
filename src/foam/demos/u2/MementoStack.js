@@ -191,9 +191,12 @@ foam.CLASS({
       this.memento_.str = 'menu1/browse/123?q=foobar';
 
       // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
+      this.startContext({data: this.memento_}).add('Str:', this.memento_.STR, 'TailStr:', this.memento_.TAIL_STR).endContext();
 
       this.SUPER();
+      this.add('Skip: ',    this.SKIP);
+      this.add('Columns: ', this.COLUMNS);
+      this.add('Query: ',   this.QUERY);
       this.tag(Menu);
     }
   ]
