@@ -4,6 +4,8 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this;
+
       this.br()
         .start('h1').add(this.cls_.name).end()
         .br()
@@ -13,7 +15,9 @@ foam.CLASS({
         .br()
         .add('usedStr: ', this.memento_.usedStr$)
         .br()
-        .add('Mode/Route: ', this.ROUTE)
+        .add('encoding: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.encode())))
+        .br()
+        .add('tail: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.tail && self.memento_.tail.encode())))
         .br();
     }
   ]
@@ -33,10 +37,7 @@ foam.CLASS({
   properties: [
     {
       name: 'route',
-      memorable: true,
-      postSet: function(_, m) {
-        this.controller = Controller.create({daoKey: m}, this);
-      }
+      memorable: true
     },
     {
       name: 'stack',
@@ -47,6 +48,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
+      this.add('Route: ', this.ROUTE);
       this.add(this.slot(route => Controller.create({daoKey: route}, this)));
     }
   ]
@@ -76,6 +78,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
+      this.add('Route: ', this.ROUTE);
       this.add(this.route$.map((mode) => { return ( mode == 'browse' ) ? Table.create({}, this) : Detail.create({}, this);}));
     }
   ]
@@ -142,7 +145,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.add('ID: ', this.ROUTE);
+      this.add('Route/ID: ', this.ROUTE);
     }
   ]
 });
@@ -161,9 +164,7 @@ foam.CLASS({
   properties: [
     {
       name: 'window',
-      factory: function() {
-        return window;
-      }
+      factory: function() { return window; }
     },
     {
       name: 'skip',
@@ -182,15 +183,6 @@ foam.CLASS({
       name: 'query',
       shortName: 'q',
       memorable: true
-    },
-    {
-      name: 'abc'
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'menu',
-      of: 'Menu',
-      factory: function() { return Menu.create({}, this); }
     }
   ],
 
@@ -202,7 +194,7 @@ foam.CLASS({
       this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
 
       this.SUPER();
-      this.add(this.menu);
+      this.tag(Menu);
     }
   ]
 });
