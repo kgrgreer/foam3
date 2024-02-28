@@ -19,7 +19,6 @@ foam.CLASS({
 
   css: `
     ^div {
-      position: relative;
       top: 15px;
       left: 15px;
 
@@ -71,7 +70,6 @@ foam.CLASS({
     function render() {
       var self = this;
       var dims = {
-        x: -15, y: -15,
         width:  '' + (this.size[0] + 30),
         height: '' + (this.size[1] + 30),
       };
