@@ -70,7 +70,7 @@ foam.CLASS({
         .end();
       }
       this.maybeAddDefault();
-      this.data.pos$.sub(() => { 
+      this.data.pos$.sub(() => {
         if ( this.data.pos >= 0 && this.defaultView_) {
           this.defaultView_.remove();
           return;
@@ -80,14 +80,18 @@ foam.CLASS({
 
       this.listenStackView();
     },
+
     function maybeAddDefault() {
       if ( this.data.pos < 0 && this.stackDefault) {
         this.tag(this.stackDefault, {}, this.defaultView_$);
       }
     },
+
+    // Overwritten in DesktopStackView
     function listenStackView() {
       this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
     },
+
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
@@ -104,8 +108,10 @@ foam.CLASS({
       } else {
         v = foam.u2.ViewSpec.createView(view, null, this, X);
       }
-      if ( v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/ ) {
-        this.data.top.breadcrumbTitle$.follow(v.viewTitle$ || v.children[0].viewTitle$);
+      var title = v.viewTitle$ || v.children[0]?.viewTitle$ /*need to do this for menu with border*/;
+      if ( title.get() ) document.title = title.get();
+      if ( title ) {
+        this.data.top.breadcrumbTitle$.follow(title); // TODO: GC issue
       }
 
       return v;
