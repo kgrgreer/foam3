@@ -788,7 +788,6 @@ foam.CLASS({
         action is provided.
       `,
 
-      inheritCSS: false,
       css: `
         ^ {
           border: 0;
