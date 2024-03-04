@@ -12,30 +12,24 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   requires: [
-    'foam.nanos.controller.WindowHash',
     'foam.graphics.Box',
     'foam.input.Gamepad'
   ],
 
-  constants: {
-    MEMENTO_PROPERTIES: [ 'x1', 'y1', 'x2', 'y2', 'maxIterations', 'width', 'height' ]
-  },
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   properties: [
-    {
-      name: 'memento'
-    },
     {
       name: 'canvas',
       factory: function() { return this.Box.create({width$: this.width$, height$: this.height$}); }
     },
-    [ 'width',  1400 ],
-    [ 'height', 800 ],
-    { class: 'Int',    name: 'maxIterations', value: 1024 },
-    { class: 'Double', name: 'x1',            value: -2 },
-    { class: 'Double', name: 'y1',            value: -1.15 },
-    { class: 'Double', name: 'x2',            value: 0.5 },
-    { class: 'Double', name: 'y2',            value: 1.15 },
+    { class: 'Int',    name: 'width',         value: 1400,  memorable: true },
+    { class: 'Int',    name: 'height',        value: 800,   memorable: true },
+    { class: 'Int',    name: 'maxIterations', value: 1024,  memorable: true },
+    { class: 'Double', name: 'x1',            value: -2,    memorable: true },
+    { class: 'Double', name: 'y1',            value: -1.15, memorable: true },
+    { class: 'Double', name: 'x2',            value: 0.5,   memorable: true },
+    { class: 'Double', name: 'y2',            value: 1.15,  memorable: true },
     {
       name: 'img',
       hidden: true,
@@ -51,25 +45,14 @@ foam.CLASS({
       value: foam.Function.memoize1(function(h) {
         return 'hsl(' + h + ',100%,50%)';
       })
-    },
-    //'pass',
-    //'v'
+    }
   ],
 
   methods: [
     function render() {
       this.SUPER();
 
-      var h = this.WindowHash.create();
-      this.memento = h.value;
-      h.value$.follow(this.memento$);
-
-      if ( this.memento ) {
-        var a = this.memento.split(',');
-        a.forEach((v, i) => this[this.MEMENTO_PROPERTIES[i]] = v);
-      }
-
-      this.MEMENTO_PROPERTIES.forEach(p => this.propertyChange.sub(p, this.invalidate));
+      this.sub(this.invalidate);
 
       this.
         style({outline: 'none'}).
@@ -184,7 +167,6 @@ foam.CLASS({
       keyboardShortcuts: [ 'e' ],
       code: function() {
         this.maxIterations *= 2;
-        this.invalidate();
       }
     },
     {
@@ -192,7 +174,6 @@ foam.CLASS({
       keyboardShortcuts: [ 'q' ],
       code: function() {
         this.maxIterations /= 2;
-        this.invalidate();
       }
     },
     {
@@ -204,7 +185,6 @@ foam.CLASS({
         this.x2 -= xd/5;
         this.y1 += yd/5;
         this.y2 -= yd/5;
-        this.invalidate();
       }
     },
     {
@@ -216,7 +196,6 @@ foam.CLASS({
         this.x2 += xd/5;
         this.y1 -= yd/5;
         this.y2 += yd/5;
-        this.invalidate();
       }
     },
     {
@@ -226,7 +205,6 @@ foam.CLASS({
         var y1 = this.y1, y2 = this.y2, yd = y2-y1;
         this.y1 -= yd/10;
         this.y2 -= yd/10;
-        this.invalidate();
       }
     },
     {
@@ -236,7 +214,6 @@ foam.CLASS({
         var y1 = this.y1, y2 = this.y2, yd = y2-y1;
         this.y1 += yd/10;
         this.y2 += yd/10;
-        this.invalidate();
       }
     },
     {
@@ -246,7 +223,6 @@ foam.CLASS({
         var x1 = this.x1, x2 = this.x2, xd = x2-x1;
         this.x1 -= xd/10;
         this.x2 -= xd/10;
-        this.invalidate();
       }
     },
     {
@@ -256,7 +232,6 @@ foam.CLASS({
         var x1 = this.x1, x2 = this.x2, xd = x2-x1;
         this.x1 += xd/10;
         this.x2 += xd/10;
-        this.invalidate();
       }
     }
   ],
@@ -266,20 +241,17 @@ foam.CLASS({
       name: 'invalidate',
       isFramed: true,
       code: function() {
-        this.memento = this.MEMENTO_PROPERTIES.map(p => this[p]);
         this.canvas.invalidate();
       }
     },
 
     function onClick(evt) {
       var x = evt.clientX, y = evt.clientY;
-      console.log(x,y);
       var x1 = this.x1, y1 = this.y1, x2 = this.x2, y2 = this.y2, xd = x2-x1, yd = y2-y1;
       this.x1 = x * xd / this.width  + x1 - xd / 2;
       this.x2 = x * xd / this.width  + x1 + xd / 2;
       this.y1 = y * yd / this.height + y1 - yd / 2;
       this.y2 = y * yd / this.height + y1 + yd / 2;
-      this.invalidate();
     }
   ]
 });
