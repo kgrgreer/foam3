@@ -203,6 +203,11 @@ foam.CLASS({
       value: 'foam.u2.borders.BaseUnAuthBorder'
     },
     {
+      class: 'foam.u2.ViewSpec',
+      name: 'appBadgeView',
+      documentation: `class of app badge view used in the loginview`
+    },
+    {
       class: 'Image',
       name: 'logo',
       documentation: 'The logo to display in the application.',

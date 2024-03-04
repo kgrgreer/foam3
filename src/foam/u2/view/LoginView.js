@@ -225,8 +225,8 @@ foam.CLASS({
               function() {
                 this.start().add(disclaimer).end()
               }
-            ).callIf(self.data.showAction, function () {
-              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
+            ).callIf(self.data.showAction && self.theme?.appBadgeView, function () {
+              this.tag(self.theme.appBadgeView, {isReferral: self.data.referralToken})
             }) 
           })
         )
