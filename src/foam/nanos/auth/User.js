@@ -63,7 +63,7 @@ foam.CLASS({
     'group',
     'enabled',
     'firstName',
-    'commonName',
+    'preferredName',
     'lastName',
     'email'
   ],
@@ -260,9 +260,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'commonName',
-      shortName: 'cn',
-      documentation: 'An alternative first name: informal, nickname, name in another language',
+      name: 'preferredName',
+      shortName: 'pn',
+      documentation: 'An alternative first name: informal, nickname, call-me name',
       section: 'userInformation',
       order: 70,
       gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
@@ -791,13 +791,13 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function toSummary() {
-        if ( this.commonName ) return this.firstName + ' (' + this.commonName + ') ' + this.lastName;
+        if ( this.preferredName ) return this.firstName + ' (' + this.preferredName + ') ' + this.lastName;
         if ( this.legalName ) return this.legalName;
         return this.userName;
       },
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(this.getCommonName()) )
-          return this.getFirstName() + " (" + this.getCommonName() + ") " + this.getLastName();
+        if ( ! SafetyUtil.isEmpty(this.getPreferredName()) )
+          return this.getFirstName() + " (" + this.getPreferredName() + ") " + this.getLastName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
         return this.getUserName();
       `
