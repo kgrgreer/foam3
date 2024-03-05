@@ -261,7 +261,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'preferredName',
-      shortName: 'cn',
+      shortName: 'pn',
       documentation: 'An alternative first name: informal, nickname, call-me name',
       section: 'userInformation',
       order: 70,
