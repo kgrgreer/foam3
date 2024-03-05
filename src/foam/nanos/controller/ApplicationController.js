@@ -555,6 +555,7 @@ foam.CLASS({
       // TODO: find a better way to resub on client reloads
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
+      this.fetchTheme();
     },
 
     function installLanguage() {
