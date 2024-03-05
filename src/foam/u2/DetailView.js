@@ -246,7 +246,7 @@ foam.CLASS({
         // bound to data of a new class, which causes problems.
         self.currentData = self.data;
 
-        var tabs = foam.u2.Tabs.create({}, self);
+        var tabs;
 
         return this.start('table').
           attrs({'cellpadding': 2}).
@@ -271,7 +271,10 @@ foam.CLASS({
               p.cls_ == foam.dao.OneToManyRelationshipProperty ||
               p.cls_ == foam.dao.ManyToManyRelationshipProperty
             ) {
-              hasTabs = true;
+              if ( ! hasTabs ) {
+                hasTabs = true;
+                tabs = foam.u2.Tabs.create({}, self);
+              }
               var label = p.label;
               let tab = self.Tab.create({ label: label });
               var dao = p.cls_ == foam.dao.ManyToManyRelationshipProperty
