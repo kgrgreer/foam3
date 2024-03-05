@@ -23,28 +23,24 @@ foam.CLASS({
       name: 'canvas',
       factory: function() { return this.Box.create({width$: this.width$, height$: this.height$}); }
     },
-    { class: 'Int',    name: 'width',         value: 1400,  memorable: true },
-    { class: 'Int',    name: 'height',        value: 800,   memorable: true },
-    { class: 'Int',    name: 'maxIterations', value: 1024,  memorable: true },
-    { class: 'Double', name: 'x1',            value: -2,    memorable: true },
-    { class: 'Double', name: 'y1',            value: -1.15, memorable: true },
-    { class: 'Double', name: 'x2',            value: 0.5,   memorable: true },
-    { class: 'Double', name: 'y2',            value: 1.15,  memorable: true },
+    { class: 'Boolean', name: 'colour',        value: true,  memorable: true },
+    { class: 'Int',     name: 'colourPeriod',  value: 256,   memorable: true },
+    { class: 'Float',   name: 'colourPhase',   value: 0,     memorable: true, view: 'foam.u2.RangeView' },
+    { class: 'Int',     name: 'width',         value: 1400,  memorable: true },
+    { class: 'Int',     name: 'height',        value: 800,   memorable: true },
+    { class: 'Int',     name: 'maxIterations', value: 1024,  memorable: true },
+    { class: 'Double',  name: 'x1',            value: -2,    memorable: true },
+    { class: 'Double',  name: 'y1',            value: -1.15, memorable: true },
+    { class: 'Double',  name: 'x2',            value: 0.5,   memorable: true },
+    { class: 'Double',  name: 'y2',            value: 1.15,  memorable: true },
     {
       name: 'img',
-      hidden: true,
       expression: function(width, height) { return this.canvas.canvas.context.createImageData(this.width, this.height); }
     },
     {
       // Joystick
       name: 'gamepad',
       factory: function() { return this.Gamepad.create(); }
-    },
-    {
-      name: 'hsl',
-      value: foam.Function.memoize1(function(h) {
-        return 'hsl(' + h + ',100%,50%)';
-      })
     }
   ],
 
@@ -63,12 +59,20 @@ foam.CLASS({
         tag({
           class: 'foam.u2.DetailView',
           data: this,
-          properties: [ 'width', 'height', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
+          properties: [ 'colour', 'colourPeriod', 'colourPhase', 'width', 'height', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
 
-      this.canvas.paintSelf = (ctx) => {
+      this.canvas.paintSelf = ctx => {
         var start = performance.now();
         var x1 = this.x1, y1 = this.y1, x2 = this.x2, y2 = this.y2, width = this.width, height = this.height, xd = x2-x1, yd = y2-y1;
         var v = this.pass ? this.v : [];
+        // if ! this.pass then compute fast first pass which calculates at
+        // 100th the resolution (1 pixel per 10X10 area), then compute
+        // and full resolution in second pass (where pass == true).
+
+        function eq(c, i, j) {
+          return v[i] == undefined || v[i][j] == undefined || v[i][j] == c;
+        }
+
         if ( ! this.pass ) {
           for ( var i = 0 ; i < width/10 ; i++ ) {
             v[i] = [];
@@ -79,23 +83,26 @@ foam.CLASS({
             }
           }
         }
-        function eq(c, i, j) {
-          return v[i] == undefined || v[i][j] == undefined || v[i][j] == c;
-        }
+
         for ( var i = 0 ; i < width/10; i++ ) {
           for ( var j = 0 ; j < height/10 ; j++ ) {
-            var c = v[i][j];
-            var same = ! this.pass || eq(c, i-1, j) && eq(c, i+1, j) && eq(c, i, j-1) && eq(c, i, j+1);
+            const c    = v[i][j];
+            const same = ! this.pass || eq(c, i-1, j) && eq(c, i+1, j) && eq(c, i, j-1) && eq(c, i, j+1);
             for ( var i2 = i*10 ; i2 < i*10 + 10 ; i2++ ) {
               for ( var j2 = j*10 ; j2 < j*10 + 10 ; j2++ ) {
-                var x = i2/width*xd+x1;
-                var y = j2/height*yd+y1;
-                this.set(i2, j2, same ? c : this.calc(x, y));
+                if ( same ) {
+                  this.set(i2, j2, c);
+                } else {
+                  var x = i2/width*xd+x1;
+                  var y = j2/height*yd+y1;
+                  this.set(i2, j2, this.calc(x, y));
+                }
               }
             }
           }
         }
-        console.log('paint', Math.round(performance.now() - start));
+
+        console.log('paint pass:', this.pass ? 2 : 1, Math.round(performance.now() - start));
         this.pass = ! this.pass;
         if ( this.pass ) {
           this.v = v;
@@ -106,18 +113,19 @@ foam.CLASS({
     },
 
     function set(x, y, c) {
-      var i   = (y*this.width+x)*4;
+      var i = (y*this.width+x)*4;
       if ( c <= 1 ) {
         this.img.data[i]   = 0;
         this.img.data[i+1] = 0;
         this.img.data[i+2] = 0;
         this.img.data[i+3] = 255;
       } else {
-        c *= 5;
-        var rgb = this.hslToRgb(c/255, 0.5, 1);
-        this.img.data[i]   = c || rgb[0];
-        this.img.data[i+1] = c || rgb[1];
-        this.img.data[i+2] = c || rgb[2];
+        var c2 =  ( c + this.colourPhase * this.colourPeriod / 100 ) % this.colourPeriod / this.colourPeriod;
+        var rgb = this.colour ? this.hslToRgb(c2, 0.5, 0.45) : [c2*256, c2*256, c2*256];
+
+        this.img.data[i]   = rgb[0];
+        this.img.data[i+1] = rgb[1];
+        this.img.data[i+2] = rgb[2];
         this.img.data[i+3] = 255;
       }
     },
@@ -129,13 +137,14 @@ foam.CLASS({
         var xt = zx*zy;
         zx = zx*zx - zy*zy + x;
         zy = 2*xt + y;
-        if ( zx*zx + zy*zy > 4 ) return 2 * 255 * Math.pow(i / this.maxIterations, 0.8);
+//        if ( zx*zx + zy*zy > 4 ) return 2 * 255 * Math.pow(i / this.maxIterations, 0.8);
+        if ( zx*zx + zy*zy > 4 ) return i;
       }
 
       return 0;
     },
 
-    function hslToRgb(h, s, l){
+    function hslToRgb(h, s, l) {
         var r, g, b;
 
         if ( s == 0 ) {
