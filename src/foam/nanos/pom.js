@@ -88,7 +88,6 @@ foam.POM({
     { name: "app/SupportMenu",                                                            flags: "js|java" },
     { name: "app/LegalMenu",                                                              flags: "js|java" },
     { name: "app/ClientAppConfigService",                                                 flags: "js" },
-    { name: "controller/WindowHash",                                                      flags: "js" },
     { name: "controller/Memento",                                                         flags: "js" },
     { name: "controller/MementoMixin",                                                    flags: "js" },
     { name: "controller/ApplicationController",                                           flags: "js" },

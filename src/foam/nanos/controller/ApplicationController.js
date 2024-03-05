@@ -37,7 +37,6 @@ foam.CLASS({
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Fonts',
-    'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -527,7 +526,7 @@ foam.CLASS({
           // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
           // use the route instead of the menu so that the menu could be re-created under the updated context
           this.pushMenu(menu.id);
-          this.languageInstalled.resolve();   
+          this.languageInstalled.resolve();
           return 1;
         }
       }
@@ -799,8 +798,8 @@ foam.CLASS({
 
       return new Promise(function(resolve, reject) {
         self.stack.push(self.StackBlock.create({
-          view: { 
-            ...(self.loginView ?? { class: 'BaseUnAuthBorder' }), 
+          view: {
+            ...(self.loginView ?? { class: 'BaseUnAuthBorder' }),
             children: [ { class: 'foam.u2.view.LoginView', mode_: 'SignIn' } ]
           },
           parent: self }));
