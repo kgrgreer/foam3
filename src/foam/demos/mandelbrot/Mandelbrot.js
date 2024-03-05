@@ -29,10 +29,10 @@ foam.CLASS({
     { class: 'Int',     name: 'width',         value: 1400,  memorable: true },
     { class: 'Int',     name: 'height',        value: 800,   memorable: true },
     { class: 'Int',     name: 'maxIterations', value: 1024,  memorable: true },
-    { class: 'Double',  name: 'x1',            value: -2,    memorable: true },
-    { class: 'Double',  name: 'y1',            value: -1.15, memorable: true },
-    { class: 'Double',  name: 'x2',            value: 0.5,   memorable: true },
-    { class: 'Double',  name: 'y2',            value: 1.15,  memorable: true },
+    { class: 'Double',  name: 'x1',            value: -2,    precision: 9, memorable: true },
+    { class: 'Double',  name: 'y1',            value: -1.15, precision: 9, memorable: true },
+    { class: 'Double',  name: 'x2',            value: 0.5,   precision: 9, memorable: true },
+    { class: 'Double',  name: 'y2',            value: 1.15,  precision: 9, memorable: true },
     {
       name: 'img',
       expression: function(width, height) { return this.canvas.canvas.context.createImageData(this.width, this.height); }
@@ -59,7 +59,7 @@ foam.CLASS({
         tag({
           class: 'foam.u2.DetailView',
           data: this,
-          properties: [ 'colour', 'colourPeriod', 'colourPhase', 'width', 'height', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
+          properties: [ 'width', 'height', 'colour', 'colourPeriod', 'colourPhase', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
 
       this.canvas.paintSelf = ctx => {
         var start = performance.now();
@@ -121,7 +121,8 @@ foam.CLASS({
         this.img.data[i+3] = 255;
       } else {
         var c2 =  ( c + this.colourPhase * this.colourPeriod / 100 ) % this.colourPeriod / this.colourPeriod;
-        var rgb = this.colour ? this.hslToRgb(c2, 0.5, 0.45) : [c2*256, c2*256, c2*256];
+        // TODO: make saturation and lightness be parameters
+        var rgb = this.colour ? this.hslToRgb(c2, 0.8, 0.5) : [c2*256, c2*256, c2*256];
 
         this.img.data[i]   = rgb[0];
         this.img.data[i+1] = rgb[1];
@@ -137,7 +138,6 @@ foam.CLASS({
         var xt = zx*zy;
         zx = zx*zx - zy*zy + x;
         zy = 2*xt + y;
-//        if ( zx*zx + zy*zy > 4 ) return 2 * 255 * Math.pow(i / this.maxIterations, 0.8);
         if ( zx*zx + zy*zy > 4 ) return i;
       }
 
@@ -241,6 +241,13 @@ foam.CLASS({
         var x1 = this.x1, x2 = this.x2, xd = x2-x1;
         this.x1 += xd/10;
         this.x2 += xd/10;
+      }
+    },
+    {
+      name: 'reset',
+      code: function() {
+        this.memento_.str = '';
+        this.memento_.encode();
       }
     }
   ],
