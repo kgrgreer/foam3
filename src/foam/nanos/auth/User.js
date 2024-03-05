@@ -63,6 +63,7 @@ foam.CLASS({
     'group',
     'enabled',
     'firstName',
+    'commonName',
     'lastName',
     'email'
   ],
@@ -256,6 +257,19 @@ foam.CLASS({
         if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
           throw new IllegalStateException(foam.nanos.auth.User.INVALID_FIRST_NAME + name);
       `
+    },
+    {
+      class: 'String',
+      name: 'commonName',
+      shortName: 'cn',
+      documentation: 'An alternative first name: informal, nickname, name in another language',
+      section: 'userInformation',
+      order: 70,
+      gridColumns: { columns: 4, smColumns: 12, xsColumns: 12 },
+      includeInDigest: false,
+      containsPII: true,
+      trim: true,
+      tableWidth: 160,
     },
     {
       class: 'String',
@@ -777,17 +791,14 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function toSummary() {
+        if ( this.commonName ) return this.firstName + ' (' + this.commonName + ') ' + this.lastName;
         if ( this.legalName ) return this.legalName;
-        if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
-        if ( this.lastName ) return this.lastName;
-        if ( this.firstName ) return this.firstName;
         return this.userName;
       },
       javaCode: `
+        if ( ! SafetyUtil.isEmpty(this.getCommonName()) )
+          return this.getFirstName() + " (" + this.getCommonName() + ") " + this.getLastName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
-        if ( ! SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
-        if ( ! SafetyUtil.isEmpty(this.getLastName()) ) return this.getLastName();
-        if ( ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName();
         return this.getUserName();
       `
     },
