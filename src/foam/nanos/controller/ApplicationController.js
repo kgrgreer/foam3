@@ -553,9 +553,9 @@ foam.CLASS({
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
+      this.fetchTheme();
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
-      this.fetchTheme();
     },
 
     function installLanguage() {
@@ -796,7 +796,12 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({
+          view: {
+            ...(self.loginView ?? { class: 'BaseUnAuthBorder' }),
+            children: [ { class: 'foam.u2.view.LoginView', mode_: 'SignIn' } ]
+          },
+          parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },

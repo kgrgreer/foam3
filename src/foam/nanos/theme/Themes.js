@@ -86,7 +86,7 @@ Later themes:
 
         var group = x.group;
         if ( user && group ) { // non-null when logged in.
-          var group       = await user.group$find;
+          group           = await user.group$find || group;
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
