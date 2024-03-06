@@ -35,11 +35,9 @@ foam.CLASS({
     UNSELECTED_COLOR: 'white'
   },
 
-  // TODO: remove '-' after ActionView when CSS naming fixed
   css: `
     ^ { width:600px; margin: 20px; }
     ^ canvas { border: 1px solid black; margin-top: 10px; }
-    ^ .foam-u2-ActionView- { margin: 10px; }
     ^ input[type='range'] { width: 400px; }
   `,
 
