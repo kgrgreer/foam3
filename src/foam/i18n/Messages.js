@@ -146,6 +146,15 @@ foam.CLASS({
           },
           configurable: true
         });
+      } else {
+        Object.defineProperty(
+          proto,
+          this.name,
+          {
+            get: function() { return this.cls_[name]; },
+            configurable: false
+          });
+      }
     }
   ]
 });
