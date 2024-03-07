@@ -83,34 +83,6 @@ foam.CLASS({
             ]
           };
 
-          var references = [];
-
-          // Force hard reload when app version updates
-          var appConfigPromise = self.nSpecDAO.find('appConfigService').then(function(a) {
-            a = foam.json.parseString(a.client, self.__context__);
-            return a.getAppConfig();
-          }).then(function(appConfig) {
-            client.exports.push('appConfig');
-            references = references.concat(foam.json.references(self.__context__, appConfig));
-            client.properties.push({
-              name: 'appConfig',
-              factory: function() {
-                return appConfig.clone(this.__subContext__);
-              }
-            });
-
-            var version = appConfig.version;
-            if ( 'CLIENT_VERSION' in localStorage ) {
-              var oldVersion = localStorage.CLIENT_VERSION;
-              if ( version != oldVersion ) {
-                localStorage.CLIENT_VERSION = version;
-                location.reload(true);
-              }
-            } else {
-              localStorage.CLIENT_VERSION = version;
-            }
-          });
-
           var query = self.EQ(self.NSpec.SERVE, true);
 
           if ( ! self.authenticate ) {
