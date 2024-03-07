@@ -58,27 +58,41 @@ foam.CLASS({
     },
     {
       name: 'valueParserResults',
-      hidden: true,
-      expression: function(value, stringSymbol) {
+      hidden: true
+    },
+  ],
+  methods: [
+    function init() {
+      this.reParse();
+    }
+  ],
+  listeners: [
+    {
+      name: 'reParse',
+      on: ['this.propertyChange.value', 'this.propertyChange.stringSymbol'],
+      code: function() {
+        let self = this;
         var matches = {};
-        this.onMatchFn = function(a) {
-          if (!matches[a[1]]) {
-            matches[a[1]] = [
-              '%',
-              Object.keys(matches).length + 1,
-              '$',
-              stringSymbol
-            ].join('');
-          }
-          return matches[a[1]];
-        };
-        var parsedValue = this.grammar.parseString(value);
-        return {
+        if ( ! this.onMatchFn ) {
+          this.onMatchFn = function(a) {
+            if ( ! matches[a[1]] ) {
+              matches[a[1]] = [
+                '%',
+                Object.keys(matches).length + 1,
+                '$',
+                self.stringSymbol
+              ].join('');
+            }
+            return matches[a[1]];
+          };
+        }
+        var parsedValue = this.grammar.parseString(this.value);
+        this.valueParserResults = {
           matches: matches,
           parsedValue: parsedValue,
-        }
-      },
-    },
+        };
+      }
+    }
   ],
   grammars: [
     {

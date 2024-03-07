@@ -66,6 +66,8 @@ foam.CLASS({
   package: 'foam.i18n',
   name: 'MessageAxiom',
 
+  requires: ['foam.i18n.TranslationFormatStringParser'],
+
   properties: [
     {
       class: 'String',
@@ -109,6 +111,10 @@ foam.CLASS({
     {
       class: 'Simple',
       name: 'message_'
+    },
+    {
+      class: 'Boolean',
+      name: 'template'
     }
   ],
 
@@ -130,13 +136,32 @@ foam.CLASS({
 
     function installInProto(proto) {
       var name = this.name;
-      Object.defineProperty(
-        proto,
-        this.name,
-        {
-          get: function() { return this.cls_[name]; },
-          configurable: false
+      let self = this;
+      if ( this.template ) {
+        let parser = self.TranslationFormatStringParser.create({
+          value: proto.cls_[name]
+        })
+        Object.defineProperty(proto, name, {
+          get: function() {
+            return function(replacementMap) {
+              parser.onMatchFn = function(a) {
+                return replacementMap[a[1]] ?? a[1];
+              }
+              parser.reParse();
+              return parser.parsedValue;
+            };
+          },
+          configurable: true
         });
+      } else {
+        Object.defineProperty(
+          proto,
+          this.name,
+          {
+            get: function() { return this.cls_[name]; },
+            configurable: false
+          });
+      }
     }
   ]
 });
