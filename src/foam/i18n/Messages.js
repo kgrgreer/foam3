@@ -111,6 +111,10 @@ foam.CLASS({
     {
       class: 'Simple',
       name: 'message_'
+    },
+    {
+      class: 'Boolean',
+      name: 'template'
     }
   ],
 
