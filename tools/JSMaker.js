@@ -72,7 +72,7 @@ exports.end = function() {
     {
       compress: false,
       mangle:   false,
-      output:   { preamble: `// Generated: ${new Date()}\n\n${license}\nvar foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` }
+      output:   { beautify: true, preamble: `// Generated: ${new Date()}\n\n${license}\nvar foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` }
     }).code;
 
   // Remove most Java and Swift Code
@@ -101,7 +101,7 @@ exports.end = function() {
   code = code.replace(/documentation:"(\\"|[^"])*",/gm, '');
 
   // Remove leading whitespace (probably from in-lined CSS)
-  code = code.replaceAll(/^\s*/gm, '');
+  // code = code.replaceAll(/^\s*/gm, '');
 
   // Put each Model on its own line
   code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
