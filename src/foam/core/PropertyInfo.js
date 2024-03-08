@@ -28,8 +28,7 @@ foam.INTERFACE({
     'Expr',
     'Hasher',
     'Signer',
-    'SQLStatement',
-    'Validator'
+    'SQLStatement'
   ],
 
   // TODO: break into XML, CSV, SQL, Sheets, PII, crypto
