@@ -114,7 +114,7 @@ foam.INTERFACE({
     'boolean containsDeletablePII() { return false; }',
     `void validateObj(foam.core.X x, foam.core.FObject obj) {
        /* Template Method: override in subclass if required. */
-       if ( getRequired() && ! isSet(obj) ) {
+       if ( getRequired() && (! isSet(obj) || isDefaultValue(obj)) ) {
          throw new ValidationException(getName() + " required");
        }
     }`,
