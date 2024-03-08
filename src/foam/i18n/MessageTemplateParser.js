@@ -32,7 +32,7 @@ foam.CLASS({
       return () => { return str; } 
     },
     function addParam(a) {
-      return map => { return map[a[1]] } 
+      return map => { return map[a] } 
     }
   ],
   grammars: [
@@ -55,7 +55,7 @@ foam.CLASS({
           return this.addLiteral(a);
         },
         function parameter(a) {
-          return this.addParam(a);
+          return this.addParam(a[1]);
         },
         function identifier(a) {
           return a.join('');
