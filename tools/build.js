@@ -741,6 +741,8 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
+  R: [ 'Set app deployment root directory',
+        args => { APP_ROOT = args } ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh
