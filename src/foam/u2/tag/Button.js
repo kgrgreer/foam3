@@ -76,10 +76,6 @@ foam.CLASS({
       flex-direction: row-reverse;
     }
 
-    ^ + ^ {
-      margin-left: 8px;
-    }
-
     ^:hover:not(:disabled) {
       cursor: pointer;
     }
