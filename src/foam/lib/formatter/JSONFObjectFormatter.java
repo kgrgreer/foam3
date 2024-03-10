@@ -513,7 +513,7 @@ public class JSONFObjectFormatter
     append(',');
     outputKey("name");
     append(':');
-    output(getPropertyName(prop));
+    output(prop.getName());
 //    if ( quoteKeys_ ) {
 //      output(getPropertyName(prop));
 //    } else {
@@ -559,7 +559,7 @@ public class JSONFObjectFormatter
   }
 
   public JSONFObjectFormatter setOutputShortNames(boolean outputShortNames) {
-   // outputShortNames_ = outputShortNames;
+    outputShortNames_ = outputShortNames;
     return this;
   }
 

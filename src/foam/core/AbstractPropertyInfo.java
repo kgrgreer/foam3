@@ -95,14 +95,6 @@ public abstract class AbstractPropertyInfo
   }
 
   @Override
-  // ???: Is this still used?
-  public void validate(X x, FObject obj)
-    throws IllegalStateException
-  {
-    /* Template Method: override in subclasses if required. */
-  }
-
-  @Override
   public boolean includeInDigest() {
     if ( getStorageTransient() || getClusterTransient() )
       return false;

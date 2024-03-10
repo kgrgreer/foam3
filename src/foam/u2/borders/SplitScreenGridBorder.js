@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.borders',
   name: 'SplitScreenGridBorder',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.layout.Grid',
 
   imports: [
     'displayWidth'
@@ -19,14 +19,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background-color: $white;
-      height: 100%;
-    }
-
     ^grid {
       grid-gap: clamp(1rem, 1.5vmax, 5rem);
       height: 100%;
@@ -79,22 +71,16 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var right = this.GUnit.create({ columns: this.columnsConfigRight })
-        .addClass(this.myClass('split-screen'))
-        .tag('', null, this.rightPanel$);
-        var left = this.GUnit.create({ columns: this.columnsConfigLeft })
-        .addClass(this.myClass('split-screen'))
-        .tag('', null, this.leftPanel$);
-
-      var grid = this.Grid.create();
-      grid
-        .addClass(this.myClass('grid'))
-        .add(left, right);
-
-      this.start()
-        .addClass(this.myClass())
-        .add(grid)
-      .end();
+      this
+        .addClass(this.myClass(), this.myClass('grid'))
+          .start(this.GUnit, { columns: this.columnsConfigLeft })
+            .addClass(this.myClass('split-screen'))
+            .tag('', null, this.leftPanel$)
+          .end()
+          .start(this.GUnit, { columns: this.columnsConfigRight })
+            .addClass(this.myClass('split-screen'))
+            .tag('', null, this.rightPanel$)
+          .end();
     }
   ]
 });

@@ -15,7 +15,11 @@ foam.CLASS({
     on current device. Will also be responsible for native app download prompts when available.
     `,
 
-  requires: ['foam.u2.dialog.StyledModal'],
+  requires: [
+    'foam.u2.dialog.StyledModal',
+    'foam.nanos.app.AppBadgeView'
+  ],
+
   imports: [
     'appConfig',
     'document',
@@ -86,17 +90,7 @@ foam.CLASS({
               .add(this.APP_DOWNLOAD_TITLE)
             .end()
             .add(this.APP_DOWNLOAD_SUB)
-            .start('a').addClass(this.myClass('playLink')).attrs({ href: this.appConfig.playLink })
-            .start('img')
-              .attrs({ alt:'Get it on Google Play', src:'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'})
-            .end().end()
-            .startContext({ data: this })
-            .tag(this.DONT_SHOW_AGAIN, { size: 'SMALL' })
-            .endContext()
-            .start()
-              .addClass('p-legal', this.myClass('legal'))
-              .add(this.GPLAY_LEGAL)
-            .end();
+            .tag(this.AppBadgeView, {legalTextAbsolute: false})
             this.popup.write();
 
             // Remove the referral token from the URL
@@ -107,17 +101,6 @@ foam.CLASS({
           }})
         }
       );
-    }
-  ],
-  actions: [
-    {
-      name: 'dontShowAgain',
-      buttonStyle: 'TERTIARY',
-      label: `Don't show this again`,
-      code: function() {
-        localStorage.setItem('showDownloadPrompt', 'NO');
-        this.popup.close();
-      }
     }
   ]
 });

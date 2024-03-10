@@ -199,7 +199,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'loginView',
-      value: 'foam.u2.view.LoginView'
+      documentation: `Border used to wrap unauthenticated views like loginViews. Set to nullBorder for no additional borders`,
+      value: 'foam.u2.borders.BaseUnAuthBorder'
     },
     {
       class: 'Image',
@@ -760,6 +761,21 @@ foam.CLASS({
       class: 'String',
       name: 'emailLinkRedirect',
       javaValue: `"/"`
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.menu.XRegistration',
+      documentation: `Allows for class overrides on a theme basis. Ex.
+      "registrations":[
+        {
+          "class":"foam.nanos.menu.XRegistration",
+          "className":"foam.u2.DetailView",
+          "targetName":"foam.u2.PropertyBorder"
+        }
+      ]
+      The above code if added to a theme jrl will replace all instances of 'foam.u2.PropertyBorder' with 'foam.u2.DetailView' when that theme is being used by a client. 
+      `,
+      name: 'registrations'
     }
   ],
 

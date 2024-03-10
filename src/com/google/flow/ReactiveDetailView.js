@@ -80,10 +80,11 @@ foam.CLASS({
 });
 
 
+// TODO: Isn't used by DetailView anymore. Should be a PropertyBorder.
 foam.CLASS({
   package: 'com.google.flow',
   name: 'DetailPropertyView',
-  extends: 'foam.u2.DetailPropertyView',
+//  extends: 'foam.u2.DetailPropertyView',
 
   imports: [
     'data',

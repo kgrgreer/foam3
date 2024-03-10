@@ -13,7 +13,7 @@ foam.POM({
   ],
   licenses: [
     `
-    Copyright 2023 The FOAM Authors. All Rights Reserved.
+    Copyright 2024 The FOAM Authors. All Rights Reserved.
     http://www.apache.org/licenses/LICENSE-2.0
     `,
     `
@@ -97,6 +97,7 @@ foam.POM({
     { name: "foam/parsers/FON",                                       flags: "js" },
     { name: "foam/core/templates",                                    flags: "js" },
     { name: "foam/i18n/Messages",                                     flags: "js" },
+    { name: "foam/i18n/MessageTemplateParser",                        flags: "js" },
     { name: "foam/core/Validation",                                   flags: "js" },
     { name: "foam/core/Action",                                       flags: "js|java" },
     { name: "foam/core/Static",                                       flags: "js" },
@@ -240,6 +241,7 @@ foam.POM({
     { name: "foam/u2/borders/CardBorder",                             flags: "web" },
     { name: "foam/u2/borders/TopBorderCard",                          flags: "web" },
     { name: "foam/u2/borders/BackgroundCard",                         flags: "web" },
+    { name: "foam/u2/borders/BreadcrumbBorder",                       flags: "web" },
     { name: "foam/u2/borders/CollapseBorder",                         flags: "web" },
     { name: "foam/u2/borders/ExpandableBorder",                       flags: "web" },
     { name: "foam/u2/borders/SpacingBorder",                          flags: "web" },
@@ -252,6 +254,7 @@ foam.POM({
     { name: "foam/u2/borders/ControlBorder",                          flags: "web" },
     { name: "foam/u2/borders/StatusPageBorder",                       flags: "web" },
     { name: "foam/u2/borders/MenuGroupBorder",                        flags: "web" },
+    { name: "foam/u2/borders/BaseUnAuthBorder",                       flags: "web" },
     { name: "foam/nanos/u2/navigation/IFrameTopNavigation",           flags: "web" },
     { name: "foam/version/VersionTrait",                              flags: "js" },
     { name: "foam/version/VersionedClass",                            flags: "js" },
@@ -514,7 +517,6 @@ foam.POM({
     { name: "foam/u2/ActionView",                                     flags: "web" },
     { name: "foam/u2/ActionButtonStyleRefinement",                    flags: "web" },
     { name: "foam/u2/view/MenuView",                                  flags: "web" },
-    { name: "foam/u2/DetailPropertyView",                             flags: "web" },
     { name: "foam/u2/DetailView",                                     flags: "web" },
     { name: "foam/u2/ContextSensitiveDetailView",                     flags: "web" },
     { name: "foam/u2/tag/Image",                                      flags: "web" },
@@ -539,6 +541,7 @@ foam.POM({
     { name: "foam/u2/RangeView",                                      flags: "web" },
     { name: "foam/u2/ReadWriteView",                                  flags: "web" },
     { name: "foam/u2/IFrameHTMLView",                                 flags: "web" },
+    { name: "foam/u2/IFrameDocView",                                  flags: "web" },
     { name: "foam/u2/tag/Select",                                     flags: "web" },
     { name: "foam/u2/UnstyledTabs",                                   flags: "web" },
     { name: "foam/u2/Tabs",                                           flags: "web" },
@@ -937,12 +940,6 @@ foam.POM({
     { name: "foam/u2/view/MapView",                                   flags: "web" },
     { name: "foam/u2/view/AnyView",                                   flags: "web" },
     { name: "foam/u2/view/ArrayView",                                 flags: "web" },
-    { name: "io/c9/ace/Config",                                       flags: "js" },
-    { name: "io/c9/ace/Editor",                                       flags: "js" },
-    { name: "io/c9/ace/KeyBinding",                                   flags: "js" },
-    { name: "io/c9/ace/Lib",                                          flags: "js" },
-    { name: "io/c9/ace/Mode",                                         flags: "js" },
-    { name: "io/c9/ace/Theme",                                        flags: "js" },
     { name: "foam/u2/view/date/AbstractDateView",                     flags: "web" },
     { name: "foam/u2/view/date/RODateView",                           flags: "web" },
     { name: "foam/u2/view/date/ROMillisecondView",                    flags: "web" },
@@ -988,7 +985,6 @@ foam.POM({
     { name: "foam/u2/detail/WizardSectionsView",                      flags: "web" },
     { name: "foam/u2/detail/DAOWizardSectionsView",                   flags: "web" },
     { name: "foam/u2/detail/TabbedDetailView",                        flags: "web" },
-    { name: "foam/u2/detail/SectionedDetailPropertyView",             flags: "web" },
     { name: "foam/u2/detail/RowPropertyView",                         flags: "web" },
     { name: "foam/u2/detail/TabularSectionView",                      flags: "web" },
     { name: "foam/u2/dialog/SimpleActionDialog",                      flags: "web" },

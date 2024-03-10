@@ -30,6 +30,7 @@ foam.CLASS({
       value: '$grey100'
     }
   ],
+
   css: `
     ^ {
       width: 100%;
@@ -42,29 +43,19 @@ foam.CLASS({
     }
     ^::-webkit-progress-value {
       background-color: $progressColor;
-      transition: all 0.2s ease;
     }
   `,
 
   properties: [
     [ 'nodeName', 'progress' ],
-    {
-      name: 'max',
-      value: 100
-    },
-    {
-      name: 'data'
-    },
+    [ 'max', 100 ],
   ],
 
   methods: [
     function render() {
-      this
-        .addClass()
-        .call(function() {
-          this.attrSlot('max').follow(this.max$);
-          this.attrSlot().follow(this.data$);
-        });
+      this.addClass();
+      this.attrSlot('max').follow(this.max$);
+      this.attrSlot().follow(this.data$);
     }
   ]
 });

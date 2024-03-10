@@ -96,22 +96,25 @@ foam.CLASS({
       class: 'Object',
       type: 'foam.nanos.auth.Authorizer',
       name: 'authorizer',
+      documentation: `
+        Checks read access to the sourceDAO.
+        If the class of the materializedDAO is Authorizable, use its custom authorization
+        logic to check access to objects in the materializedDAO.
+        Otherwise, use a StandardAuthorizer to explicitly check the read permission of the
+        sourceDAO objects.
+      `,
       javaFactory: `
-      String sourceClass = getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
       if ( foam.nanos.auth.Authorizable.class.isAssignableFrom(getOf().getObjClass()) ) {
-        return new foam.nanos.auth.AuthorizableAuthorizer(sourceClass);
+        return new foam.nanos.auth.AuthorizableAuthorizer(getPermissionPrefix());
       }
-      return new foam.nanos.auth.StandardAuthorizer(sourceClass);
+      return new foam.nanos.auth.StandardAuthorizer(getPermissionPrefix());
       `
     },
     {
       class: 'String',
       name: 'permissionPrefix',
-      factory: function() {
-        return this.of.name.toLowerCase();
-      },
       javaFactory: `
-      return getOf().getObjClass().getSimpleName().toLowerCase();
+      return getSourceDAO().getOf().getObjClass().getSimpleName().toLowerCase();
      `
     },
     {

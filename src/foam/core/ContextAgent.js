@@ -12,7 +12,7 @@ foam.INTERFACE({
     {
       name: 'execute',
       type: 'Void',
-      args: [ { name: 'x', type: 'Context' } ]
+      args: 'Context x'
     }
   ]
 });

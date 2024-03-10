@@ -96,7 +96,8 @@ foam.CLASS({
       name: 'validationEnabled',
       documentation: 'Should to set to false when entering old passwords and true when selecting a new one.',
       value: true
-    }
+    },
+    'name'
   ],
 
   methods: [
@@ -123,6 +124,7 @@ foam.CLASS({
               this.isAvailable = true;
             });
           })
+          .attrs({ name: this.name$ })
         .end()
 
         .start('img')
@@ -132,6 +134,11 @@ foam.CLASS({
           .on('mousedown', (e) => e.preventDefault())
           .on('click', () => this.visible())
         .end();
+    },
+    
+    function fromProperty(p) {
+      this.name = p.name;
+      this.SUPER(p);
     },
 
     function visibleIcon(visibilityIcon, type) {

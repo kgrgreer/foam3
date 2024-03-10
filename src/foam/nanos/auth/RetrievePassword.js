@@ -13,6 +13,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'loginView?',
+    'pushMenu',
     'resetPasswordService',
     'resetPasswordToken',
     'stack',
@@ -37,7 +38,8 @@ foam.CLASS({
     { name: 'REDIRECTION_TO',           message: 'Back to Sign in' },
     { name: 'DUPLICATE_ERROR_MSG',      message: 'This account requires username' },
     { name: 'ERROR_MSG',                message: 'Issue resetting your password. Please try again' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'Unabled to find user with email: '}
+    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'Unable to find user with email: '},
+    { name: 'USER_NOT_FOUND_ERROR_TITLE', message: 'Invalid Email'}
   ],
 
   sections: [
@@ -126,11 +128,12 @@ foam.CLASS({
             type: this.LogLevel.INFO,
             transient: true
           }));
-          if ( ! this.resetByCode ) this.stack.push({ ...(this.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, this);
+          if ( ! this.resetByCode ) this.pushMenu('sign-in')
         } catch(err) {
           var msg = this.ERROR_MSG;
           if ( this.UserNotFoundException.isInstance(err.data.exception) ) {
             msg = err.data.message =  this.USER_NOT_FOUND_ERROR_MSG + this.email;
+            err.data.title = this.USER_NOT_FOUND_ERROR_TITLE;
           }
           if ( this.DuplicateEmailException.isInstance(err.data.exception) ) {
             this.usernameRequired = true;

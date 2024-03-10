@@ -22,7 +22,7 @@ foam.CLASS({
     ^copy-box{
       background: $primary50;
       border: 1px dashed $primary400;
-      padding: 1.5rem;  
+      padding: 1.5rem;
       text-align: center;
     }
     ^error^copy-box {
@@ -66,13 +66,16 @@ foam.CLASS({
       name: 'referralText',
       class: 'String'
     },
-    'refLink'
+    'refLink',
+    'foam.mlang.predicate.Eq'
   ],
 
   methods: [
     async function render() {
       let self = this;
-      this.refLink = (await this.subject.user.referralCodes.select()).array[0]?.url;
+      this.refLink = (await this.subject.user.referralCodes.where(
+        this.Eq.create({arg1: foam.nanos.referral.ReferralCode.AUTO_GENERATED, arg2: true})
+      ).select()).array[0]?.url;
       this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
 
       let button = navigator.canShare?.({text: this.referralText}) ? this.SHARE_TEXT : this.COPY_TEXT;
@@ -114,7 +117,7 @@ foam.CLASS({
       label: 'Share',
       isAvailable: function(refLink) { return refLink },
       code: async function(_, x) {
-       
+
         var shareData = {
           text: this.referralText
         };

@@ -253,7 +253,7 @@ foam.CLASS({
             href = result;
           }
 
-          if ( href.length > 524288 ) {
+          if ( href.length > 100000 ) {
             var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
             href = URL.createObjectURL(blob);
           }

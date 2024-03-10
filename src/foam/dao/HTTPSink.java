@@ -24,7 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class HTTPSink
-    extends AbstractSink
+  extends AbstractSink
 {
   protected String url_;
   protected String bearerToken_;
@@ -76,6 +76,7 @@ public class HTTPSink
           propertyPredicate_ == null ?
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(new NetworkPropertyPredicate()) :
           new foam.lib.json.Outputter(getX()).setOutputDefaultValues(outputDefaultValues_).setPropertyPredicate(propertyPredicate_);
+        ((foam.lib.json.Outputter) outputter).setOutputReadableDates(false);
         conn.addRequestProperty("Accept", "application/json");
         conn.addRequestProperty("Content-Type", "application/json");
       } else if ( format_ == Format.XML ) {

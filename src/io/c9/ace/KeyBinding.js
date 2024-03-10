@@ -7,9 +7,11 @@
 foam.ENUM({
   package: 'io.c9.ace',
   name: 'KeyBinding',
+
   properties: [
     'path'
   ],
+
   values: [
     {
       path: null,
@@ -26,6 +28,6 @@ foam.ENUM({
     {
       path: 'ace/keyboard/sublime',
       name: 'SUBLIME'
-    },
+    }
   ]
 });

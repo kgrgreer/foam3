@@ -163,6 +163,7 @@ foam.CLASS({
           }
 
           this.element_.parentNode.replaceChild(n.element_, this.element_);
+          n.parentNode = this.parentNode;
           n.load && n.load();
           var old = this.node;
           this.node = n;
@@ -1609,7 +1610,7 @@ foam.CLASS({
       documentation: `
         The order to render the property in if rendering multiple properties.
       `,
-      value: Number.MAX_SAFE_INTEGER
+      value: 0
     },
     {
       class: 'Boolean',

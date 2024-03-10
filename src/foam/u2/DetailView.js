@@ -13,15 +13,14 @@ foam.CLASS({
 
   requires: [
     'foam.core.Property',
-    'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.Tabs'
   ],
 
   exports: [
+    'controllerMode',
     'currentData as data',
     'currentData as objData',
-    'controllerMode',
     'currentMemento_ as memento'
   ],
 
@@ -32,6 +31,119 @@ foam.CLASS({
   axioms: [
     foam.pattern.Faceted.create()
   ],
+
+  classes: [
+    {
+      name: 'PropertyBorder',
+      extends: 'foam.u2.AbstractPropertyBorder',
+
+      inheritCSS: false,
+
+      properties: [ [ 'nodeName', 'TR' ] ],
+
+      css: `
+        ^label {
+          vertical-align: top;
+          padding-top: 4px;
+          white-space: nowrap;
+          padding-right: 20px;
+        }
+
+        ^view { display: inline; }
+
+        ^errorText { font-size: smaller; }
+
+        ^helper-icon { display: inline; vertical-align: middle; margin-left: 4px; }
+
+        ^helper-icon div { display: inline; }
+
+        ^ .foam-u2-borders-ExpandableBorder-container { padding: 6px; margin-top: 4px; }
+
+        ^ .foam-u2-borders-ExpandableBorder-container h6 { margin: 0; padding-bottom: 0; }
+
+        ^ .foam-u2-borders-ExpandableBorder-container p { margin-top: 4px; margin-bottom: 0; }
+
+        // ^ input { width: 90% }
+
+        ^ input[type!='checkbox'] { width: auto; }
+      `,
+
+      methods: [
+        function layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot) {
+          var self = this;
+
+          this.
+            addClass().
+            show(visibilitySlot).
+            start('td').addClass(this.myClass('label')).add(labelSlot).end().
+            start('td').
+            start('span').
+              addClass(this.myClass('propHolder')).
+              start('span').
+                addClass(this.myClass('propHolderInner')).
+                add(viewSlot).
+              end().
+              callIf(prop.help, function() {
+                this.start().addClass(self.myClass('helper-icon'))
+                  .start('', { tooltip: prop.help.length < 60 ? prop.help : self.LEARN_MORE })
+                    .start(self.CircleIndicator, {
+                      icon: self.theme ? self.theme.glyphs.helpIcon.getDataUrl({ fill: self.theme.black }) : '/images/question-icon.svg',
+                      size: 20
+                    })
+                      .on('click', () => { self.helpEnabled = ! self.helpEnabled; })
+                    .end()
+                  .end()
+                .end();
+              }).
+            end().
+            start().
+              /**
+               * ERROR BEHAVIOUR:
+               * - data == nullish, error == true: Show error in default text color, hide icon
+               * - data == ! null, error == true: Show error and icon in destructive, highlight field border
+               * Allows for errors to act as suggestions until the user enters a value
+               * Potential improvement area: this approach makes it slightly harder to understand why
+               * submit action may be unavilable for long/tabbed  forms
+               */
+              addClass('p-legal-light', this.myClass('errorText')).
+              enableClass(this.myClass('colorText'), colorSlot).
+              show(errorSlot.and(modeSlot.map(m => m == foam.u2.DisplayMode.RW))).
+              // Using the line below we can reserve error text space instead of shifting layouts
+              // show(modeSlot.map(m => m == foam.u2.DisplayMode.RW)).
+              start({
+                class: 'foam.u2.tag.Image',
+                data: '/images/inline-error-icon.svg',
+                embedSVG: true
+              }).show(errorSlot.and(colorSlot)).end().
+              add(' ', errorSlot).
+            end().
+            callIf(prop.help, function() {
+              this
+                .start(self.ExpandableBorder, { expanded$: self.helpEnabled$, title: self.HELP })
+                  .style({ 'flex-basis': '100%', width: '100%' })
+                  .start('p').add(prop.help).end()
+                .end();
+            });
+        }
+      ]
+    }
+  ],
+
+  css: `
+    ^ {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    ^title {
+      background: #ddd;
+      border: 1px solid rgb(128, 128, 128);
+      color: gray;
+      font-weight: 500;
+      margin-bottom: 10px;
+      padding: 6px;
+    }
+  `,
 
   properties: [
     {
@@ -65,7 +177,7 @@ foam.CLASS({
       // TODO: Make an FObjectArray when it validates properly
       preSet: function(_, ps) {
         foam.assert(ps, 'Properties required.');
-        for ( var i = 0; i < ps.length; i++ ) {
+        for ( var i = 0 ; i < ps.length ; i++ ) {
           if ( ! foam.core.Property.isInstance(ps[i]) ) {
             var p = this.of.getAxiomByName(ps[i]);
             if ( ! foam.core.Property.isInstance(p) ) {
@@ -82,11 +194,13 @@ foam.CLASS({
       },
       expression: function(of) {
         if ( ! of ) return [];
-        return this.of.getAxiomsByClass(foam.core.Property).
+        var ret = this.of.getAxiomsByClass(foam.core.Property).
           // TODO: this is a temporary fix, but DisplayMode.HIDDEN should be included and could be switched
           filter(function(p) {
             return ! ( p.hidden || p.visibility === foam.u2.DisplayMode.HIDDEN );
           });
+        ret.sort(foam.core.Property.ORDER.compare);
+        return ret;
       }
     },
     {
@@ -106,68 +220,23 @@ foam.CLASS({
       attribute: true,
       expression: function(of) {
         return this.of ? this.of.model_.label : '';
-      },
+      }
     },
     ['nodeName', 'DIV'],
     'currentMemento_'
   ],
 
-  css: `
-    /* Temporary fix until we refactor DetailView to not use a table. */
-    ^ {
-      display: block;
-      margin: auto;
-      width: 100%;
-      background-color: $white;
-    }
-
-    ^toolbar {
-      display: flex;
-      padding: 6px 12px;
-      flex-wrap: wrap;
-    }
-
-    ^ table {
-      width: 100%;
-      table-layout: fixed;
-    }
-
-    ^ table tr td:nth-of-type(2) {
-      width: 70%;
-    }
-
-    ^title {
-      padding: 6px;
-      font-weight: 500;
-    }
-
-    /*
-     * Styles for table contents
-     */
-
-    ^ table .foam-u2-stack-StackView {
-      padding-left: 0 !important;
-    }
-
-    ^ table .foam-u2-tag-TextArea {
-      max-width: 100%;
-    }
-
-    ^ table .foam-u2-Multiview-container[style*="float"] .foam-u2-tag-TextArea {
-      width: 100%;
-    }
-  `,
-
   methods: [
     function render() {
+      // The next two lines are so that FObjectView uses this kind of DetailView
+      // for nested objects.
+      this.__subContext__.register(this.cls_, 'foam.u2.detail.SectionedDetailView');
+      this.__subContext__.register(this.cls_, 'foam.u2.detail.VerticalDetailView');
+
       var self    = this;
       var hasTabs = false;
 
-      if ( this.title ) {
-        self.start().addClass(self.myClass('title')).add(self.title$).end();
-      }
-
-      this.add(this.slot(function(of, properties, actions) {
+      this.add(this.dynamic(function(of, properties, actions) {
         if ( ! of ) return '';
 
         // Binds view to currentData instead of data because there
@@ -177,58 +246,60 @@ foam.CLASS({
         // bound to data of a new class, which causes problems.
         self.currentData = self.data;
 
-        var tabs = foam.u2.Tabs.create({}, self);
+        var tabs;
 
-        return self.actionBorder(
-          this.
-            addClass(this.myClass()).
-            E('table').
-            forEach(properties, function(p) {
-              var config = self.config && self.config[p.name];
-              var expr = foam.mlang.Expressions.create();
+        return this.start('table').
+          attrs({'cellpadding': 2}).
+          addClass(self.myClass()).
+          callIf(self.title, function() {
+            this.start('tr').start('td').attrs({colspan: 2}).addClass(self.myClass('title')).add(self.title$);
+          }).
+          forEach(properties, function(p) {
+            var config = self.config && self.config[p.name];
+            var expr   = foam.mlang.Expressions.create();
 
-              if ( config ) {
-                p = p.clone();
-                for ( var key in config ) {
-                  if ( config.hasOwnProperty(key) ) {
-                    p[key] = config[key];
-                  }
+            if ( config ) {
+              p = p.clone();
+              for ( var key in config ) {
+                if ( config.hasOwnProperty(key) ) {
+                  p[key] = config[key];
                 }
               }
+            }
 
-              if (
-                p.cls_ == foam.dao.OneToManyRelationshipProperty ||
-                p.cls_ == foam.dao.ManyToManyRelationshipProperty
-              ) {
+            if (
+              p.cls_ == foam.dao.OneToManyRelationshipProperty ||
+              p.cls_ == foam.dao.ManyToManyRelationshipProperty
+            ) {
+              if ( ! hasTabs ) {
                 hasTabs = true;
-                var label = p.label;
-                let tab = self.Tab.create({ label: label });
-                var dao = p.cls_ == foam.dao.ManyToManyRelationshipProperty
-                  ? p.get(self.data).getDAO()
-                  : p.get(self.data);
-                dao.select(expr.COUNT()).then(function(c) {
-                  tab.label = label + ' (' + c.value + ')';
-                });
-
-                p = p.clone();
-                p.label = '';
-                tab.start('table').tag(self.DetailPropertyView, { prop: p });
-                tabs.add(tab);
-              } else {
-                this.tag(self.DetailPropertyView, { prop: p });
+                tabs = foam.u2.Tabs.create({}, self);
               }
-            }).
-            callIf(hasTabs, function() {
-              this.start('tr').start('td').setAttribute('colspan', '2').add(tabs).end().end();
-            }));
-          }));
-    },
+              var label = p.label;
+              let tab = self.Tab.create({ label: label });
+              var dao = p.cls_ == foam.dao.ManyToManyRelationshipProperty
+                ? p.get(self.data).getDAO()
+                : p.get(self.data);
+              dao.select(expr.COUNT()).then(function(c) {
+                tab.label = label + ' (' + c.value + ')';
+              });
 
-    function actionBorder(e) {
-      if ( ! this.showActions || ! this.actions.length ) return e;
-
-      return this.E().add(e).
-        start('div').addClass(this.myClass('toolbar')).add(this.actions).end();
+              p = p.clone();
+              p.label = '';
+              tab.tag(self.PropertyBorder, { prop: p });
+              tabs.add(tab);
+            } else {
+              this.tag(self.PropertyBorder, { prop: p, nodeName: 'TR' });
+            }
+          }). // forEach
+          callIf(hasTabs, function() {
+            this.start('tr').start('td').setAttribute('colspan', '2').add(tabs).end().end();
+          }).
+        end().
+        callIf(this.showActions && this.actions.length, function() {
+          this.start('div').addClass(self.myClass('toolbar')).add(self.actions).end();
+        });
+      })); // add
     }
   ]
 });

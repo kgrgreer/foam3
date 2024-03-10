@@ -19,6 +19,11 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'popup'
+    },
+    {
+      class: 'Boolean',
+      name: 'shouldResetBreadcrumbs',
+      value: true
     }
   ],
 
@@ -31,7 +36,7 @@ foam.CLASS({
         },
         parent: X,
         id: menu.id,
-        shouldResetBreadcrumbs: true,
+        shouldResetBreadcrumbs: self.shouldResetBreadcrumbs,
         breadcrumbTitle$: menu.label$,
         popup$: this.popup$
       }));

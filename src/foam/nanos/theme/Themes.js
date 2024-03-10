@@ -86,7 +86,7 @@ Later themes:
 
         var group = x.group;
         if ( user && group ) { // non-null when logged in.
-          var group       = await user.group$find;
+          group           = group || await user.group$find;
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
@@ -113,6 +113,11 @@ Later themes:
 
         if ( theme ) {
           if ( theme.customRefinement ) await x.__subContext__.classloader.load(theme.customRefinement, []);
+          if ( theme.registrations ) {
+            theme.registrations.forEach(r => {
+              x.__subContext__.register(this.__subContext__.lookup(r.className), r.targetName);
+            });
+          }
           return theme;
         }
 

@@ -19,8 +19,11 @@ foam.CLASS({
     'warn'
   ],
 
+  axioms: [
+    foam.u2.JsLib.create({src: 'https://cdn.jsdelivr.net/npm/ace-builds/src-min-noconflict/ace.js'})
+  ],
+
   reactions: [
-    ['container', 'onload', 'renderditor'],
     ['config', 'propertyChange', 'updateEditor'],
     ['', 'propertyChange.data', 'dataToEditor']
   ],
@@ -52,6 +55,8 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.SUPER(); // required to load ACE JsLib
+
       var self = this;
       this
         .add(this.slot(function(editor) {
@@ -84,19 +89,20 @@ foam.CLASS({
             });
           }))
         .end();
+
+      this.container.el().then(e => {
+        self.renderEditor();
+      });
     }
   ],
+
   listeners: [
-    function renderditor() {
+    function renderEditor() {
       var self = this;
-      io.c9.ace.Lib.ACE().then(function(ace) {
-        self.editor = ace.edit(self.container.el_());
-        self.editor.session.on('change', self.editorToData);
-        self.updateEditor();
-        self.dataToEditor();
-      }).catch(function(x) {
-        self.warn('Unable to load ace editor.', x);
-      });
+      self.editor = ace.edit(self.container.el_());
+      self.editor.session.on('change', self.editorToData);
+      self.updateEditor();
+      self.dataToEditor();
     },
     {
       name: 'editorToData',

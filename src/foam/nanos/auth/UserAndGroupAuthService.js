@@ -104,7 +104,7 @@ foam.CLASS({
         try {
           authorizeAnonymous(x);
         } catch ( AuthorizationException e ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(e.getMessage());
+          foam.nanos.logger.Loggers.logger(x, this).warning(e.toString());
         }
         Session session = x.get(Session.class);
         // fetch context and check if not null or user id is 0

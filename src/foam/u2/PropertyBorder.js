@@ -6,10 +6,12 @@
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'PropertyBorder',
+  name: 'AbstractPropertyBorder',
   extends: 'foam.u2.Element',
 
   documentation: `
+    This model is abstract. Add css: and implement layout() to complete.
+
     Wraps a Property's underlying View with extra functionality to:
       1. Display a Label from Property's label:
       2. Display Units, if set in Property's units:
@@ -38,60 +40,6 @@ foam.CLASS({
     { name: 'HELP',       message: 'Help' },
     { name: 'LEARN_MORE', message: 'Click to learn more' }
   ],
-
-  css: `
-    ^ {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 0.4rem;
-      width: 100%;
-    }
-    ^ .error input, ^ .error input:focus {
-      border-color: $destructive400!important;
-    }
-    ^colorText {
-      color: $destructive400;
-    }
-    ^label {
-      display: contents;
-      line-height: 1;
-      min-height: 1em;
-      width: 100%;
-      color: $grey600;
-    }
-    ^errorText {
-      display: flex;
-      align-items: center;
-      /*
-        Have to use this style here since nanos uses CSS resets to
-        set 1 rem = 10px instead of the default 16px
-        May cause weird styling outside nanos
-      */
-      min-height: 1.25em;
-      justify-content: flex-start;
-      gap: 0.2rem;
-    }
-    ^errorText svg {
-      width: 1rem;
-      height: 1rem;
-    }
-    ^propHolder {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      gap: 0.2rem
-    }
-    ^propHolder > :first-child {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0.4rem;
-      width: 100%;
-    }
-  `,
 
   properties: [
     'prop',
@@ -156,17 +104,84 @@ foam.CLASS({
 
       var viewSlot = prop.view$.map(v => {
         // Add the Property's View
-        return this.E().add(prop.toE({
+        var e = prop.toE({
           ...self.viewArgs,
           mode$: modeSlot
-        }, this.__subContext__ ))
-          .style({ 'flex-grow': 1,'max-width': '100%' })
-          .enableClass('error', errorSlot.and(colorSlot));
+        }, this.__subContext__ );
+
+        return this.E().addClass(self.myClass('view')).add(e).enableClass('error', errorSlot.and(colorSlot));
       });
 
       this.layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot);
-    },
+    }
+  ]
+});
 
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'PropertyBorder',
+  extends: 'foam.u2.AbstractPropertyBorder',
+
+  css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+    }
+    ^ .error input, ^ .error input:focus {
+      border-color: $destructive400!important;
+    }
+    ^colorText {
+      color: $destructive400;
+    }
+    ^label {
+      display: contents;
+      line-height: 1;
+      min-height: 1em;
+      width: 100%;
+      color: $grey600;
+    }
+    ^errorText {
+      display: flex;
+      align-items: center;
+      /*
+        Have to use this style here since nanos uses CSS resets to
+        set 1 rem = 10px instead of the default 16px
+        May cause weird styling outside nanos
+      */
+      min-height: 1.25em;
+      justify-content: flex-start;
+      gap: 0.2rem;
+    }
+    ^errorText svg {
+      width: 1rem;
+      height: 1rem;
+    }
+    ^propHolder {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.2rem
+    }
+    ^propHolder > :first-child {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.4rem;
+      width: 100%;
+    }
+    ^view {
+      flex-grow: 1;
+      max-width: 100%;
+     }
+  `,
+
+  methods: [
     function layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot) {
       var self = this;
 
@@ -179,7 +194,8 @@ foam.CLASS({
           start('span').
             addClass(this.myClass('propHolderInner')).
             add(viewSlot).
-            start('span').addClass(self.myClass('units')).add(prop.units$).end().
+            // Not needed anymore since is now handled by TextField
+//            start('span').addClass(self.myClass('units')).add(prop.units$).end().
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
