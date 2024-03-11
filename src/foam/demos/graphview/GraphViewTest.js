@@ -5,17 +5,15 @@
  */
 
 foam.CLASS( {
-  package: 'com.foam.demos.graphview',
+  package: 'foam.demos.graphview',
   name: 'GraphViewTest',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.Controller',
 
   requires: [
-    'com.foam.demos.graphview.GraphView',
+    'foam.demos.graphview.GraphView',
     'foam.graphics.Box',
-    'foam.graphics.Circle',
+    'foam.graphics.Circle'
   ],
-
-  exports: [ 'as data' ],
 
   constants: {
     SELECTED_COLOR: '#ddd',
@@ -35,8 +33,7 @@ foam.CLASS( {
     function render() {
       this.SUPER();
 
-      this.
-      add( this.GraphView.create( {} ) );
+      this.add(this.GraphView.create());
     }
   ]
 } );

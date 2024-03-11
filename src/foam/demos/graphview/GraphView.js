@@ -5,7 +5,7 @@
  */
 
 foam.CLASS( {
-  package: 'com.foam.demos.graphview',
+  package: 'foam.demos.graphview',
   name: 'GraphView',
   extends: 'foam.u2.View',
 
