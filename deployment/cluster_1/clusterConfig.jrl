@@ -3,7 +3,7 @@ p({
   "id":"argus",
   "name":"argus",
   "enabled":true,
-  "realm":"nanopay",
+  "realm":"foam",
   "region":"Toronto",
   "regionStatus":1,
   "zone":0,
@@ -12,14 +12,13 @@ p({
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
-//  "port":8100,
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"moosehead",
   "name":"moosehead",
   "enabled":true,
-  "realm":"nanopay",
+  "realm":"foam",
   "region":"Toronto",
   "regionStatus":1,
   "zone":0,
@@ -28,4 +27,3 @@ p({
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
-//  "port":8200,

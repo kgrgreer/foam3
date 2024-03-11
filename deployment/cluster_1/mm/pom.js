@@ -1,1 +1,0 @@
-foam.POM({name:'mm'})
