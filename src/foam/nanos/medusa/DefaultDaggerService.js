@@ -128,11 +128,9 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      name: 'dao',
-      class: 'foam.dao.DAOProperty',
-      javaFactory: `
-      return (DAO) getX().get("internalMedusaDAO");
-      `,
+      name: 'daoKey',
+      class: 'String',
+      value: 'internalMedusaDAO',
       visibility: 'HIDDEN'
     },
     {
@@ -232,7 +230,7 @@ foam.CLASS({
         entry.setNSpecName("bootstrap");
         entry.setNode(support.getConfigId());
         entry.setPromoted(true);
-        entry = (MedusaEntry) getDao().put_(x, entry);
+        entry = (MedusaEntry) ((DAO) x.get(getDaoKey())).put_(x, entry);
 
         // NOTE: Normally the Primary is coordinating the entry hashes,
         // and updateLinks is called on promote which occurs in the same
@@ -362,7 +360,7 @@ foam.CLASS({
           return;
         }
 
-        MedusaEntry parent1 = (MedusaEntry) getDao().find(EQ(MedusaEntry.INDEX, entry.getIndex1()));
+        MedusaEntry parent1 = (MedusaEntry) ((DAO) x.get(getDaoKey())).find(EQ(MedusaEntry.INDEX, entry.getIndex1()));
         if ( parent1 == null ) {
           if ( entry.getIndex1() <= getLinks().length &&
                entry.getIndex2() <= getLinks().length &&
@@ -374,7 +372,7 @@ foam.CLASS({
           getLogger().error("Hash verification failed", "verify", entry.getIndex(), "parent1 not found", entry.getIndex1(), "entry", entry.toSummary(), entry.getNode());
           throw new DaggerException("Hash verification failed, parent not found on: "+entry.toSummary()+" from: "+entry.getNode());
         }
-        MedusaEntry parent2 = (MedusaEntry) getDao().find(EQ(MedusaEntry.INDEX, entry.getIndex2()));
+        MedusaEntry parent2 = (MedusaEntry) ((DAO) x.get(getDaoKey())).find(EQ(MedusaEntry.INDEX, entry.getIndex2()));
         if ( parent2 == null ) {
           if ( entry.getIndex1() <= getLinks().length &&
                entry.getIndex2() <= getLinks().length &&
