@@ -22,7 +22,6 @@ foam.CLASS({
   imports: [
     'click?',
     'dblclick?',
-    'hoverSelection',
     'nestedPropsAndIndexes',
     'propertyNamesToQuery',
     'props',
@@ -36,7 +35,8 @@ foam.CLASS({
     {
       name: 'actionDAO',
       factory: function() { return this.data.data; }
-    }
+    },
+    'hoverSelection'
   ],
 
   methods: [
