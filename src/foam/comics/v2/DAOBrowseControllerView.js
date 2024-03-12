@@ -234,7 +234,7 @@ foam.CLASS({
 
       // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
       // Right now each view controls it's own controller mode
-      if ( this.route != 'browse' && ( this.route == 'view' || this.route == 'edit' ) ) {
+      if ( this.route == 'view' || this.route == 'edit' ) {
         let b = this.memento_.createBindings(this.memento_.tailStr);
         let idCheck = false;
         if ( b.length && b[0][0] == 'route' && b[0][1] ) {
