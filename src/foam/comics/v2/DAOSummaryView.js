@@ -65,13 +65,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DETAIL', message: 'Detail' },
-    { name: 'TABBED', message: 'Tabbed' },
+    { name: 'DETAIL',    message: 'Detail' },
+    { name: 'TABBED',    message: 'Tabbed' },
     { name: 'SECTIONED', message: 'Sectioned' },
-    { name: 'MATERIAL', message: 'Material' },
-    { name: 'WIZARD', message: 'Wizard' },
-    { name: 'VERTICAL', message: 'Vertical' },
-    { name: 'ALL', message: 'All ' }
+    { name: 'MATERIAL',  message: 'Material' },
+    { name: 'WIZARD',    message: 'Wizard' },
+    { name: 'VERTICAL',  message: 'Vertical' },
+    { name: 'ALL',       message: 'All ' }
   ],
 
   properties: [
@@ -132,7 +132,7 @@ foam.CLASS({
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
           }
           return id;
-      }, 
+      },
       postSet: function(_,n) {
         if ( ! this.idOfRecord && n ) this.idOfRecord = n;
       }
@@ -149,7 +149,7 @@ foam.CLASS({
       expression: function(data) {
         var self = this;
         var maybePromise = data?.toSummary() ?? '';
-        if ( maybePromise.then ) { 
+        if ( maybePromise.then ) {
           maybePromise.then( v => { self.viewTitle = v })
           return '';
         }
@@ -275,6 +275,7 @@ foam.CLASS({
       var id = this.data?.id ?? this.idOfRecord;
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => { self.data = d; });
     },
+
     function render() {
       var self = this;
       this.SUPER();
@@ -284,7 +285,7 @@ foam.CLASS({
       /*
       // NOTE: Remove duplicate call, already a dao.find call done in init()
       this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord).then(d => {
-        if ( d ) { 
+        if ( d ) {
           self.data = d;
           if ( this.currentControllerMode === 'edit' )
             self.edit();
@@ -300,6 +301,7 @@ foam.CLASS({
         .add(self.slot(function(data, config$viewBorder, viewView) {
           // If data doesn't exist yet return
           if ( ! data ) return;
+
           this.populatePrimaryAction(self.config.of, data);
           return self.E()
             .start(self.Rows)
@@ -352,6 +354,7 @@ foam.CLASS({
         }));
       }
     },
+
     async function populatePrimaryAction(of, data) {
       var allActions = of.getAxiomsByClass(foam.core.Action);
       var defaultAction = allActions.filter((a) => a.isDefault);
