@@ -50,6 +50,8 @@ foam.CLASS({
       name: 'resizeChildren',
       isFramed: true,
       code: function() {
+        if ( this.state == this.OUTPUT ) return;
+
         this.shown = false;
         var currentWidth = 0;
         this.children.forEach(ret => {
