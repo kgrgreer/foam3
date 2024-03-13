@@ -109,7 +109,7 @@ foam.CLASS({
       expression: function(config$browseTitle) {
         var allMsg = ctrl.__subContext__.translationService.getTranslation(foam.locale, 'foam.comics.v2.DAOSummaryView.ALL', this.ALL);
         var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
-        var title = ctrl.__subContext__.translationService.getTranslation(foam.locale, menuId + '.browseTitle', config$browseTitle);
+        var title  = ctrl.__subContext__.translationService.getTranslation(foam.locale, menuId + '.browseTitle', config$browseTitle);
         return allMsg + title;
       }
     },
@@ -192,7 +192,8 @@ foam.CLASS({
             class:  'foam.comics.v2.DAOUpdateView',
             data:   this.data,
             config: this.config,
-            of:     this.config.of
+            of:     this.config.of,
+            title:  'Edit ' + this.data.cls_.name + ' ' + this.data.id
           }, parent: this.__subContext__.createSubContext({ memento: this.memento })
         }));
       }
