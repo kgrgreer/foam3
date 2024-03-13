@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'topMemento_',
     'buildingStack',
     'currentMenu',
     'menuListener',
@@ -32,12 +33,22 @@ foam.CLASS({
     'window'
   ],
 
+  exports: [
+    'memento_',
+  ],
+
   constants: [
-    { name: 'BCRMB_ID', value: 'b' },
-    { name: 'ACTION_ID', value: 'a' },
+    { name: 'BCRMB_ID',  value: 'b' },
+    { name: 'ACTION_ID', value: 'a' }
   ],
 
   properties: [
+    {
+      name: 'memento_',
+      factory: function() {
+        return this.topMemento_ || this.WindowHashMemento.create({obj: this}, this);
+      }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.u2.stack.StackBlock',
@@ -113,12 +124,18 @@ foam.CLASS({
         block = this.StackBlock.create({
           view: arguments[0],
           parent: arguments[1],
-          id: arguments[2],
+          id: arguments[2] || 'anon',
           shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
           popup: arguments[3] && arguments[3].popup,
           breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
         });
       }
+
+      block.historyPos     = this.window.history.length;
+      block.currentMemento = this.memento_.toString();
+
+      if ( ! block.breadcrumbTitle && block.view.title ) block.breadcrumbTitle = block.view.title;
+
       // Push a default menu if opening a popup as the first view in a stack
       if ( this.pos == -1 && block.popup
         // Dont render a fallback view in iframes
@@ -130,7 +147,7 @@ foam.CLASS({
         this.menuListener(menu)
       }
       // Avoid feedback of views updating mementos causing themselves to be re-inserted
-      if ( this.top && block.id && this.top.id == block.id ) return;
+// if ( this.top && block.id && this.top.id == block.id ) return;
 
       if ( foam.u2.Element.isInstance(block.view) ) {
         console.warn("Views are not recommended to be pushed to a stack. Please use a viewSpec.");
@@ -145,21 +162,17 @@ foam.CLASS({
       this.depth = pos + 1;
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
-      if ( pos > 0 && ctrl.memento_ && block.parent?.memento_ ) {
-        // Use toString here instead of usedStr since on refresh stack pushes happen faster
-        // than memento.update() is called since it is merged
-        this.stack_[pos - 1].currentMemento = ctrl.memento_.toString(null, block.parent.memento_);
-        ctrl.memento_.usedStr = ctrl.memento_.toString();
-      }
       this.pos = pos;
       if ( block.shouldResetBreadcrumbs )
         this.navStackBottom = pos;
     },
+
     function jump(jumpPos) {
       while ( this.pos > jumpPos ) {
         this.stack_[this.pos].removed.pub();
         this.pos--;
       }
+
       if ( this.navStackBottom > this.pos ) {
         for ( var i = this.pos; i >= 0; i-- ) {
           if ( this.stack_[i].shouldResetBreadcrumbs ) {
@@ -169,6 +182,7 @@ foam.CLASS({
         }
       }
     },
+
     function getContextFromParent(parent, ctx) {
       ctx = ctx || this;
       if ( ! parent ) return ctx.__subSubContext__;
@@ -181,7 +195,6 @@ foam.CLASS({
       // TODO: revisit KGR's comment from earlier; this may not be needed
       console.warn('parent is neither an element nor a context');
       return ctx.__subSubContext__.createSubContext(parent);
-
     }
   ],
 

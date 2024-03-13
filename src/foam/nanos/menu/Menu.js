@@ -130,7 +130,7 @@
       class: 'Boolean',
       name: 'authenticate',
       value: true,
-      documentation: `By deafult, authenticate: false only bypasses the authentication check for logged out users, 
+      documentation: `By deafult, authenticate: false only bypasses the authentication check for logged out users,
       logged in users still need to be granted permission to see unauthenticated menus`
     },
     {
@@ -154,7 +154,7 @@
       }
 
       this.lastMenuLaunchedListener && this.lastMenuLaunchedListener(X.currentMenu);
-      this.menuListener && this.menuListener(this);
+      // this.menuListener && this.menuListener(this); // ???: Why is this needed?
       return this.handler && this.handler.launch(subX, this, e);
     },
     function toE(args, X) {

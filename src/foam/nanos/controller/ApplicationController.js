@@ -23,7 +23,7 @@ foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'ApplicationController',
   extends: 'foam.u2.Element',
-  mixins: ['foam.u2.memento.Memorable'],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'FOAM Application Controller.',
 
@@ -89,6 +89,7 @@ foam.CLASS({
     'loginSuccess',
     'loginVariables',
     'loginView',
+    'memento_ as topMemento_',
     'menuListener',
     'notify',
     'prefersMenuOpen',
@@ -386,7 +387,7 @@ foam.CLASS({
         // as the init process will also check the route and pushmenu if required
         if ( this.initSubject && n ) {
           if ( ! this.currentMenu?.id ) this.buildingStack = true;
-          this.pushMenu(n);
+          this.pushMenu(n, true);
         }
       }
     },
@@ -708,15 +709,15 @@ foam.CLASS({
        * **/
       if ( idCheck.includes('/') )
         realMenu = idCheck.split('/')[0];
+
       /** Used to checking validity of menu push and launching default on fail **/
-      var dao;
       if ( this.client ) {
         return this.pushMenu_(realMenu, menu, opt_forceReload);
-      } else {
-        return await this.clientPromise.then(async () => {
-          await this.pushMenu_(realMenu, menu, opt_forceReload);
-        });
       }
+
+      return await this.clientPromise.then(async () => {
+        await this.pushMenu_(realMenu, menu, opt_forceReload);
+      });
     },
 
     async function pushMenu_(realMenu, menu, opt_forceReload) {
@@ -736,8 +737,8 @@ foam.CLASS({
           return;
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
-        let newId = (menu && menu.id) || '';
-        this.pushMenu(newId, opt_forceReload);
+        if ( menu )
+          this.route = menu.id;
         return;
       }
       const preserveMem = this.buildingStack || (

@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.u2.stack.Stack'
   ],
 
-  imports: [ 'ctrl', 'document' ],
+  imports: [ 'document' ],
 
   exports: [ 'data as stack' ],
 
@@ -95,23 +95,21 @@ foam.CLASS({
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
-      var view   = s.view;
-      var parent = s.parent;
-
-      var X = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(parent, this);
-      var v;
-      var ctrlMem = this.ctrl.memento_;
-      if ( s.currentMemento ) {
-        this.ctrl.window.location = '#' + s.currentMemento;
-        v = foam.u2.ViewSpec.createView(view, null, this, X);
-        console.log('setting memento', s.currentMemento);
-      } else {
-        v = foam.u2.ViewSpec.createView(view, null, this, X);
+      if ( s.currentMemento !== window.location.hash.substring(1) ) {
+        window.location.hash = s.currentMemento;
+        return this.E('span').add('Loading... ', s.currentMemento);
       }
-      var title = v.viewTitle$ || v.children[0]?.viewTitle$; /*need to do this for menu with border*/
+
+      var view  = s.view;
+      var X     = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(s.parent, this);
+      var v     = foam.u2.ViewSpec.createView(view, null, this, X);
+      var title = v.viewTitle$ || v.children[0]?.viewTitle$; /* need to do this for menu with border */
+
       if ( title ) {
         if ( title.get() ) this.document.title = title.get();
         this.data.top.breadcrumbTitle$.follow(title); // TODO: GC issue
+      } else if ( s.breadcrumbTitle ) {
+        this.document.title = s.breadcrumbTitle;
       }
 
       return v;

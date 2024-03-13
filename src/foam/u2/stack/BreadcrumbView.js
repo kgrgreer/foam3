@@ -9,11 +9,11 @@ foam.CLASS({
   name: 'BreadcrumbView',
   extends: 'foam.u2.View',
 
-  imports: ['stack'],
+  imports: [ 'stack' ],
 
   requires: [
     'foam.core.Action',
-    'foam.u2.view.OverlayActionListView',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   css: `
@@ -63,37 +63,46 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass('display'));
       if ( this.stack && this.stack.stack_ ) {
-        var navStack = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
+        var navStack  = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
         var themeIcon = navStack.length == 1 ? 'back' : '';
-        navStack.map((v, i) => {
-          var index = i + this.stack.navStackBottom;
-          var jumpAction  = self.Action.create({
+        console.log('**** navStack:', navStack);
+        navStack.forEach((v, i) => {
+          let index      = i + this.stack.navStackBottom;
+          let memento    = self.stack.stack_[index].currentMemento;
+//          var j = memento.lastIndexOf('/');
+//          memento = memento.substring(0, j);
+
+          let jumpAction = self.Action.create({
             name: 'back',
             code: () => {
+//              document.title = self.stack.stack_[index].breadcrumbTitle;
+
               self.stack.jump(index, self);
+
+//              window.location.hash = memento;
             }
           });
-          var labelSlot = this.stack.stack_[index].breadcrumbTitle$;
-          jumpAction.label$ = labelSlot;
+          let labelSlot = this.stack.stack_[index].breadcrumbTitle;
+          jumpAction.label = labelSlot;
           if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
             self.start(jumpAction, {
-              themeIcon: themeIcon,
+              themeIcon:   themeIcon,
               buttonStyle: 'LINK',
-              size: 'SMALL'
+              size:        'SMALL'
             }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
           } else if ( i == self.maxHead ) {
             self.tag(this.OverlayActionListView, {
-              label: '...',
-              data$: self.actionArray$,
-              obj: self,
-              buttonStyle: 'LINK',
-              showDropdownIcon: false,
+              label:            '...',
+              data$:            self.actionArray$,
+              obj:              self,
+              buttonStyle:      'LINK',
+              showDropdownIcon: false
             });
             self.actionArray.push(jumpAction);
           } else {
             self.actionArray.push(jumpAction);
           }
-          if ( navStack.length != 1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
+          if ( navStack.length != 1 && i != navStack.length -1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
             self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
           }
           if ( ! this.stack.stack_[index].breadcrumbTitle )
