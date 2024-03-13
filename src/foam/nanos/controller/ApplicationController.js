@@ -387,7 +387,7 @@ foam.CLASS({
         // as the init process will also check the route and pushmenu if required
         if ( this.initSubject && n ) {
           if ( ! this.currentMenu?.id ) this.buildingStack = true;
-          this.pushMenu(n, true);
+          this.pushMenu_(null, n, true);
         }
       }
     },
@@ -712,6 +712,10 @@ foam.CLASS({
 
       /** Used to checking validity of menu push and launching default on fail **/
       if ( this.client ) {
+        if ( realMenu ) {
+          this.route = realMenu;
+          return;
+        }
         return this.pushMenu_(realMenu, menu, opt_forceReload);
       }
 
@@ -726,7 +730,7 @@ foam.CLASS({
       let stringMenu = menu && foam.String.isInstance(menu);
       // No need to check for menu in DAO if user already has access to menu obj
       if ( stringMenu ) {
-        realMenu = await dao.find(realMenu);
+        realMenu = await dao.find(menu);
       } else {
         realMenu = menu;
       }
