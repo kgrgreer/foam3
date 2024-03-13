@@ -155,12 +155,13 @@ foam.CLASS({
           }
           this.__subContext__.setControllerMode('view');
           (this.stack || this.__subContext__.stack).push(foam.u2.stack.StackBlock.create({
-          view: {
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            config: this.config || this.__subContext__.config,
-            idOfRecord: id
-          }, parent: this.__subContext__ }, this));
+            view: {
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: obj,
+              config: this.config || this.__subContext__.config,
+              idOfRecord: id,
+              title: 'View ' + obj.cls_.name + ' ' + id,
+            }, parent: this.__subContext__ }, this));
         };
       }
     }
@@ -197,6 +198,7 @@ foam.CLASS({
               class: this.config.createController.class,
               data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
               config$: this.config$,
+              title: 'Create ' + this.data.of.id,
               of: this.data.of
             }, parent: this,
             popup: this.config.createPopup
@@ -210,6 +212,7 @@ foam.CLASS({
               config$: this.config$,
               of: this.data.of,
               data: this.selection,
+              title: 'Create ' + this.data.of.id,
               detailView: this.config.detailView.class,
               menu: this.config.menu,
               controllerMode: foam.u2.ControllerMode.CREATE,
@@ -235,13 +238,15 @@ foam.CLASS({
       // TODO: Refactor DAOBrowseControllerView to be the parent for a single DAO View
       // Right now each view controls it's own controller mode
       if ( this.route == 'view' || this.route == 'edit' ) {
-        let b = this.memento_.createBindings(this.memento_.tailStr);
+        let b       = this.memento_.createBindings(this.memento_.tailStr);
         let idCheck = false;
+        let obj     = null;
         if ( b.length && b[0][0] == 'route' && b[0][1] ) {
-          idCheck = !! await this.data.find(b[0][1]);
+          obj = await this.data.find(b[0][1]);
+          idCheck = !! obj;
         }
         if ( idCheck ) {
-          self.click.call(this, null, null);
+          self.click.call(this, obj, b[0][1]);
         } else {
           this.route = 'browse';
         }
