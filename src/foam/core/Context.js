@@ -167,7 +167,7 @@ foam.SCRIPT({
      */
     createSubContext: function createSubContext(opt_args, opt_name) {
 
-      if ( ! opt_args ) return this;
+      // if ( ! opt_args ) return this; // Isn't safe because it prevents new __cache__ from being created.
 
       foam.assert(
         opt_name === undefined || typeof opt_name === 'string',
