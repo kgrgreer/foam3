@@ -18,7 +18,6 @@ foam.CLASS({
     }
   `,
   properties: [
-    // Reference to LocaleDAO? That way it can point to any message anywhere
     {
       class: 'String',
       name: 'source',
