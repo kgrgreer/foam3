@@ -1,6 +1,32 @@
 foam.CLASS({
-  name: 'Menu',
+  name: 'MementoController',
   extends: 'foam.u2.Controller',
+
+  methods: [
+    function render() {
+      var self = this;
+
+      this.br()
+        .start('h1').add(this.cls_.name).end()
+        .br()
+        .add('str: ', this.memento_.str$)
+        .br()
+        .add('tailStr: ', this.memento_.tailStr$)
+        .br()
+        .add('usedStr: ', this.memento_.usedStr$)
+        .br()
+        .add('encoding: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.encode())))
+        .br()
+        .add('tail: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.tail && self.memento_.tail.encode())))
+        .br();
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'Menu',
+  extends: 'MementoController',
 
   mixins: [ 'foam.u2.memento.Memorable' ],
 
@@ -11,10 +37,7 @@ foam.CLASS({
   properties: [
     {
       name: 'route',
-      memorable: true,
-      postSet: function(_, m) {
-        this.controller = Controller.create({daoKey: m}, this);
-      }
+      memorable: true
     },
     {
       name: 'stack',
@@ -24,16 +47,8 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.br();
-      this.start('h1').add("MENU").end();
-      this.br();
-      this.add('str: ', this.memento_.str$);
-      this.br();
-      this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
-      this.br();
-      this.add('Menu/Route: ', this.ROUTE);
+      this.SUPER();
+      this.add('Route: ', this.ROUTE);
       this.add(this.slot(route => Controller.create({daoKey: route}, this)));
     }
   ]
@@ -42,7 +57,7 @@ foam.CLASS({
 
 foam.CLASS({
   name: 'Controller',
-  extends: 'foam.u2.Controller',
+  extends: 'MementoController',
 
   mixins: [
     'foam.u2.memento.Memorable'
@@ -55,22 +70,15 @@ foam.CLASS({
     {
       name: 'route',
       value: 'edit',
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ 'browse', 'edit' ] },
       memorable: true
     }
   ],
 
   methods: [
     function render() {
-      this.br();
-      this.start('h1').add("CONTROLLER: ", this.daoKey).end();
-      this.br();
-      this.add('str: ', this.memento_.str$);
-      this.br();
-      this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
-      this.br();
-      this.add('Mode/Route: ', this.ROUTE);
+      this.SUPER();
+      this.add('Route: ', this.ROUTE);
       this.add(this.route$.map((mode) => { return ( mode == 'browse' ) ? Table.create({}, this) : Detail.create({}, this);}));
     }
   ]
@@ -79,7 +87,7 @@ foam.CLASS({
 
 foam.CLASS({
   name: 'Table',
-  extends: 'foam.u2.Controller',
+  extends: 'MementoController',
 
   mixins: [
     'foam.u2.memento.Memorable'
@@ -109,15 +117,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.br();
-      this.start('h1').add("TABLE").end();
-      this.br();
-      this.add('str: ', this.memento_.str$);
-      this.br();
-      this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
-      this.br();
+      this.SUPER();
       this.add('Skip: ',    this.SKIP);
       this.add('Columns: ', this.COLUMNS);
       this.add('Query: ',   this.QUERY);
@@ -128,7 +128,7 @@ foam.CLASS({
 
 foam.CLASS({
   name: 'Detail',
-  extends: 'foam.u2.Controller',
+  extends: 'MementoController',
 
   mixins: [
     'foam.u2.memento.Memorable'
@@ -144,42 +144,27 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.br();
-      this.start('h1').add("DETAIL").end();
-      this.br();
-      this.add('str: ', this.memento_.str$);
-      this.br();
-      this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
-      this.br();
-      this.add('ID: ',    this.ROUTE);
+      this.SUPER();
+      this.add('Route/ID: ', this.ROUTE);
     }
   ]
 });
 
+
 foam.CLASS({
   name: 'MementoTest',
-  extends: 'foam.u2.Controller',
+  extends: 'MementoController',
 
-  exports: [ 'memento_', 'window' ],
+  exports: [ 'window' ],
 
   mixins: [
     'foam.u2.memento.Memorable'
   ],
 
   properties: [
-    /*
-    {
-      name: 'memento_',
-      hidden: true,
-      factory: function() { return WindowHashMemento.create({obj: null, memento_: this.parentMemento_}); }
-    },*/
     {
       name: 'window',
-      factory: function() {
-        return window;
-      }
+      factory: function() { return window; }
     },
     {
       name: 'skip',
@@ -198,15 +183,6 @@ foam.CLASS({
       name: 'query',
       shortName: 'q',
       memorable: true
-    },
-    {
-      name: 'abc'
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'menu',
-      of: 'Menu',
-      factory: function() { return Menu.create({}, this); }
     }
   ],
 
@@ -215,20 +191,18 @@ foam.CLASS({
       this.memento_.str = 'menu1/browse/123?q=foobar';
 
       // this.subMemento.str = 'q=something';
-      this.startContext({data: this.memento_}).add(this.memento_.STR).endContext();
-      this.br().br();
-      this.add('str: ', this.memento_.str$);
-      this.br();
-      this.add('tailStr: ', this.memento_.tailStr$);
-      this.br();
-      this.add('usedStr: ', this.memento_.usedStr$);
-      this.br();
-      this.br();
-      this.add('skip: ', this.SKIP);
-      this.br();
-      this.add('query: ', this.QUERY);
-      this.br();
-      this.add(this.menu);
+      this.
+        startContext({data: this.memento_}).
+          add('Str: ', this.memento_.STR).
+          add('UsedStr: ', this.memento_.usedStr$).br().
+          add('TailStr: ', this.memento_.tailStr$).br().
+        endContext();
+
+      this.SUPER();
+      this.add('Skip: ',    this.SKIP);
+      this.add('Columns: ', this.COLUMNS);
+      this.add('Query: ',   this.QUERY);
+      this.tag(Menu);
     }
   ]
 });

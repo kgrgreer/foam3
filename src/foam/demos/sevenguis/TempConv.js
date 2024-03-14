@@ -22,6 +22,8 @@ foam.CLASS({
 
   exports: [ 'as data' ],
 
+  css: '^ input { width: auto; }',
+
   properties: [
     [ 'nodeName', 'span' ],
     { class: 'Float', name: 'c', precision: 4, view: { class: 'foam.u2.FloatView', onKey: true, trimZeros: true } },
@@ -30,6 +32,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.addClass();
       this.c$.relateTo(this.f$, this.c2f, this.f2c);
       this.add(this.C, ' Celsius = ', this.F, ' Fahrenheit');
     },

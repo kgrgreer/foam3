@@ -37,7 +37,6 @@ foam.CLASS({
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Fonts',
-    'foam.nanos.controller.WindowHash',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -456,6 +455,8 @@ foam.CLASS({
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
+        self.subToNotifications();
+
         let ret = await self.initMenu();
         if ( ret ) return;
 
@@ -526,7 +527,6 @@ foam.CLASS({
           // use the route instead of the menu so that the menu could be re-created under the updated context
           this.pushMenu(menu.id);
           this.languageInstalled.resolve();
-          this.subToNotifications();
           return 1;
         }
       }
@@ -553,6 +553,8 @@ foam.CLASS({
       this.client = newClient.create(null, this.originalSubContext);
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
+      this.subToNotifications();
+      this.fetchTheme();
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
@@ -795,7 +797,12 @@ foam.CLASS({
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({ view: { ...(self.loginView ?? { class: 'foam.u2.view.LoginView' }), mode_: 'SignIn' }, parent: self }));
+        self.stack.push(self.StackBlock.create({
+          view: {
+            ...(self.loginView ?? { class: 'BaseUnAuthBorder' }),
+            children: [ { class: 'foam.u2.view.LoginView', mode_: 'SignIn' } ]
+          },
+          parent: self }));
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -853,7 +860,7 @@ foam.CLASS({
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
-        this.pushMenu('');
+        this.pushMenu('', true);
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));

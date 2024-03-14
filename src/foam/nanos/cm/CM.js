@@ -17,7 +17,7 @@ foam.CLASS({
 
   documentation: 'A computed measure.',
 
-  tableColumns: [ 'id', 'description', 'result', 'lastComputed', 'update' ],
+  tableColumns: [ 'id', 'description', 'keywords', 'result', 'lastComputed', 'update' ],
 
   properties: [
     {
@@ -28,6 +28,11 @@ foam.CLASS({
       class: 'String',
       name: 'description',
       tableWidth: 450
+    },
+    {
+      class: 'StringArray',
+      name: 'keywords',
+      shortName: 'k'
     },
     {
       class: 'Boolean',

@@ -69,14 +69,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BACK', message: 'Back' },
-    { name: 'DETAIL', message: 'Detail' },
-    { name: 'TABBED', message: 'Tabbed' },
+    { name: 'BACK',      message: 'Back' },
+    { name: 'DETAIL',    message: 'Detail' },
+    { name: 'TABBED',    message: 'Tabbed' },
     { name: 'SECTIONED', message: 'Sectioned' },
-    { name: 'MATERIAL', message: 'Material' },
-    { name: 'WIZARD', message: 'Wizard' },
-    { name: 'VERTICAL', message: 'Vertical' },
-    { name: 'UPDATED', message: 'Updated' }
+    { name: 'MATERIAL',  message: 'Material' },
+    { name: 'WIZARD',    message: 'Wizard' },
+    { name: 'VERTICAL',  message: 'Vertical' },
+    { name: 'UPDATED',   message: 'Updated' }
   ],
 
   properties: [
@@ -155,6 +155,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -164,7 +165,6 @@ foam.CLASS({
       // DAOBrowserControllerView eg. when manually pushing DAOSummaryView to
       // the stack.
       this.setControllerMode?.('edit');
-
 
       this
         .addClass(this.myClass())

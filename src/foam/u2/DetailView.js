@@ -13,7 +13,6 @@ foam.CLASS({
 
   requires: [
     'foam.core.Property',
-    'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.Tabs'
   ],
@@ -247,7 +246,7 @@ foam.CLASS({
         // bound to data of a new class, which causes problems.
         self.currentData = self.data;
 
-        var tabs = foam.u2.Tabs.create({}, self);
+        var tabs;
 
         return this.start('table').
           attrs({'cellpadding': 2}).
@@ -272,7 +271,10 @@ foam.CLASS({
               p.cls_ == foam.dao.OneToManyRelationshipProperty ||
               p.cls_ == foam.dao.ManyToManyRelationshipProperty
             ) {
-              hasTabs = true;
+              if ( ! hasTabs ) {
+                hasTabs = true;
+                tabs = foam.u2.Tabs.create({}, self);
+              }
               var label = p.label;
               let tab = self.Tab.create({ label: label });
               var dao = p.cls_ == foam.dao.ManyToManyRelationshipProperty
@@ -284,7 +286,7 @@ foam.CLASS({
 
               p = p.clone();
               p.label = '';
-              tab.start('table').tag(self.DetailPropertyView, { prop: p });
+              tab.tag(self.PropertyBorder, { prop: p });
               tabs.add(tab);
             } else {
               this.tag(self.PropertyBorder, { prop: p, nodeName: 'TR' });

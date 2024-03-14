@@ -905,7 +905,7 @@ foam.CLASS({
         return 'get' + foam.String.capitalize(propertyName);
       }
     },
-    ['of', 'foam.dao.ManyToManyRelationship'],
+    ['of', 'foam.dao.ManyToManyRelationshipImpl'],
     ['transient', true],
     ['javaInfoType', 'foam.core.AbstractFObjectRelationshipPropertyInfo'],
     ['tableCellFormatter', null],
@@ -1084,7 +1084,7 @@ foam.CLASS({
     },
     {
       name: 'of',
-      value: 'foam.dao.ManyToManyRelationship',
+      value: 'foam.dao.ManyToManyRelationshipImpl',
     },
     {
       name: 'transient',

@@ -290,7 +290,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      factory: function() { return "select"; }
+      expression: function(prop) { return prop.name || 'select'; }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -574,7 +574,8 @@ foam.CLASS({
             }
             return self.E()
               .attrs({
-                name: this.name,
+                name: self.prop.name,
+                'data-value': self.data$,
                 tabindex: 0
               })
               .addClass(this.myClass())
@@ -788,7 +789,6 @@ foam.CLASS({
         action is provided.
       `,
 
-      inheritCSS: false,
       css: `
         ^ {
           border: 0;

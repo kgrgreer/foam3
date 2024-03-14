@@ -203,8 +203,8 @@ foam.LIB({
       var ret = foam.Function.setName(
         function(key) {
           foam.assert(
-              arguments.length === 1,
-              'Memoize1\'ed functions must take exactly one argument.');
+            arguments.length === 1,
+            'Memoize1\'ed functions must take exactly one argument.');
 
           var mKey =
               key === null      ? '___null___'      :

@@ -13,7 +13,7 @@ foam.POM({
   ],
   licenses: [
     `
-    Copyright 2023 The FOAM Authors. All Rights Reserved.
+    Copyright 2024 The FOAM Authors. All Rights Reserved.
     http://www.apache.org/licenses/LICENSE-2.0
     `,
     `
@@ -97,6 +97,7 @@ foam.POM({
     { name: "foam/parsers/FON",                                       flags: "js" },
     { name: "foam/core/templates",                                    flags: "js" },
     { name: "foam/i18n/Messages",                                     flags: "js" },
+    { name: "foam/i18n/MessageTemplateParser",                        flags: "js" },
     { name: "foam/core/Validation",                                   flags: "js" },
     { name: "foam/core/Action",                                       flags: "js|java" },
     { name: "foam/core/Static",                                       flags: "js" },
@@ -251,8 +252,10 @@ foam.POM({
     { name: "foam/u2/borders/Block",                                  flags: "web" },
     { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
     { name: "foam/u2/borders/ControlBorder",                          flags: "web" },
+    { name: "foam/u2/borders/AlertMessageBorder",                     flags: "web" },
     { name: "foam/u2/borders/StatusPageBorder",                       flags: "web" },
     { name: "foam/u2/borders/MenuGroupBorder",                        flags: "web" },
+    { name: "foam/u2/borders/BaseUnAuthBorder",                       flags: "web" },
     { name: "foam/nanos/u2/navigation/IFrameTopNavigation",           flags: "web" },
     { name: "foam/version/VersionTrait",                              flags: "js" },
     { name: "foam/version/VersionedClass",                            flags: "js" },
@@ -515,7 +518,6 @@ foam.POM({
     { name: "foam/u2/ActionView",                                     flags: "web" },
     { name: "foam/u2/ActionButtonStyleRefinement",                    flags: "web" },
     { name: "foam/u2/view/MenuView",                                  flags: "web" },
-    { name: "foam/u2/DetailPropertyView",                             flags: "web" },
     { name: "foam/u2/DetailView",                                     flags: "web" },
     { name: "foam/u2/ContextSensitiveDetailView",                     flags: "web" },
     { name: "foam/u2/tag/Image",                                      flags: "web" },
@@ -984,7 +986,6 @@ foam.POM({
     { name: "foam/u2/detail/WizardSectionsView",                      flags: "web" },
     { name: "foam/u2/detail/DAOWizardSectionsView",                   flags: "web" },
     { name: "foam/u2/detail/TabbedDetailView",                        flags: "web" },
-    { name: "foam/u2/detail/SectionedDetailPropertyView",             flags: "web" },
     { name: "foam/u2/detail/RowPropertyView",                         flags: "web" },
     { name: "foam/u2/detail/TabularSectionView",                      flags: "web" },
     { name: "foam/u2/dialog/SimpleActionDialog",                      flags: "web" },

@@ -223,6 +223,7 @@ foam.CLASS({
                 y: coords[1]
               })
             })
+              .addClass('safari-svg-pos-support')
               .call(function () {
                 self.nodeDraggables_[node.id] = this;
               })
@@ -339,10 +340,11 @@ foam.CLASS({
               parent: parent,
               arrow: arrow
             }
-          });
+          }).addClass('safari-svg-pos-support');
           
           if ( this.isArrowheadShown ){
-            g.tag(this.SimpleArrowHead, {
+            g.addClass('safari-svg-pos-support')
+            .tag(this.SimpleArrowHead, {
               pos: self.Position.create({
                 x$: nodeDraggable.pos.x$.map(x => x + enterCellLane),
                 y$: nodeDraggable.pos.y$

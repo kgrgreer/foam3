@@ -8,10 +8,14 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Label',
   extends: 'foam.u2.View',
+
+  imports: ['theme?'],
+
   documentation: `
     Generic implementation for a view that renders a label and icon
     TODO: Use for labels in controls (Actions, Menus, Tabs etc...)
   `,
+
   css: `
     ^{
       display: flex;
@@ -47,7 +51,7 @@ foam.CLASS({
       height: initial;
     }
   `,
-  imports: ['theme?'],
+
   properties: [
     {
       name: 'label'
@@ -67,6 +71,7 @@ foam.CLASS({
       name: 'labelClass'
     }
   ],
+
   methods: [
     function render() {
       this.addClass().enableClass(this.myClass('vertical'), this.vertical$);

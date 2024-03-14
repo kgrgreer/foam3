@@ -19,11 +19,11 @@ foam.RELATIONSHIP({
       var dao = this.__subSubContext__[foam.String.daoize(this.type)];
       if ( dao ) {
         dao
-        .find(value)
-        .then((entry) => this.add(entry.id))
-        .catch((error) => {
-          this.add(value);
-        });
+          .find(value)
+          .then((entry) => this.add(entry.id))
+          .catch((error) => {
+            this.add(value);
+          });
       }
     }
   },
@@ -31,8 +31,6 @@ foam.RELATIONSHIP({
     label: 'Script Id',
     visibility: 'RO',
     tableWidth: 300,
-    javaPostSet: `
-      setScriptId(val);
-    `
+    javaPostSet: 'setScriptId(val);'
   }
 });

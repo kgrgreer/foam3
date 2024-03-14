@@ -51,7 +51,6 @@ foam.CLASS({
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.u2.DetailPropertyView',
     'foam.u2.Tab',
     'foam.u2.crunch.lab.CapabilityGraphNodeView',
     'foam.u2.borders.SideViewBorder',
@@ -346,7 +345,7 @@ foam.CLASS({
           service: 'crunchController',
           method: 'createWizardSequence' }
       ]
-      
+
       values.
         map(v => foam.json.parse(v, undefined, this.__subContext__)).
         forEach(obj => dao.put(obj));

@@ -25,13 +25,6 @@ foam.CLASS({
     'foam.u2.detail.SectionView'
   ],
 
-  css: `
-    ^ .foam-u2-detail-SectionedDetailPropertyView .foam-u2-CheckBox-label {
-      top: 0px;
-      position: relative;
-    }
-  `,
-
   properties: [
     {
       name: 'capableObj',

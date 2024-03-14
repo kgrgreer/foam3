@@ -2447,12 +2447,12 @@ foam.CLASS({
           return this.Gt.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
         } else if (this.And.isInstance(this.arg1)) {
           for ( var i = 0; i < this.arg1.args.length; i++ ) {
-            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+            this.arg1.args[i] = this.Not.create({ arg1: this.arg1.args[i] });
           }
           return this.Or.create({args: this.arg1.args[i]});
         } else if (this.Or.isInstance(this.arg1)) {
           for ( var i = 0; i < this.arg1.args.length; i++ ) {
-            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+            this.arg1.args[i] = this.Not.create({ arg1: this.arg1.args[i] });
           }
           return this.And.create({args: this.arg1.args[i]});
         }

@@ -171,5 +171,10 @@ foam.CLASS({
     justify-content: center;
     align-items: center;
   }
+
+  /* safari svg foreignObject support: need to use static positioning */
+  .safari-svg-pos-support {
+    position: static !important;
+  }
   `
 });

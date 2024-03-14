@@ -91,6 +91,7 @@ foam.CLASS({
     },
     'currentMemento_'
   ],
+
   actions: [
     {
       name: 'save',
@@ -135,8 +136,9 @@ foam.CLASS({
           }
         });
       }
-    },
+    }
   ],
+
   methods: [
     function render() {
       var self = this;
