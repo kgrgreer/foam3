@@ -19,7 +19,9 @@ foam.CLASS({
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Loggers'
+    'foam.nanos.logger.Loggers',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.AuthService'
   ],
 
   methods: [
@@ -27,6 +29,9 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         final var clsName = getClass().getSimpleName();
+        X systemX = ruler.getX();
+        AuthService authService = (AuthService) x.get("auth");
+
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
@@ -42,6 +47,27 @@ foam.CLASS({
 
             if ( ucj.getData() == null ) {
               return;
+            }
+
+            //UCJ Edit permission check
+            if ( ! authService.check(x, "usercapabilityjunction.update.*") ) {
+              if (oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
+
+                if ( ucj.getSkipEditBehaviour() == true ) {
+                  ucj.setSkipEditBehaviour(false);
+                  return;
+                }
+    
+                // If edit behaviour does nothing we will keep old data
+                var newData = ucj.getData();
+                ucj.setData(oldUcj.getData());
+    
+                var capability = (Capability) ucj.findTargetId(systemX);
+                var editBehaviour = capability.getEditBehaviour();
+                var editor = (Subject) x.get("subject");
+    
+                editBehaviour.maybeApplyEdit(x, systemX, editor, ucj, newData);
+              }
             }
 
             if ( oldUcj != null &&
