@@ -39,7 +39,7 @@ foam.CLASS({
     'futureContent_'
   ],
   methods: [
-    function init() {
+    function render() {
       this.addClass().tag('', {}, this.futureContent_$)
       .add(this.slot(function(source) {
         let e = this.E().style({ display: 'contents' });
