@@ -41,6 +41,7 @@ foam.CLASS({
               parent:  this.id,
               handler: this.LinkMenu.create({link: '#admin.data/' + spec.id})
             });
+            menu.select = menu.handler;
             aDAO.put(menu);
         }).then(() => pDAO.promise.resolve(aDAO));
 

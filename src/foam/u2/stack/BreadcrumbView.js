@@ -65,7 +65,6 @@ foam.CLASS({
       if ( this.stack && this.stack.stack_ ) {
         var navStack  = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
         var themeIcon = navStack.length == 1 ? 'back' : '';
-        console.log('**** navStack:', navStack);
         navStack.forEach((v, i) => {
           let index      = i + this.stack.navStackBottom;
           let memento    = self.stack.stack_[index].currentMemento;
@@ -82,7 +81,7 @@ foam.CLASS({
 //              window.location.hash = memento;
             }
           });
-          let labelSlot = this.stack.stack_[index].breadcrumbTitle;
+          let labelSlot = this.stack.stack_[index].breadcrumbTitle + '#' + this.stack.stack_[index].currentMemento;
           jumpAction.label = labelSlot;
           if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
             self.start(jumpAction, {

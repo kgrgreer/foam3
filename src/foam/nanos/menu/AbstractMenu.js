@@ -9,10 +9,10 @@ foam.CLASS({
   name: 'AbstractMenu',
   abstract: true,
 
-  imports: [ 
+  imports: [
     'menuListener?',
     'pushMenu',
-    'translationService' 
+    'translationService'
   ],
 
   properties: [
@@ -28,9 +28,14 @@ foam.CLASS({
   ],
 
   methods: [
+    function select(X, menu) {
+      /** Called when a menu is selected. **/
+      X.routeTo(menu.id);
+    },
     function launch(X, menu) {
+      /** Called to activate a menu. **/
       var self = this;
-      X.stack.push(foam.u2.stack.StackBlock.create({ 
+      X.stack.push(foam.u2.stack.StackBlock.create({
         view: () => {
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },

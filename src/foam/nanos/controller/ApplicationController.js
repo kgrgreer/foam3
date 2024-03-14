@@ -693,7 +693,7 @@ foam.CLASS({
 
     async function pushMenu(menu, opt_forceReload) {
       /** Setup **/
-      let idCheck = menu && menu.id ? menu.id : menu;
+      let idCheck = menu && ( menu.id ? menu.id : menu );
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
@@ -725,8 +725,9 @@ foam.CLASS({
     },
 
     async function pushMenu_(realMenu, menu, opt_forceReload) {
+console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
-      let m = this.memento_.str;
+//      let m = this.memento_.str;
       let stringMenu = menu && foam.String.isInstance(menu);
       // No need to check for menu in DAO if user already has access to menu obj
       if ( stringMenu ) {
@@ -737,7 +738,7 @@ foam.CLASS({
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
           await this.fetchSubject();
-          this.memento_.str = m;
+//          this.memento_.str = m;
           return;
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
@@ -745,6 +746,7 @@ foam.CLASS({
           this.route = menu.id;
         return;
       }
+      /*
       const preserveMem = this.buildingStack || (
         stringMenu ?
         foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
@@ -752,6 +754,7 @@ foam.CLASS({
       );
       if ( ! preserveMem )
         this.memento_.removeMementoTail();
+        */
       if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
       this.buildingStack = false;

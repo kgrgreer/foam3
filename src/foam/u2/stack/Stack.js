@@ -103,14 +103,14 @@ foam.CLASS({
   methods: [
     function slotAt(i) {
       return this.StackSlot.create({
-        pos: i,
+        pos:   i,
         stack: this
       });
     },
 
     function resetStack() {
       this.stack_ = [];
-      this.pos = -1;
+      this.pos    = -1;
     },
 
     function at(i) {
@@ -132,7 +132,10 @@ foam.CLASS({
       }
 
       block.historyPos     = this.window.history.length;
-      block.currentMemento = this.memento_.toString();
+//      block.currentMemento = this.memento_.str;
+      block.currentMemento = this.memento_.toString();;
+
+  //    debugger;
 
       if ( ! block.breadcrumbTitle && block.view.title ) block.breadcrumbTitle = block.view.title;
 
