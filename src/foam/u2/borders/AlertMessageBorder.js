@@ -8,7 +8,15 @@ foam.CLASS({
   package: 'foam.u2.borders',
   name: 'AlertMessageBorder',
   extends: 'foam.u2.Element',
-  documentation: ``,
+  documentation: `
+    A message border that renders at the bottom of the child view. Displays a warning message from any class in an inlineNotificationMessage;
+    Eg.
+    {
+      class: 'foam.u2.borders.AlertMessageBorder',
+      source: 'foam.somePackage.someClass.MESSAGE_NAME',
+      children: [....]
+    }
+  `,
   requires: ['foam.u2.dialog.InlineNotificationMessage'],
   css: `
     ^ {
@@ -21,6 +29,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'source',
+      documentation: 'Expects a path to a message axiom on another foam class. See class documentation',
       adapt: function(_, n) {
         var lastIndex = n.lastIndexOf('.');
         var classObj = foam.lookup(n.substring(0, lastIndex));
