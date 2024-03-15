@@ -719,7 +719,6 @@ foam.CLASS({
     async function pushMenu_(realMenu, menu, opt_forceReload) {
 console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
-//      let m = this.memento_.str;
       let stringMenu = menu && foam.String.isInstance(menu);
 
       // No need to check for menu in DAO if user already has access to menu obj
@@ -732,12 +731,9 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
           await this.fetchSubject();
-//          this.memento_.str = m;
           return;
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
-//        if ( menu )
-//          this.route = menu.id;
         return;
       }
 
@@ -803,6 +799,7 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
 
     function notify(toastMessage, toastSubMessage, severity, transient, icon) {
       var notification = this.Notification.create();
+
       notification.userId = this.subject && this.subject.realUser ?
         this.subject.realUser.id : this.user.id;
       notification.toastMessage    = toastMessage;
