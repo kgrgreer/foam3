@@ -68,17 +68,10 @@ foam.CLASS({
         navStack.forEach((v, i) => {
           let index      = i + this.stack.navStackBottom;
           let memento    = self.stack.stack_[index].currentMemento;
-//          var j = memento.lastIndexOf('/');
-//          memento = memento.substring(0, j);
-
           let jumpAction = self.Action.create({
             name: 'back',
             code: () => {
-//              document.title = self.stack.stack_[index].breadcrumbTitle;
-
               self.stack.jump(index, self);
-
-//              window.location.hash = memento;
             }
           });
           let labelSlot = this.stack.stack_[index].breadcrumbTitle + '#' + this.stack.stack_[index].currentMemento;

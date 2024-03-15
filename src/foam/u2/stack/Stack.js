@@ -25,11 +25,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'topMemento_',
-    'buildingStack',
     'currentMenu',
     'menuListener',
     'pushDefaultMenu',
+    'topMemento_',
     'window'
   ],
 
@@ -132,10 +131,8 @@ foam.CLASS({
       }
 
       block.historyPos     = this.window.history.length;
-//      block.currentMemento = this.memento_.str;
-      block.currentMemento = this.memento_.toString();;
-
-  //    debugger;
+      block.currentMemento = this.memento_.toString();
+      console.log('************ currentMemento', block.currentMemento);
 
       if ( ! block.breadcrumbTitle && block.view.title ) block.breadcrumbTitle = block.view.title;
 
@@ -144,13 +141,10 @@ foam.CLASS({
         // Dont render a fallback view in iframes
          && this.window.top == this.window.self
       ) {
-        this.buildingStack = true;
         let menu = this.currentMenu;
         await this.pushDefaultMenu();
         this.menuListener(menu)
       }
-      // Avoid feedback of views updating mementos causing themselves to be re-inserted
-// if ( this.top && block.id && this.top.id == block.id ) return;
 
       if ( foam.u2.Element.isInstance(block.view) ) {
         console.warn("Views are not recommended to be pushed to a stack. Please use a viewSpec.");

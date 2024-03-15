@@ -95,10 +95,11 @@ foam.CLASS({
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
-      if ( s.currentMemento !== window.location.hash.substring(1) ) {
+      if ( s.currentMemento !== window.location.hash.substring(1) && s.seen ) {
         window.location.hash = s.currentMemento;
-        return this.E('span').add('Loading... ', s.currentMemento);
+        return this.E('span').add('Loading... ', s.currentMemento, ' from ', window.location.hash.substring(1));
       }
+      s.seen = true;
 
       var view  = s.view;
       var X     = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(s.parent, this);

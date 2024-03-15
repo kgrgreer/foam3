@@ -76,7 +76,6 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
-    'buildingStack',
     'crunchController',
     'currentMenu',
     'displayWidth',
@@ -386,15 +385,9 @@ foam.CLASS({
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
         if ( this.initSubject && n ) {
-          if ( ! this.currentMenu?.id ) this.buildingStack = true;
           this.pushMenu_(null, n, true);
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'buildingStack',
-      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -698,7 +691,6 @@ foam.CLASS({
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
-        this.buildingStack = false;
         return;
       }
       /**  Used for menus that are constructed on the fly (data management, support, legal)
@@ -729,12 +721,14 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
 //      let m = this.memento_.str;
       let stringMenu = menu && foam.String.isInstance(menu);
+
       // No need to check for menu in DAO if user already has access to menu obj
       if ( stringMenu ) {
         realMenu = await dao.find(menu);
       } else {
         realMenu = menu;
       }
+
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
           await this.fetchSubject();
@@ -742,22 +736,14 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
           return;
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
-        if ( menu )
-          this.route = menu.id;
+//        if ( menu )
+//          this.route = menu.id;
         return;
       }
-      /*
-      const preserveMem = this.buildingStack || (
-        stringMenu ?
-        foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
-        foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
-      );
-      if ( ! preserveMem )
-        this.memento_.removeMementoTail();
-        */
+
       if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
-      this.buildingStack = false;
+
       return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
@@ -1035,10 +1021,10 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       }
     },
     function routeTo(link) {
+      console.log('*** routeTo: ', link);
       /**
        * Replaces the url to redirect to the new menu without cleared tails
        */
-      this.buildingStack = true;
       this.memento_.str = link;
     }
   ]
