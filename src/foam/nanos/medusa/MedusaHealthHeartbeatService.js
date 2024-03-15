@@ -67,7 +67,12 @@ foam.CLASS({
         if ( host != null ) {
           address = host.getAddress();
         }
-        packets.add(new DatagramPacket(buf, buf.length, InetAddress.getByName(address), getPort()));
+        try {
+          packets.add(new DatagramPacket(buf, buf.length, InetAddress.getByName(address), getPort()));
+        } catch (java.net.UnknownHostException e) {
+          // occurs when host offline
+          ((Logger) x.get("logger")).warning("MedusaHealthHeartbeatService","getPackets", e.getClass().getName(), e.getMessage());
+        }
       }
       return packets.toArray(new DatagramPacket[0]);
       `
