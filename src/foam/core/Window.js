@@ -53,6 +53,7 @@ foam.CLASS({
     'console',
     'debug',
     'delayed',
+    'discardStale',
     'document',
     'error',
     'framed',
@@ -226,6 +227,10 @@ foam.CLASS({
 
         return f;
       }(), 'framed(' + l.name + ')');
+    },
+
+    function discardStale(l) {
+      return foam.events.discardStale(l);
     },
 
     function setTimeout(f, t) {
