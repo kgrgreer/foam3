@@ -345,6 +345,7 @@ foam.POM({
     { name: "cron/test/CronScheduleTest",                                                 flags: "js|java" },
     { name: "cron/test/IntervalScheduleTest",                                             flags: "js|java" },
     { name: "cron/test/TimeOfDayScheduleTest",                                            flags: "js|java" },
+    { name: "cron/test/OrScheduleTest",                                                    flags: "js|java" },
     { name: "export/ClientGoogleSheetsExportService",                                     flags: "js|java" },
     { name: "export/CSVTableExportDriver",                                                flags: "js" },
     { name: "export/ExportDriverRegistry",                                                flags: "js|java" },
