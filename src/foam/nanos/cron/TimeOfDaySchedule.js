@@ -21,10 +21,17 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'java.util.Calendar'
+    'java.time.*',
+    'static foam.util.DateUtil.*',
   ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.time.TimeZone',
+      name: 'timeZone',
+      value: 'Africa/Abidjan' // UTC/GMT
+    },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.cron.TimeHMS',
@@ -49,28 +56,19 @@ foam.CLASS({
           type: 'java.util.Date'
         }
       ],
-      javaCode:
-`
-Calendar now = Calendar.getInstance();
-now.setTime(from);
-Calendar nextTOD = Calendar.getInstance();
-nextTOD.setTime(from);
+      javaCode: `
+        ZoneId zone = getTimeZoneId(x, getTimeZone());
+        LocalDateTime now = dateToLocalDateTime(from, zone);
+        LocalDateTime nextTOD = ZonedDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
+          getTime().getHour(), getTime().getMinute(), getTime().getSecond(), 0, zone).toLocalDateTime();
+        
+        // Increment the date if time now is after scheduled time of day
+        if ( now.isAfter(nextTOD) ) {
+          nextTOD = nextTOD.plusDays(1);
+        }
 
-// Zero milliseconds
-nextTOD.set(Calendar.MILLISECOND, 0);
-
-// Set time for next run
-nextTOD.set(Calendar.HOUR_OF_DAY, getTime().getHour());
-nextTOD.set(Calendar.MINUTE,      getTime().getMinute());
-nextTOD.set(Calendar.SECOND,      getTime().getSecond());
-
-// Increment the date if time now is after scheduled time of day
-if ( nextTOD.getTimeInMillis() < now.getTimeInMillis() ) {
-  nextTOD.add(Calendar.DATE, 1);
-}
-
-return nextTOD.getTime();
-`
+        return localDateTimeToDate(nextTOD, zone);
+      `
     },
     {
       name: 'postExecution',
