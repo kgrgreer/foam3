@@ -49,7 +49,7 @@ foam.CLASS({
         LocalDateTime expected = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
           13, 2, 3);
 
-        test(expected.equals(next),
+        test(next.equals(expected),
           "testBeforeScheduled - Expected: " + expected + ", Received: " + next);
       `
     },
@@ -84,8 +84,7 @@ foam.CLASS({
       name: 'testBeforeScheduledDifferentTimezones',
       documentation: `
         Tests if next scheduled time is on the same day if current time is before the next scheduled time.
-        The schedule has a different timezone to that of the system to test getNextScheduledTime also
-        works in this case.
+        The schedule has a different timezone to that of the system.
       `,
       args: 'X x',
       javaCode: `
@@ -102,9 +101,9 @@ foam.CLASS({
             .build())
           .build();
 
-        // Set current time to 5:00 PM in UTC which is before the next scheduled time, 1:02:03 in EST/EDT
+        // Set current time to 5:00 PM in UTC which is in EST/EDT before the next scheduled time, 1:02:03 PM in EST/EDT
         // 5:00 PM in UTC == 1:00 PM in EDT == 12:00 PM in EST
-        LocalDateTime now_utc = ZonedDateTime.of(2024, 3, 16, 16, 0, 0, 0, systemZone).toLocalDateTime();
+        LocalDateTime now_utc = ZonedDateTime.of(2024, 3, 16, 17, 0, 0, 0, systemZone).toLocalDateTime();
 
         LocalDateTime next_est5edt = dateToLocalDateTime(testTOD.getNextScheduledTime(x, localDateTimeToDate(now_utc, systemZone)), customZone);
 
@@ -115,7 +114,7 @@ foam.CLASS({
 
         /* second test start */
 
-        // Test when date changes in two timezones
+        // Test when date changes in different timezones
 
         testTOD = new TimeOfDaySchedule.Builder(x)
           .setTimeZone("EST5EDT")
@@ -124,8 +123,8 @@ foam.CLASS({
             .build())
           .build();
 
-        // Set current time to 12:00 AM in UTC which is before the next scheduled time, 11:00 PM in EST/EDT
-        // 12:00 AM in UTC == 20:00 PM in EDT == 19:00 PM in EST
+        // Set current time to midnight in UTC which is in EST/EDT before the next scheduled time, 11:00 PM in EST/EDT
+        // midnight in UTC == 20:00 PM in EDT (-1 day) == 19:00 PM in EST (-1 day)
         now_utc = ZonedDateTime.of(2025, 1, 1, 0, 0, 0, 0, systemZone).toLocalDateTime();
 
         next_est5edt = dateToLocalDateTime(testTOD.getNextScheduledTime(x, localDateTimeToDate(now_utc, systemZone)), customZone);
@@ -140,8 +139,7 @@ foam.CLASS({
       name: 'testAfterScheduledDifferentTimezones',
       documentation: `
         Tests if next scheduled time is on the next day if current time is after the next scheduled time.
-        The schedule has a different timezone to that of the system to test getNextScheduledTime also
-        works in this case.
+        The schedule has a different timezone to that of the system.
       `,
       args: 'X x',
       javaCode: `
@@ -158,7 +156,7 @@ foam.CLASS({
             .build())
           .build();
 
-        // Set current time to 7:00 PM in UTC which is after the next scheduled time, 1:02:03 in EST/EDT
+        // Set current time to 7:00 PM in UTC which is in EST/EDT after the next scheduled time, 1:02:03 PM in EST/EDT
         // 7:00 PM in UTC == 3:00 PM in EDT == 2:00 pm in EST
         LocalDateTime now_utc = ZonedDateTime.of(2024, 3, 16, 19, 0, 0, 0, systemZone).toLocalDateTime();
 
@@ -171,7 +169,7 @@ foam.CLASS({
 
         /* second test start */
 
-        // Test when date changes in two timezones
+        // Test when date changes in different timezones
 
         testTOD = new TimeOfDaySchedule.Builder(x)
           .setTimeZone("EST5EDT")
@@ -180,7 +178,7 @@ foam.CLASS({
             .build())
           .build();
 
-        // Set current time to 3:30 AM in UTC which is after the next scheduled time, 10:00 PM in EST/EDT
+        // Set current time to 3:30 AM in UTC which is in EST/EDT after the next scheduled time, 10:00 PM in EST/EDT
         // 3:30 AM in UTC == 11:30 PM in EDT == 10:30 PM in EST
         now_utc = ZonedDateTime.of(2025, 1, 1, 3, 30, 0, 0, systemZone).toLocalDateTime();
 
