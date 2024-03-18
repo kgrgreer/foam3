@@ -38,7 +38,7 @@ foam.INTERFACE({
       of: 'foam.time.TimeZone',
       name: 'timeZone',
       order: 0,
-      value: 'Africa/Abidjan', // UTC/GMT
+      value: 'GMT',
       section: 'renewableSection'
     },
     {
@@ -303,7 +303,7 @@ foam.INTERFACE({
       // }
 
       if ( getExpiry() != null ) return this;
-      if ( ! this.getTimeZone().equals("Africa/Abidjan") ) {
+      if ( ! this.getTimeZone().equals("GMT") ) {
         this.setTimeZone(ren.getTimeZone());
       }
       this.setExpiry(ren.getExpiry());

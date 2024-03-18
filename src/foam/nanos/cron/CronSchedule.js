@@ -55,7 +55,7 @@ foam.CLASS({
       of: 'foam.time.TimeZone',
       name: 'timeZone',
       order: 0,
-      value: 'Africa/Abidjan' // UTC/GMT
+      value: 'GMT'
     },
     {
       class: 'Int',

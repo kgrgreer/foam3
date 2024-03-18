@@ -66,14 +66,14 @@ foam.CLASS({
       name: 'testDifferentTimezones',
       args: 'X x',
       javaCode: `
-        ZoneId zone_utc = getTimeZoneId(x, "Africa/Abidjan"); //UTC
+        ZoneId zone_utc = getTimeZoneId(x, "GMT"); //UTC
         ZoneId zone_est5edt = getTimeZoneId(x, "EST5EDT");
         
         // First schedule   -   14:00 in UCT / 09:00 in EST / 10:00 in EDT
         // Second schedule  -   19:00 in UCT during daylight saving time or 18:00 in UCT during summer time / 14:00 EST/EDT
         Schedule testTOD = new OrSchedule.Builder(x)
           .setDelegates(new Schedule[] {
-            new TimeOfDaySchedule.Builder(x).setTimeZone("Africa/Abidjan").setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).build()).build(),
+            new TimeOfDaySchedule.Builder(x).setTimeZone("GMT").setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).build()).build(),
             new TimeOfDaySchedule.Builder(x).setTimeZone("EST5EDT").setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(0).setSecond(0).build()).build(),
           })
           .build();

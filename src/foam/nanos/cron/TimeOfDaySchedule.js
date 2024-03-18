@@ -30,7 +30,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.time.TimeZone',
       name: 'timeZone',
-      value: 'Africa/Abidjan' // UTC/GMT
+      value: 'GMT'
     },
     {
       class: 'FObjectProperty',

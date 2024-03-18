@@ -88,7 +88,7 @@ foam.CLASS({
       `,
       args: 'X x',
       javaCode: `
-        ZoneId systemZone = getTimeZoneId(x, "Africa/Abidjan"); //UTC
+        ZoneId systemZone = getTimeZoneId(x, "GMT"); //UTC
         ZoneId customZone = getTimeZoneId(x, "EST5EDT");
 
         // Create schedule for 1:02:03 PM in EST/EDT
@@ -143,7 +143,7 @@ foam.CLASS({
       `,
       args: 'X x',
       javaCode: `
-        ZoneId systemZone = getTimeZoneId(x, "Africa/Abidjan"); //UTC
+        ZoneId systemZone = getTimeZoneId(x, "GMT"); //UTC
         ZoneId customZone = getTimeZoneId(x, "EST5EDT");
 
         // Create schedule for 1:02:03 PM in EST/EDT
