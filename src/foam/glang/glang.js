@@ -85,6 +85,7 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfHour',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: ['js'], // java requires 'f' implemented
 
   methods: [
     {
@@ -133,6 +134,7 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfDay',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: ['js'], // java requires 'f' implemented
 
   methods: [
     {
@@ -181,6 +183,7 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfWeek',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: ['js'],  // java requires 'f' implemented
 
   properties: [
     {
@@ -264,6 +267,7 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfMonth',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: ['js'], // java requires 'f' implemented
 
   methods: [
     {
@@ -319,7 +323,8 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfQuarter',
   extends: 'foam.glang.AbstractDateGlang',
-  flags: [],
+  flags: ['js'], // java requires 'f' implemented
+
   methods: [
     {
       name: 'f',
@@ -381,6 +386,7 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfYear',
   extends: 'foam.glang.AbstractDateGlang',
+  flags: ['js'], // java requires 'f' implemented
 
   methods: [
     {
