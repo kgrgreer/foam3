@@ -42,6 +42,12 @@ foam.CLASS({
       hidden: true,
       flags: ['js']
     },
+    {
+      class: 'Boolean',
+      name: 'addUnits',
+      documentation: 'Include unit in UnitValues (mostly currencies) or now',
+      value: true
+    }
   ],
 
   methods: [
@@ -51,14 +57,16 @@ foam.CLASS({
 
       return await this.outputter.objectToTable(X, obj.cls_, propertyNamesToQuery, obj, propNames.length);
     },
+
     async function exportDAOAndReturnTable(X, dao, propNames) {
       var propToColumnMapping  = this.columnConfigToPropertyConverter.returnPropertyColumnMappings(dao.of, propNames);
       var propertyNamesToQuery = this.columnHandler.returnPropNamesToQuery(propToColumnMapping);
 
       var expr = ( foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder.create() ).buildProjectionForPropertyNamesArray(dao.of, propertyNamesToQuery);
       var sink = await dao.select(expr);
-      return await this.outputter.returnTable(X, dao.of, propertyNamesToQuery, sink.projection, propNames.length, true);
+      return await this.outputter.returnTable(X, dao.of, propertyNamesToQuery, sink.projection, propNames.length, this.addUnits);
     },
+
     function getPropName(X, of) {
       var propNames = X.filteredTableColumns ? X.filteredTableColumns : this.outputter.getAllPropertyNames(of);
       return this.columnConfigToPropertyConverter.filterExportedProps(of, propNames);
