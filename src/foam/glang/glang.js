@@ -9,16 +9,13 @@ foam.CLASS({
   name: 'AbstractDateGlang',
   extends: 'foam.mlang.AbstractExpr',
   abstract: true,
-
   requires: [
-    'foam.mlang.IdentityExpr'
+    'foam.mlang.IdentityExpr',
   ],
-
   implements: [
     'foam.core.Serializable',
-    'foam.mlang.order.Comparator'
+    'foam.mlang.order.Comparator',
   ],
-
   properties: [
     {
       class: 'foam.mlang.ExprProperty',
@@ -26,7 +23,6 @@ foam.CLASS({
       factory: function() { return this.IdentityExpr.create() }
     }
   ],
-
   methods: [
     {
       name: 'createStatement',
@@ -55,14 +51,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfTimeSpan',
   extends: 'foam.glang.AbstractDateGlang',
-
   properties: [
     {
       class: 'Long',
       name: 'timeSpanMs'
     }
   ],
-
   methods: [
     {
       name: 'f',
@@ -85,8 +79,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfHour',
   extends: 'foam.glang.AbstractDateGlang',
+<<<<<<< HEAD
   flags: ['js'], // java requires 'f' implemented
 
+=======
+  flags: [],
+>>>>>>> parent of f601417c26 (Cleanup.)
   methods: [
     {
       name: 'f',
@@ -99,12 +97,10 @@ foam.CLASS({
   ]
 });
 
-
 foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfHour',
   extends: 'foam.glang.AbstractDateGlang',
-
   methods: [
     {
       name: 'f',
@@ -134,8 +130,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfDay',
   extends: 'foam.glang.AbstractDateGlang',
+<<<<<<< HEAD
   flags: ['js'], // java requires 'f' implemented
 
+=======
+  flags: [],
+>>>>>>> parent of f601417c26 (Cleanup.)
   methods: [
     {
       name: 'f',
@@ -153,7 +153,6 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfDay',
   extends: 'foam.glang.AbstractDateGlang',
-
   methods: [
     {
       name: 'f',
@@ -183,8 +182,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfWeek',
   extends: 'foam.glang.AbstractDateGlang',
+<<<<<<< HEAD
   flags: ['js'],  // java requires 'f' implemented
 
+=======
+  flags: [],
+>>>>>>> parent of f601417c26 (Cleanup.)
   properties: [
     {
       class: 'Int',
@@ -195,7 +198,6 @@ foam.CLASS({
       value: 0
     }
   ],
-
   methods: [
     {
       name: 'f',
@@ -214,7 +216,6 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfWeek',
   extends: 'foam.glang.AbstractDateGlang',
-
   properties: [
     {
       class: 'Int',
@@ -225,7 +226,6 @@ foam.CLASS({
       value: 0
     }
   ],
-
   methods: [
     {
       name: 'f',
@@ -267,8 +267,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfMonth',
   extends: 'foam.glang.AbstractDateGlang',
+<<<<<<< HEAD
   flags: ['js'], // java requires 'f' implemented
 
+=======
+  flags: [],
+>>>>>>> parent of f601417c26 (Cleanup.)
   methods: [
     {
       name: 'f',
@@ -288,7 +292,6 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfMonth',
   extends: 'foam.glang.AbstractDateGlang',
-
   methods: [
     {
       name: 'f',
@@ -386,8 +389,12 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'StartOfYear',
   extends: 'foam.glang.AbstractDateGlang',
+<<<<<<< HEAD
   flags: ['js'], // java requires 'f' implemented
 
+=======
+  flags: [],
+>>>>>>> parent of f601417c26 (Cleanup.)
   methods: [
     {
       name: 'f',
@@ -407,7 +414,6 @@ foam.CLASS({
   package: 'foam.glang',
   name: 'EndOfYear',
   extends: 'foam.glang.AbstractDateGlang',
-
   methods: [
     {
       name: 'f',
