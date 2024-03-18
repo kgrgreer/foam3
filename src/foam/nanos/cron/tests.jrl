@@ -1,3 +1,4 @@
 p({"class":"foam.nanos.cron.test.CronScheduleTest","id":"CronScheduleTest"})
 p({"class":"foam.nanos.cron.test.IntervalScheduleTest","id":"IntervalScheduleTest"})
 p({"class":"foam.nanos.cron.test.TimeOfDayScheduleTest","id":"TimeOfDayScheduleTest"})
+p({"class":"foam.nanos.cron.test.OrScheduleTest","id":"OrScheduleTest"})
