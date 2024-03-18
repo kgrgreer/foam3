@@ -57,11 +57,14 @@ as 'ignoreHealth'.
     'java.time.Duration',
     'java.util.ArrayList',
     'java.util.Arrays',
+    'java.util.Collections',
     'java.util.HashMap',
     'java.util.HashSet',
     'java.util.List',
+    'java.util.ListIterator',
     'java.util.Map',
-    'java.util.Set'
+    'java.util.Set',
+    'java.util.stream.Collectors'
   ],
 
   constants: [
@@ -260,6 +263,7 @@ as 'ignoreHealth'.
         er = getEventRecord();
         er.setMessage(t.getMessage());
         er.setSeverity(LogLevel.ERROR);
+        er.setException(t);
         ((DAO) x.get("eventRecordDAO")).put(er);
         throw t;
       } finally {
@@ -316,7 +320,8 @@ as 'ignoreHealth'.
       DAO healthDAO = (DAO) x.get("healthDAO");
 
       List<ClusterConfig> nodes = support.getReplayNodes();
-      for ( ClusterConfig cfg : nodes ) {
+      ListIterator<ClusterConfig> iter = nodes.listIterator();
+      while ( iter.hasNext() ) {
         MedusaHealth health = (MedusaHealth) healthDAO.find(cfg.getId());
         if ( health == null ||
              health.getMedusaStatus() != Status.ONLINE ) {
@@ -380,11 +385,13 @@ as 'ignoreHealth'.
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map failures = new HashMap();
       final Map replies = new HashMap();
-      List<ClusterConfig> nodes = support.getReplayNodes();
-      for ( ClusterConfig cfg : nodes ) {
+      List<ClusterConfig> nodes = (List<ClusterConfig>) support.getReplayNodes().stream().collect(Collectors.toList());
+      ListIterator<ClusterConfig> iter = nodes.listIterator();
+      while ( iter.hasNext() ) {
+        ClusterConfig cfg = iter.next();
         if ( cfg.getStatus() == Status.OFFLINE &&
              getIgnoreHealth() ) {
-          nodes.remove(cfg);
+          iter.remove();
           continue;
         }
         line.enqueue(new AbstractAssembly() {
@@ -474,22 +481,23 @@ as 'ignoreHealth'.
       // update other mediators
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-      List<ClusterConfig> mediators = Arrays.asList(support.getSfBroadcastMediators());
-      // ClusterConfig[] mediators = support.getSfBroadcastMediators();
+      List<ClusterConfig> mediators = Arrays.stream(support.getSfBroadcastMediators()).collect(Collectors.toList());
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map failures = new HashMap();
       final Map replies = new HashMap();
       final DaggerBootstrap bs = bootstrap;
 
-      for ( ClusterConfig cfg : mediators ) {
+      ListIterator<ClusterConfig> iter = mediators.listIterator();
+      while ( iter.hasNext() ) {
+        ClusterConfig cfg = iter.next();
         if ( cfg.getId() == myConfig.getId() ) {
-          mediators.remove(cfg);
+          iter.remove();
           continue;
         }
         if ( cfg.getStatus() == Status.OFFLINE &&
              getIgnoreHealth() ) {
-          mediators.remove(cfg);
+          iter.remove();
           continue;
         }
         line.enqueue(new AbstractAssembly() {
@@ -640,17 +648,18 @@ as 'ignoreHealth'.
 
       final ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       final ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
-      // ClusterConfig[] mediators = support.getSfBroadcastMediators();
-      List<ClusterConfig> mediators = Arrays.asList(support.getSfBroadcastMediators());
+      List<ClusterConfig> mediators = Arrays.stream(support.getSfBroadcastMediators()).collect(Collectors.toList());
 
       AssemblyLine line = new AsyncAssemblyLine(x, null, support.getThreadPoolName());
       final Map failures = new HashMap();
       final Map replies = new HashMap();
 
-      for ( ClusterConfig cfg : mediators ) {
-        if ( cfg.getStatus() == Status.OFFLINE &&
+      ListIterator<ClusterConfig> iter = mediators.listIterator();
+      while ( iter.hasNext() ) {
+        ClusterConfig cfg = iter.next();
+         if ( cfg.getStatus() == Status.OFFLINE &&
              getIgnoreHealth() ) {
-          mediators.remove(cfg);
+          iter.remove();
           continue;
         }
         line.enqueue(new AbstractAssembly() {

@@ -3,10 +3,60 @@ p({
   id:"MedusaCompaction",
   description:"Initiate MedusaEntryDAO Compaction",
   code:"""
+/**
+ * Configuration (via scriptParameter):
+ * dryRun: true | false
+ * ignoreHealth: true | false  - 'true' to compact a compromised system
+ * nodes: 0 | 1  - 0 ignore, 1 reduce to 1 node
+ */
+
 import foam.nanos.medusa.CompactionDAO;
+import foam.nanos.medusa.ClusterConfigSupport;
+import foam.nanos.medusa.ClusterConfigStatusDAO;
+import foam.dao.ProxyDAO;
+
+dryRun = false;
+nodes = 0;
+sp = scriptParameter;
+if ( sp != null ) {
+  p = sp.getParameters();
+  if ( p != null ) {
+    if ( p.get("dryRun") != null ) {
+      dryRun = "true".equals(p.get("dryRun").toString());
+    }
+    if ( p.get("nodes") != nulll ) {
+      nodes = Integer.valueOf(p.get("nodes").toString());
+    }
+  }
+}
 d = x.get("medusaEntryMediatorDAO");
 try {
-  d.cmd(CompactionDAO.COMPACTION_CMD);
+  if ( dryRun ) {
+    print("INFO: DryRun");
+    d.cmd(CompactionDAO.COMPACTION_DRY_RUN_CMD);
+  } else {
+    if ( nodes > 0 ) {
+      print("INFO: Reconfiguring to "+nodes+" nodes");
+      s = x.get("clusterConfigSupport");
+      s.setNodeCount(nodes);
+      reconfigured = false;
+      dao = x.get("localClusterConfigDAO");
+      while ( dao instanceof ProxyDAO ) {
+        if ( dao instanceof ClusterConfigStatusDAO ) {
+          ((ClusterConfigStatusDAO) dao).bucketNodes(x);
+          reconfigured = true;
+          break;
+        }
+        dao = ((ProxyDAO) dao).getDelegate();
+      }
+      if ( ! reconfigured ) {
+        ClusterConfigSupport.NODE_COUNT.clear(s);
+        print("WARNING: Reconfigured failed. ClusterConfigSupportDAO not found. System OK");
+        return;
+      }
+    }
+    d.cmd(CompactionDAO.COMPACTION_CMD);
+  }
   print("INFO: Compaction complete. System OK");
 } catch (IllegalStateException e) {
   print(e.getMessage());
@@ -14,25 +64,6 @@ try {
 } catch (Throwable t) {
   print(t.getMessage());
   print("ERROR: Compaction failed.  System OFFLINE. Intervention required.");
-}
-  """
-})
-p({
-  class:"foam.nanos.script.Script",
-  id:"MedusaCompactionDryRun",
-  description:"Initiate MedusaEntryDAO Compaction DryRun",
-  code:"""
-import foam.nanos.medusa.CompactionDAO;
-d = x.get("medusaEntryMediatorDAO");
-try {
-  d.cmd(CompactionDAO.COMPACTION_DRY_RUN_CMD);
-  print("INFO: Compaction Dry Run complete. System OK");
-} catch (IllegalStateException e) {
-  print(e.getMessage());
-  print("WARNING: Compaction Dry Run aborted. System OK");
-} catch (Throwable t) {
-  print(t.getMessage());
-  print("ERROR: Compaction Dry Run failed.  System OFFLINE. Intervention required.");
 }
   """
 })
