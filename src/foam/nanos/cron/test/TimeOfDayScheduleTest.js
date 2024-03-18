@@ -179,7 +179,7 @@ foam.CLASS({
           .build();
 
         // Set current time to 3:30 AM in UTC which is in EST/EDT after the next scheduled time, 10:00 PM in EST/EDT
-        // 3:30 AM in UTC == 11:30 PM in EDT == 10:30 PM in EST
+        // 3:30 AM in UTC == 11:30 PM in EDT (-1 day) == 10:30 PM in EST (-1 day)
         now_utc = ZonedDateTime.of(2025, 1, 1, 3, 30, 0, 0, systemZone).toLocalDateTime();
 
         next_est5edt = dateToLocalDateTime(testTOD.getNextScheduledTime(x, localDateTimeToDate(now_utc, systemZone)), customZone);
