@@ -260,6 +260,7 @@ as 'ignoreHealth'.
         er = getEventRecord();
         er.setMessage(t.getMessage());
         er.setSeverity(LogLevel.ERROR);
+        er.setException(t);
         ((DAO) x.get("eventRecordDAO")).put(er);
         throw t;
       } finally {
