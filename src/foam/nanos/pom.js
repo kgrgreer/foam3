@@ -389,7 +389,7 @@ foam.POM({
     { name: "om/DAOOMLogger",                                                             flags: "js|java" },
     { name: "cm/CM",                                                                      flags: "js|java" },
     { name: "cm/KVCM",                                                                    flags: "js|java" },
-    { name: "cm/SeriesCM",                                                                      flags: "js|java" },
+    { name: "cm/SeriesCM",                                                                flags: "js|java" },
     { name: "cm/CMUpdateDAO",                                                             flags: "java" },
     { name: "pm/PMTemperatureCellFormatter",                                              flags: "js" },
     { name: "pm/NullPM",                                                                  flags: "js|java" },
