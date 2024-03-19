@@ -38,7 +38,7 @@ foam.CLASS({
         X.postToWindow?.post({ step: menu.analyticsMessage });
       }
     },
-    function handle(X, menu) {
+    function launch(X, menu) {
       this.select(X, menu);
     }
   ]
