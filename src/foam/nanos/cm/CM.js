@@ -54,14 +54,20 @@ foam.CLASS({
       },
       javaFactory: `
         if ( getRawResults() == null || getRawResults().size() == 0 ) return "";
-        return "TODO";
+        var results = getRawResults();
+        var ret = "";
+        for ( int i = 0 ; i < results.size() ; i++ ) {
+          ret += results.get(i).getKey() + ": " + results.get(i).getValue();
+          if ( i < results.size() ) ret += ", ";
+        }
+        return ret;
       `
     },
     {
       class: 'List',
       name: 'rawResults',
       storageTransient: true,
-      javaType: 'ArrayList<foam.nanos.cm.CMResult>',
+      javaType: 'java.util.ArrayList<foam.nanos.cm.CMResult>',
       javaFactory: `
         return new java.util.ArrayList();
       `

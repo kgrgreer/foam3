@@ -17,12 +17,5 @@ foam.CLASS({
       class: 'Float',
       name: 'value'
     }
-  ],
-
-  methods: [
-    {
-      name: 'toSummary',
-      type: 'String'
-    }
   ]
 })
