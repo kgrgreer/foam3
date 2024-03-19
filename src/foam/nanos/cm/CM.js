@@ -45,6 +45,11 @@ foam.CLASS({
       storageTransient: true
     },
     {
+      class: 'FObjectProperty',
+      of: '',
+      storageTransient: true
+    },
+    {
       class: 'DateTime',
       name: 'lastComputed',
       storageTransient: true
