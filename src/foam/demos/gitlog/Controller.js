@@ -330,6 +330,7 @@ foam.CLASS({
       'remove extra space',
       'Remove extra space',
       'Remove space.',
+      'Remove stale comments.',
       'remove space',
       'Remove unused code.',
       'update version',
@@ -468,10 +469,15 @@ foam.CLASS({
         paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
       },
       {
-//        name: 'U2/U3',
-name: 'NANOS',
+       name: 'U2/U3',
+//name: 'NANOS',
         keywords: [ 'initE' ],
-        paths: [ 'u2', 'xsd', 'comics', 'foamdev' /* ??? for 2022 only */ ]
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev' ]
+      },
+      {
+       name: 'FOOBAR',
+        keywords: [ 'build', 'Maker', 'pom' ],
+        paths: [ 'tools', 'build']
       },
       {
         name: 'Hybrid-Blockchain',
@@ -749,7 +755,6 @@ name: 'NANOS',
           }
         }
       }
-      console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
