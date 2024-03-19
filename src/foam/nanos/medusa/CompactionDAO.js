@@ -322,6 +322,7 @@ as 'ignoreHealth'.
       List<ClusterConfig> nodes = support.getReplayNodes();
       ListIterator<ClusterConfig> iter = nodes.listIterator();
       while ( iter.hasNext() ) {
+        ClusterConfig cfg = iter.next();
         MedusaHealth health = (MedusaHealth) healthDAO.find(cfg.getId());
         if ( health == null ||
              health.getMedusaStatus() != Status.ONLINE ) {
