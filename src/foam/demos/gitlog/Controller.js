@@ -244,6 +244,8 @@ foam.CLASS({
 
   constants: {
     IGNORE_CONTAINS: [
+      ' -> ',
+      '4.',
       'Add test',
       'broken build',
       'Cleanup',
@@ -294,12 +296,13 @@ foam.CLASS({
       'revert',
       'Revert',
       'Small fix',
+      'Space corrected',
       'spacing fixes',
+      'spacing',
+      'Spacing',
       'typo',
-      ' -> ',
-      'v4.',
-      '4.',
       'v2.',
+      'v4.'
     ],
     IGNORE_EQUALS: [
       'foam',
@@ -450,7 +453,7 @@ foam.CLASS({
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
-        paths: [ 'medusa', 'cluster', 'sf' ]
+        paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx' ]
       },
       {
         name: 'NANOS',
@@ -465,14 +468,13 @@ foam.CLASS({
       },
       {
         name: 'Application',
-        keywords: [ 'afex' ],
+        keywords: [ 'afex', 'approval', 'gateway', 'deployment' ],
         paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
       },
       {
        name: 'U2/U3',
-//name: 'NANOS',
-        keywords: [ 'initE' ],
-        paths: [ 'u2', 'xsd', 'comics', 'foamdev' ]
+        keywords: [ 'initE', 'view', 'u3', 'u2', 'demo', 'example'  ],
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev', 'demo', 'layout', 'google/flow', 'phonecat' ]
       },
       {
        name: 'FOOBAR',
@@ -491,13 +493,6 @@ foam.CLASS({
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Application',
-//         name: 'Approval',
-        keywords: [ 'approval' ],
-        paths: [ ]
-      },
-      {
-//        name: 'Performance ',
         name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
@@ -512,12 +507,6 @@ foam.CLASS({
         name: 'NANOS',
         keywords: [ 'nanos' ],
         paths: [ 'nanos', 'dashboard', 'parse', 'Email', 'foam/java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
-      },
-      {
-//        name: 'U2/U3',
-        name: 'NANOS',
-        keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
-        paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
       },
       {
         name: 'Test',
