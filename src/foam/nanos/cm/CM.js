@@ -45,7 +45,12 @@ foam.CLASS({
       storageTransient: true,
       factory: function() {
         if ( !rawResults || rawResults.length == 0 ) return "";
-        return "TODO";
+        let ret = "";
+        for (let i = 0 ; i < rawResults.length ; i++ ) {
+          ret += r.key + ": " + r.value;
+          if ( i < rawResults.length - 1) ret += ", ";
+        }
+        return ret;
       },
       javaFactory: `
         if ( getRawResults() == null || getRawResults().size() == 0 ) return "";
@@ -56,6 +61,7 @@ foam.CLASS({
       class: 'List',
       name: 'rawResults',
       storageTransient: true,
+      javaType: 'ArrayList<foam.nanos.cm.CMResult>',
       javaFactory: `
         return new java.util.ArrayList();
       `
