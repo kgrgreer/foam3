@@ -342,6 +342,7 @@ foam.CLASS({
     ],
     AUTHOR_MAP: {
       'dependabot[bot]': 'dependabot[bot]',
+      'Adam Van Ymeren': 'Adam Van Ymeren',
       'Mritunjay Chauhan': 'Mritunjay Chauhan',
       'Mritunjay': 'Mritunjay Chauhan',
       'mritunjay51': 'Mritunjay Chauhan',
@@ -710,6 +711,9 @@ name: 'NANOS',
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            if ( commit.author.indexOf('dependabot') != -1 || commit.author === 'Adam Van Ymeren' ) {
+              data.pop();
+            }
           } else if ( line.startsWith('Date: ') ) {
             commit.date = new Date(line.substring(6).trim());
             i++;
@@ -740,7 +744,6 @@ name: 'NANOS',
           }
         }
       }
-      if ( commit.author.indexOf('dependabot') != -1 ) return;
       console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
