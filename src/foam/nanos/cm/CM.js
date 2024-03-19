@@ -15,7 +15,11 @@ foam.CLASS({
 
   javaImports: [ 'foam.dao.DAO' ],
 
-  documentation: 'A computed measure.',
+  documentation: `
+    A computed measure.
+    Beanshell code that should call setResult or setResulte.
+    eg: x.get("this").setResult("Foo") or x.get("this").setRawResult(new ArrayList())
+  `,
 
   tableColumns: [ 'id', 'description', 'keywords', 'result', 'lastComputed', 'update' ],
 
