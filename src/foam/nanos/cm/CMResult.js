@@ -6,9 +6,16 @@
 
 foam.CLASS({
   package: 'foam.nanos.cm',
-  name: 'KVCM',
-  extends: 'foam.nanos.cm.CM',
-  documentation: `
-    Handle Key-Value type of results from Code/Script.
-  `
+  name: 'CMResult',
+
+  properties: [
+    {
+      class: 'String',
+      name: 'key'
+    },
+    {
+      class: 'Float',
+      name: 'value'
+    }
+  ]
 })

@@ -42,7 +42,23 @@ foam.CLASS({
     {
       class: 'String',
       name: 'result',
-      storageTransient: true
+      storageTransient: true,
+      factory: function() {
+        if ( !rawResults || rawResults.length == 0 ) return "";
+        return "TODO";
+      },
+      javaFactory: `
+        if ( getRawResults() == null || getRawResults().size() == 0 ) return "";
+        return "TODO";
+      `
+    },
+    {
+      class: 'List',
+      name: 'rawResults',
+      storageTransient: true,
+      javaFactory: `
+        return new java.util.ArrayList();
+      `
     },
     {
       class: 'DateTime',
