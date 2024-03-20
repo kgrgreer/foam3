@@ -336,6 +336,9 @@ foam.CLASS({
 
   listeners: [
     function mementoChange() {
+      if ( this.hasOwnProperty('memento_') ) {
+        this.memento_.tail = null;
+      }
       if ( ! this.currentDAO ) return;
       var x = this.__subContext__;
 
