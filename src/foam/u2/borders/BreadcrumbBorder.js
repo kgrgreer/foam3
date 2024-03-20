@@ -37,7 +37,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      let showBack = this.stack?.stack_.slice(this.stack.navStackBottom, this.stack.pos).length < 1;
+      let showBack = this.stack?.slice(0, this.stack.pos).length < 1 ?? true;
       this
       .addClass()
       .callIfElse(showBack, function() {

@@ -87,15 +87,6 @@ foam.CLASS({
         while ( pos >= 0 && this.stack_[pos].popup ) pos--;
         return this.stack_[pos] || null;
       }
-    },
-    {
-      class: 'Int',
-      name: 'navStackBottom',
-      value: -1,
-      preSet: function(_, p) {
-        if ( isNaN(p) || p > this.depth || p < 0 ) return 0;
-        return p;
-      }
     }
   ],
 
@@ -124,7 +115,7 @@ foam.CLASS({
           view: arguments[0],
           parent: arguments[1],
           id: arguments[2] || 'anon',
-          shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
+          // shouldResetBreadcrumbs: arguments[3] && arguments[3].menuItem,
           popup: arguments[3] && arguments[3].popup,
           breadcrumbTitle: arguments[3] && arguments[3].navStackTitle
         });
@@ -160,23 +151,12 @@ foam.CLASS({
       this.stack_.length = this.depth;
       this.stack_[pos] = block;
       this.pos = pos;
-      if ( block.shouldResetBreadcrumbs )
-        this.navStackBottom = pos;
     },
 
     function jump(jumpPos) {
       while ( this.pos > jumpPos ) {
         this.stack_[this.pos].removed.pub();
         this.pos--;
-      }
-
-      if ( this.navStackBottom > this.pos ) {
-        for ( var i = this.pos; i >= 0; i-- ) {
-          if ( this.stack_[i].shouldResetBreadcrumbs ) {
-            this.navStackBottom = i;
-            break;
-          }
-        }
       }
     },
 

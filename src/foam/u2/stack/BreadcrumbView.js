@@ -61,46 +61,46 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.addClass(this.myClass('display'));
-      if ( this.stack && this.stack.stack_ ) {
-        var navStack  = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
-        var themeIcon = navStack.length == 1 ? 'back' : '';
-        navStack.forEach((v, i) => {
-          let index      = i + this.stack.navStackBottom;
-          let memento    = self.stack.stack_[index].currentMemento;
-          let jumpAction = self.Action.create({
-            name: 'back',
-            code: () => {
-              self.stack.jump(index, self);
-            }
-          });
-          let labelSlot = this.stack.stack_[index].breadcrumbTitle + '#' + this.stack.stack_[index].currentMemento;
-          jumpAction.label = labelSlot;
-          if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
-            self.start(jumpAction, {
-              themeIcon:   themeIcon,
-              buttonStyle: 'LINK',
-              size:        'SMALL'
-            }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
-          } else if ( i == self.maxHead ) {
-            self.tag(this.OverlayActionListView, {
-              label:            '...',
-              data$:            self.actionArray$,
-              obj:              self,
-              buttonStyle:      'LINK',
-              showDropdownIcon: false
+      this.add(this.dynamic(function(stack$pos) {
+        this.addClass(this.myClass('display'));
+        if ( this.stack && this.stack.stack_ ) {
+          var navStack  = this.stack.stack_.slice(0, this.stack.pos);
+          var themeIcon = navStack.length == 1 ? 'back' : '';
+          navStack.forEach((v, i) => {
+            let jumpAction = self.Action.create({
+              name: 'back',
+              code: () => {
+                self.stack.jump(i, self);
+              }
             });
-            self.actionArray.push(jumpAction);
-          } else {
-            self.actionArray.push(jumpAction);
-          }
-          if ( navStack.length != 1 && i != navStack.length -1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
-            self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
-          }
-          if ( ! this.stack.stack_[index].breadcrumbTitle )
-            console.warn('Missing Title for BreadcrumbView ' + navStack[i].view);
-        });
-      }
+            let labelSlot = this.stack.stack_[i].breadcrumbTitle + '#' + this.stack.stack_[i].currentMemento;
+            jumpAction.label = labelSlot;
+            if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
+              self.start(jumpAction, {
+                themeIcon:   themeIcon,
+                buttonStyle: 'LINK',
+                size:        'SMALL'
+              }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
+            } else if ( i == self.maxHead ) {
+              self.tag(this.OverlayActionListView, {
+                label:            '...',
+                data$:            self.actionArray$,
+                obj:              self,
+                buttonStyle:      'LINK',
+                showDropdownIcon: false
+              });
+              self.actionArray.push(jumpAction);
+            } else {
+              self.actionArray.push(jumpAction);
+            }
+            if ( navStack.length != 1 && i != navStack.length -1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
+              self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
+            }
+            if ( ! this.stack.stack_[i].breadcrumbTitle )
+              console.warn('Missing Title for BreadcrumbView ' + navStack[i].view);
+          });
+        }
+      }));
     }
   ]
 });

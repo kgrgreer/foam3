@@ -38,7 +38,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldResetBreadcrumbs',
-      documentation: 'Used by Stack to determine if breadcrumb trail should be reset'
+      documentation: 'DEPRECATED: Used by Stack to determine if breadcrumb trail should be reset'
     },
     {
       name: 'popup',
