@@ -347,7 +347,7 @@ public class QueryParser
           values[2] = c.getTime();
         } else {
           var dates = (Date[]) values[2];
-          values[2] = dates[1];
+          values[2] = dates[0];
         }
       }
 
@@ -429,6 +429,7 @@ public class QueryParser
     });
 
     grammar.addSymbol("LITERAL_DATE", new Alt(
+      // yyyy-mm-ddThh:mm
       new Seq(
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
@@ -440,6 +441,7 @@ public class QueryParser
         Literal.create(":"),
         grammar.sym("NUMBER")
       ),
+      // yyyy-mm-ddThh
       new Seq(
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
@@ -449,6 +451,7 @@ public class QueryParser
         Literal.create("T"),
         grammar.sym("NUMBER")
       ),
+      // yyyy-mm-dd
       new Seq(
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
@@ -456,6 +459,7 @@ public class QueryParser
         new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER")
       ),
+      // yyyy-mm
       new Seq(
         grammar.sym("NUMBER"),
         new Alt(Literal.create("-"), Literal.create("/")),
@@ -488,11 +492,11 @@ public class QueryParser
         dateFmt >=  5 ? dateFmt == 5 ? (Integer) result[4] + 1 : (Integer) result[4]  : 0,
         dateFmt >=  7 ? dateFmt == 7 ? (Integer) result[6] + 1 : (Integer) result[6]  : 0,
         dateFmt >=  9 ? dateFmt == 9 ? (Integer) result[8] + 1 : (Integer) result[8]  : 0);
-      
+
       // All servers run in UTC time, setting UTC here is for development and testing purposes
       start.setTimeZone(TimeZone.getTimeZone("UTC"));
       end.setTimeZone(TimeZone.getTimeZone("UTC"));
-      
+
       Date[] dates = new Date[] { start.getTime(), end.getTime() };
       return dates;
     });
