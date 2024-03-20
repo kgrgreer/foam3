@@ -318,7 +318,6 @@ foam.CLASS({
       code: function() {
         console.log('onHashChange', this.hashFeedback_, this.window.location.hash);
         if ( this.hashFeedback_ ) return;
-        this.tail = null;
         this.str = decodeURI(this.window.location.hash.substring(1));
       }
     },
@@ -327,8 +326,9 @@ foam.CLASS({
       documentation: 'Called when the memento changes, causes update to hash.',
       code: function() {
         this.hashFeedback_ = true;
-        let route = this.usedStr.split('?')[0];
+        let route    = this.usedStr.split('?')[0];
         let winRoute = this.window.location.hash.substring(1).split('?')[0];
+
         if ( route == winRoute ) {
           this.window.history.replaceState(null,'','#' + this.usedStr)
         } else {
