@@ -453,12 +453,12 @@ foam.CLASS({
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
-        paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx' ]
+        paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx', 'nanopay/fx' ]
       },
       {
         name: 'NANOS',
         keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
-        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar' ]
+        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar', 'doc/templates', 'DocBrowser', 'foam/doc', 'Outputter' ]
       },
       {
 //        name: 'Core',
@@ -469,7 +469,7 @@ foam.CLASS({
       {
         name: 'Application',
         keywords: [ 'afex', 'approval', 'gateway', 'deployment' ],
-        paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
+        paths: [ 'companybrand', 'accounting', 'contacts', 'integration', 'gateway', 'plaid', 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'nanopay/personal', 'svg', 'paymentrequest', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting', 'payment', 'nanopay/rfi', 'nanopay/sme' ]
       },
       {
        name: 'U2/U3',
@@ -479,12 +479,12 @@ foam.CLASS({
       {
        name: 'FOOBAR',
         keywords: [ 'build', 'Maker', 'pom' ],
-        paths: [ 'tools', 'build']
+        paths: [ 'tools', 'build', 'foam.js' ]
       },
       {
         name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF' ]
+        keywords: [ 'medusa', 'dao', 'json', 'mlang', 'docker' ],
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF', 'docker', 'Docker', 'iso20022' ]
       },
       {
 //        name: 'Core',
@@ -512,7 +512,12 @@ foam.CLASS({
         name: 'Test',
         keywords: [ 'test', 'tests' ],
         paths: [ 'test', 'tests' ]
-      }
+      },
+      {
+        name: 'Application',
+        keywords: [ ],
+        paths: [ 'nanopay' ]
+      },
     ]
   },
 
@@ -540,6 +545,7 @@ foam.CLASS({
       class: 'String',
       name: 'author',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.authors}, X);
       }
@@ -557,6 +563,7 @@ foam.CLASS({
       class: 'String',
       name: 'project',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.projects}, X);
       }
@@ -565,8 +572,13 @@ foam.CLASS({
       class: 'Array',
       name: 'files',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, f)));
+console.log('*********** files: ', this.author, this.project);
+var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => {
+          this.incr(files, f);
+        }));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -575,15 +587,17 @@ foam.CLASS({
       name: 'file',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.files}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.files$}, X);
       }
     },
     {
       class: 'Array',
       name: 'paths',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
+        console.log('*********** paths: ', this.author, this.project);
+        var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -592,12 +606,13 @@ foam.CLASS({
       name: 'path',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.paths}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.paths$}, X);
       }
     },
     {
       class: 'String',
       name: 'query',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
@@ -826,6 +841,7 @@ foam.CLASS({
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().
         add('Path: ',             self.PATH).br().
+        add('Author: ',           self.AUTHOR).br().
         add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
         add('Embed Files: ',      self.EMBED_FILES).br().
       end();
