@@ -46,34 +46,25 @@ foam.CLASS({
     {
       class: 'String',
       name: 'result',
-      storageTransient: true,
-      factory: function() {
-        if ( !rawResults || rawResults.length == 0 ) return "";
-        let ret = "";
-        for (let i = 0 ; i < rawResults.length ; i++ ) {
-          ret += r.key + ": " + r.value;
-          if ( i < rawResults.length - 1) ret += ", ";
-        }
-        return ret;
-      },
-      javaFactory: `
-        if ( getRawResults() == null || getRawResults().size() == 0 ) return "";
-        var results = getRawResults();
-        var ret = "";
-        for ( int i = 0 ; i < results.size() ; i++ ) {
-          ret += results.get(i).getKey() + ": " + results.get(i).getValue();
-          if ( i < results.size() ) ret += ", ";
-        }
-        return ret;
-      `
+      storageTransient: true
     },
     {
       class: 'List',
       name: 'rawResults',
       storageTransient: true,
       javaType: 'java.util.ArrayList<foam.nanos.cm.CMResult>',
-      javaFactory: `
-        return new java.util.ArrayList();
+      javaPostSet: `
+        if ( getRawResults() == null || getRawResults().size() == 0 ) {
+          setResult("");
+          return;
+        }
+        var results = getRawResults();
+        var ret = "";
+        for ( int i = 0 ; i < results.size() ; i++ ) {
+          ret += results.get(i).getKey() + ": " + results.get(i).getValue();
+          if ( i < results.size() ) ret += ", ";
+        }
+        setResult(ret);
       `
     },
     {
@@ -145,19 +136,6 @@ foam.CLASS({
         cm.reschedule();
 
         return (CM) dao.put_(x, cm);
-      `
-    },
-    {
-      name: 'resetRawResult',
-      javaCode: `
-        setRawResults(new java.util.ArrayList());
-      `
-    },
-    {
-      name: 'addResult',
-      args: 'String key, float value',
-      javaCode: `
-        getRawResults().add(new CMResult(key, value));
       `
     }
   ],

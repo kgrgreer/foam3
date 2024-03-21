@@ -14,7 +14,7 @@ foam.CLASS({
       name: 'key'
     },
     {
-      class: 'Float',
+      class: 'Double',
       name: 'value'
     }
   ]
