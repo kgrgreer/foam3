@@ -229,7 +229,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      if ( this.route ) {
+      if ( this.currentDAO ) {
         this.mementoChange();
         return;
       }
@@ -330,15 +330,16 @@ foam.CLASS({
         self.start().addClass(self.myClass('footer')).add(self.daoCount$, ' of ', self.totalDAOCount$, ' shown').end();
       });
 
-      this.mementoChange();
+     // this.mementoChange();
     }
   ],
 
   listeners: [
     function mementoChange() {
+      /*
       if ( this.hasOwnProperty('memento_') ) {
         this.memento_.tail = null;
-      }
+      }*/
       if ( ! this.currentDAO ) return;
       var x = this.__subContext__;
 
