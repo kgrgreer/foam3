@@ -146,6 +146,19 @@ foam.CLASS({
 
         return (CM) dao.put_(x, cm);
       `
+    },
+    {
+      name: 'resetRawResult',
+      javaCode: `
+        setRawResults(new java.util.ArrayList());
+      `
+    },
+    {
+      name: 'addResult',
+      args: 'String key, float value',
+      javaCode: `
+        getRawResults().add(new CMResult(key, value));
+      `
     }
   ],
 
