@@ -80,7 +80,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'FObjectProperty',
+      of: 'foam.u2.stack.StackBlock',
       name: 'topNonPopup',
       hidden: true,
       expression: function(pos) {

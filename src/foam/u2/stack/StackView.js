@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.u2.stack.Stack'
   ],
 
-  imports: [ 'document' ],
+  imports: [ 'document', 'routeTo' ],
 
   exports: [ 'data as stack' ],
 
@@ -79,6 +79,9 @@ foam.CLASS({
       });
 
       this.listenStackView();
+      if ( this.data.top ) {
+        this.renderStackView(this.data.top);
+      }
     },
 
     function maybeAddDefault() {
@@ -89,15 +92,16 @@ foam.CLASS({
 
     // Overwritten in DesktopStackView
     function listenStackView() {
-      this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
+      let self = this;
+      this.add(this.dynamic(function(data$top) { this.add(self.renderStackView(data$top)) }));
     },
 
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
-      if ( s.currentMemento !== window.location.hash.substring(1) && s.seen ) {
-        window.location.hash = s.currentMemento;
-        return this.E('span').add('Loading... ', s.currentMemento, ' from ', window.location.hash.substring(1));
+      if ( s.currentMemento !== window.location.hash.substring(1) ) {
+        this.routeTo(s.currentMemento);
+        // return this.E('span').add('Loading... ', s.currentMemento, ' from ', window.location.hash.substring(1));
       }
       s.seen = true;
 

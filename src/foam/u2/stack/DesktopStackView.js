@@ -52,8 +52,7 @@ foam.CLASS({
           ctrl.add(popup);
         }
       });
-      this.add(this.slot(s => self.renderStackView(s),
-        this.data$.dot('topNonPopup')))
+      this.add(this.dynamic(function(data$topNonPopup)  { this.add(self.renderStackView(data$topNonPopup)) }))
     }
   ]
 });
