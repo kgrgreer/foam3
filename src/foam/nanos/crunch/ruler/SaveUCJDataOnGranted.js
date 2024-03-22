@@ -45,20 +45,14 @@ foam.CLASS({
 
             if (ucj.getData() == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED || ucj.getData().equals(oldUcj.getData())) return;
 
-            if (oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED || oldUcj.getIsInRenewable() != ucj.getIsInRenewable()) {
+            if (oldUcj.getData() == null || oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED || ucj.getIsInRenewable()) {
 
-              if ( ! authService.check(x, "usercapabilityjunction.update.*") ) {
-                if ( ucj.getSkipEditBehaviour() == true ) {
-                  ucj.setSkipEditBehaviour(false);
-                  return;
-                }
-
-                // If edit behaviour does nothing we will keep old data
-                var newData = ucj.getData();
-                ucj.setData(oldUcj.getData());
-
-                editBehaviour.maybeApplyEdit(x, systemX, editor, ucj, newData); 
+              if ( ucj.getSkipEditBehaviour() == true ) {
+                ucj.setSkipEditBehaviour(false);
+                return;
               }
+
+              editBehaviour.maybeApplyEdit(x, systemX, editor, ucj, ucj.getData()); 
 
               capability = (Capability) ucj.findTargetId(x);
               if ( capability == null ) {
