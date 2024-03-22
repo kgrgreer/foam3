@@ -56,8 +56,9 @@ foam.CLASS({
     ^ .foam-u2-tag-Select:focus {
       border: solid 1px #59A5D5;
     }
-    ^ .label{
+    ^ .label {
       color: #000000;
+      font-size: medium;
       margin: 10px 0px 0px 24px;
     }
     ^ .note {
@@ -70,7 +71,6 @@ foam.CLASS({
       position: relative;
       top: 10;
     }
-
     ^ .foam-u2-ActionView-primary {
       margin: 12px;
     }

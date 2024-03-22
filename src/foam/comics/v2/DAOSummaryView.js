@@ -367,13 +367,17 @@ foam.CLASS({
       if ( acArray && acArray.length ) {
         let res;
         for ( let a of acArray ) {
-          var aSlot = a.createIsAvailable$(this.__subContext__, data);
-          let b = aSlot.get();
-          if ( aSlot.promise ) {
-            await aSlot.promise;
-            b = aSlot.get();
+          try {
+            var aSlot = a.createIsAvailable$(this.__subContext__, data);
+            let b = aSlot.get();
+            if ( aSlot.promise ) {
+              await aSlot.promise;
+              b = aSlot.get();
+            }
+            if (b) res = a;
+          } catch ( e ) {
+            console.error("Action: " + a.name + " for the class: " + a.source + " has an error: " + e);
           }
-          if (b) res = a;
         }
         this.primary = res;
       }

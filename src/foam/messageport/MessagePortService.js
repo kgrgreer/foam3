@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.box.RegisterSelfMessage',
     'foam.json.Parser'
   ],
+
   imports: [
     'creationContext'
   ],

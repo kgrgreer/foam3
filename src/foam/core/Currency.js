@@ -9,7 +9,7 @@
   name: 'Currency',
   extends: 'foam.core.Unit',
 
-  documentation: `The base model for storing, using and managing currency information.`,
+  documentation: 'The base model for storing, using and managing currency information.',
 
   javaImports: [
     'foam.core.XLocator',

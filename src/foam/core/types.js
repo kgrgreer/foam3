@@ -721,11 +721,11 @@ foam.CLASS({
     },
     {
       name: 'unitPropValueToString',
-      value: async function(x, val, unitPropName) {
+      value: async function(x, val, unitPropName, excludeUnit) {
         if ( unitPropName ) {
           const unitProp = await x.currencyDAO.find(unitPropName);
           if ( unitProp )
-            return unitProp.format(val);
+            return unitProp.format(val, excludeUnit, false);
         }
         return val;
       }

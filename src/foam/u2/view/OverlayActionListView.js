@@ -232,7 +232,7 @@ foam.CLASS({
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .callIfElse(foam.u2.ActionReference.isInstance(action), function() { 
+                .callIfElse(foam.u2.ActionReference.isInstance(action), function() {
                   this.tag(action.action, { buttonStyle: 'UNSTYLED', data$: action.data$})
                 }, function() {
                   this.tag(action, { buttonStyle: 'UNSTYLED' })
@@ -328,9 +328,13 @@ foam.CLASS({
 
     async function recheckShown() {
       for ( let action of this.data ) {
-        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-          this.shown = true;
-          break;
+        try {
+          if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
+            this.shown = true;
+            break;
+          }
+        } catch ( e ) {
+          console.error("Action: " + action.name + " for the class: " + action.source + " has an error: " + e);
         }
       }
     }

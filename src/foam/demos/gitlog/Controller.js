@@ -244,6 +244,8 @@ foam.CLASS({
 
   constants: {
     IGNORE_CONTAINS: [
+      ' -> ',
+      '4.',
       'Add test',
       'broken build',
       'Cleanup',
@@ -256,14 +258,17 @@ foam.CLASS({
       'Foam peg',
       'FOAM peg',
       'FOAM Peg',
+      'FOAM_PEG',
       'Merge release',
       'merge',
       'Peg  foam',
       'peg -foam',
       'peg dev',
       'peg foam',
+      'peg Foam',
       'peg FOAM',
       'Peg foam',
+      'Peg Foam',
       'Peg FOAM',
       'peg master',
       'peg nwe foam',
@@ -273,6 +278,7 @@ foam.CLASS({
       'peg to',
       'pege foam',
       'peged',
+      'pegfoam',
       'pegFoam',
       'Pegged to dev foam',
       'pegged',
@@ -290,12 +296,13 @@ foam.CLASS({
       'revert',
       'Revert',
       'Small fix',
+      'Space corrected',
       'spacing fixes',
+      'spacing',
+      'Spacing',
       'typo',
-      ' -> ',
-      'v4.',
-      '4.',
       'v2.',
+      'v4.'
     ],
     IGNORE_EQUALS: [
       'foam',
@@ -305,7 +312,6 @@ foam.CLASS({
       'foam2',
       'formatting',
       'master foam',
-      'update version',
       'Add comment.',
       'Add space',
       'added space',
@@ -315,6 +321,7 @@ foam.CLASS({
       'Fix indentation.',
       'fix space',
       'fix spaces',
+      'Fixed space',
       'fixing pr',
       'format',
       'Formatting.',
@@ -326,8 +333,10 @@ foam.CLASS({
       'remove extra space',
       'Remove extra space',
       'Remove space.',
+      'Remove stale comments.',
       'remove space',
       'Remove unused code.',
+      'update version',
       'removed a space',
       'Sort exports.',
       'space',
@@ -342,6 +351,7 @@ foam.CLASS({
     ],
     AUTHOR_MAP: {
       'dependabot[bot]': 'dependabot[bot]',
+      'Adam Van Ymeren': 'Adam Van Ymeren',
       'Mritunjay Chauhan': 'Mritunjay Chauhan',
       'Mritunjay': 'Mritunjay Chauhan',
       'mritunjay51': 'Mritunjay Chauhan',
@@ -443,12 +453,12 @@ foam.CLASS({
       {
         name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
-        paths: [ 'medusa', 'cluster', 'sf' ]
+        paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx', 'nanopay/fx' ]
       },
       {
         name: 'NANOS',
         keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
-        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar' ]
+        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar', 'doc/templates', 'DocBrowser', 'foam/doc', 'Outputter' ]
       },
       {
 //        name: 'Core',
@@ -458,19 +468,23 @@ foam.CLASS({
       },
       {
         name: 'Application',
-        keywords: [ 'afex' ],
-        paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
+        keywords: [ 'afex', 'approval', 'gateway', 'deployment' ],
+        paths: [ 'companybrand', 'accounting', 'contacts', 'integration', 'gateway', 'plaid', 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'nanopay/personal', 'svg', 'paymentrequest', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting', 'payment', 'nanopay/rfi', 'nanopay/sme' ]
       },
       {
-//        name: 'U2/U3',
-name: 'NANOS',
-        keywords: [ 'initE' ],
-        paths: [ 'u2', 'xsd', 'comics', 'foamdev' /* ??? for 2022 only */ ]
+       name: 'U2/U3',
+        keywords: [ 'initE', 'view', 'u3', 'u2', 'demo', 'example'  ],
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev', 'demo', 'layout', 'google/flow', 'phonecat' ]
+      },
+      {
+       name: 'FOOBAR',
+        keywords: [ 'build', 'Maker', 'pom' ],
+        paths: [ 'tools', 'build', 'foam.js' ]
       },
       {
         name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF' ]
+        keywords: [ 'medusa', 'dao', 'json', 'mlang', 'docker' ],
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF', 'docker', 'Docker', 'iso20022' ]
       },
       {
 //        name: 'Core',
@@ -479,13 +493,6 @@ name: 'NANOS',
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Application',
-//         name: 'Approval',
-        keywords: [ 'approval' ],
-        paths: [ ]
-      },
-      {
-//        name: 'Performance ',
         name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
@@ -502,16 +509,15 @@ name: 'NANOS',
         paths: [ 'nanos', 'dashboard', 'parse', 'Email', 'foam/java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
       },
       {
-//        name: 'U2/U3',
-        name: 'NANOS',
-        keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
-        paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
-      },
-      {
         name: 'Test',
         keywords: [ 'test', 'tests' ],
         paths: [ 'test', 'tests' ]
-      }
+      },
+      {
+        name: 'Application',
+        keywords: [ ],
+        paths: [ 'nanopay' ]
+      },
     ]
   },
 
@@ -539,6 +545,7 @@ name: 'NANOS',
       class: 'String',
       name: 'author',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.authors}, X);
       }
@@ -556,6 +563,7 @@ name: 'NANOS',
       class: 'String',
       name: 'project',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.projects}, X);
       }
@@ -564,8 +572,13 @@ name: 'NANOS',
       class: 'Array',
       name: 'files',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, f)));
+console.log('*********** files: ', this.author, this.project);
+var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => {
+          this.incr(files, f);
+        }));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -574,15 +587,17 @@ name: 'NANOS',
       name: 'file',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.files}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.files$}, X);
       }
     },
     {
       class: 'Array',
       name: 'paths',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
+        console.log('*********** paths: ', this.author, this.project);
+        var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -591,12 +606,13 @@ name: 'NANOS',
       name: 'path',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.paths}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.paths$}, X);
       }
     },
     {
       class: 'String',
       name: 'query',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
@@ -710,6 +726,9 @@ name: 'NANOS',
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            if ( commit.author.indexOf('dependabot') != -1 || commit.author === 'Adam Van Ymeren' ) {
+              data.pop();
+            }
           } else if ( line.startsWith('Date: ') ) {
             commit.date = new Date(line.substring(6).trim());
             i++;
@@ -740,8 +759,6 @@ name: 'NANOS',
           }
         }
       }
-      if ( commit.author.indexOf('dependabot') != -1 ) return;
-      console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
     },
@@ -824,6 +841,7 @@ name: 'NANOS',
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().
         add('Path: ',             self.PATH).br().
+        add('Author: ',           self.AUTHOR).br().
         add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
         add('Embed Files: ',      self.EMBED_FILES).br().
       end();
