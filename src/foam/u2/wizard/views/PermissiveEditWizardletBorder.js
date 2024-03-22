@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.wizard.views.NullEditWizardletBorder',
   documentation: 'Border for wizardlets that the user is allowed to edit',
 
-  imports: ['ctrl'],
+  imports: ['ctrl', 'notify'],
 
   requires: [
     'foam.u2.borders.CardBorder'
@@ -19,7 +19,7 @@ foam.CLASS({
   messages: [
     {
       name: 'SAVE_FAILED',
-      message: 'Your information was not saved. Please try again.'
+      message: 'Your data could not be saved.'
     }
   ],
 
@@ -92,7 +92,7 @@ foam.CLASS({
         this.ctrl.reloadClient()
         this.controllerMode = foam.u2.ControllerMode.VIEW
        } catch (e) {
-        alert(this.SAVE_FAILED)
+        this.notify(this.SAVE_FAILED, e.message, 'ERROR', true);
        }
       }
     },
