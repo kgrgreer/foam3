@@ -252,7 +252,7 @@ foam.POM({
     { name: "benchmark/AuthorizerBenchmark",                                              flags: "js|java" },
     { name: "boot/NSpec",                                                                 flags: "js|java" },
     { name: "boot/NSpecAware",                                                            flags: "js|java" },
-    { name: "boot/DAOConfigSummaryView",                                                  flags: "web" },
+    { name: "boot/DataManagement",                                                  flags: "web" },
     { name: "boot/DAONSpecMenu",                                                          flags: "js|java" },
     { name: "session/GroupResetSessionRuleAction",                                        flags: "js|java" },
     { name: "session/LocalSetting",                                                       flags: "js|java" },
