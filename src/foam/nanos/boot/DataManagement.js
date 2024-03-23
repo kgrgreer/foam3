@@ -34,6 +34,8 @@ foam.CLASS({
 
       methods: [
         function render() {
+          this.document.title = 'Data Management / ' + this.daoKey;
+
           var x = this.__subContext__;
 
           this.start(this.BackBorder).
@@ -142,6 +144,8 @@ foam.CLASS({
       methods: [
         function render() {
           this.SUPER();
+
+          this.document.title = 'Data Management'
 
           var self          = this;
           var currentLetter = '';
@@ -355,7 +359,7 @@ foam.CLASS({
       name: 'route',
       memorable: true
     },
-    ['viewTitle', 'Data Management']
+    ['viewTitle', 'Data Management'] // ???: Needed / Used ?
   ],
 
   methods: [
@@ -364,6 +368,7 @@ foam.CLASS({
 
       var self = this;
 
+      // TODO: Should move to DAOView and these sub-Models should move there also
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
