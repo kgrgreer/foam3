@@ -41,7 +41,7 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DAOConfigSummaryView"}},"parent":"admin"})
+p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DataManagement"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailmessages","label":"Email Messages","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailMessageDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.emailtemplates","label":"Email Templates","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"emailTemplateDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.export","label":"Export Drivers","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"exportDriverRegistryDAO"}},"parent":"admin"})
@@ -319,7 +319,7 @@ p({
   "id":"sign-in",
   "authenticate":false,
   "label":"Sign In",
-  "handler":{ 
+  "handler":{
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
       class: "foam.u2.borders.BaseUnAuthBorder",
