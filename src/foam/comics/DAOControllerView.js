@@ -141,7 +141,8 @@ foam.CLASS({
       var reciprocalSearch = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.ReciprocalSearch',
         data$: this.data.predicate$
-      }, {}, self, self.__subContext__.createSubContext({ memento_: this.memento_ }));
+//      }, {}, self, self.__subContext__.createSubContext({ memento_: this.memento_ }));
+      }, {}, self, self.__subContext__);
 
       var searchView = foam.u2.ViewSpec.createView({
         class: 'foam.u2.view.SimpleSearch',
