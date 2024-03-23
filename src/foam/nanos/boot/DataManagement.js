@@ -34,8 +34,6 @@ foam.CLASS({
 
       methods: [
         function render() {
-          this.add('DAOView: ', this.daoKey);
-
           var x = this.__subContext__;
 
           this.start(this.BackBorder).
