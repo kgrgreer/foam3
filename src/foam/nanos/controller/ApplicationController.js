@@ -385,7 +385,7 @@ foam.CLASS({
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
         if ( this.initSubject && n ) {
-          this.pushMenu_(null, n, true);
+          this.pushMenu_(null, n);
         }
       }
     },
@@ -1022,7 +1022,8 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       /**
        * Replaces the url to redirect to the new menu without cleared tails
        */
-      this.memento_.str = link;
+//      this.memento_.str = link;
+      this.window.location.hash = link;
     }
   ]
 });
