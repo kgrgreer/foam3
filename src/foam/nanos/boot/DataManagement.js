@@ -358,8 +358,7 @@ foam.CLASS({
     {
       name: 'route',
       memorable: true
-    },
-    ['viewTitle', 'Data Management'] // ???: Needed / Used ?
+    }
   ],
 
   methods: [
