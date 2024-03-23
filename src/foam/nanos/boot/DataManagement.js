@@ -38,11 +38,6 @@ foam.CLASS({
 
           var x = this.__subContext__;
 
-          x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
-          x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
-          x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
-          x.register(foam.u2.DetailView,           'foam.u2.DetailView');
-
           this.start(this.BackBorder).
             tag(this.AltView, {
               data: this.__context__[this.daoKey],
@@ -370,6 +365,11 @@ foam.CLASS({
       this.SUPER();
 
       var self = this;
+
+      x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
+      x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
+      x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
+      x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
