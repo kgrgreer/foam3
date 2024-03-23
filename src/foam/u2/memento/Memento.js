@@ -193,7 +193,7 @@ foam.CLASS({
       return s;
     },
 
-    function encode() {
+    function encode(opt_untilObj) {
       /**
         Recursively encode memento as a map with the following structure:
         {route: "route1/route2/...", params: "key1=value1&key2=value2...", bound: { key1: true, key2: true, ... }}
@@ -202,7 +202,7 @@ foam.CLASS({
         in the parent, even if it is the default value, otherwise it would
         cause ambiguity as to which level the binding applied.
       **/
-      var ret = this.tail ? this.tail.encode() : { route: '', params: '', bound: {} };
+      var ret = ( this.tail && opt_untilObj !== this.obj ) ? this.tail.encode() : { route: '', params: '', bound: {} };
 
       this.props.forEach(p => {
         var val = this.obj[p.name] === undefined ? '' : this.obj[p.name];
@@ -226,7 +226,7 @@ foam.CLASS({
         }
       });
 
-      this.usedStr = this.toString(ret);
+      if ( ! opt_untilObj ) this.usedStr = this.toString(ret);
 
       return ret;
     }
