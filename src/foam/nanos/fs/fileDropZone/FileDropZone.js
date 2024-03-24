@@ -187,8 +187,14 @@ foam.CLASS({
           this.supportedFormats[type.toSummary()] = type.abbreviation;
         });
       }
+      var visibilitySlot = this.slot(function(isMultipleFiles, controllerMode) {
+          let cm = controllerMode != foam.u2.ControllerMode.VIEW;
+          if ( isMultipleFiles && cm ) return true;
+          return cm;
+        });
 
       this.start('input')
+        .show(visibilitySlot)
         .addClass(this.myClass('input'))
         .addClass(this.instanceClass('input'))
         .attrs({
@@ -197,49 +203,47 @@ foam.CLASS({
           multiple: this.isMultipleFiles ? 'multiple' : false
         })
         .on('change', this.onChange)
-        .end()
-        .callIf(this.controllerMode != foam.u2.ControllerMode.VIEW, function() {
-          this.start().addClass(this.myClass())
-            .addClass(this.myClass('instruction-container'))
-            .enableClass('selection', this.hasFiles$)
-            .enableClass(this.myClass('dragged'), this.isDragged_$)
-            .start()
-              .addClass(this.myClass('browse-container'))
-              .enableClass(this.myClass('browse-container-row'), this.hasFiles$)
-              .start().addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
-              .start().addClass('p').add(this.LABEL_OR).end()
-              .add(this.slot(function(hasFiles) {
-                return this.E().start(this.BROWSE, {
-                  label: self.LABEL_BROWSE,
-                  buttonStyle: hasFiles ? 'LINK' : 'SECONDARY'
+      .end()
+      .start().addClass(this.myClass())
+        .show(visibilitySlot)
+        .addClass(this.myClass('instruction-container'))
+        .enableClass('selection', this.hasFiles$)
+        .enableClass(this.myClass('dragged'), this.isDragged_$)
+        .start()
+          .addClass(this.myClass('browse-container'))
+          .enableClass(this.myClass('browse-container-row'), this.hasFiles$)
+          .start().addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
+            .start().addClass('p').add(this.LABEL_OR).end()
+            .add(this.slot(function(hasFiles) {
+              return this.E().start(this.BROWSE, {
+                label: self.LABEL_BROWSE,
+                buttonStyle: hasFiles ? 'LINK' : 'SECONDARY'
+              })
+                .enableClass(this.myClass('link'), self.hasFiles$)
+                .attrs({
+                  for: 'file-upload'
                 })
-                  .enableClass(this.myClass('link'), self.hasFiles$)
-                  .attrs({
-                    for: 'file-upload'
-                  })
-                  .end();
-              }))
-            .end()
-
-            .start().addClass(this.myClass('caption-container'))
-              .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1; }))
-              .start()
-                .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
-                .start('p').addClass('p-xs', self.myClass('caption')).add(this.getSupportedTypes(true)).end()
-              .end()
-              .start()
-                .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
-              .end()
-            .end()
+              .end();
+            }))
+        .end()
+        .start().addClass(this.myClass('caption-container'))
+        .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1; }))
+          .start()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
+            .start('p').addClass('p-xs', self.myClass('caption')).add(this.getSupportedTypes(true)).end()
           .end()
-          .on('drop', this.onDrop)
-          .on('dragover', e => { this.isDragged_ = true; e.preventDefault(); } )
-          .on('dragenter', e => { this.isDragged_ = true; e.preventDefault(); })
-          .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); });
-        })
-        .add(this.slot(function(files) {
+          .start()
+            .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_MAX_SIZE + ' ' + this.maxSize + 'MB').end()
+          .end()
+        .end()
+      .end()
+      .on('drop', this.onDrop)
+      .on('dragover', e => { this.isDragged_ = true; e.preventDefault(); } )
+      .on('dragenter', e => { this.isDragged_ = true; e.preventDefault(); })
+      .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); })
+        .add(this.slot(function(files, visibility) {
         var e = this.E().addClass(self.myClass('fileCards'));
-        if ( files.length == 0 )
+        if ( ! files.length && ! visibility )
           return e.add(self.NO_FILES);
         for ( var i = 0; i < files.length; i++ ) {
           e.tag({
@@ -281,7 +285,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
+          this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;
@@ -370,7 +374,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
+                this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
               }
             }
           }
@@ -382,7 +386,7 @@ foam.CLASS({
           if ( this.isFileType(file) ) {
             files.push(file);
           } else {
-            ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
+            this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
           }
         }
       }
