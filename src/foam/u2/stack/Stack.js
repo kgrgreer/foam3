@@ -123,8 +123,8 @@ foam.CLASS({
       }
 
       block.historyPos     = this.window.history.length;
-      block.currentMemento = this.memento_.toString();
-      console.log('************ currentMemento', block.currentMemento);
+//      block.currentMemento = this.memento_.toString(this.memento_.encode(block.parent));
+//      console.log('************ currentMemento', block.currentMemento);
 
       if ( ! block.breadcrumbTitle && block.view.title ) block.breadcrumbTitle = block.view.title;
 
