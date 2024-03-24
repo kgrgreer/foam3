@@ -59,6 +59,8 @@ foam.CLASS({
       name: 'DAOListView',
       extends: 'foam.u2.Controller',
 
+      mixins: [ 'foam.u2.memento.Memorable' ],
+
       imports: [ 'nSpecDAO', 'route' ],
 
       css: `
@@ -136,6 +138,7 @@ foam.CLASS({
            class: 'foam.u2.SearchField',
            onKey: true
           },
+          memorable: true,
           preSet: function(o, n) { this.daoCount = 0; return n; }
         }
       ],
