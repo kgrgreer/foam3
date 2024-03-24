@@ -99,7 +99,7 @@ foam.CLASS({
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
-      if ( s.currentMemento !== window.location.hash.substring(1) ) {
+      if ( s.seen ) {
         this.routeTo(s.currentMemento);
         // return this.E('span').add('Loading... ', s.currentMemento, ' from ', window.location.hash.substring(1));
       }
