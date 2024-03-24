@@ -7,8 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DataManagement',
-  extends: 'foam.u2.Controller',
-  mixins: [ 'foam.u2.memento.Memorable' ],
+  extends: 'foam.u2.Router',
 
   documentation: 'Data Management UI for browsing all DAOs.',
 
@@ -349,15 +348,6 @@ foam.CLASS({
             tag(this.inner);
         }
       ]
-    }
-  ],
-
-  exports: [ 'route' ],
-
-  properties: [
-    {
-      name: 'route',
-      memorable: true
     }
   ],
 
