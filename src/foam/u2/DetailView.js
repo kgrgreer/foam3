@@ -21,12 +21,7 @@ foam.CLASS({
   exports: [
     'controllerMode',
     'currentData as data',
-    'currentData as objData',
-    'currentMemento_ as memento'
-  ],
-
-  imports: [
-    'memento'
+    'currentData as objData'
   ],
 
   axioms: [
@@ -227,8 +222,7 @@ foam.CLASS({
         return this.of ? this.of.model_.label : '';
       }
     },
-    ['nodeName', 'DIV'],
-    'currentMemento_'
+    ['nodeName', 'DIV']
   ],
 
   methods: [
@@ -239,7 +233,9 @@ foam.CLASS({
         self.removeAllChildren(); // TODO: not needed in U3
 
         if ( route ) {
-          this.add('Property: ', route);
+          self.currentData = self.data;
+          var axiom = self.of.getAxiomByName(route);
+          this.br().add(axiom.__);
         } else {
           self.renderDetailView();
         }
