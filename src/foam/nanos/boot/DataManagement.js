@@ -49,7 +49,8 @@ foam.CLASS({
                   { class: this.DAOBrowseControllerView, showNav: false },
                   this.CONTROLLER2
                 ]
-              ]
+              ],
+              selectedView: this.CONTROLLER2
             }).
           end();
         }
