@@ -75,46 +75,24 @@ foam.CLASS({
         .start('div')
           .add(plot)
         .end();
-
-      //1. show error message if CM not found.
     },
 
     async function buildCharDataSet(cm) {
-      // let labels = {};
-      // let datasets = {};
-      // let results = cm.rawResults;
+      let dataSets = {};
+      dataSets['labels'] = cm.rawResult.labels
+      dataSets['datasets'] = []
 
-      // for ( const c of results ) {
-        
-      // }
-      return {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [
-          {
-            label: 'Total',
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1
-          },
-          {
-            label: 'With Fee',
-            data: [5, 10, 13, 15, 12, 13],
-            borderWidth: 1
-          },
-          {
-            label: 'Without Fee',
-            data: [2, 8, 23, 25, 22, 23],
-            borderWidth: 1
-          }
-        ]
+      for (const [k, v] of Object.entries(cm.rawResult.dataset)) {
+        dataSets['datasets'].push({
+          label: k,
+          data: v,
+          borderWidth: 1
+        })
       }
-      // return {
-      //   data: {
-      //     datasets: [{
-      //       data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
-      //     }]
-      //   },
-      // }
+
+      return dataSets
     },
+
     async function generatePlot(data) {
       return this.Line2.create({
         data,
