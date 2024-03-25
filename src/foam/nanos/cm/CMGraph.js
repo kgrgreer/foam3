@@ -22,7 +22,8 @@ foam.CLASS({
 
   requires: [
     'foam.graphics.Box',
-    'org.chartjs.Line2'
+    'org.chartjs.Line2',
+    'org.chartjs.Bar2'
   ],
 
   imports: [
@@ -88,12 +89,31 @@ foam.CLASS({
       // }
       return {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 1
-        }]
+        datasets: [
+          {
+            label: 'Total',
+            data: [12, 19, 3, 5, 2, 3],
+            borderWidth: 1
+          },
+          {
+            label: 'With Fee',
+            data: [5, 10, 13, 15, 12, 13],
+            borderWidth: 1
+          },
+          {
+            label: 'Without Fee',
+            data: [2, 8, 23, 25, 22, 23],
+            borderWidth: 1
+          }
+        ]
       }
+      // return {
+      //   data: {
+      //     datasets: [{
+      //       data: [{id: 'Sales', nested: {value: 1500}}, {id: 'Purchases', nested: {value: 500}}]
+      //     }]
+      //   },
+      // }
     },
     async function generatePlot(data) {
       return this.Line2.create({

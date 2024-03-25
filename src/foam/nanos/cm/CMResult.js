@@ -21,6 +21,36 @@ foam.CLASS({
       class: 'Double',
       name: 'value'
     },
+    {
+      class: 'List',
+      javaType: 'java.util.List<String>',
+      documentation: 'xAxis key',
+      name: 'labels',
+      javaFactory: `
+        return new java.util.ArrayList<String>();
+      `
+    },
+    {
+      class: 'Map',
+      name: 'dataset',
+      documentation: 'xAxis keys',
+      javaType: 'java.util.Map<String, java.util.List<Integer>>',
+      javaFactory: `
+        return new java.util.HashMap<String, java.util.List<Integer>>();
+      `
+    }
+  ],
 
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function toSummary() {
+        return "TODO";
+      },
+      javaCode: `
+        return "TODO";
+      `
+    }
   ]
 })
