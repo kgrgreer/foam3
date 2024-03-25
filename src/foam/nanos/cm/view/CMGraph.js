@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.cm',
+  package: 'foam.nanos.cm.view',
   name: 'CMGraph',
   extends: 'foam.u2.View',
   documentation: `
@@ -43,12 +43,6 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'type of graph.'
-    },
-    {
-      name: 'canvas',
-      factory: function() {
-        return this.Box.create();
-      }
     },
     {
       class: 'Map',
