@@ -88,11 +88,7 @@ foam.CLASS({
       name: 'message',
       class: 'String',
       storageTransient: true,
-      visibility: 'RO',
-      javaGetter: `
-        // Return non-translated template rendered exceptionMessage
-        return renderMessage(getExceptionMessage());
-      `
+      visibility: 'RO'
     },
     {
       documentation: 'Override title of notification messages',
@@ -217,7 +213,7 @@ foam.CLASS({
         sb.append(getErrorCode());
         sb.append("),");
       }
-      sb.append(getMessage());
+      sb.append(renderMessage(getExceptionMessage()));
       return sb.toString();
       `
     },
