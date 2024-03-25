@@ -57,7 +57,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'addLabels',
+      name: 'addLabel',
       args: 'String label',
       javaCode: `
         getLabels().add(label);
@@ -67,7 +67,9 @@ foam.CLASS({
       name: 'addDataPoint',
       args: 'String key, Double value',
       javaCode: `
-        getDataset().getOrDefault(key, new java.util.ArrayList<Double>()).add(value);
+        var r = getDataset().getOrDefault(key, new java.util.ArrayList<Double>());
+        r.add(value);
+        getDataset().put(key, r);
       `
     }
   ],
