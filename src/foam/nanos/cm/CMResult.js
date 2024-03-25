@@ -8,6 +8,10 @@ foam.CLASS({
   package: 'foam.nanos.cm',
   name: 'CMResult',
 
+  documentation: `
+    Model the result of CM, so the result can render into plot easiler.
+  `,
+
   properties: [
     {
       class: 'String',
@@ -16,6 +20,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'value'
-    }
+    },
+
   ]
 })
