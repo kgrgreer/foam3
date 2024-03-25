@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'DetailView',
   extends: 'foam.u2.View',
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'A generic property-sheet style View for editing an FObject.',
 
@@ -147,6 +148,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'route',
+      memorable: true
+    },
+    {
       name: 'data',
       attribute: true,
       preSet: function(_, data) {
@@ -228,6 +233,20 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this;
+
+      this.dynamic(function(route) {
+        self.removeAllChildren(); // TODO: not needed in U3
+
+        if ( route ) {
+          this.add('Property: ', route);
+        } else {
+          self.renderDetailView();
+        }
+      });
+    },
+
+    function renderDetailView() {
       // The next two lines are so that FObjectView uses this kind of DetailView
       // for nested objects.
       this.__subContext__.register(this.cls_, 'foam.u2.detail.SectionedDetailView');
