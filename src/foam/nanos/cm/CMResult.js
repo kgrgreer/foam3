@@ -12,15 +12,13 @@ foam.CLASS({
     Model the result of CM, so the result can render into plot easiler.
   `,
 
+  javaImports: [
+    'java.util.Map.Entry',
+    'java.util.Map',
+    'java.util.List'
+  ],
+
   properties: [
-    {
-      class: 'String',
-      name: 'key'
-    },
-    {
-      class: 'Double',
-      name: 'value'
-    },
     {
       class: 'List',
       javaType: 'java.util.List<String>',
@@ -33,10 +31,10 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'dataset',
-      documentation: 'xAxis keys',
-      javaType: 'java.util.Map<String, java.util.List<Integer>>',
+      documentation: 'yAxis keys',
+      javaType: 'java.util.Map<String, java.util.List<Double>>',
       javaFactory: `
-        return new java.util.HashMap<String, java.util.List<Integer>>();
+        return new java.util.HashMap<String, java.util.List<Double>>();
       `
     }
   ],
@@ -45,12 +43,32 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
-      code: function toSummary() {
-        return "TODO";
-      },
       javaCode: `
-        return "TODO";
+        var ret = "";
+        for ( Map.Entry<String, List<Double>> e: getDataset().entrySet() ) {
+          var key = e.getKey();
+          var values = e.getValue();
+
+          for ( int i = 0 ; i < values.size() && i < getLabels().size() ; i++ ) {
+            ret += key + "-" + getLabels().get(i) + ": " + values.get(i) + ", ";
+          }
+        }
+        return ret;
+      `
+    },
+    {
+      name: 'addLabels',
+      args: 'String label',
+      javaCode: `
+        getLabels().add(label);
+      `
+    },
+    {
+      name: 'addDataPoint',
+      args: 'String key, Double value',
+      javaCode: `
+        getDataset().getOrDefault(key, new java.util.ArrayList<Double>()).add(value);
       `
     }
-  ]
+  ],
 })

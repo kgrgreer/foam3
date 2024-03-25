@@ -49,22 +49,12 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'List',
-      name: 'rawResults',
+      class: 'FObjectProperty',
+      name: 'rawResult',
+      of: 'foam.nanos.cm.CMResult',
       storageTransient: true,
-      javaType: 'java.util.ArrayList<foam.nanos.cm.CMResult>',
       javaPostSet: `
-        if ( getRawResults() == null || getRawResults().size() == 0 ) {
-          setResult("");
-          return;
-        }
-        var results = getRawResults();
-        var ret = "";
-        for ( int i = 0 ; i < results.size() ; i++ ) {
-          ret += results.get(i).getKey() + ": " + results.get(i).getValue();
-          if ( i < results.size() ) ret += ", ";
-        }
-        setResult(ret);
+        setResult(getRawResult().toSummary());
       `
     },
     {
