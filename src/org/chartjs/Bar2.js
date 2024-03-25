@@ -26,7 +26,12 @@ foam.CLASS({
     },
     {
       name: 'config',
-      required: true
+      factory: function() {
+        return {
+          type: 'bar',
+          data: this.data
+        };
+      }
     }
   ],
 

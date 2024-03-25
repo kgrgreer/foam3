@@ -390,6 +390,7 @@ foam.POM({
     { name: "cm/CM",                                                                      flags: "js|java" },
     { name: "cm/view/CMGraph",                                                            flags: "web" },
     { name: "cm/view/CMLine",                                                             flags: "web" },
+    { name: "cm/view/CMBar",                                                              flags: "web" },
     { name: "cm/CMResult",                                                                flags: "js|java" },
     { name: "cm/CMUpdateDAO",                                                             flags: "java" },
     { name: "pm/PMTemperatureCellFormatter",                                              flags: "js" },

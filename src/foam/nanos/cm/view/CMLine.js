@@ -15,7 +15,6 @@ foam.CLASS({
   requires: [
     'foam.graphics.Box',
     'org.chartjs.Line2',
-    'org.chartjs.Bar2'
   ],
 
   methods: [
