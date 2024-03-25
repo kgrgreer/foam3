@@ -43,7 +43,7 @@ foam.CLASS({
     max-height: 100%;
     position: relative;
     overflow: auto;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: contain;
     scroll-behavior: smooth;
   }
   ^nav{

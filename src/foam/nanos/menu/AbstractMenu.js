@@ -35,19 +35,10 @@ foam.CLASS({
     function launch(X, menu) {
       /** Called to activate a menu. **/
       var self = this;
-      if ( this.shouldResetBreadcrumbs ) {
-        X.stack.resetStack();
-      }
-      X.stack.push(foam.u2.stack.StackBlock.create({
-        view: () => {
-          return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
-        },
-        parent: X,
-        id: menu.id,
-        // shouldResetBreadcrumbs: self.shouldResetBreadcrumbs,
-        breadcrumbTitle$: menu.label$,
-        popup$: this.popup$
-      }));
+      X.stack.set(
+        (menu.border ? { ...menu.border, children: [ this.createView(X, menu) ] } : menu),
+        X
+      )
     }
   ]
 });

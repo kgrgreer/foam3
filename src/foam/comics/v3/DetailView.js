@@ -47,20 +47,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
+    ^buttonGroup {
+      flex: 2 0 fit-content;
+      justify-content: flex-end;
     }
-    ^main {
-      height: min(600px,100%);
-      padding: 24px 32px;
-    }
-    ^widget-container {
-      width: 100%;
-      display: grid;
-      flex-grow: 1;
+    ^buttonGroup .foam-u2-view-OverlayActionListView-iconOnly {
+      padding: 6px;
     }
   `,
 
@@ -73,7 +65,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'workingData',
       expression: function(data) {
-        return data?.clone(this);
+        return data?.clone(this) ?? this.config.of.create({}, this);
       }
     },
     {
@@ -81,35 +73,20 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return importedConfig || foam.comics.v2.DAOControllerConfig.create({}, this);
+        return this.importedConfig || foam.comics.v2.DAOControllerConfig.create({}, this);
       }
     },
     {
       name: 'controllerMode',
+      shortName: 'mode',
+      memorable: true,
       factory: function() {
         return this.ControllerMode.VIEW;
       }
     },
     {
       name: 'primary',
-      documentation: `Axiom to store the primary action of the 'of' model`,
-      expression: function(config$of, data) {
-        var allActions = config$of.getAxiomsByClass(foam.core.Action);
-        var defaultAction = allActions.filter((a) => a.isDefault);
-        var acArray = defaultAction.length >= 1
-          ? defaultAction
-          : allActions.length >= 1
-            ? allActions
-            : null;
-        if ( acArray && acArray.length ) {
-          let res;
-          acArray.forEach(a => {
-            var aSlot = a.createIsAvailable$(this.__subContext__, data);
-            if (aSlot.get()) res = a;
-          });
-          return res;
-        }
-      }
+      documentation: `Axiom to store the primary action of the 'of' model`
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -125,29 +102,12 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'route',
-      memorable: true,
-      documentation: 'This stores the id we want to add to the memento of the view',
-      factory: function() {
-          if ( ! this.idOfRecord )
-            return '';
-          var id = '' + this.idOfRecord;
-          if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
-            id = id.substr(1, id.length - 2).replaceAll(':', '=');
-          }
-          return id;
-      },
-      postSet: function(_,n) {
-        if ( ! this.idOfRecord && n ) this.idOfRecord = n;
-      }
-    },
-    {
       name: 'idOfRecord',
       factory: function() {
-        return this.route ? this.route : this.data ? this.data.id : null;
+        return this.data ? this.data.id : null;
       }
     },
+    'actionArray',
     {
       class: 'String',
       name: 'viewTitle',
@@ -158,15 +118,17 @@ foam.CLASS({
           maybePromise.then( v => { self.viewTitle = v })
           return '';
         }
+        this.__subContext__.controlBorder.viewTitle = maybePromise;
         return maybePromise;
       }
     },
     {
       name: 'translationService',
       factory: function() {
-        return this.context.translationService || foam.i18n.NullTranslationService.create({}, this);
+        return this.__context__.translationService || foam.i18n.NullTranslationService.create({}, this);
       }
     },
+    // TODO: routeable props and actions on data
   ],
 
   methods: [
@@ -177,70 +139,76 @@ foam.CLASS({
       var id = this.data?.id ?? this.idOfRecord;
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
         self.data = d;
-        if ( self.currentControllerMode == 'edit' ) self.edit();
+        if ( this.controllerMode == 'EDIT' ) this.edit();
+        this.populatePrimaryAction(self.config.of, self.data);
+
       });
     },
     function render() {
       var self = this;
       this.SUPER();
-      // if ( this.setControllerMode ) this.setControllerMode('view');
       this
-      .addClass(this.myClass())
       .add(self.slot(function(config$viewBorder, viewView) {
-        return self.E()
-          .start(self.Rows)
-            .start(self.Rows)
-              // we will handle this in the StackView instead
-              .startContext({ onBack: self.onBack })
-                .tag(self.BreadcrumbView)
-              .endContext()
-              .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
-                .start()
-                  .add(self.data$.map(v => { return v?.toSummary() ?? '---' }))
-                  .addClass('dao-title')
-                  .addClass('truncate-ellipsis')
-                .end()
-                .startContext({ data: self.data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
-              .end()
-            .end()
-
-            .start(self.Cols)
-              .start(self.Cols).addClass(self.myClass('actions-header'))
-                .startContext({ data: self })
-                  .tag(self.EDIT, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'edit',
-                    icon: 'images/edit-icon.svg'
-                  })
-                  .tag(self.COPY, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'copy',
-                    icon: 'images/copy-icon.svg'
-                  })
-                  .tag(self.DELETE, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'trash',
-                    icon: 'images/delete-icon.svg'
-                  })
-                  .tag(self.CANCEL_EDIT, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                  })
-                  .tag(self.SAVE, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                  })
-                .endContext()
-              .end()
-            .end()
+        var allActions = self.config.of.getAxiomsByClass(foam.core.Action);
+        self.actionArray = allActions;
+        this.onDetach(() => { this.__subContext__.controlBorder.buttonHolder.removeAllChildren() })
+        this.__subContext__.controlBorder.buttonHolder.add(this.dynamic(function(actionArray, primary) {
+          this.start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: this, icon: '/images/Icon_More_Resting.svg',
+              showDropdownIcon: false  }})
+            .addClass(this.myClass('buttonGroup'))
+            .add(self.slot(function(primary) {
+              return this.E()
+                .hide(self.controllerMode$.map(c => c == 'EDIT' ))
+                .startContext({ data: self.data })
+                  .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
+                .endContext();
+            }))
+            .startContext({ data: self })
+              .tag(self.EDIT)
+              .tag(self.CANCEL_EDIT)
+              .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
+            .endContext()
+            .startOverlay()
+              .forEach(self.actionArray, function(v) {
+                this.addActionReference(v, self.data)
+              })
+              .tag(self.COPY)
+              .tag(self.DELETE)
+            .endOverlay()
+          .end();
+        }))
+        return self.E().style({ display: 'contents' })
             .start(config$viewBorder)
               .start(viewView, {
                 data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
-                memento_$: self.memento_$
               })
                 .addClass(self.myClass('view-container'))
               .end()
-            .end()
-          .end();
+            .end();
       }));
+    },
+    async function populatePrimaryAction(of, data) {
+      var allActions = of.getAxiomsByClass(foam.core.Action);
+      var defaultAction = allActions.filter((a) => a.isDefault);
+      var acArray = defaultAction.length >= 1
+        ? defaultAction
+        : allActions.length >= 1
+          ? allActions
+          : null;
+      if ( acArray && acArray.length ) {
+        let res;
+        for ( let a of acArray ) {
+          var aSlot = a.createIsAvailable$(this.__subContext__, data);
+          let b = aSlot.get();
+          if ( aSlot.promise ) {
+            await aSlot.promise;
+            b = aSlot.get();
+          }
+          if (b) res = a;
+        }
+
+        this.primary = res;
+      }
     }
   ],
 
@@ -251,6 +219,8 @@ foam.CLASS({
     },
     {
       name: 'edit',
+      themeIcon: 'edit',
+      icon: 'images/edit-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
@@ -273,11 +243,12 @@ foam.CLASS({
       },
       code: function() {
         this.controllerMode = 'EDIT';
-        this.setControllerMode('edit');
       }
     },
     {
       name: 'copy',
+      themeIcon: 'copy',
+      icon: 'images/copy-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
@@ -358,17 +329,18 @@ foam.CLASS({
     },
     {
       name: 'cancelEdit',
-      label: 'cancel',
+      label: 'Cancel',
       isAvailable: function(controllerMode) {
         return controllerMode == 'EDIT';
       },
       code: function() {
         this.controllerMode = 'VIEW';
-        this.setControllerMode('view');
       }
     },
     {
       name: 'delete',
+      themeIcon: 'trash',
+      icon: 'images/delete-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
@@ -381,7 +353,8 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config) {
+      isAvailable: function(config, controllerMode) {
+        if ( controllerMode == 'EDIT' ) return false;
         try {
           return config.deletePredicate.f();
         } catch(e) {

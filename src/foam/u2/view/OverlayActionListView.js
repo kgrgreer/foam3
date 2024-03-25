@@ -157,7 +157,7 @@ foam.CLASS({
   methods: [
     async function render() {
       this.SUPER();
-
+      this.enableClass(this.myClass('unavailable'), this.disabled_$)
       this.shown = false;
       this.onDetach(this.data$.sub(this.recheckShown));
       await this.recheckShown();
@@ -184,6 +184,14 @@ foam.CLASS({
           return e;
         }));
       }
+      let availSlots = this.data.map(action => {
+        if (  foam.u2.ActionReference.isInstance(action) ) return action.action.createIsAvailable$(this.__context__, action.data)
+        if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
+        return action.createIsAvailable$(this.__context__, this.obj)
+      })
+      this.onDetach(this.disabled_$.follow(foam.core.ArraySlot.create({
+        slots: availSlots
+      }, this).map(arr => ! arr.reduce((l, r) => l || r, false))));
     },
 
     async function initializeOverlay(x, y) {
@@ -200,15 +208,6 @@ foam.CLASS({
         this.obj = await this.dao.inX(this.__context__).find(this.obj.id);
       }
 
-      this.onDetach(this.disabled_$.follow(this.ExpressionSlot.create({
-        args: this.data.map(action => {
-          if (  foam.u2.ActionReference.isInstance(action) ) action.action.createIsAvailable$(this.__context__, action.data)
-          if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
-          return action.createIsAvailable$(this.__context__, this.obj)
-        }),
-        code: (...rest) => ! rest.reduce((l, r) => l || r, false)
-      })));
-
       this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
       self.obj?.sub(function() {
@@ -217,12 +216,12 @@ foam.CLASS({
 
       // a list where element at i stores whether ith action in data is enabled or not
       const enabled = await Promise.all(this.data.map(action => {
-        if ( ! foam.core.Action.isInstance(action) ) return true;
+        if ( ! foam.core.Action.isInstance(action) || ! foam.u2.ActionReference.isInstance(action) ) return true;
         return this.isEnabled.bind(this);
       }));
       // a list where element at i stores whether ith action in data is available or not
       const availabilities = await Promise.all(this.data.map(action => {
-        if ( ! foam.core.Action.isInstance(action) ) return true;
+        if ( ! foam.core.Action.isInstance(action) || ! foam.u2.ActionReference.isInstance(action) ) return true;
         return this.isAvailable.bind(this);
       }));
 

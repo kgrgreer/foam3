@@ -24,35 +24,32 @@ foam.CLASS({
 
       messages: [
         { name: 'CONTROLLER1', message: 'Controller 1' },
-        { name: 'CONTROLLER2', message: 'Controller 2' }
+        { name: 'CONTROLLER2', message: 'Controller 3' }
       ],
 
       properties: [
-        'daoKey'
+        'data'
       ],
 
       methods: [
         function render() {
           this.document.title = 'Data Management / ' + this.daoKey;
 
-          var x = this.__subContext__;
-
-          this.start(this.BackBorder).
-            tag(this.AltView, {
-              data: this.__context__[this.daoKey],
-              views: [
-                [
-                  { class: this.BrowserView },
-                  this.CONTROLLER1
-                ],
-                [
-                  { class: this.DAOBrowseControllerView, showNav: false },
-                  this.CONTROLLER2
-                ]
+          this
+          .tag(this.AltView, {
+            data$: this.data$,
+            views: [
+              [
+                { class: this.BrowserView },
+                this.CONTROLLER1
               ],
+              [
+                { class: foam.comics.v3.DAOController, showNav: false },
+                this.CONTROLLER2
+              ]
+            ],
               selectedView: this.CONTROLLER2
-            }).
-          end();
+          });
         }
       ]
     },
@@ -148,7 +145,7 @@ foam.CLASS({
         function render() {
           this.SUPER();
 
-          this.document.title = 'Data Management'
+          this.document.title = 'Data Management';
 
           var self          = this;
           var currentLetter = '';
@@ -249,57 +246,6 @@ foam.CLASS({
       ]
     },
     {
-      name: 'CustomDAOUpdateView',
-      extends: 'foam.comics.v2.DAOUpdateView',
-
-      properties: [
-        {
-          class: 'foam.u2.ViewSpec',
-          name: 'viewView',
-          factory: function() {
-            return {
-              class: 'foam.u2.view.ObjAltView',
-              views: [
-                [ {class: 'foam.u2.DetailView'},                 this.DETAIL ],
-                [ {class: 'foam.u2.detail.TabbedDetailView'},    this.TABBED ],
-                [ {class: 'foam.u2.detail.SectionedDetailView'}, this.SECTIONED ],
-                [ {class: 'foam.u2.detail.MDDetailView'},        this.MATERIAL ],
-                [ {class: 'foam.u2.detail.WizardSectionsView'},  this.WIZARD ],
-                [ {class: 'foam.u2.detail.VerticalDetailView'},  this.VERTICAL ]
-              ]
-            };
-          }
-        }
-      ]
-    },
-
-    // TODO: replace with UpdateView
-    {
-      name: 'CustomDAOSummaryView',
-      extends: 'foam.comics.v2.DAOSummaryView',
-
-      properties: [
-        {
-          class: 'foam.u2.ViewSpec',
-          name: 'viewView',
-          factory: function() {
-            return {
-              class: 'foam.u2.view.ObjAltView',
-              views: [
-                [ {class: 'foam.u2.DetailView'},                 this.DETAIL ],
-                [ {class: 'foam.u2.detail.TabbedDetailView'},    this.TABBED ],
-                [ {class: 'foam.u2.detail.SectionedDetailView'}, this.SECTIONED ],
-                [ {class: 'foam.u2.detail.MDDetailView'},        this.MATERIAL ],
-                [ {class: 'foam.u2.detail.WizardSectionsView'},  this.WIZARD ],
-                [ {class: 'foam.u2.detail.VerticalDetailView'},  this.VERTICAL ]
-              ]
-            };
-          }
-        }
-      ]
-    },
-
-    {
       name: 'DAOUpdateControllerView',
       extends: 'foam.comics.DAOUpdateControllerView',
 
@@ -314,45 +260,6 @@ foam.CLASS({
         }
       ]
     },
-
-    {
-      name: 'BackBorder',
-      extends: 'foam.u2.Element',
-
-      imports: [ 'stack' ],
-
-      requires: [ 'foam.u2.stack.BreadcrumbView' ],
-
-      css: `
-        ^nav {
-          margin-top: 32px;
-          margin-left: 32px;
-          margin-bottom: 16px;
-        }
-      `,
-
-      properties: [
-        'title',
-        {
-          class: 'foam.u2.ViewSpec',
-          name: 'inner'
-        },
-        {
-          name: 'viewTitle',
-          factory: function() { return this.title; }
-        }
-      ],
-
-      methods: [
-        function render() {
-          this.SUPER();
-
-          this.
-            start(this.BreadcrumbView).addClass(this.myClass('nav')).end().
-            tag(this.inner);
-        }
-      ]
-    }
   ],
 
   methods: [
@@ -363,15 +270,13 @@ foam.CLASS({
 
       // TODO: Should move to DAOView and these sub-Models should move there also
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
-      x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
-      x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
 
         if ( route ) {
-          this.tag(self.DAOView, {daoKey: route});
+          this.tag(self.DAOView, {data: this.__context__[route]});
         } else {
           this.tag(self.DAOListView);
         }

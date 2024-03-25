@@ -55,7 +55,7 @@ foam.CLASS({
     'foam.u2.crunch.CrunchController',
     'foam.u2.crunch.WizardRunner',
     'foam.u2.wizard.WizardType',
-    'foam.u2.stack.Stack',
+    'foam.nanos.u2.navigation.Stack',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
@@ -717,6 +717,13 @@ foam.CLASS({
     },
 
     async function pushMenu_(realMenu, menu, opt_forceReload) {
+      let idCheck = menu && ( menu.id ? menu.id : menu );
+      let currentMenuCheck = this.currentMenu?.id;
+      var realMenu = menu;
+      /** Used to stop any duplicating recursive calls **/
+      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
+        return;
+      }
 console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
       let stringMenu = menu && foam.String.isInstance(menu);
@@ -739,7 +746,7 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
 
       if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
-
+      this.menuListener(menu);
       return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
@@ -914,19 +921,7 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
         .addClass(this.myClass())
         .tag(this.NavigationController, {
           topNav$: this.topNavigation_$,
-          mainView: {
-            class: 'foam.u2.stack.DesktopStackView',
-            data: this.stack,
-            stackDefault: {
-              class:     'foam.u2.LoadingSpinner',
-              size:      32,
-              text:      'Loading...',
-              showText:  true,
-              color:     color
-            },
-            showActions: false,
-            nodeName:    'main'
-          },
+          mainView: this.stack,
           footer$: this.footerView_$,
           sideNav$: this.sideNav_$
         });
@@ -942,7 +937,6 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
        * by some Menu View. Is exported.
        */
       this.currentMenu = m;
-      this.route = m.id;
     },
 
     function lastMenuLaunchedListener(m) {

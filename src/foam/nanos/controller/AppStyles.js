@@ -29,7 +29,7 @@ foam.CLASS({
       padding-right: env(safe-area-inset-right, 0);
       padding-bottom: env(safe-area-inset-bottom, 0);
       padding-left: env(safe-area-inset-left, 0);
-      overscroll-behavior: none;
+      overscroll-behavior-y: none;
     }
 
     blockquote{

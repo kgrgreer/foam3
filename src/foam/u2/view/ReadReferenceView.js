@@ -158,7 +158,7 @@ foam.CLASS({
                       id: `daoSummary.${self.obj.cls_.name}.${self.obj.id}`,
                       breadcrumbTitle: '' + self.obj.id,
                       view: {
-                        class: 'foam.comics.v2.DAOSummaryView',
+                        class: 'foam.comics.v3.DetailView',
                         data: self.obj,
                         of: self.obj.cls_,
                         backLabel: 'Back',
