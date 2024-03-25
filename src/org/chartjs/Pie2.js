@@ -30,14 +30,7 @@ foam.CLASS({
       factory: function() {
         return {
           type: 'pie',
-          data: this.data,
-          options: {
-            animation: {
-              duration: 0
-            },
-            responsive: false,
-            maintainAspectRatio: false,
-          }
+          data: this.data
         };
       }
     }

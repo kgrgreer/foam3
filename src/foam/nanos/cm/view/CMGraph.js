@@ -18,6 +18,14 @@ foam.CLASS({
       place-items: center;
       height: 100%;
     }
+    ^plot {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    ^plot-item {
+      width: 100%
+    }
   `,
 
   requires: [
@@ -63,11 +71,15 @@ foam.CLASS({
       }
       
       let data = await self.buildCharDataSet(cm)
-      let plot = await self.generatePlot(data)
+      let plots = await self.generatePlots(data)
 
       self.addClass(self.myClass('canvas-container'))
-        .start('div')
-          .add(plot)
+        .start('div').addClass(self.myClass('plot'))
+          .forEach(plots, function(plot) {
+            this.start('div').addClass(self.myClass('plot-item'))
+              .add(plot)
+            .end()
+          })
         .end();
     },
 
@@ -87,15 +99,17 @@ foam.CLASS({
       return dataSets
     },
 
-    async function generatePlot(data) {
-      return this.Line2.create({
-        data,
-        options: {
-          legend: {
-            display: false,
-          },
-        }
-      })
+    async function generatePlots(data) {
+      return [
+        this.Line2.create({
+          data,
+          options: {
+            legend: {
+              display: false,
+            },
+          }
+        })
+      ]
     }
   ]
 })

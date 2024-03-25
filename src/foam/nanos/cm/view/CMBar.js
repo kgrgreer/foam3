@@ -22,15 +22,17 @@ foam.CLASS({
       this.SUPER();
     },
 
-    async function generatePlot(data) {
-      return this.Bar2.create({
-        data,
-        options: {
-          legend: {
-            display: false,
-          },
-        }
-      })
+    async function generatePlots(data) {
+      return [
+        this.Bar2.create({
+          data,
+          options: {
+            legend: {
+              display: false,
+            },
+          }
+        })
+      ]
     }
   ]
 })
