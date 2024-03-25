@@ -44,7 +44,7 @@ foam.CLASS({
       of: 'foam.core.FObject',
       autoValidate: true,
       documentation: `data for capability.of`,
-      view: 'foam.u2.view.AnyView'
+      view: 'foam.u2.view.FObjectPropertyView'
     },
     {
       name: 'status',
