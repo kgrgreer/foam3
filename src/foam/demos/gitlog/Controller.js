@@ -191,6 +191,14 @@ foam.CLASS({
                 if ( total )
                   this.add(' / ', (100*total/allTotal).toFixed(0) + '%');
               }).
+              call(function() {
+                if ( ! self.data.showSalaries ) return;
+                try {
+                var monthly = self.data.salaries[a[0]][1];
+                if ( total )
+                  this.add(' / $', (100*total/allTotal).toFixed(0) * monthly);
+                } catch (x) {}
+              }).
             end().
           end();
         }).
@@ -623,11 +631,19 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     },
     {
       class: 'Boolean',
+      name: 'showSalaries'
+    },
+    {
+      class: 'Boolean',
       name: 'embedFiles'
     },
     {
       name: 'data',
       factory: function() { return []; }
+    },
+    {
+      name: 'salaries',
+      factory: function() { return {}; }
     },
     { class: 'Boolean', name: 'isHardSelection' },
     {
@@ -704,12 +720,19 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     function loadYear(year) {
       this.loadData(`data/data${year}.log`);
       this.loadData(`data/np${year}.log`);
+      this.loadSalaryData(`data/salary${year}.csv`);
     },
 
     function loadData(f) {
       fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
+    },
+
+    function loadSalaryData(f) {
+      fetch(f)
+      .then(r => r.text())
+      .then(t => this.parseSalaries(t));
     },
 
     function parseLog(t) {
@@ -763,6 +786,16 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
       this.authors = this.files = this.projects = undefined;
     },
 
+    function parseSalaries(csv) {
+      csv.split('\n').slice(1).forEach(s => {
+        s = s.split(',');
+        const name = s[2], salaries = s.slice(3);
+        console.log('***', name);
+        this.salaries[name] = salaries;
+      });
+      console.log('salaries: ', this.salaries);
+    },
+
     function match(commit, query, author, file, path, project) {
       if ( project === '-- Unknown --' ) project = undefined;
 
@@ -810,7 +843,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
           end().
           start().
             style({width: '75%', 'padding-left': '60px'}).
-            add(this.slot(function (filteredCommits, showPercentages) {
+            add(this.slot(function (filteredCommits, showPercentages, showSalaries) {
               return self.UserMonthView.create({data: self}, self);
             })).
           end().
@@ -843,6 +876,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
         add('Path: ',             self.PATH).br().
         add('Author: ',           self.AUTHOR).br().
         add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
+        add('Show Salaries: ',    self.SHOW_SALARIES).br().
         add('Embed Files: ',      self.EMBED_FILES).br().
       end();
     },
