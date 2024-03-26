@@ -93,6 +93,10 @@ public class JSONFObjectFormatter
 
   protected boolean calculateDeltaForNestedFObjects_ = true;
 
+  // when containing key/value pairs. The keys are the object's property names
+  // and values are the replacement names to be outputted
+  protected Map<String, String> propNamesMapping_ = new HashMap<>();
+
   public JSONFObjectFormatter(X x) {
     super(x);
   }
@@ -546,6 +550,10 @@ public class JSONFObjectFormatter
   }
 
   public String getPropertyName(PropertyInfo p) {
+    // Use the property name from propNamesMapping_ if present
+    if ( propNamesMapping_ != null && propNamesMapping_.containsKey(p.getName()) )
+      return propNamesMapping_.get(p.getName());
+
     return outputShortNames_ && ! SafetyUtil.isEmpty(p.getShortName()) ? p.getShortName() : p.getName();
   }
 
@@ -590,6 +598,11 @@ public class JSONFObjectFormatter
 
   public void setCalculateDeltaForNestedFObjects(boolean calculateDeltaForNestedFObjects) {
     this.calculateDeltaForNestedFObjects_ = calculateDeltaForNestedFObjects;
+  }
+
+  public JSONFObjectFormatter setPropNamesMapping(Map<String, String> propNamesMapping) {
+    propNamesMapping_ = propNamesMapping;
+    return this;
   }
 
   public void outputKey(String val) {
