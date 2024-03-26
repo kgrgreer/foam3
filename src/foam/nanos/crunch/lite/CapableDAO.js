@@ -107,7 +107,6 @@ foam.CLASS({
 
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
-
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
           var afterPut = toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
           if ( obj instanceof net.nanopay.contacts.CapableContact )
