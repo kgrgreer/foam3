@@ -36,6 +36,12 @@ foam.CLASS({
       name: 'status'
     },
     {
+      name: 'message',
+      javaGetter: `
+        return renderMessage(getExceptionMessage());
+      `
+    },
+    {
       class: 'String',
       name: 'type',
       javaFactory: `
