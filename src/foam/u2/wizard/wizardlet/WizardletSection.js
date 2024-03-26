@@ -137,6 +137,7 @@ foam.CLASS({
   methods: [
     function createView(opt_spec, opt_ctx_extras) {
       if ( ! opt_spec ) opt_spec = {};
+       // to do: look into why we need wizardlet's subcontext to render the view
       var ctx = this.wizardlet.__subSubContext__.createSubContext({
         wizardController: this.wizardlet.wizardController ||
           this.wizardlet.__subContext__.wizardController

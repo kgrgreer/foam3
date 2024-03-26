@@ -240,10 +240,6 @@ p({
   "operation":3,
   "after":false,
   "enabled":true,
-  predicate: {
-    class: 'foam.nanos.ruler.predicate.FScriptRulePredicate',
-    query: 'o !exists || o.status != n.status || o.isInRenewable != n.isInRenewable'
-  },
   "action": {
     "class":"foam.nanos.crunch.ruler.SaveUCJDataOnGranted"
   },

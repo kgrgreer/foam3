@@ -70,13 +70,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.ViewSpec',
+      class: 'FObjectProperty',
+      of: 'foam.u2.stack.StackBlock',
       name: 'topNonPopup',
-      hidden: true,
-      expression: function(pos) {
-        while ( pos >= 0 && this.stack_[pos].popup ) pos--;
-        return this.stack_[pos] || null;
-      }
+      hidden: true
     },
     {
       class: 'Int',
@@ -182,6 +179,19 @@ foam.CLASS({
       console.warn('parent is neither an element nor a context');
       return ctx.__subSubContext__.createSubContext(parent);
 
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'pubBlockRemoval',
+      on: ['this.propertyChange.pos'],
+      code: function() {
+        let pos = this.pos;
+        while ( pos >= 0 && this.stack_[pos].popup ) { pos--; }
+        if ( this.topNonPopup && this.topNonPopup != this.stack_[pos] ) { this.topNonPopup.removed.pub(); }
+        this.topNonPopup = this.stack_[pos] || null;
+      }
     }
   ],
 
