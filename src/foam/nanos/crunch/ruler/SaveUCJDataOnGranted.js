@@ -38,31 +38,51 @@ foam.CLASS({
             DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             UserCapabilityJunction oldUcj = (UserCapabilityJunction) oldObj;
- 
-            var capability = (Capability) ucj.findTargetId(systemX);
-            var editBehaviour = capability.getEditBehaviour();
-            var editor = (Subject) x.get("subject");
 
-            if (ucj.getData() == null || ucj.getStatus() != CapabilityJunctionStatus.GRANTED || ucj.getData().equals(oldUcj.getData())) return;
+            var capability = (Capability) ucj.findTargetId(x);
+            if ( capability == null ) {
+              Loggers.logger(x, this, clsName).warning("Target capability not found", ucj.getTargetId(), "ucj", ucj.getId());
+              throw new RuntimeException("Capability not found, data not saved to target");
+            }
+        
+            if ( (capability.getOf() != null && capability.getDaoKey() != null) ||
+                  ucj.getData() == null ||
+                  ucj.getStatus() != CapabilityJunctionStatus.GRANTED ||
+                  (oldUcj != null && ucj.getData().equals(oldUcj.getData())) ) {
+              return;
+            }
 
-            if (oldUcj.getData() == null || oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED || ucj.getIsInRenewable()) {
+            var save = authService.check(x, "usercapabilityjunction.update.*");
 
-              if ( ucj.getSkipEditBehaviour() == true ) {
-                ucj.setSkipEditBehaviour(false);
-                return;
+            if ( ! save ) {
+              // NOT GRANTED -> GRANTED
+              if ( oldUcj == null ||
+                    oldUcj.getStatus() != CapabilityJunctionStatus.GRANTED ) {
+                save = true;
               }
 
-              editBehaviour.maybeApplyEdit(x, systemX, editor, ucj, ucj.getData()); 
-
-              capability = (Capability) ucj.findTargetId(x);
-              if ( capability == null ) {
-                Loggers.logger(x, this, clsName).warning("Target capability not found", ucj.getTargetId(), "ucj", ucj.getId());
-                throw new RuntimeException("Capability not found, data not saved to target");
+              // GRANTED -> GRANTED
+              if ( ! save &&
+                    oldUcj != null &&
+                    oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
+                // ! isInRenewable -> isInRenewable
+                if ( ! oldUcj.getIsInRenewable() &&
+                      ucj.getIsInRenewable() ) {
+                  save = true;
+                } else {
+                  // editBehaviour
+                  if ( ucj.getSkipEditBehaviour() == true ) {
+                    // REVIEW: this update is not persisted
+                    ucj.setSkipEditBehaviour(false);
+                  } else {
+                    save = capability.getEditBehaviour().maybeApplyEdit(x, systemX, (Subject) x.get("subject"), ucj, ucj.getData());
+                  }
+                }
               }
-
-              if ( capability.getOf() != null && capability.getDaoKey() != null ) {
-                ucj.saveDataToDAO(x, capability, true);
-              }
+            }
+            
+            if ( save ) {
+              ucj.saveDataToDAO(x, capability, true);
             }
           }
         }, "");
