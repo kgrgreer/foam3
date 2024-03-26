@@ -128,6 +128,7 @@ foam.CLASS({
     function render() {
       var self            = this;
       var allCommits      = this.data.commits;
+      var salaries        = this.data.salaries;
       var commits         = this.data.filteredCommits;
       var allCounts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var counts          = [0,0,0,0,0,0,0,0,0,0,0,0];
@@ -179,9 +180,14 @@ foam.CLASS({
               total += c;
               allTotal += allAuthorCounts[a[0]][i];
               this.start('td').add(c || '-').call(function() {
-                if ( ! self.data.showPercentages ) return;
-                if ( c )
-                  this.add(' / ', (100*c/allAuthorCounts[a[0]][i]).toFixed(0) + '%');
+                if ( c ) {
+                  if ( self.data.showPercentages ) {
+                    this.add(' / ', (100*c/allAuthorCounts[a[0]][i]).toFixed(0) + '%');
+                  }
+                  if ( self.data.showSalaries ) {
+                    this.add(' / $', (salaries[a[0]][i]*c/allAuthorCounts[a[0]][i]).toLocaleString());
+                  }
+                }
               }).end();
             }).
             start('th').
@@ -194,9 +200,9 @@ foam.CLASS({
               call(function() {
                 if ( ! self.data.showSalaries ) return;
                 try {
-                var monthly = self.data.salaries[a[0]][1];
+                var monthly = salaries[a[0]][1];
                 if ( total )
-                  this.add(' / $', (100*total/allTotal).toFixed(0) * monthly);
+                  this.add(' / $', ((total/allTotal).toFixed(0) * monthly).toLocaleString());
                 } catch (x) {}
               }).
             end().
@@ -631,6 +637,11 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     },
     {
       class: 'Boolean',
+      name: 'showCounts',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'showSalaries'
     },
     {
@@ -843,7 +854,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
           end().
           start().
             style({width: '75%', 'padding-left': '60px'}).
-            add(this.slot(function (filteredCommits, showPercentages, showSalaries) {
+            add(this.slot(function (filteredCommits, showCounts, showPercentages, showSalaries) {
               return self.UserMonthView.create({data: self}, self);
             })).
           end().
@@ -875,6 +886,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
         add('File: ',             self.FILE).br().
         add('Path: ',             self.PATH).br().
         add('Author: ',           self.AUTHOR).br().
+        add('Show Counts: ',      self.SHOW_COUNTS).br().
         add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
         add('Show Salaries: ',    self.SHOW_SALARIES).br().
         add('Embed Files: ',      self.EMBED_FILES).br().
