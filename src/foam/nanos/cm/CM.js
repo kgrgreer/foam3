@@ -49,15 +49,6 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'FObjectProperty',
-      name: 'rawResult',
-      of: 'foam.nanos.cm.CMResult',
-      storageTransient: true,
-      javaPostSet: `
-        setResult(getRawResult().toSummary());
-      `
-    },
-    {
       class: 'DateTime',
       name: 'lastComputed',
       storageTransient: true

@@ -6,10 +6,10 @@
 
 foam.CLASS({
   package: 'foam.nanos.cm',
-  name: 'CMResult',
-
+  name: 'ChartJsCM',
+  extends: 'foam.nanos.cm.CM',
   documentation: `
-    Model the result of CM, so the result can render into plot easiler.
+    Provide supports to adapt ChartJS data type.
   `,
 
   javaImports: [
@@ -21,9 +21,10 @@ foam.CLASS({
   properties: [
     {
       class: 'List',
+      name: 'labels',
       javaType: 'java.util.List<String>',
       documentation: 'xAxis key',
-      name: 'labels',
+      storageTransient: true,
       javaFactory: `
         return new java.util.ArrayList<String>();
       `
@@ -31,7 +32,8 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'dataset',
-      documentation: 'yAxis keys',
+      documentation: 'yAxis keys and data',
+      storageTransient: true,
       javaType: 'java.util.Map<String, java.util.List<Double>>',
       javaFactory: `
         return new java.util.HashMap<String, java.util.List<Double>>();
@@ -41,7 +43,7 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'toSummary',
+      name: 'generateSummaryResult',
       type: 'String',
       javaCode: `
         var ret = "";
@@ -54,6 +56,14 @@ foam.CLASS({
           }
         }
         return ret;
+      `
+    },
+    {
+      name: 'clear',
+      javaCode: `
+        clearResult();
+        clearLabels();
+        clearDataset();
       `
     },
     {
@@ -72,5 +82,5 @@ foam.CLASS({
         getDataset().put(key, r);
       `
     }
-  ],
+  ]
 })

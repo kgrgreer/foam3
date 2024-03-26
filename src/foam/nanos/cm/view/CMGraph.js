@@ -70,7 +70,7 @@ foam.CLASS({
         return;
       }
 
-      if ( !cm.rawResult ) {
+      if ( !cm.labels || !cm.dataset ) {
         self.addClass(self.myClass('warming'))
           .start('h2')
             .add(`🚫 Empty Data with CM id: \`${self.cmId}\``)
@@ -93,10 +93,10 @@ foam.CLASS({
 
     async function buildCharDataSet(cm) {
       let dataSets = {};
-      dataSets['labels'] = cm.rawResult.labels
+      dataSets['labels'] = cm.labels
       dataSets['datasets'] = []
 
-      for (const [k, v] of Object.entries(cm.rawResult.dataset)) {
+      for (const [k, v] of Object.entries(cm.dataset)) {
         dataSets['datasets'].push({
           label: k,
           data: v,

@@ -25,9 +25,9 @@ foam.CLASS({
     async function buildCharDataSet(cm) {
       let dataSets = [];
 
-      for (const [k, v] of Object.entries(cm.rawResult.dataset)) {
+      for (const [k, v] of Object.entries(cm.dataset)) {
         dataSets.push({
-          labels: cm.rawResult.labels,
+          labels: cm.labels,
           datasets: [{
             label: k,
             data: v
