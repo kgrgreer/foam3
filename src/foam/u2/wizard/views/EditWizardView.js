@@ -17,29 +17,76 @@ foam.CLASS({
     a wizardlet is rendered in.
   `,
 
+  imports: ['wizardController'],
+
   requires: [
-    'foam.u2.borders.Block'
+    'foam.u2.borders.Block',
+    'foam.u2.borders.CardBorder',
+    'foam.u2.detail.SectionView'
+  ],
+
+  messages: [
+    { name: 'EDIT_WIZARD_TITLE', message: 'Personal Settings'}
+  ],
+
+  css:`
+  ^ {
+    padding: 32px 24px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+    overflow: auto;
+  }
+  ^menu-header{
+    align-self: flex-start
+  }
+  ^card.foam-u2-borders-CardBorder {
+    padding: 16px 32px;
+  }
+  `,
+
+  properties: [
+    {
+      name: 'title',
+      class: 'String'
+    }
   ],
 
   methods: [
     function render () {
+      const self = this
       this
-        .react(function (data$wizardlets) {
-          this.forEach(data$wizardlets, function (wizardlet) {
-            const border = this.getBorder_(wizardlet);
-            this
-              .start(border)
+        .dynamic(function (data$wizardlets) {
+          this
+          .start().addClass('h300', this.myClass('menu-header')).add(this.title$).end()
+          .addClass()
+          .forEach(data$wizardlets, function (wizardlet) {
+            wizardlet.load()
+            const x = this.__subContext__.createSubContext({wizardlet})
+            self.wrapBorder_(x, this, wizardlet, function() {
+              this
                 .forEach(wizardlet.sections, function (section) {
-                  this.add(section.createView() ?? this.E());
+                  this.tag(section.createView( {}, { controllerMode: this.__subSubContext__.controllerMode$ } ) ?? this.E());
                 })
-              .end()
+            })
           });
         });
     },
 
-    function getBorder_(wizardlet) {
+    function getBorder_(x, wizardlet) {
       if ( ! wizardlet.capability ) return this.Block;
-      return this.Block;
+      return wizardlet.capability.editBehaviour.wizardletBorder
+    },
+
+    function wrapBorder_(x, el, wizardlet, callback) {
+      el
+        .startContext({ wizardlet })
+          .start(this.getBorder_(x, wizardlet))
+            .call(callback)
+          .end()
+        .endContext()
     }
   ]
 });
