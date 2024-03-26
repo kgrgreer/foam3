@@ -64,16 +64,16 @@ foam.CLASS({
       let cm = await self.cmDAO.find(self.cmId);
       if ( !cm ) {
         self.addClass(self.myClass('warming'))
-          .start('h2')
+          .start('h4')
             .add(`🚫 Can not load CM with id: \`${self.cmId}\``)
           .end();
         return;
       }
 
-      if ( !cm.labels || !cm.dataset ) {
+      if ( !cm.labels || !cm.dataset || cm.labels.length === 0 ) {
         self.addClass(self.myClass('warming'))
-          .start('h2')
-            .add(`🚫 Empty Data with CM id: \`${self.cmId}\``)
+          .start('h4')
+            .add(`⏳ Empty Data with CM id: \`${self.cmId}\``)
           .end();
         return;
       }
