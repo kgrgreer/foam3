@@ -125,6 +125,27 @@ foam.CLASS({
   ],
 
   methods: [
+    function cell(self, count, totalCount, salary) {
+      var a = [];
+
+      if ( this.data.showCounts ) {
+        a.push(count || '-');
+      }
+
+      if ( count ) {
+        if ( this.data.showPercentages ) {
+          a.push(count/totalCount.toFixed(0)*100 + '%');
+        }
+
+        if ( this.data.showSalaries ) {
+          a.push('$' + (count/totalCount * salary).toLocaleString());
+//          a.push('$' + (salary/count).toFixed(0).toLocaleString());
+        }
+      }
+
+      self.add(a.join(' / ') || '-');
+    },
+
     function render() {
       var self            = this;
       var allCommits      = this.data.commits;
@@ -134,6 +155,7 @@ foam.CLASS({
       var counts          = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts    = {};
       var allAuthorCounts = {};
+      var totalSalary     = 0;
 
       commits.forEach(c => {
         var month   = c.date.getMonth();
@@ -159,11 +181,15 @@ foam.CLASS({
           this.start('th').add(h).end();
         }).end().
         forEach(this.data.authors, function(a) {
-          var total = 0, allTotal = 0;
+          var total = 0, allTotal = 0, salaryTotal = 0;
+
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
             enableClass('selected', self.selection$.map(s => s === a[0])).
+
+            // Author Title
             start('th').
+              attr('nowrap', true).
               start('href').
                 on('click', () => {
                   if ( self.selection == a[0] ) {
@@ -176,50 +202,37 @@ foam.CLASS({
                 add(a[0]).
               end().
             end().
+
+            // Per-Month Details
             forEach(authorCounts[a[0]], function(c, i) {
-              total += c;
-              allTotal += allAuthorCounts[a[0]][i];
-              this.start('td').add(c || '-').call(function() {
-                if ( c ) {
-                  if ( self.data.showPercentages ) {
-                    this.add(' / ', (100*c/allAuthorCounts[a[0]][i]).toFixed(0) + '%');
-                  }
-                  if ( self.data.showSalaries ) {
-                    this.add(' / $', (salaries[a[0]][i]*c/allAuthorCounts[a[0]][i]).toLocaleString());
-                  }
-                }
+              var salary = salaries[a[0]][i];
+              total       += c;
+              allTotal    += allAuthorCounts[a[0]][i];
+              salaryTotal += salary;
+              this.start('td').attr('nowrap', true).call(function() {
+                self.cell(this, c, allAuthorCounts[a[0]][i], salary);
               }).end();
             }).
-            start('th').
-              add(total).
-              call(function() {
-                if ( ! self.data.showPercentages ) return;
-                if ( total )
-                  this.add(' / ', (100*total/allTotal).toFixed(0) + '%');
-              }).
-              call(function() {
-                if ( ! self.data.showSalaries ) return;
-                try {
-                var monthly = salaries[a[0]][1];
-                if ( total )
-                  this.add(' / $', ((total/allTotal).toFixed(0) * monthly).toLocaleString());
-                } catch (x) {}
-              }).
-            end().
+
+            // Totals
+            start('th').call(function() {
+              self.cell(this, total, allTotal, salaryTotal);
+            }).end().
           end();
         }).
+
+        // Per-Month Totals
         start('tr').
           start('th').on('click', () => self.selection = '-- All --').add('All:').end().
           forEach(counts, function(c, i) {
-            this.start('th').add(c).call(function() {
-              if ( ! self.data.showPercentages ) return;
-              if ( c )
-                this.add(' / ', (100*c/allCounts[i]).toFixed(0) + '%');
+            this.start('th').attr('nowrap', true).call(function() {
+              var monthlySalaryTotal = Object.values(self.data.salaries).reduce((sum, s) => s[i] + sum, 0);
+              totalSalary += monthlySalaryTotal;
+              self.cell(this, c, allCounts[i], monthlySalaryTotal);
             }).end();
           }).
-          start('th').add(this.data.filteredCommits.length).call(function() {
-            if ( ! self.data.showPercentages ) return;
-            this.add(' / ', (100*self.data.filteredCommits.length/self.data.commits.length).toFixed(0) + '%');
+          start('th').call(function() {
+            self.cell(this, self.data.filteredCommits.length, self.data.commits.length, totalSalary);
           }).end().
         end().
       end();
@@ -633,12 +646,12 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     },
     {
       class: 'Boolean',
-      name: 'showPercentages'
+      name: 'showCounts',
+      value: true
     },
     {
       class: 'Boolean',
-      name: 'showCounts',
-      value: true
+      name: 'showPercentages'
     },
     {
       class: 'Boolean',
@@ -680,7 +693,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
             return true;
           }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).
-          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
+//          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
@@ -760,7 +773,8 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-            if ( commit.author.indexOf('dependabot') != -1 || commit.author === 'Adam Van Ymeren' ) {
+            commit.author = this.AUTHOR_MAP[commit.author] || 'Unknown: ' + commit.author;
+            if ( commit.author.indexOf('dependabot') != -1 || commit.author === 'Adam Van Ymeren' || commit.author === 'Mykola Kolombet' ) {
               data.pop();
             }
           } else if ( line.startsWith('Date: ') ) {
@@ -801,9 +815,9 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
       csv.split('\n').slice(1).forEach(s => {
         s = s.split(',');
         const name = s[2], salaries = s.slice(3);
-        console.log('***', name);
-        this.salaries[name] = salaries;
+        this.salaries[name] = salaries.map(parseFloat);
       });
+      delete this.salaries[undefined];
       console.log('salaries: ', this.salaries);
     },
 
