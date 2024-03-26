@@ -69,6 +69,14 @@ foam.CLASS({
           .end();
         return;
       }
+
+      if ( !cm.rawResult ) {
+        self.addClass(self.myClass('warming'))
+          .start('h2')
+            .add(`🚫 Empty Data with CM id: \`${self.cmId}\``)
+          .end();
+        return;
+      }
       
       let data = await self.buildCharDataSet(cm)
       let plots = await self.generatePlots(data)
