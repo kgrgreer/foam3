@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CMBar',
   extends: 'foam.nanos.cm.view.CMGraph',
   documentation: `
-    Render CM into the Bar Plot
+    Render DatasetCM into the Bar Plot
   `,
 
   requires: [

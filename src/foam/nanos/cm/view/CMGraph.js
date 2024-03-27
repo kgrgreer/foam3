@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CMGraph',
   extends: 'foam.u2.View',
   documentation: `
-    The view model that renders result of a CM to the graph.
+    The view model that renders result of a DatasetCM to the graph.
   `,
 
   css: `
@@ -65,14 +65,23 @@ foam.CLASS({
       if ( !cm ) {
         self.addClass(self.myClass('warming'))
           .start('h4')
-            .add(`🚫 Can not load CM with id: \`${self.cmId}\``)
+            .add(`🚫 CM: \`${self.cmId}\` not found.`)
           .end();
         return;
       }
+
+      if ( !cm.enabled ) {
+        self.addClass(self.myClass('warming'))
+          .start('h4')
+            .add(`🚫 CM: \`${self.cmId}\` is disabled.`)
+          .end();
+        return;
+      }
+
       if ( !cm.labels || !cm.dataset || cm.labels.length === 0 ) {
         self.addClass(self.myClass('warming'))
           .start('h4')
-            .add(`⏳ Empty Data with CM id: \`${self.cmId}\``)
+            .add(`⏳ CM: \`${self.cmId}\` will update at ${cm.expiry}`)
           .end();
         return;
       }

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CMPie',
   extends: 'foam.nanos.cm.view.CMGraph',
   documentation: `
-    Render CM into the Pie Plot
+    Render DatasetCM into the Pie Plot
   `,
 
   requires: [

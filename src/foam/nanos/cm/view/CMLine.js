@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CMLine',
   extends: 'foam.nanos.cm.view.CMGraph',
   documentation: `
-    Render CM into the Line Plot
+    Render DatasetCM into the Line Plot
   `,
 
   requires: [
