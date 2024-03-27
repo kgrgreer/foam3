@@ -606,7 +606,6 @@ foam.LIB({
         return str.toUpperCase();
       })
     },
-
     {
       name: 'toLowerCase',
       code: foam.Function.memoize1(function(str) {
