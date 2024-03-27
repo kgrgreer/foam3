@@ -478,6 +478,16 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
+        name: 'Intuit',
+        keywords: [ 'intuit' ],
+        paths: [ 'intuit' ]
+      },
+      {
+        name: 'NBP',
+        keywords: [ 'nbp' ],
+        paths: [ 'nbp' ]
+      },
+      {
         name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
         paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx', 'nanopay/fx' ]
