@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.cm',
-  name: 'ChartJsCM',
+  name: 'DatasetCM',
   extends: 'foam.nanos.cm.CM',
   documentation: `
     Provide supports to adapt ChartJS data type.
