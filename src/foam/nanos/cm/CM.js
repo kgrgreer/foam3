@@ -17,8 +17,8 @@ foam.CLASS({
 
   documentation: `
     A computed measure.
-    Beanshell code that should call setResult or setResulte.
-    eg: x.get("this").setResult("Foo") or x.get("this").setRawResult(new ArrayList())
+    Beanshell code that should call setResult.
+    eg: x.get("this").setResult("Foo")
   `,
 
   tableColumns: [ 'id', 'description', 'keywords', 'result', 'lastComputed', 'update' ],

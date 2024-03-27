@@ -81,7 +81,7 @@ foam.CLASS({
       if ( !cm.labels || !cm.dataset || cm.labels.length === 0 ) {
         self.addClass(self.myClass('warming'))
           .start('h4')
-            .add(`⏳ CM: \`${self.cmId}\` will update at ${cm.expiry}`)
+            .add(`⏳ CM: \`${self.cmId}\` is waiting for execute`)
           .end();
         return;
       }
