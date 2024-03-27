@@ -22,7 +22,7 @@ foam.CLASS({
       this.SUPER();
     },
 
-    async function buildCharDataSet(cm) {
+    async function buildChartDataSet(cm) {
       let dataSets = [];
 
       for (const [k, v] of Object.entries(cm.dataset)) {

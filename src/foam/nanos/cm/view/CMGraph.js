@@ -69,7 +69,6 @@ foam.CLASS({
           .end();
         return;
       }
-
       if ( !cm.labels || !cm.dataset || cm.labels.length === 0 ) {
         self.addClass(self.myClass('warming'))
           .start('h4')
@@ -78,7 +77,7 @@ foam.CLASS({
         return;
       }
       
-      let data = await self.buildCharDataSet(cm)
+      let data = await self.buildChartDataSet(cm)
       let plots = await self.generatePlots(data)
 
       self.addClass(self.myClass('canvas-container'))
@@ -91,7 +90,7 @@ foam.CLASS({
         .end();
     },
 
-    async function buildCharDataSet(cm) {
+    async function buildChartDataSet(cm) {
       let dataSets = {};
       dataSets['labels'] = cm.labels
       dataSets['datasets'] = []
