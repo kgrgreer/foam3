@@ -290,6 +290,30 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2.view',
+  name: 'DAOCountCellFormatter',
+  implements: ['foam.u2.view.Formatter'],
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'projectionSafe',
+      value: true
+    }
+  ],
+
+  methods: [
+    function format(e, value, obj, axiom) {
+      try {
+        var ex = foam.mlang.Expressions.create();
+        value.select(ex.COUNT()).then(o => e.add(o.value));
+      } catch (x) {
+      }
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
   name: 'YesNoTableCellFormatter',
   implements: ['foam.u2.view.Formatter'],
   documentation: `Shows 'Y'/'N' for boolean props`,

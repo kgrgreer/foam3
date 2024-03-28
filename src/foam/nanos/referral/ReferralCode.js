@@ -147,6 +147,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     permissionRequired: true,
-    columnPermissionRequired: true
+    columnPermissionRequired: true,
+    tableCellFormatter: { class: 'foam.u2.view.DAOCountCellFormatter' },
   }
 });
