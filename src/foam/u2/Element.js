@@ -2203,7 +2203,7 @@ foam.CLASS({
       documentation: `
         The order to render the property in if rendering multiple properties.
       `,
-      value: Number.MAX_SAFE_INTEGER
+      value: 0
     },
     {
       class: 'Boolean',
@@ -2830,6 +2830,19 @@ foam.CLASS({
   documentation: 'A Controller is an Element which exports itself as "data".',
 
   exports: [ 'as data' ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'Router',
+  extends: 'foam.u2.Controller',
+  mixins: [ 'foam.u2.memento.Memorable' ],
+
+  exports: [ 'route' ],
+
+  properties: [
+  ]
 });
 
 
