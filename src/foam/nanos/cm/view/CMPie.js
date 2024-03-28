@@ -40,14 +40,8 @@ foam.CLASS({
 
     async function generatePlots(data) {
       return data.map(d => {
-        console.log('vvvv: ', d)
         return this.Pie2.create({
-          data: d,
-          options: {
-            legend: {
-              display: true,
-            },
-          }
+          data: d
         })
       });
     }

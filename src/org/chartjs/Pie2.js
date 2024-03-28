@@ -26,11 +26,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'chartJSOptions',
+      factory: function() {
+        return {};
+      },
+    },
+    {
       name: 'config',
       factory: function() {
         return {
           type: 'pie',
-          data: this.data
+          data: this.data,
+          options: {...this.chartJSOptions}
         };
       }
     }
