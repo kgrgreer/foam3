@@ -47,7 +47,7 @@ foam.CLASS({
         
             // NOTE: explicit test for GRANTED, as the same test on
             // the rule predicate fails some capability updates.
-            if ( (capability.getOf() != null && capability.getDaoKey() != null) ||
+            if ( (capability.getOf() == null && capability.getDaoKey() == null) ||
                   ucj.getData() == null ||
                   ucj.getStatus() != CapabilityJunctionStatus.GRANTED ||
                   (oldUcj != null && ucj.getData().equals(oldUcj.getData())) ) {
