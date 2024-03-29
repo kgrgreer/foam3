@@ -11,11 +11,17 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'html'
+      name: 'html',
+      view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 100 },
+      postSet: function(_, html) {
+        this.output = html;
+      }
     },
     {
       class: 'String',
-      name: 'output'
+      name: 'output',
+      visibility: 'RO',
+      view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 100 },
     }
   ]
 });
