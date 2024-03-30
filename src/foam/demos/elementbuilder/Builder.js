@@ -14,7 +14,8 @@ foam.CLASS({
       name: 'html',
       view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 100 },
       postSet: function(_, html) {
-        this.output = html;
+        this.output = this.generate();
+//        this.output = html;
       }
     },
     {
@@ -22,6 +23,23 @@ foam.CLASS({
       name: 'output',
       visibility: 'RO',
       view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 100 },
+    }
+  ],
+
+  templates: [
+    {
+      name: 'generate',
+      template: `
+      foam.CLASS({
+        package: '',
+        name: '',
+
+        methods: [
+          function render() {
+          }
+        ]
+      });
+      `
     }
   ]
 });
