@@ -33,8 +33,9 @@ foam.CLASS({
     ^button-flex{
       display: flex;
       justify-content: flex-end;
-    }
- 
+      align-items: center;
+      gap: 0.5rem;
+    } 
   `,
 
   properties: [
@@ -57,7 +58,9 @@ foam.CLASS({
             .start().addClass(this.myClass('flex'))
             .start().addClass('h500', this.myClass('wizard-heading')).add(this.title).end()
             .start().addClass(this.myClass('button-flex'))
-              .add(this.EDIT, ' ', this.SAVE, ' ', this.CANCEL)
+              .tag(this.EDIT,  { size: 'SMALL'})
+              .tag(this.CANCEL,  { size: 'SMALL'})
+              .tag(this.SAVE,  { size: 'SMALL'})
             .end()
             .end()
           .endContext()
@@ -71,7 +74,7 @@ foam.CLASS({
     {
       name: 'Edit',
       label: 'Edit',
-      buttonStyle: 'LINK',
+      buttonStyle: 'TERTIARY',
       isAvailable: function(controllerMode) {
         return this.controllerMode !== foam.u2.ControllerMode.EDIT
       },
@@ -82,7 +85,7 @@ foam.CLASS({
     {
       name: 'Save',
       label: 'Save',
-      buttonStyle: 'LINK',
+      buttonStyle: 'PRIMARY',
       isAvailable: function(controllerMode) {
         return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
@@ -99,7 +102,7 @@ foam.CLASS({
     {
       name: 'Cancel',
       label: 'Cancel',
-      buttonStyle: 'Link',
+      buttonStyle: 'TERTIARY',
       isAvailable: function(controllerMode) {
         return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
