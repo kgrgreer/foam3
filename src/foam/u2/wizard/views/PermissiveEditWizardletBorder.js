@@ -34,7 +34,7 @@ foam.CLASS({
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     } 
   `,
 
