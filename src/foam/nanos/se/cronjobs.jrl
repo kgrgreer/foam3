@@ -54,7 +54,7 @@ p({
 
     for ( var event : deactivate ) {
       event.deactivate();
-      event.setActivate(false);
+      event.setActive(false);
       systemEventDAO.put(event);
     }
       
