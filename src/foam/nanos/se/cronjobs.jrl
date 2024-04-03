@@ -17,15 +17,18 @@ p({
     import foam.dao.DAO;
     import foam.dao.ArraySink;
     import static foam.mlang.MLang.*;
+    import java.util.Calendar;
     import java.util.List;
-    import java.util.Date;
+    import java.util.TimeZone;
+
+    var currTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 
     var systemEventDAO = x.get("systemEventDAO");
     List<SystemEvent> activate = ((ArraySink) systemEventDAO
       .where(
         AND(
           EQ(SystemEvent.active, false),
-          LTE(SystemEvent.START_TIME, new Date())
+          LTE(SystemEvent.START_TIME, currTime)
         )
       )
       .select(new ArraySink()))
@@ -42,7 +45,7 @@ p({
       .where(
         AND(
           EQ(SystemEvent.active, true),
-          GTE(SystemEvent.END_TIME, new Date())
+          GTE(SystemEvent.END_TIME, currTime)
         )
       )
       .select(new ArraySink()))
