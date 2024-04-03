@@ -1,0 +1,58 @@
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "id": "systemevent_cron",
+  "description": "cron to activate/deactivate a systemevent",
+  "clusterable": true,
+  "enabled": true,
+  "schedule": {
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "duration":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "minute":1
+    }
+  },
+  "code": """
+    import foam.nanos.se.SystemEvent;
+    import foam.dao.DAO;
+    import foam.dao.ArraySink;
+    import static foam.mlang.MLang.*;
+    import java.util.List;
+    import java.util.Date;
+
+    var systemEventDAO = x.get("systemEventDAO");
+    List<SystemEvent> activate = ((ArraySink) systemEventDAO
+      .where(
+        AND(
+          EQ(SystemEvent.active, false),
+          LTE(SystemEvent.START_TIME, new Date())
+        )
+      )
+      .select(new ArraySink()))
+      .getArray();
+
+    for ( var event : activate ) {
+      event.activate();
+      event.setActivate(true);
+      systemEventDAO.put(event);
+    }
+
+
+    List<SystemEvent> deactivate = ((ArraySink) systemEventDAO
+      .where(
+        AND(
+          EQ(SystemEvent.active, true),
+          GTE(SystemEvent.END_TIME, new Date())
+        )
+      )
+      .select(new ArraySink()))
+      .getArray();
+
+    for ( var event : deactivate ) {
+      event.deactivate();
+      event.setActivate(false);
+      systemEventDAO.put(event);
+    }
+      
+  """
+})

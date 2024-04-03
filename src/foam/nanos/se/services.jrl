@@ -1,0 +1,18 @@
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "systemEventDAO",
+  serve: true,
+  serviceScript: """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.se.SystemEvent.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("systemEvents")
+      .build()
+  """,
+  client: """
+    {
+      "of": "foam.nanos.se.SystemEvent"
+    }
+   """
+})
