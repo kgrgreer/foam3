@@ -27,7 +27,8 @@ p({
     List<SystemEvent> activate = ((ArraySink) systemEventDAO
       .where(
         AND(
-          EQ(SystemEvent.active, false),
+          EQ(SystemEvent.ENABLED, true),
+          EQ(SystemEvent.ACTIVE, false),
           LTE(SystemEvent.START_TIME, currTime)
         )
       )
