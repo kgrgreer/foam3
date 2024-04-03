@@ -22,6 +22,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'activate',
+      args: 'X x',
       type: 'Void'
     },
     {
