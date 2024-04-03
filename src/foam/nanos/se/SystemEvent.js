@@ -50,6 +50,7 @@ foam.CLASS({
   methods: [
     {
       name: 'activate',
+      args: 'X x',
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
