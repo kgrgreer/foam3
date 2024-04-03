@@ -17,7 +17,7 @@
 
 foam.INTERFACE({
   package: 'foam.nanos.se',
-  name: 'SystemEventTasks',
+  name: 'SystemEventTask',
 
   methods: [
     {
