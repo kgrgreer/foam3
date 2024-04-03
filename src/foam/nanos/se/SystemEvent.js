@@ -19,8 +19,10 @@ foam.CLASS({
   package: 'foam.nanos.se',
   name: 'SystemEvent',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware'
+  mixins: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.EnabledAware'
   ],
 
   properties: [
