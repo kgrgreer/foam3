@@ -44,7 +44,12 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'endTime'
-    }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.se.SystemEventTask',
+      name: 'tasks'
+    }    
   ],
 
   methods: [
