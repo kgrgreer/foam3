@@ -29,7 +29,8 @@ p({
         AND(
           EQ(SystemEvent.ENABLED, true),
           EQ(SystemEvent.ACTIVE, false),
-          LTE(SystemEvent.START_TIME, currTime)
+          GT(SystemEvent.END_TIME, SystemEvent.START_TIME),
+          GTE(SystemEvent.START_TIME, currTime)
         )
       )
       .select(new ArraySink()))
@@ -41,12 +42,12 @@ p({
       systemEventDAO.put(event);
     }
 
-
     List<SystemEvent> deactivate = ((ArraySink) systemEventDAO
       .where(
         AND(
           EQ(SystemEvent.active, true),
-          GTE(SystemEvent.END_TIME, currTime)
+          GT(SystemEvent.END_TIME, SystemEvent.START_TIME)
+          LTE(SystemEvent.END_TIME, currTime)
         )
       )
       .select(new ArraySink()))
