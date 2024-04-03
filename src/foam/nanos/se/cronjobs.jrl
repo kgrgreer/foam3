@@ -14,6 +14,7 @@ p({
   },
   "code": """
     import foam.nanos.se.SystemEvent;
+    import foam.nanos.logger.Loggers;
     import foam.dao.DAO;
     import foam.dao.ArraySink;
     import static foam.mlang.MLang.*;
@@ -37,9 +38,15 @@ p({
       .getArray();
 
     for ( var event : activate ) {
-      event.activate();
       event.setActivate(true);
       systemEventDAO.put(event);
+      try {
+        event.activate();
+      } catch (RuntimeException e) {
+        Loggers.logger(x, this).error("Failed to activate System Event", this.getName())
+        event.setActive(false);
+        systemEventDAO.put(event);
+      }
     }
 
     List<SystemEvent> deactivate = ((ArraySink) systemEventDAO
@@ -54,9 +61,15 @@ p({
       .getArray();
 
     for ( var event : deactivate ) {
-      event.deactivate();
       event.setActive(false);
       systemEventDAO.put(event);
+      try {
+        event.deactivate();
+      } catch (RuntimeException e) {
+        Loggers.logger(x, this).error("Failed to deactivate System Event", this.getName())
+        event.setActive(true);
+        systemEventDAO.put(event);
+      }
     }
       
   """
