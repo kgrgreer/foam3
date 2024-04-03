@@ -113,7 +113,7 @@ foam.CLASS({
               this.tail = null;
             }
             // Even if value doesn't exist, then still set, to revert to default value
-            this.obj[p.name] = value;
+            this.obj[p.name] = value && decodeURIComponent(value);
           });
 
           this.tailStr = this.encodeBindings(bs);
@@ -208,7 +208,7 @@ foam.CLASS({
         var val = this.obj[p.name] === undefined ? '' : this.obj[p.name];
         if ( p.name === 'route' || p.shortName === 'route' ) {
           if ( ret.route ) ret.route = '/' + ret.route;
-          ret.route = val + ret.route;
+          ret.route = encodeURIComponent(val) + ret.route;
         } else {
           var name = p.shortName || p.name;
 
@@ -219,7 +219,7 @@ foam.CLASS({
             if ( val && this.cls_.isInstance(val) ) debugger;
             // if ( val && this.cls_.isInstance(val) ) val = `{${val.usedStr}}`;
             // if ( val === undefined ) val = '';
-            ret.params = name + '=' + val + ret.params;
+            ret.params = name + '=' + encodeURIComponent(val) + ret.params;
             // console.log('***', name, val);
             ret.bound[name] = true;
           }
@@ -318,7 +318,7 @@ foam.CLASS({
       code: function() {
         console.log('onHashChange', this.hashFeedback_, this.window.location.hash);
         if ( this.hashFeedback_ ) return;
-        this.str = decodeURI(this.window.location.hash.substring(1));
+        this.str = this.window.location.hash.substring(1);
       }
     },
     {
