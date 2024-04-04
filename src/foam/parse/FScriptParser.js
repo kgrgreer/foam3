@@ -356,6 +356,18 @@ foam.CLASS({
           return v.join('');
         };
 
+        var adaptFormulaArgs = function(v) {
+          var argList = [];
+          for ( var i = 0; i < v.length; i++ ) {
+            var arg = v[i];
+            if ( typeof arg === 'number' )
+              arg = self.CONSTANT(arg);
+
+            argList.push(arg);
+          }
+          return argList;
+        };
+
         var actions = {
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
@@ -409,11 +421,11 @@ foam.CLASS({
           minutes: function(v) { return self.MINUTES(v); },
 
           formula: function(v) {
-            return self.ADD.apply(self, v);
+            return self.ADD.apply(self, adaptFormulaArgs(v));
           },
 
           minus: function(v) {
-            return self.SUB.apply(self, v);
+            return self.SUB.apply(self, adaptFormulaArgs(v));
           },
 
           form_expr: function(v) {
