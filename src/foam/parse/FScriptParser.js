@@ -156,11 +156,11 @@ foam.CLASS({
             sym('comparison')
           ),
 
-          paren: seq1(1, '(', sym('expr'), ')'),
+          paren: seq1(1, '(', sym('or'), ')'),
 
           form_paren: seq1(1, '(', sym('formula'), ')'),
 
-          negate: seq(literal('!'), sym('expr')),
+          negate: seq(literal('!'), sym('or')),
 
           comparison: seq(
             sym('value'),
