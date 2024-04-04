@@ -3317,6 +3317,9 @@ foam.CLASS({
       name: 'orderDirection',
       code: function() { return 1; },
       javaCode: 'return 1;'
+    },
+    function partialEval(o) {
+      return this;
     }
   ]
 });
