@@ -393,9 +393,13 @@ foam.CLASS({
             return op.call(self, lhs);
           },
 
-          or: function(v) { return self.OR.apply(self, v); },
+          or: function(v) {
+            return v.length === 1 ? v[0] : self.OR.apply(self, v);
+          },
 
-          and: function(v) { return self.AND.apply(self, v); },
+          and: function(v) {
+            return v.length === 1 ? v[0] : self.AND.apply(self, v);
+          },
 
           field: function(v) {
             var expr = v[0];
