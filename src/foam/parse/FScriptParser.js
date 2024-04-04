@@ -448,7 +448,7 @@ foam.CLASS({
             if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
 
             // handle formula with left operand followed by MUL or DIV and right operand
-            // v[0] is the left operand and v[1] contains an arry of [MUL or DIV, right operand]
+            // v[0] is the left operand and v[1] contains an array of [MUL or DIV, right operand]
             // Eg.
             //    v = [ 1,
             //          [
