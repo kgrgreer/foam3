@@ -4029,6 +4029,7 @@ foam.CLASS({
     function DIV() { return this._nary_("Divide", arguments); },
     function MIN_FUNC() { return this._nary_("MinFunc", arguments); },
     function MAX_FUNC() { return this._nary_("MaxFunc", arguments); },
+    function CONSTANT(v) { return this.Constant.create({ value: v }); },
 
     function UNIQUE(expr, sink) { return this.Unique.create({ expr: expr, delegate: sink }); },
     function GROUP_BY(expr, opt_sinkProto, opt_limit) { return this.GroupBy.create({ arg1: expr, arg2: opt_sinkProto || this.COUNT(), groupLimit: opt_limit || -1 }); },
