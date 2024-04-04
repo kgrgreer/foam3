@@ -25,6 +25,7 @@ foam.CLASS({
       javaType: 'java.util.List<String>',
       documentation: 'xAxis key',
       storageTransient: true,
+      visibility: 'HIDDEN',
       javaFactory: `
         return new java.util.ArrayList<String>();
       `
@@ -35,6 +36,7 @@ foam.CLASS({
       documentation: 'yAxis keys and data',
       storageTransient: true,
       javaType: 'java.util.Map<String, java.util.List<Double>>',
+      visibility: 'HIDDEN',
       javaFactory: `
         return new java.util.HashMap<String, java.util.List<Double>>();
       `
