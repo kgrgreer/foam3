@@ -4790,6 +4790,10 @@ foam.CLASS({
     'java.util.List'
   ],
 
+  requires: [
+    'foam.mlang.Constant'
+  ],
+
   properties: [
     {
       class: 'foam.mlang.ExprArrayProperty',
@@ -4877,8 +4881,8 @@ foam.CLASS({
         var argList = [];
         for ( var i = 0; i < this.args.length; i++ ) {
           var arg = this.args[i];
-          if ( arg.partialEval ) arg = arg.partialEval();
-          if ( foam.mlang.Constant.isInstance(arg)  ) arg = parseFloat(arg.f(this));
+          if ( arg.partialEval               ) arg = arg.partialEval();
+          if ( this.Constant.isInstance(arg) ) arg = parseFloat(arg.f(this));
 
           if ( typeof arg === 'number' ) {
             valList.push(arg);
