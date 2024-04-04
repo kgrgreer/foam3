@@ -51,7 +51,7 @@ foam.CLASS({
       function test(s) {
         try {
           var p = fs.parseString(s).partialEval();
-            console.log(s, '->', p.toString(), '=', p.f(data));
+          console.log(s, '->', p.toString(), '=', p.f(data));
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -60,7 +60,7 @@ foam.CLASS({
       function testFormula(s, val) {
         try {
           var p = fs.parseString(s);
-          console.log(s, '==', val, '=', p.f(data)==val);
+          console.log(s, '->', p.cls_.id, p.toString(), '==', val, '=', p.f(data)==val);
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -86,6 +86,12 @@ foam.CLASS({
       test('MINUTES(born) > 10500000 && MINUTES(born) < 11100000');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
+      testFormula('1', 1);
+      testFormula('(1)', 1);
+      testFormula('1+2+3', 6);
+      testFormula('1+(2+3)', 6);
+      testFormula('(1+2)+3', 6);
+      testFormula('1+2-3*4/4+5-6+7', 6);
     },
 
     function test2__() {
@@ -213,28 +219,28 @@ foam.CLASS({
           minus: repeat(sym('form_expr'), literal('-'), 1),
 
           form_expr: seq(
-            alt(
-              sym('form_paren'),
-              sym('number'),
-              sym('field'),
-              sym('fieldLen')
-            ),
+            // left operand
+            sym('form_operand'),
             optional(
               repeat(
                 seq(
+                  // MUL or DIV
                   alt(
                     literal('*', this.MUL),
                     literal('/', this.DIV)
                   ),
-                  alt(
-                    sym('form_paren'),
-                    sym('number'),
-                    sym('fieldLen'),
-                    sym('field')
-                  )
+                  // right operand
+                  sym('form_operand'),
                 )
               )
             )
+          ),
+
+          form_operand: alt(
+            sym('form_paren'),
+            sym('number'),
+            sym('fieldLen'),
+            sym('field')
           ),
 
           date: alt(
@@ -437,20 +443,30 @@ foam.CLASS({
           form_expr: function(v) {
           if ( foam.mlang.expr.Dot.isInstance(v[0]) || foam.core.Property.isInstance(v[0]) && ! foam.core.Int.isInstance(v[0]) ) return foam.parse.ParserWithAction.NO_PARSE;
 
+            // handle single value as formula without MUL or DIV operator and right operand
+            // v[0] is the value and v[1] is null or empty
             if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
 
-            var formulas = v[1];
-            var firstArg = v[0];
-            var temp = formulas[0];
-            var cnst = temp[1];
-            var formula = temp[0];
-            formula = formula.call(self, firstArg, cnst);
+            // handle formula with left operand followed by MUL or DIV and right operand
+            // v[0] is the left operand and v[1] contains an arry of [MUL or DIV, right operand]
+            // Eg.
+            //    v = [ 1,
+            //          [
+            //            [ '*', 2 ],
+            //            [ '/', 3 ]
+            //          ]
+            //        ];
+            //
+            // will return DIV(MUL(1, 2), 3) which is 1*2/3
+            var [ left, formulas ] = v;
+            var [ formula, right ] = formulas[0];
+            formula = formula.call(self, left, right);
+
+            // construct the final formula by recursively using the formula
+            // from the previous iteration as the left operand
             for ( var i = 1; i < formulas.length; i++ ) {
-              var tempArr = formulas[i];
-              var tempForm = tempArr[0];
-              var constant = tempArr[1];
-              tempForm = tempForm.call(self, formula, constant);
-              formula = tempForm;
+              var [ next, val ] = formulas[i];
+              formula = next.call(self, formula, val);
             }
             return formula;
           },
