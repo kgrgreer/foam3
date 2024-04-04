@@ -4895,13 +4895,13 @@ foam.CLASS({
         if ( valList.length > 0 ) {
           var result = valList.reduce(this.reduce);
           if ( ! isFinite(result) )
-            return foam.mlang.Constant.create({ value: result });
+            return this.Constant.create({ value: result });
 
           if ( argList.length === 0 )
-            return foam.mlang.Constant.create({ value: this.rounding ? Math.round(result) : result });
+            return this.Constant.create({ value: this.rounding ? Math.round(result) : result });
 
           // append valList result to the un-resolvable argList
-          argList.push(foam.mlang.Constant.create({ value: result }));
+          argList.push(this.Constant.create({ value: result }));
         }
         return this.cls_.create({ rounding: this.rounding, args: argList });
       },
