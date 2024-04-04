@@ -15,7 +15,8 @@ foam.CLASS({
     'ctrl',
     'menuDAO',
     'pushMenu',
-    'stack'
+    'stack',
+    'routeTo'
   ],
 
   requires: [
@@ -150,29 +151,10 @@ foam.CLASS({
                 .attrs({ href: '#' })
                 .on('click', (evt) => {
                   evt.preventDefault();
-                  if ( self.linkTo === 'daoSummary' ) {
-                    const pred = foam.mlang.predicate.False.create();
-
-                    this.stack.push(this.StackBlock.create({
-                      parent: this,
-                      id: `daoSummary.${self.obj.cls_.name}.${self.obj.id}`,
-                      breadcrumbTitle: '' + self.obj.id,
-                      view: {
-                        class: 'foam.comics.v3.DetailView',
-                        data: self.obj,
-                        of: self.obj.cls_,
-                        backLabel: 'Back',
-                        config: self.DAOControllerConfig.create({
-                          daoKey: self.prop.targetDAOKey,
-                          createPredicate: pred,
-                          editPredicate: pred,
-                          deletePredicate: pred,
-                          editEnabled: false
-                        })
-                      }
-                    }));
-
-                    // link to a menu
+                  if ( self.linkTo == 'permissioned' ) {
+                    this.routeToDAO(this.__subContext__[this.prop.targetDAOKey], this.obj?.id)
+                  } else if ( self.linkTo.includes('/') ) {
+                    this.routeTo('#' + this.linkTo);
                   } else {
                     self.pushMenu(self.linkTo);
                   }
@@ -202,7 +184,11 @@ foam.CLASS({
       if ( dao ) {
         this.obj = await dao.find(this.data);
       }
-
+      if ( ! this.obj ) {
+        console.warn('***********No valid reference obj')
+        this.enableLink = false;
+        return;
+      }
       // enableLink set to false?
       if ( ! this.enableLink ) {
         this.enableLink = false;
@@ -224,7 +210,7 @@ foam.CLASS({
             this.linkTo = (
               configuredDAOKey &&
               configuredDAOKey === this.prop.targetDAOKey
-            ) ? 'daoSummary' : maybeMenu.id;
+            ) ? `${maybeMenu.id}/${this.obj.id}` : maybeMenu.id;
 
             await this.maybeEnableLink();
             return;
@@ -233,7 +219,7 @@ foam.CLASS({
 
         // have permission to service.{prop.targetDAOKey} ?
         if ( this.__subContext__[this.prop.targetDAOKey] ) {
-          this.linkTo = 'daoSummary';
+          this.linkTo = 'permissioned';
           await this.maybeEnableLink();
           return;
         }

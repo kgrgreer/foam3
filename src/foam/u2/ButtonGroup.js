@@ -23,9 +23,14 @@ foam.CLASS({
       gap: 1rem;
       align-items: center;
       flex-wrap: wrap;
+      flex: 2 0 fit-content;
+      justify-content: flex-end;
     }
     ^vertical {
       flex-direction: column;
+    }
+    ^ .foam-u2-view-OverlayActionListView-iconOnly {
+      padding: 6px;
     }
   `,
   enums: [
@@ -91,7 +96,7 @@ foam.CLASS({
     },
     function addActionReference(action, data, opts = {}) {
       // Convienience method to add ActionReference
-      let actRef = this.ActionReference.create({ action, data });
+      let actRef = this.ActionReference.create({ action, ...( foam.core.Slot.isInstance(data) ? {data$: data} : {data: data} ) });
       this.tag(actRef, opts);
       return this
     }

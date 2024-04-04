@@ -27,7 +27,7 @@ foam.CLASS({
   properties: [
     {
       name: 'view',
-      value: { class: 'foam.comics.InlineBrowserView' }
+      value: { class: 'foam.u2.view.EmbeddedTableView' }
     },
     {
       name: 'createVisibility',

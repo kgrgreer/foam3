@@ -56,6 +56,7 @@ foam.CLASS({
     'foam.u2.crunch.WizardRunner',
     'foam.u2.wizard.WizardType',
     'foam.nanos.u2.navigation.Stack',
+    'foam.u2.stack.BreadcrumbManager',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
@@ -97,6 +98,7 @@ foam.CLASS({
     'requestLogin',
     'returnExpandedCSS',
     'routeTo',
+    'routeToDAO',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -106,7 +108,8 @@ foam.CLASS({
     'subject',
     'theme',
     'user',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'breadcrumbs'
   ],
 
   topics: [
@@ -253,6 +256,10 @@ foam.CLASS({
     {
       name: 'stack',
       factory: function() { return this.Stack.create(); }
+    },
+    {
+      name: 'breadcrumbs',
+      factory: function() { return this.BreadcrumbManager.create(); }
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -774,8 +781,7 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
     async function pushDefaultMenu() {
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
-      this.purgeMenuDAO(defaultMenu);
-      await this.pushMenu(defaultMenu);
+      await this.pushMenu(defaultMenu.id);
       return defaultMenu;
     },
 
@@ -1016,8 +1022,26 @@ console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       /**
        * Replaces the url to redirect to the new menu without cleared tails
        */
-//      this.memento_.str = link;
+      // this.memento_.str = link;
       this.window.location.hash = link;
+    },
+    async function routeToDAO(dao, id) {
+      // Finds the correct menu for a given dao and optionally an object
+      let menuDAOs = (await this.__subContext__.menuDAO.select())
+        .array?.filter(v => foam.nanos.menu.DAOMenu2.isInstance(v.handler));
+      menuDAOs = menuDAOs.filter(m => m.handler.config.dao.of == dao.of);
+      if ( ! id ) {
+        return this.routeTo(menuDAOs[0].id);
+      }
+      for ( var i = 0; i < menuDAOs.length; i++ ) {
+        var result = await menuDAOs[i].handler.config.dao.find(id);
+        if ( result ) {
+          this.routeTo(menuDAOs[i].id + (id ? '/' + id : ''))
+          return;
+        }
+          // TODO: add support for being able to pick if multiple menus have the same obj
+          // menus.push(menuDAOs[i]);
+      }
     }
   ]
 });

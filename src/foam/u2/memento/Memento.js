@@ -109,10 +109,10 @@ foam.CLASS({
           this.props.forEach(p => {
             var value = consumeBinding(p.shortName || p.name);
             // Remove the tail memento if the route changes to prevent retaining stale parameters.
-            if ( ( p.name === 'route' || p.shortName === 'route' ) && this.obj[p.name] !== value ) {
-              this.tail = null;
+            if ( ( p.name === 'route' || p.shortName === 'route' ) && this.obj[p.name] !== value && this.tail ) {
+              this.detachTail();
             }
-            // Even if value doesn't exist, then still set, to revert to default value
+                        // Even if value doesn't exist, then still set, to revert to default value
             this.obj[p.name] = value && decodeURIComponent(value);
           });
 
@@ -147,6 +147,13 @@ foam.CLASS({
       this.props.forEach(p => {
         this.obj.slot(p.name).sub(this.update);
       });
+    },
+
+    function detachTail() {
+      console.log('detaching tail', this.tailStr)
+      this.tail?.detach();
+      this.tail = null;
+      this.tailStr = '';
     },
 
     function createBindings(s) {
@@ -290,14 +297,15 @@ foam.CLASS({
     The top-level Memento in the system should be a WindowHashMemento.
   `,
 
-  imports: [ 'window' ],
+  imports: [ 'window', 'breadcrumbs', 'document' ],
 
   properties: [
     {
       class: 'Boolean',
       name: 'hashFeedback_',
       hidden: true
-    }
+    },
+    'detacher_'
   ],
 
   methods: [
@@ -307,6 +315,7 @@ foam.CLASS({
       this.onHashChange();
       this.window.onpopstate = this.onHashChange;
       this.usedStr$.sub(this.onMementoChange);
+      this.window.history.replaceState({},'',this.window.location.href)
     }
   ],
 
@@ -328,11 +337,18 @@ foam.CLASS({
         this.hashFeedback_ = true;
         let route    = this.usedStr.split('?')[0];
         let winRoute = this.window.location.hash.substring(1).split('?')[0];
-
+        let self = this;
         if ( route == winRoute ) {
           this.window.history.replaceState(null,'','#' + this.usedStr)
         } else {
           this.window.history.pushState(null, '', '#' + this.usedStr)
+        }
+        // Title needs to be set here otherwise title changes before the memento does and we get incorrect document titles
+        if ( this.breadcrumbs ) {
+          if ( this.detacher_ ) this.detacher_.detach();
+          this.detacher_ = this.breadcrumbs.current.dynamic(function(title) {
+            self.document.title = title;
+          });
         }
         this.hashFeedback_ = false;
       }

@@ -7,9 +7,9 @@
 foam.CLASS({
   package: 'foam.comics.v3',
   name: 'DAOController',
-  extends: 'foam.comics.v3.DAOViewBorder',
+  extends: 'foam.u2.View',
 
-  mixins: ['foam.u2.memento.Memorable'],
+  implements: ['foam.u2.Routable'],
 
   documentation: `
     // TODO
@@ -21,11 +21,11 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'stack as parentStack'
+    'stack'
   ],
 
   exports: [
-    'as controlBorder',
+    'as daoController',
     'config',
     'click'
   ],
@@ -70,27 +70,40 @@ foam.CLASS({
         // This function is exported and is not always called with the 'this' being the current view
         // which is why we need to fetch config from subContext
         return function(obj, id) {
-          this.__subContext__.controlBorder.route = id || obj.id;
+          this.__subContext__.daoController.route = id || obj.id;
         };
+      }
+    },
+    {
+      name: 'viewTitle',
+      expression: function(config) {
+        var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
+        return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
       }
     }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.addCrumb();
+      this.stack.setTitle(this.viewTitle$);
+    },
     function render() {
       var self = this;
       this.SUPER();
       this.dynamic(function(route) {
-        self.content.removeAllChildren(); // TODO: not needed in U3
-        self.content.addClass(self.myClass('content'));
+        self.removeAllChildren(); // TODO: not needed in U3
+        self.addClass(self.myClass('content'));
         if ( route ) {
-          self.content.tag({
+          self.tag({
             class: 'foam.comics.v3.DetailView',
             config$: self.config$,
             idOfRecord$: self.route$
           });
         } else {
-          self.content.tag({
+          this.stack.setTitle(this.viewTitle$);
+          self.tag({
             class: 'foam.comics.v3.DAOBrowseView',
             data$: self.data$,
             config$: self.config$
@@ -107,7 +120,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'config as importedConfig'
+    'config as importedConfig',
+    'stack'
   ],
 
   requires: [
@@ -159,22 +173,13 @@ foam.CLASS({
           : this.DAOBrowserView
           ;
       }
-    },
-    {
-      name: 'viewTitle',
-      expression: function(config) {
-        var menuID = this.currentMenu ? this.currentMenu.id : config.of.id;
-        return this.translationService.getTranslation(foam.locale, menuID + '.browseTitle', config.browseTitle);
-      }
     }
   ],
 
   methods: [
     function render() {
       this.SUPER();
-
       var self = this;
-      this.__subContext__.controlBorder.viewTitle = this.viewTitle;
       this    
         .addClass()  
         .start(self.CardBorder)

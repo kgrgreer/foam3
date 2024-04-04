@@ -140,7 +140,7 @@ foam.CLASS({
       name: 'browseController',
       factory: function() {
         return {
-          class: 'foam.comics.v2.DAOBrowseControllerView'
+          class: 'foam.comics.v3.DAOController'
         };
       }
     },

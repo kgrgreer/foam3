@@ -7,7 +7,9 @@
 foam.CLASS({
   package: 'foam.nanos.boot',
   name: 'DataManagement',
-  extends: 'foam.u2.Router',
+  extends: 'foam.u2.Controller',
+
+  implements: ['foam.u2.Routable'],
 
   documentation: 'Data Management UI for browsing all DAOs.',
 
@@ -33,8 +35,6 @@ foam.CLASS({
 
       methods: [
         function render() {
-          this.document.title = 'Data Management / ' + this.daoKey;
-
           this
           .tag(this.AltView, {
             data$: this.data$,
@@ -59,12 +59,9 @@ foam.CLASS({
 
       mixins: [ 'foam.u2.memento.Memorable' ],
 
-      imports: [ 'nSpecDAO', 'route' ],
+      imports: [ 'nSpecDAO', 'route', 'stack' ],
 
       css: `
-        ^ {
-          padding: 6px;
-        }
         ^dao, ^header {
           display: inline-block;
           font-size: smaller;
@@ -92,10 +89,6 @@ foam.CLASS({
         ^footer {
           color: $grey500;
           padding-top: 12px;
-        }
-        /* TODO: scope this better so it doesn't affect nested AltViews also */
-        .foam-u2-view-AltView .property-selectedView {
-          margin-left: 32px;
         }
       `,
 
@@ -145,28 +138,12 @@ foam.CLASS({
         function render() {
           this.SUPER();
 
-          this.document.title = 'Data Management';
-
           var self          = this;
           var currentLetter = '';
           var section;
-
-          this.addClass().
-          start().
-            style({ 'height': '56px'}).
-            start().
-              style({ 'font-size': '2.6rem', 'width': 'fit-content', 'float': 'left', 'padding-top': '10px' }).
-              add('Data Management').
-            end()
-            .start()
-            .style({ 'width': 'fit-content', 'float': 'right', 'margin-right': '40px', 'margin-top': '12px' })
-                .start(this.SEARCH).focus().end()
-                .addClass('foam-u2-search-TextSearchView')
-                .addClass(this.myClass('foam-u2-search-TextSearchView'))
-              .end()
-            .end()
-          .end();
-
+          this.stack.setTitle('Data Management');
+          this.onDetach(this.stack.setTrailingContainer(this.E().start(this.SEARCH).focus().end()));
+          this.addClass();
           var updateSections = [];
           var i = 0;
 
@@ -260,23 +237,66 @@ foam.CLASS({
         }
       ]
     },
+    {
+      name: 'CustomDAOSummaryView',
+      extends: 'foam.comics.v3.DetailView',
+      messages: [
+        { name: 'DETAIL',    message: 'Detail' },
+        { name: 'TABBED',    message: 'Tabbed' },
+        { name: 'SECTIONED', message: 'Sectioned' },
+        { name: 'MATERIAL',  message: 'Material' },
+        { name: 'WIZARD',    message: 'Wizard' },
+        { name: 'VERTICAL',  message: 'Vertical' },
+        { name: 'ALL',       message: 'All ' }
+      ],
+      properties: [
+        {
+          class: 'foam.u2.ViewSpec',
+          name: 'viewView',
+          factory: function() {
+            return {
+              class: 'foam.u2.view.ObjAltView',
+              views: [
+                [ {class: 'foam.u2.DetailView'},                 this.DETAIL ],
+                [ {class: 'foam.u2.detail.TabbedDetailView'},    this.TABBED ],
+                [ {class: 'foam.u2.detail.SectionedDetailView'}, this.SECTIONED ],
+                [ {class: 'foam.u2.detail.MDDetailView'},        this.MATERIAL ],
+                [ {class: 'foam.u2.detail.WizardSectionsView'},  this.WIZARD ],
+                [ {class: 'foam.u2.detail.VerticalDetailView'},  this.VERTICAL ]
+              ],
+              selectedView: this.VERTICAL
+            };
+          }
+        }
+      ]
+    }
+  ],
+
+  properties: [
+    {
+      name: 'viewTitle',
+      value: 'Data Management'
+    }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.addCrumb();
+    },
     function render() {
       this.SUPER();
-
       var self = this;
-
       // TODO: Should move to DAOView and these sub-Models should move there also
+      let x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
+      x.register(this.CustomDAOSummaryView,    'foam.comics.v3.DetailView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
-
         if ( route ) {
-          this.tag(self.DAOView, {data: this.__context__[route]});
+          this.tag(foam.comics.v3.DAOController, {data: this.__context__[route]});
         } else {
           this.tag(self.DAOListView);
         }

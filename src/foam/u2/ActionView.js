@@ -37,6 +37,8 @@ foam.CLASS({
 
   imports: [ 'ctrl?' ],
 
+  exports: ['action'],
+
   enums: [
     {
       name: 'ButtonState',

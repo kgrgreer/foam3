@@ -8,10 +8,9 @@ foam.CLASS({
   package: 'foam.comics.v3',
   name: 'DetailView',
   extends: 'foam.u2.View',
-  mixins: ['foam.u2.memento.Memorable'],
+  implements: ['foam.u2.Routable'],
 
-  documentation: `Experimental new detail view that uses controller mode for a more seamless view/edit experience
-  and offers more customisation while simplifying the code`,
+  documentation: `Detail view for displaying objects in comics 3 controller`,
 
   axioms: [
     foam.pattern.Faceted.create()
@@ -34,11 +33,14 @@ foam.CLASS({
     'currentControllerMode?',
     'notify',
     'setControllerMode?',
-    'stack?'
+    'stack?',
+    'controlBorder'
   ],
 
   exports: [
-    'controllerMode'
+    'controllerMode',
+    'as detailView',
+    'exportStack as stack'
   ],
 
   topics: [
@@ -46,17 +48,39 @@ foam.CLASS({
     'throwError'
   ],
 
+  classes: [
+    {
+      name: 'Stack',
+      extends: 'foam.nanos.u2.navigation.Stack',
+      imports: ['detailView'],
+      methods: [
+        function push(v, p) {
+          let ctx;
+          if ( foam.u2.stack.StackBlock.isInstance(v) && v.parent) {
+            ctx = foam.core.FObject.isInstance(v.parent) ? v.parent.__subContext__: v.parent;
+          } else {
+            ctx = (foam.core.FObject.isInstance(p) ? p.__subContext__: p) ?? v.__subContext__;
+          }
+          if ( this.detailView && this.detailView.stack.pos == this.detailView.__subContext__.stackPos ) {
+            console.warn('***** Pushing inside detail view. Audit and maybe remove');
+            this.detailView.route = ctx.prop?.name || ctx.action?.name;
+          }
+          return this.SUPER(...arguments);
+        }
+      ]
+    }
+  ],
+
   css: `
-    ^buttonGroup {
-      flex: 2 0 fit-content;
-      justify-content: flex-end;
-    }
-    ^buttonGroup .foam-u2-view-OverlayActionListView-iconOnly {
-      padding: 6px;
-    }
   `,
 
   properties: [
+    {
+      name: 'exportStack',
+      factory: function() {
+        return this.Stack.create({ delegate_: this.stack });
+      }
+    },
     {
       class: 'FObjectProperty',
       name: 'data'
@@ -92,7 +116,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
-        return this.config?.detailView ?? foam.u2.detail.TabbedDetailView;
+        return this.config?.detailView ?? foam.u2.detail.VerticalDetailView;
       }
     },
     {
@@ -118,7 +142,6 @@ foam.CLASS({
           maybePromise.then( v => { self.viewTitle = v })
           return '';
         }
-        this.__subContext__.controlBorder.viewTitle = maybePromise;
         return maybePromise;
       }
     },
@@ -127,8 +150,7 @@ foam.CLASS({
       factory: function() {
         return this.__context__.translationService || foam.i18n.NullTranslationService.create({}, this);
       }
-    },
-    // TODO: routeable props and actions on data
+    }
   ],
 
   methods: [
@@ -137,55 +159,73 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
+      this.addCrumb();
+      this.stack?.setTitle(this.viewTitle$);
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
         self.data = d;
         if ( this.controllerMode == 'EDIT' ) this.edit();
         this.populatePrimaryAction(self.config.of, self.data);
-
       });
     },
     function render() {
       var self = this;
       this.SUPER();
-      this
-      .add(self.slot(function(config$viewBorder, viewView) {
-        var allActions = self.config.of.getAxiomsByClass(foam.core.Action);
-        self.actionArray = allActions;
-        this.onDetach(() => { this.__subContext__.controlBorder.buttonHolder.removeAllChildren() })
-        this.__subContext__.controlBorder.buttonHolder.add(this.dynamic(function(actionArray, primary) {
-          this.start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: this, icon: '/images/Icon_More_Resting.svg',
-              showDropdownIcon: false  }})
-            .addClass(this.myClass('buttonGroup'))
-            .add(self.slot(function(primary) {
-              return this.E()
-                .hide(self.controllerMode$.map(c => c == 'EDIT' ))
-                .startContext({ data: self.data })
-                  .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
-                .endContext();
-            }))
-            .startContext({ data: self })
-              .tag(self.EDIT)
-              .tag(self.CANCEL_EDIT)
-              .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
-            .endContext()
-            .startOverlay()
-              .forEach(self.actionArray, function(v) {
-                this.addActionReference(v, self.data)
-              })
-              .tag(self.COPY)
-              .tag(self.DELETE)
-            .endOverlay()
+      var allActions = self.config.of.getAxiomsByClass(foam.core.Action);
+      self.actionArray = allActions;
+      let d = self.stack.setTrailingContainer(
+        this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
+            showDropdownIcon: false  }})
+          .addClass(this.myClass('buttonGroup'))
+          .add(self.slot(function(primary) {
+            return this.E()
+              .hide(self.controllerMode$.map(c => c == 'EDIT' ))
+              .startContext({ data: self.data })
+                .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
+              .endContext();
+          }))
+          .startContext({ data: self })
+            .tag(self.EDIT)
+            .tag(self.CANCEL_EDIT)
+            .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
+          .endContext()
+          .startOverlay()
+            .forEach(self.actionArray, function(v) {
+              this.addActionReference(v, self.data$)
+            })
+            .tag(self.COPY)
+            .tag(self.DELETE)
+          .endOverlay()
+        .end()
+      )
+      self.onDetach(d);
+      this.dynamic(function(route, data) {
+        if ( ! data ) return;
+        this.removeAllChildren(); //TODO: remove in U3
+        /* 
+          Only handle routing if detailView is currently visible as otherwise route changes
+          are probably caused by sub views
+        */
+        if ( self.route && this.stack.pos == this.__subContext__.stackPos ) {
+          let axiom = self.data[foam.String.constantize(self.route)];
+          if ( foam.core.Action.isInstance(axiom) ) {
+            axiom.maybeCall(self.__subContext__.createSubContext({ action: axiom }), self.data);
+            return;
+          }
+          // PropertyBorder handles routing so dont clear that as it hasn't been rendered yet
+          if ( ! foam.core.Property.isInstance(axiom) ) {
+            // Otherwise just clear route for now
+            self.routeToMe();
+          }
+        }
+        self
+          .start(this.config.viewBorder)
+            .start(this.viewView, {
+              data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
+            })
+              .addClass(self.myClass('view-container'))
+            .end()
           .end();
-        }))
-        return self.E().style({ display: 'contents' })
-            .start(config$viewBorder)
-              .start(viewView, {
-                data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
-              })
-                .addClass(self.myClass('view-container'))
-              .end()
-            .end();
-      }));
+      })
     },
     async function populatePrimaryAction(of, data) {
       var allActions = of.getAxiomsByClass(foam.core.Action);
@@ -247,8 +287,6 @@ foam.CLASS({
     },
     {
       name: 'copy',
-      themeIcon: 'copy',
-      icon: 'images/copy-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
@@ -339,8 +377,6 @@ foam.CLASS({
     },
     {
       name: 'delete',
-      themeIcon: 'trash',
-      icon: 'images/delete-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {

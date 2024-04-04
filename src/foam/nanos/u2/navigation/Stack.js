@@ -11,37 +11,60 @@ foam.CLASS({
   documentation: `
     A simple stack view for use with nested dao controllers and detailViews
   `,
+  exports: ['as controlBorder'],
+  requires: ['foam.u2.layout.Cols'],
   css:`
     ^ {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
       position: relative;
+      gap: 1.6rem;
     }
-    @keyframes stackfade-out {
-      0% { position: absolute; }
-      100% { 
-        opacity: 0; 
-        // transform: translateX(-300px); 
-        position: absolute;
-      }
+    ^content {
+      display: contents;
     }
-    @keyframes stackfade-in {
-      0% { 
-        opacity: 0; 
-        // transform: translateX(300px); 
-        position: absolute; top: 0;
-      }
-      100% {
-        opacity: 1; 
-        // transform: translateX(0px);
-        position: absolute; top: 0;
-      }
+    ^content > * {
+      flex: 1;
+      min-height: 0; 
     }
-    .fancy-hide {
-      animation-name: stackfade-out;
-      animation-duration: 0.2s;
+    ^padding ^content > * {
+      padding: 1.6rem;
+      padding-top: 0;
     }
-    .fancy-show {
-      animation-name: stackfade-in;
-      animation-duration: 0.2s;
+    ^browse-title {
+      transition: all 0.2s ease;
+    }
+    ^header-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+      // sort of a hack to make css think this element is not always at the top;
+      position: sticky;
+      top: -1px;
+      transition: all 0.2s ease;
+    }
+    ^header-container > .foam-u2-layout-Cols {
+      align-items: center;
+    }
+    ^padding ^header-container {
+      padding: calc(1.6rem + 1px);
+      padding-bottom: 0;
+    }
+    ^stuck {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(3px) opacity(0.5);
+      transition: all 0.2s ease;
+      padding: 1rem;
+      gap: 0.4rem;
+    }
+    ^stuck ^browse-title {
+      font-size: 2.4rem;
+    }
+    ^stuck .h600, ^stuck {
+      font-size: 1.2rem;
     }
   `,
   topics: ['stackReset', 'posUpdated'],
@@ -61,32 +84,71 @@ foam.CLASS({
       expression: function(stack_, pos) {
         return stack_[pos];
       }
-    }
+    },
+    'title', 'trailingContainer',
+    // If set, takes over stack operations, useful for overriding stack behaviour in routers
+    'delegate_', 
+    'header_', 'breadcrumbs_', ['stuck_', false]
     // TODO: add stack default
   ],
   methods: [
     function render() {
+      let headerVisibility$ = this.slot(function(title, trailingContainer) {
+        return title || trailingContainer?.childNodes.length;
+      });
       this.addClass()
-      this.stackReset.sub(() => { this.removeAllChildren(); })
+      // Theoretically we shouldnt need this as views should be taking up all the space they get
+      // But since old stack didnt have styling we need this until we can go through the old views
+      // and update them
+      .enableClass(this.myClass('padding'), headerVisibility$.or(this.breadcrumbs_$.dot('shown')))
+      .start('', {}, this.header_$)
+        .addClass(this.myClass('header-container'))
+        .show(headerVisibility$.or(this.breadcrumbs_$.dot('shown')))
+        .enableClass(this.myClass('stuck'), this.stuck_$)
+        .tag(foam.u2.stack.BreadcrumbView, {}, this.breadcrumbs_$)
+        .start(this.Cols)
+          .show(headerVisibility$)
+          .start()
+            .addClass('h100', this.myClass('browse-title'))
+            .add(this.title$)
+          .end()
+          .tag('', {}, this.trailingContainer$)
+        .end()
+      .end()
+      .start('', {}, this.content$).addClass(this.myClass('content')).end();
+      this.addHeaderObserver();
+      this.stackReset.sub(() => { this.content?.removeAllChildren(); })
       this.posUpdated.sub((_, p, type) => {
         this.current.hide();
         if ( type == 'new' )
-          this.add(this.current);
+          this.content.add(this.current);
         this.stack_.forEach(v => { 
           if ( v !== this.current ) {
-            this.fancyHide(v);
+            v.hide();
           } else {
-            this.fancyShow(v);
+            v.show();
           }
         })
       })
     },
+    async function addHeaderObserver() {
+      const root = await this.el();
+      const options = { root, threshold: [1.0] };
+
+      const observer = new IntersectionObserver(([e]) => { this.stuck_ = e.intersectionRatio < 1; }, options);
+      (async () => {
+        observer.observe(await this.header_.el());
+      })();
+    },
     function resetStack() {
+      if ( this.delegate_ ) return this.delegate_.resetStack();
       this.stack_ = [];
+      this.title = undefined;
       this.pos = -1;
       this.stackReset.pub();
     },
     function push(v, parent) {
+      if ( this.delegate_ ) return this.delegate_.push(...arguments);
       if ( foam.u2.stack.StackBlock.isInstance(v) ) {
         console.warn('**************** Replace with just a view push');
         parent = v.parent;
@@ -98,31 +160,42 @@ foam.CLASS({
       }
       this.pos++;
       // if a view is overridden in the stack, actually remove it
+      if ( this.stack_[this.pos] ) {
+        this.stack_.splice(this.pos).forEach(v => v.remove())
+      }
       this.stack_[this.pos]?.remove();
+      // v.__subContext__.stackPos = this.pos
+      if ( foam.u2.Routable.isInstance(v) ) {
+        v.stackPos = this.pos;
+      }
       this.stack_[this.pos] = v;
       this.posUpdated.pub('new');
       return this.pos;
     },
-    function fancyHide(v) {
-      v.addClass('fancy-hide');
-      v.addEventListener('animationend', () => {
-        v.hide(); 
-        v.removeClass('fancy-hide');
-      }, {once : true})
-    },
-    function fancyShow(v) {
-      v.addClass('fancy-show').show();
-      v.addEventListener('animationend', () => {
-        v.removeClass('fancy-show'); 
-      }, {once : true})
-    },
     function set() {
+      if ( this.delegate_ ) return this.delegate_.set();
       this.resetStack();
       return this.push(...arguments);
     },
     function jump(p) {
+      if ( this.delegate_ ) return this.delegate_.jump(...arguments);
       this.pos = p;
       this.posUpdated.pub('jump');
+    },
+    function setTitle(title) {
+      if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
+      if ( foam.core.Slot.isInstance(title) ) {
+        title.obj.onDetach(this.title$.follow(title));
+        return;
+      }
+      this.title = title;
+    },
+    function setTrailingContainer(view) {
+      if ( this.delegate_ ) return this.delegate_.setTrailingContainer(...arguments);
+      let pos = view.__subContext__.stackPos;
+      view.show(this.pos$.map(v => v == pos));
+      this.trailingContainer.add(view);
+      return { detach: () => { this.trailingContainer.removeChild(view); }}
     }
   ]
 });
