@@ -421,11 +421,13 @@ foam.CLASS({
           minutes: function(v) { return self.MINUTES(v); },
 
           formula: function(v) {
-            return self.ADD.apply(self, adaptFormulaArgs(v));
+            var args = adaptFormulaArgs(v);
+            return args.length === 1 ? args[0] : self.ADD.apply(self, args);
           },
 
           minus: function(v) {
-            return self.SUB.apply(self, adaptFormulaArgs(v));
+            var args = adaptFormulaArgs(v);
+            return args.length === 1 ? args[0] : self.SUB.apply(self, args);
           },
 
           form_expr: function(v) {
