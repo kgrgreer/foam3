@@ -4851,6 +4851,8 @@ foam.CLASS({
             }
           }
         }
+
+        foam.assert(result !== null, 'Formula ' + this.toString() + ' result is null.');
         return this.rounding ? Math.round(result) : result;
       }
     },
