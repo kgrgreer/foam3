@@ -4866,6 +4866,38 @@ foam.CLASS({
     {
       name: 'partialEval',
       type: 'foam.mlang.Expr',
+      code: function() {
+        if ( this.args.length === 0 ) return this;
+        if ( this.args.length === 1 ) return this.args[0].partialEval?.() || this.args[0];
+
+        var valList = [];
+        var argList = [];
+        for ( var i = 0; i < this.args.length; i++ ) {
+          var arg = this.args[i];
+          if ( arg.partialEval ) arg = arg.partialEval();
+          if ( foam.mlang.Constant.isInstance(arg)  ) arg = parseFloat(arg.f(this));
+
+          if ( typeof arg === 'number' ) {
+            valList.push(arg);
+          } else {
+            argList.push(arg);
+          }
+        }
+
+        // reduce the valList result
+        if ( valList.length > 0 ) {
+          var result = valList.reduce(this.reduce);
+          if ( ! isFinite(result) )
+            return foam.mlang.Constant.create({ value: result });
+
+          if ( argList.length === 0 )
+            return foam.mlang.Constant.create({ value: this.rounding ? Math.round(result) : result });
+
+          // append valList result to the un-resolvable argList
+          argList.push(foam.mlang.Constant.create({ value: result }));
+        }
+        return this.cls_.create({ rounding: this.rounding, args: argList });
+      },
       javaCode: `
         if ( getArgs().length == 0 ) return this;
         if ( getArgs().length == 1 ) return getArgs()[0].partialEval();
