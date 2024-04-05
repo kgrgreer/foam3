@@ -205,7 +205,8 @@ foam.CLASS({
 
             // Per-Month Details
             forEach(authorCounts[a[0]], function(c, i) {
-              var salary = salaries[a[0]][i];
+              var salary = 0;
+              try { salary = salaries[a[0]][i]; } catch (x) {}
               total       += c;
               allTotal    += allAuthorCounts[a[0]][i];
               salaryTotal += salary;
