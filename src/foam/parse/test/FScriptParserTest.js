@@ -320,10 +320,10 @@ foam.CLASS({
     test(((Predicate) parser.parse(sps, px).value()).f(user), "address.regionId.len==5");
 
     sps.setString("if(id exists){id}else{0}");
-    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists){id}else{0} -> 666");
+    test(((Number)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists){id}else{0} -> 666");
 
     sps.setString("if(id exists && id==666){id}else{0}");
-    test(((Double)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists && id==666){id}else{0} -> 666");
+    test(((Number)((Expr)parser.parse(sps, px).value()).f(user)).longValue()==666, "if(id exists && id==666){id}else{0} -> 666");
 
     sps.setString("if(unknown==null){999}else{0}");
     test(parser.parse(sps, px) == null, "if(unknown==null){999}else{0} --> null");
@@ -354,7 +354,7 @@ foam.CLASS({
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { lastName.len+3 }");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 }");
+    test((((Number) result)).doubleValue() == 8, "if ( address.regionId.len==5 ) { firstName } else { lastName.len==3 }");
 
     sps.setString("if ( address.regionId.len==4 ) { firstName } else { if ( lastName.len+3==10 ) { address.regionId } else { address.city } }");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
@@ -391,7 +391,7 @@ foam.CLASS({
 
     sps.setString("let testVar11 = 4+7; if ( testVar > 8 ) { if (testVar11 < 0 ) { 0 } else { testVar11 } } else { 0 }");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 11, "let testVar11 = 4+7; if ( testVar11 > 8 ) { testVar } else { 0 }");
+    test((((Number) result)).doubleValue() == 11, "let testVar11 = 4+7; if ( testVar11 > 8 ) { testVar } else { 0 }");
 
     sps.setString("let newVar = address.regionId.len; address.regionId.len==newVar");
     test(( ((Predicate) parser.parse(sps, px).value()).f(user)), "let testVar2 = address.regionId.len; address.regionId.len==testVar");
@@ -436,15 +436,15 @@ foam.CLASS({
 
     sps.setString("lit_int_10 * lit_int_20");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 200, "expect: 10 * 20 == 200, found: "+result);
+    test((((Number) result)).doubleValue() == 200, "expect: 10 * 20 == 200, found: "+result);
 
     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == -910.0, "expect: (10*20)-(111.0*10) == -910.0, found: "+result);
+    test((((Number) result)).doubleValue() == -910.0, "expect: (10*20)-(111.0*10) == -910.0, found: "+result);
 
     sps.setString("lit_int_30+lit_int_20-lit_int_10");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 40, "expect: 30+20-10 == 40, found: "+result);
+    test((((Number) result)).doubleValue() == 40, "expect: 30+20-10 == 40, found: "+result);
 
     sps.setString("Hello, {{firstName}}. Is {{lastName}} your last name?");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
@@ -456,19 +456,19 @@ foam.CLASS({
 
     sps.setString("(lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10)+(lit_int_30+(lit_int_20-lit_int_10))");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == -870.0, "expect: (10*20)-(111.0*10)+(30+(20-10)) == -870.0, found: "+result);
+    test((((Number) result)).doubleValue() == -870.0, "expect: (10*20)-(111.0*10)+(30+(20-10)) == -870.0, found: "+result);
 
     sps.setString("((lit_int_10 * lit_int_20)-(lit_float_111*lit_int_10))-(lit_int_30+(lit_int_20-lit_int_10))");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == -950.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -950.0, found: "+result);
+    test((((Number) result)).doubleValue() == -950.0, "expect: ((10*20)-(111.0*10))-(30+(20-10)) == -950.0, found: "+result);
 
     sps.setString("if(lit_int_20 > lit_int_10){lit_int_30}else{0}");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 30, "expect: if(lit_int_20 > lit_int_10){lit_int_30}else{0} == 30, found: "+result);
+    test((((Number) result)).doubleValue() == 30, "expect: if(lit_int_20 > lit_int_10){lit_int_30}else{0} == 30, found: "+result);
 
     sps.setString("if(lit_int_20 > lit_int_10){lit_int_30*10}else{0}");
     result = ((Expr) parser.parse(sps, px).value()).f(user);
-    test(((Double) result) == 300, "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
+    test((((Number) result)).doubleValue() == 300, "expect: if(lit_int_20 > lit_int_10){lit_int_30*10}else{0} == 300, found: "+result);
 
     user.setTestint1(11);
     user.setTestint2(22);
@@ -488,7 +488,7 @@ foam.CLASS({
 
      sps.setString("0 / 1");
      result = ((Expr) parser.parse(sps, px).value()).f(user);
-     test (((Double)result) == 0, "expect: 0 / 1 -> 0, found: "+result);
+     test ((((Number) result)).doubleValue() == 0, "expect: 0 / 1 -> 0, found: "+result);
 
      sps.setString("1 / 0");
      try {

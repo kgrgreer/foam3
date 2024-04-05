@@ -270,18 +270,12 @@ public class FScriptParser
     });
 
     grammar.addSymbol("FORM_EXPR", new Seq(
-      new Alt(
-        grammar.sym("FORM_PAREN"),
-        grammar.sym("NUMBER"),
-        grammar.sym("FIELD_LEN"),
-        grammar.sym("FIELD"),
-        grammar.sym("MAX"),
-        grammar.sym("MIN"),
-        grammar.sym("IF_ELSE")
-      ),
+      // lhs
+      grammar.sym("FORM_VALUE"),
       new Alt(
         new Repeat(
           new Seq(
+            // MUL or DIV
             new Alt(
               new Seq1(1, Whitespace.instance(), new AbstractLiteral("*") {
                 @Override
@@ -296,15 +290,8 @@ public class FScriptParser
                 }
               }, Whitespace.instance())
             ),
-            new Alt(
-              grammar.sym("FORM_PAREN"),
-              grammar.sym("NUMBER"),
-              grammar.sym("FIELD_LEN"),
-              grammar.sym("FIELD"),
-              grammar.sym("MAX"),
-              grammar.sym("MIN"),
-              grammar.sym("IF_ELSE")
-            )
+            // rhs
+            grammar.sym("FORM_VALUE")
           ), 1
         ),
         new foam.lib.parse.Not(
@@ -319,23 +306,49 @@ public class FScriptParser
       ) {
         return Action.NO_PARSE;
       }
+
+      // handle left hand side (lhs) value as formula without MUL or DIV operator and right hand side (rhs) value
+      // v[0] is lhs value and v[1] is null or empty
       if ( vals.length == 1 || vals[1] == null || ! (vals[1] instanceof Object[]) || ((Object[])vals[1]).length == 0 ) return ( vals[0] instanceof Expr ) ? vals[0] : new foam.mlang.Constant (vals[0]);
-      Expr[] args = new Expr[2];
-      Object [] formulas = (Object[]) vals[1];
-      var firstArg = ( vals[0] instanceof Expr ) ? (Expr) vals[0] : new foam.mlang.Constant (vals[0]);
-      var temp = (Object[]) formulas[0];
-      var cnst = ( temp[1] instanceof Expr ) ? (Expr) temp[1] : new foam.mlang.Constant (temp[1]);
-      Formula formula = (Formula) temp[0];
-      formula.setArgs(new Expr[] {firstArg, cnst});
+
+
+      // handle formula with lhs value followed by MUL or DIV and rhs value
+      // v[0] is the lhs and v[1] contains an array of [MUL or DIV, rhs]
+      // Eg.
+      //    v = [ 1,
+      //          [
+      //            [ '*', 2 ],
+      //            [ '/', 3 ]
+      //          ]
+      //        ];
+      //
+      // will return DIV(MUL(1, 2), 3) which is 1*2/3
+      var lhs       = ( vals[0] instanceof Expr ) ? (Expr) vals[0] : new Constant(vals[0]);
+      var formulas  = (Object[]) vals[1];
+      var f0        = (Object[]) formulas[0];
+      var formula   = (Formula) f0[0];
+      var rhs       = ( f0[1] instanceof Expr ) ? (Expr) f0[1] : new Constant(f0[1]);
+
+      formula.setArgs(new Expr[] { lhs, rhs });
       for ( int i = 1 ; i < formulas.length ; i++ ) {
-        var tempArr = (Object[]) formulas[i];
-        var tempFormula = (Formula) tempArr[0];
-        var constant = ( tempArr[1] instanceof Expr ) ? (Expr) tempArr[1] : new foam.mlang.Constant (tempArr[1]);
-        tempFormula.setArgs(new Expr[] { formula, constant });
-        formula = tempFormula;
+        var fi = (Object[]) formulas[i];
+        var next = (Formula) fi[0];
+        var nextVal = ( fi[1] instanceof Expr ) ? (Expr) fi[1] : new Constant (fi[1]);
+        next.setArgs(new Expr[] { formula, nextVal });
+        formula = next;
       }
       return formula;
     });
+
+    grammar.addSymbol("FORM_VALUE", new Alt(
+      grammar.sym("FORM_PAREN"),
+      grammar.sym("NUMBER"),
+      grammar.sym("FIELD_LEN"),
+      grammar.sym("FIELD"),
+      grammar.sym("MAX"),
+      grammar.sym("MIN"),
+      grammar.sym("IF_ELSE")
+    ));
 
     grammar.addSymbol("IF_ELSE", new SeqI(new int[] { 5, 11,14 },
       Whitespace.instance(),
