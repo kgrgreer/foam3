@@ -16,7 +16,8 @@ foam.CLASS({
     'menuDAO',
     'pushMenu',
     'stack',
-    'routeTo'
+    'routeTo',
+    'routeToDAO'
   ],
 
   requires: [
