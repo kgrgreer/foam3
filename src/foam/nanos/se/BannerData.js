@@ -14,23 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'BannerData',
 
-  javaImports: [
-    'foam.core.X'
-  ],
-
-  methods: [
+  properties: [
     {
-      name: 'activate',
-      args: 'X x'
+      class: 'String',
+      name: 'message'
     },
     {
-      name: 'deactivate',
-      args: 'X x'
+      class: 'Boolean',
+      name: 'isDismissed',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isDismissable',
+      value: true
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.log.LogLevel',
+      name: 'severity',
+      value: 'WARNING'
     }
   ]
 });
+

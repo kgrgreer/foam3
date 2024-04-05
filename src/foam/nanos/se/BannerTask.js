@@ -14,23 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'BannerTask',
+  implements: [ 'foam.nanos.se.SystemEventTask' ],
+
+  documentation: 'Task for managin banner display',
 
   javaImports: [
     'foam.core.X'
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.se.BannerData',
+      name: 'bannerData',
+    }
+  ],
+
   methods: [
     {
       name: 'activate',
-      args: 'X x'
+      javaCode: `
+      // nop
+      `
     },
     {
       name: 'deactivate',
-      args: 'X x'
+      javaCode: `
+      // nop
+      `
     }
   ]
 });
+

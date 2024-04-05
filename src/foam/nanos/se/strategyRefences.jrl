@@ -1,0 +1,6 @@
+p({
+  class: "foam.strategy.StrategyReference",
+  id: "foam_nanos_se_BannerTask",
+  desiredModelId: "foam.nanos.se.SystemEventTask",
+  strategy: "foam.nanos.se.BannerTask"
+})
