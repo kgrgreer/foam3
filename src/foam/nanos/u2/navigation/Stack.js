@@ -88,7 +88,7 @@ foam.CLASS({
         return stack_[pos];
       }
     },
-    'title', 'trailingContainer',
+    'trailingContainer', [ 'titleMap_', {} ],
     // If set, takes over stack operations, useful for overriding stack behaviour in routers
     'delegate_', 
     'header_', 'breadcrumbs_', ['stuck_', false]
@@ -96,8 +96,8 @@ foam.CLASS({
   ],
   methods: [
     function render() {
-      let headerVisibility$ = this.slot(function(title, trailingContainer) {
-        return title || trailingContainer?.childNodes.length;
+      let headerVisibility$ = this.slot(function(titleMap_, pos, trailingContainer) {
+        return titleMap_[pos] || trailingContainer?.childNodes.length;
       });
       this.addClass()
       // Theoretically we shouldnt need this as views should be taking up all the space they get
@@ -113,7 +113,9 @@ foam.CLASS({
           .show(headerVisibility$)
           .start()
             .addClass('h100', this.myClass('browse-title'))
-            .add(this.title$)
+            .add(this.dynamic(function(pos, titleMap_) {
+              this.add(titleMap_[pos]);
+            }))
           .end()
           .tag('', {}, this.trailingContainer$)
         .end()
@@ -146,7 +148,7 @@ foam.CLASS({
     function resetStack() {
       if ( this.delegate_ ) return this.delegate_.resetStack();
       this.stack_ = [];
-      this.title = undefined;
+      this.titleMap_ = {};
       this.pos = -1;
       this.stackReset.pub();
     },
@@ -166,8 +168,7 @@ foam.CLASS({
       if ( this.stack_[this.pos] ) {
         this.stack_.splice(this.pos).forEach(v => v.remove())
       }
-      this.stack_[this.pos]?.remove();
-      // v.__subContext__.stackPos = this.pos
+      // Maybe just move to router? Would need to force stack pushes to be viewSpecs, that might not be bad tho.
       if ( foam.u2.Routable.isInstance(v) ) {
         v.stackPos = this.pos;
       }
@@ -185,13 +186,14 @@ foam.CLASS({
       this.pos = p;
       this.posUpdated.pub('jump');
     },
+    function viewAt(i) {
+      if ( this.delegate_ ) return this.delegate_.viewAt(...arguments);
+      return this.stack_[i];
+    },
     function setTitle(title) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
-      if ( foam.core.Slot.isInstance(title) ) {
-        title.obj.onDetach(this.title$.follow(title));
-        return;
-      }
-      this.title = title;
+      this.titleMap_[this.pos] = title;
+      this.propertyChange.pub('titleMap_', this.titleMap_$);
     },
     function setTrailingContainer(view) {
       if ( this.delegate_ ) return this.delegate_.setTrailingContainer(...arguments);

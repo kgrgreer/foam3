@@ -63,6 +63,7 @@ foam.CLASS({
         return this.DAOControllerConfig.create({ dao: this.data });
       }
     },
+    'view_',
     {
       name: 'click',
       expression: function(config$click) {
@@ -88,7 +89,10 @@ foam.CLASS({
       this.config.editPredicate =   foam.mlang.predicate.False.create();
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
-      this.handlePropertyRouting();
+      let self = this;
+      this.detailView?.dynamic(function(route) {
+        self.handlePropertyRouting();
+      })
       let mem = foam.u2.memento.Memento.create({}, this);
       var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
       this.start(this.CardBorder).addClass(this.myClass('wrapper'))
@@ -112,6 +116,10 @@ foam.CLASS({
     function handlePropertyRouting() {
       if ( ! this.detailView.route ) return;
       if ( this.detailView.route == this.prop?.name ) {
+        if ( this.view_ && this.stack.viewAt(this.view_)?.shown ) { 
+          return; 
+        }
+        this.view_ = undefined; 
         this.openFullTable();
       }
     },
@@ -120,8 +128,7 @@ foam.CLASS({
       this.SUPER(p);
     },
     function openFullTable(id) {
-      this.stack.push(
-        {
+      this.view_ = this.stack.push({
           class: this.DAOController,
           data$: this.data$,
           config$: this.config$,

@@ -87,9 +87,9 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.addCrumb();
-      this.stack.setTitle(this.viewTitle$);
     },
     function render() {
+      this.stack.setTitle(this.viewTitle$);
       var self = this;
       this.SUPER();
       this.dynamic(function(route) {
