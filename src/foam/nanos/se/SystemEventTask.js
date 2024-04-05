@@ -19,6 +19,10 @@ foam.INTERFACE({
   package: 'foam.nanos.se',
   name: 'SystemEventTask',
 
+  javaImports: [
+    'foam.core.X'
+  ],
+
   methods: [
     {
       name: 'activate',
@@ -27,6 +31,7 @@ foam.INTERFACE({
     },
     {
       name: 'deactivate',
+      args: 'X x',
       type: 'Void'
     }
   ]

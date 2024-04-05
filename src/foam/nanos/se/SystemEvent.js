@@ -25,8 +25,16 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
+  javaImports: [
+    'foam.core.X'
+  ],
+  
   properties: [
-    'id',
+    {
+      class: 'String',
+      name: 'id',
+      visibility: 'RO'
+    },
     {
       class: 'String',
       name: 'name'
@@ -51,7 +59,7 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.nanos.se.SystemEventTask',
       name: 'tasks'
-    }    
+    }
   ],
 
   methods: [
@@ -61,15 +69,16 @@ foam.CLASS({
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-
+        // nop
       `
     },
     {
       name: 'deactivate',
+      args: 'X x',
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-
+        // nop
       `
     }
   ]
