@@ -66,7 +66,15 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.nanos.se.SystemEventTask',
-      name: 'tasks'
+      name: 'tasks',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView',
+        of: 'foam.nanos.se.SystemEventTask',
+        valueView: {
+          class: 'foam.u2.view.FObjectView',
+          of: 'foam.nanos.se.SystemEventTask'
+        }
+      }
     }
   ],
 

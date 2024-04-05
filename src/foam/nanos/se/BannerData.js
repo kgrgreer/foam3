@@ -37,7 +37,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.log.LogLevel',
       name: 'severity',
-      value: 'WARNING'
+      value: 'WARN'
     }
   ]
 });
