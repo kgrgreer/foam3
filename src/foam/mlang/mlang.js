@@ -4291,7 +4291,7 @@ foam.CLASS({
       if ( ps.value() instanceof foam.mlang.Expr ) {
         return ((foam.mlang.Expr) ps.value()).f(obj);
       }
-      return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
+      return ((foam.mlang.predicate.Predicate) ps.value()).f(obj);
       `
     }
   ]
