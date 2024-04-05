@@ -89,9 +89,10 @@ foam.CLASS({
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
       this.handlePropertyRouting();
-
+      let mem = this.Memento.create();
       var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
       this.start(this.CardBorder).addClass(this.myClass('wrapper'))
+          .startContext({ memento_: mem})
           .start(this.TableView, {
             data: this.data.limit(this.rowsToDisplay),
             editColumnsEnabled: false,
@@ -100,6 +101,7 @@ foam.CLASS({
           })
             .addClass(this.myClass())
           .end()
+          .endContext()
         .startContext({ data: this })
           .start(this.OPEN_TABLE, { label: `${this.VIEW_MORE} (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
             .addClass(this.myClass('button'))
@@ -111,8 +113,6 @@ foam.CLASS({
       if ( ! this.detailView.route ) return;
       if ( this.detailView.route == this.prop?.name ) {
         this.openFullTable();
-      } else {
-        // this.click(null, this.detailView.route);
       }
     },
     function fromProperty(p) {
@@ -125,7 +125,7 @@ foam.CLASS({
           class: this.DAOController,
           data$: this.data$,
           config$: this.config$,
-          route: id
+          ...(id ? {route: id} : {})
         }, this);
     }
   ],

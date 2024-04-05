@@ -200,13 +200,12 @@ foam.CLASS({
       self.onDetach(d);
       this.dynamic(function(route, data) {
         if ( ! data ) return;
-        this.removeAllChildren(); //TODO: remove in U3
         /* 
           Only handle routing if detailView is currently visible as otherwise route changes
           are probably caused by sub views
         */
-        if ( self.route && this.stack.pos == this.__subContext__.stackPos ) {
-          let axiom = self.data[foam.String.constantize(self.route)];
+        if ( route && this.stack.pos == this.__subContext__.stackPos ) {
+          let axiom = self.data[foam.String.constantize(route)];
           if ( foam.core.Action.isInstance(axiom) ) {
             axiom.maybeCall(self.__subContext__.createSubContext({ action: axiom }), self.data);
             return;
@@ -217,15 +216,15 @@ foam.CLASS({
             self.routeToMe();
           }
         }
-        self
-          .start(this.config.viewBorder)
-            .start(this.viewView, {
-              data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
-            })
-              .addClass(self.myClass('view-container'))
-            .end()
-          .end();
       })
+      self
+        .start(this.config.viewBorder)
+          .start(this.viewView, {
+            data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
+          })
+            .addClass(self.myClass('view-container'))
+          .end()
+        .end();
     },
     async function populatePrimaryAction(of, data) {
       var allActions = of.getAxiomsByClass(foam.core.Action);

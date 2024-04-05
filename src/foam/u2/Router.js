@@ -25,7 +25,10 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'stackPos'
+      name: 'stackPos',
+      factory: function() {
+        return this.__context__.stackPos || undefined;
+      }
     },
     ['routingFeedback_', false]
   ],

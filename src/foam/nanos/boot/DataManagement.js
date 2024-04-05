@@ -290,7 +290,8 @@ foam.CLASS({
       // TODO: Should move to DAOView and these sub-Models should move there also
       let x = this.__subContext__;
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
-      x.register(this.CustomDAOSummaryView,    'foam.comics.v3.DetailView');
+      // TODO: Fix route handling in this view
+      // x.register(this.CustomDAOSummaryView,    'foam.comics.v3.DetailView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
 
       this.dynamic(function(route) {
