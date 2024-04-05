@@ -219,8 +219,8 @@ foam.CLASS({
           minus: repeat(sym('form_expr'), literal('-'), 1),
 
           form_expr: seq(
-            // left operand
-            sym('form_operand'),
+            // lhs
+            sym('form_value'),
             optional(
               repeat(
                 seq(
@@ -229,14 +229,14 @@ foam.CLASS({
                     literal('*', this.MUL),
                     literal('/', this.DIV)
                   ),
-                  // right operand
-                  sym('form_operand'),
+                  // rhs
+                  sym('form_value'),
                 )
               )
             )
           ),
 
-          form_operand: alt(
+          form_value: alt(
             sym('form_paren'),
             sym('number'),
             sym('fieldLen'),
@@ -443,11 +443,11 @@ foam.CLASS({
           form_expr: function(v) {
           if ( foam.mlang.expr.Dot.isInstance(v[0]) || foam.core.Property.isInstance(v[0]) && ! foam.core.Int.isInstance(v[0]) ) return foam.parse.ParserWithAction.NO_PARSE;
 
-            // handle single value as formula without MUL or DIV operator and right operand
-            // v[0] is the value and v[1] is null or empty
+            // handle left hand side (lhs) value as formula without MUL or DIV operator and right hand side (rhs) value
+            // v[0] is lhs value and v[1] is null or empty
             if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
 
-            // handle formula with left operand followed by MUL or DIV and right operand
+            // handle formula with lhs value followed by MUL or DIV and rhs value
             // v[0] is the left operand and v[1] contains an array of [MUL or DIV, right operand]
             // Eg.
             //    v = [ 1,
@@ -458,12 +458,13 @@ foam.CLASS({
             //        ];
             //
             // will return DIV(MUL(1, 2), 3) which is 1*2/3
-            var [ left, formulas ] = v;
-            var [ formula, right ] = formulas[0];
-            formula = formula.call(self, left, right);
+            var [ lhs, formulas ] = v;
+            var [ formula, rhs  ] = formulas[0];
+            formula = formula.call(self, lhs, rhs);
 
             // construct the final formula by recursively using the formula
-            // from the previous iteration as the left operand
+            // from the previous iteration as lhs value for the next formula
+            // and its rhs value
             for ( var i = 1; i < formulas.length; i++ ) {
               var [ next, val ] = formulas[i];
               formula = next.call(self, formula, val);
