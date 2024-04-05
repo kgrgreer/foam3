@@ -41,6 +41,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       gap: 1.6rem;
+      z-index: 2;
       // sort of a hack to make css think this element is not always at the top;
       position: sticky;
       top: -1px;
@@ -57,8 +58,10 @@ foam.CLASS({
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(3px) opacity(0.5);
       transition: all 0.2s ease;
-      padding: 1rem;
       gap: 0.4rem;
+    }
+    ^padding ^header-container^stuck {
+      padding: 1rem;
     }
     ^stuck ^browse-title {
       font-size: 2.4rem;
