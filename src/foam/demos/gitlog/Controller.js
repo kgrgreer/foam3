@@ -134,7 +134,7 @@ foam.CLASS({
 
       if ( count ) {
         if ( this.data.showPercentages ) {
-          a.push(count/totalCount.toFixed(0)*100 + '%');
+          a.push((count/totalCount*100).toFixed(0) + '%');
         }
 
         if ( this.data.showSalaries ) {
