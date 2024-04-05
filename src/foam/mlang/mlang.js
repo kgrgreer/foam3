@@ -1932,6 +1932,9 @@ foam.CLASS({
     function toString_(x) {
       return typeof x === 'number' ? '' + x :
         typeof x === 'string' ? '"' + x + '"' :
+        typeof x === 'boolean' ? ( x ? 'true' : 'false' ) :
+        x === null ? 'null' :
+        x === undefined ? 'undefined' :
         Array.isArray(x) ? '[' + x.map(this.toString_.bind(this)).join(', ') + ']' :
         x && x.toString?.();
     },
