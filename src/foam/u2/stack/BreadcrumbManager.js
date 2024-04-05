@@ -26,7 +26,8 @@ foam.CLASS({
       ],
       listeners: [
         function detach() {
-          this.parent.pos = this.position - 1;
+          if ( this.parent.pos > this.pos )
+            this.parent.pos = this.position - 1;
         }
       ]
     }

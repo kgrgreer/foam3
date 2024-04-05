@@ -89,7 +89,7 @@ foam.CLASS({
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
       this.handlePropertyRouting();
-      let mem = this.Memento.create();
+      let mem = foam.u2.memento.Memento.create({}, this);
       var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
       this.start(this.CardBorder).addClass(this.myClass('wrapper'))
           .startContext({ memento_: mem})
