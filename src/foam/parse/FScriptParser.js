@@ -66,6 +66,16 @@ foam.CLASS({
         }
       }
 
+      var m = foam.mlang.Expressions.create();
+      function testOutput(s, expected) {
+        try {
+          var p = fs.parseString(s);
+          console.log(s, '->', p.toString(), '==', expected.toString(), '=', p.equals(expected));
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
       test('address.city=="Toronto"');
       test('address.city==address.regionId');
       test('address.city == address.regionId');
@@ -92,6 +102,12 @@ foam.CLASS({
       testFormula('1+(2+3)', 6);
       testFormula('(1+2)+3', 6);
       testFormula('1+2-3*4/4+5-6+7', 6);
+      testOutput('1==1 &&2==2' , m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1&& 2==2' , m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 && 2==2', m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 ||2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1|| 2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 || 2==2', m.OR (m.EQ(1, 1), m.EQ(2, 2)));
     },
 
     function test2__() {
@@ -149,9 +165,9 @@ foam.CLASS({
 
           expr: alt(sym('or'), sym('formula')),
 
-          or: repeat(sym('and'), seq1(optional(' '), literal('||'), optional(' ')), 1),
+          or: repeat(sym('and'), seq1(1, optional(' '), literal('||'), optional(' ')), 1),
 
-          and: repeat(sym('simpleexpr'), seq1(optional(' '), literal('&&'), optional(' ')), 1),
+          and: repeat(sym('simpleexpr'), seq1(1, optional(' '), literal('&&'), optional(' ')), 1),
 
           simpleexpr: alt(
             sym('paren'),
