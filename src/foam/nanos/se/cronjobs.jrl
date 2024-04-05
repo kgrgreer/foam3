@@ -1,8 +1,8 @@
 
 p({
   "class": "foam.nanos.cron.Cron",
-  "id": "systemevent_cron",
-  "description": "cron to activate/deactivate a systemevent",
+  "id": "SystemEvent",
+  "description": "Activate/deactivate SystemEvents",
   "clusterable": true,
   "enabled": true,
   "schedule": {
@@ -13,64 +13,7 @@ p({
     }
   },
   "code": """
-    import foam.nanos.se.SystemEvent;
-    import foam.nanos.logger.Loggers;
-    import foam.dao.DAO;
-    import foam.dao.ArraySink;
-    import static foam.mlang.MLang.*;
-    import java.util.Calendar;
-    import java.util.List;
-    import java.util.TimeZone;
-
-    var currTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
-
-    var systemEventDAO = x.get("systemEventDAO");
-    List<SystemEvent> activate = ((ArraySink) systemEventDAO
-      .where(
-        AND(
-          EQ(SystemEvent.ENABLED, true),
-          EQ(SystemEvent.ACTIVE, false),
-          GT(SystemEvent.END_TIME, SystemEvent.START_TIME),
-          GTE(SystemEvent.START_TIME, currTime)
-        )
-      )
-      .select(new ArraySink()))
-      .getArray();
-
-    for ( var event : activate ) {
-      event.setActivate(true);
-      systemEventDAO.put(event);
-      try {
-        event.activate();
-      } catch (RuntimeException e) {
-        Loggers.logger(x, this).error("Failed to activate System Event", this.getName())
-        event.setActive(false);
-        systemEventDAO.put(event);
-      }
-    }
-
-    List<SystemEvent> deactivate = ((ArraySink) systemEventDAO
-      .where(
-        AND(
-          EQ(SystemEvent.active, true),
-          GT(SystemEvent.END_TIME, SystemEvent.START_TIME)
-          LTE(SystemEvent.END_TIME, currTime)
-        )
-      )
-      .select(new ArraySink()))
-      .getArray();
-
-    for ( var event : deactivate ) {
-      event.setActive(false);
-      systemEventDAO.put(event);
-      try {
-        event.deactivate();
-      } catch (RuntimeException e) {
-        Loggers.logger(x, this).error("Failed to deactivate System Event", this.getName())
-        event.setActive(true);
-        systemEventDAO.put(event);
-      }
-    }
-      
+    new foam.nanos.se.SystemEventAgent(x).execute(x);
+    print("done");
   """
 })

@@ -28,7 +28,15 @@ foam.CLASS({
   javaImports: [
     'foam.core.X'
   ],
-  
+
+  tableColumns: [
+    'name',
+    'enabled',
+    'active',
+    'startTime',
+    'endTime'
+  ],
+
   properties: [
     {
       class: 'String',
