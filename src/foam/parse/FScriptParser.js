@@ -464,7 +464,7 @@ foam.CLASS({
             if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
 
             // handle formula with lhs value followed by MUL or DIV and rhs value
-            // v[0] is the left operand and v[1] contains an array of [MUL or DIV, right operand]
+            // v[0] is the lhs and v[1] contains an array of [MUL or DIV, rhs]
             // Eg.
             //    v = [ 1,
             //          [
@@ -479,7 +479,7 @@ foam.CLASS({
             formula = formula.call(self, lhs, rhs);
 
             // construct the final formula by recursively using the formula
-            // from the previous iteration as lhs value for the next formula
+            // from the previous iteration as lhs value with the next formula
             // and its rhs value
             for ( var i = 1; i < formulas.length; i++ ) {
               var [ next, val ] = formulas[i];
