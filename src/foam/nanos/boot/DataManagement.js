@@ -141,7 +141,7 @@ foam.CLASS({
           var self          = this;
           var currentLetter = '';
           var section;
-          this.stack.setTitle('Data Management');
+          this.stack.setTitle('Data Management', this);
           this.onDetach(this.stack.setTrailingContainer(this.E().start(this.SEARCH).focus().end()));
           this.addClass();
           var updateSections = [];

@@ -16,17 +16,18 @@ foam.CLASS({
   classes: [
     {
       name: 'Breadcrumb',
-      imports: ['window', 'document'],
+      imports: ['window', 'document', 'stack'],
       properties: ['title', 'position', 'parent', 'view'],
       methods: [
         function go() {
+          this.stack?.jump(this.view.__subContext__.stackPos);
           this.view.routeToMe();
           this.parent.pos = this.position;
         }
       ],
       listeners: [
         function detach() {
-          if ( this.parent.pos > this.pos )
+          if ( this.parent.pos >= this.position )
             this.parent.pos = this.position - 1;
         }
       ]
@@ -46,11 +47,11 @@ foam.CLASS({
     function init() {
       this.stack.stackReset.sub(() => { this.crumbs = []; this.pos = -1; })
     },
-    function push(view, titleSlot) {
+    function push(view) {
       foam.assert(foam.u2.Routable.isInstance(view), 'Can not add crumb for non-routable view');
       let c = this.Breadcrumb.create({ parent: this });
       c.view = view;
-      c.title$.follow(titleSlot || view.viewTitle$);
+      c.title$.follow(view.viewTitle$);
       let pos = this.pos;
       pos++;
       if ( this.crumbs[pos] )

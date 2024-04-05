@@ -50,17 +50,13 @@ foam.CLASS({
       this.routingFeedback_ = true;
       this.clearProperty('route'); this.route;
       this.memento_.detachTail();
-      if ( this.stack && this.stackPos != undefined ) {
-        this.stack.jump(this.stackPos);
-      }
       this.routingFeedback_ = false;
     },
     function routeChange() {
       if ( this.routingFeedback_ ) return;
       this.routingFeedback_ = true;
-      this.getPrivate_('crumb')?.go();
-      if ( this.stack && this.stackPos != undefined ) {
-        this.stack.jump(this.stackPos);
+      if ( ! this.route ) {
+        this.getPrivate_('crumb')?.go();
       }
       this.routingFeedback_ = false;
     }

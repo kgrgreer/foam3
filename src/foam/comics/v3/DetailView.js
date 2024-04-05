@@ -120,12 +120,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'onBack',
-      factory: function() {
-        return () => this.stack.back();
-      }
-    },
-    {
       name: 'idOfRecord',
       factory: function() {
         return this.data ? this.data.id : null;
@@ -160,7 +154,6 @@ foam.CLASS({
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
       this.addCrumb();
-      this.stack?.setTitle(this.viewTitle$);
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
         self.data = d;
         if ( this.controllerMode == 'EDIT' ) this.edit();
@@ -169,9 +162,10 @@ foam.CLASS({
     },
     function render() {
       var self = this;
+      this.stack?.setTitle(this.viewTitle$, this);
       this.SUPER();
       var allActions = self.config.of.getAxiomsByClass(foam.core.Action);
-      self.actionArray = allActions;
+      // self.actionArray = allActions;
       let d = self.stack.setTrailingContainer(
         this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
             showDropdownIcon: false  }})
@@ -189,9 +183,9 @@ foam.CLASS({
             .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
           .endContext()
           .startOverlay()
-            .forEach(self.actionArray, function(v) {
-              this.addActionReference(v, self.data$)
-            })
+            // .forEach(self.actionArray, function(v) {
+            //   this.addActionReference(v, self.data$)
+            // })
             .tag(self.COPY)
             .tag(self.DELETE)
           .endOverlay()
@@ -252,10 +246,6 @@ foam.CLASS({
   ],
 
   actions: [
-    {
-      name: 'back',
-      code: (data) => data.onBack()
-    },
     {
       name: 'edit',
       themeIcon: 'edit',

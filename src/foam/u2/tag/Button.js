@@ -538,7 +538,6 @@ foam.CLASS({
         this.add(this.iconFontName);
       }
 
-      if ( this.label ) {
         if ( foam.String.isInstance(this.label) ) {
           if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
             this.start().addClass('p').add(this.label$).end();
@@ -550,7 +549,6 @@ foam.CLASS({
         } else {
           this.add(this.label$);
         }
-      }
 
       this.attrs({ 'data-loading': this.loading_$ })
       this.add(this.slot(function(loading_) {

@@ -70,7 +70,7 @@ foam.CLASS({
       font-size: 1.2rem;
     }
   `,
-  topics: ['stackReset', 'posUpdated'],
+  topics: ['stackReset', 'posUpdated', 'viewVisible'],
   properties: [
     {
       class: 'FObjectArray',
@@ -131,6 +131,7 @@ foam.CLASS({
           if ( v !== this.current ) {
             v.hide();
           } else {
+            this.viewVisible.pub(this.pos);
             v.show();
           }
         })
@@ -183,6 +184,7 @@ foam.CLASS({
     },
     function jump(p) {
       if ( this.delegate_ ) return this.delegate_.jump(...arguments);
+      this.stack_.splice(p + 1).forEach(v => v.remove());
       this.pos = p;
       this.posUpdated.pub('jump');
     },
@@ -190,9 +192,12 @@ foam.CLASS({
       if ( this.delegate_ ) return this.delegate_.viewAt(...arguments);
       return this.stack_[i];
     },
-    function setTitle(title) {
+    function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
-      this.titleMap_[this.pos] = title;
+      this.titleMap_[view.__subContext__.stackPos || this.pos] = title;
+      if ( foam.core.Slot.isInstance(title) ) {
+        view.onDetach(() => this.titleMap_[this.pos] = null);
+      }
       this.propertyChange.pub('titleMap_', this.titleMap_$);
     },
     function setTrailingContainer(view) {

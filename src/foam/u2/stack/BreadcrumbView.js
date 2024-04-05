@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'BreadcrumbView',
   extends: 'foam.u2.View',
 
-  imports: [ 'breadcrumbs' ],
+  imports: [ 'breadcrumbs', 'stack' ],
 
   requires: [
     'foam.core.Action',
@@ -61,9 +61,13 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.breadcrumbs?.dynamic(function(pos) {
+      this.breadcrumbs?.dynamic(function(pos, stack$pos, breadcrumbs$current) {
         self.removeAllChildren(); // Remove in U3
-        let navStack  = self.breadcrumbs.crumbs?.slice(0, pos);
+        let endPos = pos
+        if ( self.stack.pos != self.breadcrumbs.current?.view.__subContext__.stackPos ) {
+          endPos = pos + 1
+        }
+        let navStack  = self.breadcrumbs.crumbs?.slice(0, endPos);
         if ( ! navStack?.length ) {
           self.hide();
           return;

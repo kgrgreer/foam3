@@ -89,7 +89,7 @@ foam.CLASS({
       this.addCrumb();
     },
     function render() {
-      this.stack.setTitle(this.viewTitle$);
+      this.stack.setTitle(this.viewTitle$, this);
       var self = this;
       this.SUPER();
       this.dynamic(function(route) {
@@ -102,7 +102,7 @@ foam.CLASS({
             idOfRecord$: self.route$
           });
         } else {
-          this.stack.setTitle(this.viewTitle$);
+          this.stack.setTitle(this.viewTitle$, self);
           self.tag({
             class: 'foam.comics.v3.DAOBrowseView',
             data$: self.data$,
