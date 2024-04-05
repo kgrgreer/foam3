@@ -103,6 +103,8 @@ public class FScriptParser
     );
     grammar.addAction("OR", (val, x) -> {
       Object[] values = (Object[])val;
+      if ( values.length == 1 ) return values[0];
+
       Or or = new Or();
       Predicate[] args = new Predicate[values.length];
       for ( int i = 0 ; i < args.length ; i++ ) {
@@ -118,8 +120,10 @@ public class FScriptParser
         new Seq1(1, Whitespace.instance(), Literal.create("&&"), Whitespace.instance()),1));
 
     grammar.addAction("AND", (val, x) -> {
-      And and = new And();
       Object[] valArr = (Object[]) val;
+      if ( valArr.length == 1 ) return valArr[0];
+
+      And and = new And();
       Predicate[] args = new Predicate[valArr.length];
       for ( int i = 0 ; i < valArr.length ; i++ ) {
         args[i] = (Predicate) valArr[i];
@@ -234,7 +238,9 @@ public class FScriptParser
     );
     grammar.addAction("FORMULA", (val, x) -> {
       Object[] vals = (Object[]) val;
-      if ( vals[0] == null ) return null;
+      if ( vals[0] == null  ) return null;
+      if ( vals.length == 1 ) return vals[0];
+
       Expr[] args = new Expr[vals.length];
       for ( int i = 0 ; i < vals.length ; i++ ) {
         args[i] = (Expr)vals[i];
@@ -251,6 +257,8 @@ public class FScriptParser
     grammar.addAction("MINUS", (val, x) -> {
       Object[] vals = (Object[]) val;
       if ( vals[0] == null ) return null;
+      if ( vals.length == 1 ) return vals[0];
+
       Expr[] args = new Expr[vals.length];
       for ( int i = 0 ; i < vals.length ; i++ ) {
         if ( vals[i] instanceof If && ! isPropNumber(((If) vals[i]).getTrueExpr())) return Action.NO_PARSE;
