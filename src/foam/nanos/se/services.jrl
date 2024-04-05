@@ -1,7 +1,9 @@
+// TODO: client needs to read, but admin to edit
 p({
   class: "foam.nanos.boot.NSpec",
   name: "systemEventDAO",
   serve: true,
+  authenticate: false,
   serviceScript: """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.se.SystemEvent.getOwnClassInfo())

@@ -11,6 +11,12 @@ foam.POM({
       flags: "js|java" },
     { name: "SystemEventAgent",
       flags: "js|java" },
+    // { name: "SystemEventServiceClient",
+    //   flags: "js" }
+    // { name: "SystemEventService",
+    //   flags: "js|java" }
+    // { name: "SystemEventServiceServer",
+    //   flags: "js|java" }
     { name: "SystemEventTask",
       flags: "js|java" }
   ]

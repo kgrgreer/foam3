@@ -43,6 +43,7 @@ foam.CLASS({
     'foam.nanos.menu.VerticalMenu',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
+    'foam.nanos.se.BannerView',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
@@ -50,7 +51,6 @@ foam.CLASS({
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.crunch.CapabilityIntercept',
-    'foam.nanos.se.BannerData',
     'foam.u2.LoadingSpinner',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
@@ -77,7 +77,6 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
-    'bannerTask',
     'buildingStack',
     'crunchController',
     'currentMenu',
@@ -356,6 +355,13 @@ foam.CLASS({
     },
     {
       class: 'foam.u2.ViewSpec',
+      name: 'bannerView_',
+      factory: function() {
+        return this.BannerView;
+      }
+    },
+    {
+      class: 'foam.u2.ViewSpec',
       name: 'topNavigation_',
       factory: function() {
         return this.TopNavigation;
@@ -429,21 +435,6 @@ foam.CLASS({
     {
       name: 'groupLoadingHandled',
       class: 'Boolean'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.se.BannerData',
-      name: 'bannerTask',
-      factory: function() {
-        // ?
-        return this.BannerData.create({
-          isDismissed: true
-        });
-      }
-      // .tag({
-      //   class: 'foam.nanos.se.Banner',
-      //   data$: this.bannerData$
-      // })
     }
   ],
 
@@ -854,19 +845,20 @@ foam.CLASS({
       }
     },
 
-    function bannerizeTwoFactorAuth() {
-      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
-           this.theme.twoFactorEnabled &&
-           ! this.subject.user.twoFactorEnabled ) {
-        this.setBanner(this.LogLevel.WARNING, 'Please enable Two-Factor Authentication in Personal Settings.');
-      }
-    },
+    // function bannerizeTwoFactorAuth() {
+    //   if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
+    //        this.theme.twoFactorEnabled &&
+    //        ! this.subject.user.twoFactorEnabled ) {
+    //     this.setBanner(this.LogLevel.WARNING, 'Please enable Two-Factor Authentication in Personal Settings.');
+    //   }
+    // },
 
-    function setBanner(severity, message) {
-      this.bannerData.isDismissed = false;
-      this.bannerData.severity = severity;
-      this.bannerData.message = message;
-    }
+    // function setBanner(severity, message) {
+    //   // ToDO; set bannerview data
+    //   this.bannerData.isDismissed = false;
+    //   this.bannerData.severity = severity;
+    //   this.bannerData.message = message;
+    // }
   ],
 
   listeners: [
@@ -954,6 +946,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag(this.NavigationController, {
+          banner$: this.bannerView_$,
           topNav$: this.topNavigation_$,
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',

@@ -1,0 +1,14 @@
+p({
+  class:"foam.nanos.se.SystemEvent",
+  id:"ApplicationControllerBannerData",
+  name:"ApplicationControllerBanner",
+  description:"ApplicationControllerBanner",
+  tasks:[
+    {
+      class:"foam.nanos.se.BannerTask",
+      bannerData:{
+        class:"foam.nanos.se.BannerData"
+      }
+    }
+  ]
+})

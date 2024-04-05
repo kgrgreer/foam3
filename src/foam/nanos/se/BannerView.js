@@ -24,10 +24,20 @@ foam.CLASS({
     Displays a thin view that takes up 100% width of its container and displays a message.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+  
   requires: [
-    'foam.log.LogLevel'
+    'foam.log.LogLevel',
+    'foam.nanos.se.BannerData',
+    'foam.nanos.se.SystemEvent'
   ],
 
+  imports: [
+    'systemEventDAO'
+  ],
+  
   css: `
     ^ .banner {
       width: calc(100% - 48px);
@@ -64,20 +74,41 @@ foam.CLASS({
   `,
 
   methods: [
-    function render() {
+    async function init() {
       var self = this;
-
-      this.addClass(this.myClass())
-        .start('div').addClass('banner')
+      this.__subContext__.systemEventDAO
+        .find(this.AND(
+          this.EQ(this.SystemEvent.ENABLED, true),
+          this.EQ(this.SystemEvent.ACTIVE, true),
+          this.EQ(this.SystemEvent.ID, this.BannerData.APPLICATION_CONTROLLER_ID)
+        ))
+        .then(function(se) {
+          if ( se ) {
+            for ( var task of se.tasks ) {
+              if ( foam.nanos.se.BannerTask.isInstance(task) ) {
+                self.data = task.bannerData;
+                break;
+              }
+            }
+          }
+        });
+    },
+    function render() {
+      this.dynamic(function(data) {
+        this.removeAllChildren();
+        if ( ! data ) return;
+        this.addClass(this.myClass())
+          .start('div').addClass('banner')
           .enableClass('hidden', this.data$.dot('isDismissed'))
-          .enableClass('error', this.data$.dot('severity').map(function(m) { return m === self.LogLEvel.ERROR; }))
-          .enableClass('warning', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.WARNING; }))
+          .enableClass('error', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.ERROR; }))
+          .enableClass('warning', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.WARN; }))
           .enableClass('info', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.INFO; }))
           .start('div').addClass('p', 'message')
-            .add(this.data$.dot('message').map(function(v) { return v; }))
+          .add(this.data$.dot('message').map(function(v) { return v; }))
           .end()
           // TODO: Use isDismissable
-        .end();
+          .end();
+      });
     }
   ]
 });

@@ -14,38 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'BannerTask',
-  implements: [ 'foam.nanos.se.SystemEventTask' ],
+  name: 'SystemEventServiceService',
 
-  documentation: 'Task for managing banner display',
+  implements: [ 'foam.nanos.se.SystemEventService' ],
 
   javaImports: [
-    'foam.core.X'
-  ],
-
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.se.BannerData',
-      name: 'bannerData',
-    }
+    'foam.core.X',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
     {
-      name: 'activate',
+      name: 'getSystemEvent',
       javaCode: `
-      // nop
-      `
-    },
-    {
-      name: 'deactivate',
-      javaCode: `
-      // nop
+      return (SystemEvent) ((DAO) x.get("systemEventDAO"))
+        .find(AND(
+          EQ(SystemEvent.ENABLED, true),
+          EQ(SystemEvent.ID, id)
+        ));
       `
     }
   ]
-});
-
+})

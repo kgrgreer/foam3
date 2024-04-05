@@ -18,6 +18,14 @@ foam.CLASS({
   package: 'foam.nanos.se',
   name: 'BannerData',
 
+  constants: [
+    {
+      name: 'APPLICATION_CONTROLLER_ID',
+      type: 'String',
+      value: 'ApplicationControllerBannerData'
+    }
+  ],
+
   properties: [
     {
       class: 'String',
