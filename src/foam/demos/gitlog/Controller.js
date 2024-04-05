@@ -689,6 +689,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     {
       name: 'commits',
       expression: function(data) {
+        var seen = {}; // used to remove duplicates based on same date and subject
         var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
@@ -700,6 +701,12 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
             for ( var i = 0 ; i < this.IGNORE_EQUALS.length ; i++ ) {
               if ( c.subject === this.IGNORE_EQUALS[i] ) return false;
             }
+            return true;
+          }).
+          filter(c => {
+            var signature = c.date + "+" + c.subject;
+            if ( seen[signature] ) return false;
+            seen[signature] = true;
             return true;
           }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).
