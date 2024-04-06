@@ -32,16 +32,6 @@ foam.CLASS({
       name: 'message'
     },
     {
-      class: 'Boolean',
-      name: 'isDismissed',
-      value: false
-    },
-    {
-      class: 'Boolean',
-      name: 'isDismissable',
-      value: true
-    },
-    {
       class: 'foam.core.Enum',
       of: 'foam.log.LogLevel',
       name: 'severity',

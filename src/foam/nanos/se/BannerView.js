@@ -100,14 +100,12 @@ foam.CLASS({
         if ( ! data ) return;
         this.addClass(this.myClass())
           .start('div').addClass('banner')
-          .enableClass('hidden', this.data$.dot('isDismissed'))
           .enableClass('error', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.ERROR; }))
           .enableClass('warning', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.WARN; }))
           .enableClass('info', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.INFO; }))
           .start('div').addClass('p', 'message')
           .add(this.data$.dot('message').map(function(v) { return v; }))
           .end()
-          // TODO: Use isDismissable
           .end();
       });
     }
