@@ -43,7 +43,6 @@ foam.CLASS({
     'foam.nanos.menu.VerticalMenu',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
-    'foam.nanos.se.BannerView',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.nanos.theme.ThemeDomain',
@@ -351,13 +350,6 @@ foam.CLASS({
         if ( o && n && o.equals(n)) return;
         this.__subContext__.cssTokenOverrideService.maybeReload();
         this.pub('themeChange');
-      }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'bannerView_',
-      factory: function() {
-        return this.BannerView;
       }
     },
     {
@@ -946,7 +938,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .tag(this.NavigationController, {
-          banner$: this.bannerView_$,
           topNav$: this.topNavigation_$,
           mainView: {
             class: 'foam.u2.stack.DesktopStackView',

@@ -25,6 +25,7 @@ foam.CLASS({
   requires: [
     'foam.nanos.menu.MenuBar',
     'foam.nanos.u2.navigation.BusinessLogoView',
+    'foam.nanos.se.BannerView',
     'foam.nanos.u2.navigation.UserView'
   ],
 
@@ -142,6 +143,7 @@ foam.CLASS({
           .start(this.MenuBar, { menuName: this.group ? this.group.rootMenu : '' })
             .addClass('menuBar')
           .end()
+          .tag({ class: 'foam.nanos.se.BannerView' })
           .tag({ class: 'foam.nanos.u2.navigation.UserView' })
         .end();
     }

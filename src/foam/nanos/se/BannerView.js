@@ -94,6 +94,7 @@ foam.CLASS({
         });
     },
     function render() {
+      var self = this;
       this.dynamic(function(data) {
         this.removeAllChildren();
         if ( ! data ) return;

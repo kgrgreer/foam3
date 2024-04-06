@@ -109,10 +109,6 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.u2.ViewSpec',
-      name: 'banner'
-    },
-    {
-      class: 'foam.u2.ViewSpec',
       name: 'topNav'
     },
     {
@@ -154,16 +150,7 @@ foam.CLASS({
       this.setNavCtx_();
 
       this.addClass()
-        .add(this.slot( async function(banner) {
-          if ( ! banner ) return null;
-          await this.initLayout;
-          var bannerView = foam.u2.ViewSpec.createView(banner, {}, self, self.navCtx_);
-          return self.E()
-            .addClass(this.myClass('banner'))
-            .add(bannerView)
-            .show(this.showNav$);
-        }))
-        .add(this.slot( async function(loginSuccess, topNav) {
+       .add(this.slot( async function(loginSuccess, topNav) {
           if ( ! loginSuccess || ! topNav ) return null;
           await this.initLayout;
           var topView = foam.u2.ViewSpec.createView(topNav, {}, self, self.navCtx_);
