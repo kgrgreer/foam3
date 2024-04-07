@@ -16,10 +16,10 @@
  */
 foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'BannerTask',
+  name: 'SystemNotificationTask',
   implements: [ 'foam.nanos.se.SystemEventTask' ],
 
-  documentation: 'Task for managing banner display',
+  documentation: 'Task for managing SystemNotification display',
 
   javaImports: [
     'foam.core.X'
@@ -28,8 +28,8 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.se.BannerData',
-      name: 'bannerData',
+      of: 'foam.nanos.se.SystemNotification',
+      name: 'systemNotification',
     }
   ],
 

@@ -17,29 +17,24 @@
 
 foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'BannerView',
+  name: 'SystemNotificationView',
   extends: 'foam.u2.View',
 
   documentation: `
     Displays a thin view that takes up 100% width of its container and displays a message.
   `,
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-  
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.se.BannerData',
-    'foam.nanos.se.SystemEvent'
+    'foam.nanos.se.SystemNotification'
   ],
 
   imports: [
-    'systemEventDAO'
+    'systemNotificationService'
   ],
-  
+
   css: `
-    ^ .banner {
+    ^ .notification {
       width: calc(100% - 48px);
       height: 36px;
       padding: 0 24px;
@@ -73,38 +68,50 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.se.SystemNotification',
+      name: 'systemNotification'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.se.SystemNotification',
+      name: 'systemNotifications'
+    }
+  ],
+
+  // TODO: Render array of notifications
+  // TODO: implement dismissed based on localStorage
   methods: [
     async function init() {
-      var self = this;
-      this.__subContext__.systemEventDAO
-        .find(this.AND(
-          this.EQ(this.SystemEvent.ENABLED, true),
-          this.EQ(this.SystemEvent.ACTIVE, true),
-          this.EQ(this.SystemEvent.ID, this.BannerData.APPLICATION_CONTROLLER_ID)
-        ))
-        .then(function(se) {
-          if ( se ) {
-            for ( var task of se.tasks ) {
-              if ( foam.nanos.se.BannerTask.isInstance(task) ) {
-                self.data = task.bannerData;
-                break;
-              }
-            }
-          }
-        });
+      // this.systemNotificationService.getSystemNotifications().then(function(notifications) {
+      //   this.systemNotifications = notifications;
+      // });
+      this.systemNotifications = await this.systemNotificationService.getSystemNotifications();
     },
+
     function render() {
       var self = this;
-      this.dynamic(function(data) {
+      this.dynamic(function(systemNotification, systemNotifications) {
         this.removeAllChildren();
-        if ( ! data ) return;
+        var sn = systemNotification;
+        if ( ! sn && systemNotifications ) {
+          sn = systemNotifications[0];
+        }
+        if ( ! sn ) return;
         this.addClass(this.myClass())
-          .start('div').addClass('banner')
-          .enableClass('error', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.ERROR; }))
-          .enableClass('warning', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.WARN; }))
-          .enableClass('info', this.data$.dot('severity').map(function(m) { return m === self.LogLevel.INFO; }))
+          .start('div').addClass('notification')
+          .start().addClass('text')
+          .enableClass('error', sn.severity === self.LogLevel.ERROR)
+          .enableClass('warning', sn.severity === self.LogLevel.WARN)
+          .enableClass('info', sn.severity === self.LogLevel.INFO)
           .start('div').addClass('p', 'message')
-          .add(this.data$.dot('message').map(function(v) { return v; }))
+          .add(sn.message)
+          .end()
+        // callif ( this.systemNotification.dismissable )
+        //   .start().addClass('dismiss')
+        //   .end()
           .end()
           .end();
       });

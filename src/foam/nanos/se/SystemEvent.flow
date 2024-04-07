@@ -1,0 +1,5 @@
+<h1>SystemEvent</h1>
+<p>The SytemEvent component is intended to model the actions taken when a system wide event has occured, or is occuring, such as maintenance event, or third party end-point failing. </p>
+
+<h1>SystemNotification</h1>
+<p>A SytemEvent with a <b>task</b> of type <b>SystemNotification</b> will display the <b>SystemNotification.message</b> in the top banner/border</p>

@@ -16,17 +16,23 @@
  */
 foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'BannerData',
+  name: 'SystemNotification',
 
-  constants: [
-    {
-      name: 'APPLICATION_CONTROLLER_ID',
-      type: 'String',
-      value: 'ApplicationControllerBannerData'
-    }
-  ],
+  // constants: [
+  //   {
+  //     name: 'APPLICATION_CONTROLLER_ID',
+  //     type: 'String',
+  //     value: 'ApplicationControllerBannerData'
+  //   }
+  // ],
 
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.nanos.se.SystemEvent',
+      name: 'id',
+      visibility: 'HIDDEN'
+    },
     {
       class: 'String',
       name: 'message'
@@ -36,6 +42,17 @@ foam.CLASS({
       of: 'foam.log.LogLevel',
       name: 'severity',
       value: 'WARN'
+    },
+    {
+      class: 'Boolean',
+      name: 'isDismissable',
+      value: true
+    },
+    {
+      // Client side only, stored in local storage
+      class: 'Boolean',
+      name: 'isDismissed',
+      value: false
     }
   ]
 });

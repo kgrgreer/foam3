@@ -3,7 +3,6 @@ p({
   class: "foam.nanos.boot.NSpec",
   name: "systemEventDAO",
   serve: true,
-  authenticate: false,
   serviceScript: """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.se.SystemEvent.getOwnClassInfo())
@@ -17,4 +16,25 @@ p({
       "of": "foam.nanos.se.SystemEvent"
     }
    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "systemNotificationService",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.se.SystemNotificationServiceSkeleton",
+  "serviceClass": "foam.nanos.se.SystemNotificationServiceServer",
+  "client":"""
+    {
+      "class":"foam.nanos.se.SystemNotificationServiceClient",
+      "delegate": {
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":"service/systemNotificationService"
+        }
+      }
+    }
+  """
 })

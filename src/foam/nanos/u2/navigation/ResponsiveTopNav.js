@@ -52,8 +52,6 @@ foam.CLASS({
     ^components-container^logo-adjust {
       gap: 16px;
     }
-    ^components-container^banner {
-    }
     ^menuControl.foam-u2-view-NavigationButton {
       justify-content: flex-start;
     }
@@ -117,9 +115,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().addClass(this.myClass('components-container'), this.myClass('banner'))
-          .tag({ class: 'foam.nanos.se.BannerView' })
-        .end()
+        .tag({class: 'foam.nanos.se.SystemNotificationView'})
         .add(this.slot(function(displayWidth) {
           if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
             return this.E().addClass(this.myClass('components-container'), this.myClass('right'))

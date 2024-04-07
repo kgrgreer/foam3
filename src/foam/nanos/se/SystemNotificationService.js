@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-foam.CLASS({
+foam.INTERFACE({
   package: 'foam.nanos.se',
-  name: 'SystemEventServiceClient',
+  name: 'SystemNotificationService',
 
-  implements: [ 'foam.nanos.se.SystemEventService' ],
+  skeleton: true,
 
-  properties: [
+  methods: [
     {
-      class: 'Stub',
-      of: 'foam.nanos.se.SystemEventService',
-      name: 'delegate'
+      name: 'getSystemNotifications',
+      type: 'foam.nanos.se.SystemNotification[]',
+      async: true
     }
   ]
 })
