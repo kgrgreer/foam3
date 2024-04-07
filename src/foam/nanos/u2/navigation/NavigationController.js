@@ -150,7 +150,7 @@ foam.CLASS({
       this.setNavCtx_();
 
       this.addClass()
-       .add(this.slot( async function(loginSuccess, topNav) {
+        .add(this.slot( async function(loginSuccess, topNav) {
           if ( ! loginSuccess || ! topNav ) return null;
           await this.initLayout;
           var topView = foam.u2.ViewSpec.createView(topNav, {}, self, self.navCtx_);
