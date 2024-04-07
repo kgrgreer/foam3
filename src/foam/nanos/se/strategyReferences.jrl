@@ -1,6 +1,6 @@
 p({
   class: "foam.strategy.StrategyReference",
-  id: "foam_nanos_se_BannerTask",
+  id: "foam_nanos_se_SystemNotificationTask",
   desiredModelId: "foam.nanos.se.SystemEventTask",
   strategy: "foam.nanos.se.SystemNotificationTask",
   label: "System Notification"
