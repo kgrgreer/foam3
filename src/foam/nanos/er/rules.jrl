@@ -83,12 +83,12 @@ p({
   daoKey: "eventRecordDAO",
   after: true,
   operation: 3,
-  predicate:{
-    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
-    query: 'n.systemEvent exists && ((o !exists && (n.severity == foam.log.LogLevel.WARNING || n.severity == foam.log.LogLevel.ERROR )) || o.severity != n.severity &&)'
-  },
   lifecycleState:1,
   action: {
     class: "foam.nanos.er.EventRecordSystemEventRuleAction"
   }
 })
+  // predicate:{
+  //   class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+  //   query: 'n.systemEvent exists && ((o !exists && (n.severity == foam.log.LogLevel.WARN || n.severity == foam.log.LogLevel.ERROR )) || o.severity != n.severity)'
+  // },

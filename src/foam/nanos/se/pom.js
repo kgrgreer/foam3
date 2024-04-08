@@ -18,6 +18,8 @@ foam.POM({
     { name: "SystemNotificationTask",
       flags: "java|js" },
     { name: "SystemNotificationView",
-      flags: "web" }
+      flags: "web" },
+    { name: "test/EventRecordSystemEventTest",
+      flags: "js|java" }
   ]
 })

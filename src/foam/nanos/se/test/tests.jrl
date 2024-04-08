@@ -1,0 +1,4 @@
+p({
+  class: "foam.nanos.se.test.EventRecordSystemEventTest",
+  id: "EventRecordSystemEventTest"
+})

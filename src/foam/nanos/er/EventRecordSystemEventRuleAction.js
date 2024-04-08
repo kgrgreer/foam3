@@ -15,6 +15,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.log.LogLevel',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
     'foam.nanos.se.SystemEvent'
   ],
@@ -24,7 +26,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       EventRecord er = (EventRecord) obj;
-      EventRecord old = (EventRecord) ((DAO) ruler.getX().get("localEventRecordDAO")).find(er);
+      EventRecord old = (EventRecord) oldObj;
       boolean raise = false;
       boolean lower = false;
       if ( old == null ) {
@@ -42,19 +44,24 @@ foam.CLASS({
       }
       if ( raise || lower ) {
         DAO dao = ((DAO) ruler.getX().get("systemEventDAO"));
-        SystemEvent se = (SystemEvent) dao.find(er.getSystemEvent());
+        SystemEvent se = (SystemEvent) dao.find(
+          AND(
+            EQ(SystemEvent.ENABLED, true),
+            EQ(SystemEvent.ID, er.getSystemEvent())
+          ));
         if ( se == null ) {
           Loggers.logger(x, this).error("SystemEvent not found", "er", er.getId(), "se", er.getSystemEvent());
         } else {
           se = (SystemEvent) se.fclone();
-          se.setEnabled(raise);
           if ( raise ) {
             se.setStartTime(new java.util.Date());
             Loggers.logger(x, this).info("Toggled SystemEvent",se.getId(), "enabled");
           } else {
+            se.setEndTime(new java.util.Date());
             Loggers.logger(x, this).info("Toggled SystemEvent", se.getId(), "disable");
           }
           dao.put(se);
+          // cron will run the agent.
         }
       }
       `

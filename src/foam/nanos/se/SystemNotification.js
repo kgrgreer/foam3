@@ -18,16 +18,9 @@ foam.CLASS({
   package: 'foam.nanos.se',
   name: 'SystemNotification',
 
-  // constants: [
-  //   {
-  //     name: 'APPLICATION_CONTROLLER_ID',
-  //     type: 'String',
-  //     value: 'ApplicationControllerBannerData'
-  //   }
-  // ],
-
   properties: [
     {
+      documentation: 'set to the id of the encapsulating SystemEvent. Used to managed isDismissed in localStorage on the client.',
       class: 'Reference',
       of: 'foam.nanos.se.SystemEvent',
       name: 'id',
