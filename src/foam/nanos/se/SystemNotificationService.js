@@ -17,20 +17,15 @@
 
 foam.INTERFACE({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'SystemNotificationService',
 
-  javaImports: [
-    'foam.core.X'
-  ],
+  skeleton: true,
 
   methods: [
     {
-      name: 'activate',
-      args: 'X x'
-    },
-    {
-      name: 'deactivate',
-      args: 'X x'
+      name: 'getSystemNotifications',
+      type: 'foam.nanos.se.SystemNotification[]',
+      async: true
     }
   ]
-});
+})

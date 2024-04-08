@@ -26,11 +26,24 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.logger.Loggers'
   ],
 
+  tableColumns: [
+    'name',
+    'enabled',
+    'active',
+    'startTime',
+    'endTime'
+  ],
+
   properties: [
-    'id',
+    {
+      class: 'String',
+      name: 'id',
+      visibility: 'RO'
+    },
     {
       class: 'String',
       name: 'name'
@@ -54,8 +67,16 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.nanos.se.SystemEventTask',
-      name: 'tasks'
-    }    
+      name: 'tasks',
+      view: {
+        class: 'foam.u2.view.FObjectArrayView',
+        of: 'foam.nanos.se.SystemEventTask',
+        valueView: {
+          class: 'foam.u2.view.FObjectView',
+          of: 'foam.nanos.se.SystemEventTask'
+        }
+      }
+    }
   ],
 
   methods: [
@@ -76,6 +97,7 @@ foam.CLASS({
     },
     {
       name: 'deactivate',
+      args: 'X x',
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `

@@ -134,7 +134,7 @@ foam.CLASS({
 
       if ( count ) {
         if ( this.data.showPercentages ) {
-          a.push(count/totalCount.toFixed(0)*100 + '%');
+          a.push((count/totalCount*100).toFixed(0) + '%');
         }
 
         if ( this.data.showSalaries ) {
@@ -205,7 +205,8 @@ foam.CLASS({
 
             // Per-Month Details
             forEach(authorCounts[a[0]], function(c, i) {
-              var salary = salaries[a[0]][i];
+              var salary = 0;
+              try { salary = salaries[a[0]][i]; } catch (x) {}
               total       += c;
               allTotal    += allAuthorCounts[a[0]][i];
               salaryTotal += salary;
@@ -689,6 +690,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     {
       name: 'commits',
       expression: function(data) {
+        var seen = {}; // used to remove duplicates based on same date and subject
         var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
@@ -700,6 +702,12 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
             for ( var i = 0 ; i < this.IGNORE_EQUALS.length ; i++ ) {
               if ( c.subject === this.IGNORE_EQUALS[i] ) return false;
             }
+            return true;
+          }).
+          filter(c => {
+            var signature = c.date + "+" + c.subject;
+            if ( seen[signature] ) return false;
+            seen[signature] = true;
             return true;
           }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).

@@ -15,22 +15,17 @@
  * limitations under the License.
  */
 
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'SystemNotificationServiceClient',
 
-  javaImports: [
-    'foam.core.X'
-  ],
+  implements: [ 'foam.nanos.se.SystemNotificationService' ],
 
-  methods: [
+  properties: [
     {
-      name: 'activate',
-      args: 'X x'
-    },
-    {
-      name: 'deactivate',
-      args: 'X x'
+      class: 'Stub',
+      of: 'foam.nanos.se.SystemNotificationService',
+      name: 'delegate'
     }
   ]
-});
+})

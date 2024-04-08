@@ -14,23 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'SystemNotification',
 
-  javaImports: [
-    'foam.core.X'
-  ],
-
-  methods: [
+  properties: [
     {
-      name: 'activate',
-      args: 'X x'
+      documentation: 'set to the id of the encapsulating SystemEvent. Used to managed isDismissed in localStorage on the client.',
+      class: 'Reference',
+      of: 'foam.nanos.se.SystemEvent',
+      name: 'id',
+      visibility: 'HIDDEN'
     },
     {
-      name: 'deactivate',
-      args: 'X x'
+      class: 'String',
+      name: 'message'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.log.LogLevel',
+      name: 'severity',
+      value: 'WARN'
+    },
+    {
+      class: 'Boolean',
+      name: 'isDismissable',
+      value: true
+    },
+    {
+      // Client side only, stored in local storage
+      class: 'Boolean',
+      name: 'isDismissed',
+      value: false
     }
   ]
 });
+

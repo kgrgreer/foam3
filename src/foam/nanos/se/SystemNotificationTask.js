@@ -14,23 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemEventTask',
+  name: 'SystemNotificationTask',
+  implements: [ 'foam.nanos.se.SystemEventTask' ],
+
+  documentation: 'Task for managing SystemNotification display',
 
   javaImports: [
     'foam.core.X'
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.se.SystemNotification',
+      name: 'systemNotification',
+    }
+  ],
+
   methods: [
     {
       name: 'activate',
-      args: 'X x'
+      javaCode: `
+      // nop
+      `
     },
     {
       name: 'deactivate',
-      args: 'X x'
+      javaCode: `
+      // nop
+      `
     }
   ]
 });
+

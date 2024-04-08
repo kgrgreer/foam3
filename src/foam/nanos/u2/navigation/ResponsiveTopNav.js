@@ -115,6 +115,7 @@ foam.CLASS({
             })
           .end()
         .end()
+        .tag({class: 'foam.nanos.se.SystemNotificationView'})
         .add(this.slot(function(displayWidth) {
           if ( displayWidth.ordinal >= foam.u2.layout.DisplayWidth.MD.ordinal ) {
             return this.E().addClass(this.myClass('components-container'), this.myClass('right'))

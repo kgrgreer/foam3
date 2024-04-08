@@ -1,0 +1,15 @@
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"systemEvents",
+  label:"System Events",
+  keywords: ["system", "event", "banner", "notification", "alarm"],
+  handler:{
+    class:"foam.nanos.menu.DAOMenu2",
+    config:{
+      class:"foam.comics.v2.DAOControllerConfig",
+      daoKey:"systemEventDAO",
+      browseTitle:"System Events"
+    }
+  },
+  parent:"admin"
+})
