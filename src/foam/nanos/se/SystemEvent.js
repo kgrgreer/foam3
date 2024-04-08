@@ -25,6 +25,10 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
+  javaImports: [
+    'foam.nanos.logger.Loggers'
+  ],
+
   properties: [
     'id',
     {
@@ -61,7 +65,13 @@ foam.CLASS({
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-
+        for ( var task : getTasks() ) {
+          try {
+            task.activate();
+          } catch ( RuntimeException e ) {
+            Loggers.logger(x, this).error("Failed to activate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+          }
+        }
       `
     },
     {
@@ -69,7 +79,13 @@ foam.CLASS({
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-
+        for ( var task : getTasks() ) {
+          try {
+            task.deactivate();
+          } catch ( RuntimeException e ) {
+            Loggers.logger(x, this).error("Failed to deactivate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+          }
+        }
       `
     }
   ]
