@@ -51,7 +51,7 @@ foam.CLASS({
       function test(s) {
         try {
           var p = fs.parseString(s).partialEval();
-            console.log(s, '->', p.toString(), '=', p.f(data));
+          console.log(s, '->', p.toString(), '=', p.f(data));
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -60,7 +60,17 @@ foam.CLASS({
       function testFormula(s, val) {
         try {
           var p = fs.parseString(s);
-          console.log(s, '==', val, '=', p.f(data)==val);
+          console.log(s, '->', p.cls_.id, p.toString(), '==', val, '=', p.f(data)==val);
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      var m = foam.mlang.Expressions.create();
+      function testOutput(s, expected) {
+        try {
+          var p = fs.parseString(s);
+          console.log(s, '->', p.toString(), '==', expected.toString(), '=', p.equals(expected));
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -86,6 +96,18 @@ foam.CLASS({
       test('MINUTES(born) > 10500000 && MINUTES(born) < 11100000');
       test('instanceof foam.parse.Test');
       testFormula('2+8', 10);
+      testFormula('1', 1);
+      testFormula('(1)', 1);
+      testFormula('1+2+3', 6);
+      testFormula('1+(2+3)', 6);
+      testFormula('(1+2)+3', 6);
+      testFormula('1+2-3*4/4+5-6+7', 6);
+      testOutput('1==1 &&2==2' , m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1&& 2==2' , m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 && 2==2', m.AND(m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 ||2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1|| 2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('1==1 || 2==2', m.OR (m.EQ(1, 1), m.EQ(2, 2)));
     },
 
     function test2__() {
@@ -143,9 +165,9 @@ foam.CLASS({
 
           expr: alt(sym('or'), sym('formula')),
 
-          or: repeat(sym('and'), seq1(optional(' '), literal('||'), optional(' ')), 1),
+          or: repeat(sym('and'), seq1(1, optional(' '), literal('||'), optional(' ')), 1),
 
-          and: repeat(sym('simpleexpr'), seq1(optional(' '), literal('&&'), optional(' ')), 1),
+          and: repeat(sym('simpleexpr'), seq1(1, optional(' '), literal('&&'), optional(' ')), 1),
 
           simpleexpr: alt(
             sym('paren'),
@@ -156,11 +178,11 @@ foam.CLASS({
             sym('comparison')
           ),
 
-          paren: seq1(1, '(', sym('expr'), ')'),
+          paren: seq1(1, '(', sym('or'), ')'),
 
           form_paren: seq1(1, '(', sym('formula'), ')'),
 
-          negate: seq(literal('!'), sym('expr')),
+          negate: seq(literal('!'), sym('or')),
 
           comparison: seq(
             sym('value'),
@@ -213,28 +235,28 @@ foam.CLASS({
           minus: repeat(sym('form_expr'), literal('-'), 1),
 
           form_expr: seq(
-            alt(
-              sym('form_paren'),
-              sym('number'),
-              sym('field'),
-              sym('fieldLen')
-            ),
+            // lhs
+            sym('form_value'),
             optional(
               repeat(
                 seq(
+                  // MUL or DIV
                   alt(
                     literal('*', this.MUL),
                     literal('/', this.DIV)
                   ),
-                  alt(
-                    sym('form_paren'),
-                    sym('number'),
-                    sym('fieldLen'),
-                    sym('field')
-                  )
+                  // rhs
+                  sym('form_value'),
                 )
               )
             )
+          ),
+
+          form_value: alt(
+            sym('form_paren'),
+            sym('number'),
+            sym('fieldLen'),
+            sym('field')
           ),
 
           date: alt(
@@ -356,6 +378,18 @@ foam.CLASS({
           return v.join('');
         };
 
+        var adaptFormulaArgs = function(v) {
+          var argList = [];
+          for ( var i = 0; i < v.length; i++ ) {
+            var arg = v[i];
+            if ( typeof arg === 'number' )
+              arg = self.CONSTANT(arg);
+
+            argList.push(arg);
+          }
+          return argList;
+        };
+
         var actions = {
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
@@ -381,9 +415,13 @@ foam.CLASS({
             return op.call(self, lhs);
           },
 
-          or: function(v) { return self.OR.apply(self, v); },
+          or: function(v) {
+            return v.length === 1 ? v[0] : self.OR.apply(self, v);
+          },
 
-          and: function(v) { return self.AND.apply(self, v); },
+          and: function(v) {
+            return v.length === 1 ? v[0] : self.AND.apply(self, v);
+          },
 
           field: function(v) {
             var expr = v[0];
@@ -409,30 +447,43 @@ foam.CLASS({
           minutes: function(v) { return self.MINUTES(v); },
 
           formula: function(v) {
-            return self.ADD.apply(self, v);
+            var args = adaptFormulaArgs(v);
+            return args.length === 1 ? args[0] : self.ADD.apply(self, args);
           },
 
           minus: function(v) {
-            return self.SUB.apply(self, v);
+            var args = adaptFormulaArgs(v);
+            return args.length === 1 ? args[0] : self.SUB.apply(self, args);
           },
 
           form_expr: function(v) {
           if ( foam.mlang.expr.Dot.isInstance(v[0]) || foam.core.Property.isInstance(v[0]) && ! foam.core.Int.isInstance(v[0]) ) return foam.parse.ParserWithAction.NO_PARSE;
 
+            // handle left hand side (lhs) value as formula without MUL or DIV operator and right hand side (rhs) value
+            // v[0] is lhs value and v[1] is null or empty
             if ( v.length == 1 || v[1] === null || v[1].length == 0 ) return v[0];
 
-            var formulas = v[1];
-            var firstArg = v[0];
-            var temp = formulas[0];
-            var cnst = temp[1];
-            var formula = temp[0];
-            formula = formula.call(self, firstArg, cnst);
+            // handle formula with lhs value followed by MUL or DIV and rhs value
+            // v[0] is the lhs and v[1] contains an array of [MUL or DIV, rhs]
+            // Eg.
+            //    v = [ 1,
+            //          [
+            //            [ '*', 2 ],
+            //            [ '/', 3 ]
+            //          ]
+            //        ];
+            //
+            // will return DIV(MUL(1, 2), 3) which is 1*2/3
+            var [ lhs, formulas ] = v;
+            var [ formula, rhs  ] = formulas[0];
+            formula = formula.call(self, lhs, rhs);
+
+            // construct the final formula by recursively using the formula
+            // from the previous iteration as lhs value with the next formula
+            // and its rhs value
             for ( var i = 1; i < formulas.length; i++ ) {
-              var tempArr = formulas[i];
-              var tempForm = tempArr[0];
-              var constant = tempArr[1];
-              tempForm = tempForm.call(self, formula, constant);
-              formula = tempForm;
+              var [ next, val ] = formulas[i];
+              formula = next.call(self, formula, val);
             }
             return formula;
           },

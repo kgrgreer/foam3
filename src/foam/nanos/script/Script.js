@@ -349,6 +349,7 @@ foam.CLASS({
             .put("scriptParameter", sp);
           jShell.eval("import foam.core.X;");
           jShell.eval("X x = foam.nanos.script.Script.X_HOLDER[0];");
+          jShell.eval("void print(Object o) { ((java.io.PrintStream) x.get(\\\"out\\\")).println(String.valueOf(o));  }");
           return jShell;
         } else if ( l == foam.nanos.script.Language.BEANSHELL ) {
           Interpreter shell = new Interpreter();
