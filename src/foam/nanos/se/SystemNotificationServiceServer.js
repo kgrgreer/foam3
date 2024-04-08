@@ -28,6 +28,8 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.DESC',
     'static foam.mlang.MLang.EQ',
+    'foam.nanos.theme.Theme',
+    'foam.util.SafetyUtil',
     'java.util.ArrayList',
     'java.util.Arrays',
     'java.util.List'
@@ -47,8 +49,23 @@ foam.CLASS({
         .getArray();
       List<SystemNotification> notifications = new ArrayList();
       for ( SystemEvent event : events ) {
+        String themeId = (String) x.get("theme");
         for ( SystemEventTask task : event.getTasks() ) {
           if ( task instanceof SystemNotificationTask ) {
+            SystemNotificationTask snt = (SystemNotificationTask) task;
+            if ( snt.getThemes() != null &&
+                 snt.getThemes().length > 0 ) {
+              boolean match = false;
+              if ( ! SafetyUtil.isEmpty(themeId) ) {
+                for ( String id : snt.getThemes() ) {
+                  if ( id.equals(themeId) ) {
+                    match = true;
+                    break;
+                  }
+                }
+              }
+              if ( ! match ) continue;
+            }
             SystemNotification sn = (SystemNotification) ((SystemNotificationTask)task).getSystemNotification().fclone();
             // REVIEW: regarding 'id', assuming one per SystemEvent
             // used for trackign dismissal in localStorage

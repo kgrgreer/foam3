@@ -24,6 +24,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getSystemNotifications',
+      args: 'Context x',
       type: 'foam.nanos.se.SystemNotification[]',
       async: true
     }

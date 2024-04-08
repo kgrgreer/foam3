@@ -30,6 +30,16 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.se.SystemNotification',
       name: 'systemNotification',
+    },
+    {
+      documentation: 'Optionally filter display to particular themes',
+      class: 'StringArray',
+      name: 'themes',
+      view: {
+        class: 'foam.u2.view.ReferenceArrayView',
+        daoKey: 'themeDAO',
+        allowDuplicates: false
+      }
     }
   ],
 
