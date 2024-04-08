@@ -55,6 +55,7 @@ foam.CLASS({
     {
       name: 'updateTranslation',
       args: 'X x',
+      javaType: 'String',
       javaCode: `
         var msg = getMessageKeyText();
         if ( x == null || SafetyUtil.isEmpty(msg) ) return msg;
