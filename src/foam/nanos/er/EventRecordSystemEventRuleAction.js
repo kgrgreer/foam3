@@ -30,8 +30,10 @@ foam.CLASS({
       boolean raise = false;
       boolean lower = false;
       if ( old == null ) {
-        // Rule predicate tests for n warning or error
-        raise = true;
+        if ( er.getSeverity().getOrdinal() > LogLevel.INFO.getOrdinal() ) {
+          // Rule predicate tests for n warning or error
+          raise = true;
+        }
       } else {
         // Rule predicate tests if severity has changed.
         if ( old.getSeverity().getOrdinal() <= LogLevel.INFO.getOrdinal() &&

@@ -8,12 +8,8 @@ p({
   priority: 100,
   operation: 0,
   predicate:{
-    class:"foam.nanos.ruler.predicate.PropertyEQValue",
-    propName: "severity",
-    propValue: {
-      class: "foam.log.LogLevel",
-      ordinal: 3
-    }
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n.severity == foam.log.LogLevel.ERROR'
   },
   lifecycleState:1,
   action: {
@@ -31,43 +27,8 @@ p({
   priority: 110,
   operation: 0,
   predicate:{
-    class:"foam.mlang.predicate.And",
-    args: [
-      {
-        class:"foam.nanos.ruler.predicate.PropertyEQValue",
-        propName: "raiseAlarm",
-        propValue: true
-      },
-      {
-        class:"foam.mlang.predicate.Or",
-        args:[
-          {
-            class:"foam.nanos.ruler.predicate.PropertyEQValue",
-            propName: "severity",
-            propValue: {
-              class: "foam.log.LogLevel",
-              ordinal: 1
-            }
-          },
-          {
-            class:"foam.nanos.ruler.predicate.PropertyEQValue",
-            propName: "severity",
-            propValue: {
-              class: "foam.log.LogLevel",
-              ordinal: 2
-            }
-          },
-          {
-            class:"foam.nanos.ruler.predicate.PropertyEQValue",
-            propName: "severity",
-            propValue: {
-              class: "foam.log.LogLevel",
-              ordinal: 3
-            }
-          }
-        ]
-      }
-    ]
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n.raiseAlarm == true && n.severity != foam.log.LogLevel.DEBUG'
   },
   lifecycleState:1,
   action: {
@@ -75,6 +36,7 @@ p({
     alarmSeverity: "WARN"
   }
 })
+
 p({
   class: "foam.nanos.ruler.Rule",
   id: "foam-nanos-er-EventRecordSystemEventRule",
@@ -83,12 +45,16 @@ p({
   daoKey: "eventRecordDAO",
   after: true,
   operation: 3,
+  predicate:{
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n.systemEvent exists && (o !exists || o.severity != n.severity)'
+  },
   lifecycleState:1,
   action: {
     class: "foam.nanos.er.EventRecordSystemEventRuleAction"
   }
 })
-  // predicate:{
-  //   class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
-  //   query: 'n.systemEvent exists && ((o !exists && (n.severity == foam.log.LogLevel.WARN || n.severity == foam.log.LogLevel.ERROR )) || o.severity != n.severity)'
-  // },
+// predicate:{
+//   class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+//   query: 'n.systemEvent exists && ((o !exists && (n.severity == foam.log.LogLevel.WARN || n.severity == foam.log.LogLevel.ERROR )) || o.severity != n.severity)'
+// },

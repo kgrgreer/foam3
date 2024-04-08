@@ -47,8 +47,9 @@ foam.CLASS({
       se.setName(this.getClass().getSimpleName());
       se.setEnabled(true);
       se.setActive(false);
-      se.setStartTime(new java.util.Date(System.currentTimeMillis() + 3600));
+      se.setStartTime(new java.util.Date(System.currentTimeMillis() + 36000));
       se = (SystemEvent) seDAO.put(se);
+      test ( ! se.getActive(), "SystemEvent not active");
 
       EventRecord er = new EventRecord(x, this, "test");
       er.setSystemEvent(se.getId());
@@ -69,7 +70,7 @@ foam.CLASS({
       er = (EventRecord) erDAO.put(er).fclone();
       agent.execute(x);
       se = (SystemEvent) seDAO.find(se.getId());
-      test ( se.getActive(), "EventRecord WARN->INFO, SystemEvent not active");
+      test ( ! se.getActive(), "EventRecord WARN->INFO, SystemEvent not active");
     } finally {
       teardown(x);
     }
