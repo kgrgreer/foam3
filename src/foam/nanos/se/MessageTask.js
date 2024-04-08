@@ -57,25 +57,27 @@ foam.CLASS({
       args: 'X x',
       javaCode: `
         var msg = getMessageKeyText();
-        if ( x == null || SafetyUtil.isEmpty(msg) ) return defaultText;
+        if ( x == null || SafetyUtil.isEmpty(msg) ) return msg;
 
         var ts = (TranslationService) x.get("translationService");
-        if ( ts == null ) return defaultText;
+        if ( ts == null ) return msg;
 
         var locale = (String) x.get("locale.language");
         if ( SafetyUtil.isEmpty(locale) ) locale = "en";
 
-        return ts.getTranslation(locale, source, defaultText);
+        return ts.getTranslation(locale, msg, msg);
       `
     },
     {
       name: 'activate',
+      args: 'X x',
       javaCode: `
         this.setReplacementText(updateTranslation(x));
       `
     },
     {
       name: 'deactivate',
+      args: 'X x',
       javaCode: `
         this.clearProperty("replacementText");
       `
