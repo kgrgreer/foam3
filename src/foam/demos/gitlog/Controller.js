@@ -134,7 +134,7 @@ foam.CLASS({
 
       if ( count ) {
         if ( this.data.showPercentages ) {
-          a.push(count/totalCount.toFixed(0)*100 + '%');
+          a.push((count/totalCount*100).toFixed(0) + '%');
         }
 
         if ( this.data.showSalaries ) {
@@ -205,7 +205,8 @@ foam.CLASS({
 
             // Per-Month Details
             forEach(authorCounts[a[0]], function(c, i) {
-              var salary = salaries[a[0]][i];
+              var salary = 0;
+              try { salary = salaries[a[0]][i]; } catch (x) {}
               total       += c;
               allTotal    += allAuthorCounts[a[0]][i];
               salaryTotal += salary;
