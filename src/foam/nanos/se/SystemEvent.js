@@ -26,7 +26,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X'
+    'foam.core.X',
+    'foam.nanos.logger.Loggers'
   ],
 
   tableColumns: [
@@ -85,7 +86,13 @@ foam.CLASS({
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-        // nop
+        for ( var task : getTasks() ) {
+          try {
+            task.activate(x);
+          } catch ( RuntimeException e ) {
+            Loggers.logger(x, this).error("Failed to activate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+          }
+        }
       `
     },
     {
@@ -94,7 +101,13 @@ foam.CLASS({
       type: 'Void',
       documentation: 'execute activate systemeventtasks',
       javaCode: `
-        // nop
+        for ( var task : getTasks() ) {
+          try {
+            task.deactivate(x);
+          } catch ( RuntimeException e ) {
+            Loggers.logger(x, this).error("Failed to deactivate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+          }
+        }
       `
     }
   ]

@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2024 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.POM({
   name: "se",
   files: [
@@ -19,6 +25,8 @@ foam.POM({
       flags: "java|js" },
     { name: "SystemNotificationView",
       flags: "web" },
+    { name: "MessageTask",
+      flags: "js|java" },
     { name: "test/EventRecordSystemEventTest",
       flags: "js|java" },
     { name: "test/SystemEventSystemNotificationThemeTest",

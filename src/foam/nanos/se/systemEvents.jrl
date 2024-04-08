@@ -1,0 +1,12 @@
+p({
+  class: "foam.nanos.se.SystemEvent",
+  id: "systemevent-messagetask-test",
+  name: "messagetask test",
+  description: "messagetask test",
+  tasks: [
+    {
+      class: "foam.nanos.se.MessageTask",
+      messageKeyText: "TEST MESSAGE"
+    }
+  ]
+})
