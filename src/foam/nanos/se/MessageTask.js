@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'foam.nanos.se',
   name: 'MessageTask',
+  implements: 'foam.nanos.se.SystemEventTask',
 
   javaImports: [
     'foam.core.X',
