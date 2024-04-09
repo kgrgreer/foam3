@@ -79,11 +79,6 @@ foam.CLASS({
         await this.wizardController.setFirstPosition();
       }
 
-      // this.wizardView = this.StackBlock.create({
-      //   view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
-      //   parent: this
-      // });
-
       await new Promise((resolve, onError) => {
         this.onDetach(this.wizardController.lastException$.sub(() => {
           let e = this.wizardController.lastException;
@@ -131,7 +126,6 @@ foam.CLASS({
     function resolveAgent() {
       if ( this.wizardClosing ) return;
       this.wizardClosing = true;
-
       this.wizardView.remove();
     }
   ]
