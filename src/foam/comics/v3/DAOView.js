@@ -71,7 +71,7 @@ foam.CLASS({
     async function render() {
       this.SUPER();
       var self = this;
-      this.config.createMenu$find.then(v => {
+      (this.config.createMenu ? this.config.createMenu$find : new Promise(res => res())).then(v => {
         this.onDetach(this.stack.setTrailingContainer(
           this.E()
             .callIfElse(v, function() {
