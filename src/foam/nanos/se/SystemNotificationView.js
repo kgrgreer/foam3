@@ -88,7 +88,7 @@ foam.CLASS({
       // this.systemNotificationService.getSystemNotifications().then(function(notifications) {
       //   this.systemNotifications = notifications;
       // });
-      this.systemNotifications = await this.systemNotificationService.getSystemNotifications();
+      this.systemNotifications = await this.systemNotificationService.getSystemNotifications(null);
     },
 
     function render() {

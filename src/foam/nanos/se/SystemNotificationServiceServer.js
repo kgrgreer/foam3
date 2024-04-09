@@ -49,16 +49,16 @@ foam.CLASS({
         .getArray();
       List<SystemNotification> notifications = new ArrayList();
       for ( SystemEvent event : events ) {
-        String themeId = (String) x.get("theme");
+        Theme theme = (Theme) x.get("theme");
         for ( SystemEventTask task : event.getTasks() ) {
           if ( task instanceof SystemNotificationTask ) {
             SystemNotificationTask snt = (SystemNotificationTask) task;
             if ( snt.getThemes() != null &&
                  snt.getThemes().length > 0 ) {
               boolean match = false;
-              if ( ! SafetyUtil.isEmpty(themeId) ) {
+              if ( theme != null ) {
                 for ( String id : snt.getThemes() ) {
-                  if ( id.equals(themeId) ) {
+                  if ( id.equals(theme.getId()) ) {
                     match = true;
                     break;
                   }

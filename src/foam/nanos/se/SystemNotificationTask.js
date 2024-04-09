@@ -40,6 +40,12 @@ foam.CLASS({
         daoKey: 'themeDAO',
         allowDuplicates: false
       }
+    },
+    {
+      documentation: 'Optionally restrict Notification to a particular menu',
+      class: 'Reference',
+      of: 'foam.nanos.menu.Menu',
+      name: 'menu'
     }
   ],
 
