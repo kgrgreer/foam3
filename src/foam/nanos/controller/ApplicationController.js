@@ -835,22 +835,7 @@ foam.CLASS({
           this.__subSubContext__.notificationDAO.put(clonedNotification);
         }
       }
-    },
-
-    // function bannerizeTwoFactorAuth() {
-    //   if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
-    //        this.theme.twoFactorEnabled &&
-    //        ! this.subject.user.twoFactorEnabled ) {
-    //     this.setBanner(this.LogLevel.WARNING, 'Please enable Two-Factor Authentication in Personal Settings.');
-    //   }
-    // },
-
-    // function setBanner(severity, message) {
-    //   // ToDO; set bannerview data
-    //   this.bannerData.isDismissed = false;
-    //   this.bannerData.severity = severity;
-    //   this.bannerData.message = message;
-    // }
+    }
   ],
 
   listeners: [
@@ -869,7 +854,6 @@ foam.CLASS({
 
       await this.fetchTheme();
       this.initLayout.resolve();
-      // this.bannerizeTwoFactorAuth();
       this.stack.resetStack();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
