@@ -29,6 +29,7 @@ foam.CLASS({
     ^content > * {
       flex: 1;
       min-height: 0; 
+      overflow: auto;
     }
     ^padding ^content > * {
       padding: 1.6rem;

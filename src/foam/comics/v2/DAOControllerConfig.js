@@ -320,42 +320,13 @@ foam.CLASS({
       name: 'createController',
       documentation: 'class of createController.',
       factory: function() {
-        return { class: 'foam.comics.v2.DAOCreateView' };
+        return { class: 'foam.comics.v3.CreateView' };
       }
     },
     {
       class: 'foam.u2.ViewSpec',
       name: 'detailView',
       documentation: 'class of detailView.'
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'menu',
-      documentation: 'class of detailView.'
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'createControllerView',
-      type: 'foam.lib.json.UnknownFObject',
-      javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
-      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
-      // TODO: remove next line when permanently fixed in ViewSpec
-      fromJSON: function fromJSON(value, ctx, prop, json) {
-        return value;
-      }
-    },
-    {
-      name: 'browseContext',
-      documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
-      value: null,
-      cloneProperty: function() { }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'createPopup',
-      documentation: `Given a ViewSpec the createView will be rendered using
-      the given viewSpec as a wrapper. Can be set to 'true' to render the view in a
-      default Popup`
     },
     {
       class: 'FObjectArray',

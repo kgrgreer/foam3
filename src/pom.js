@@ -967,6 +967,8 @@ foam.POM({
     { name: "foam/comics/v2/DAOBrowserView",                          flags: "js" },
     { name: "foam/comics/v3/DetailView",                              flags: "js" },
     { name: "foam/comics/v3/DAOController",                           flags: "js" },
+    { name: "foam/comics/v3/CreateView",                              flags: "js" },
+    { name: "foam/comics/v3/DAOView",                                 flags: "js" },
     { name: "foam/comics/v2/DAOControllerConfig",                     flags: "js|java" },
     { name: "foam/comics/v2/DAOCreateView",                           flags: "js" },
     { name: "foam/comics/v2/DAOSummaryView",                          flags: "js" },

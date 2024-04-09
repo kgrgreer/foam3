@@ -698,6 +698,8 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      // Now does a silent push, that is the menu is pushed but the route is not update
+      // Use routeTo if route needs to be updated
       /** Setup **/
       let idCheck = menu && ( menu.id ? menu.id : menu );
       let currentMenuCheck = this.currentMenu?.id;
@@ -717,10 +719,6 @@ foam.CLASS({
 
       /** Used to checking validity of menu push and launching default on fail **/
       if ( this.client ) {
-        if ( realMenu ) {
-          this.route = realMenu;
-          return;
-        }
         return this.pushMenu_(realMenu, menu, opt_forceReload);
       }
 
@@ -737,7 +735,7 @@ foam.CLASS({
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
         return;
       }
-console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
+      console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
       let stringMenu = menu && foam.String.isInstance(menu);
 

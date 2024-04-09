@@ -21,7 +21,8 @@ foam.CLASS({
   imports: [
     'auth',
     'currentMenu?',
-    'stack'
+    'stack',
+    'pushMenu'
   ],
 
   exports: [
@@ -95,102 +96,40 @@ foam.CLASS({
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
         self.addClass(self.myClass('content'));
-        if ( route ) {
+        if ( route == 'create' ) {
+          if ( this.config.createMenu ) {
+            self.pushMenu(self.config.createMenu);
+            return self.renderDAOView();
+          }
+          if ( this.config.createController ) {
+            this.stack.push({
+                data: (this.config.factory || this.data.of).create({ mode: 'create'}, this),
+                config$: this.config$,
+                title: 'Create ' + this.data.of.id,
+                of: this.data.of,
+                ...this.config.createController
+            }, this);
+          }
+        } else if ( route ) {
           self.tag({
             class: 'foam.comics.v3.DetailView',
             config$: self.config$,
             idOfRecord$: self.route$
           });
         } else {
-          this.stack.setTitle(this.viewTitle$, self);
-          self.tag({
-            class: 'foam.comics.v3.DAOBrowseView',
-            data$: self.data$,
-            config$: self.config$
-          });
+          self.renderDAOView();
         }
+      });
+    },
+    function renderDAOView() {
+      var self = this;
+      this.stack.setTitle(this.viewTitle$, self);
+      self.tag({
+        class: 'foam.comics.v3.DAOView',
+        data$: self.data$,
+        config$: self.config$
       });
     }
   ]
 });
 
-foam.CLASS({
-  package: 'foam.comics.v3',
-  name: 'DAOBrowseView',
-  extends: 'foam.u2.View',
-
-  imports: [
-    'config as importedConfig',
-    'stack'
-  ],
-
-  requires: [
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder'
-  ],
-
-  cssTokens: [
-    {
-      name: 'borderSize',
-      value: '1px solid $grey300'
-    },
-    {
-      name: 'boxShadowSize',
-      value: '0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1)'
-    }
-  ],
-
-  css: `
-    ^ .foam-u2-borders-CardBorder {
-      border: $borderSize;
-      border-radius: 4px;
-      box-sizing: border-box;
-      box-shadow: $boxShadowSize;
-      height: 100%;
-      padding: 0;
-    }
-  `,
-
-  properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'data'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.comics.v2.DAOControllerConfig',
-      name: 'config',
-      factory: function() {
-        return this.importedConfig ?? this.onDetach(foam.comics.v2.DAOControllerConfig.create({dao: this.data}));
-      }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'browseView',
-      expression: function(config$browseViews) {
-        return config$browseViews && config$browseViews.length
-          ? config$browseViews[0].view
-          : this.DAOBrowserView
-          ;
-      }
-    }
-  ],
-
-  methods: [
-    function render() {
-      this.SUPER();
-      var self = this;
-      this    
-        .addClass()  
-        .start(self.CardBorder)
-        .style({ position: 'relative', 'min-height': this.config.minHeight + 'px' })
-        .start(this.config.browseBorder)
-          .call(function() {
-            this.add(self.slot(function(browseView) {
-              return self.E().tag(browseView, { data: this.data, config: this.config } );
-            }));
-          })
-        .end();
-    }
-  ]
-});
