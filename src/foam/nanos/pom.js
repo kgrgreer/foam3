@@ -304,6 +304,7 @@ foam.POM({
     { name: "u2/navigation/UserInfoNavigationView",                                       flags: "web" },
     { name: "u2/navigation/NotificationMenuItem",                                         flags: "web" },
     { name: "u2/navigation/Stack",                                                        flags: "web" },
+    { name: "u2/navigation/PopupManager",                                                 flags: "web" },
     { name: "script/Language",                                                            flags: "js|java" },
     { name: "script/Script",                                                              flags: "js|java" },
     { name: "script/ScriptEvent",                                                         flags: "js|java" },

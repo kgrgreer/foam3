@@ -169,13 +169,13 @@ foam.CLASS({
       if ( this.stack_[this.pos] ) {
         this.stack_.splice(this.pos).forEach(v => v.remove())
       }
-      // Maybe just move to router? Would need to force stack pushes to be viewSpecs, that might not be bad tho.
+      // Maybe just move to router? It is only used by breadcrumbs
       if ( foam.u2.Routable.isInstance(v) ) {
         v.stackPos = this.pos;
       }
       this.stack_[this.pos] = v;
       this.posUpdated.pub('new');
-      return this.pos;
+      return v;
     },
     function set() {
       if ( this.delegate_ ) return this.delegate_.set();
@@ -187,10 +187,6 @@ foam.CLASS({
       this.stack_.splice(p + 1).forEach(v => v.remove());
       this.pos = p;
       this.posUpdated.pub('jump');
-    },
-    function viewAt(i) {
-      if ( this.delegate_ ) return this.delegate_.viewAt(...arguments);
-      return this.stack_[i];
     },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);

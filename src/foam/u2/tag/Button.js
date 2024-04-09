@@ -538,17 +538,17 @@ foam.CLASS({
         this.add(this.iconFontName);
       }
 
-        if ( foam.String.isInstance(this.label) ) {
-          if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
-            this.start().addClass('p').add(this.label$).end();
-          } else {
-            this.start().addClass('h600').add(this.label$).end();
-          }
-        } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
-          this.tag(this.label);
+      if ( foam.String.isInstance(this.label)  ) {
+        if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
+          this.start().style({ display: 'contents' }).addClass('p').add(this.label$).end();
         } else {
-          this.add(this.label$);
+          this.start().style({ display: 'contents' }).addClass('h600').add(this.label$).end();
         }
+      } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
+        this.tag(this.label);
+      } else {
+        this.add(this.label$);
+      }
 
       this.attrs({ 'data-loading': this.loading_$ })
       this.add(this.slot(function(loading_) {

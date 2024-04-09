@@ -116,7 +116,7 @@ foam.CLASS({
     function handlePropertyRouting() {
       if ( ! this.detailView.route ) return;
       if ( this.detailView.route == this.prop?.name ) {
-        if ( this.view_ && this.stack.viewAt(this.view_)?.shown ) { 
+        if ( this.view_?.shown ) { 
           return; 
         }
         this.view_ = undefined; 
@@ -128,7 +128,7 @@ foam.CLASS({
       this.SUPER(p);
     },
     function openFullTable(id) {
-      this.view_ = this.stack.push({
+      [_, this.view_] = this.stack.push({
           class: this.DAOController,
           data$: this.data$,
           config$: this.config$,

@@ -24,7 +24,8 @@ foam.CLASS({
     'popupMode',
     'flowAgent?',
     'stack',
-    'pushMenu',
+    'popupManager',
+    'pushDefaultMenu',
     'wizardClosing',
     'wizardController?'
   ],
@@ -46,7 +47,7 @@ foam.CLASS({
         return this.importedConfig || this.StepWizardConfig.create();
       }
     },
-    'wizardStackBlock',
+    'wizardView',
     'lastLastActiveWizard'
   ],
 
@@ -78,10 +79,10 @@ foam.CLASS({
         await this.wizardController.setFirstPosition();
       }
 
-      this.wizardStackBlock = this.StackBlock.create({
-        view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
-        parent: this
-      });
+      // this.wizardView = this.StackBlock.create({
+      //   view, ...(this.popupMode ? { popup: this.config.popup || {} } : {}),
+      //   parent: this
+      // });
 
       await new Promise((resolve, onError) => {
         this.onDetach(this.wizardController.lastException$.sub(() => {
@@ -89,15 +90,6 @@ foam.CLASS({
           if ( ! e ) return;
           onError(e);
         }));
-
-        this.wizardStackBlock.removed.sub(() => {
-          this.crunchController.lastActiveWizard = this.lastLastActiveWizard;
-          this.wizardClosing = true;
-          if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
-            this.wizardController.status = this.WizardStatus.DISCARDED;
-          }
-          resolve();
-        })
 
         // If this is published to, wizard status will stay IN_PROGRESS
         this.flowAgent?.sub(this.cls_.name,() => {
@@ -108,7 +100,20 @@ foam.CLASS({
           this.lastLastActiveWizard = this.crunchController.lastActiveWizard;
           this.crunchController.lastActiveWizard = this.wizardController;
         }
-        this.stack.push(this.wizardStackBlock);
+        if ( this.popupMode ) {
+          this.wizardView = this.popupManager.push(view, this, this.config.popup || {})
+        } else {
+          this.wizardView = this.stack.push(view, this)
+        }
+
+        this.wizardView.onDetach(() => {
+          this.crunchController.lastActiveWizard = this.lastLastActiveWizard;
+          this.wizardClosing = true;
+          if ( this.wizardController.status == this.WizardStatus.IN_PROGRESS ) {
+            this.wizardController.status = this.WizardStatus.DISCARDED;
+          }
+          resolve();
+        })
       });
     }
   ],
@@ -120,18 +125,18 @@ foam.CLASS({
       if ( this.isIframe() ) return;
 
       if ( this.stack.pos < 0 ) {
-        this.pushMenu('');
+        this.pushDefaultMenu('');
       }  
     },
     function resolveAgent() {
       if ( this.wizardClosing ) return;
-      this.wizardClosing = true;
-      if ( this.stack.BACK.isEnabled(this.stack.pos) )
-        this.stack.back();
-      else
-        // This is temporarily necessary to fake a StackBlock removal
-        // in case the stack is empty when the wizard is pushed.
-        this.wizardStackBlock.removed.pub();
+      // this.wizardClosing = true;
+      // if ( this.stack.BACK.isEnabled(this.stack.pos) )
+      //   this.stack.back();
+      // else
+      //   // This is temporarily necessary to fake a StackBlock removal
+      //   // in case the stack is empty when the wizard is pushed.
+      //   this.wizardView.removed.pub();
     }
   ]
 });

@@ -91,7 +91,7 @@ foam.CLASS({
             .end()
             .add(this.APP_DOWNLOAD_SUB)
             .tag(this.AppBadgeView, {legalTextAbsolute: false})
-            this.popup.write();
+            this.popup.open();
 
             // Remove the referral token from the URL
             let url = new URL(window.location.href);

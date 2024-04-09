@@ -34,7 +34,10 @@ foam.CLASS({
     },
     function launch(X, menu) {
       /** Called to activate a menu. **/
-      var self = this;
+      if ( this.popup ) {
+        X.popupManager.push((menu.border ? { ...menu.border, children: [ this.createView(X, menu) ] } : menu), this, this.popup);
+        return;
+      }
       X.stack.set(
         (menu.border ? { ...menu.border, children: [ this.createView(X, menu) ] } : menu),
         X

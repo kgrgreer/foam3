@@ -40,6 +40,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.menu.VerticalMenu',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
@@ -49,13 +50,13 @@ foam.CLASS({
     'foam.nanos.u2.navigation.NavigationController',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
-    'foam.nanos.crunch.CapabilityIntercept',
+    'foam.nanos.u2.navigation.Stack',
+    'foam.nanos.u2.navigation.PopupManager',
     'foam.u2.LoadingSpinner',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
     'foam.u2.crunch.WizardRunner',
     'foam.u2.wizard.WizardType',
-    'foam.nanos.u2.navigation.Stack',
     'foam.u2.stack.BreadcrumbManager',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
@@ -92,6 +93,7 @@ foam.CLASS({
     'memento_ as topMemento_',
     'menuListener',
     'notify',
+    'popupManager',
     'prefersMenuOpen',
     'pushDefaultMenu',
     'pushMenu',
@@ -260,6 +262,10 @@ foam.CLASS({
     {
       name: 'breadcrumbs',
       factory: function() { return this.BreadcrumbManager.create(); }
+    },
+    {
+      name: 'popupManager',
+      factory: function() { return this.PopupManager.create(); }
     },
     {
       class: 'foam.core.FObjectProperty',
