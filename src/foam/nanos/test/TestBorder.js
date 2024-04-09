@@ -11,6 +11,8 @@ foam.CLASS({
 
   implements: ['foam.mlang.Expressions'],
 
+  imports: ['stack'],
+
   requires: [
     'foam.nanos.test.Test', 
     'foam.u2.table.TableView'
@@ -46,6 +48,12 @@ foam.CLASS({
 
   methods: [
     function render() {
+      this.onDetach(this.stack.setTrailingContainer(
+        this.E()
+          .startContext({ data: this })
+          .tag(this.RUN_ALL).tag(this.RUN_FAILED_TESTS)
+          .endContext()
+      ));
       this.SUPER();
       var self = this;
       this

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PMTableView',
-  extends: 'foam.u2.view.ScrollTableView',
+  extends: 'foam.u2.table.TableView',
 
   documentation: 'TableView for displaying PMInfos.',
 
@@ -43,7 +43,7 @@ foam.CLASS({
     function render() {
       this.addClass(this.myClass('container'));
       // this.columns.push([this.CLEAR, null]);
-
+      this.onDetach(this.stack.setTrailingContainer(this.E().tag(this.CLEAR_ALL)));
       this.SUPER();
 
       this.updateMax();

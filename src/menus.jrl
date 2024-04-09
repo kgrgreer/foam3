@@ -147,8 +147,7 @@ p({
       "daoKey":"testDAO",
       "summaryView":{
         "class":"foam.nanos.test.TestBorder"
-      },
-      "browseActions":[ "foam.nanos.test.TestBorder.RUN_ALL", "foam.nanos.test.TestBorder.RUN_FAILED_TESTS" ]
+      }
     }
   },
   "parent":"admin"

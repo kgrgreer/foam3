@@ -14,8 +14,7 @@ p({
       "daoKey":"pmInfoDAO",
       "summaryView":{
         "class":"foam.nanos.pm.PMTableView"
-      },
-      "browseActions": [ "foam.nanos.pm.PMTableView.CLEAR_ALL" ]
+      }
     }
   },
   "parent":"analytics"
