@@ -125,7 +125,7 @@ foam.CLASS({
         return this.data ? this.data.id : null;
       }
     },
-    'actionArray',
+    'actionArray', 'buttonGroup_',
     {
       class: 'String',
       name: 'viewTitle',
@@ -158,17 +158,24 @@ foam.CLASS({
         self.data = d;
         if ( this.controllerMode == 'EDIT' ) this.edit();
         this.populatePrimaryAction(self.config.of, self.data);
+        self.actionArray = self.config.of.getAxiomsByClass(foam.core.Action);
+        if ( this.buttonGroup_ ) {
+          this.buttonGroup_
+            .startOverlay()
+            .forEach(self.actionArray, function(v) {
+              this.addActionReference(v, self.data$)
+            })
+            .endOverlay()
+        }
       });
     },
     function render() {
       var self = this;
       this.stack?.setTitle(this.viewTitle$, this);
       this.SUPER();
-      var allActions = self.config.of.getAxiomsByClass(foam.core.Action);
-      // self.actionArray = allActions;
       let d = self.stack.setTrailingContainer(
         this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
-            showDropdownIcon: false  }})
+            showDropdownIcon: false  }}, this.buttonGroup_$)
           .addClass(this.myClass('buttonGroup'))
           .add(self.slot(function(primary) {
             return this.E()
@@ -183,9 +190,6 @@ foam.CLASS({
             .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
           .endContext()
           .startOverlay()
-            // .forEach(self.actionArray, function(v) {
-            //   this.addActionReference(v, self.data$)
-            // })
             .tag(self.COPY)
             .tag(self.DELETE)
           .endOverlay()

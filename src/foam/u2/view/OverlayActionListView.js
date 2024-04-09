@@ -117,6 +117,10 @@ foam.CLASS({
       border-color: transparent;
     }
 
+    ^button-container button:disabled {
+      color: $buttonSecondaryColor$active;
+    }
+
     /* destructive */
 
     ^button-container .destructive{
@@ -158,11 +162,23 @@ foam.CLASS({
     async function render() {
       this.SUPER();
       this.enableClass(this.myClass('unavailable'), this.disabled_$)
-      this.shown = false;
-      this.onDetach(this.data$.sub(this.recheckShown));
-      await this.recheckShown();
     },
-
+    function startOverlay() {
+      this.__subSubContext__ = this.__subSubContext__.createSubContext({overlay: true});
+      return this;
+    },
+    function endOverlay() {
+      this.__subSubContext__ = this.__subSubContext__.createSubContext({overlay: false});
+      return this;
+    },
+    function createChild_(spec, args) {
+      if ( this.__subSubContext__.overlay ) {
+        this.data$push(spec);
+        return;
+      }
+      let a = this.SUPER(spec, args);
+      return a;
+    },
     function addContent() {
       this.SUPER();
       var self = this;
@@ -191,7 +207,12 @@ foam.CLASS({
       })
       this.onDetach(this.disabled_$.follow(foam.core.ArraySlot.create({
         slots: availSlots
-      }, this).map(arr => ! arr.reduce((l, r) => l || r, false))));
+      }, this)
+        .map(async arr => {
+          arr = await Promise.all(arr) 
+          return ! arr.reduce((l, r) => l || r, false)
+        })
+      ));
     },
 
     async function initializeOverlay(x, y) {
@@ -227,7 +248,7 @@ foam.CLASS({
 
       var el = this.E().startContext({ data: self.obj, dropdown: self.overlay_ })
         .forEach(self.data, function(action, index) {
-          if ( availabilities[index] ) {
+          // if ( availabilities[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
@@ -239,11 +260,11 @@ foam.CLASS({
                 .attrs({ tabindex: -1 })
                 .callIf(! enabled[index], function() {
                   this
-                    .addClass(self.myClass('disabled'))
+                    // .addClass(self.myClass('disabled'))
                     .attrs({ disabled: true })
                 })
               .end();
-          }
+          // }
         })
       .endContext();
       spinner.remove();
@@ -321,15 +342,6 @@ foam.CLASS({
         if ( this.document.activeElement === this.lastEl_.el_() ) {
           this.firstEl_.focus();
           e.preventDefault();
-        }
-      }
-    },
-
-    async function recheckShown() {
-      for ( let action of this.data ) {
-        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-          this.shown = true;
-          break;
         }
       }
     }
