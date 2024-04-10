@@ -67,6 +67,10 @@ foam.CLASS({
               if ( ! match ) continue;
             }
             SystemNotification sn = (SystemNotification) ((SystemNotificationTask)task).getSystemNotification().fclone();
+            if ( menuId != null &&
+                 ! menuId.equals(sn.getMenu()) ) {
+              continue;
+            }
             // REVIEW: regarding 'id', assuming one per SystemEvent
             // used for trackign dismissal in localStorage
             sn.setId(event.getId());

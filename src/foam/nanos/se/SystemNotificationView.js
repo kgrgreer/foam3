@@ -85,10 +85,10 @@ foam.CLASS({
   // TODO: implement dismissed based on localStorage
   methods: [
     async function init() {
-      // this.systemNotificationService.getSystemNotifications().then(function(notifications) {
+      // this.systemNotificationService.getSystemNotifications(null, null).then(function(notifications) {
       //   this.systemNotifications = notifications;
       // });
-      this.systemNotifications = await this.systemNotificationService.getSystemNotifications(null);
+      this.systemNotifications = await this.systemNotificationService.getSystemNotifications(null, null);
     },
 
     function render() {

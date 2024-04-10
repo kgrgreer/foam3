@@ -14,7 +14,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.se.*'
+    'foam.nanos.se.*',
+    'foam.nanos.theme.Theme'
   ],
 
   methods: [
@@ -41,18 +42,28 @@ foam.CLASS({
       task.setSystemNotification(note);
       task.setThemes(new String[] {"foam"});
       se.setTasks(new SystemNotificationTask[] {task});
-      se = (SystemEvent) seDAO.put(se);
+      se = (SystemEvent) seDAO.put(se).fclone();
 
       SystemNotificationService service = (SystemNotificationService) x.get("systemNotificationService");
 
-      SystemNotification[] notes = service.getSystemNotifications(x);
+      SystemNotification[] notes = service.getSystemNotifications(x, null);
 
       test ( notes == null || notes.length == 0, "SystemNotification (x) not found");
 
-      X y = x.put("theme", "foam");
-      notes = service.getSystemNotifications(y);
+      X y = x.put("theme", new Theme.Builder(x).setId("foam").build());
+      notes = service.getSystemNotifications(y, null);
 
-      test ( notes.length == 1, "SystemNotification (y) found");
+      test ( notes.length == 1, "SystemNotification (theme) found");
+
+      task = new SystemNotificationTask();
+      note = new SystemNotification();
+      note.setMenu("test");
+      task.setSystemNotification(note);
+      se.setTasks(new SystemNotificationTask[] {task});
+      se = (SystemEvent) seDAO.put(se);
+
+      notes = service.getSystemNotifications(y, "test");
+      test ( notes.length == 1 && notes[0].getMenu().equals("test"), "SystemNotification (menu) found");
     } finally {
       teardown(x);
     }
