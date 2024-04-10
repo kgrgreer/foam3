@@ -538,7 +538,7 @@ foam.CLASS({
         this.add(this.iconFontName);
       }
       this.add(this.slot(function(label) {
-        let e = this.E().show(label);
+        let e = this.E().show(!! label);
         if ( foam.String.isInstance(this.label)  ) {
           if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
             e.start().addClass('p').add(this.label$).end();
