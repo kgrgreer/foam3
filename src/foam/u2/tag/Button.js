@@ -537,18 +537,21 @@ foam.CLASS({
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }
-
-      if ( foam.String.isInstance(this.label)  ) {
-        if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
-          this.start().style({ display: 'contents' }).addClass('p').add(this.label$).end();
+      this.add(this.slot(function(label) {
+        let e = this.E().show(label);
+        if ( foam.String.isInstance(this.label)  ) {
+          if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
+            e.start().addClass('p').add(this.label$).end();
+          } else {
+            e.start().addClass('h600').add(this.label$).end();
+          }
+        } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
+          e.tag(this.label);
         } else {
-          this.start().style({ display: 'contents' }).addClass('h600').add(this.label$).end();
+          e.add(this.label$);
         }
-      } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
-        this.tag(this.label);
-      } else {
-        this.add(this.label$);
-      }
+        return e;
+      }))
 
       this.attrs({ 'data-loading': this.loading_$ })
       this.add(this.slot(function(loading_) {
