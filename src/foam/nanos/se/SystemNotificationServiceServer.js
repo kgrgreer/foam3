@@ -67,8 +67,8 @@ foam.CLASS({
               if ( ! match ) continue;
             }
             SystemNotification sn = (SystemNotification) ((SystemNotificationTask)task).getSystemNotification().fclone();
-            if ( menuId != null &&
-                 ! menuId.equals(sn.getMenu()) ) {
+            if ( key != null &&
+                 ! key.equals(sn.getKey()) ) {
               continue;
             }
             // REVIEW: regarding 'id', assuming one per SystemEvent

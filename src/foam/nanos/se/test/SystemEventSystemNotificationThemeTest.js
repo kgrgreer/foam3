@@ -57,13 +57,13 @@ foam.CLASS({
 
       task = new SystemNotificationTask();
       note = new SystemNotification();
-      note.setMenu("test");
+      note.setKey("test");
       task.setSystemNotification(note);
       se.setTasks(new SystemNotificationTask[] {task});
       se = (SystemEvent) seDAO.put(se);
 
       notes = service.getSystemNotifications(y, "test");
-      test ( notes.length == 1 && notes[0].getMenu().equals("test"), "SystemNotification (menu) found");
+      test ( notes.length == 1 && notes[0].getKey().equals("test"), "SystemNotification (key) found");
     } finally {
       teardown(x);
     }

@@ -37,10 +37,9 @@ foam.CLASS({
       value: 'WARN'
     },
     {
-      documentation: 'Optionally restrict Notification to a particular menu',
-      class: 'Reference',
-      of: 'foam.nanos.menu.Menu',
-      name: 'menu'
+      documentation: 'Optionally restrict Notification to a particular menu, wizard, ... ',
+      class: 'String',
+      name: 'key'
     },
     {
       class: 'Boolean',
