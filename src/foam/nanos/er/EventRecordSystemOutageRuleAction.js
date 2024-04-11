@@ -45,7 +45,7 @@ foam.CLASS({
         }
       }
       if ( raise || lower ) {
-        DAO dao = ((DAO) ruler.getX().get("systemEventDAO"));
+        DAO dao = ((DAO) ruler.getX().get("systemOutageDAO"));
         SystemOutage se = (SystemOutage) dao.find(
           AND(
             EQ(SystemOutage.ENABLED, true),

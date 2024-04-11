@@ -31,7 +31,7 @@ foam.CLASS({
     setup(x);
 
     try {
-      DAO seDAO = (DAO) x.get("systemEventDAO");
+      DAO seDAO = (DAO) x.get("systemOutageDAO");
 
       SystemOutage se = new SystemOutage(x);
       se.setName(this.getClass().getSimpleName());

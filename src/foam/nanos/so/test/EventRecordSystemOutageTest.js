@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'EventRecordSystemOutageTest',
   extends: 'foam.nanos.test.Test',
 
-  documentation: 'Create EventRecord with SytemEvent, change EventRecord severity, test SystemOutage activates, deactivates.',
+  documentation: 'Create EventRecord with SytemOutage, change EventRecord severity, test SystemOutage activates, deactivates.',
 
   javaImports: [
     'foam.core.X',
@@ -37,7 +37,7 @@ foam.CLASS({
     setup(x);
 
     try {
-      DAO seDAO = (DAO) x.get("systemEventDAO");
+      DAO seDAO = (DAO) x.get("systemOutageDAO");
       DAO erDAO = (DAO) x.get("eventRecordDAO");
 
       // explicity run the agent the cron would normally run.
