@@ -47,5 +47,9 @@ foam.CLASS({
       }
       return await SUPER(...a);
     },
+
+    function toSummary() {
+      return this.cls_.name;
+    }
   ]
 });
