@@ -23,7 +23,7 @@ foam.POM({
       flags: "js|java" },
     { name: "task/TaskRemovedPredicate",
       flags: "js|java" },
-    { name: "task/PauseTaskOnRemoveRuleAction",
+    { name: "task/CleanUpTaskRuleAction",
       flags: "js|java" },
     { name: "SystemNotification",
       flags: "java|js" },

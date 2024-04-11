@@ -23,7 +23,7 @@ foam.CLASS({
   implements: ['foam.core.Serializable'],
 
   documentation: `
-    A predicate for checking if tasks are removed from system event.
+    A predicate for checking if tasks are removed from system outage.
     Set 'of' property to check for specific task class
   `,
 

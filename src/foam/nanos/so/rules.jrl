@@ -44,14 +44,17 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"D5D811DD-7F3C-4931-926F-FD4246072E41",
-  "name":"PauseComplianceTransactionTask Cleanup on remove (on system outage remove)",
-  "documentation":"Perform cleanup when system outage is removed",
+  "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
+  "name":"Tasks Cleanup On Removal",
+  "documentation":"Clean up tasks when it is removed from the system outage",
   "ruleGroup":"SystemOutage",
   "daoKey":"systemOutageDAO",
-  "operation":2,
+  "operation":1,
+  "predicate":{
+    "class":"foam.nanos.so.task.TaskRemovedPredicate"
+  },
   "action":{
-    "class":"foam.nanos.so.task.PauseTaskOnRemoveRuleAction"
+    "class":"foam.nanos.so.task.CleanUpTaskRuleAction"
   },
   "enabled":true,
   "lifecycleState":1
@@ -59,18 +62,14 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
-  "name":"PauseComplianceTransactionTask Cleanup on remove - (on system outage update)",
-  "documentation":"Perform cleanup when Pause-Compliance-Transaction tasks are removed",
+  "id":"D5D811DD-7F3C-4931-926F-FD4246072E41",
+  "name":"Tasks Cleanup On System Outage Removal",
+  "documentation":"Clean up tasks when system outage is removed",
   "ruleGroup":"SystemOutage",
   "daoKey":"systemOutageDAO",
-  "operation":1,
-  "predicate":{
-    "class":"foam.nanos.so.task.TaskRemovedPredicate",
-    "of":"foam.nanos.so.task.PauseComplianceTransactionTask"
-  },
+  "operation":2,
   "action":{
-    "class":"foam.nanos.so.task.PauseTaskOnRemoveRuleAction"
+    "class":"foam.nanos.so.task.CleanUpTaskRuleAction"
   },
   "enabled":true,
   "lifecycleState":1

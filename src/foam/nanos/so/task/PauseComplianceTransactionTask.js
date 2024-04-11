@@ -117,6 +117,19 @@ foam.CLASS({
       `
     },
     {
+      name: 'cleanUp',
+      args: 'X x',
+      javaCode: `
+        Loggers.logger(x, this).info("Cleaning up task", getId());
+
+        deactivate(x);
+        Loggers.logger(x, this).info("Deativated task", getId());
+        
+        ((DAO) x.get("ruleDAO")).remove(findRule(x));
+        Loggers.logger(x, this).info("Removed task rule", "task", getId(), "rule", getRule());
+      `
+    },
+    {
       visibility: 'private',
       type: 'Rule',
       name: 'createRule',

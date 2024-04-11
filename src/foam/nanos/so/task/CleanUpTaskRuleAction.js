@@ -17,10 +17,10 @@
 
 foam.CLASS({
   package: 'foam.nanos.so.task',
-  name: 'PauseTaskOnRemoveRuleAction',
+  name: 'CleanUpTaskRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
-  documentation: 'Cleans up on pause-compliacne-transaction task removal',
+  documentation: 'Cleans up tasks on removal',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -45,57 +45,36 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            // Find removed pause-compliance-transaction tasks
-            List<PauseComplianceTransactionTask> removedTasks = findRemovedTasks(x, newSo, oldSo, rule.getOperation());
+            // Find removed tasks
+            List<SystemOutageTask> removedTasks = findRemovedTasks(x, newSo, oldSo, rule.getOperation());
 
-            // Clean up removed pause-compliance-transaction tasks
-            cleanUp(x, removedTasks);
+            // Clean up removed tasks
+            for ( SystemOutageTask task : removedTasks ) {
+              task.cleanUp(x);
+            }
           }
         }, "Pause Compliacne Transaction Task On Remove");
       `
     },
     {
       visibility: 'private',
-      javaType: 'List<PauseComplianceTransactionTask>',
+      javaType: 'List<SystemOutageTask>',
       name: 'findRemovedTasks',
       args: 'X x, SystemOutage newSo, SystemOutage oldSo, Operation op',
       javaCode: `
-        List<PauseComplianceTransactionTask> removedTasks = new ArrayList<>();
+        List<SystemOutageTask> removedTasks = new ArrayList<>();
         if ( op == Operation.REMOVE ) {
           // All tasks are removed
           for ( SystemOutageTask task : newSo.getTasks() ) {
-            if ( task instanceof PauseComplianceTransactionTask ) {
-              removedTasks.add((PauseComplianceTransactionTask) task);
-            }
+            removedTasks.add((PauseComplianceTransactionTask) task);
           }
-
         } else if ( op == Operation.UPDATE ) {
-          // Find tasks that are only in old system event
+          // Find tasks that are only in old system outage
           for ( SystemOutageTask task : oldSo.findNonOverlappingTasks(x, newSo) ) {
-            if ( (task instanceof PauseComplianceTransactionTask) ) {
-              removedTasks.add((PauseComplianceTransactionTask) task);
-            }
+            removedTasks.add((PauseComplianceTransactionTask) task);
           }
         }
-
         return removedTasks;
-      `
-    },
-    {
-      visibility: 'private',
-      name: 'cleanUp',
-      args: 'X x, List<PauseComplianceTransactionTask> removedTasks',
-      javaCode: `
-        for ( PauseComplianceTransactionTask task : removedTasks ) {
-          Loggers.logger(x, this).info("Cleaning up task", task.getId());
-
-          task.deactivate(x);
-          Loggers.logger(x, this).info("Deativated task", task.getId());
-          
-          ((DAO) x.get("ruleDAO")).remove(task.findRule(x));
-          Loggers.logger(x, this).info("Removed task rule",
-            "task", task.getId(), "rule", task.getRule());
-        }
       `
     }
   ]
