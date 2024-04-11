@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.so.task',
-  name: 'SystemOutageTaskInitRuleAction',
+  name: 'TaskInitRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
   documentation: 'Initialize system outage tasks',

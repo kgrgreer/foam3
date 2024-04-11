@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.so.task',
-  name: 'SystemOutageTaskInitPredicate',
+  name: 'TaskInitPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   
   implements: ['foam.core.Serializable'],

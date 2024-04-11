@@ -8,10 +8,10 @@ p({
   "operation":3,
   "after":true,
   "predicate": {
-    "class":"foam.nanos.se.task.TaskInitPredicate"
+    "class":"foam.nanos.so.task.TaskInitPredicate"
   },
   "action":{
-    "class":"foam.nanos.se.task.TaskInitRuleAction"
+    "class":"foam.nanos.so.task.TaskInitRuleAction"
   },
   "enabled":true,
   "lifecycleState":1

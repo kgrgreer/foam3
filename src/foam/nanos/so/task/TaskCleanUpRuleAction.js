@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.so.task',
-  name: 'CleanUpTaskRuleAction',
+  name: 'TaskCleanUpRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
   documentation: 'Cleans up tasks on removal',
