@@ -86,9 +86,7 @@ foam.CLASS({
       themeIcon: 'close',
       icon: 'images/ic-cancelblack.svg',
       code: function(X) {
-        if ( X.sn.id) {
-          localStorage.setItem(X.sn.id, X.sn.id);
-        }
+        localStorage.setItem(X.sn.dismissId, 'dismissed');
         this.remove();
       }
     }
