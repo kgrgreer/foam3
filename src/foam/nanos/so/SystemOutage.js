@@ -27,7 +27,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.nanos.logger.Loggers'
+    'foam.nanos.logger.Loggers',
+    'java.util.Arrays',
+    'java.util.List',
+    'java.util.stream.Collectors'
   ],
 
   tableColumns: [
@@ -108,6 +111,23 @@ foam.CLASS({
             Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
           }
         }
+      `
+    },
+    {
+      javaType: 'SystemOutageTask[]',
+      name: 'findNonOverlappingTasks',
+      documentation: 'Returns a list of tasks whose tasks are in \'this\' but not in other',
+      args: 'X x, SystemOutage other',
+      javaCode: `
+        List<String> otherTaskIds = Arrays.asList(other.getTasks())
+          .stream()
+          .map(t -> t.getId())
+          .collect(Collectors.toList());
+
+        return Arrays.asList(getTasks())
+          .stream()
+          .filter(t -> ! otherTaskIds.contains(t.getId()))
+          .toArray(SystemOutageTask[]::new);
       `
     }
   ]

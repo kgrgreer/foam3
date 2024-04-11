@@ -1,0 +1,77 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"61b4e62c-6c43-49ca-9abc-0d23a2c2765d",
+  "name":"System Outage Task Init",
+  "documentation":"Initialize system outage task",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"systemOutageDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.nanos.se.task.SystemOutageTaskInitPredicate"
+  },
+  "action":{
+    "class":"foam.nanos.se.task.SystemOutageTaskInitRuleAction"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"4dae09e9-58fc-4639-bac3-a17a496bdf8b",
+  "name":"Pause Compliance Transaction Template",
+  "documentation":"a template used in PauseComplianceTransactionTask to build a pause rule at runtime",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.tx.ComplianceTransaction"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.FScriptRulePredicate",
+        "query":"o.status != n.status && n.status == net.nanopay.tx.model.TransactionStatus.PENDING"
+      }
+    ]
+  },
+  "enabled":false,
+  "lifecycleState":4
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"D5D811DD-7F3C-4931-926F-FD4246072E41",
+  "name":"PauseComplianceTransactionTask Cleanup on remove (on system outage remove)",
+  "documentation":"Perform cleanup when system outage is removed",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"systemOutageDAO",
+  "operation":2,
+  "action":{
+    "class":"foam.nanos.so.task.PauseTaskOnRemoveRuleAction"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
+  "name":"PauseComplianceTransactionTask Cleanup on remove - (on system outage update)",
+  "documentation":"Perform cleanup when Pause-Compliance-Transaction tasks are removed",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"systemOutageDAO",
+  "operation":1,
+  "predicate":{
+    "class":"foam.nanos.so.task.TaskRemovedPredicate",
+    "of":"foam.nanos.so.task.PauseComplianceTransactionTask"
+  },
+  "action":{
+    "class":"foam.nanos.so.task.PauseTaskOnRemoveRuleAction"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

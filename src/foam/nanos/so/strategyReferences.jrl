@@ -1,5 +1,13 @@
 p({
   class: "foam.strategy.StrategyReference",
+  id: "foam_nanos_so_task_PauseComplianceTransactionTask",
+  desiredModelId: "foam.nanos.so.SystemOutageTask",
+  strategy: "foam.nanos.so.task.PauseComplianceTransactionTask",
+  label: "Pause Compliance Transaction"
+})
+
+p({
+  class: "foam.strategy.StrategyReference",
   id: "foam_nanos.so_SystemNotificationTask",
   desiredModelId: "foam.nanos.so.SystemOutageTask",
   strategy: "foam.nanos.so.SystemNotificationTask",

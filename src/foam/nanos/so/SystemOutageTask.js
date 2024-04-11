@@ -23,6 +23,20 @@ foam.INTERFACE({
     'foam.core.X'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      order: -20
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.so.SystemOutage',
+      name: 'systemOutage',
+      order: -10
+    }
+  ],
+
   methods: [
     {
       name: 'activate',
