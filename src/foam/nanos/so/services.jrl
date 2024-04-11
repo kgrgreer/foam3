@@ -1,14 +1,14 @@
 // TODO: client needs to read, but admin to edit
 p({
   class: "foam.nanos.boot.NSpec",
-  name: "systemEventDAO",
+  name: "systemOutageDAO",
   serve: true,
   serviceScript: """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.so.SystemOutage.getOwnClassInfo())
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("systemEvents")
+      .setJournalName("systemOutages")
       .build()
   """,
   client: """

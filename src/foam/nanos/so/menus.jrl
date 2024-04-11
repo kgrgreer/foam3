@@ -1,14 +1,14 @@
 p({
   class:"foam.nanos.menu.Menu",
-  id:"systemEvents",
-  label:"System Events",
-  keywords: ["system", "event", "banner", "notification", "alarm"],
+  id:"systemOutages",
+  label:"System Outages",
+  keywords: ["system", "outage", "banner", "notification", "alarm"],
   handler:{
     class:"foam.nanos.menu.DAOMenu2",
     config:{
       class:"foam.comics.v2.DAOControllerConfig",
-      daoKey:"systemEventDAO",
-      browseTitle:"System Events"
+      daoKey:"systemOutageDAO",
+      browseTitle:"System Outages"
     }
   },
   parent:"admin"
