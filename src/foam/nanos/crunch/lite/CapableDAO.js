@@ -108,16 +108,11 @@ foam.CLASS({
         List<CapabilityJunctionPayload> capablePayloads = new ArrayList<CapabilityJunctionPayload>(Arrays.asList(toPutCapablePayloadArray));
 
         for ( CapabilityJunctionPayload currentPayload : capablePayloads ){
-          var afterPut = toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
-          if ( obj instanceof net.nanopay.contacts.CapableContact )
-            foam.nanos.logger.Loggers.logger(x, this).info("PAYLOAD AFTER PUT:", "before="+currentPayload, "after="+afterPut);
+          toUpdateCapablePayloadDAO.inX(x).put(currentPayload);
         }
 
         // include old payloads when checking requirement status
         CapabilityJunctionPayload[] payloads = (CapabilityJunctionPayload[]) ((List) ((ArraySink) toUpdateCapablePayloadDAO.inX(getX()).select(new ArraySink())).getArray()).toArray(new CapabilityJunctionPayload[0]);
-        
-        if ( obj instanceof net.nanopay.contacts.CapableContact )
-          foam.nanos.logger.Loggers.logger(x, this).info("PAYLOADS FROM toUpdateCapablePayloadDAO", payloads[0]);
         toPutCapableObj.setCapablePayloads(payloads);
 
         if ( 
