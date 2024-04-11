@@ -66,9 +66,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'message'
-    },
-    {
       name: 'icon',
       factory: function() {
         if ( ! this.type.glyph ) return undefined;
@@ -80,7 +77,7 @@ foam.CLASS({
             fill: this.iconColor
           })
         };
-        return { class: 'foam.u2.tag.CircleIndicator', ...props };
+        return { class: 'foam.u2.tag.CircleIndicator', ...props }
       }
     },
     {
@@ -106,19 +103,6 @@ foam.CLASS({
       name: 'isVisible',
       value: true,
       documentation: 'Can be used to hide the view in case this.content is not populated synchronously'
-    },
-    {
-      name: 'dismissable',
-      value: false
-    },
-    {
-      name: 'dismissId',
-    },
-    {
-      name: 'dismissed',
-      expression: function(dismissId) {
-        return dismissId && localStorage.getItem(dismissId);
-      }
     }
   ],
 
@@ -142,24 +126,13 @@ foam.CLASS({
     ^content {
       flex: 1;
     }
-    ^close-icon {
-      position: absolute;
-      right: 0.5em;
-      top: 0.5em;
-    }
-    ^close-icon > ^iconButton{
-      width: 2rem;
-      height: 2rem;
-      padding: 0;
-    }
   `,
 
   methods: [
-    function render() {
+    function init() {
       var self = this;
       this
-        .show(this.isVisible$ && ! this.dismissed)
-        .start()
+        .show(this.isVisible$)
         .addClass(this.myClass('outer'))
         .style({ 'border-color': this.accentColor$ })
         .call(function() {
@@ -170,38 +143,12 @@ foam.CLASS({
             .attrs({ src: self.icon$ })
             .end();
           } else {
-            this.tag(self.icon);
+            this.tag(self.icon)
           }
         })
         .startContext({ controllerMode: this.ControllerMode.VIEW })
-//          .start('', null, this.content$).addClass(this.myClass('content')).end()
-        .start('', null, this.content$).addClass(this.myClass('content')).add(this.message).end()
-        .endContext()
-        .callIf(this.dismissable, function() {
-          this.startContext({ data: this, obj: self })
-            .start()
-              .addClass(this.myClass('close-icon'))
-              .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
-              .addClass(self.myClass('iconButton'))
-              .end()
-            .end()
-            .endContext();
-        })
-        .end();
-    }
-  ],
-
-  actions: [
-    {
-      name: 'removeNotification',
-      themeIcon: 'close',
-      icon: 'images/ic-cancelblack.svg',
-      code: function(X) {
-        if ( X.obj.dismissId ) {
-          localStorage.setItem(X.obj.dismissId, X.obj.dismissId);
-        }
-        this.remove();
-      }
+          .start('', null, this.content$).addClass(this.myClass('content')).end()
+        .endContext();
     }
   ]
 });
