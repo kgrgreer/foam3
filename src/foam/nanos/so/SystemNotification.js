@@ -55,7 +55,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'dismissable',
+      name: 'dismissible',
       value: false
     },
     {

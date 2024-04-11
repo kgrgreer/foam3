@@ -63,7 +63,7 @@ foam.CLASS({
           if ( ! sn.dismissed ) {
             e.start(this.InlineNotificationMessage, { type: sn.severity.name })
               .add(sn.message)
-              .callIf(sn.dismissable, function() {
+              .callIf(sn.dismissible, function() {
                 this.startContext({ data: this, sn: sn })
                   .addClass(this.myClass('close-icon'))
                   .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
