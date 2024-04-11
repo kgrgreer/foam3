@@ -18,12 +18,24 @@ foam.CLASS({
   package: 'foam.nanos.se',
   name: 'SystemNotification',
 
+  javaImports: [
+    'java.util.concurrent.ThreadLocalRandom',
+    'java.util.Random',
+    'java.util.UUID'
+  ],
+
   properties: [
     {
       documentation: 'set to the id of the encapsulating SystemEvent. Used to managed isDismissed in localStorage on the client.',
-      class: 'Reference',
-      of: 'foam.nanos.se.SystemEvent',
+      class: 'String',
       name: 'id',
+      factory: function() {
+        return foam.uuid.randomGUID();
+      },
+      javaFactory: `
+        Random r = ThreadLocalRandom.current();
+        return new UUID(r.nextLong(), r.nextLong()).toString();
+      `,
       visibility: 'HIDDEN'
     },
     {
@@ -43,13 +55,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isDismissable',
-      value: true
-    },
-    {
-      // Client side only, stored in local storage
-      class: 'Boolean',
-      name: 'isDismissed',
+      name: 'dismissable',
       value: false
     }
   ]

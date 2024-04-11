@@ -71,9 +71,6 @@ foam.CLASS({
                  ! key.equals(sn.getKey()) ) {
               continue;
             }
-            // REVIEW: regarding 'id', assuming one per SystemEvent
-            // used for trackign dismissal in localStorage
-            sn.setId(event.getId());
             notifications.add(sn);
           }
         }

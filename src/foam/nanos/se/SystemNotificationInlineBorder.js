@@ -46,7 +46,13 @@ foam.CLASS({
       .add(this.slot(function(systemNotifications) {
         let e = this.E().style({ display: 'contents' });
         systemNotifications.forEach(sn => {
-          e.start(this.InlineNotificationMessage, { type: sn.severity.name }).add(sn.message).end();
+          e.start(this.InlineNotificationMessage, {
+            message: sn.message,
+            type: sn.severity.name,
+            dismissable: sn.dismissable,
+            dismissId: sn.id
+          // }).add(sn.message).end();
+          }).end();
         });
         return e;
       }));
