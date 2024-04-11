@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.se',
-  name: 'SystemNotificationInlineBorder',
+  name: 'SystemNotificationBorder',
   extends: 'foam.u2.Element',
   documentation: `
     A message border that renders at the bottom of the child view. Displaying SystemNotification messages in an InlineNotificationMessage
