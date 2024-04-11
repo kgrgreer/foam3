@@ -479,6 +479,11 @@ foam.CLASS({
     },
     PROJECT_RULES: [
       {
+        name: 'Test',
+        keywords: [ ],
+        paths: [ 'demos/m0' ]
+      },
+      {
         name: 'Intuit',
         keywords: [ 'intuit' ],
         paths: [ 'intuit' ]
@@ -486,17 +491,23 @@ foam.CLASS({
       {
         name: 'NBP',
         keywords: [ 'nbp' ],
-        paths: [ 'nbp' ]
+        paths: [ 'nbp', 'transfer' ]
       },
       {
-        name: 'Hybrid-Blockchain',
+       name: 'FOOBAR',
+        keywords: [ 'genjava', 'genjs', 'pomsplit', 'build', 'Maker', 'pom' ],
+        paths: [ 'tools', 'build', 'foam.js', 'xsd', 'src/foam/xsd' ]
+      },
+      {
+        name: 'NANOS',
+//        name: 'Hybrid-Blockchain',
         keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
         paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx', 'nanopay/fx' ]
       },
       {
         name: 'NANOS',
-        keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
-        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar', 'doc/templates', 'DocBrowser', 'foam/doc', 'Outputter' ]
+        keywords: [ 'memento', 'graphbuilder', 'wizardlet' ],
+        paths: [ 'analytic', 'foam/graph', 'foam/foobar', 'doc/templates', 'DocBrowser', 'foam/doc', 'Outputter' ]
       },
       {
 //        name: 'Core',
@@ -515,12 +526,8 @@ foam.CLASS({
         paths: [ 'u2', 'xsd', 'comics', 'foamdev', 'demo', 'layout', 'google/flow', 'phonecat' ]
       },
       {
-       name: 'FOOBAR',
-        keywords: [ 'build', 'Maker', 'pom' ],
-        paths: [ 'tools', 'build', 'foam.js' ]
-      },
-      {
-        name: 'Hybrid-Blockchain',
+        name: 'NANOS',
+//        name: 'Hybrid-Blockchain',
         keywords: [ 'medusa', 'dao', 'json', 'mlang', 'docker' ],
         paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF', 'docker', 'Docker', 'iso20022' ]
       },
@@ -531,7 +538,8 @@ foam.CLASS({
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Hybrid-Blockchain',
+        name: 'NANOS',
+//        name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
       },
@@ -549,7 +557,7 @@ foam.CLASS({
       {
         name: 'Test',
         keywords: [ 'test', 'tests' ],
-        paths: [ 'test', 'tests' ]
+        paths: [ 'test', 'tests', 'demos/m0' ]
       },
       {
         name: 'Application',
