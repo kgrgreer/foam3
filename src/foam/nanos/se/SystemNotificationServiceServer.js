@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.DESC',
     'static foam.mlang.MLang.EQ',
@@ -39,6 +40,12 @@ foam.CLASS({
     {
       name: 'getSystemNotifications',
       javaCode: `
+      TranslationService translationService = (TranslationService) x.get("translationService");
+      String locale = (String) x.get("locale.language");
+      if ( locale == null ) {
+        locale = "en";
+      }
+
       List<SystemEvent> events = (List) ((ArraySink) ((DAO) getX().get("systemEventDAO"))
         .where(AND(
           EQ(SystemEvent.ENABLED, true),
@@ -70,6 +77,9 @@ foam.CLASS({
             if ( key != null &&
                  ! key.equals(sn.getKey()) ) {
               continue;
+            }
+            if ( translationService != null ) {
+              sn.setMessage(translationService.getTranslation(locale, sn.getMessage(), sn.getMessage()));
             }
             notifications.add(sn);
           }
