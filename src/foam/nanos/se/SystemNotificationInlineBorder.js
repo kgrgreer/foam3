@@ -25,6 +25,18 @@ foam.CLASS({
       flex-direction: column;
       gap: 1rem;
     }
+    ^close-icon {
+      position: absolute;
+      right: 0.5em;
+      top: 0.5em;
+      padding: 0;
+    }
+    ^iconButton {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      float: right;
+    }
   `,
   properties: [
     {
@@ -41,22 +53,44 @@ foam.CLASS({
     async function init() {
       this.systemNotifications = await this.systemNotificationService.getSystemNotifications(null, this.key);
     },
+
     function render() {
+      var self = this;
       this.addClass().tag('', {}, this.futureContent_$)
       .add(this.slot(function(systemNotifications) {
         let e = this.E().style({ display: 'contents' });
         systemNotifications.forEach(sn => {
-          e.start(this.InlineNotificationMessage, {
-            message: sn.message,
-            type: sn.severity.name,
-            dismissable: sn.dismissable,
-            dismissId: sn.id
-          // }).add(sn.message).end();
-          }).end();
+          if ( ! sn.dismissed ) {
+            e.start(this.InlineNotificationMessage, { type: sn.severity.name })
+              .add(sn.message)
+              .callIf(sn.dismissable, function() {
+                this.startContext({ data: this, sn: sn })
+                  .addClass(this.myClass('close-icon'))
+                  .start(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                    .addClass(self.myClass('iconButton'))
+                  .end()
+                .endContext();
+              })
+              .end();
+          }
         });
         return e;
       }));
       this.content = this.futureContent_;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'removeNotification',
+      themeIcon: 'close',
+      icon: 'images/ic-cancelblack.svg',
+      code: function(X) {
+        if ( X.sn.id) {
+          localStorage.setItem(X.sn.id, X.sn.id);
+        }
+        this.remove();
+      }
     }
   ]
 });

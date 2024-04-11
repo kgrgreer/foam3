@@ -57,6 +57,25 @@ foam.CLASS({
       class: 'Boolean',
       name: 'dismissable',
       value: false
+    },
+    {
+      name: 'dismissId',
+      expression: function(key, id) {
+        var val = this.cls_.name;
+        if ( key ) val += "-" + key;
+        val += "-" + id;
+        return val;
+      },
+      transient: true,
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'dismissed',
+      expression: function(dismissId) {
+        return dismissId && localStorage.getItem(dismissId);
+      },
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ]
 });
