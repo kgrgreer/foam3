@@ -1,6 +1,6 @@
 p({
   class: "foam.nanos.so.SystemOutage",
-  id: "systemevent-messagetask-test",
+  id: "systemoutage-messagetask-test",
   name: "messagetask test",
   description: "messagetask test",
   tasks: [

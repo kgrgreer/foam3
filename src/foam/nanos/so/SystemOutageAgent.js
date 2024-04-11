@@ -36,8 +36,8 @@ foam.CLASS({
       javaCode: `
     var currTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 
-    DAO systemEventDAO = (DAO) x.get("systemEventDAO");
-    List<SystemOutage> activate = ((ArraySink) systemEventDAO
+    DAO systemOutageDAO = (DAO) x.get("systemOutageDAO");
+    List<SystemOutage> activate = ((ArraySink) systemOutageDAO
       .where(
         AND(
           EQ(SystemOutage.ENABLED, true),
@@ -48,20 +48,20 @@ foam.CLASS({
       .select(new ArraySink()))
       .getArray();
 
-    for ( SystemOutage event : activate ) {
-      event = (SystemOutage) event.fclone();
-      event.setActive(true);
-      systemEventDAO.put(event);
+    for ( SystemOutage outage : activate ) {
+      outage = (SystemOutage) outage.fclone();
+      outage.setActive(true);
+      systemOutageDAO.put(outage);
       try {
-        event.activate(x);
+        outage.activate(x);
       } catch (RuntimeException e) {
-        Loggers.logger(x, this).error("Failed to activate System Event", event.getName());
-        event.setActive(false);
-        systemEventDAO.put(event);
+        Loggers.logger(x, this).error("Failed to activate System Outage", outage.getName());
+        outage.setActive(false);
+        systemOutageDAO.put(outage);
       }
     }
 
-    List<SystemOutage> deactivate = ((ArraySink) systemEventDAO
+    List<SystemOutage> deactivate = ((ArraySink) systemOutageDAO
       .where(
         AND(
           EQ(SystemOutage.ENABLED, true),
@@ -73,15 +73,15 @@ foam.CLASS({
       .select(new ArraySink()))
       .getArray();
 
-    for ( SystemOutage event : deactivate ) {
-      event = (SystemOutage) event.fclone();
-      event.setActive(false);
-      systemEventDAO.put(event);
+    for ( SystemOutage outage : deactivate ) {
+      outage = (SystemOutage) outage.fclone();
+      outage.setActive(false);
+      systemOutageDAO.put(outage);
       try {
-        event.deactivate(x);
+        outage.deactivate(x);
       } catch (RuntimeException e) {
-        Loggers.logger(x, this).error("Failed to deactivate System Event", event.getName());
-        event.setActive(true);
+        Loggers.logger(x, this).error("Failed to deactivate System Outage", outage.getName());
+        outage.setActive(true);
       }
     }
      `

@@ -50,7 +50,7 @@ foam.CLASS({
           locale = "en";
         }
 
-        List<SystemOutage> events = (List) ((ArraySink) ((DAO) getX().get("systemEventDAO"))
+        List<SystemOutage> outages = (List) ((ArraySink) ((DAO) getX().get("systemOutageDAO"))
           .where(AND(
             EQ(SystemOutage.ENABLED, true),
             EQ(SystemOutage.ACTIVE, true)
@@ -59,9 +59,9 @@ foam.CLASS({
           .select(new ArraySink()))
           .getArray();
         List<SystemNotification> notifications = new ArrayList();
-        for ( SystemOutage event : events ) {
+        for ( SystemOutage outage : outages ) {
           Theme theme = (Theme) x.get("theme");
-          for ( SystemOutageTask task : event.getTasks() ) {
+          for ( SystemOutageTask task : outage.getTasks() ) {
             if ( task instanceof SystemNotificationTask ) {
               SystemNotificationTask snt = (SystemNotificationTask) task;
               if ( snt.getThemes() != null &&

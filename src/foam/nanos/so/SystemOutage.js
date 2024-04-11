@@ -84,13 +84,13 @@ foam.CLASS({
       name: 'activate',
       args: 'X x',
       type: 'Void',
-      documentation: 'execute activate systemeventtasks',
+      documentation: 'execute activate systemoutagetasks',
       javaCode: `
         for ( var task : getTasks() ) {
           try {
             task.activate(x);
           } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to activate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+            Loggers.logger(x, this).error("Failed to activate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
           }
         }
       `
@@ -99,13 +99,13 @@ foam.CLASS({
       name: 'deactivate',
       args: 'X x',
       type: 'Void',
-      documentation: 'execute activate systemeventtasks',
+      documentation: 'execute activate systemoutagetasks',
       javaCode: `
         for ( var task : getTasks() ) {
           try {
             task.deactivate(x);
           } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to deactivate System Event: " + task.getClass().getSimpleName(), "error : " + e);
+            Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
           }
         }
       `
