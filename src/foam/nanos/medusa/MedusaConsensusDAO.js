@@ -537,7 +537,8 @@ This is the heart of Medusa.`,
                 }
               } else {
                 PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "mdao:overlay,nu,transient");
-                nu = nu.overlay(tran);
+                MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+                nu = entrySupport.overlay(nu, tran);
                 pmOverlay.log(x);
               }
             }
