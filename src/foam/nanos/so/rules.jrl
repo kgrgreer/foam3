@@ -8,10 +8,10 @@ p({
   "operation":3,
   "after":true,
   "predicate": {
-    "class":"foam.nanos.se.task.SystemOutageTaskInitPredicate"
+    "class":"foam.nanos.se.task.TaskInitPredicate"
   },
   "action":{
-    "class":"foam.nanos.se.task.SystemOutageTaskInitRuleAction"
+    "class":"foam.nanos.se.task.TaskInitRuleAction"
   },
   "enabled":true,
   "lifecycleState":1
@@ -54,7 +54,7 @@ p({
     "class":"foam.nanos.so.task.TaskRemovedPredicate"
   },
   "action":{
-    "class":"foam.nanos.so.task.CleanUpTaskRuleAction"
+    "class":"foam.nanos.so.task.TaskCleanUpRuleAction"
   },
   "enabled":true,
   "lifecycleState":1
@@ -69,7 +69,7 @@ p({
   "daoKey":"systemOutageDAO",
   "operation":2,
   "action":{
-    "class":"foam.nanos.so.task.CleanUpTaskRuleAction"
+    "class":"foam.nanos.so.task.TaskCleanUpRuleAction"
   },
   "enabled":true,
   "lifecycleState":1
