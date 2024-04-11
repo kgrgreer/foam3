@@ -27,13 +27,15 @@ foam.INTERFACE({
     {
       class: 'String',
       name: 'id',
-      order: -20
+      order: -20,
+      visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.so.SystemOutage',
       name: 'systemOutage',
-      order: -10
+      order: -10,
+      hidden: true
     }
   ],
 
