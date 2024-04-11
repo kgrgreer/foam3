@@ -20,10 +20,12 @@ foam.POM({
   ],
   projects: [
     { name: "app/pom"},
+    { name: "er/pom"},
     { name: "crunch/pom"},
     { name: "jetty/pom"},
     { name: "ruler/pom"},
-    { name: "referral/pom" }
+    { name: "referral/pom" },
+    { name: "so/pom"}
   ],
   files: [
     { name: "client/ClientBuilder",                                                       flags: "js" },
@@ -45,14 +47,6 @@ foam.POM({
     { name: "logger/StdoutLoggerDAO",                                                     flags: "js|java" },
     { name: "logger/benchmark/LoggerBenchmark",                                           flags: "js|java" },
     { name: "logger/LoggerUserInfo",                                                      flags: "js|java" },
-    { name: "er/EventRecord",                                                             flags: "js|java" },
-    { name: "er/EventRecordAlarmRuleAction",                                              flags: "js|java" },
-    { name: "er/EventRecordCitationView",                                                 flags: "js" },
-    { name: "er/EventRecordDAO",                                                          flags: "js|java" },
-    { name: "er/EventRecordResponseDAO",                                                  flags: "js|java" },
-    { name: "er/EventRecordNotificationRuleAction",                                       flags: "js|java" },
-    { name: "er/EventRecordResponse",                                                     flags: "js|java" },
-    { name: "er/test/EventRecordTest",                                                    flags: "js|java" },
     { name: "fs/File",                                                                    flags: "js|java" },
     { name: "fs/FileLabel",                                                               flags: "js|java" },
     { name: "fs/FileType",                                                                flags: "js|java" },

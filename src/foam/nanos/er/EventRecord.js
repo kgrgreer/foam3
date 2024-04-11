@@ -232,7 +232,6 @@ foam.CLASS({
       name: 'raiseAlarm',
       class: 'Boolean',
       value: true,
-      storageTransient: true
     },
     {
       name: 'alarm',
@@ -245,6 +244,11 @@ foam.CLASS({
         'alarm',
         'admin.alarm'
       ]
+    },
+    {
+      name: 'systemOutage',
+      class: 'Reference',
+      of: 'foam.nanos.so.SystemOutage'
     }
   ],
 
