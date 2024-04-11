@@ -112,7 +112,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    ^ table { font-size: smaller; }
+    ^ table { font-size: smaller; margin-right: 20px; }
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
@@ -138,7 +138,7 @@ foam.CLASS({
         }
 
         if ( this.data.showSalaries ) {
-          a.push('$' + (count/totalCount * salary).toLocaleString());
+          a.push('$' + Math.round(count/totalCount * salary).toLocaleString());
 //          a.push('$' + (salary/count).toFixed(0).toLocaleString());
         }
       }
@@ -216,7 +216,7 @@ foam.CLASS({
             }).
 
             // Totals
-            start('th').call(function() {
+            start('th').attr('nowrap', true).call(function() {
               self.cell(this, total, allTotal, salaryTotal);
             }).end().
           end();
@@ -232,7 +232,7 @@ foam.CLASS({
               self.cell(this, c, allCounts[i], monthlySalaryTotal);
             }).end();
           }).
-          start('th').call(function() {
+          start('th').attr('nowrap', true).call(function() {
             self.cell(this, self.data.filteredCommits.length, self.data.commits.length, totalSalary);
           }).end().
         end().
