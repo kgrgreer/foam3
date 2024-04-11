@@ -24,28 +24,14 @@ foam.CLASS({
 
   documentation: `
     A predicate for checking if tasks are removed from system outage.
-    Set 'of' property to check for specific task class
   `,
 
   javaImports: [
     'foam.core.XLocator',
     'foam.nanos.so.SystemOutage',
-    'foam.nanos.so.SystemOutageTask',
-    'java.util.Arrays',
 
-    'static foam.mlang.MLang.INSTANCE_OF',
     'static foam.mlang.MLang.NEW_OBJ',
     'static foam.mlang.MLang.OLD_OBJ'
-  ],
-
-  properties: [
-    {
-      class: 'Class',
-      name: 'of',
-      javaFactory: `
-        return SystemOutage.getOwnClassInfo();
-      `
-    }
   ],
 
   methods: [
@@ -55,11 +41,7 @@ foam.CLASS({
         SystemOutage newSo = (SystemOutage) NEW_OBJ.f(obj);
         SystemOutage oldSo = (SystemOutage) OLD_OBJ.f(obj);
 
-        long numRemovedTasks = Arrays.asList(oldSo.findNonOverlappingTasks(XLocator.get(), newSo))
-          .stream()
-          .filter(t -> INSTANCE_OF(getOf()).f(t))
-          .count();
-
+        long numRemovedTasks = oldSo.findNonOverlappingTasks(XLocator.get(), newSo).length;
         return numRemovedTasks > 0;
       `
     }
