@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.wizard.views',
   name: 'ReferenceWizardletView',
   extends: 'foam.u2.View',
-  documentation: `A view for wizardlets that need to populate an object from a DAO, 
+  documentation: `A view for wizardlets that need to populate an object from a DAO,
                   Wraps RichChoiceView and modifies the data passed to the wizardlet to be the full object instead of the id
   `,
 
@@ -25,12 +25,18 @@ foam.CLASS({
       class: 'Map',
       name: 'viewArgs',
       documentation: 'Map of arguments passed to RichChoiceView'
-    }
+    },
+    'prop'
   ],
   methods: [
     function render() {
       this
-        .tag(this.RichChoiceView, { ...this.viewArgs, data$: this.selectedID$, fullObject_$: this.data$ })
+        .tag(this.RichChoiceView, { ...this.viewArgs, prop: this.prop, data$: this.selectedID$, fullObject_$: this.data$ })
+    },
+
+    function fromProperty(p) {
+      this.prop = p;
     }
   ]
 });
+
