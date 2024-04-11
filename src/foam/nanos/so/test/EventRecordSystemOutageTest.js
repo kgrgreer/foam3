@@ -5,11 +5,11 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.se.test',
-  name: 'EventRecordSystemEventTest',
+  package: 'foam.nanos.so.test',
+  name: 'EventRecordSystemOutageTest',
   extends: 'foam.nanos.test.Test',
 
-  documentation: 'Create EventRecord with SytemEvent, change EventRecord severity, test SystemEvent activates, deactivates.',
+  documentation: 'Create EventRecord with SytemEvent, change EventRecord severity, test SystemOutage activates, deactivates.',
 
   javaImports: [
     'foam.core.X',
@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.cron.Cron',
     'foam.nanos.er.*',
-    'foam.nanos.se.*'
+    'foam.nanos.so.*'
   ],
 
   methods: [
@@ -26,7 +26,7 @@ foam.CLASS({
       args: 'X x',
       javaCode: `
       DAO cronDAO = (DAO) x.get("cronDAO");
-      Cron cron = (Cron) cronDAO.find("SystemEvent").fclone();
+      Cron cron = (Cron) cronDAO.find("SystemOutage").fclone();
       cron.setEnabled(false);
       cronDAO.put(cron);
       `
@@ -41,36 +41,36 @@ foam.CLASS({
       DAO erDAO = (DAO) x.get("eventRecordDAO");
 
       // explicity run the agent the cron would normally run.
-      SystemEventAgent agent = new SystemEventAgent(x);
+      SystemOutageAgent agent = new SystemOutageAgent(x);
 
-      SystemEvent se = new SystemEvent(x);
+      SystemOutage se = new SystemOutage(x);
       se.setName(this.getClass().getSimpleName());
       se.setEnabled(true);
       se.setActive(false);
       se.setStartTime(new java.util.Date(System.currentTimeMillis() + 36000));
-      se = (SystemEvent) seDAO.put(se);
-      test ( ! se.getActive(), "SystemEvent not active");
+      se = (SystemOutage) seDAO.put(se);
+      test ( ! se.getActive(), "SystemOutage not active");
 
       EventRecord er = new EventRecord(x, this, "test");
-      er.setSystemEvent(se.getId());
+      er.setSystemOutage(se.getId());
 
       er.setSeverity(LogLevel.INFO);
       er = (EventRecord) erDAO.put(er).fclone();
       agent.execute(x);
-      se = (SystemEvent) seDAO.find(se.getId());
-      test ( ! se.getActive(), "EventRecord INFO->INFO, SystemEvent not active");
+      se = (SystemOutage) seDAO.find(se.getId());
+      test ( ! se.getActive(), "EventRecord INFO->INFO, SystemOutage not active");
 
       er.setSeverity(LogLevel.WARN);
       er = (EventRecord) erDAO.put(er).fclone();
       agent.execute(x);
-      se = (SystemEvent) seDAO.find(se.getId());
-      test ( se.getActive(), "EventRecord INFO->WARN, SystemEvent active");
+      se = (SystemOutage) seDAO.find(se.getId());
+      test ( se.getActive(), "EventRecord INFO->WARN, SystemOutage active");
 
       er.setSeverity(LogLevel.INFO);
       er = (EventRecord) erDAO.put(er).fclone();
       agent.execute(x);
-      se = (SystemEvent) seDAO.find(se.getId());
-      test ( ! se.getActive(), "EventRecord WARN->INFO, SystemEvent not active");
+      se = (SystemOutage) seDAO.find(se.getId());
+      test ( ! se.getActive(), "EventRecord WARN->INFO, SystemOutage not active");
     } finally {
       teardown(x);
     }
@@ -81,7 +81,7 @@ foam.CLASS({
       args: 'X x',
       javaCode: `
       DAO cronDAO = (DAO) x.get("cronDAO");
-      Cron cron = (Cron) cronDAO.find("SystemEvent").fclone();
+      Cron cron = (Cron) cronDAO.find("SystemOutage").fclone();
       cron.setEnabled(true);
       cronDAO.put(cron);
       `

@@ -1,0 +1,7 @@
+p({
+  class: "foam.strategy.StrategyReference",
+  id: "foam_nanos.so_SystemNotificationTask",
+  desiredModelId: "foam.nanos.so.SystemOutageTask",
+  strategy: "foam.nanos.so.SystemNotificationTask",
+  label: "System Notification"
+})

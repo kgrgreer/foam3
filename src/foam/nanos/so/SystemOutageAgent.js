@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 foam.CLASS({
-  package: 'foam.nanos.se',
-  name: 'SystemEventAgent',
+  package: 'foam.nanos.so',
+  name: 'SystemOutageAgent',
   implements: [ 'foam.core.ContextAgent' ],
 
   javaImports: [
@@ -24,7 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.logger.Loggers',
-    'foam.nanos.se.SystemEvent',
+    'foam.nanos.so.SystemOutage',
     'java.util.Calendar',
     'java.util.List',
     'java.util.TimeZone'
@@ -37,19 +37,19 @@ foam.CLASS({
     var currTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
 
     DAO systemEventDAO = (DAO) x.get("systemEventDAO");
-    List<SystemEvent> activate = ((ArraySink) systemEventDAO
+    List<SystemOutage> activate = ((ArraySink) systemEventDAO
       .where(
         AND(
-          EQ(SystemEvent.ENABLED, true),
-          EQ(SystemEvent.ACTIVE, false),
-          LTE(SystemEvent.START_TIME, currTime)
+          EQ(SystemOutage.ENABLED, true),
+          EQ(SystemOutage.ACTIVE, false),
+          LTE(SystemOutage.START_TIME, currTime)
         )
       )
       .select(new ArraySink()))
       .getArray();
 
-    for ( SystemEvent event : activate ) {
-      event = (SystemEvent) event.fclone();
+    for ( SystemOutage event : activate ) {
+      event = (SystemOutage) event.fclone();
       event.setActive(true);
       systemEventDAO.put(event);
       try {
@@ -61,20 +61,20 @@ foam.CLASS({
       }
     }
 
-    List<SystemEvent> deactivate = ((ArraySink) systemEventDAO
+    List<SystemOutage> deactivate = ((ArraySink) systemEventDAO
       .where(
         AND(
-          EQ(SystemEvent.ENABLED, true),
-          EQ(SystemEvent.ACTIVE, true),
-          GT(SystemEvent.END_TIME, SystemEvent.START_TIME),
-          LTE(SystemEvent.END_TIME, currTime)
+          EQ(SystemOutage.ENABLED, true),
+          EQ(SystemOutage.ACTIVE, true),
+          GT(SystemOutage.END_TIME, SystemOutage.START_TIME),
+          LTE(SystemOutage.END_TIME, currTime)
         )
       )
       .select(new ArraySink()))
       .getArray();
 
-    for ( SystemEvent event : deactivate ) {
-      event = (SystemEvent) event.fclone();
+    for ( SystemOutage event : deactivate ) {
+      event = (SystemOutage) event.fclone();
       event.setActive(false);
       systemEventDAO.put(event);
       try {

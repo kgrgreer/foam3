@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.se',
+  package: 'foam.nanos.so',
   name: 'SystemNotificationBorder',
   extends: 'foam.u2.Element',
   documentation: `
@@ -13,7 +13,7 @@ foam.CLASS({
   `,
   requires: [
     'foam.log.LogLevel',
-    'foam.nanos.se.SystemNotification',
+    'foam.nanos.so.SystemNotification',
     'foam.u2.dialog.InlineNotificationMessage'
   ],
   imports: [
@@ -45,7 +45,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.nanos.se.SystemNotification',
+      of: 'foam.nanos.so.SystemNotification',
       name: 'systemNotifications'
     }
   ],

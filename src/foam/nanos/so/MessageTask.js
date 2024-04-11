@@ -16,9 +16,9 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.se',
+  package: 'foam.nanos.so',
   name: 'MessageTask',
-  implements: ['foam.nanos.se.SystemEventTask'],
+  implements: ['foam.nanos.so.SystemOutageTask'],
 
   javaImports: [
     'foam.core.X',

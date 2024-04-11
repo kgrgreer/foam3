@@ -5,13 +5,13 @@
  */
 
 foam.POM({
-  name: "se",
+  name: "so",
   files: [
-    { name: "SystemEvent",
+    { name: "SystemOutage",
       flags: "js|java" },
-    { name: "SystemEventAgent",
+    { name: "SystemOutageAgent",
       flags: "js|java" },
-    { name: "SystemEventTask",
+    { name: "SystemOutageTask",
       flags: "js|java" },
     { name: "SystemNotification",
       flags: "java|js" },
@@ -27,9 +27,9 @@ foam.POM({
       flags: "java|js" },
     { name: "MessageTask",
       flags: "js|java" },
-    { name: "test/EventRecordSystemEventTest",
+    { name: "test/EventRecordSystemOutageTest",
       flags: "js|java" },
-    { name: "test/SystemEventSystemNotificationThemeTest",
+    { name: "test/SystemOutageSystemNotificationThemeTest",
       flags: "js|java" }
   ]
 })

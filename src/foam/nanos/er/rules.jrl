@@ -39,19 +39,19 @@ p({
 
 p({
   class: "foam.nanos.ruler.Rule",
-  id: "foam-nanos-er-EventRecordSystemEventRule",
-  name: "foam-nanos-er-EventRecordSystemEventRule",
+  id: "foam-nanos-er-EventRecordSystemOutageRule",
+  name: "foam-nanos-er-EventRecordSystemOutageRule",
   ruleGroup: "EventRecord",
   daoKey: "eventRecordDAO",
   after: true,
   operation: 3,
   predicate:{
     class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
-    query: 'n.systemEvent exists && (o !exists || o.severity != n.severity)'
+    query: 'n.systemOutage exists && (o !exists || o.severity != n.severity)'
   },
   lifecycleState:1,
   action: {
-    class: "foam.nanos.er.EventRecordSystemEventRuleAction"
+    class: "foam.nanos.er.EventRecordSystemOutageRuleAction"
   }
 })
 // predicate:{

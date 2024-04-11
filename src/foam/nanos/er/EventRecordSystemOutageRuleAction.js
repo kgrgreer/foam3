@@ -6,10 +6,10 @@
 
 foam.CLASS({
   package: 'foam.nanos.er',
-  name: 'EventRecordSystemEventRuleAction',
+  name: 'EventRecordSystemOutageRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
-  documentation: `Manage a SystemEvent based on EventRecord severity`,
+  documentation: `Manage a SystemOutage based on EventRecord severity`,
 
   javaImports: [
     'foam.core.X',
@@ -18,7 +18,7 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
-    'foam.nanos.se.SystemEvent'
+    'foam.nanos.so.SystemOutage'
   ],
 
   methods: [
@@ -46,21 +46,21 @@ foam.CLASS({
       }
       if ( raise || lower ) {
         DAO dao = ((DAO) ruler.getX().get("systemEventDAO"));
-        SystemEvent se = (SystemEvent) dao.find(
+        SystemOutage se = (SystemOutage) dao.find(
           AND(
-            EQ(SystemEvent.ENABLED, true),
-            EQ(SystemEvent.ID, er.getSystemEvent())
+            EQ(SystemOutage.ENABLED, true),
+            EQ(SystemOutage.ID, er.getSystemOutage())
           ));
         if ( se == null ) {
-          Loggers.logger(x, this).error("SystemEvent not found", "er", er.getId(), "se", er.getSystemEvent());
+          Loggers.logger(x, this).error("SystemOutage not found", "er", er.getId(), "se", er.getSystemOutage());
         } else {
-          se = (SystemEvent) se.fclone();
+          se = (SystemOutage) se.fclone();
           if ( raise ) {
             se.setStartTime(new java.util.Date());
-            Loggers.logger(x, this).info("Toggled SystemEvent",se.getId(), "enabled");
+            Loggers.logger(x, this).info("Toggled SystemOutage",se.getId(), "enabled");
           } else {
             se.setEndTime(new java.util.Date());
-            Loggers.logger(x, this).info("Toggled SystemEvent", se.getId(), "disable");
+            Loggers.logger(x, this).info("Toggled SystemOutage", se.getId(), "disable");
           }
           dao.put(se);
           // cron will run the agent.

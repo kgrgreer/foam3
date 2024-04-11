@@ -1,8 +1,0 @@
-<h1>SystemEvent</h1>
-<p>The SytemEvent component is intended to model the actions taken when a system wide event has occured, or is occuring, such as maintenance event, or third party end-point failing. </p>
-
-<h2>SystemNotification</h2>
-<p>A SytemEvent with a <b>task</b> of type <b>SystemNotification</b> will display the <b>SystemNotification.message</b> in the top banner/border</p>
-
-<h2>EventRecord Integration</h2>
-<p>If an EventRecord has a <b>SystemEvent</b> reference, then the <b>EventRecord</b> will <b>activate</b> and <b>deactivate</b> the <b>SystemEvent</b> as the <b>EventRecord</b> transitions from severity <b>INFO</b> to/from <b>WARN</b> or <b>ERROR</b>.</p>

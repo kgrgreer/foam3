@@ -1,8 +1,8 @@
 
 p({
   "class": "foam.nanos.cron.Cron",
-  "id": "SystemEvent",
-  "description": "Activate/deactivate SystemEvents",
+  "id": "SystemOutage",
+  "description": "Activate/deactivate SystemOutages",
   "clusterable": true,
   "enabled": true,
   "schedule": {
@@ -13,7 +13,8 @@ p({
     }
   },
   "code": """
-    new foam.nanos.se.SystemEventAgent(x).execute(x);
+    new foam.nanos.so.SystemOutageAgent(x).execute(x);
     print("done");
   """
 })
+

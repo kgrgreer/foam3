@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.se',
-  name: 'SystemEvent',
+  package: 'foam.nanos.so',
+  name: 'SystemOutage',
 
   mixins: [
     'foam.nanos.auth.CreatedAware',
@@ -66,14 +66,14 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'foam.nanos.se.SystemEventTask',
+      of: 'foam.nanos.so.SystemOutageTask',
       name: 'tasks',
       view: {
         class: 'foam.u2.view.FObjectArrayView',
-        of: 'foam.nanos.se.SystemEventTask',
+        of: 'foam.nanos.so.SystemOutageTask',
         valueView: {
           class: 'foam.u2.view.FObjectView',
-          of: 'foam.nanos.se.SystemEventTask'
+          of: 'foam.nanos.so.SystemOutageTask'
         }
       }
     }

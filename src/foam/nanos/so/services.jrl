@@ -5,7 +5,7 @@ p({
   serve: true,
   serviceScript: """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.se.SystemEvent.getOwnClassInfo())
+      .setOf(foam.nanos.so.SystemOutage.getOwnClassInfo())
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("systemEvents")
@@ -13,7 +13,7 @@ p({
   """,
   client: """
     {
-      "of": "foam.nanos.se.SystemEvent"
+      "of": "foam.nanos.so.SystemOutage"
     }
    """
 })
@@ -23,11 +23,11 @@ p({
   "name": "systemNotificationService",
   "serve": true,
   "authenticate": false,
-  "boxClass": "foam.nanos.se.SystemNotificationServiceSkeleton",
-  "serviceClass": "foam.nanos.se.SystemNotificationServiceServer",
+  "boxClass": "foam.nanos.so.SystemNotificationServiceSkeleton",
+  "serviceClass": "foam.nanos.so.SystemNotificationServiceServer",
   "client":"""
     {
-      "class":"foam.nanos.se.SystemNotificationServiceClient",
+      "class":"foam.nanos.so.SystemNotificationServiceClient",
       "delegate": {
         "class":"foam.box.SessionClientBox",
         "delegate": {

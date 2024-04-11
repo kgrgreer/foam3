@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 foam.CLASS({
-  package: 'foam.nanos.se',
+  package: 'foam.nanos.so',
   name: 'SystemNotification',
 
   javaImports: [
@@ -26,7 +26,7 @@ foam.CLASS({
 
   properties: [
     {
-      documentation: 'set to the id of the encapsulating SystemEvent. Used to managed isDismissed in localStorage on the client.',
+      documentation: 'set to the id of the encapsulating SystemOutage. Used to managed isDismissed in localStorage on the client.',
       class: 'String',
       name: 'id',
       factory: function() {

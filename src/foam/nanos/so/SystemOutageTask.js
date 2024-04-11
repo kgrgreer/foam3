@@ -15,17 +15,22 @@
  * limitations under the License.
  */
 
-foam.CLASS({
-  package: 'foam.nanos.se',
-  name: 'SystemNotificationServiceClient',
+foam.INTERFACE({
+  package: 'foam.nanos.so',
+  name: 'SystemOutageTask',
 
-  implements: [ 'foam.nanos.se.SystemNotificationService' ],
+  javaImports: [
+    'foam.core.X'
+  ],
 
-  properties: [
+  methods: [
     {
-      class: 'Stub',
-      of: 'foam.nanos.se.SystemNotificationService',
-      name: 'delegate'
+      name: 'activate',
+      args: 'X x'
+    },
+    {
+      name: 'deactivate',
+      args: 'X x'
     }
   ]
-})
+});

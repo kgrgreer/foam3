@@ -1,8 +1,0 @@
-p({
-  class: "foam.nanos.se.test.EventRecordSystemEventTest",
-  id: "EventRecordSystemEventTest"
-})
-p({
-  class: "foam.nanos.se.test.SystemEventSystemNotificationThemeTest",
-  id: "SystemEventSystemNotificationThemeTest"
-})

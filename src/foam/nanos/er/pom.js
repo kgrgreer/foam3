@@ -19,7 +19,7 @@ foam.POM({
       flags: "js|java" },
     { name: "EventRecordNotificationRuleAction",
       flags: "js|java" },
-    { name: "EventRecordSystemEventRuleAction",
+    { name: "EventRecordSystemOutageRuleAction",
       flags: "js|java" },
     { name: "EventRecordResponse",
       flags: "js|java" },

@@ -16,7 +16,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.nanos.se',
+  package: 'foam.nanos.so',
   name: 'SystemNotificationService',
 
   skeleton: true,
@@ -25,7 +25,7 @@ foam.INTERFACE({
     {
       name: 'getSystemNotifications',
       args: 'Context x, String key',
-      type: 'foam.nanos.se.SystemNotification[]',
+      type: 'foam.nanos.so.SystemNotification[]',
       async: true
     }
   ]

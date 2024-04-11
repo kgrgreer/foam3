@@ -1,11 +1,11 @@
 p({
-  class: "foam.nanos.se.SystemEvent",
+  class: "foam.nanos.so.SystemOutage",
   id: "systemevent-messagetask-test",
   name: "messagetask test",
   description: "messagetask test",
   tasks: [
     {
-      class: "foam.nanos.se.MessageTask",
+      class: "foam.nanos.so.MessageTask",
       messageKeyText: "TEST MESSAGE"
     }
   ]

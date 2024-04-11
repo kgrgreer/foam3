@@ -246,9 +246,9 @@ foam.CLASS({
       ]
     },
     {
-      name: 'systemEvent',
+      name: 'systemOutage',
       class: 'Reference',
-      of: 'foam.nanos.se.SystemEvent'
+      of: 'foam.nanos.so.SystemOutage'
     }
   ],
 

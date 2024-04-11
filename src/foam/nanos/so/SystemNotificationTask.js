@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 foam.CLASS({
-  package: 'foam.nanos.se',
+  package: 'foam.nanos.so',
   name: 'SystemNotificationTask',
-  implements: [ 'foam.nanos.se.SystemEventTask' ],
+  implements: [ 'foam.nanos.so.SystemOutageTask' ],
 
   documentation: 'Task for managing SystemNotification display',
 
@@ -28,7 +28,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'foam.nanos.se.SystemNotification',
+      of: 'foam.nanos.so.SystemNotification',
       name: 'systemNotification',
     },
     {
