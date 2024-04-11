@@ -159,13 +159,13 @@ foam.CLASS({
       type: 'FObject',
       args: 'FObject nu, FObject old',
       javaCode: `
-        return overlay_(nu, old, new java.util.HashSet());
+        return overlay_(nu, old, new java.util.HashSet(), true);
       `
     },
     {
       name: 'overlay_',
       type: 'FObject',
-      args: 'FObject nu, FObject old, java.util.HashSet visited',
+      args: 'FObject nu, FObject old, java.util.HashSet visited, Boolean checkStorageTransient',
       javaCode: `
         int code = old.hashCode();
         if ( visited.contains(code) ) return nu;
@@ -174,7 +174,7 @@ foam.CLASS({
     
         List<PropertyInfo> props = old.getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo p : props ) {
-          if ( ! p.getStorageTransient() ) continue;
+          if ( checkStorageTransient && ! p.getStorageTransient() ) continue;
           Object remote = null;
           try {
             if ( p.isSet(old) ) {
@@ -206,7 +206,7 @@ foam.CLASS({
                 ! local.equals(remote) &&
                 local.getClass().getCanonicalName().equals(remote.getClass().getCanonicalName()) ) {
               try {
-                p.set(nu, ((FObject)local).overlay_((FObject)remote, visited));
+                p.set(nu, overlay_((FObject)local, (FObject)remote, visited, false));
               } catch ( ClassCastException e ) {
                 // foam.nanos.logger.StdoutLogger.instance().warning("FObject.overlay local", nu.getClass().getSimpleName(), "set", p.getName(), "overlay", remote.getClass().getSimpleName(), e.getMessage());
                 p.set(nu, remote);
