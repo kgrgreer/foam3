@@ -66,12 +66,12 @@ foam.CLASS({
         if ( op == Operation.REMOVE ) {
           // All tasks are removed
           for ( SystemOutageTask task : newSo.getTasks() ) {
-            removedTasks.add((PauseComplianceTransactionTask) task);
+            removedTasks.add(task);
           }
         } else if ( op == Operation.UPDATE ) {
           // Find tasks that are only in old system outage
           for ( SystemOutageTask task : oldSo.findNonOverlappingTasks(x, newSo) ) {
-            removedTasks.add((PauseComplianceTransactionTask) task);
+            removedTasks.add(task);
           }
         }
         return removedTasks;
