@@ -174,7 +174,7 @@ foam.CLASS({
     
         List<PropertyInfo> props = old.getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo p : props ) {
-          if ( p.getStorageTransient() ) continue;
+          if ( ! p.getStorageTransient() ) continue;
           Object remote = null;
           try {
             if ( p.isSet(old) ) {
