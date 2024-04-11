@@ -19,31 +19,6 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"4dae09e9-58fc-4639-bac3-a17a496bdf8b",
-  "name":"Pause Compliance Transaction Template",
-  "documentation":"a template used in PauseComplianceTransactionTask to build a pause rule at runtime",
-  "ruleGroup":"SystemOutage",
-  "daoKey":"localTransactionDAO",
-  "operation":3,
-  "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of": "net.nanopay.tx.ComplianceTransaction"
-      },
-      {
-        "class": "foam.nanos.ruler.predicate.FScriptRulePredicate",
-        "query":"o.status != n.status && n.status == net.nanopay.tx.model.TransactionStatus.PENDING"
-      }
-    ]
-  },
-  "enabled":false,
-  "lifecycleState":4
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
   "name":"Tasks Cleanup On Removal",
   "documentation":"Clean up tasks when it is removed from the system outage",
