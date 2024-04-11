@@ -12,6 +12,9 @@ foam.CLASS({
   requires: [ 'foam.nanos.menu.SubMenuView' ],
 
   methods: [
+    function select() {
+      /** NOP **/
+    },
     function launch() { /** NOP **/ }
     // Code below is for conventional style menus which pop-up,
     // which no longer happens as opening a menu just opens the tree view.

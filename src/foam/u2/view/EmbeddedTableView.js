@@ -128,7 +128,7 @@ foam.CLASS({
       this.SUPER(p);
     },
     function openFullTable(id) {
-      [_, this.view_] = this.stack.push({
+      this.view_ = this.stack.push({
           class: this.DAOController,
           data$: this.data$,
           config$: this.config$,
