@@ -72,7 +72,7 @@ foam.CLASS({
 
             // Get pauseComplianceTransactionTask from system outage
             PauseComplianceTransactionTask task = null;
-            for ( SystemOutageTask curTask : se.getTasks() ) {
+            for ( SystemOutageTask curTask : so.getTasks() ) {
               if ( SafetyUtil.equals(curTask.getId(), getTaskId()) &&
                   (curTask instanceof PauseComplianceTransactionTask) ) {
                 task = (PauseComplianceTransactionTask) curTask;

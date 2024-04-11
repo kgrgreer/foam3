@@ -39,8 +39,8 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        SystemEvent newSo = (SystemOutage) obj;
-        SystemEvent oldSo = (SystemOutage) ((DAO) x.get("systemOutageDAO")).find(newSo.getId());
+        SystemOutage newSo = (SystemOutage) obj;
+        SystemOutage oldSo = (SystemOutage) ((DAO) x.get("systemOutageDAO")).find(newSo.getId());
 
         agency.submit(x, new ContextAgent() {
           @Override
