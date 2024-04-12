@@ -124,7 +124,7 @@ foam.CLASS({
       this.addHeaderObserver();
       this.stackReset.sub(() => { this.content?.removeAllChildren(); })
       this.posUpdated.sub((_, p, type) => {
-        this.current.hide();
+        // this.current.hide();
         if ( type == 'new' )
           this.content.add(this.current);
         this.stack_.forEach(v => { 

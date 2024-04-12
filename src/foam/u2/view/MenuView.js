@@ -11,6 +11,7 @@ foam.CLASS({
 
   imports: [
     'menu',
+    'routeTo',
     // If rendered in a dropdown, close the dropdown after launching menu
     'dropdown? as parentMenuDropdown'
   ],
@@ -54,7 +55,13 @@ foam.CLASS({
     function click(evt) {
       this.SUPER(evt);
       if ( evt.detail && evt.detail > 1 ) return;
-      let ret = this.menu.launch_(this.__subContext__, this);
+      let ret;
+      if ( this.routeTo ) {
+        this.routeTo(this.menu.id);
+        return;
+      } else {
+        ret = this.menu.launch_(this.__subContext__, this);
+      }
       if ( ret && ret.then ) {
         this.loading_ = true;
         ret.then(() => { this.loading_ = false; })

@@ -21,7 +21,7 @@ foam.CLASS({
     'currentMenu',
     'menuDAO',
     'myNotificationDAO',
-    'pushMenu',
+    'routeTo',
     'subject'
   ],
 
@@ -160,7 +160,7 @@ foam.CLASS({
     {
       name: 'notifications',
       code: function() {
-        this.pushMenu(this.MENU_ID);
+        this.routeTo(this.MENU_ID);
       }
     }
   ]
