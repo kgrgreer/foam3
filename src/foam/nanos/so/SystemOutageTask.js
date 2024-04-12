@@ -19,8 +19,15 @@ foam.INTERFACE({
   package: 'foam.nanos.so',
   name: 'SystemOutageTask',
 
+  documentation: `
+    Inteface for SystemOutage Task.
+    Note that persist method needs to be called after change to task to persist the change.
+  `,
+
   javaImports: [
-    'foam.core.X'
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.logger.Loggers'
   ],
 
   properties: [
@@ -51,9 +58,31 @@ foam.INTERFACE({
     {
       name: 'cleanUp',
       args: 'X x',
-      documentation: 'Executes cleanup when task is removed',
+      documentation: 'work to be done when task is removed',
       javaCode: `
         deactivate(x);
+      `
+    },
+    {
+      name: 'persist',
+      args: 'X x',
+      documentation: 'Need to put system outage on which this task is to persist change to the task',
+      javaCode: `
+        SystemOutage so = findSystemOutage(x);
+        if ( so == null )  {
+          Loggers.logger(x, this).error("Failed to persist task", getId());
+          return;
+        }
+
+        so = (SystemOutage) so.fclone();
+        SystemOutageTask[] tasks = so.getTasks();
+        for ( int i = 0; i < tasks.length; i++ ) {
+          if ( tasks[i].getId().equals(getId()) ) {
+            tasks[i] = this;
+            ((DAO) x.get("systemOutageDAO")).put(so); 
+          }
+        }
+        return;
       `
     }
   ]
