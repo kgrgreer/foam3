@@ -227,8 +227,9 @@ foam.CLASS({
           start('th').on('click', () => self.selection = '-- All --').add('All:').end().
           forEach(counts, function(c, i) {
             this.start('th').attr('nowrap', true).call(function() {
-              var monthlySalaryTotal = Object.values(self.data.salaries).reduce((sum, s) => s[i] + sum, 0);
+              var monthlySalaryTotal = Object.values(salaries).reduce((sum, s) => s[i] + sum, 0);
               totalSalary += monthlySalaryTotal;
+              debugger;
               self.cell(this, c, allCounts[i], monthlySalaryTotal);
             }).end();
           }).
@@ -477,6 +478,18 @@ foam.CLASS({
       'xuerongNanopay': 'Xuerong Wu',
       'yij793': 'Garfiled Jian'
     },
+
+    IGNORED_AUTHORS: {
+      'Adam Van Ymeren': true,
+      'Ani Maria Lukose': true,
+      'Arturs Pavlovs': true,
+      'dependabot[bot]': true,
+      'Mahimaa Jayaprakash': true,
+      'Moorthy Rathinasamy': true,
+      'Mritunjay Chauhan': true,
+      'Mykola Kolombet': true
+    },
+
     PROJECT_RULES: [
       {
         name: 'Test',
@@ -800,9 +813,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
             commit.author = this.AUTHOR_MAP[commit.author] || 'Unknown: ' + commit.author;
-            if ( commit.author.indexOf('dependabot') != -1 || commit.author === 'Adam Van Ymeren' || commit.author === 'Mykola Kolombet' ) {
-              data.pop();
-            }
+            if ( this.IGNORED_AUTHORS[commit.author] ) data.pop();
           } else if ( line.startsWith('Date: ') ) {
             commit.date = new Date(line.substring(6).trim());
             i++;
@@ -838,10 +849,12 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
     },
 
     function parseSalaries(csv) {
+      var self = this;
       csv.split('\n').slice(1).forEach(s => {
         s = s.split(',');
         const name = s[2], salaries = s.slice(3);
-        this.salaries[name] = salaries.map(parseFloat);
+        if ( ! self.IGNORED_AUTHORS[name] )
+          this.salaries[name] = salaries.map(parseFloat);
       });
       delete this.salaries[undefined];
       console.log('salaries: ', this.salaries);

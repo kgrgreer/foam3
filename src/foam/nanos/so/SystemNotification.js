@@ -19,8 +19,6 @@ foam.CLASS({
   name: 'SystemNotification',
 
   javaImports: [
-    'java.util.concurrent.ThreadLocalRandom',
-    'java.util.Random',
     'java.util.UUID'
   ],
 
@@ -33,8 +31,7 @@ foam.CLASS({
         return foam.uuid.randomGUID();
       },
       javaFactory: `
-        Random r = ThreadLocalRandom.current();
-        return new UUID(r.nextLong(), r.nextLong()).toString();
+        return UUID.randomUUID().toString();
       `,
       visibility: 'HIDDEN'
     },

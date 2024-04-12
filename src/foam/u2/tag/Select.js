@@ -115,6 +115,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .attrs({size: this.size$})
         .enableClass('expanded', this.size != 0 )
+        .attrs({ role: 'combobox' })
         .attrSlot().linkFrom(this.data$);
 
       if ( this.size ) this.style({height: 'auto'});

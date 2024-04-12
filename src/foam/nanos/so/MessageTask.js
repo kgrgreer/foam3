@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.nanos.so',
   name: 'MessageTask',
-  implements: ['foam.nanos.so.SystemOutageTask'],
+  extends: 'foam.nanos.so.SystemOutageTask',
 
   javaImports: [
     'foam.core.X',
@@ -33,7 +33,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'replacementText'
+      name: 'replacementText',
+    },
+    {
+      class: 'String',
+      name: 'savedText',
+      visibility: 'RO'
     },
     {
       class: 'Enum',
@@ -64,6 +69,7 @@ foam.CLASS({
         var ts = (TranslationService) x.get("translationService");
         if ( ts == null ) return msg;
 
+// TODO: get existing message to save
         var locale = (String) x.get("locale.language");
         if ( SafetyUtil.isEmpty(locale) ) locale = "en";
 

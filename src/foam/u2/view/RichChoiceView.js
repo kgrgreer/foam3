@@ -501,7 +501,15 @@ foam.CLASS({
       this.onDataUpdate();
 
       this.onDetach(() => this.dropdown_.remove());
-
+      this.attrs({
+        name: self.prop$.map(v => v?.name),
+        'data-value': self.data$,
+        'role': 'combobox',
+        'aria-controls': 'listbox',
+        'aria-haspopup': 'listbox',
+        'aria-expanded': self.isOpen_$.map(v => v ? 'true' : 'false')
+      });
+      self.isOpen_$.follow(this.dropdown_.opened$);
       self.dropdown_.add(self.slot(function(hasBeenOpenedYet_) {
         if ( ! hasBeenOpenedYet_ ) return this.E();
         return this.E()
@@ -541,6 +549,7 @@ foam.CLASS({
                     .select( section.choicesLimit ? section.filteredDAO$proxy.limit(section.choicesLimit) : section.filteredDAO$proxy, obj => {
                       return this.E()
                         .start(self.rowView, { data: obj })
+                          .attr('role', 'option')
                           .enableClass('disabled', section.disabled)
                           .callIf(! section.disabled, function() {
                             this.on('click', () => {
@@ -573,11 +582,7 @@ foam.CLASS({
               this.dropdown_.write();
             }
             return self.E()
-              .attrs({
-                name: self.prop.name,
-                'data-value': self.data$,
-                tabindex: 0
-              })
+              .attrs({ tabindex: 0 })
               .addClass(this.myClass())
               .start('', {}, this.selectionEl_$)
                 .addClass(this.myClass('selection-view'))
@@ -586,7 +591,6 @@ foam.CLASS({
                   var x = e.clientX || this.getBoundingClientRect().x;
                   var y = e.clientY || this.getBoundingClientRect().y;
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
-                    self.isOpen_ = ! self.isOpen_;
                     self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
                     self.inputView.focused = true;

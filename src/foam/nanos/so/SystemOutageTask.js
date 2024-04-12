@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.so',
   name: 'SystemOutageTask',
 
@@ -23,6 +23,9 @@ foam.INTERFACE({
     Inteface for SystemOutage Task.
     Note that persist method needs to be called after change to task to persist the change.
   `,
+
+  abstract: true,
+
 
   javaImports: [
     'foam.core.X',
@@ -46,14 +49,43 @@ foam.INTERFACE({
     }
   ],
 
+  tableColumns: [
+    'id',
+    'type',
+    'outage'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      transient: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      factory: function() { return this.cls_.name; }
+    }
+  ],
+
   methods: [
     {
       name: 'activate',
-      args: 'X x'
+      args: 'X x',
+      javaCode: `
+        // nop
+      `
     },
     {
       name: 'deactivate',
-      args: 'X x'
+      args: 'X x',
+      javaCode: `
+        // nop
+      `
     },
     {
       name: 'cleanUp',
@@ -79,11 +111,16 @@ foam.INTERFACE({
         for ( int i = 0; i < tasks.length; i++ ) {
           if ( tasks[i].getId().equals(getId()) ) {
             tasks[i] = this;
-            ((DAO) x.get("systemOutageDAO")).put(so); 
+            ((DAO) x.get("systemOutageDAO")).put(so);
           }
         }
         return;
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() { return this.type + ' ' + this.id; }
     }
   ]
 });
