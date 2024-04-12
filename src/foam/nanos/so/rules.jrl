@@ -7,10 +7,10 @@ p({
   "daoKey":"systemOutageDAO",
   "operation":1,
   "predicate":{
-    "class":"foam.nanos.so.task.TaskRemovedPredicate"
+    "class":"foam.nanos.so.TaskRemovedPredicate"
   },
   "action":{
-    "class":"foam.nanos.so.task.TaskCleanUpRuleAction"
+    "class":"foam.nanos.so.TaskCleanUpRuleAction"
   },
   "enabled":true,
   "lifecycleState":1
@@ -25,7 +25,7 @@ p({
   "daoKey":"systemOutageDAO",
   "operation":2,
   "action":{
-    "class":"foam.nanos.so.task.TaskCleanUpRuleAction"
+    "class":"foam.nanos.so.TaskCleanUpRuleAction"
   },
   "enabled":true,
   "lifecycleState":1

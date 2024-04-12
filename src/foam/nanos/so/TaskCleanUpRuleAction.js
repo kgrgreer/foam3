@@ -16,7 +16,7 @@
   */
 
 foam.CLASS({
-  package: 'foam.nanos.so.task',
+  package: 'foam.nanos.so',
   name: 'TaskCleanUpRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
