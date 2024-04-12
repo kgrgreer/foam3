@@ -16,7 +16,7 @@
   */
 
 foam.CLASS({
-  package: 'foam.nanos.so.task',
+  package: 'foam.nanos.so',
   name: 'TaskInitPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   

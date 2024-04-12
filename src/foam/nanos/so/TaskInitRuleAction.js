@@ -16,34 +16,33 @@
   */
 
 foam.CLASS({
-  package: 'foam.nanos.so.task',
-  name: 'TaskRemovedPredicate',
-  extends: 'foam.mlang.predicate.AbstractPredicate',
-  
-  implements: ['foam.core.Serializable'],
+  package: 'foam.nanos.so',
+  name: 'TaskInitRuleAction',
+  implements: [ 'foam.nanos.ruler.RuleAction' ],
 
-  documentation: `
-    A predicate for checking if tasks are removed from system outage.
-  `,
+  documentation: 'Initialize system outage tasks',
 
   javaImports: [
-    'foam.core.XLocator',
     'foam.nanos.so.SystemOutage',
-
-    'static foam.mlang.MLang.NEW_OBJ',
-    'static foam.mlang.MLang.OLD_OBJ'
+    'foam.nanos.so.SystemOutageTask',
+    'java.util.UUID'
   ],
 
   methods: [
     {
-      name: 'f',
+      name: 'applyAction',
       javaCode: `
-        SystemOutage newSo = (SystemOutage) NEW_OBJ.f(obj);
-        SystemOutage oldSo = (SystemOutage) OLD_OBJ.f(obj);
+        SystemOutage so = (SystemOutage) obj;
+        for ( SystemOutageTask task : so.getTasks() ) {
+          if ( task.getId().isEmpty() ) {
+            task.setId(UUID.randomUUID().toString());
+          }
 
-        long numRemovedTasks = oldSo.findNonOverlappingTasks(XLocator.get(), newSo).length;
-        return numRemovedTasks > 0;
+          if ( task.getSystemOutage().isEmpty() ) {
+            task.setSystemOutage(so.getId());
+          }
+        }
       `
     }
   ]
-});
+})
