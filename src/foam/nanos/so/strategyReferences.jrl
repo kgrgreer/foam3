@@ -5,3 +5,10 @@ p({
   strategy: "foam.nanos.so.SystemNotificationTask",
   label: "System Notification"
 })
+p({
+  class: "foam.strategy.StrategyReference",
+  id: "foam_nanos.so_MessageTask",
+  desiredModelId: "foam.nanos.so.SystemOutageTask",
+  strategy: "foam.nanos.so.MessageTask",
+  label: "Translation Message"
+})
