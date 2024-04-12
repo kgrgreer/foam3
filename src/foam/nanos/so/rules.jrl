@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"61b4e62c-6c43-49ca-9abc-0d23a2c2765d",
+  "id":"foam_nanos_so_task_init",
   "name":"System Outage Task Init",
   "documentation":"Initialize system outage task",
   "ruleGroup":"SystemOutage",
@@ -19,7 +19,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
+  "id":"foam_nanos_so_task_cleanup_on_remove",
   "name":"Tasks Cleanup On Removal",
   "documentation":"Clean up tasks when it is removed from the system outage",
   "ruleGroup":"SystemOutage",
@@ -37,7 +37,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"D5D811DD-7F3C-4931-926F-FD4246072E41",
+  "id":"foam_nanos_so_task_cleanup_on_system_outage_remove",
   "name":"Tasks Cleanup On System Outage Removal",
   "documentation":"Clean up tasks when system outage is removed",
   "ruleGroup":"SystemOutage",
