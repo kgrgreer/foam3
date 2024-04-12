@@ -20,10 +20,7 @@ foam.CLASS({
   name: 'SystemOutageTask',
   abstract: true,
 
-  documentation: `
-    Inteface for SystemOutage Task.
-    Note that persist method needs to be called after change to task to persist the change.
-  `,
+  documentation: `  `,
 
   javaImports: [
     'foam.core.X',
@@ -95,23 +92,6 @@ foam.CLASS({
         deactivate(x);
       `
     },
-    // {
-    //   name: 'persist',
-    //   args: 'X x',
-    //   documentation: 'Need to put system outage on which this task is to persist change to the task',
-    //   javaCode: `
-    //     SystemOutage so = findOutage(x);
-    //     List<SystemOutageTask> tasks = (List) ((ArraySink) so.getTasks(x).select(new ArraySink())).getArray();
-    //     for ( SystemOutageTask task : tasks ) {
-    //       if ( task.getId().equals(getId()) ) {
-    //         SystemOutageTask t = (SystemOutageTask) this.fclone();
-    //         t.copyFrom(task);
-    //         ((DAO) x.get("systemOutageTaskDAO")).put(t);
-    //       }
-    //     }
-    //     return;
-    //   `
-    // },
     {
       name: 'toSummary',
       type: 'String',

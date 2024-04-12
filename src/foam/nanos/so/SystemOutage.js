@@ -82,6 +82,7 @@ foam.CLASS({
         for ( var task : tasks ) {
           try {
             task.activate(x);
+            getTasks(x).put(task);
           } catch ( RuntimeException e ) {
             Loggers.logger(x, this).error("Failed to activate System Outage: " + task.toSummary(), "error : " + e);
           }
@@ -97,6 +98,7 @@ foam.CLASS({
         for ( var task : tasks ) {
           try {
             task.deactivate(x);
+            getTasks(x).put(task);
           } catch ( RuntimeException e ) {
             Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.toSummary(), "error : " + e);
           }

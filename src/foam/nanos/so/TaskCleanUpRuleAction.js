@@ -52,6 +52,7 @@ foam.CLASS({
             // Clean up removed tasks
             for ( SystemOutageTask task : removedTasks ) {
               task.cleanUp(x);
+              newSo.getTasks(x).put(task);
             }
           }
         }, "Pause Compliacne Transaction Task On Remove");
