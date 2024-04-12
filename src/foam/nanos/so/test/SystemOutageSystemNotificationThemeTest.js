@@ -41,7 +41,7 @@ foam.CLASS({
       SystemNotification note = new SystemNotification();
       task.setSystemNotification(note);
       task.setThemes(new String[] {"foam"});
-      se.setTasks(new SystemNotificationTask[] {task});
+      // se.setTasks(new SystemNotificationTask[] {task});
       se = (SystemOutage) seDAO.put(se).fclone();
 
       SystemNotificationService service = (SystemNotificationService) x.get("systemNotificationService");
@@ -59,7 +59,7 @@ foam.CLASS({
       note = new SystemNotification();
       note.setKey("test");
       task.setSystemNotification(note);
-      se.setTasks(new SystemNotificationTask[] {task});
+      // se.setTasks(new SystemNotificationTask[] {task});
       se = (SystemOutage) seDAO.put(se);
 
       notes = service.getSystemNotifications(y, "test");

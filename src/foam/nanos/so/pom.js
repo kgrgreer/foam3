@@ -7,6 +7,8 @@
 foam.POM({
   name: "so",
   files: [
+    { name: "Relationships",
+      flags: "js|java" },
     { name: "SystemOutage",
       flags: "js|java" },
     { name: "SystemOutageAgent",

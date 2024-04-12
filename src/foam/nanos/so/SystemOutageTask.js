@@ -15,22 +15,58 @@
  * limitations under the License.
  */
 
-foam.INTERFACE({
+foam.CLASS({
   package: 'foam.nanos.so',
   name: 'SystemOutageTask',
+
+  abstract: true,
 
   javaImports: [
     'foam.core.X'
   ],
 
+  tableColumns: [
+    'id',
+    'type',
+    'outage'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      transient: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      factory: function() { return this.cls_.name; }
+    }
+  ],
+
   methods: [
     {
       name: 'activate',
-      args: 'X x'
+      args: 'X x',
+      javaCode: `
+        // nop
+      `
     },
     {
       name: 'deactivate',
-      args: 'X x'
+      args: 'X x',
+      javaCode: `
+        // nop
+      `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() { return this.type + ' ' + this.id; }
     }
   ]
 });

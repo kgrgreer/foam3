@@ -27,7 +27,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.nanos.logger.Loggers'
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.logger.Loggers',
+    'java.util.List'
   ],
 
   tableColumns: [
@@ -42,7 +45,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
@@ -63,19 +67,6 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'endTime'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.nanos.so.SystemOutageTask',
-      name: 'tasks',
-      view: {
-        class: 'foam.u2.view.FObjectArrayView',
-        of: 'foam.nanos.so.SystemOutageTask',
-        valueView: {
-          class: 'foam.u2.view.FObjectView',
-          of: 'foam.nanos.so.SystemOutageTask'
-        }
-      }
     }
   ],
 
@@ -83,14 +74,14 @@ foam.CLASS({
     {
       name: 'activate',
       args: 'X x',
-      type: 'Void',
-      documentation: 'execute activate systemoutagetasks',
+      documentation: 'execute Activate on all SystemOutageTasks',
       javaCode: `
-        for ( var task : getTasks() ) {
+        List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
+        for ( var task : tasks ) {
           try {
             task.activate(x);
           } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to activate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
+            Loggers.logger(x, this).error("Failed to activate System Outage: " + task.toSummary(), "error : " + e);
           }
         }
       `
@@ -98,17 +89,22 @@ foam.CLASS({
     {
       name: 'deactivate',
       args: 'X x',
-      type: 'Void',
-      documentation: 'execute activate systemoutagetasks',
+      documentation: 'execute Deactivate on all SystemOutageTasks',
       javaCode: `
-        for ( var task : getTasks() ) {
+        List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
+        for ( var task : tasks ) {
           try {
             task.deactivate(x);
           } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
+            Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.toSummary(), "error : " + e);
           }
         }
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() { return this.name; }
     }
   ]
 });
