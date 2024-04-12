@@ -61,7 +61,7 @@ foam.CLASS({
         List<SystemNotification> notifications = new ArrayList();
         for ( SystemOutage outage : outages ) {
           Theme theme = (Theme) x.get("theme");
-          List<SystemOutageTask> tasks = (List) ((ArraySink) outage.getTasks(x).select(new ArraySink())).getArray();
+          List<SystemOutageTask> tasks = (List) ((ArraySink) outage.getTasks(getX()).select(new ArraySink())).getArray();
           for ( SystemOutageTask task : tasks ) {
             if ( task instanceof SystemNotificationTask ) {
               SystemNotificationTask snt = (SystemNotificationTask) task;
