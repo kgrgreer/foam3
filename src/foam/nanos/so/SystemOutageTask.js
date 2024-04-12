@@ -51,7 +51,7 @@ foam.INTERFACE({
     {
       name: 'cleanUp',
       args: 'X x',
-      documentation: 'work to be done when task is removed',
+      documentation: 'Executes cleanup when task is removed',
       javaCode: `
         deactivate(x);
       `
