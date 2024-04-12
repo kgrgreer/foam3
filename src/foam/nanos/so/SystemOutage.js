@@ -110,12 +110,12 @@ foam.CLASS({
       documentation: 'Returns a list of tasks whose tasks are in \'this\' but not in other',
       args: 'X x, SystemOutage other',
       javaCode: `
-        List<String> otherTaskIds = ((List) ((ArraySink) other.getTasks(x).select(new ArraySink())).getArray())
+        List<String> otherTaskIds = ((List<SystemOutageTask>) ((ArraySink) other.getTasks(x).select(new ArraySink())).getArray())
           .stream()
           .map(t -> t.getId())
           .collect(Collectors.toList());
 
-        return ((List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray())
+        return ((List<SystemOutageTask>) ((ArraySink) getTasks(x).select(new ArraySink())).getArray())
           .stream()
           .filter(t -> ! otherTaskIds.contains(t.getId()))
           .toArray(SystemOutageTask[]::new);

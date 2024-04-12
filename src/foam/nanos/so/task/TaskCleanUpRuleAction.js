@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.dao.Operation',
     'foam.nanos.logger.Loggers',
@@ -65,7 +66,8 @@ foam.CLASS({
         List<SystemOutageTask> removedTasks = new ArrayList<>();
         if ( op == Operation.REMOVE ) {
           // All tasks are removed
-          for ( SystemOutageTask task : newSo.getTasks() ) {
+          List<SystemOutageTask> tasks = (List) ((ArraySink) newSo.getTasks(x).select(new ArraySink())).getArray();
+          for ( SystemOutageTask task : tasks ) {
             removedTasks.add(task);
           }
         } else if ( op == Operation.UPDATE ) {

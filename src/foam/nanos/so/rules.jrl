@@ -1,24 +1,5 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"61b4e62c-6c43-49ca-9abc-0d23a2c2765d",
-  "name":"System Outage Task Init",
-  "documentation":"Initialize system outage task",
-  "ruleGroup":"SystemOutage",
-  "daoKey":"systemOutageDAO",
-  "operation":3,
-  "after":true,
-  "predicate": {
-    "class":"foam.nanos.so.task.TaskInitPredicate"
-  },
-  "action":{
-    "class":"foam.nanos.so.task.TaskInitRuleAction"
-  },
-  "enabled":true,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"341E0A0C-3BA3-4C07-83C1-B9313DCFE001",
   "name":"Tasks Cleanup On Removal",
   "documentation":"Clean up tasks when it is removed from the system outage",
