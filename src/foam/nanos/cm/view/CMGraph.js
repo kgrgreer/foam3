@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CMGraph',
   extends: 'foam.u2.View',
   documentation: `
-    The view model that renders result of a DatasetCM to the graph.
+    The view model that renders result of a DatasetCM to the graph using ChartJs.
   `,
 
   css: `
@@ -54,7 +54,10 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'chartJsConfig'
+      name: 'chartJsConfig',
+      factory: function() {
+        return {};
+      },
     }
   ],
   methods: [
