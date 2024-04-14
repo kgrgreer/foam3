@@ -253,10 +253,8 @@ foam.CLASS({
             href = result;
           }
 
-          if ( href.length > 100000 ) {
-            var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
-            href = URL.createObjectURL(blob);
-          }
+          var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
+          href = URL.createObjectURL(blob);
           link.setAttribute('href', href);
           link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
           document.body.appendChild(link);
