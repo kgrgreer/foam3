@@ -13,7 +13,11 @@ foam.CLASS({
     'foam.core.ContextAgent'
   ],
 
-  javaImports: [ 'foam.dao.DAO' ],
+  javaImports: [ 
+    'foam.dao.DAO',
+    'foam.nanos.cron.CronSchedule',
+    'foam.nanos.logger.Loggers'
+  ],
 
   documentation: `
     A computed measure.
@@ -70,6 +74,16 @@ foam.CLASS({
       value: 'HOUR'
     },
     {
+      name: 'schedule',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.cron.Schedule',
+      view: {
+        class: 'foam.u2.view.FObjectView',
+        of: 'foam.nanos.cron.Schedule'
+      },
+      javaFactory: `return new CronSchedule.Builder(getX()).build();`
+    },
+    {
       class: 'Code',
       name: 'code',
       documentation: 'Beanshell code that should call x.get("this").setResult(result).',
@@ -88,20 +102,22 @@ foam.CLASS({
             x.put("this", this),
             new java.io.PrintStream(new java.io.ByteArrayOutputStream()),
             getCode());
-        } catch(java.io.IOException e) {
+        } catch(Exception e) {
           setResult(e.toString());
+          Loggers.logger(x, this).error("CM: \`" + getId() + "\` failed to execute", e);
         }
       `
     },
     {
       name: 'reschedule',
       type: 'Void',
+      args: 'Context x',
       javaCode: `
         try {
           setLastComputed(new java.util.Date());
           setExpiry(new java.util.Date(System.currentTimeMillis() + getValidity() * getTimeUnit().getConversionFactorMs()));
-        } catch (Throwable t) {
-          t.printStackTrace();
+        } catch (Exception e) {
+          Loggers.logger(x, this).error("CM: \`" + getId() + "\` failed to schedule", e);
         }
       `
     },
@@ -114,7 +130,7 @@ foam.CLASS({
         DAO dao = (DAO) x.get("cmDAO");
 
         cm.execute(x);
-        cm.reschedule();
+        cm.reschedule(x);
 
         return (CM) dao.put_(x, cm);
       `
