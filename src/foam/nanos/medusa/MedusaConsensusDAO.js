@@ -302,12 +302,13 @@ This is the heart of Medusa.`,
 
       long lastLogTime = 0L;
       long lastLogIndex = 0L;
+      MedusaEntry entry = null;
       try {
         while ( true ) {
           ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
           DaggerService dagger = (DaggerService) x.get("daggerService");
           PM pm = PM.create(x, "MedusaConsensusDAO", "promoter");
-          MedusaEntry entry = null;
+          entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
             if ( System.currentTimeMillis() - lastLogTime > getTimerInterval() ) {
@@ -388,7 +389,7 @@ This is the heart of Medusa.`,
           }
         }
       } catch ( Throwable e ) {
-        logger.error(e.getMessage(), e);
+        logger.error(e.getMessage(), (entry != null ? entry.toSummary() : entry), e);
         DAO d = (DAO) x.get("localClusterConfigDAO");
         ClusterConfig config = (ClusterConfig) d.find(support.getConfigId()).fclone();
         config.setErrorMessage(e.getMessage());
@@ -396,7 +397,7 @@ This is the heart of Medusa.`,
         d.put(config);
 
         alarm.setIsActive(true);
-        alarm.setNote(e.getMessage());
+        alarm.setNote(e.getMessage()+", "+(entry != null ? entry.toSummary() : entry));
         ((DAO) x.get("alarmDAO")).put(alarm);
         logger.error("exit");
         NanoService monitor = (NanoService) x.get("medusaConsensusMonitor");
@@ -536,7 +537,8 @@ This is the heart of Medusa.`,
                 }
               } else {
                 PM pmOverlay = PM.create(x, "MedusaConsensusDAO", "mdao:overlay,nu,transient");
-                nu = nu.overlay(tran);
+                MedusaEntrySupport entrySupport = (MedusaEntrySupport) x.get("medusaEntrySupport");
+                nu = entrySupport.overlay(nu, tran);
                 pmOverlay.log(x);
               }
             }
@@ -584,7 +586,7 @@ This is the heart of Medusa.`,
         throw e;
       } catch (Throwable t) {
         pm.error(x, t);
-        getLogger().error(t);
+        getLogger().error(t.getMessage(), entry.toSummary(), t);
         throw t;
       } finally {
         pm.log(x);

@@ -12,5 +12,6 @@ p({
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "parent":"analytics"
 })

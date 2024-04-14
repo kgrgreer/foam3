@@ -9,7 +9,7 @@
   name: 'Currency',
   extends: 'foam.core.Unit',
 
-  documentation: `The base model for storing, using and managing currency information.`,
+  documentation: 'The base model for storing, using and managing currency information.',
 
   javaImports: [
     'foam.core.XLocator',
@@ -165,7 +165,7 @@
         }
 
         var delimiter = this.translationService.getTranslation(foam.locale, 'Currency.delimiter', this.delimiter);
-        var decimal = this.translationService.getTranslation(foam.locale, 'Currency.decimalCharacter', this.decimalCharacter)
+        var decimal   = this.translationService.getTranslation(foam.locale, 'Currency.decimalCharacter', this.decimalCharacter)
 
         if ( this.insertDelimiter ) {
           formatted += beforeDecimal.replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) || '0';
@@ -207,14 +207,13 @@
       type: 'String',
       javaCode: `
         Boolean isNegative = amount < 0;
-        String amountStr = Long.toString(amount);
+        String  amountStr  = Long.toString(amount);
         if ( isNegative ) amountStr = amountStr.substring(1);
         while ( amountStr.length() < this.getPrecision() ) {
           amountStr = "0" + amountStr;
         }
         String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
         String formatted = isNegative ? "-" : "";
-
 
         if ( ! hideId && SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();

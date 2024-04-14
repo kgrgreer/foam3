@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.crunch.wizardflow',
   name: 'WAOSettingAgent',
   implements: [ 'foam.core.ContextAgent' ],
@@ -14,7 +14,7 @@
   `,
 
   imports: [
-    'wizardSubject',
+    'wizardSubject?',
     'subject'
   ],
 

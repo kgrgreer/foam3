@@ -159,6 +159,12 @@ foam.CLASS({
       `
     },
     {
+      documentation: 'Control disabling cron on retry failure.',
+      name: 'disableOnReattemptFailure',
+      class: 'Boolean',
+      value: true
+    },
+    {
       class: 'String',
       name: 'daoKey',
       value: 'cronJobDAO',
@@ -240,8 +246,10 @@ foam.CLASS({
             getReattemptSchedule().postExecution();
           } else if ( getReattempts() >= getMaxReattempts() ) {
             er(x, "max reattempts reached", LogLevel.ERROR, null);
-            er(x, "disable on error", LogLevel.WARN, null);
-            setEnabled(false);
+            if ( getDisableOnReattemptFailure() ) {
+              er(x, "disable on error", LogLevel.WARN, null);
+              setEnabled(false);
+            }
           } else if ( getReattempts() == 0 ) {
             er(x, "reattempt requested", LogLevel.WARN, null);
           } else {

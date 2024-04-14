@@ -94,6 +94,10 @@ foam.CLASS({
       width: -webkit-fill-available;
     }
 
+    ^button-container button svg {
+      fill: currentcolor;
+    }
+
     ^button-container button > img{
       height: 100%;
     }
@@ -198,6 +202,7 @@ foam.CLASS({
 
       this.onDetach(this.disabled_$.follow(this.ExpressionSlot.create({
         args: this.data.map(action => {
+          if (  foam.u2.ActionReference.isInstance(action) ) action.action.createIsAvailable$(this.__context__, action.data)
           if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
           return action.createIsAvailable$(this.__context__, this.obj)
         }),
@@ -227,7 +232,11 @@ foam.CLASS({
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .tag(action, { buttonStyle: 'UNSTYLED' })
+                .callIfElse(foam.u2.ActionReference.isInstance(action), function() {
+                  this.tag(action.action, { buttonStyle: 'UNSTYLED', data$: action.data$})
+                }, function() {
+                  this.tag(action, { buttonStyle: 'UNSTYLED' })
+                })
                 .attrs({ tabindex: -1 })
                 .callIf(! enabled[index], function() {
                   this
@@ -255,7 +264,13 @@ foam.CLASS({
       /*
        * checks if action is enabled
        */
-      const slot = action.createIsEnabled$(this.__context__, this.obj);
+      let slot;
+      if (  foam.u2.ActionReference.isInstance(action) ) {
+        slot = action.action.createIsEnabled$(this.__context__, action.data)
+      }
+      else {
+        slot = action.createIsEnabled$(this.__context__, this.obj);
+      }
       if ( slot.get() ) return true;
       return slot.args[1].promise || false;
     },
@@ -264,7 +279,12 @@ foam.CLASS({
       /*
        * checks if action is available
        */
-      const slot = action.createIsAvailable$(this.__context__, this.obj);
+      if (  foam.u2.ActionReference.isInstance(action) ) {
+        slot = action.action.createIsAvailable$(this.__context__, action.data)
+      }
+      else {
+        slot = action.createIsAvailable$(this.__context__, this.obj);
+      }
       if ( slot.get() ) return true;
       return slot.promise || false;
     }
@@ -308,9 +328,13 @@ foam.CLASS({
 
     async function recheckShown() {
       for ( let action of this.data ) {
-        if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-          this.shown = true;
-          break;
+        try {
+          if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
+            this.shown = true;
+            break;
+          }
+        } catch ( e ) {
+          console.error("Action: " + action.name + " for the class: " + action.source + " has an error: " + e);
         }
       }
     }

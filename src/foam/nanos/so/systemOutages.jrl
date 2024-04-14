@@ -1,0 +1,12 @@
+p({
+  class: "foam.nanos.so.SystemOutage",
+  id: "systemoutage-messagetask-test",
+  name: "messagetask test",
+  description: "messagetask test",
+  tasks: [
+    {
+      class: "foam.nanos.so.MessageTask",
+      messageKeyText: "TEST MESSAGE"
+    }
+  ]
+})

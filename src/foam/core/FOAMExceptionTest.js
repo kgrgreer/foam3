@@ -23,26 +23,30 @@ foam.CLASS({
         throw new FOAMException();
       } catch (FOAMException e) {
         String expected = "";
-        test(e.getMessage() == null || expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        String res = e.renderMessage(e.getExceptionMessage());
+        test(res == null || expected.equals(res), "expecting: "+expected+", found: \\\""+res+"\\\"");
       }
       try {
         throw new FOAMException("test message");
       } catch (FOAMException e) {
         String expected = "test message";
-        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        String res = e.renderMessage(e.getExceptionMessage());
+        test(expected.equals(res), "expecting: "+expected+", found: \\\""+res+"\\\"");
       }
 
       try {
         throw new FOAMExceptionTestTestException();
       } catch (FOAMExceptionTestTestException e) {
         String expected = "ExceptionMessage , ErrorCode:";
-        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        String res = e.renderMessage(e.getExceptionMessage());
+        test(expected.equals(res), "expecting: "+expected+", found: \\\""+res+"\\\"");
       }
       try {
         throw new FOAMExceptionTestTestException("inner message");
       } catch (FOAMExceptionTestTestException e) {
         String expected = "ExceptionMessage inner message, ErrorCode:";
-        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        String res = e.renderMessage(e.getExceptionMessage());
+        test(expected.equals(res), "expecting: "+expected+", found: \\\""+res+"\\\"");
       }
 
       // test templating
@@ -50,7 +54,8 @@ foam.CLASS({
         throw new FOAMExceptionTestTestException("inner message", "16");
       } catch (FOAMExceptionTestTestException e) {
         String expected = "ExceptionMessage inner message, ErrorCode: 16";
-        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        String res = e.renderMessage(e.getExceptionMessage());
+        test(expected.equals(res), "expecting: "+expected+", found: \\\""+res+"\\\"");
         System.out.println("toString: "+e.toString());
       }
 

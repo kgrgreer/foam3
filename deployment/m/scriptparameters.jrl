@@ -1,0 +1,2 @@
+p({class:"foam.nanos.script.ScriptParameter",id:"MedusaCompaction",name:"MedusaCompaction",parameters:{"dryRun":true, "nodes":0}})
+p({class:"foam.nanos.script.ScriptParameter",id:"compactionDAO",name:"compactionDAO",parameters:{"ignoreHealth":false}})

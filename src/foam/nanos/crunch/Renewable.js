@@ -22,6 +22,7 @@ foam.INTERFACE({
     'foam.nanos.logger.Loggers',
     'foam.time.TimeZone',
     'foam.util.SafetyUtil',
+    'static foam.util.DateUtil.getTimeZoneId',
     'java.time.*',
     'java.time.temporal.*',
     'java.util.Date'
@@ -37,7 +38,7 @@ foam.INTERFACE({
       of: 'foam.time.TimeZone',
       name: 'timeZone',
       order: 0,
-      value: 'Africa/Abidjan', // UTC/GMT
+      value: 'GMT',
       section: 'renewableSection'
     },
     {
@@ -191,7 +192,7 @@ foam.INTERFACE({
         return from;
       }
 
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
 
       LocalDateTime last = null;
       if ( from == null ) {
@@ -227,23 +228,6 @@ foam.INTERFACE({
       `
     },
     {
-      name: 'getTimeZoneId',
-      args: 'X x',
-      javaType: 'java.time.ZoneId',
-      javaCode: `
-      var zone = ZoneId.systemDefault();
-      if ( ! SafetyUtil.isEmpty(getTimeZone()) ) {
-        if ( x == null ) x = foam.core.XLocator.get();
-        TimeZone timeZone = (TimeZone) ((DAO) x.get("timeZoneDAO")).find(OR(EQ(TimeZone.ID, getTimeZone()), EQ(TimeZone.DISPLAY_NAME, getTimeZone())));
-        if ( timeZone == null ) {
-          Loggers.logger(getX(), this).error("TimeZone not found", getTimeZone());
-        }
-        zone = ZoneId.of(timeZone.getId());
-      }
-      return zone;
-      `
-    },
-    {
       documentation: 'Before expiry, after renewable',
       name: 'isInRenewalPeriod',
       args: 'X x',
@@ -254,7 +238,7 @@ foam.INTERFACE({
       if ( this instanceof UserCapabilityJunction &&
            ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
 
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
       Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
        Date renewable = calculateDate(x, getExpiry(), -1 * getRenewalPeriod(), getRenewalPeriodTimeUnit());
       // r <= n <= e
@@ -273,7 +257,7 @@ foam.INTERFACE({
       if ( this instanceof UserCapabilityJunction &&
            ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
 
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
       Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
       if ( now.before(getExpiry())) {
         Date renewable = calculateDate(x, getExpiry(), -1 * getRenewalPeriod(), getRenewalPeriodTimeUnit());
@@ -295,7 +279,7 @@ foam.INTERFACE({
            ((UserCapabilityJunction) this).getStatus() != CapabilityJunctionStatus.GRANTED ) return false;
 
       Date grace = calculateDate(x, getExpiry(), getGracePeriod(), getGracePeriodTimeUnit());
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
       Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
       // e <= n <= g
       return ! now.before(getExpiry()) &&
@@ -319,7 +303,7 @@ foam.INTERFACE({
       // }
 
       if ( getExpiry() != null ) return this;
-      if ( ! this.getTimeZone().equals("Africa/Abidjan") ) {
+      if ( ! this.getTimeZone().equals("GMT") ) {
         this.setTimeZone(ren.getTimeZone());
       }
       this.setExpiry(ren.getExpiry());
@@ -340,7 +324,7 @@ foam.INTERFACE({
       javaCode: `
       if ( ! getIsRenewable() ) return 0L;
 
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
       Date now = Date.from(LocalDateTime.now(zone).atZone(zone).toInstant());
       if ( ! now.after(getExpiry()) ) {
         return getExpiry().getTime() - now.getTime();
@@ -350,7 +334,7 @@ foam.INTERFACE({
         return grace.getTime() - now.getTime();
       }
       return 0L;
-     `
+      `
     }
   ]
 });

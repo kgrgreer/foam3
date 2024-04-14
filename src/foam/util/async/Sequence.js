@@ -75,8 +75,7 @@ foam.CLASS({
           })
         );
       }
-      let name = typeof spec.getImpliedId === 'function'
-        ? spec.getImpliedId(args) : foam.uuid.randomGUID();
+      const name = spec.getImpliedId?.(args) || foam.uuid.randomGUID();
       return this.addAs(name, spec, args);
     },
 

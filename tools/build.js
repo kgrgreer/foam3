@@ -277,7 +277,7 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
   var webroot = BUILD_DIR + '/webroot'; // ???: Why doesResourceMaker uses journals/webroot instead?
   ensureDir(webroot);
 
-  execSync(__dirname + `/pmake.js -makers="Webroot" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -makers=Webroot -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
   var foambin = `foam-bin-${VERSION}.js`;
   copyFile('./' + foambin, webroot + '/' + foambin);
@@ -287,7 +287,7 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 task('Copy images from src sub directories to BUILD_DIR/images.', [], function jarImages() {
   JAR_INCLUDES += ` -C ${BUILD_DIR} images `;
 
-  execSync(__dirname + `/pmake.js -makers="Image" -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -makers=Image -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 });
 
 task('Include journals in jar.', [], function jarJournals() {
@@ -301,7 +301,7 @@ task('Display generated JAR manifest file.', [], function showManifest() {
 
 
 task('Show POM structure.', [], function showPOMStructure() {
-  execSync(__dirname + `/pmake.js -flags=web,java -makers="Verbose" -pom=${pom()}`, {stdio: 'inherit'});
+  execSync(__dirname + `/pmake.js -flags=web,java -makers=Verbose -pom=${pom()}`, {stdio: 'inherit'});
 });
 
 
@@ -313,10 +313,8 @@ task('Install npm and git hooks.', [], function install() {
   execSync('npm install');
   process.chdir('..');
 
-//   if ( IS_MAC ) {
-    ensureDir(join(APP_HOME, 'journals'));
-    ensureDir(join(APP_HOME, 'logs'));
-//  }
+  ensureDir(join(APP_HOME, 'journals'));
+  ensureDir(join(APP_HOME, 'logs'));
 
   // git hooks
   execSync('git config core.hooksPath .githooks');
@@ -399,7 +397,7 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers="JS" -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 
@@ -415,15 +413,15 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers="${makers}" ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers="Journal" ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
-  execSync(`node foam3/tools/pmake.js -makers="Maven" -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
   try {
     execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
   } catch (_) {
@@ -445,7 +443,7 @@ task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function
 
   rmfile(JAR_OUT);
   fs.writeFileSync(BUILD_DIR + '/MANIFEST.MF', manifest());
-  execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${APP_HOME} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
+  execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${BUILD_DIR} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
 
 
@@ -741,6 +739,8 @@ const ARGS = {
     args => { POM = args; info('POM=' + POM); } ],
   r: [ 'Start nanos with whatever was last built.',
     () => RESTART_ONLY = true ],
+  R: [ 'Set app deployment root directory',
+        args => { APP_ROOT = args } ],
   s: [ 'Stop a running daemonized nanos.',
     () => STOP_ONLY = true ],
   '$': [ 'When debugging, start suspended.', // renamed from 'S' in build.sh

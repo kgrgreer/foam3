@@ -13,6 +13,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.DOP',
     'foam.lib.json.JSONParser',
@@ -91,7 +92,7 @@ foam.CLASS({
       MedusaEntry me = (MedusaEntry) parser_.get().parseString(message);
 
       test ( me != null, "MedusaEntry deserialized");
-      MedusaTestObject oldMto = (MedusaTestObject) validate(me, false);
+      MedusaTestObject oldMto = (MedusaTestObject) validate(x, me, false);
 
       // Update
       value = "updated";
@@ -160,7 +161,7 @@ foam.CLASS({
 
       test ( entry != null, "MedusaEntry (update) deserialized");
 
-      validate(entry, true);
+      validate(x, entry, true);
 
       // test an object with a predicate
       String json = entrySupport.data(x, new foam.nanos.ruler.RuleGroup.Builder(x).setId("id").build(), null, DOP.PUT);
@@ -176,7 +177,7 @@ foam.CLASS({
     },
     {
       name: 'validate',
-      args: 'MedusaEntry entry, boolean update',
+      args: 'X x, MedusaEntry entry, boolean update',
       type: 'foam.core.FObject',
       javaCode: `
       String DT = "D ";
@@ -221,7 +222,8 @@ foam.CLASS({
       n = (MedusaTestObjectNested) (transientMto.getNetworkTransientFObject());
       test ( n == null, DT+"networkTransientFObject null");
 
-      return (MedusaTestObject) dataMto.overlay(transientMto);
+      MedusaEntrySupport entrySupport = new MedusaEntrySupport(x);
+      return (MedusaTestObject) entrySupport.overlay(dataMto, transientMto);
       `
     }
   ]

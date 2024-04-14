@@ -424,6 +424,7 @@ if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) 
           name: 'clear' + capitalized,
           visibility: 'public',
           type: 'void',
+          forceJavaOutputter: true,
           body: `assertNotFrozen();
 ${isSet} = false;`
         });

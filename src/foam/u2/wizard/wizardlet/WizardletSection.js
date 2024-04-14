@@ -114,6 +114,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'border',
+      class: 'foam.u2.ViewSpec',
+      documentation: 'A border to display for this section.',
+      value: { class: 'foam.u2.borders.NullBorder' }
+    },
+    {
       name: 'navTitle',
       class: 'String',
       documentation: 'Short title used for navigation menu items',
@@ -131,6 +137,7 @@ foam.CLASS({
   methods: [
     function createView(opt_spec, opt_ctx_extras) {
       if ( ! opt_spec ) opt_spec = {};
+       // to do: look into why we need wizardlet's subcontext to render the view
       var ctx = this.wizardlet.__subSubContext__.createSubContext({
         wizardController: this.wizardlet.wizardController ||
           this.wizardlet.__subContext__.wizardController
@@ -145,8 +152,8 @@ foam.CLASS({
       });
 
       if ( this.customView ) {
-        return this.ViewSpec.createView(
-          this.customView, { data$: this.wizardlet.data$ }, this, ctx);
+        let vs = { ...this.customView, data$: this.wizardlet.data$ }
+        return this.ViewSpec.createView( (this.border ? { ...this.border, children: [ vs ] } : vs) , {}, this, ctx);
       }
 
       ctx.register(
@@ -159,17 +166,17 @@ foam.CLASS({
       var showTitle = null;
       if ( this.showTitle != null ) showTitle = this.showTitle;
       else if ( this.showWizardletSectionTitles != null ) showTitle = this.showWizardletSectionTitles;
-
-      return this.ViewSpec.createView(this.section.view,
-        { 
-          section: this.section,
-          data$: this.wizardlet.data$,
-          of$: this.wizardlet.data$.map(d => d.cls_),
-          ...opt_spec,
-          // ...(showTitle != null ? { showTitle: showTitle } : {})
-          // this line is equivalent to commented code above
-          ...(showTitle != null ? { showTitle } : {})
-        }, this, ctx);
+      let spec = { 
+        ...this.section.view, 
+        section: this.section,
+        data$: this.wizardlet.data$,
+        of$: this.wizardlet.data$.map(d => d.cls_),
+        ...opt_spec,
+        // ...(showTitle != null ? { showTitle: showTitle } : {})
+        // this line is equivalent to commented code above
+        ...(showTitle != null ? { showTitle } : {}) 
+      };
+      return this.ViewSpec.createView( (this.border ? { ...this.border, children: [ spec ] } : spec), {}, this, ctx);
     }
   ]
 });

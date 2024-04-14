@@ -23,6 +23,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sheetsCompatibleDates',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'addUnits',
+      value: true
     }
   ],
 
@@ -41,15 +46,12 @@ foam.CLASS({
             return stringArr.join(' ');
           }
           if ( foam.core.UnitValue.isInstance(prop) ) {
-            if ( addUnitPropValueToStr ) {
-              if ( unitPropName ) {
-                if ( prop.unitPropValueToString ) {
-                  return await prop.unitPropValueToString(x, val, unitPropName);
-                }
-                return unitPropName + ' ' + ( val / 100 ).toString();
+            if ( unitPropName ) {
+              if ( prop.unitPropValueToString ) {
+                return await prop.unitPropValueToString(x, val, unitPropName, ! addUnitPropValueToStr);
               }
+              return val.toString();
             }
-            return ( val / 100 ).toString();
           }
           if ( foam.core.DateTime.isInstance(prop) ) {
             return this.dateTimeToString(val);

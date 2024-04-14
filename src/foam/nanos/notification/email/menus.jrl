@@ -13,3 +13,31 @@ p({
   },
   parent:"admin"
 })
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"emailmessages",
+  "label":"Email Messages",
+  "keywords": ["email","message"],
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"emailMessageDAO"
+    }
+  },
+  "parent":"admin"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"emailtemplates",
+  "label":"Email Templates",
+  "keywords": ["email","message","template"],
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"emailTemplateDAO"
+    }
+  },
+  "parent":"admin"
+})

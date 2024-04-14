@@ -1932,6 +1932,9 @@ foam.CLASS({
     function toString_(x) {
       return typeof x === 'number' ? '' + x :
         typeof x === 'string' ? '"' + x + '"' :
+        typeof x === 'boolean' ? ( x ? 'true' : 'false' ) :
+        x === null ? 'null' :
+        x === undefined ? 'undefined' :
         Array.isArray(x) ? '[' + x.map(this.toString_.bind(this)).join(', ') + ']' :
         x && x.toString?.();
     },
@@ -2447,12 +2450,12 @@ foam.CLASS({
           return this.Gt.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
         } else if (this.And.isInstance(this.arg1)) {
           for ( var i = 0; i < this.arg1.args.length; i++ ) {
-            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+            this.arg1.args[i] = this.Not.create({ arg1: this.arg1.args[i] });
           }
           return this.Or.create({args: this.arg1.args[i]});
         } else if (this.Or.isInstance(this.arg1)) {
           for ( var i = 0; i < this.arg1.args.length; i++ ) {
-            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+            this.arg1.args[i] = this.Not.create({ arg1: this.arg1.args[i] });
           }
           return this.And.create({args: this.arg1.args[i]});
         }
@@ -3317,6 +3320,9 @@ foam.CLASS({
       name: 'orderDirection',
       code: function() { return 1; },
       javaCode: 'return 1;'
+    },
+    function partialEval(o) {
+      return this;
     }
   ]
 });
@@ -4026,6 +4032,7 @@ foam.CLASS({
     function DIV() { return this._nary_("Divide", arguments); },
     function MIN_FUNC() { return this._nary_("MinFunc", arguments); },
     function MAX_FUNC() { return this._nary_("MaxFunc", arguments); },
+    function CONSTANT(v) { return this.Constant.create({ value: v }); },
 
     function UNIQUE(expr, sink) { return this.Unique.create({ expr: expr, delegate: sink }); },
     function GROUP_BY(expr, opt_sinkProto, opt_limit) { return this.GroupBy.create({ arg1: expr, arg2: opt_sinkProto || this.COUNT(), groupLimit: opt_limit || -1 }); },
@@ -4284,7 +4291,7 @@ foam.CLASS({
       if ( ps.value() instanceof foam.mlang.Expr ) {
         return ((foam.mlang.Expr) ps.value()).f(obj);
       }
-      return ((foam.mlang.predicate.Nary) ps.value()).f(obj);
+      return ((foam.mlang.predicate.Predicate) ps.value()).f(obj);
       `
     }
   ]
@@ -4786,6 +4793,10 @@ foam.CLASS({
     'java.util.List'
   ],
 
+  requires: [
+    'foam.mlang.Constant'
+  ],
+
   properties: [
     {
       class: 'foam.mlang.ExprArrayProperty',
@@ -4848,6 +4859,8 @@ foam.CLASS({
             }
           }
         }
+
+        foam.assert(result !== null, 'Formula ' + this.toString() + ' result is null.');
         return this.rounding ? Math.round(result) : result;
       }
     },
@@ -4863,6 +4876,38 @@ foam.CLASS({
     {
       name: 'partialEval',
       type: 'foam.mlang.Expr',
+      code: function() {
+        if ( this.args.length === 0 ) return this;
+        if ( this.args.length === 1 ) return this.args[0].partialEval?.() || this.args[0];
+
+        var valList = [];
+        var argList = [];
+        for ( var i = 0; i < this.args.length; i++ ) {
+          var arg = this.args[i];
+          if ( arg.partialEval               ) arg = arg.partialEval();
+          if ( this.Constant.isInstance(arg) ) arg = parseFloat(arg.f(this));
+
+          if ( typeof arg === 'number' ) {
+            valList.push(arg);
+          } else {
+            argList.push(arg);
+          }
+        }
+
+        // reduce the valList result
+        if ( valList.length > 0 ) {
+          var result = valList.reduce(this.reduce);
+          if ( ! isFinite(result) )
+            return this.Constant.create({ value: result });
+
+          if ( argList.length === 0 )
+            return this.Constant.create({ value: this.rounding ? Math.round(result) : result });
+
+          // append valList result to the un-resolvable argList
+          argList.push(this.Constant.create({ value: result }));
+        }
+        return this.cls_.create({ rounding: this.rounding, args: argList });
+      },
       javaCode: `
         if ( getArgs().length == 0 ) return this;
         if ( getArgs().length == 1 ) return getArgs()[0].partialEval();

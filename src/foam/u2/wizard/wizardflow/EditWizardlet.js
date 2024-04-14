@@ -29,7 +29,8 @@ foam.CLASS({
           for ( const k in spec ) {
             wizardlet[k] = spec[k];
           }
-        }
+        },
+        spec: this
       });
       return this;
     },
@@ -41,7 +42,8 @@ foam.CLASS({
             ...args,
             alternateFlow: x[name]
           }, x))
-        }
+        },
+        spec: this
       })
       return this;
     },
@@ -56,7 +58,8 @@ foam.CLASS({
           executeFn: x => {
             const wizardlet = this.getWizardlet_(x);
             wizardlet.wao[prop] = value;
-          }
+          },
+          spec: this
         })
         return this;
       }
@@ -72,12 +75,17 @@ foam.CLASS({
               ...value,
               delegate: wizardlet.wao[prop]
             }
-          }
+          },
+          spec: this
         })
         return this;
       }
       throw new Error(`WizardFlow.push called for unrecognized prop: ${prop}`);
       return this;
     },
+
+    function toSummary() {
+      return this.cls_.name + '_' + this.wizardletId;
+    }
   ]
 })

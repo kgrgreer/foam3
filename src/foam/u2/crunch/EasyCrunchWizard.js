@@ -130,14 +130,10 @@ foam.CLASS({
       };
 
       sequence.reconfigure('CreateControllerAgent', { config: config });
-      if ( this.skipMode )
-        sequence.reconfigure('SkipGrantedAgent', {
-          mode: this.skipMode });
-      if ( this.statelessWizard )
-        sequence.remove('WizardStateAgent');
-      if ( this.preventApprovableCreation )
-        sequence.remove('GrantedEditAgent');
-      
+      if ( this.skipMode                  ) sequence.reconfigure('SkipGrantedAgent', { mode: this.skipMode });
+      if ( this.statelessWizard           ) sequence.remove('WizardStateAgent');
+      if ( this.preventApprovableCreation ) sequence.remove('GrantedEditAgent');
+
       // Apply sequence extras
       for ( const fluentSpec of this.sequenceExtras ) {
         fluentSpec.apply(sequence);

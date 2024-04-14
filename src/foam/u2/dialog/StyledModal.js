@@ -68,8 +68,10 @@ foam.CLASS({
       position: relative;
     }
     ^title{
-      margin-right: min(10%, 16px);
       padding-bottom: 16px;
+    }
+    ^inner^closeable ^title {
+      margin-right: min(10%, 16px);
     }
     ^actionBar {
       display: flex;
@@ -148,6 +150,7 @@ foam.CLASS({
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)
+            .enableClass(this.myClass('closeable'), this.closeable$)
             .startContext({ data: this })
               .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
                 .addClass(this.myClass('X'))
