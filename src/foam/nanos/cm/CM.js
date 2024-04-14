@@ -81,7 +81,14 @@ foam.CLASS({
         class: 'foam.u2.view.FObjectView',
         of: 'foam.nanos.cron.Schedule'
       },
-      javaFactory: `return new CronSchedule.Builder(getX()).build();`
+      javaFactory: `
+        return new CronSchedule
+                .Builder(getX())
+                .setSecond(0)
+                .setMinute(0)
+                .setHours("-1")
+                .build();
+      `
     },
     {
       class: 'Code',
@@ -115,7 +122,7 @@ foam.CLASS({
       javaCode: `
         try {
           setLastComputed(new java.util.Date());
-          setExpiry(new java.util.Date(System.currentTimeMillis() + getValidity() * getTimeUnit().getConversionFactorMs()));
+          setExpiry(getSchedule().getNextScheduledTime(x, null));
         } catch (Exception e) {
           Loggers.logger(x, this).error("CM: \`" + getId() + "\` failed to schedule", e);
         }
