@@ -17,16 +17,33 @@
 
 foam.CLASS({
   package: 'foam.nanos.so',
-  name: 'TaskCleanUpRuleAction',
+  name: 'OrphanedTaskDeactivateRuleAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
-  documentation: 'Cleans up task',
+  documentation: 'Disactivates task when it is removed from an active system outage',
+
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.logger.Loggers'
+  ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        ((SystemOutageTask) obj).cleanUp(x);
+        SystemOutageTask newTask = (SystemOutageTask) obj;
+        SystemOutageTask oldTask = (SystemOutageTask) ((DAO) x.get("systemOutageTaskDAO")).find(newTask.getId());
+        
+        SystemOutage outage = oldTask.findOutage(x);
+        if ( outage == null ) {
+          Loggers.logger(x, this).error("outage not found", "outage", oldTask.getOutage(), "task", oldTask.getId());
+          return;
+        }
+
+        if ( outage.getActive() ) {
+          newTask.deactivate(x);
+          Loggers.logger(x, this).error("Disactivated task", newTask.getId());
+        }
       `
     }
   ]

@@ -17,33 +17,32 @@
 
 foam.CLASS({
   package: 'foam.nanos.so',
-  name: 'TaskRemovedPredicate',
-  extends: 'foam.mlang.predicate.AbstractPredicate',
-  
-  implements: ['foam.core.Serializable'],
+  name: 'SystemOutageRemoveRuleAction',
+  implements: [ 'foam.nanos.ruler.RuleAction' ],
 
-  documentation: `
-    A predicate for checking if tasks are removed from system outage.
-  `,
+  documentation: 'Executes any jobs need to be done before system outage is removed',
 
   javaImports: [
-    'foam.core.XLocator',
-    'foam.nanos.so.SystemOutage',
-
-    'static foam.mlang.MLang.NEW_OBJ',
-    'static foam.mlang.MLang.OLD_OBJ'
+    'foam.dao.ArraySink',
+    'foam.nanos.logger.Loggers',
+    'java.util.List'
   ],
 
   methods: [
     {
-      name: 'f',
+      name: 'applyAction',
       javaCode: `
-        SystemOutage newSo = (SystemOutage) NEW_OBJ.f(obj);
-        SystemOutage oldSo = (SystemOutage) OLD_OBJ.f(obj);
+        SystemOutage outage = (SystemOutage) obj;
 
-        long numRemovedTasks = oldSo.findNonOverlappingTasks(XLocator.get(), newSo).length;
-        return numRemovedTasks > 0;
+        // Deactivate all tasks belonged to active outage
+        if ( outage.getActive() ) {
+          List<SystemOutageTask> tasks = ((ArraySink) outage.getTasks(x).select(new ArraySink())).getArray();
+          for ( SystemOutageTask task : tasks ) {
+            task.deactivate(x);
+            Loggers.logger(x, this).info("Deactivated task", task.getId());
+          }
+        }
       `
     }
   ]
-});
+})
