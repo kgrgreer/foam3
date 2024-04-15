@@ -247,14 +247,11 @@ foam.CLASS({
           var link = document.createElement('a');
           var href = '';
           if ( self.exportDriverReg.mimeType && self.exportDriverReg.mimeType.length != 0 ) {
-            var prefix = 'data:' + self.exportDriverReg.mimeType + ',';
-            href = encodeURI(prefix + result);
+            var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
+            href = URL.createObjectURL(blob);
           } else {
-            href = result;
+            console.error("Data type for export not specified");
           }
-
-          var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
-          href = URL.createObjectURL(blob);
           link.setAttribute('href', href);
           link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
           document.body.appendChild(link);
