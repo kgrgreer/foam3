@@ -20,36 +20,12 @@ foam.CLASS({
   name: 'SystemOutageTask',
   abstract: true,
 
-  documentation: `  `,
-
   javaImports: [
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
     'java.util.List'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'id',
-      order: -20,
-      visibility: 'RO'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.so.SystemOutage',
-      name: 'systemOutage',
-      order: -10,
-      hidden: true
-    }
-  ],
-
-  tableColumns: [
-    'id',
-    'type',
-    'outage'
   ],
 
   properties: [
@@ -69,27 +45,37 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'id',
+    'type',
+    'outage'
+  ],
+
   methods: [
     {
       name: 'activate',
       args: 'X x',
-      javaCode: `
-        // nop
+      abstract: true,
+      documentation: `
+        Activate must always be called through a system outage.
+        By doing so, it can be guaranteed that this task has been activated
+        iff the calling system outage is active.
       `
     },
     {
       name: 'deactivate',
       args: 'X x',
-      javaCode: `
-        // nop
-      `
+      abstract: true
     },
     {
       name: 'cleanUp',
       args: 'X x',
       documentation: 'work to be done when task is removed',
       javaCode: `
-        deactivate(x);
+        SystemOutage outage = findOutage(x);
+        if ( outage != null && outage.getActive() ) {
+          deactivate(x);
+        }
       `
     },
     {
