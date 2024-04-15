@@ -250,7 +250,7 @@ foam.CLASS({
             var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
             href = URL.createObjectURL(blob);
           } else {
-            console.error("Data type for export not specified");
+            throw new Error('Data type for export not specified');
           }
           link.setAttribute('href', href);
           link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
