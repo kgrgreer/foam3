@@ -713,7 +713,9 @@ foam.CLASS({
         // TODO: hack because addProperty is async
         setTimeout(this.updateMemento.bind(this), 100);
       } else {
-        for ( ; c !== this.canvas ; c = c.parent ) {
+          // for ( ; c !== this.canvas ; c = c.parent ) {
+          // TODO: temporary fix
+          for ( ; c && c !== this.canvas ; c = c.parent ) {
           var p = c.getPrivate_('lpp_');
           if ( p ) {
             this.selected = p;
