@@ -9,7 +9,7 @@ exports.description = 'copies .flow files into /build/documents';
 const fs_                                 = require('fs');
 const { copyFile, ensureDir, isExcluded } = require('./buildlib');
 
-const documentFiles  = [];
+const documentFiles = [];
 
 exports.init = function() {
   X.documentdir = X.builddir + '/documents/';
