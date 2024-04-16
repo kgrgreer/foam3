@@ -31,8 +31,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
     'java.util.Arrays',
-    'java.util.List',
-    'java.util.stream.Collectors'
+    'java.util.List'
   ],
 
   tableColumns: [
