@@ -78,9 +78,16 @@ foam.CLASS({
       args: 'X x',
       documentation: 'execute Activate on all SystemOutageTasks',
       javaCode: `
+        if ( ! getActive() ) {
+          setActive(true);
+          SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
+          this.copyFrom(outage);
+        }
+
         List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
         for ( var task : tasks ) {
           try {
+            task = (SystemOutageTask) task.fclone();
             task.activate(x);
             getTasks(x).put(task);
           } catch ( RuntimeException e ) {
@@ -94,9 +101,16 @@ foam.CLASS({
       args: 'X x',
       documentation: 'execute Deactivate on all SystemOutageTasks',
       javaCode: `
+        if ( getActive() ) {
+          setActive(false);
+          SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
+          this.copyFrom(outage);
+        }
+
         List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
         for ( var task : tasks ) {
           try {
+            task = (SystemOutageTask) task.fclone();
             task.deactivate(x);
             getTasks(x).put(task);
           } catch ( RuntimeException e ) {
