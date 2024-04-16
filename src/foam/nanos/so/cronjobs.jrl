@@ -1,15 +1,14 @@
-
 p({
   "class": "foam.nanos.cron.Cron",
   "id": "SystemOutage",
   "description": "Activate/deactivate SystemOutages",
   "clusterable": true,
-  "enabled": true,
+  "enabled": false,
   "schedule": {
     "class":"foam.nanos.cron.IntervalSchedule",
     "duration":{
       "class":"foam.nanos.cron.TimeHMS",
-      "minute":1
+      "minute":5
     }
   },
   "code": """
