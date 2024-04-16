@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 foam.CLASS({
   package: 'foam.nanos.so',
   name: 'SystemNotificationTask',
-  implements: [ 'foam.nanos.so.SystemOutageTask' ],
+  extends: 'foam.nanos.so.SystemOutageTask',
 
   documentation: 'Task for managing SystemNotification display',
 

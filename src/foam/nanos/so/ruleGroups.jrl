@@ -1,0 +1,9 @@
+p({
+  class:"foam.nanos.ruler.RuleGroup",
+  id:"SystemOutage"
+})
+
+p({
+  class:"foam.nanos.ruler.RuleGroup",
+  id:"SystemOutageTask"
+})

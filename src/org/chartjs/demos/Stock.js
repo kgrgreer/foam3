@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'org.chartjs.demos',
   name: 'Stock',
+
   requires: [
     'foam.dao.EasyDAO',
     'foam.graphics.CView',
@@ -14,11 +15,13 @@ foam.CLASS({
     'foam.graphics.PieGraph2',
     'foam.graphics.PieGraphLabels',
     'foam.u2.DetailView',
-    'org.chartjs.Pie',
+    'org.chartjs.Pie'
   ],
+
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
+
   properties: [
     {
       class: 'Boolean',
@@ -44,7 +47,7 @@ foam.CLASS({
             this.StockPriceSnapshot.PRICE));
         this.stockPriceSnapshotDAO.listen(sink);
         return sink;
-      },
+      }
     },
     {
       name: 'stockPrices',
@@ -60,7 +63,7 @@ foam.CLASS({
             this.SUM(this.StockPriceSnapshot.PRICE)));
         this.stockPriceSnapshotDAO.listen(sink);
         return sink;
-      },
+      }
     },
     {
       name: 'totalHoldings',
@@ -72,7 +75,7 @@ foam.CLASS({
         var sink = this.GROUP_BY(this.StockOrder.SYMBOL, this.SUM(this.StockOrder.SHARES));
         this.stockOrderDAO.listen(sink);
         return sink;
-      },
+      }
     },
     {
       name: 'holdingsByPersonPie',
@@ -88,7 +91,7 @@ foam.CLASS({
             this.SUM(this.StockOrder.SHARES)));
         this.stockOrderDAO.listen(sink);
         return sink;
-      },
+      }
     },
     {
       name: 'holdingsByPersonBar',
@@ -98,7 +101,7 @@ foam.CLASS({
       },
       expression: function(holdingsByPersonPie) {
         return holdingsByPersonPie;
-      },
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -109,7 +112,7 @@ foam.CLASS({
           daoType: 'MDAO',
           seqNo: true,
         });
-      },
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -118,9 +121,9 @@ foam.CLASS({
         return this.EasyDAO.create({
           of: this.StockPriceSnapshot,
           daoType: 'MDAO',
-          seqNo: true,
+          seqNo: true
         });
-      },
+      }
     },
     {
       class: 'StringArray',
@@ -129,9 +132,9 @@ foam.CLASS({
         return [
           'Adam',
           'Mike',
-          'Kevin',
+          'Kevin'
         ];
-      },
+      }
     },
     {
       class: 'StringArray',
@@ -142,16 +145,17 @@ foam.CLASS({
           'GOOG',
           'JNUG',
           'NFLX',
-          'TSLA',
+          'TSLA'
         ];
-      },
+      }
     },
     {
       class: 'Date',
       name: 'date',
       factory: function() { return new Date() },
-    },
+    }
   ],
+
   classes: [
     {
       name: 'StockPriceSnapshot',
@@ -159,7 +163,7 @@ foam.CLASS({
         { name: 'id' },
         { class: 'Date', name: 'date' },
         { class: 'String', name: 'symbol' },
-        { class: 'UnitValue', name: 'price' },
+        { class: 'UnitValue', name: 'price' }
       ]
     },
     {
@@ -172,7 +176,7 @@ foam.CLASS({
           name: 'person',
           chartJsFormatter: function(v) {
             return v + '!'
-          },
+          }
         },
         { class: 'UnitValue', name: 'pricePerShare' },
         {
@@ -180,10 +184,10 @@ foam.CLASS({
           name: 'shares',
           chartJsFormatter: function(v) {
             return v + ' shares'
-          },
-        },
+          }
+        }
       ]
-    },
+    }
   ],
   listeners: [
     {
@@ -194,7 +198,7 @@ foam.CLASS({
         if ( ! this.autoAddRandomOrder ) return;
         this.addRandomOrder();
         this.maybeAddRandomOrder();
-      },
+      }
     },
     {
       name: 'maybeAddRandomSnapshots',
@@ -204,8 +208,8 @@ foam.CLASS({
         if ( ! this.autoAddRandomSnapshots ) return;
         this.addRandomSnapshots();
         this.maybeAddRandomSnapshots();
-      },
-    },
+      }
+    }
   ],
   actions: [
     {
@@ -219,7 +223,7 @@ foam.CLASS({
           shares: Math.floor(Math.random()*100) - 50,
           pricePerShare: Math.random()*100000,
         }));
-      },
+      }
     },
     {
       name: 'addRandomSnapshots',
@@ -234,7 +238,7 @@ foam.CLASS({
           }));
         })
         self.date = new Date(self.date.getTime() + 24*60*60*1000);
-      },
-    },
-  ],
+      }
+    }
+  ]
 });

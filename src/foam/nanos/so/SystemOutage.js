@@ -27,7 +27,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.nanos.logger.Loggers'
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.logger.Loggers',
+    'java.util.Arrays',
+    'java.util.List'
   ],
 
   tableColumns: [
@@ -42,7 +46,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
@@ -63,19 +68,6 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'endTime'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.nanos.so.SystemOutageTask',
-      name: 'tasks',
-      view: {
-        class: 'foam.u2.view.FObjectArrayView',
-        of: 'foam.nanos.so.SystemOutageTask',
-        valueView: {
-          class: 'foam.u2.view.FObjectView',
-          of: 'foam.nanos.so.SystemOutageTask'
-        }
-      }
     }
   ],
 
@@ -83,32 +75,36 @@ foam.CLASS({
     {
       name: 'activate',
       args: 'X x',
-      type: 'Void',
-      documentation: 'execute activate systemoutagetasks',
+      documentation: 'a facade method for executing Activate on all SystemOutageTasks',
       javaCode: `
-        for ( var task : getTasks() ) {
-          try {
-            task.activate(x);
-          } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to activate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
-          }
+        if ( getActive() ) {
+          Loggers.logger(x, this).info("System Outage is already active. Activate aborted.", getId());
+          return;
         }
+
+        SystemOutage clone = (SystemOutage) fclone();
+        clone.setActive(true);
+        ((DAO) x.get("systemOutageDAO")).put(clone);
       `
     },
     {
       name: 'deactivate',
       args: 'X x',
-      type: 'Void',
-      documentation: 'execute activate systemoutagetasks',
+      documentation: 'a facade method for executing Deactivate on all SystemOutageTasks',
       javaCode: `
-        for ( var task : getTasks() ) {
-          try {
-            task.deactivate(x);
-          } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.getClass().getSimpleName(), "error : " + e);
-          }
+        if ( ! getActive() ) {
+          Loggers.logger(x, this).info("System Outage is already inactive. Deactivate aborted.", getId());
         }
+
+        SystemOutage clone = (SystemOutage) fclone();
+        clone.setActive(false);
+        ((DAO) x.get("systemOutageDAO")).put(clone);
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() { return this.name; }
     }
   ]
 });

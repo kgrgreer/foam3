@@ -33,11 +33,22 @@ foam.CLASS({
 
   methods: [
     function installInProto(proto) {
-      var oldRender = proto.render, self = this;
+      var self = this;
 
-      proto.render = async function() {
-        await self.installLib();
-        oldRender.apply(this, arguments);
+      var oldRender = proto.render;
+      if ( oldRender ) {
+        proto.render = async function() {
+          await self.installLib();
+          oldRender.apply(this, arguments);
+        }
+      }
+
+      var oldPaint = proto.paintSelf;
+      if ( oldPaint ) {
+        proto.paintSelf = async function() {
+          await self.installLib();
+          oldPaint.apply(this, arguments);
+        }
       }
     },
 

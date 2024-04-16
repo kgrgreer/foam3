@@ -9,9 +9,7 @@ foam.CLASS({
   name: 'ChartCView',
   extends: 'foam.graphics.CView',
 
-  requires: [
-    'org.chartjs.Lib'
-  ],
+  mixins: [ 'org.chartjs.Lib' ],
 
   properties: [
     {
@@ -25,13 +23,13 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.config', 'invalidate']
+    [ '', 'propertyChange.config', 'invalidate' ]
   ],
 
   methods: [
     function paintSelf(x) {
       if ( this.chart_ ) this.chart_.destroy();
-      this.chart_ = new this.Lib.CHART(x, this.config);
+      this.chart_ = new Chart(x, this.config);
       this.chart_.render();
     }
   ]

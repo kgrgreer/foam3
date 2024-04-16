@@ -7,7 +7,6 @@
 package foam.core;
 
 import foam.nanos.logger.Logger;
-
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -19,7 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class AbstractFObjectArrayPropertyInfo
-    extends AbstractArrayPropertyInfo {
+  extends AbstractArrayPropertyInfo
+{
 
   @Override
   public Object fromString(String value) {
@@ -101,15 +101,15 @@ public abstract class AbstractFObjectArrayPropertyInfo
       }
     }
   }
-  
+
   public String getSQLType() {
     return "";
   }
-  
+
   public Object get(Object o) {
     return get_(o);
   }
-  
+
   public int comparePropertyToObject(Object key, Object o) {
     return foam.util.SafetyUtil.compare(cast(key), get_(o));
   }

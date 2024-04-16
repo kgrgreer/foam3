@@ -8,22 +8,26 @@ foam.CLASS({
   package: 'org.chartjs.demos',
   name: 'ConfigurableChartView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.u2.DetailView',
-    'org.chartjs.Pie',
+    'org.chartjs.Pie'
   ],
+
   imports: [
-    'classloader',
+    'classloader'
   ],
+
   properties: [
     'view',
     {
       name: 'config',
       factory: function() {
         return this.Config.create();
-      },
-    },
+      }
+    }
   ],
+
   classes: [
     {
       name: 'Config',
@@ -31,12 +35,12 @@ foam.CLASS({
         {
           class: 'Int',
           name: 'height',
-          value: 500,
+          value: 500
         },
         {
           class: 'Int',
           name: 'width',
-          value: 1000,
+          value: 1000
         },
         {
           class: 'StringArray',
@@ -47,13 +51,14 @@ foam.CLASS({
               'green',
               'blue',
               'orange',
-              'purple',
+              'purple'
             ]
-          },
-        },
-      ],
-    },
+          }
+        }
+      ]
+    }
   ],
+
   methods: [
     function render() {
       this.
@@ -68,6 +73,6 @@ foam.CLASS({
             })
           }.bind(this))
         }));
-    },
-  ],
+    }
+  ]
 });

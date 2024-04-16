@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'Pie',
   extends: 'org.chartjs.AbstractChartCView',
   flags: ['web'],
+
   properties: [
     [ 'chartType', 'pie' ],
     {
@@ -24,11 +25,12 @@ foam.CLASS({
         tooltipItem = tooltipItem[0];
         return data.datasets[tooltipItem.datasetIndex].label;
       }
-    },
+    }
   ],
+
   methods: [
-    function configChart_(chart) {
-      delete chart.options.scales;
+    function configChart_() {
+      delete this.config.options.scales;
     },
     function genChartData_(data) {
       var chartData = this.toChartData(data);
@@ -37,7 +39,7 @@ foam.CLASS({
           d.data = d.data.map(function(d) { return d.y });
         }
         d.backgroundColor = this.colors.map(function(c) {
-          return this.Lib.CHART.helpers.color(c).alpha(0.5).rgbString();
+          return Chart.helpers.color(c).alpha(0.5).rgbString();
         }.bind(this))
         d.borderColor = this.colors
       }.bind(this));

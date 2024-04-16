@@ -31,18 +31,19 @@ foam.CLASS({
     setup(x);
 
     try {
-      DAO seDAO = (DAO) x.get("systemOutageDAO");
+      DAO soDAO = (DAO) x.get("systemOutageDAO");
 
-      SystemOutage se = new SystemOutage(x);
-      se.setName(this.getClass().getSimpleName());
-      se.setEnabled(true);
-      se.setActive(true);
+      SystemOutage so = new SystemOutage(x);
+      so.setName(this.getClass().getSimpleName());
+      so.setEnabled(true);
+      so.setActive(true);
+      so = (SystemOutage) soDAO.put(so).fclone();
+
       SystemNotificationTask task = new SystemNotificationTask();
       SystemNotification note = new SystemNotification();
       task.setSystemNotification(note);
       task.setThemes(new String[] {"foam"});
-      se.setTasks(new SystemNotificationTask[] {task});
-      se = (SystemOutage) seDAO.put(se).fclone();
+      so.getTasks(x).put(task);
 
       SystemNotificationService service = (SystemNotificationService) x.get("systemNotificationService");
 
@@ -59,8 +60,7 @@ foam.CLASS({
       note = new SystemNotification();
       note.setKey("test");
       task.setSystemNotification(note);
-      se.setTasks(new SystemNotificationTask[] {task});
-      se = (SystemOutage) seDAO.put(se);
+      so.getTasks(x).put(task);
 
       notes = service.getSystemNotifications(y, "test");
       test ( notes.length == 1 && notes[0].getKey().equals("test"), "SystemNotification (key) found");
