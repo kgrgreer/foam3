@@ -737,7 +737,7 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
-//              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
+              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' || r.name === "FOOBAR" || r.name === "U2/U3" ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
