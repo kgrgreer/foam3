@@ -76,52 +76,30 @@ foam.CLASS({
     {
       name: 'activate',
       args: 'X x',
-      documentation: 'execute Activate on all SystemOutageTasks',
+      documentation: 'a facade method for executing Activate on all SystemOutageTasks',
       javaCode: `
         if ( getActive() ) {
           Loggers.logger(x, this).info("System Outage is already active. Activate aborted.", getId());
           return;
         }
 
-        setActive(true);
-        SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
-        this.copyFrom(outage);
-
-        List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
-        for ( var task : tasks ) {
-          try {
-            task = (SystemOutageTask) task.fclone();
-            task.activate(x);
-            getTasks(x).put(task);
-          } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to activate System Outage: " + task.toSummary(), "error : " + e);
-          }
-        }
+        SystemOutage clone = (SystemOutage) fclone();
+        clone.setActive(true);
+        ((DAO) x.get("systemOutageDAO")).put(clone);
       `
     },
     {
       name: 'deactivate',
       args: 'X x',
-      documentation: 'execute Deactivate on all SystemOutageTasks',
+      documentation: 'a facade method for executing Deactivate on all SystemOutageTasks',
       javaCode: `
         if ( ! getActive() ) {
           Loggers.logger(x, this).info("System Outage is already inactive. Deactivate aborted.", getId());
         }
 
-        setActive(false);
-        SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
-        this.copyFrom(outage);
-
-        List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
-        for ( var task : tasks ) {
-          try {
-            task = (SystemOutageTask) task.fclone();
-            task.deactivate(x);
-            getTasks(x).put(task);
-          } catch ( RuntimeException e ) {
-            Loggers.logger(x, this).error("Failed to deactivate System Outage: " + task.toSummary(), "error : " + e);
-          }
-        }
+        SystemOutage clone = (SystemOutage) fclone();
+        clone.setActive(false);
+        ((DAO) x.get("systemOutageDAO")).put(clone);
       `
     },
     {

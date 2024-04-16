@@ -1,5 +1,43 @@
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"foam_nanos_so_system_outage_activate",
+  "name":"System Outage Activate",
+  "documentation":"Activates system outage",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"systemOutageDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.FScriptRulePredicate",
+    "query":"(o !exists || o.active == false) && n.active == true"
+  },
+  "action":{
+    "class":"foam.nanos.so.SystemOutageOnActivateRuleAction"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"foam_nanos_so_system_outage_deactivate",
+  "name":"System Outage Deactivate",
+  "documentation":"Deactivates system outage",
+  "ruleGroup":"SystemOutage",
+  "daoKey":"systemOutageDAO",
+  "operation":1,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.FScriptRulePredicate",
+    "query":"o.active == true && n.active == false"
+  },
+  "action":{
+    "class":"foam.nanos.so.SystemOutageOnDeactivateRuleAction"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"foam_nanos_so_task_cleanup_on_remove",
   "name":"Task Cleanup On Remove",
   "documentation":"Cleans up task when removed",
