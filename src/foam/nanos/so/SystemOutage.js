@@ -78,11 +78,14 @@ foam.CLASS({
       args: 'X x',
       documentation: 'execute Activate on all SystemOutageTasks',
       javaCode: `
-        if ( ! getActive() ) {
-          setActive(true);
-          SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
-          this.copyFrom(outage);
+        if ( getActive() ) {
+          Loggers.logger(x, this).info("System Outage is already active. Activate aborted.", getId());
+          return;
         }
+
+        setActive(true);
+        SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
+        this.copyFrom(outage);
 
         List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
         for ( var task : tasks ) {
@@ -101,11 +104,13 @@ foam.CLASS({
       args: 'X x',
       documentation: 'execute Deactivate on all SystemOutageTasks',
       javaCode: `
-        if ( getActive() ) {
-          setActive(false);
-          SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
-          this.copyFrom(outage);
+        if ( ! getActive() ) {
+          Loggers.logger(x, this).info("System Outage is already inactive. Deactivate aborted.", getId());
         }
+
+        setActive(false);
+        SystemOutage outage = (SystemOutage) ((DAO) x.get("systemOutageDAO")).put(this);
+        this.copyFrom(outage);
 
         List<SystemOutageTask> tasks = (List) ((ArraySink) getTasks(x).select(new ArraySink())).getArray();
         for ( var task : tasks ) {
