@@ -24,7 +24,7 @@ p({
   "predicate":{
     "class":"foam.nanos.ruler.predicate.FScriptRulePredicate",
     "query":"o.outage exists && n.outage !exists"
-  }
+  },
   "action":{
     "class":"foam.nanos.so.OrphanedTaskDeactivateRuleAction"
   },
