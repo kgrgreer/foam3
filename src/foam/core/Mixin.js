@@ -20,7 +20,7 @@ foam.CLASS({
     },
     'flags',
     'path',
-    ['priority', 200]
+    ['priority', 19]
   ],
 
   methods: [
