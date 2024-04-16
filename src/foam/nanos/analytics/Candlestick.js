@@ -7,7 +7,6 @@
 foam.CLASS({
   package: 'foam.nanos.analytics',
   name: 'Candlestick',
-  ids: ['closeTime', 'key'],
 
   documentation: `
     Represents a single candlestick in a financial candlestick chart. See
@@ -31,8 +30,11 @@ foam.CLASS({
     'min',
     'max',
     'average',
-    'total',
+    'total'
   ],
+
+  ids: [ 'closeTime', 'key' ],
+
   properties: [
     {
       class: 'Object',
@@ -107,6 +109,7 @@ foam.CLASS({
     //   getter: function() { return this.key; }
     }
   ],
+
   methods: [
     {
       name: 'fclone',
