@@ -23,6 +23,8 @@ foam.CLASS({
   documentation: 'Executes any jobs need to be done before system outage is removed',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.nanos.logger.Loggers',
     'java.util.List'
@@ -34,14 +36,21 @@ foam.CLASS({
       javaCode: `
         SystemOutage outage = (SystemOutage) obj;
 
-        // Deactivate all tasks belonged to active outage
-        if ( outage.getActive() ) {
-          List<SystemOutageTask> tasks = ((ArraySink) outage.getTasks(x).select(new ArraySink())).getArray();
-          for ( SystemOutageTask task : tasks ) {
-            task.deactivate(x);
-            Loggers.logger(x, this).info("Deactivated task", task.getId());
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            // Deactivate all tasks belonged to active outage
+            if ( outage.getActive() ) {
+              List<SystemOutageTask> tasks = ((ArraySink) outage.getTasks(x).select(new ArraySink())).getArray();
+              for ( SystemOutageTask task : tasks ) {
+                task = (SystemOutageTask) task.fclone();
+                task.deactivate(x);
+                outage.getTasks(x).put(task);
+                Loggers.logger(x, this).info("Deactivated task", task.getId());
+              }
+            }
           }
-        }
+        }, "SystemOutageRemove");
       `
     }
   ]

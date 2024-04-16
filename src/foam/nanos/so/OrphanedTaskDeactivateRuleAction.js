@@ -23,6 +23,8 @@ foam.CLASS({
   documentation: 'Disactivates task when it is removed from an active system outage',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Loggers'
   ],
@@ -32,18 +34,24 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         SystemOutageTask newTask = (SystemOutageTask) obj;
-        SystemOutageTask oldTask = (SystemOutageTask) ((DAO) x.get("systemOutageTaskDAO")).find(newTask.getId());
-        
-        SystemOutage outage = oldTask.findOutage(x);
-        if ( outage == null ) {
-          Loggers.logger(x, this).error("outage not found", "outage", oldTask.getOutage(), "task", oldTask.getId());
-          return;
-        }
+        SystemOutageTask oldTask = (SystemOutageTask) oldObj;
 
-        if ( outage.getActive() ) {
-          newTask.deactivate(x);
-          Loggers.logger(x, this).error("Disactivated task", newTask.getId());
-        }
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            SystemOutage outage = oldTask.findOutage(x);
+            if ( outage == null ) {
+              Loggers.logger(x, this).error("outage not found", "outage", oldTask.getOutage(), "task", oldTask.getId());
+              return;
+            }
+    
+            if ( outage.getActive() ) {
+              newTask.deactivate(x);
+              Loggers.logger(x, this).error("Disactivated task", newTask.getId());
+            }
+          }
+        }, "Orphaned Task Deactivate");
+        
       `
     }
   ]

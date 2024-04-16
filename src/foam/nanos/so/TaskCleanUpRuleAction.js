@@ -22,11 +22,21 @@ foam.CLASS({
 
   documentation: 'Cleans up task',
 
+  javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X'
+  ],
+
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        ((SystemOutageTask) obj).cleanUp(x);
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            ((SystemOutageTask) obj).cleanUp(x);
+          }
+        }, "TaskCleanUp");
       `
     }
   ]
