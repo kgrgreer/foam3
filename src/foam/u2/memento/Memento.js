@@ -150,7 +150,7 @@ foam.CLASS({
     },
 
     function detachTail() {
-      console.log('detaching tail', this.tailStr)
+      // console.log('detaching tail', this.tailStr)
       this.tail?.detach();
       this.tail = null;
       this.tailStr = '';
@@ -242,7 +242,7 @@ foam.CLASS({
   listeners: [
     function removeMementoTail() {
       // Logging to track memento issues
-      console.log('Detaching tail ', this.obj?.cls_.name, this.tailStr);
+      // console.log('Detaching tail ', this.obj?.cls_.name, this.tailStr);
       this.tail = null;
       this.tailStr = undefined;
       this.update();
@@ -275,7 +275,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 32,
       code: function() {
-        console.log('*** update_(): ', this.$UID, this.cls_.name, 'objClass:', this.obj.cls_.name, 'tail:', this.tail && (this.tail.$UID + ' ' + this.tail.usedStr), 'usedStr:', this.usedStr);
+        // console.log('*** update_(): ', this.$UID, this.cls_.name, 'objClass:', this.obj.cls_.name, 'tail:', this.tail && (this.tail.$UID + ' ' + this.tail.usedStr), 'usedStr:', this.usedStr);
         if ( this.parent ) {
           this.parent.update();
         } else {
@@ -325,7 +325,7 @@ foam.CLASS({
       // Not framed or merged so can detect hashFeedback_ properly
       documentation: 'Called when the window hash is updated, causes update to memento.',
       code: function() {
-        console.log('onHashChange', this.hashFeedback_, this.window.location.hash);
+        // console.log('onHashChange', this.hashFeedback_, this.window.location.hash);
         if ( this.hashFeedback_ ) return;
         this.str = this.window.location.hash.substring(1);
       }

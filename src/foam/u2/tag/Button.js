@@ -397,7 +397,7 @@ foam.CLASS({
       height: 1em;
     }
     /* Loading indicator css */
-    ^[data-loading] > :not(^loading) {
+    ^[data-loading] > :not(^loading),  ^[data-loading] > :not(^loading) * {
       opacity: 0;
     }
     ^loading {

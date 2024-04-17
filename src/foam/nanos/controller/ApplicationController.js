@@ -735,7 +735,6 @@ foam.CLASS({
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
         return;
       }
-      console.log('**** pushMenu_', realMenu, menu, opt_forceReload);
       dao = this.client.menuDAO;
       let stringMenu = menu && foam.String.isInstance(menu);
 
@@ -859,15 +858,15 @@ foam.CLASS({
       this.loginSuccess = true;
       let check = await this.checkGeneralCapability();
       if ( ! check ) return;
-
-      await this.fetchTheme();
+      this.stack.resetStack();
       this.initLayout.resolve();
+      await this.fetchTheme();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
-        this.pushMenu('', true);
+        this.pushDefaultMenu();
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
@@ -1021,11 +1020,9 @@ foam.CLASS({
       }
     },
     function routeTo(link) {
-      console.log('*** routeTo: ', link);
       /**
        * Replaces the url to redirect to the new menu without cleared tails
        */
-      // this.memento_.str = link;
       this.window.location.hash = link;
     },
     async function routeToDAO(dao, id) {
