@@ -720,6 +720,15 @@ foam.CLASS({
       name: 'propertyType',
       of: 'foam.nanos.auth.PropertyType',
       documentation: 'Defines property type of address.'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      label: 'Address',
+      transient: true,
+      factory: function() {
+        return this.toSummary();
+      }
     }
   ],
 

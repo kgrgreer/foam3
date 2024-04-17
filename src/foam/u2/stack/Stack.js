@@ -176,6 +176,19 @@ foam.CLASS({
     }
   ],
 
+  listeners: [
+    {
+      name: 'pubBlockRemoval',
+      on: ['this.propertyChange.pos'],
+      code: function() {
+        let pos = this.pos;
+        while ( pos >= 0 && this.stack_[pos].popup ) { pos--; }
+        if ( this.topNonPopup && this.topNonPopup != this.stack_[pos] ) { this.topNonPopup.removed.pub(); }
+        this.topNonPopup = this.stack_[pos] || null;
+      }
+    }
+  ],
+
   actions: [
     {
       name: 'back',

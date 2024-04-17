@@ -775,11 +775,15 @@ foam.CLASS({
     },
 
     function process(child, name) {
-      var id   = this.package + '.' + name;
+      var id = this.package + '.' + name;
+
+      // There is a top-level <xs:element name="Document" type="Document"/>
+      // in each document, but the real definition will appear below
+      // as <xs:complexType name="Document">, so skip this one.
+      if ( child.localName == 'element' ) return;
 
       // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-      if ( name !== 'Document' &&
-           foam.maybeLookup(id) ) return;
+      if ( name !== 'Document' && foam.maybeLookup(id) ) return;
 
       // create foam model
       var m = this.createClass(this.package, name);

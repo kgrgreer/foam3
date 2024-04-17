@@ -252,7 +252,7 @@ foam.CLASS({
             this
               .start()
                 .addClass(self.myClass('button-container'))
-                .callIfElse(foam.u2.ActionReference.isInstance(action), function() { 
+                .callIfElse(foam.u2.ActionReference.isInstance(action), function() {
                   this.tag(action.action, { buttonStyle: 'UNSTYLED', data$: action.data$})
                 }, function() {
                   this.tag(action, { buttonStyle: 'UNSTYLED' })

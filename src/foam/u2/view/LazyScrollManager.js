@@ -195,7 +195,7 @@ foam.CLASS({
     function init() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({
         fn: () => {
-          this.data$proxy.cmd(foam.dao.DAO.PURGE_CMD);
+          this.data.on.reset.pub();
           this.updateCount();
         }
       })));

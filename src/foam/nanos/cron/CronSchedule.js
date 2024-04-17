@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.time.TimeZone',
     'foam.util.SafetyUtil',
+    'static foam.util.DateUtil.getTimeZoneId',
     'java.time.*',
     'java.time.temporal.*',
     'java.util.Arrays',
@@ -54,7 +55,7 @@ foam.CLASS({
       of: 'foam.time.TimeZone',
       name: 'timeZone',
       order: 0,
-      value: 'Africa/Abidjan' // UTC/GMT
+      value: 'GMT'
     },
     {
       class: 'Int',
@@ -245,7 +246,7 @@ foam.CLASS({
       args: 'X x, java.util.Date from',
       type: 'Date',
       javaCode: `
-      var zone = getTimeZoneId(x);
+      var zone = getTimeZoneId(x, getTimeZone());
 
       LocalDateTime last = null;
       if ( from == null ) {
@@ -294,22 +295,6 @@ foam.CLASS({
         time = time.plusMinutes(1);
       }
       return Date.from(time.atZone(zone).toInstant());
-      `
-    },
-    {
-      name: 'getTimeZoneId',
-      args: 'X x',
-      javaType: 'java.time.ZoneId',
-      javaCode: `
-      var zone = ZoneId.systemDefault();
-      if ( ! foam.util.SafetyUtil.isEmpty(getTimeZone()) ) {
-        TimeZone timeZone = (TimeZone) ((DAO) x.get("timeZoneDAO")).find(OR(EQ(TimeZone.ID, getTimeZone()), EQ(TimeZone.DISPLAY_NAME, getTimeZone())));
-        if ( timeZone == null ) {
-          Loggers.logger(x, this).error("TimeZone not found", getTimeZone());
-        }
-        zone = ZoneId.of(timeZone.getId());
-      }
-      return zone;
       `
     },
     {

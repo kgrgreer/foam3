@@ -1,0 +1,59 @@
+// TODO: client needs to read, but admin to edit
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "systemOutageDAO",
+  serve: true,
+  serviceScript: """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.so.SystemOutage.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("systemOutages")
+      .build()
+  """,
+  client: """
+    {
+      "of": "foam.nanos.so.SystemOutage"
+    }
+   """
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "systemOutageTaskDAO",
+  serve: true,
+  serviceScript: """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.so.SystemOutageTask.getOwnClassInfo())
+      .setFuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("systemOutageTasks")
+      .build()
+  """,
+  client: """
+    {
+      "of": "foam.nanos.so.SystemOutageTask"
+    }
+   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "systemNotificationService",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.so.SystemNotificationServiceSkeleton",
+  "serviceClass": "foam.nanos.so.SystemNotificationServiceServer",
+  "client":"""
+    {
+      "class":"foam.nanos.so.SystemNotificationServiceClient",
+      "delegate": {
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":"service/systemNotificationService"
+        }
+      }
+    }
+  """
+})

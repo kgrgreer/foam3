@@ -18,7 +18,6 @@ foam.CLASS({
       of: 'foam.nanos.boot.NSpec',
       name: 'nSpec',
       label: 'NSpec',
-      visibility: 'RO',
       tableWidth: 225,
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();

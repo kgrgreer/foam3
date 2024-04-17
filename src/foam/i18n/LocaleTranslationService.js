@@ -34,9 +34,9 @@ foam.CLASS({
 
         DAO localeDAO = (DAO) getX().get("localeDAO");
 
-        // locale - determines locale type (en, fr, es …etc)        
+        // locale - determines locale type (en, fr, es …etc)
         // variant - Locale variation (CA for en-CA, CA for fr-CA, AT for de_AT …etc)
-        String variant = "";
+        String variant     = "";
         Locale localeEntry = null;
 
         // note: 'locale' passed to the function may be in locale format or in local variant format
@@ -44,13 +44,13 @@ foam.CLASS({
         boolean hasVariant = locale.contains("-");
         if ( hasVariant ) {
           variant = locale.substring(3).toUpperCase();
-          locale = locale.substring(0,2).toLowerCase();
+          locale  = locale.substring(0,2).toLowerCase();
 
           // search for locale and variant
           localeEntry = (Locale) localeDAO.find(
             AND(
-              EQ(Locale.SOURCE, source),        
-              EQ(Locale.LOCALE, locale),
+              EQ(Locale.SOURCE,  source),
+              EQ(Locale.LOCALE,  locale),
               EQ(Locale.VARIANT, variant)
             )
           );
@@ -62,15 +62,15 @@ foam.CLASS({
         if ( localeEntry == null ) {
           localeEntry = (Locale) localeDAO.find(
             AND(
-              EQ(Locale.SOURCE, source),
-              EQ(Locale.LOCALE, locale),
+              EQ(Locale.SOURCE,  source),
+              EQ(Locale.LOCALE,  locale),
               EQ(Locale.VARIANT, "")
             )
           );
         }
 
         String translation = localeEntry != null ? localeEntry.getTarget() : defaultText;
-        
+
         return translation;
       `
     }

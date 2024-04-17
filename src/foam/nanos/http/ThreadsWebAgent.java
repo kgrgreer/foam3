@@ -50,7 +50,7 @@ public class ThreadsWebAgent
     PrintWriter        out         = x.get(PrintWriter.class);
     HttpServletRequest req         = x.get(HttpServletRequest.class);
     Set<Thread>        threadSet   = Thread.getAllStackTraces().keySet();
-    Session            session      = x.get(Session.class);
+    Session            session     = x.get(Session.class);
     Thread[]           threadArray = threadSet.toArray(new Thread[threadSet.size()]);
     boolean            showAll     = "y".equals(req.getParameter("showAll"));
 
@@ -65,8 +65,8 @@ public class ThreadsWebAgent
     out.println("<br><H1>Threads</H1>\n");
     out.println("<pre>");
 
-    int parkedThreads    = 0;
-    int sleepingThreads  = 0;
+    int parkedThreads   = 0;
+    int sleepingThreads = 0;
     Map<Thread.State, Integer> threadsInState = new HashMap();
     out.println("<table style=\"width: 100%\">");
     out.println("<tr>");

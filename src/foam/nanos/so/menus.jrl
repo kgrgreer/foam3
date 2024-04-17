@@ -1,0 +1,15 @@
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"systemOutages",
+  label:"System Outages",
+  keywords: ["system", "outage", "banner", "notification", "alarm"],
+  handler:{
+    class:"foam.nanos.menu.DAOMenu2",
+    config:{
+      class:"foam.comics.v2.DAOControllerConfig",
+      daoKey:"systemOutageDAO",
+      browseTitle:"System Outages"
+    }
+  },
+  parent:"admin"
+})

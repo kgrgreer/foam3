@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
   documentation: 'Border that adds a list of menus around child views',
 
-  imports: ['menuDAO'],
+  imports: ['menuDAO', 'currentMenu'],
 
   requires: ['foam.nanos.u2.navigation.ApplicationLogoView'],
 
@@ -67,7 +67,7 @@ foam.CLASS({
         .add(this.slot(function(menuArray_) {
           let el = this.E();
           for ( i of menuArray_ ) {
-            el.tag(i[0], i[1]);
+            el.start(i[0], i[1]).show(this.currentMenu$.map(v => v != i[0])).end();
           }
           return el;
         }))

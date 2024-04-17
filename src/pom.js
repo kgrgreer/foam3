@@ -253,6 +253,7 @@ foam.POM({
     { name: "foam/u2/borders/Block",                                  flags: "web" },
     { name: "foam/u2/borders/MultiBorder",                            flags: "web" },
     { name: "foam/u2/borders/ControlBorder",                          flags: "web" },
+    { name: "foam/u2/borders/AlertMessageBorder",                     flags: "web" },
     { name: "foam/u2/borders/StatusPageBorder",                       flags: "web" },
     { name: "foam/u2/borders/MenuGroupBorder",                        flags: "web" },
     { name: "foam/u2/borders/BaseUnAuthBorder",                       flags: "web" },

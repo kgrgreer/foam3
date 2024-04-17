@@ -9,6 +9,15 @@ foam.CLASS({
   name: 'PermissiveEditBehaviour',
   extends: 'foam.nanos.crunch.edit.AbstractEditBehaviour',
 
+  properties: [
+    {
+      name: 'wizardletBorder',
+      factory: function(){
+        return 'foam.u2.wizard.views.PermissiveEditWizardletBorder'
+      }
+    }
+  ],
+
   methods: [
     {
       name: 'maybeApplyEdit',

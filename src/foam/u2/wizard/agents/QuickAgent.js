@@ -8,6 +8,12 @@ foam.CLASS({
   package: 'foam.u2.wizard.agents',
   name: 'QuickAgent',
 
+  static: [
+    function getImpliedId(args) {
+      return args.spec?.toSummary?.();
+    }
+  ],
+
   properties: [
     {
       class: 'Function',

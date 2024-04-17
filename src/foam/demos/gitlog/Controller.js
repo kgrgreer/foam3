@@ -112,7 +112,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   css: `
-    ^ table { font-size: smaller; }
+    ^ table { font-size: smaller; margin-right: 20px; }
     ^ th { text-align: right; }
     ^ th:first-child { text-align: left; }
     ^ td { align: rigth; }
@@ -125,14 +125,37 @@ foam.CLASS({
   ],
 
   methods: [
+    function cell(self, count, totalCount, salary) {
+      var a = [];
+
+      if ( this.data.showCounts ) {
+        a.push(count || '-');
+      }
+
+      if ( count ) {
+        if ( this.data.showPercentages ) {
+          a.push((count/totalCount*100).toFixed(0) + '%');
+        }
+
+        if ( this.data.showSalaries ) {
+          a.push('$' + Math.round(count/totalCount * salary).toLocaleString());
+//          a.push('$' + (salary/count).toFixed(0).toLocaleString());
+        }
+      }
+
+      self.add(a.join(' / ') || '-');
+    },
+
     function render() {
       var self            = this;
       var allCommits      = this.data.commits;
+      var salaries        = this.data.salaries;
       var commits         = this.data.filteredCommits;
       var allCounts       = [0,0,0,0,0,0,0,0,0,0,0,0];
       var counts          = [0,0,0,0,0,0,0,0,0,0,0,0];
       var authorCounts    = {};
       var allAuthorCounts = {};
+      var totalSalary     = 0;
 
       commits.forEach(c => {
         var month   = c.date.getMonth();
@@ -158,11 +181,15 @@ foam.CLASS({
           this.start('th').add(h).end();
         }).end().
         forEach(this.data.authors, function(a) {
-          var total = 0, allTotal = 0;
+          var total = 0, allTotal = 0, salaryTotal = 0;
+
           if ( ! authorCounts[a[0]] ) return;
           this.start('tr').
             enableClass('selected', self.selection$.map(s => s === a[0])).
+
+            // Author Title
             start('th').
+              attr('nowrap', true).
               start('href').
                 on('click', () => {
                   if ( self.selection == a[0] ) {
@@ -175,37 +202,39 @@ foam.CLASS({
                 add(a[0]).
               end().
             end().
+
+            // Per-Month Details
             forEach(authorCounts[a[0]], function(c, i) {
-              total += c;
-              allTotal += allAuthorCounts[a[0]][i];
-              this.start('td').add(c || '-').call(function() {
-                if ( ! self.data.showPercentages ) return;
-                if ( c )
-                  this.add(' / ', (100*c/allAuthorCounts[a[0]][i]).toFixed(0) + '%');
+              var salary = 0;
+              try { salary = salaries[a[0]][i]; } catch (x) {}
+              total       += c;
+              allTotal    += allAuthorCounts[a[0]][i];
+              salaryTotal += salary;
+              this.start('td').attr('nowrap', true).call(function() {
+                self.cell(this, c, allAuthorCounts[a[0]][i], salary);
               }).end();
             }).
-            start('th').
-              add(total).
-              call(function() {
-                if ( ! self.data.showPercentages ) return;
-                if ( total )
-                  this.add(' / ', (100*total/allTotal).toFixed(0) + '%');
-              }).
-            end().
+
+            // Totals
+            start('th').attr('nowrap', true).call(function() {
+              self.cell(this, total, allTotal, salaryTotal);
+            }).end().
           end();
         }).
+
+        // Per-Month Totals
         start('tr').
           start('th').on('click', () => self.selection = '-- All --').add('All:').end().
           forEach(counts, function(c, i) {
-            this.start('th').add(c).call(function() {
-              if ( ! self.data.showPercentages ) return;
-              if ( c )
-                this.add(' / ', (100*c/allCounts[i]).toFixed(0) + '%');
+            this.start('th').attr('nowrap', true).call(function() {
+              var monthlySalaryTotal = Object.values(salaries).reduce((sum, s) => s[i] + sum, 0);
+              totalSalary += monthlySalaryTotal;
+              debugger;
+              self.cell(this, c, allCounts[i], monthlySalaryTotal);
             }).end();
           }).
-          start('th').add(this.data.filteredCommits.length).call(function() {
-            if ( ! self.data.showPercentages ) return;
-            this.add(' / ', (100*self.data.filteredCommits.length/self.data.commits.length).toFixed(0) + '%');
+          start('th').attr('nowrap', true).call(function() {
+            self.cell(this, self.data.filteredCommits.length, self.data.commits.length, totalSalary);
           }).end().
         end().
       end();
@@ -244,6 +273,8 @@ foam.CLASS({
 
   constants: {
     IGNORE_CONTAINS: [
+      ' -> ',
+      '4.',
       'Add test',
       'broken build',
       'Cleanup',
@@ -256,14 +287,17 @@ foam.CLASS({
       'Foam peg',
       'FOAM peg',
       'FOAM Peg',
+      'FOAM_PEG',
       'Merge release',
       'merge',
       'Peg  foam',
       'peg -foam',
       'peg dev',
       'peg foam',
+      'peg Foam',
       'peg FOAM',
       'Peg foam',
+      'Peg Foam',
       'Peg FOAM',
       'peg master',
       'peg nwe foam',
@@ -273,6 +307,7 @@ foam.CLASS({
       'peg to',
       'pege foam',
       'peged',
+      'pegfoam',
       'pegFoam',
       'Pegged to dev foam',
       'pegged',
@@ -290,12 +325,13 @@ foam.CLASS({
       'revert',
       'Revert',
       'Small fix',
+      'Space corrected',
       'spacing fixes',
+      'spacing',
+      'Spacing',
       'typo',
-      ' -> ',
-      'v4.',
-      '4.',
       'v2.',
+      'v4.'
     ],
     IGNORE_EQUALS: [
       'foam',
@@ -305,7 +341,6 @@ foam.CLASS({
       'foam2',
       'formatting',
       'master foam',
-      'update version',
       'Add comment.',
       'Add space',
       'added space',
@@ -315,6 +350,7 @@ foam.CLASS({
       'Fix indentation.',
       'fix space',
       'fix spaces',
+      'Fixed space',
       'fixing pr',
       'format',
       'Formatting.',
@@ -326,8 +362,10 @@ foam.CLASS({
       'remove extra space',
       'Remove extra space',
       'Remove space.',
+      'Remove stale comments.',
       'remove space',
       'Remove unused code.',
+      'update version',
       'removed a space',
       'Sort exports.',
       'space',
@@ -342,6 +380,7 @@ foam.CLASS({
     ],
     AUTHOR_MAP: {
       'dependabot[bot]': 'dependabot[bot]',
+      'Adam Van Ymeren': 'Adam Van Ymeren',
       'Mritunjay Chauhan': 'Mritunjay Chauhan',
       'Mritunjay': 'Mritunjay Chauhan',
       'mritunjay51': 'Mritunjay Chauhan',
@@ -439,16 +478,49 @@ foam.CLASS({
       'xuerongNanopay': 'Xuerong Wu',
       'yij793': 'Garfiled Jian'
     },
+
+    IGNORED_AUTHORS: {
+      'Adam Van Ymeren': true,
+      'Ani Maria Lukose': true,
+      'Arturs Pavlovs': true,
+      'dependabot[bot]': true,
+      'Mahimaa Jayaprakash': true,
+      'Moorthy Rathinasamy': true,
+      'Mritunjay Chauhan': true,
+      'Mykola Kolombet': true
+    },
+
     PROJECT_RULES: [
       {
-        name: 'Hybrid-Blockchain',
-        keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
-        paths: [ 'medusa', 'cluster', 'sf' ]
+        name: 'Test',
+        keywords: [ ],
+        paths: [ 'demos/m0' ]
+      },
+      {
+        name: 'Intuit',
+        keywords: [ 'intuit' ],
+        paths: [ 'intuit' ]
+      },
+      {
+        name: 'NBP',
+        keywords: [ 'nbp' ],
+        paths: [ 'nbp', 'transfer' ]
+      },
+      {
+       name: 'FOOBAR',
+        keywords: [ 'genjava', 'genjs', 'pomsplit', 'build', 'Maker', 'pom' ],
+        paths: [ 'tools', 'build', 'foam.js', 'xsd', 'src/foam/xsd' ]
       },
       {
         name: 'NANOS',
-        keywords: [ 'genjava', 'genjs', 'pomsplit', 'memento', 'graphbuilder', 'wizardlet' ],
-        paths: [ 'analytic', 'xsd', 'src/foam/xsd', 'foam/graph', 'foam/foobar' ]
+//        name: 'Hybrid-Blockchain',
+        keywords: [ 'saf', 'storeandforward', 'replay', 'crypt', 'medusa', 'socket', 'compact' ],
+        paths: [ 'medusa', 'cluster', 'sf', 'nanopay/tx', 'nanopay/fx' ]
+      },
+      {
+        name: 'NANOS',
+        keywords: [ 'memento', 'graphbuilder', 'wizardlet' ],
+        paths: [ 'analytic', 'foam/graph', 'foam/foobar', 'doc/templates', 'DocBrowser', 'foam/doc', 'Outputter' ]
       },
       {
 //        name: 'Core',
@@ -458,19 +530,19 @@ foam.CLASS({
       },
       {
         name: 'Application',
-        keywords: [ 'afex' ],
-        paths: [ 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting' ]
+        keywords: [ 'afex', 'approval', 'gateway', 'deployment' ],
+        paths: [ 'companybrand', 'accounting', 'contacts', 'integration', 'gateway', 'plaid', 'rbc', 'afex', 'invoice', 'android', 'deployment', 'nanopay/auth', 'nanopay/admin', 'nanopay/personal', 'svg', 'paymentrequest', 'ticket', 'dashboard', 'bepay', 'billing', 'i18n', 'exchange', 'creditengine', 'compliance', 'treviso', 'bmo', 'flinks', 'onboarding', 'intuit', 'marqeta', 'cards', 'transfer', 'partner', 'interac', 'scotiabank', 'payroll', 'bank', 'reporting', 'payment', 'nanopay/rfi', 'nanopay/sme' ]
       },
       {
-//        name: 'U2/U3',
-name: 'NANOS',
-        keywords: [ 'initE' ],
-        paths: [ 'u2', 'xsd', 'comics', 'foamdev' /* ??? for 2022 only */ ]
+       name: 'U2/U3',
+        keywords: [ 'initE', 'view', 'u3', 'u2', 'demo', 'example'  ],
+        paths: [ 'u2', 'xsd', 'comics', 'foamdev', 'demo', 'layout', 'google/flow', 'phonecat' ]
       },
       {
-        name: 'Hybrid-Blockchain',
-        keywords: [ 'medusa', 'dao', 'json', 'mlang' ],
-        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF' ]
+        name: 'NANOS',
+//        name: 'Hybrid-Blockchain',
+        keywords: [ 'medusa', 'dao', 'json', 'mlang', 'docker' ],
+        paths: [ 'medusa', 'dao', 'box', 'foam/net', 'mlang', 'formatter', 'json', 'Linked', 'util', 'SMF', 'docker', 'Docker', 'iso20022' ]
       },
       {
 //        name: 'Core',
@@ -479,14 +551,8 @@ name: 'NANOS',
         paths: [ 'core', 'pattern' ]
       },
       {
-        name: 'Application',
-//         name: 'Approval',
-        keywords: [ 'approval' ],
-        paths: [ ]
-      },
-      {
-//        name: 'Performance ',
-        name: 'Hybrid-Blockchain',
+        name: 'NANOS',
+//        name: 'Hybrid-Blockchain',
         keywords: [ 'pm', 'performance', 'bench' ],
         paths: [ 'pm', 'concurrent' ]
       },
@@ -502,16 +568,15 @@ name: 'NANOS',
         paths: [ 'nanos', 'dashboard', 'parse', 'Email', 'foam/java', 'src/cronjobs', 'src/regions', 'src/services', 'doc/guides' ]
       },
       {
-//        name: 'U2/U3',
-        name: 'NANOS',
-        keywords: [ 'view', 'u3', 'u2', 'demo', 'example' ],
-        paths: [ 'u2', 'demo', 'layout', 'google/flow', 'phonecat' ]
-      },
-      {
         name: 'Test',
         keywords: [ 'test', 'tests' ],
-        paths: [ 'test', 'tests' ]
-      }
+        paths: [ 'test', 'tests', 'demos/m0' ]
+      },
+      {
+        name: 'Application',
+        keywords: [ ],
+        paths: [ 'nanopay' ]
+      },
     ]
   },
 
@@ -539,6 +604,7 @@ name: 'NANOS',
       class: 'String',
       name: 'author',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.authors}, X);
       }
@@ -556,6 +622,7 @@ name: 'NANOS',
       class: 'String',
       name: 'project',
       value: '-- All --',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({choices: X.data.projects}, X);
       }
@@ -564,8 +631,13 @@ name: 'NANOS',
       class: 'Array',
       name: 'files',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, f)));
+console.log('*********** files: ', this.author, this.project);
+var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => {
+          this.incr(files, f);
+        }));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -574,15 +646,17 @@ name: 'NANOS',
       name: 'file',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.files}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.files$}, X);
       }
     },
     {
       class: 'Array',
       name: 'paths',
       factory: function() {
-        var files = { '/': this.commits.length };
-        this.commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
+        console.log('*********** paths: ', this.author, this.project);
+        var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/', '/', this.project));
+        var files = { '/': commits.length };
+        commits.forEach(c => c.files.forEach(f => this.incr(files, this.fileToPath(f))));
         return Object.keys(files).sort().map(a => [a, a + '      ' + files[a]]);
       }
     },
@@ -591,19 +665,29 @@ name: 'NANOS',
       name: 'path',
       value: '/',
       view: function(_, X) {
-        return foam.u2.view.ChoiceView.create({choices: X.data.paths}, X);
+        return foam.u2.view.ChoiceView.create({choices$: X.data.paths$}, X);
       }
     },
     {
       class: 'String',
       name: 'query',
+      postSet: function() { this.files = undefined; this.paths = undefined; },
       // view: 'foam.u2.SearchField',
       preSet: function(o, n) { return n.toLowerCase(); },
       onKey: true
     },
     {
       class: 'Boolean',
+      name: 'showCounts',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'showPercentages'
+    },
+    {
+      class: 'Boolean',
+      name: 'showSalaries'
     },
     {
       class: 'Boolean',
@@ -612,6 +696,10 @@ name: 'NANOS',
     {
       name: 'data',
       factory: function() { return []; }
+    },
+    {
+      name: 'salaries',
+      factory: function() { return {}; }
     },
     { class: 'Boolean', name: 'isHardSelection' },
     {
@@ -623,6 +711,7 @@ name: 'NANOS',
     {
       name: 'commits',
       expression: function(data) {
+        var seen = {}; // used to remove duplicates based on same date and subject
         var d2 = data.
           filter(c => {
             for ( var i = 0 ; i < this.IGNORE_CONTAINS.length ; i++ ) {
@@ -636,13 +725,19 @@ name: 'NANOS',
             }
             return true;
           }).
+          filter(c => {
+            var signature = c.date + "+" + c.subject;
+            if ( seen[signature] ) return false;
+            seen[signature] = true;
+            return true;
+          }).
           map(c => { c.files = c.files.map(s => s.trim()); return c; }).
-          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
+//          map(c => { c.author = this.AUTHOR_MAP[c.author] || 'UNKNOWN: "' + c.author + '"'; return c; }).
           map(c => {
             var subject = c.subjectLC = c.subject.toLowerCase();
             this.PROJECT_RULES.forEach(r => {
               if ( c.project ) return;
-//              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' ) r.name = 'SR&ED';
+              if ( r.name === 'NANOS' || r.name === 'Hybrid-Blockchain' || r.name === "FOOBAR" || r.name === "U2/U3" ) r.name = 'SR&ED';
               for ( var i = 0 ; i < r.keywords.length ; i++ ) {
                 var keyword = r.keywords[i];
                 if ( subject.indexOf(keyword) != -1 ) {
@@ -688,12 +783,19 @@ name: 'NANOS',
     function loadYear(year) {
       this.loadData(`data/data${year}.log`);
       this.loadData(`data/np${year}.log`);
+      this.loadSalaryData(`data/salary${year}.csv`);
     },
 
     function loadData(f) {
       fetch(f)
       .then(r => r.text())
       .then(t => this.parseLog(t));
+    },
+
+    function loadSalaryData(f) {
+      fetch(f)
+      .then(r => r.text())
+      .then(t => this.parseSalaries(t));
     },
 
     function parseLog(t) {
@@ -710,6 +812,8 @@ name: 'NANOS',
             data.push(commit);
           } else if ( line.startsWith('Author: ') ) {
             commit.author = line.substring(8, line.indexOf('<')).trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            commit.author = this.AUTHOR_MAP[commit.author] || 'Unknown: ' + commit.author;
+            if ( this.IGNORED_AUTHORS[commit.author] ) data.pop();
           } else if ( line.startsWith('Date: ') ) {
             commit.date = new Date(line.substring(6).trim());
             i++;
@@ -740,10 +844,20 @@ name: 'NANOS',
           }
         }
       }
-      if ( commit.author.indexOf('dependabot') != -1 ) return;
-      console.log(commit.author);
       this.data    = this.data.concat(data);
       this.authors = this.files = this.projects = undefined;
+    },
+
+    function parseSalaries(csv) {
+      var self = this;
+      csv.split('\n').slice(1).forEach(s => {
+        s = s.split(',');
+        const name = s[2], salaries = s.slice(3);
+        if ( ! self.IGNORED_AUTHORS[name] )
+          this.salaries[name] = salaries.map(parseFloat);
+      });
+      delete this.salaries[undefined];
+      console.log('salaries: ', this.salaries);
     },
 
     function match(commit, query, author, file, path, project) {
@@ -793,7 +907,7 @@ name: 'NANOS',
           end().
           start().
             style({width: '75%', 'padding-left': '60px'}).
-            add(this.slot(function (filteredCommits, showPercentages) {
+            add(this.slot(function (filteredCommits, showCounts, showPercentages, showSalaries) {
               return self.UserMonthView.create({data: self}, self);
             })).
           end().
@@ -824,7 +938,10 @@ name: 'NANOS',
         add('Project: ',          self.PROJECT).br().
         add('File: ',             self.FILE).br().
         add('Path: ',             self.PATH).br().
+        add('Author: ',           self.AUTHOR).br().
+        add('Show Counts: ',      self.SHOW_COUNTS).br().
         add('Show Percentages: ', self.SHOW_PERCENTAGES).br().
+        add('Show Salaries: ',    self.SHOW_SALARIES).br().
         add('Embed Files: ',      self.EMBED_FILES).br().
       end();
     },

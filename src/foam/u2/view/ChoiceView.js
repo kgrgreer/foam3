@@ -43,7 +43,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      factory: function() { return "select"; }
+      expression: function(prop_) {
+        return prop_?.name ?? 'select';
+      }
     },
     {
       class: 'String',

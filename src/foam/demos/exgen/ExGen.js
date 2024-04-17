@@ -8,6 +8,8 @@ foam.CLASS({
   name: 'ExGen',
   extends: 'foam.u2.Controller',
 
+  documentation: 'Exercise Generator',
+
   requires: [
     'foam.audio.Beep',
     'foam.util.Timer'

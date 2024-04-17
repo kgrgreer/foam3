@@ -227,7 +227,7 @@ foam.CLASS({
             }))
         .end()
         .start().addClass(this.myClass('caption-container'))
-        .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1 }))
+        .show(this.slot(function(showHelp, files) { return showHelp && files.length < 1; }))
           .start()
             .start('p').addClass('p-xs', this.myClass('caption')).add(this.LABEL_SUPPORTED).end()
             .start('p').addClass('p-xs', self.myClass('caption')).add(this.getSupportedTypes(true)).end()
@@ -241,9 +241,9 @@ foam.CLASS({
       .on('dragover', e => { this.isDragged_ = true; e.preventDefault(); } )
       .on('dragenter', e => { this.isDragged_ = true; e.preventDefault(); })
       .on('dragleave', e => { this.isDragged_ = false; e.preventDefault(); })
-      .add(this.slot(function(files) {
+        .add(this.slot(function(files, visibility) {
         var e = this.E().addClass(self.myClass('fileCards'));
-        if ( ! visibilitySlot.get() )
+        if ( ! files.length && ! visibility )
           return e.add(self.NO_FILES);
         for ( var i = 0; i < files.length; i++ ) {
           e.tag({
@@ -285,7 +285,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
+          this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;
@@ -374,7 +374,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
+                this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
               }
             }
           }
@@ -386,7 +386,7 @@ foam.CLASS({
           if ( this.isFileType(file) ) {
             files.push(file);
           } else {
-            ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
+            this.ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
           }
         }
       }

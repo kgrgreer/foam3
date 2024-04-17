@@ -56,8 +56,9 @@ foam.CLASS({
     ^ .foam-u2-tag-Select:focus {
       border: solid 1px #59A5D5;
     }
-    ^ .label{
+    ^ .label {
       color: #000000;
+      font-size: medium;
       margin: 10px 0px 0px 24px;
     }
     ^ .note {
@@ -70,7 +71,6 @@ foam.CLASS({
       position: relative;
       top: 10;
     }
-
     ^ .foam-u2-ActionView-primary {
       margin: 12px;
     }
@@ -247,15 +247,10 @@ foam.CLASS({
           var link = document.createElement('a');
           var href = '';
           if ( self.exportDriverReg.mimeType && self.exportDriverReg.mimeType.length != 0 ) {
-            var prefix = 'data:' + self.exportDriverReg.mimeType + ',';
-            href = encodeURI(prefix + result);
-          } else {
-            href = result;
-          }
-
-          if ( href.length > 100000 ) {
             var blob = new Blob([result], { type: self.exportDriverReg.mimeType });
             href = URL.createObjectURL(blob);
+          } else {
+            throw new Error('Data type for export not specified');
           }
           link.setAttribute('href', href);
           link.setAttribute('download', 'data.' + self.exportDriverReg.extension);
