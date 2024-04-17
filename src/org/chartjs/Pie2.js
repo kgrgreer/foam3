@@ -26,18 +26,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'chartJSOptions',
+      factory: function() {
+        return {};
+      },
+    },
+    {
       name: 'config',
       factory: function() {
         return {
           type: 'pie',
           data: this.data,
-          options: {
-            animation: {
-              duration: 0
-            },
-            responsive: false,
-            maintainAspectRatio: false,
-          }
+          options: {...this.chartJSOptions}
         };
       }
     }

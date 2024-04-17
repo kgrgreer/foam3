@@ -8,8 +8,7 @@ foam.CLASS({
   package: 'org.chartjs',
   name: 'Lib',
   flags: ['web'],
-
   axioms: [
-    foam.u2.JsLib.create({src: 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js'})
+    foam.u2.JsLib.create({src: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js'})
   ]
 });

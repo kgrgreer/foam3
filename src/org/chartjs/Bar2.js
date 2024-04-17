@@ -25,8 +25,20 @@ foam.CLASS({
       }
     },
     {
+      name: 'chartJSOptions',
+      factory: function() {
+        return {};
+      },
+    },
+    {
       name: 'config',
-      required: true
+      factory: function() {
+        return {
+          type: 'bar',
+          data: this.data,
+          options: {...this.chartJSOptions}
+        };
+      }
     }
   ],
 
