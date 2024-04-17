@@ -2240,7 +2240,7 @@ foam.CLASS({
     },
 
     function createElFromSpec_(spec, args, X) {
-      let el = foam.u2.ViewSpec.createView(spec, args, this, X);
+      let el = foam.u2.ViewSpec.createView(spec, args, this, X.createSubContext({ prop: this }));
 
       if ( X.data$ && ! ( args && ( args.data || args.data$ ) ) ) {
         el.data$ = X.data$.dot(this.name);
@@ -2829,6 +2829,7 @@ foam.CLASS({
 
   exports: [ 'as data' ]
 });
+
 
 
 foam.CLASS({

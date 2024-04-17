@@ -9,10 +9,10 @@ foam.CLASS({
   name: 'AbstractMenu',
   abstract: true,
 
-  imports: [ 
+  imports: [
     'menuListener?',
     'pushMenu',
-    'translationService' 
+    'translationService'
   ],
 
   properties: [
@@ -28,18 +28,20 @@ foam.CLASS({
   ],
 
   methods: [
+    function select(X, menu) {
+      /** Called when a menu is selected. **/
+      X.routeTo(menu.id);
+    },
     function launch(X, menu) {
-      var self = this;
-      X.stack.push(foam.u2.stack.StackBlock.create({ 
-        view: () => {
-          return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
-        },
-        parent: X,
-        id: menu.id,
-        shouldResetBreadcrumbs: self.shouldResetBreadcrumbs,
-        breadcrumbTitle$: menu.label$,
-        popup$: this.popup$
-      }));
+      /** Called to activate a menu. **/
+      if ( this.popup ) {
+        X.popupManager.push((menu.border ? { ...menu.border, children: [ this.createView(X, menu) ] } : menu), this, this.popup);
+        return;
+      }
+      X.stack.set(
+        (menu.border ? { ...menu.border, children: [ this.createView(X, menu) ] } : menu),
+        X
+      )
     }
   ]
 });

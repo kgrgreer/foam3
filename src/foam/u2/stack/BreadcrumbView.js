@@ -9,11 +9,11 @@ foam.CLASS({
   name: 'BreadcrumbView',
   extends: 'foam.u2.View',
 
-  imports: ['stack'],
+  imports: [ 'breadcrumbs', 'stack' ],
 
   requires: [
     'foam.core.Action',
-    'foam.u2.view.OverlayActionListView',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   css: `
@@ -61,45 +61,52 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.addClass(this.myClass('display'));
-      if ( this.stack && this.stack.stack_ ) {
-        var navStack = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
-        var themeIcon = navStack.length == 1 ? 'back' : '';
-        navStack.map((v, i) => {
-          var index = i + this.stack.navStackBottom;
-          var jumpAction  = self.Action.create({
+      this.breadcrumbs?.dynamic(function(pos, stack$pos, current) {
+        self.removeAllChildren(); // Remove in U3
+        let endPos = pos
+        if ( self.stack.pos != self.breadcrumbs.current?.view.__subContext__.stackPos ) {
+          endPos = pos + 1
+        }
+        let navStack  = self.breadcrumbs.crumbs?.slice(0, endPos);
+        if ( ! navStack?.length ) {
+          self.hide();
+          return;
+        } else {
+          self.show();
+        }
+        self.addClass(self.myClass('display'));
+        let themeIcon = navStack.length == 1 ? 'back' : '';
+        navStack.forEach((v, i) => {
+          let jumpAction = self.Action.create({
             name: 'back',
             code: () => {
-              self.stack.jump(index, self);
+              v.go();
             }
           });
-          var labelSlot = this.stack.stack_[index].breadcrumbTitle$;
-          jumpAction.label$ = labelSlot;
+          jumpAction.label$.follow(v.title$);
           if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
             self.start(jumpAction, {
-              themeIcon: themeIcon,
+              themeIcon:   themeIcon,
               buttonStyle: 'LINK',
-              size: 'SMALL'
-            }).show(labelSlot).addClass(this.myClass('breadCrumb')).end();
+              size:        'SMALL'
+            }).show(v.title$).addClass(self.myClass('breadCrumb')).end();
           } else if ( i == self.maxHead ) {
             self.tag(this.OverlayActionListView, {
-              label: '...',
-              data$: self.actionArray$,
-              obj: self,
-              buttonStyle: 'LINK',
-              showDropdownIcon: false,
+              label:            '...',
+              data$:            self.actionArray$,
+              obj:              self,
+              buttonStyle:      'LINK',
+              showDropdownIcon: false
             });
             self.actionArray.push(jumpAction);
           } else {
             self.actionArray.push(jumpAction);
           }
-          if ( navStack.length != 1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
-            self.start('span').addClass(this.myClass('slash')).show(labelSlot).add('/').end();
+          if ( navStack.length != 1 && i != navStack.length -1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
+            self.start('span').addClass(self.myClass('slash')).show(v.title$).add('/').end();
           }
-          if ( ! this.stack.stack_[index].breadcrumbTitle )
-            console.warn('Missing Title for BreadcrumbView ' + navStack[i].view);
         });
-      }
+      });
     }
   ]
 });

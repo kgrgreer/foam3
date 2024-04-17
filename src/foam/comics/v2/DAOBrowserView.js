@@ -320,10 +320,6 @@ foam.CLASS({
             config: self.config
           }, this, summaryContext);
 
-          if ( ! self.config.browseContext ) {
-            self.config.browseContext = summaryView;
-          }
-
           if ( summaryView.selectedObjects )
             self.config.selectedObjs$ = summaryView.selectedObjects$;
 

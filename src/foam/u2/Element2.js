@@ -2243,6 +2243,23 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
+  name: 'Router',
+  extends: 'foam.u2.Controller',
+  mixins: [ 'foam.u2.memento.Memorable' ],
+
+  exports: [ 'route' ],
+
+  properties: [
+    {
+      name: 'route',
+      memorable: true
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
   name: 'ActionViewRefinement',
   refines: 'foam.core.Action',
 

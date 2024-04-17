@@ -11,13 +11,13 @@ foam.CLASS({
         .br()
         .add('str: ', this.memento_.str$)
         .br()
-        .add('tailStr: ', this.memento_.tailStr$)
-        .br()
         .add('usedStr: ', this.memento_.usedStr$)
+        .br()
+        .add('tailStr: ', this.memento_.tailStr$)
         .br()
         .add('encoding: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.encode())))
         .br()
-        .add('tail: ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.tail && self.memento_.tail.encode())))
+        .add('tail: ', this.memento_.tail$.map(t => !!t), ' ', this.memento_.usedStr$.map(s => JSON.stringify(self.memento_.tail && self.memento_.tail.encode())))
         .br();
     }
   ]
@@ -155,7 +155,7 @@ foam.CLASS({
   name: 'MementoTest',
   extends: 'MementoController',
 
-  exports: [ 'window' ],
+  exports: [ 'window', 'as demo' ],
 
   mixins: [
     'foam.u2.memento.Memorable'
@@ -188,14 +188,9 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.memento_.str = 'menu1/browse/123?q=foobar';
-
-      // this.subMemento.str = 'q=something';
       this.
         startContext({data: this.memento_}).
           add('Str: ', this.memento_.STR).
-          add('UsedStr: ', this.memento_.usedStr$).br().
-          add('TailStr: ', this.memento_.tailStr$).br().
         endContext();
 
       this.SUPER();
@@ -203,6 +198,10 @@ foam.CLASS({
       this.add('Columns: ', this.COLUMNS);
       this.add('Query: ',   this.QUERY);
       this.tag(Menu);
+
+      if ( ! this.memento_.str ) {
+        window.location.hash = 'menu1/browse/123?q=foobar';
+      }
     }
   ]
 });

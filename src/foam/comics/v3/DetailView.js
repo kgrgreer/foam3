@@ -8,10 +8,9 @@ foam.CLASS({
   package: 'foam.comics.v3',
   name: 'DetailView',
   extends: 'foam.u2.View',
-  mixins: ['foam.u2.memento.Memorable'],
+  implements: ['foam.u2.Routable'],
 
-  documentation: `Experimental new detail view that uses controller mode for a more seamless view/edit experience
-  and offers more customisation while simplifying the code`,
+  documentation: `Detail view for displaying objects in comics 3 controller`,
 
   axioms: [
     foam.pattern.Faceted.create()
@@ -34,11 +33,14 @@ foam.CLASS({
     'currentControllerMode?',
     'notify',
     'setControllerMode?',
-    'stack?'
+    'stack?',
+    'controlBorder'
   ],
 
   exports: [
-    'controllerMode'
+    'controllerMode',
+    'as detailView',
+    'exportStack as stack'
   ],
 
   topics: [
@@ -46,25 +48,39 @@ foam.CLASS({
     'throwError'
   ],
 
+  classes: [
+    {
+      name: 'Stack',
+      extends: 'foam.nanos.u2.navigation.Stack',
+      imports: ['detailView'],
+      methods: [
+        function push(v, p) {
+          let ctx;
+          if ( foam.u2.stack.StackBlock.isInstance(v) && v.parent) {
+            ctx = foam.core.FObject.isInstance(v.parent) ? v.parent.__subContext__: v.parent;
+          } else {
+            ctx = (foam.core.FObject.isInstance(p) ? p.__subContext__: p) ?? v.__subContext__;
+          }
+          if ( this.detailView && this.detailView.stack.pos == this.detailView.__subContext__.stackPos ) {
+            console.warn('***** Pushing inside detail view. Audit and maybe remove');
+            this.detailView.route = ctx.prop?.name || ctx.action?.name;
+          }
+          return this.SUPER(...arguments);
+        }
+      ]
+    }
+  ],
+
   css: `
-    ^ {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    ^main {
-      height: min(600px,100%);
-      padding: 24px 32px;
-    }
-    ^widget-container {
-      width: 100%;
-      display: grid;
-      flex-grow: 1;
-    }
   `,
 
   properties: [
+    {
+      name: 'exportStack',
+      factory: function() {
+        return this.Stack.create({ delegate_: this.stack });
+      }
+    },
     {
       class: 'FObjectProperty',
       name: 'data'
@@ -73,7 +89,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'workingData',
       expression: function(data) {
-        return data?.clone(this);
+        return data?.clone(this) ?? this.config.of.create({}, this);
       }
     },
     {
@@ -81,73 +97,35 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return importedConfig || foam.comics.v2.DAOControllerConfig.create({}, this);
+        return this.importedConfig || foam.comics.v2.DAOControllerConfig.create({}, this);
       }
     },
     {
       name: 'controllerMode',
+      shortName: 'mode',
+      memorable: true,
       factory: function() {
         return this.ControllerMode.VIEW;
       }
     },
     {
       name: 'primary',
-      documentation: `Axiom to store the primary action of the 'of' model`,
-      expression: function(config$of, data) {
-        var allActions = config$of.getAxiomsByClass(foam.core.Action);
-        var defaultAction = allActions.filter((a) => a.isDefault);
-        var acArray = defaultAction.length >= 1
-          ? defaultAction
-          : allActions.length >= 1
-            ? allActions
-            : null;
-        if ( acArray && acArray.length ) {
-          let res;
-          acArray.forEach(a => {
-            var aSlot = a.createIsAvailable$(this.__subContext__, data);
-            if (aSlot.get()) res = a;
-          });
-          return res;
-        }
-      }
+      documentation: `Axiom to store the primary action of the 'of' model`
     },
     {
       class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
-        return this.config?.detailView ?? foam.u2.detail.TabbedDetailView;
-      }
-    },
-    {
-      name: 'onBack',
-      factory: function() {
-        return () => this.stack.back();
-      }
-    },
-    {
-      class: 'String',
-      name: 'route',
-      memorable: true,
-      documentation: 'This stores the id we want to add to the memento of the view',
-      factory: function() {
-          if ( ! this.idOfRecord )
-            return '';
-          var id = '' + this.idOfRecord;
-          if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
-            id = id.substr(1, id.length - 2).replaceAll(':', '=');
-          }
-          return id;
-      },
-      postSet: function(_,n) {
-        if ( ! this.idOfRecord && n ) this.idOfRecord = n;
+        return this.config?.detailView ?? foam.u2.detail.VerticalDetailView;
       }
     },
     {
       name: 'idOfRecord',
       factory: function() {
-        return this.route ? this.route : this.data ? this.data.id : null;
+        return this.data ? this.data.id : null;
       }
     },
+    'actionArray', 'buttonGroup_',
     {
       class: 'String',
       name: 'viewTitle',
@@ -164,9 +142,9 @@ foam.CLASS({
     {
       name: 'translationService',
       factory: function() {
-        return this.context.translationService || foam.i18n.NullTranslationService.create({}, this);
+        return this.__context__.translationService || foam.i18n.NullTranslationService.create({}, this);
       }
-    },
+    }
   ],
 
   methods: [
@@ -175,82 +153,107 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var id = this.data?.id ?? this.idOfRecord;
+      this.addCrumb();
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
         self.data = d;
-        if ( self.currentControllerMode == 'edit' ) self.edit();
+        if ( this.controllerMode == 'EDIT' ) this.edit();
+        this.populatePrimaryAction(self.config.of, self.data);
+        self.actionArray = self.config.of.getAxiomsByClass(foam.core.Action);
+        if ( this.buttonGroup_ ) {
+          this.buttonGroup_
+            .startOverlay()
+            .forEach(self.actionArray, function(v) {
+              this.addActionReference(v, self.data$)
+            })
+            .endOverlay()
+        }
       });
     },
     function render() {
       var self = this;
+      this.stack?.setTitle(this.viewTitle$, this);
       this.SUPER();
-      // if ( this.setControllerMode ) this.setControllerMode('view');
-      this
-      .addClass(this.myClass())
-      .add(self.slot(function(config$viewBorder, viewView) {
-        return self.E()
-          .start(self.Rows)
-            .start(self.Rows)
-              // we will handle this in the StackView instead
-              .startContext({ onBack: self.onBack })
-                .tag(self.BreadcrumbView)
-              .endContext()
-              .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
-                .start()
-                  .add(self.data$.map(v => { return v?.toSummary() ?? '---' }))
-                  .addClass('dao-title')
-                  .addClass('truncate-ellipsis')
-                .end()
-                .startContext({ data: self.data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
-              .end()
-            .end()
+      let d = self.stack.setTrailingContainer(
+        this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
+            showDropdownIcon: false  }}, this.buttonGroup_$)
+          .addClass(this.myClass('buttonGroup'))
+          .add(self.slot(function(primary) {
+            return this.E()
+              .hide(self.controllerMode$.map(c => c == 'EDIT' ))
+              .startContext({ data: self.data })
+                .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
+              .endContext();
+          }))
+          .startContext({ data: self })
+            .tag(self.EDIT)
+            .tag(self.CANCEL_EDIT)
+            .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
+          .endContext()
+          .startOverlay()
+            .tag(self.COPY)
+            .tag(self.DELETE)
+          .endOverlay()
+        .end()
+      )
+      self.onDetach(d);
+      this.dynamic(function(route, data) {
+        if ( ! data ) return;
+        /* 
+          Only handle routing if detailView is currently visible as otherwise route changes
+          are probably caused by sub views
+        */
+        if ( route && this.stack.pos == this.__subContext__.stackPos ) {
+          let axiom = self.data[foam.String.constantize(route)];
+          if ( foam.core.Action.isInstance(axiom) ) {
+            axiom.maybeCall(self.__subContext__.createSubContext({ action: axiom }), self.data);
+            return;
+          }
+          // PropertyBorder handles routing so dont clear that as it hasn't been rendered yet
+          if ( ! foam.core.Property.isInstance(axiom) ) {
+            // Otherwise just clear route for now
+            self.routeToMe();
+          }
+        }
+      })
+      self
+        .start(this.config.viewBorder)
+          .start(this.viewView, {
+            data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
+          })
+            .addClass(self.myClass('view-container'))
+          .end()
+        .end();
+    },
+    async function populatePrimaryAction(of, data) {
+      var allActions = of.getAxiomsByClass(foam.core.Action);
+      var defaultAction = allActions.filter((a) => a.isDefault);
+      var acArray = defaultAction.length >= 1
+        ? defaultAction
+        : allActions.length >= 1
+          ? allActions
+          : null;
+      if ( acArray && acArray.length ) {
+        let res;
+        for ( let a of acArray ) {
+          var aSlot = a.createIsAvailable$(this.__subContext__, data);
+          let b = aSlot.get();
+          if ( aSlot.promise ) {
+            await aSlot.promise;
+            b = aSlot.get();
+          }
+          if (b) res = a;
+        }
 
-            .start(self.Cols)
-              .start(self.Cols).addClass(self.myClass('actions-header'))
-                .startContext({ data: self })
-                  .tag(self.EDIT, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'edit',
-                    icon: 'images/edit-icon.svg'
-                  })
-                  .tag(self.COPY, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'copy',
-                    icon: 'images/copy-icon.svg'
-                  })
-                  .tag(self.DELETE, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                    themeIcon: 'trash',
-                    icon: 'images/delete-icon.svg'
-                  })
-                  .tag(self.CANCEL_EDIT, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                  })
-                  .tag(self.SAVE, {
-                    buttonStyle: foam.u2.ButtonStyle.LINK,
-                  })
-                .endContext()
-              .end()
-            .end()
-            .start(config$viewBorder)
-              .start(viewView, {
-                data$: self.slot(function(controllerMode, data, workingData) { return controllerMode == 'EDIT' ? workingData : data }),
-                memento_$: self.memento_$
-              })
-                .addClass(self.myClass('view-container'))
-              .end()
-            .end()
-          .end();
-      }));
+        this.primary = res;
+      }
     }
   ],
 
   actions: [
     {
-      name: 'back',
-      code: (data) => data.onBack()
-    },
-    {
       name: 'edit',
+      themeIcon: 'edit',
+      icon: 'images/edit-icon.svg',
       isEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
@@ -273,7 +276,6 @@ foam.CLASS({
       },
       code: function() {
         this.controllerMode = 'EDIT';
-        this.setControllerMode('edit');
       }
     },
     {
@@ -358,13 +360,12 @@ foam.CLASS({
     },
     {
       name: 'cancelEdit',
-      label: 'cancel',
+      label: 'Cancel',
       isAvailable: function(controllerMode) {
         return controllerMode == 'EDIT';
       },
       code: function() {
         this.controllerMode = 'VIEW';
-        this.setControllerMode('view');
       }
     },
     {
@@ -381,7 +382,8 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config) {
+      isAvailable: function(config, controllerMode) {
+        if ( controllerMode == 'EDIT' ) return false;
         try {
           return config.deletePredicate.f();
         } catch(e) {

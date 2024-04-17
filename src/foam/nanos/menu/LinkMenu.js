@@ -9,7 +9,10 @@ foam.CLASS({
   name: 'LinkMenu',
   extends: 'foam.nanos.menu.AbstractMenu',
 
-  imports: [ 'window', 'buildingStack?', 'postToWindow?' ],
+  imports: [
+    'postToWindow?',
+    'window'
+  ],
 
   documentation: 'A menu item which links to an external URL.',
 
@@ -25,16 +28,18 @@ foam.CLASS({
   ],
 
   methods: [
-    function launch(X, menu) {
+    function select(X, menu) {
       if ( this.openNewTab ) {
         this.window.open(this.link, '_blank');
       } else {
-        if ( this.buildingStack$ ) this.buildingStack = true;
         this.window.location = this.link;
       }
       if ( menu.analyticsMessage ) {
         X.postToWindow?.post({ step: menu.analyticsMessage });
       }
+    },
+    function launch(X, menu) {
+      this.select(X, menu);
     }
   ]
 });

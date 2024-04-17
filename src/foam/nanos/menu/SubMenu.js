@@ -11,8 +11,19 @@ foam.CLASS({
 
   requires: [ 'foam.nanos.menu.SubMenuView' ],
 
+  implements: ['foam.u2.Routable'],
+
   methods: [
-    function launch() { /** NOP **/ }
+    function select() {
+      /** NOP **/
+    },
+    async function launch(X, menu) { 
+      /** NOP **/ 
+      if ( this.route ) {
+        let sub = (await menu.children.select()).array.find(v => v.id == menu.id + '/' + this.route)
+        return await sub?.launch();
+      }
+    }
     // Code below is for conventional style menus which pop-up,
     // which no longer happens as opening a menu just opens the tree view.
     /*

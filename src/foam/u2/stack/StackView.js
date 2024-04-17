@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.u2.stack.Stack'
   ],
 
-  imports: [ 'ctrl', 'document' ],
+  imports: [ 'document', 'routeTo' ],
 
   exports: [ 'data as stack' ],
 
@@ -79,6 +79,9 @@ foam.CLASS({
       });
 
       this.listenStackView();
+      if ( this.data.top ) {
+        this.renderStackView(this.data.top);
+      }
     },
 
     function maybeAddDefault() {
@@ -89,29 +92,29 @@ foam.CLASS({
 
     // Overwritten in DesktopStackView
     function listenStackView() {
-      this.add(this.slot(s => this.renderStackView(s), this.data$.dot('top')));
+      let self = this;
+      this.add(this.dynamic(function(data$top) { this.add(self.renderStackView(data$top)) }));
     },
 
     function renderStackView(s, opt_popup) {
       if ( ! s ) return this.E('span');
 
-      var view   = s.view;
-      var parent = s.parent;
-
-      var X = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(parent, this);
-      var v;
-      var ctrlMem = this.ctrl.memento_;
-      if ( s.currentMemento ) {
-        this.ctrl.window.location = '#' + s.currentMemento;
-        v = foam.u2.ViewSpec.createView(view, null, this, X);
-        console.log('setting memento', s.currentMemento);
-      } else {
-        v = foam.u2.ViewSpec.createView(view, null, this, X);
+      if ( s.seen ) {
+        this.routeTo(s.currentMemento);
+        // return this.E('span').add('Loading... ', s.currentMemento, ' from ', window.location.hash.substring(1));
       }
-      var title = v.viewTitle$ || v.children[0]?.viewTitle$; /*need to do this for menu with border*/
+      s.seen = true;
+
+      var view  = s.view;
+      var X     = opt_popup ? opt_popup.__subContext__ : this.data.getContextFromParent(s.parent, this);
+      var v     = foam.u2.ViewSpec.createView(view, null, this, X);
+      var title = v.viewTitle$ || v.children[0]?.viewTitle$; /* need to do this for menu with border */
+
       if ( title ) {
         if ( title.get() ) this.document.title = title.get();
         this.data.top.breadcrumbTitle$.follow(title); // TODO: GC issue
+      } else if ( s.breadcrumbTitle ) {
+        this.document.title = s.breadcrumbTitle;
       }
 
       return v;

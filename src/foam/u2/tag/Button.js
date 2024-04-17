@@ -397,7 +397,7 @@ foam.CLASS({
       height: 1em;
     }
     /* Loading indicator css */
-    ^[data-loading] > :not(^loading) {
+    ^[data-loading] > :not(^loading),  ^[data-loading] > :not(^loading) * {
       opacity: 0;
     }
     ^loading {
@@ -537,20 +537,21 @@ foam.CLASS({
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }
-
-      if ( this.label ) {
-        if ( foam.String.isInstance(this.label) ) {
+      this.add(this.slot(function(label) {
+        let e = this.E().show(!! label).style({ display: 'contents' });
+        if ( foam.String.isInstance(this.label)  ) {
           if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
-            this.start().addClass('p').add(this.label$).end();
+            e.start().addClass('p').add(this.label$).end();
           } else {
-            this.start().addClass('h600').add(this.label$).end();
+            e.start().addClass('h600').add(this.label$).end();
           }
         } else if ( foam.Object.isInstance(this.label) && ! this.label.then ) {
-          this.tag(this.label);
+          e.tag(this.label);
         } else {
-          this.add(this.label$);
+          e.add(this.label$);
         }
-      }
+        return e;
+      }))
 
       this.attrs({ 'data-loading': this.loading_$ })
       this.add(this.slot(function(loading_) {

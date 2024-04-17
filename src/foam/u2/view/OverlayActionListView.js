@@ -117,6 +117,10 @@ foam.CLASS({
       border-color: transparent;
     }
 
+    ^button-container button:disabled {
+      color: $buttonSecondaryColor$active;
+    }
+
     /* destructive */
 
     ^button-container .destructive{
@@ -157,12 +161,24 @@ foam.CLASS({
   methods: [
     async function render() {
       this.SUPER();
-
-      this.shown = false;
-      this.onDetach(this.data$.sub(this.recheckShown));
-      await this.recheckShown();
+      this.enableClass(this.myClass('unavailable'), this.disabled_$)
     },
-
+    function startOverlay() {
+      this.__subSubContext__ = this.__subSubContext__.createSubContext({overlay: true});
+      return this;
+    },
+    function endOverlay() {
+      this.__subSubContext__ = this.__subSubContext__.createSubContext({overlay: false});
+      return this;
+    },
+    function createChild_(spec, args) {
+      if ( this.__subSubContext__.overlay ) {
+        this.data$push(spec);
+        return;
+      }
+      let a = this.SUPER(spec, args);
+      return a;
+    },
     function addContent() {
       this.SUPER();
       var self = this;
@@ -184,6 +200,19 @@ foam.CLASS({
           return e;
         }));
       }
+      let availSlots = this.data.map(action => {
+        if (  foam.u2.ActionReference.isInstance(action) ) return action.action.createIsAvailable$(this.__context__, action.data)
+        if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
+        return action.createIsAvailable$(this.__context__, this.obj)
+      })
+      this.onDetach(this.disabled_$.follow(foam.core.ArraySlot.create({
+        slots: availSlots
+      }, this)
+        .map(async arr => {
+          arr = await Promise.all(arr) 
+          return ! arr.reduce((l, r) => l || r, false)
+        })
+      ));
     },
 
     async function initializeOverlay(x, y) {
@@ -200,15 +229,6 @@ foam.CLASS({
         this.obj = await this.dao.inX(this.__context__).find(this.obj.id);
       }
 
-      this.onDetach(this.disabled_$.follow(this.ExpressionSlot.create({
-        args: this.data.map(action => {
-          if (  foam.u2.ActionReference.isInstance(action) ) action.action.createIsAvailable$(this.__context__, action.data)
-          if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
-          return action.createIsAvailable$(this.__context__, this.obj)
-        }),
-        code: (...rest) => ! rest.reduce((l, r) => l || r, false)
-      })));
-
       this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
       self.obj?.sub(function() {
@@ -217,18 +237,18 @@ foam.CLASS({
 
       // a list where element at i stores whether ith action in data is enabled or not
       const enabled = await Promise.all(this.data.map(action => {
-        if ( ! foam.core.Action.isInstance(action) ) return true;
+        if ( ! foam.core.Action.isInstance(action) || ! foam.u2.ActionReference.isInstance(action) ) return true;
         return this.isEnabled.bind(this);
       }));
       // a list where element at i stores whether ith action in data is available or not
       const availabilities = await Promise.all(this.data.map(action => {
-        if ( ! foam.core.Action.isInstance(action) ) return true;
+        if ( ! foam.core.Action.isInstance(action) || ! foam.u2.ActionReference.isInstance(action) ) return true;
         return this.isAvailable.bind(this);
       }));
 
       var el = this.E().startContext({ data: self.obj, dropdown: self.overlay_ })
         .forEach(self.data, function(action, index) {
-          if ( availabilities[index] ) {
+          // if ( availabilities[index] ) {
             this
               .start()
                 .addClass(self.myClass('button-container'))
@@ -240,11 +260,11 @@ foam.CLASS({
                 .attrs({ tabindex: -1 })
                 .callIf(! enabled[index], function() {
                   this
-                    .addClass(self.myClass('disabled'))
+                    // .addClass(self.myClass('disabled'))
                     .attrs({ disabled: true })
                 })
               .end();
-          }
+          // }
         })
       .endContext();
       spinner.remove();
@@ -322,19 +342,6 @@ foam.CLASS({
         if ( this.document.activeElement === this.lastEl_.el_() ) {
           this.firstEl_.focus();
           e.preventDefault();
-        }
-      }
-    },
-
-    async function recheckShown() {
-      for ( let action of this.data ) {
-        try {
-          if ( ! foam.core.Action.isInstance(action) || await this.isAvailable(action) ) {
-            this.shown = true;
-            break;
-          }
-        } catch ( e ) {
-          console.error("Action: " + action.name + " for the class: " + action.source + " has an error: " + e);
         }
       }
     }

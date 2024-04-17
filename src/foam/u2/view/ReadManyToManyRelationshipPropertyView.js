@@ -27,19 +27,24 @@ foam.CLASS({
   ],
 
   property: [
-    'config'
+    'config', 'prop'
   ],
 
   methods: [
     function render() {
       this.SUPER();
+      var self = this;
 
       this.config = this.DAOControllerConfig.create({ dao: this.data.dao });
 
-      this.tag(this.EmbeddedTableView, {
+      this.start(this.EmbeddedTableView, {
         data: this.data.dao,
         config: this.config,
-      });
+      }).call(function() { this.fromProperty(self.prop); }).end();
+    },
+    function fromProperty(p) {
+      this.prop = p;
+      this.SUPER(p);
     },
     function click(obj, id) {
       if ( ! this.stack ) return;

@@ -64,16 +64,6 @@ foam.CLASS({
     'controllerMode'
   ],
 
-  messages: [
-    { name: 'DETAIL',    message: 'Detail' },
-    { name: 'TABBED',    message: 'Tabbed' },
-    { name: 'SECTIONED', message: 'Sectioned' },
-    { name: 'MATERIAL',  message: 'Material' },
-    { name: 'WIZARD',    message: 'Wizard' },
-    { name: 'VERTICAL',  message: 'Vertical' },
-    { name: 'ALL',       message: 'All ' }
-  ],
-
   properties: [
     {
       class: 'FObjectProperty',

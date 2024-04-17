@@ -86,7 +86,7 @@ foam.CLASS({
 
       imports: [ 'stack' ],
 
-      requires: ['foam.u2.stack.BreadcrumbView'],
+      requires: [ 'foam.u2.stack.BreadcrumbView' ],
 
       css: `
         ^nav {
@@ -219,18 +219,20 @@ foam.CLASS({
       shortName: 'route',
       memorable: true,
       postSet: function(o, n) {
-        if ( o == n || ! this.viewDidRender ) return;
-        if ( o && this.stack.pos >= 1 ) this.stack.back();
         this.mementoChange();
       }
     },
-    ['viewTitle', 'Data Management'],
-    ['viewDidRender', false]
+    ['viewTitle', 'Data Management']
   ],
 
   methods: [
     function render() {
       this.SUPER();
+
+      if ( this.currentDAO ) {
+        this.mementoChange();
+        return;
+      }
 
       var self          = this;
       var currentLetter = '';
@@ -327,16 +329,20 @@ foam.CLASS({
         });
         self.start().addClass(self.myClass('footer')).add(self.daoCount$, ' of ', self.totalDAOCount$, ' shown').end();
       });
-      this.mementoChange();
-      this.viewDidRender = true;
 
+     // this.mementoChange();
     }
   ],
 
   listeners: [
     function mementoChange() {
+      /*
+      if ( this.hasOwnProperty('memento_') ) {
+        this.memento_.tail = null;
+      }*/
       if ( ! this.currentDAO ) return;
       var x = this.__subContext__;
+
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
@@ -345,7 +351,7 @@ foam.CLASS({
       this.stack.push(this.StackBlock.create({
         view: {
           class: this.BackBorder,
-          title: this.currentDAO,
+          title: 'Browse ' + this.currentDAO,
           inner: {
             class: 'foam.u2.view.AltView',
             data: this.__context__[this.currentDAO],

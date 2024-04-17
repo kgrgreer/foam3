@@ -41,7 +41,7 @@ p({
   },
   "parent":"admin"
 })
-p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DAOConfigSummaryView"}},"parent":"admin"})
+p({"class":"foam.nanos.boot.DAONSpecMenu","id":"admin.data","label":"Data Management","order": 1,"handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.boot.DataManagement"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.export","label":"Export Drivers","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"exportDriverRegistryDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.groups","label":"Groups","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"groupDAO"}},"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"admin.lang","label":"Languages","handler":{"class":"foam.nanos.menu.DAOMenu2","config":{"class":"foam.comics.v2.DAOControllerConfig","daoKey":"languageDAO"}},"parent":"admin"})
@@ -145,8 +145,7 @@ p({
       "daoKey":"testDAO",
       "summaryView":{
         "class":"foam.nanos.test.TestBorder"
-      },
-      "browseActions":[ "foam.nanos.test.TestBorder.RUN_ALL", "foam.nanos.test.TestBorder.RUN_FAILED_TESTS" ]
+      }
     }
   },
   "parent":"admin"
@@ -317,7 +316,7 @@ p({
   "id":"sign-in",
   "authenticate":false,
   "label":"Sign In",
-  "handler":{ 
+  "handler":{
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
       class: "foam.u2.borders.BaseUnAuthBorder",

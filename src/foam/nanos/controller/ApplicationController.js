@@ -23,7 +23,7 @@ foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'ApplicationController',
   extends: 'foam.u2.Element',
-  mixins: ['foam.u2.memento.Memorable'],
+  mixins: [ 'foam.u2.memento.Memorable' ],
 
   documentation: 'FOAM Application Controller.',
 
@@ -40,6 +40,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.CapabilityIntercept',
     'foam.nanos.menu.VerticalMenu',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
@@ -49,13 +50,14 @@ foam.CLASS({
     'foam.nanos.u2.navigation.NavigationController',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.nanos.u2.navigation.FooterView',
-    'foam.nanos.crunch.CapabilityIntercept',
+    'foam.nanos.u2.navigation.Stack',
+    'foam.nanos.u2.navigation.PopupManager',
     'foam.u2.LoadingSpinner',
     'foam.u2.crunch.CapabilityInterceptView',
     'foam.u2.crunch.CrunchController',
     'foam.u2.crunch.WizardRunner',
     'foam.u2.wizard.WizardType',
-    'foam.u2.stack.Stack',
+    'foam.u2.stack.BreadcrumbManager',
     'foam.u2.stack.StackBlock',
     'foam.u2.stack.DesktopStackView',
     'foam.u2.dialog.NotificationMessage',
@@ -76,7 +78,6 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
-    'buildingStack',
     'crunchController',
     'currentMenu',
     'displayWidth',
@@ -89,14 +90,17 @@ foam.CLASS({
     'loginSuccess',
     'loginVariables',
     'loginView',
+    'memento_ as topMemento_',
     'menuListener',
     'notify',
+    'popupManager',
     'prefersMenuOpen',
     'pushDefaultMenu',
     'pushMenu',
     'requestLogin',
     'returnExpandedCSS',
     'routeTo',
+    'routeToDAO',
     'sessionID',
     'sessionTimer',
     'showFooter',
@@ -106,7 +110,8 @@ foam.CLASS({
     'subject',
     'theme',
     'user',
-    'wrapCSS as installCSS'
+    'wrapCSS as installCSS',
+    'breadcrumbs'
   ],
 
   topics: [
@@ -255,6 +260,14 @@ foam.CLASS({
       factory: function() { return this.Stack.create(); }
     },
     {
+      name: 'breadcrumbs',
+      factory: function() { return this.BreadcrumbManager.create(); }
+    },
+    {
+      name: 'popupManager',
+      factory: function() { return this.PopupManager.create(); }
+    },
+    {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.User',
       name: 'user',
@@ -385,15 +398,9 @@ foam.CLASS({
         // only pushmenu on route change after the fetchsubject process has been initiated
         // as the init process will also check the route and pushmenu if required
         if ( this.initSubject && n ) {
-          if ( ! this.currentMenu?.id ) this.buildingStack = true;
-          this.pushMenu(n);
+          this.pushMenu_(null, n);
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'buildingStack',
-      documentation: 'when set to true, memento tails are not cleared when pushing menus'
     },
     'currentMenu',
     'lastMenuLaunched',
@@ -691,13 +698,14 @@ foam.CLASS({
     },
 
     async function pushMenu(menu, opt_forceReload) {
+      // Now does a silent push, that is the menu is pushed but the route is not update
+      // Use routeTo if route needs to be updated
       /** Setup **/
-      let idCheck = menu && menu.id ? menu.id : menu;
+      let idCheck = menu && ( menu.id ? menu.id : menu );
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
       /** Used to stop any duplicating recursive calls **/
       if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
-        this.buildingStack = false;
         return;
       }
       /**  Used for menus that are constructed on the fly (data management, support, legal)
@@ -708,48 +716,47 @@ foam.CLASS({
        * **/
       if ( idCheck.includes('/') )
         realMenu = idCheck.split('/')[0];
+
       /** Used to checking validity of menu push and launching default on fail **/
-      var dao;
       if ( this.client ) {
         return this.pushMenu_(realMenu, menu, opt_forceReload);
-      } else {
-        return await this.clientPromise.then(async () => {
-          await this.pushMenu_(realMenu, menu, opt_forceReload);
-        });
       }
+
+      return await this.clientPromise.then(async () => {
+        await this.pushMenu_(realMenu, menu, opt_forceReload);
+      });
     },
 
     async function pushMenu_(realMenu, menu, opt_forceReload) {
+      let idCheck = menu && ( menu.id ? menu.id : menu );
+      let currentMenuCheck = this.currentMenu?.id;
+      var realMenu = menu;
+      /** Used to stop any duplicating recursive calls **/
+      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
+        return;
+      }
       dao = this.client.menuDAO;
-      let m = this.memento_.str;
       let stringMenu = menu && foam.String.isInstance(menu);
+
       // No need to check for menu in DAO if user already has access to menu obj
       if ( stringMenu ) {
-        realMenu = await dao.find(realMenu);
+        realMenu = await dao.find(menu);
       } else {
         realMenu = menu;
       }
+
       if ( ! realMenu ) {
         if ( ! this.loginSuccess ) {
           await this.fetchSubject();
-          this.memento_.str = m;
           return;
         }
         menu = await this.findFirstMenuIHavePermissionFor(dao);
-        let newId = (menu && menu.id) || '';
-        this.pushMenu(newId, opt_forceReload);
         return;
       }
-      const preserveMem = this.buildingStack || (
-        stringMenu ?
-        foam.nanos.menu.LinkMenu.isInstance(realMenu?.handler) :
-        foam.nanos.menu.LinkMenu.isInstance(menu?.handler)
-      );
-      if ( ! preserveMem )
-        this.memento_.removeMementoTail();
+
       if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
-      this.buildingStack = false;
+      this.menuListener(menu);
       return menu && menu.launch && menu.launch(this.__subContext__);
     },
 
@@ -777,8 +784,7 @@ foam.CLASS({
     async function pushDefaultMenu() {
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
-      this.purgeMenuDAO(defaultMenu);
-      await this.pushMenu(defaultMenu);
+      await this.routeTo(defaultMenu.id);
       return defaultMenu;
     },
 
@@ -809,6 +815,7 @@ foam.CLASS({
 
     function notify(toastMessage, toastSubMessage, severity, transient, icon) {
       var notification = this.Notification.create();
+
       notification.userId = this.subject && this.subject.realUser ?
         this.subject.realUser.id : this.user.id;
       notification.toastMessage    = toastMessage;
@@ -851,16 +858,15 @@ foam.CLASS({
       this.loginSuccess = true;
       let check = await this.checkGeneralCapability();
       if ( ! check ) return;
-
-      await this.fetchTheme();
-      this.initLayout.resolve();
       this.stack.resetStack();
+      this.initLayout.resolve();
+      await this.fetchTheme();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
-        this.pushMenu('', true);
+        this.pushDefaultMenu();
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
@@ -923,19 +929,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .tag(this.NavigationController, {
           topNav$: this.topNavigation_$,
-          mainView: {
-            class: 'foam.u2.stack.DesktopStackView',
-            data: this.stack,
-            stackDefault: {
-              class:     'foam.u2.LoadingSpinner',
-              size:      32,
-              text:      'Loading...',
-              showText:  true,
-              color:     color
-            },
-            showActions: false,
-            nodeName:    'main'
-          },
+          mainView: this.stack,
           footer$: this.footerView_$,
           sideNav$: this.sideNav_$
         });
@@ -951,7 +945,6 @@ foam.CLASS({
        * by some Menu View. Is exported.
        */
       this.currentMenu = m;
-      this.route = m.id;
     },
 
     function lastMenuLaunchedListener(m) {
@@ -1030,8 +1023,25 @@ foam.CLASS({
       /**
        * Replaces the url to redirect to the new menu without cleared tails
        */
-      this.buildingStack = true;
-      this.memento_.str = link;
+      this.window.location.hash = link;
+    },
+    async function routeToDAO(dao, id) {
+      // Finds the correct menu for a given dao and optionally an object
+      let menuDAOs = (await this.__subContext__.menuDAO.select())
+        .array?.filter(v => foam.nanos.menu.DAOMenu2.isInstance(v.handler));
+      menuDAOs = menuDAOs.filter(m => m.handler.config.dao.of == dao.of);
+      if ( ! id ) {
+        return this.routeTo(menuDAOs[0].id);
+      }
+      for ( var i = 0; i < menuDAOs.length; i++ ) {
+        var result = await menuDAOs[i].handler.config.dao.find(id);
+        if ( result ) {
+          this.routeTo(menuDAOs[i].id + (id ? '/' + id : ''))
+          return;
+        }
+          // TODO: add support for being able to pick if multiple menus have the same obj
+          // menus.push(menuDAOs[i]);
+      }
     }
   ]
 });

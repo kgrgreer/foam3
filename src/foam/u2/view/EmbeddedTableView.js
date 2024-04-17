@@ -8,10 +8,10 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'EmbeddedTableView',
   extends: 'foam.u2.View',
-  mixins: ['foam.u2.memento.Memorable'],
 
   requires: [
     'foam.comics.v2.DAOBrowseControllerView',
+    'foam.comics.v3.DAOController',
     'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
     'foam.u2.stack.StackBlock',
@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.u2.table.TableView'
   ],
 
-  imports: ['stack'],
+  imports: ['stack', 'detailView'],
 
   exports: [
     'click',
@@ -54,11 +54,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data'
     },
-    {
-      class: 'String',
-      name: 'route',
-      memorable: true
-    },
+    'prop',
     {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
@@ -67,29 +63,20 @@ foam.CLASS({
         return this.DAOControllerConfig.create({ dao: this.data });
       }
     },
+    'view_',
     {
       name: 'click',
       expression: function(config$click) {
-        var self = this;
+        let self = this;
         var importedClick;
         if ( config$click && typeof config$click === 'function' ) {
           importedClick = config$click;
         } else {
-          // This function is exported and is not always called with the 'this' being the current view
-          // which is why we need to fetch config from subContext
           importedClick = function(obj, id) {
-            if ( ! this.stack ) return;
-            this.stack.push(foam.u2.stack.StackBlock.create({
-            view: {
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: obj,
-              config: this.config || this.__subContext__.config,
-              idOfRecord: id
-            }, parent: this.__subContext__.createSubContext({ memento_: self.memento_ }) }, this));
+            self.openFullTable(id);
           };
         }
         return function(obj, id) {
-          self.route = self.data.of.name + 'view';
           importedClick.call(this, obj, id);
         };
       }
@@ -102,44 +89,51 @@ foam.CLASS({
       this.config.editPredicate =   foam.mlang.predicate.False.create();
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
-
-      if ( this.route == this.data.of.name ) {
+      let self = this;
+      this.detailView?.dynamic(function(route) {
+        self.handlePropertyRouting();
+      })
+      let mem = foam.u2.memento.Memento.create({}, this);
+      var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
+      this.start(this.CardBorder).addClass(this.myClass('wrapper'))
+          .startContext({ memento_: mem})
+          .start(this.TableView, {
+            data: this.data.limit(this.rowsToDisplay),
+            editColumnsEnabled: false,
+            multiSelectEnabled: false,
+            showPagination: false
+          })
+            .addClass(this.myClass())
+          .end()
+          .endContext()
+        .startContext({ data: this })
+          .start(this.OPEN_TABLE, { label: `${this.VIEW_MORE} (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
+            .addClass(this.myClass('button'))
+          .end()
+        .endContext()
+      .end();
+    },
+    function handlePropertyRouting() {
+      if ( ! this.detailView.route ) return;
+      if ( this.detailView.route == this.prop?.name ) {
+        if ( this.view_?.shown ) { 
+          return; 
+        }
+        this.view_ = undefined; 
         this.openFullTable();
-      } else if ( this.route == this.data.of.name + 'view' && this.memento_.tailStr ) {
-        this.click.call(this, null, null);
-      } else {
-        // Required in case of broken URLs
-        if ( ! this.memento_.tailStr )
-          this.route = '';
-        var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
-        this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-          // Embedded tables don't need to store column names hence the null memento
-          .startContext({ memento_: this.Memento.create({ memento_: null }) })
-            .start(this.TableView, {
-              data: this.data.limit(this.rowsToDisplay),
-              editColumnsEnabled: false,
-              multiSelectEnabled: false,
-              showPagination: false
-            })
-              .addClass(this.myClass())
-            .end()
-          .endContext()
-          .startContext({ data: this })
-            .start(this.OPEN_TABLE, { label: `${this.VIEW_MORE} (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
-              .addClass(this.myClass('button'))
-            .end()
-          .endContext()
-        .end();
       }
     },
-    function openFullTable() {
-      this.route = this.data.of.name;
-      this.stack.push(this.StackBlock.create({
-        view: {
-          class: this.DAOBrowseControllerView,
+    function fromProperty(p) {
+      this.prop = p;
+      this.SUPER(p);
+    },
+    function openFullTable(id) {
+      this.view_ = this.stack.push({
+          class: this.DAOController,
           data$: this.data$,
-          config$: this.config$
-        }, parent: this.__subContext__.createSubContext({ controllerMode: 'CREATE' }) }));
+          config$: this.config$,
+          ...(id ? {route: id} : {})
+        }, this);
     }
   ],
   actions: [

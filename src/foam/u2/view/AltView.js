@@ -17,7 +17,19 @@ foam.CLASS({
   requires: [ 'foam.u2.view.RadioView' ],
 
   css: `
-    ^ { margin: auto; width: 100%; }
+    ^ { 
+      margin: auto; width: 100%; 
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+    }
+    ^ > div:last-child {
+      flex: 1;
+      // This min-height: 0 is required as it sets the base height for the height of the contents rendered by 
+      // altview. This means the above flex: 1 doesnt make the content overflow this div
+      // I love CSS :)
+      min-height: 0;
+    }
   `,
 
   properties: [

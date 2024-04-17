@@ -26,7 +26,7 @@ foam.CLASS({
     },
     {
       name: 'id',
-      documentation: `Used to give some unique id to the view being pushed. 
+      documentation: `Used to give some unique id to the view being pushed.
                       If it matches the current view then push() ignored.`
     },
     {
@@ -38,16 +38,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'shouldResetBreadcrumbs',
-      documentation: 'Used by Stack to determine if breadcrumb trail should be reset'
+      documentation: 'DEPRECATED: Used by Stack to determine if breadcrumb trail should be reset'
     },
     {
       name: 'popup',
-      documentation: `Used by DesktopStackView to determine if view should be wrapped in a popup, 
+      documentation: `Used by DesktopStackView to determine if view should be wrapped in a popup,
                       takes in arguments that are passed onto the Popup`
     },
     {
       name: 'currentMemento'
+    },
+    {
+      name: 'historyPos',
+      documentation: 'Position in window.history.'
     }
   ]
-
 });

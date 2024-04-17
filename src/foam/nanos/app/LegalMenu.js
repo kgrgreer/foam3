@@ -27,7 +27,7 @@ foam.CLASS({
         var aDAO = this.ArrayDAO.create();
         if ( this.appConfig.termsAndCondLink ) {
           aDAO.put(this.Menu.create({
-            id: this.id + '/T&C',
+            id: this.id + '/TC',
             parent: this.id,
             label: this.TERMS_AND_CONDITIONS_TITLE,
             handler: {
