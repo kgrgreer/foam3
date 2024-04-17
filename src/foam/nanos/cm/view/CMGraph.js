@@ -40,7 +40,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.cm.CM',
       name: 'cmId',
       required: true,
       documentation:`
