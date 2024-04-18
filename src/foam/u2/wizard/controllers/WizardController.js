@@ -14,8 +14,10 @@ foam.CLASS({
 
   imports: [
     'developerMode',
+    'handleEvent?',
     'analyticsAgent?'
   ],
+
   exports: ['as data'],
 
   requires: [

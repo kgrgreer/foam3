@@ -261,9 +261,7 @@ foam.CLASS({
             traceIDKey: 'wizardTraceID'
           })
           .addBefore('ConfigureFlowAgent', {
-            class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent',
-            createTraceID: true,
-            traceIDKey: 'wizardTraceID'
+            class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent'
           });
           await wizardRunner.launch();
         }
