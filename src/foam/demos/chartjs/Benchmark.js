@@ -16,6 +16,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'dao',
+      visibility: 'RW',
       factory: function() {
         return this.MDAO.create({ of: this.Candlestick });
       },
@@ -56,7 +57,7 @@ foam.CLASS({
             }
           },
           {
-            class: 'foam.u2.view.TableView'
+            class: 'foam.u2.TableView'
           }
         ]
       }
