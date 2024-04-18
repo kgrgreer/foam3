@@ -295,7 +295,7 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
-        if ( this.chart && this.data ) {
+        if ( globalThis.Chart && this.chart && this.data ) {
           // Simply doing this.chart.data = this.data will cause the entire
           // chart to re-render when chart.update() is called. Doing a deep
           // copyFrom makes the chart update only what it needs to which is a
