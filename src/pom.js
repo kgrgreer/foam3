@@ -273,6 +273,7 @@ foam.POM({
     { name: "foam/dao/DAOInterceptor",                                flags: "js|java" },
     { name: "foam/dao/AbstractDAO",                                   flags: "js|java" },
     { name: "foam/dao/FilteredDAO",                                   flags: "js|java" },
+    { name: "foam/dao/FilteredBySubjectDAO",                          flags: "js|java" },
     { name: "foam/dao/DAOProperty",                                   flags: "js" },
     { name: "foam/dao/PipelinePMDAO",                                 flags: "js|java" },
     { name: "foam/dao/SQLStatement",                                  flags: "js|java" },
