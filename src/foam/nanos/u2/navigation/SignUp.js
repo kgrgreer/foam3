@@ -261,9 +261,7 @@ foam.CLASS({
             traceIDKey: 'wizardTraceID'
           })
           .addBefore('ConfigureFlowAgent', {
-            class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent',
-            createTraceID: true,
-            traceIDKey: 'wizardTraceID'
+            class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent'
           });
           await wizardRunner.launch();
         }
@@ -293,6 +291,7 @@ foam.CLASS({
       },
       isAvailable: function(showAction) { return showAction; },
       code: async function(x) {
+        this.logAnalyticEvent('USER_CLICKED_GET_STARTED', '', this.sessionID, '' );
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
