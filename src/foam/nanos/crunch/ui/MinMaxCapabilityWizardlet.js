@@ -264,7 +264,7 @@ foam.CLASS({
 
       this.choiceWizardlets.push(wizardlet);
       if ( wizardlet.saveOnAvailable ) {
-        console.error( 'MinMax choice', wizardlet.id, 'of MinMax', this.id, `has saveOnAvailable active, 
+        console.warn( 'MinMax choice', wizardlet.id, 'of MinMax', this.id, `has saveOnAvailable active, 
         this can cause unexpected wizardelet.save() calls, disabling this behavior`)
         wizardlet.saveOnAvailable = false;
       }

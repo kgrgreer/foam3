@@ -20,6 +20,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'emailVerificationService',
+    'logAnalyticEvent',
     'loginSuccess',
     'loginView?',
     'notify?',
@@ -246,20 +247,25 @@ foam.CLASS({
           this.subject = await this.auth.getCurrentSubject(null);
           this.onDetach(this.emailVerificationService.sub('emailVerified', this.emailVerifiedListener));
           this.ctrl.groupLoadingHandled = true;
-          this.stack.push(this.StackBlock.create({
-            view: {
-              class: 'foam.u2.borders.StatusPageBorder', showBack: false,
-              children: [{
-                class: 'foam.nanos.auth.email.VerificationCodeView',
-                data: {
-                  class: 'foam.nanos.auth.email.EmailVerificationCode',
-                  email: user.email,
-                  userName: user.userName,
-                  signinOnSubmit: true
-                }
-              }]
-            }, parent: this
-          }, this));
+
+          var ctx = this.__subContext__.createSubContext({ email: user.email, username: user.username })
+          const wizardRunner = foam.u2.crunch.WizardRunner.create({
+            wizardType: foam.u2.wizard.WizardType.TRANSIENT,
+            source: 'net.nanopay.auth.VerifyEmailByCode',
+            options: { inline: true }
+          }, ctx);
+          wizardRunner.sequence
+          .addBefore('ConfigureFlowAgent', {
+            class: 'foam.u2.wizard.agents.AnalyticEventsAgent',
+            createTraceID: true,
+            traceIDKey: 'wizardTraceID'
+          })
+          .addBefore('ConfigureFlowAgent', {
+            class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent',
+            createTraceID: true,
+            traceIDKey: 'wizardTraceID'
+          });
+          await wizardRunner.launch();
         }
       }
     },
@@ -306,9 +312,8 @@ foam.CLASS({
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
-
+          this.logAnalyticEvent('USER_CREATED_SIGN_UP', '', this.sessionID, 'User ID: ' + user.id + ' Email: ' + user.email );
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
-
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {
           this.loginFailed = true;

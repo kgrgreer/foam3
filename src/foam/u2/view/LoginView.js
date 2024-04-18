@@ -35,7 +35,10 @@ foam.CLASS({
     'stack',
     'theme',
     'displayWidth?',
-    'loginSuccess'
+    'logAnalyticEvent',
+    'loginSuccess',
+    'currentMenu?',
+    'sessionID'
   ],
 
   requires: [
@@ -157,7 +160,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-
+      this.logAnalyticEvent("VIEW_LOAD_LoginView_" + this.currentMenu?.id, '', this.sessionID, '');
       // CREATE DATA VIEW
       this
         // Title txt and Data

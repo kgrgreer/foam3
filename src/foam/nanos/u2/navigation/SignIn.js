@@ -17,6 +17,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'emailVerificationService',
+    'logAnalyticEvent',
     'loginSuccess',
     'loginView?',
     'memento_',
@@ -212,6 +213,7 @@ foam.CLASS({
             return;
           }
           try {
+            this.logAnalyticEvent('USER_CLICKED_SIGN_IN', '', this.sessionID, '');
             var loginId = this.usernameRequired ? this.username : this.identifier;
             let logedInUser = await this.auth.login(x, loginId, this.password);
             this.loginFailed = false;

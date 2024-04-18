@@ -17,6 +17,10 @@ foam.CLASS({
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
+  imports: [
+    'handleEvent?'
+  ],
+
   issues: [
     'should not depend on legacy controller'
   ],
@@ -301,6 +305,13 @@ foam.CLASS({
 
       let wizardlet      = this.currentWizardlet;
       let firstWizardlet = this.currentWizardlet;
+
+      // log user action to proceed
+      this.handleEvent(this.WizardEvent.create({
+        wizardlet,
+        eventType: this.WizardEventType.WIZARDLET_GO_NEXT
+      }));
+
       // if wizardlet.goNextOnSave if false, simply save the wizardlet and return
       // TODO: won't work if the wizardlet with goNextOnSave is sandwiched between invisible wizardlets
       // (i.e. we're in the loop below instead)
