@@ -394,8 +394,6 @@ public class QueryParser
       new LiteralIC("me"),
       new foam.lib.parse.Not(grammar.sym("CHAR"))
     ));
-    // FIXME: this will never work as x is an empty parser context,
-    // event  "X", set by the Parser setup is also empty.
     grammar.addAction("ME", (val, x) -> {
       if ( ( (Object[]) val )[0].equals("me") ) {
         User user = ((Subject) x.get("subject")).getUser();
