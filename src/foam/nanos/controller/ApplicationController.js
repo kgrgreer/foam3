@@ -757,7 +757,7 @@ foam.CLASS({
       if ( stringMenu && ! menu.includes('/') )
         menu = realMenu;
       this.menuListener(menu);
-      return menu && menu.launch && menu.launch(this.__subContext__);
+      return menu?.launch?.(this.__subContext__);
     },
 
     async function findDefaultMenu(dao) {
