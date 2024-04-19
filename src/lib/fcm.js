@@ -21,7 +21,7 @@ foam.CLASS({
   name: 'CloudMessaging',
 
   requires: [
-    'foam.net.node.HTTPRequest',
+    'foam.net.node.HTTPRequest'
   ],
 
   properties: [
