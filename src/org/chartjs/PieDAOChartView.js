@@ -8,12 +8,15 @@ foam.CLASS({
   package: 'org.chartjs',
   name: 'PieDAOChartView',
   extends: 'org.chartjs.AbstractChartView',
+
   requires: [
-    'foam.nanos.analytics.Candlestick',
+    'foam.nanos.analytics.Candlestick'
   ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
+
   properties: [
     {
       name: 'config',

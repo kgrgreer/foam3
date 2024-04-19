@@ -38,14 +38,14 @@ foam.CLASS({
           maintainAspectRatio: false,
           interaction: {
             mode: 'index',
-            intersect: false,
+            intersect: false
           },
           stacked: false,
           scales: {
             y: {
               type: 'linear',
               display: true,
-              position: 'left',
+              position: 'left'
             }
           }
         };

@@ -310,9 +310,11 @@ foam.CLASS({
                 to[i] = copyFrom(to[i], from[i]);
               }
               return to;
-            } else if ( foam.Date.isInstance(from) ) {
+            }
+            if ( foam.Date.isInstance(from) ) {
               return from;
-            } else if ( foam.Object.isInstance(to) ) {
+            }
+            if ( foam.Object.isInstance(to) ) {
               to = to || {};
               Object.keys(from).forEach(function(k) {
                 to[k] = copyFrom(to[k], from[k])
@@ -322,11 +324,11 @@ foam.CLASS({
             return from;
           }
 
-          this.normalizeData().then(function(o) {
+          this.normalizeData().then(o => {
             var data = this.genChartData_(o);
             copyFrom(this.chart.data, data);
             this.chart.update();
-          }.bind(this));
+          });
         }
       }
     }

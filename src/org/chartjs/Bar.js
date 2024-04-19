@@ -22,11 +22,11 @@ foam.CLASS({
     function genChartData_(data) {
       var chartData = this.toChartData(data);
 
-      chartData.datasets.forEach(function(d, i) {
+      chartData.datasets.forEach((d, i) => {
         d.backgroundColor = Chart.helpers.color(this.colors[i]).alpha(0.5).rgbString();
         d.borderColor     = this.colors[i];
         d.borderWidth     = 2;
-      }.bind(this));
+      });
 
       return chartData;
     }

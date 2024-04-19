@@ -3,6 +3,7 @@
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
 foam.CLASS({
   package: 'org.chartjs.demos',
   name: 'Benchmark',
@@ -21,6 +22,39 @@ foam.CLASS({
         return this.MDAO.create({ of: this.Candlestick });
       },
       view: {
+        class: 'org.chartjs.CandlestickDAOChartView',
+        /*
+        config: {
+          type: 'bar',
+          options: {
+            scales: {
+              xAxes: [{
+                type: 'time',
+                distribution: 'linear'
+              }]
+            }
+          }
+        },
+        */
+        customDatasetStyling: {
+          TSLA: {
+            steppedLine: true,
+            borderColor: [
+              'rgba(255, 99, 132, 1)'
+            ],
+            backgroundColor: 'rgba(255, 99, 132, 0.3)',
+            label: 'Red Team (TSLA)'
+          },
+          NFLX: {
+            borderColor: [
+              'rgba(54, 162, 235, 1)'
+            ],
+            backgroundColor: 'rgba(54, 162, 235, 0.3)',
+            label: 'Blue Team (NFLX)'
+          }
+        }
+      },
+      view2: {
         class: 'foam.u2.MultiView',
         views: [
           {
@@ -64,6 +98,12 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    function init() {
+      this.generateData();
+    }
+  ],
+
   actions: [
     {
       name: 'generateData',
@@ -82,17 +122,17 @@ foam.CLASS({
             key: 'NFLX',
             total: curValue,
             count: 1,
-            openTime: new Date(i),
+            openTime:  new Date(i),
             closeTime: new Date(i+step)
           });
           data.push({
             key: 'TSLA',
             total: curValue2,
             count: 1,
-            openTime: new Date(i),
+            openTime:  new Date(i),
             closeTime: new Date(i+step)
           });
-          curValue += Math.random()*5 - 2.5;
+          curValue  += Math.random()*5 - 2.5;
           curValue2 += Math.random()*5 - 2.5;
         }
         Promise.all(data.map(d => self.dao.put(foam.nanos.analytics.Candlestick.create(d)))).then(function() {

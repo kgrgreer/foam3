@@ -22,7 +22,7 @@ foam.CLASS({
       `,
       factory: function () {
         return {
-          type: 'horizontalBar',
+          type: 'horizontalBar'
         };
       }
     },
@@ -37,15 +37,15 @@ foam.CLASS({
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'keyExpr',
+      name: 'keyExpr'
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'xExpr',
+      name: 'xExpr'
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'yExpr',
+      name: 'yExpr'
     }
   ],
 

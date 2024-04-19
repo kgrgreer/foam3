@@ -32,7 +32,7 @@ foam.CLASS({
       name: 'bar',
       view: {
         class: 'org.chartjs.demos.ConfigurableChartView',
-        view: 'org.chartjs.Bar',
+        view:  'org.chartjs.Bar',
       },
       factory: function() {
         var sink = this.GROUP_BY(this.Person.NAME, this.COUNT());
@@ -44,7 +44,7 @@ foam.CLASS({
       name: 'pie',
       view: {
         class: 'org.chartjs.demos.ConfigurableChartView',
-        view: 'org.chartjs.Pie',
+        view:  'org.chartjs.Pie',
       },
       factory: function() {
         var sink = this.GROUP_BY(this.Person.NAME, this.COUNT());

@@ -4,19 +4,23 @@
 * http://www.apache.org/licenses/LICENSE-2.0
 */
 
+// TODO: Rename this to LineDAOChartView because the DAO
+// doesn't NEED to be of Candlesticks. The defaults for this
+// view are just for candlesticks.
+
 foam.CLASS({
   package: 'org.chartjs',
-  // TODO: Rename this to LineDAOChartView because the DAO
-  // doesn't NEED to be of Candlesticks. The defaults for this
-  // view are just for candlesticks.
   name: 'CandlestickDAOChartView',
   extends: 'org.chartjs.AbstractChartView',
+
   requires: [
-    'foam.nanos.analytics.Candlestick',
+    'foam.nanos.analytics.Candlestick'
   ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
+
   properties: [
     {
       class: 'Map',

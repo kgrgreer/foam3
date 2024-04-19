@@ -8,19 +8,24 @@ foam.CLASS({
   package: 'org.chartjs',
   name: 'Line',
   extends: 'org.chartjs.AbstractChartCView',
-  flags: ['web'],
+
+  flags: [ 'web' ],
+
   properties: [
-    ['chartType', 'line'],
+    [ 'chartType', 'line' ]
   ],
+
   methods: [
     function genChartData_(data) {
       var chartData = this.toChartData(data);
-      chartData.datasets.forEach(function(d, i) {
-        d.backgroundColor = this.colors[i]
-        d.borderColor = this.colors[i]
-        d.fill = false
-        d.spanGaps = true
-      }.bind(this));
+
+      chartData.datasets.forEach((d, i) => {
+        d.backgroundColor = this.colors[i];
+        d.borderColor     = this.colors[i];
+        d.fill            = false;
+        d.spanGaps        = true;
+      });
+
       return chartData;
     }
   ]
