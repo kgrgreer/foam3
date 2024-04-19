@@ -17,9 +17,6 @@ foam.CLASS({
     'foam.u2.wizard.axiom.WizardAction'
   ],
 
-  imports: [
-    'handleEvent?'
-  ],
 
   issues: [
     'should not depend on legacy controller'

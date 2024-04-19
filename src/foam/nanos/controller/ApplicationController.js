@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Fonts',
+    'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -1046,14 +1047,14 @@ foam.CLASS({
       }
     },
     function logAnalyticEvent(evtName, evtTraceId, evtSessionId, evtExtra) {
-      this.__subContext__.analyticEventDAO.put(foam.nanos.analytics.AnalyticEvent.create(
+      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(
         {
           name: evtName,
           sessionId: evtSessionId,
           traceId: evtTraceId,
           extra: evtExtra
         }
-      ));
+      ), this);
     }
   ]
 });
