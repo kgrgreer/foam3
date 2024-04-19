@@ -296,10 +296,10 @@ foam.CLASS({
       name: 'lifecycleState',
       value: 'ACTIVE',
       documentation: `
-        PENDING - Awaiting action, unusable capability.
+        PENDING  - Awaiting action, unusable capability.
         REJECTED - Rejected from system use, unusable capability.
-        DELETED - Marked as deleted from system, unusuable capability.
-        ACTIVE - Capability is active and can be used.
+        DELETED  - Marked as deleted from system, unusuable capability.
+        ACTIVE   - Capability is active and can be used.
       `
     },
     {
@@ -319,7 +319,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'autoGrantPrereqs',
-      value:true,
+      value: true,
       documentation: `
         If set to true, prerequisites that are still in the AVAILABLE status are updated for the user
         before checking the chainedStatus of that prereq, this is useful for granting no-data prerequisites
@@ -450,9 +450,9 @@ foam.CLASS({
     {
       name: 'getPrereqChainedStatus',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
-        { name: 'prereq', javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'x',       javaType: 'foam.core.X' },
+        { name: 'ucj',     javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
+        { name: 'prereq',  javaType: 'foam.nanos.crunch.UserCapabilityJunction' },
         { name: 'subject', javaType: 'foam.nanos.auth.Subject' }
       ],
       static: true,
@@ -511,7 +511,7 @@ foam.CLASS({
       name: 'maybeReopen',
       type: 'Boolean',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',   javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
       ],
       documentation: `
@@ -549,10 +549,10 @@ foam.CLASS({
       ],
       javaCode: `
         if ( ucj == null ) return true;
-        else if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable() ) return true;
-        else if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED &&
-                  ucj.getStatus() != CapabilityJunctionStatus.PENDING &&
-                  ucj.getStatus() != CapabilityJunctionStatus.APPROVED ) return true;
+        if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED && ucj.getIsRenewable() ) return true;
+        if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED &&
+             ucj.getStatus() != CapabilityJunctionStatus.PENDING &&
+             ucj.getStatus() != CapabilityJunctionStatus.APPROVED ) return true;
         return false;
       `
     },
@@ -563,7 +563,7 @@ foam.CLASS({
         when a UCJ is saved with null data.
       `,
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x',   javaType: 'foam.core.X' },
         { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
       ],
       type: 'FObject',
