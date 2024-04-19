@@ -184,6 +184,7 @@ foam.CLASS({
         return codeVerified;
       },
       code: async function() {
+        this.report('^USER_CLICKED_NEXT', ['email-verification']);
         var success, err;
         if ( ! this.codeVerified ) return;
         try {

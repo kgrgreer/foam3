@@ -20,6 +20,12 @@ foam.ENUM({
       documentation: `
         A wizardlet's load() method was called
       `
+    },
+    {
+      name: 'WIZARDLET_GO_NEXT',
+      documentation: `
+        A wizardlet's next() method was called
+      `
     }
   ]
 });

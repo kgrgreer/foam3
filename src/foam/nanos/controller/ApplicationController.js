@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.nanos.client.ClientBuilder',
     'foam.nanos.controller.AppStyles',
     'foam.nanos.controller.Fonts',
+    'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -67,6 +68,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'analyticEventDAO',
     'capabilityDAO',
     'installCSS',
     'notificationDAO',
@@ -87,6 +89,7 @@ foam.CLASS({
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
+    'logAnalyticEvent',
     'loginSuccess',
     'loginVariables',
     'loginView',
@@ -1042,6 +1045,16 @@ foam.CLASS({
           // TODO: add support for being able to pick if multiple menus have the same obj
           // menus.push(menuDAOs[i]);
       }
+    },
+    function logAnalyticEvent(evtName, evtTraceId, evtSessionId, evtExtra) {
+      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(
+        {
+          name: evtName,
+          sessionId: evtSessionId,
+          traceId: evtTraceId,
+          extra: evtExtra
+        }
+      ), this);
     }
   ]
 });
