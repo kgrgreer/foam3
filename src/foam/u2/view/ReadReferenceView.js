@@ -219,7 +219,7 @@ foam.CLASS({
         }
 
         // have permission to service.{prop.targetDAOKey} ?
-        if ( this.__subContext__[this.prop.targetDAOKey] ) {
+        else if ( this.__subContext__[this.prop.targetDAOKey] ) {
           this.linkTo = 'permissioned';
           await this.maybeEnableLink();
           return;
