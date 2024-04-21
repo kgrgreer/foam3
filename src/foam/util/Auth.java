@@ -65,6 +65,10 @@ public class Auth {
     if ( hasAgent ) session.setAgentId(realUser.getId());
 
     X y = session.applyTo(x);
+    if ( user.getId() == User.SYSTEM_USER_ID ) {
+      // Session.applyTo does not setup subject when user is System.
+      y = y.put("subject", new Subject(user));
+    }
     session.setContext(y);
     y = y.put(Session.class, session);
 
