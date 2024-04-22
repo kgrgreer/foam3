@@ -17,7 +17,7 @@ foam.CLASS({
   imports: [
     'currentMenu',
     'menuDAO',
-    'pushMenu',
+    'pushDefaultMenu',
     'isMenuOpen?',
     'displayWidth?'
   ],
@@ -125,7 +125,7 @@ foam.CLASS({
           .start({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .addClass(self.myClass('logo'))
             .on('click', () => {
-              self.pushMenu('', true);
+              self.pushDefaultMenu();
             })
           .end() : null;
         }))
