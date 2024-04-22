@@ -36,6 +36,10 @@
   A sub-class or refinement can include a partial Property definition which
   will override or add meta-information to the Property.
 **/
+
+// Don't genreate factory warnings if comments have been stripped (ie. a production build).
+const GENERATE_FACTORY_WARNINGS = (function() { /* XXX */ }).toString().indexOf('XXX') != -1;
+
 foam.CLASS({
   package: 'foam.core',
   name: 'Property',
@@ -436,20 +440,22 @@ foam.CLASS({
       var FIP         = factory && ( prop.name + '_fip' ); // Factory In Progress
       var fip         = 0;
 
-if ( factory && (
-     factory.toString().indexOf('/* ignoreWarning */') == -1) && (
-     factory.toString().indexOf('then(') != -1 ||
-     factory.toString().indexOf('await') != -1 ) )
-{
-  console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.factory=', factory);
-}
-if ( eFactory && (
-     eFactory.toString().indexOf('/* ignoreWarning */') == -1) && (
-     eFactory.toString().indexOf('then(') != -1 ||
-     eFactory.toString().indexOf('await') != -1 ) )
-{
-  console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.expression=', eFactory);
-}
+      if ( GENERATE_FACTORY_WARNINGS ) {
+        if ( factory && (
+             factory.toString().indexOf('/* ignoreWarning */') == -1) && (
+             factory.toString().indexOf('then(') != -1 ||
+             factory.toString().indexOf('await') != -1 ) )
+        {
+          console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.factory=', factory);
+        }
+        if ( eFactory && (
+             eFactory.toString().indexOf('/* ignoreWarning */') == -1) && (
+             eFactory.toString().indexOf('then(') != -1 ||
+             eFactory.toString().indexOf('await') != -1 ) )
+        {
+          console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.expression=', eFactory);
+        }
+      }
 
       // Factory In Progress (FIP) Support
       // When a factory method is in progress, the object sets a private
