@@ -30,7 +30,7 @@ foam.CLASS({
   methods: [
     function select(X, menu) {
       /** Called when a menu is selected. **/
-      X.routeTo(menu.id);
+      X.routeTo(menu.id, true);
     },
     function launch(X, menu) {
       /** Called to activate a menu. **/

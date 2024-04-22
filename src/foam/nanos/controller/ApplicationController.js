@@ -535,7 +535,7 @@ foam.CLASS({
           // only push the unauthenticated menu if there is no subject
           // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
           // use the route instead of the menu so that the menu could be re-created under the updated context
-          this.pushMenu(menu.id);
+          this.routeTo(menu.id);
           this.languageInstalled.resolve();
           return 1;
         }
@@ -730,14 +730,10 @@ foam.CLASS({
       });
     },
 
-    async function pushMenu_(realMenu, menu, opt_forceReload) {
+    async function pushMenu_(realMenu, menu) {
       let idCheck = menu && ( menu.id ? menu.id : menu );
       let currentMenuCheck = this.currentMenu?.id;
       var realMenu = menu;
-      /** Used to stop any duplicating recursive calls **/
-      if ( currentMenuCheck === idCheck && ! opt_forceReload ) {
-        return;
-      }
       dao = this.client.menuDAO;
       let stringMenu = menu && foam.String.isInstance(menu);
 

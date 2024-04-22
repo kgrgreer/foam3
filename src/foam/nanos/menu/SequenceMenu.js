@@ -29,7 +29,7 @@ foam.CLASS({
   methods: [
     function select(X, menu) {
       /** Called when a menu is selected. **/
-      return X.pushMenu(menu.id);
+      return X.pushMenu(menu.id, true);
     },
     function launch(X, menu) {
       // Rebase sequence onto new context first

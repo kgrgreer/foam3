@@ -17,24 +17,14 @@ foam.CLASS({
     function select() {
       /** NOP **/
     },
-    async function launch(X, menu) { 
-      /** NOP **/ 
+    async function launch(X, menu) {
+      // Force a memento update as the menus are cached and are not recreated so they are not subbed to memento like other attached objects
+      this.memento_.str = this.memento_.parent.tailStr;
+      this.memento_.propertyChange.pub('str', this.memento_.str$);
       if ( this.route ) {
         let sub = (await menu.children.select()).array.find(v => v.id == menu.id + '/' + this.route)
         return await sub?.launch();
       }
     }
-    // Code below is for conventional style menus which pop-up,
-    // which no longer happens as opening a menu just opens the tree view.
-    /*
-    function createView(X, menu, parent) {
-      return this.SubMenuView.create({menu: menu, parent: parent}, X);
-    },
-
-    function launch(X, menu, parent) {
-      var view = this.createView(X, menu, parent);
-      view.open();
-    }
-    */
   ]
 });
