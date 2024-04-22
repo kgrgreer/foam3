@@ -19,7 +19,8 @@ foam.CLASS({
 
   exports: [
     'analyticsAgent',
-    'logAnalyticsEvent'
+    'logAnalyticsEvent',
+    'wizardTraceID'
   ],
 
   topics: ['analyticsAgent'],
@@ -39,6 +40,15 @@ foam.CLASS({
       class: 'Boolean',
       name: 'logDeviceInfo',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'createTraceID',
+      value: false
+    },
+    {
+      class: 'String',
+      name: 'wizardTraceID'
     }
   ],
   methods: [
@@ -47,6 +57,10 @@ foam.CLASS({
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
         self.logAnalyticsEvent(evt);
       });
+
+      if (this.createTraceID && !this.traceIdKey) {
+        this.wizardTraceID = foam.uuid.randomGUID();
+      }
 
       // TODO: Temp fix for 3.20 iframe logging
       window.analyticsAgent = this.analyticsAgent;
@@ -89,10 +103,10 @@ foam.CLASS({
     },
 
     async function logAnalyticsEvent(evt) {
-      var traceId = this.traceIDKey$get(this.__subContext__);
+      var traceId = this.traceIDKey$get(this.__subContext__) || this.wizardTraceID;
       var objectId = this.objectIDKey$get(this.__subContext__);
       var sessionId = this.sessionID;
-
+      
       // TODO: add subclass support
       var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId, sessionId});
       await this.analyticEventDAO.put(analyticEvent);
