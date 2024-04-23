@@ -33,11 +33,17 @@ foam.CLASS({
       javaFactory: `
         return UUID.randomUUID().toString();
       `,
-      visibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'message'
+      name: 'message',
+      createVisibility: 'RW',
+      updateVisibility: function(dismissible) {
+        return dismissible ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.RW;
+      }
     },
     {
       class: 'foam.core.Enum',

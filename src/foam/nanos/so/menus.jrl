@@ -13,3 +13,20 @@ p({
   },
   parent:"admin"
 })
+
+p({
+  class:"foam.nanos.menu.Menu",
+  id:"systemOutageTasks",
+  label:"System Outage Tasks",
+  keywords: ["system", "outage", "task", "banner", "notification", "alarm"],
+  handler:{
+    class:"foam.nanos.menu.DAOMenu2",
+    config:{
+      class:"foam.comics.v2.DAOControllerConfig",
+      daoKey:"systemOutageTaskDAO",
+      browseTitle:"System Outage Tasks",
+      copyPredicate:{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  parent:"admin"
+})

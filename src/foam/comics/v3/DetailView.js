@@ -301,7 +301,7 @@ foam.CLASS({
       isAvailable: function(config, controllerMode) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
-          return config.createPredicate.f();
+          return config.copyPredicate.f();
         } catch(e) {
           return false;
         }
