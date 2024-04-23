@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'PathnameHandler',
   extends: 'foam.net.node.PathnamePrefixHandler',
   flags: ['node'],
-  documentation: `Handler that recieves its pathname from a PathnameRoute (or
+  documentation: `Handler that receives its pathname from a PathnameRoute (or
       similar) export.`,
 
   imports: [ 'pathname?' ],

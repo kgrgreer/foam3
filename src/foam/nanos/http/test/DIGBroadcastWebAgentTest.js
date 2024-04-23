@@ -65,7 +65,7 @@ foam.CLASS({
         .build();
 
       Object reply = client.submit(x, getDop(), getData());
-      test ( reply != null, "recieved non-null reply: "+reply);
+      test ( reply != null, "received non-null reply: "+reply);
       test ( client.getLastHttpResponseCode() == 200, "response code 200: "+client.getLastHttpResponseCode());
 
 

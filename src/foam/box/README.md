@@ -200,7 +200,7 @@ Of course, in a distributed scenario, the flow would look more like:
 - Register skeleton, yielding a "portable" box that refers to the implementation;
 - Send the portable box over some channel (socket, web socket, etc.) to a
   client;
-- Client recieves protable box and binds it to the channel from whence it came;
+- Client receives protable box and binds it to the channel from whence it came;
 - Client creates a stub of `SomeInterface` and sets its delegate to the
   portable box.
 

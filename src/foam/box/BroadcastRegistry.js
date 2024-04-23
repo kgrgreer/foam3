@@ -63,7 +63,7 @@ foam.CLASS({
       class: 'Array',
       of: 'foam.box.BoxRegistryBox',
       name: 'delegates',
-      documentation: 'Delegates that recieve register()/unregister() calls.',
+      documentation: 'Delegates that receive register()/unregister() calls.',
     },
     {
       class: 'FObjectProperty',

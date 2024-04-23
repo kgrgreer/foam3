@@ -115,7 +115,7 @@ capability is a prerequisite of another can be determined by using the
 <p>
 The <b>visibilityPredicate</b> property of Capability can specify under what
 conditions the capability is visible. This uses context predicates (predicates
-which recieve a context as their object to evaluate on), simlar to rule
+which receive a context as their object to evaluate on), simlar to rule
 predicates.
 </p>
 
@@ -145,7 +145,7 @@ p({
 The <b>availabilityPredicate</b> property of Capability takes the same type of
 predicate as does visibilityPredicate, but instead of controlling the
 capability's visibility in the Capability Store in controls whether or not the
-user can recieve information that this capability exists, or perform actions
+user can receive information that this capability exists, or perform actions
 that assume it exists.
 </p>
 

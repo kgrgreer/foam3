@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'foam.net.node',
   name: 'ServerRequest',
   flags: ['node'],
-  documentation: `Request recieved by HTTP server. Underlying Node JS message
+  documentation: `Request received by HTTP server. Underlying Node JS message
       should be injected upon creation but treated as private.`,
 
   requires: [

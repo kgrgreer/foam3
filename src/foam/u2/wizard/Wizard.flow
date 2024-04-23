@@ -142,7 +142,7 @@ CapabilityWizardlet which saves the data using CrunchService.
   invoke the save method manually. When the wizardlet is saved this way, and no
   parameters are passed to `wizardlet.save`, this is called a triggered save.
   The most important difference between this and an auto save is that user input
-  will be blocked until a response is recieved from the server. This gives the
+  will be blocked until a response is received from the server. This gives the
   server an opportunity to update properties on the data model to provide
   important feedback to a user.
 </p>
