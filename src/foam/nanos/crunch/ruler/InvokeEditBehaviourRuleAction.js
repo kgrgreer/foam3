@@ -40,11 +40,17 @@ foam.CLASS({
               return;
             }
 
+            AuthService authService = (AuthService) x.get("auth");
+
+            var capability = (Capability) ucj.findTargetId(systemX);
+            if (authService.check(x, "usercapabilityjunction.update." + capability.getId())) {
+              return;
+            }
+
             // If edit behaviour does nothing we will keep old data
             var newData = ucj.getData();
             ucj.setData(oldUCJ.getData());
 
-            var capability = (Capability) ucj.findTargetId(systemX);
             var editBehaviour = capability.getEditBehaviour();
 
             var editor = (Subject) x.get("subject");
