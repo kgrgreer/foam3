@@ -117,8 +117,13 @@ foam.CLASS({
     function getSequenceFromCapability_ (x, isInline) {
       const wizardType = this.wizardType;
 
-      if ( isInline && wizardType == this.WizardType.UCJ ) {
-        const seq = this.crunchController.toGraphAgentWizard(this.crunchController.createUCJInlineWizardSequence(x));
+      if ( isInline) {
+        let seq;
+        if ( wizardType == this.WizardType.UCJ ) {
+          seq = this.crunchController.toGraphAgentWizard(this.crunchController.createUCJInlineWizardSequence(x));
+        } else {
+          seq = this.crunchController.toGraphAgentWizard(this.crunchController.createInlineWizardSequence(x))
+        }
         seq.addBefore('CapabilityAdaptAgent', {
           class: 'foam.u2.wizard.agents.RootCapabilityAgent',
           rootCapability: this.source

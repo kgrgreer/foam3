@@ -123,6 +123,12 @@ foam.CLASS({
       name: 'idOfRecord',
       factory: function() {
         return this.data ? this.data.id : null;
+      },
+      adapt: function(_, id) {
+        if (id && foam.core.MultiPartID.isInstance(this.config.of.ID)) {
+          id = this.config.of.ID.of.FROM_STRING(id, this.config.of.ID);
+        }
+        return id;
       }
     },
     'actionArray', 'buttonGroup_',
