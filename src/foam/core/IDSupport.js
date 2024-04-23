@@ -140,16 +140,27 @@ foam.CLASS({
           foam.assert(foam.core.Property.isInstance(prop), 'Ids property:', c.id + '.' + n, 'is not a Property.');
           return prop.clone();
         }),
+        constants: [
+          {
+            name: 'FROM_STRING',
+            value: function(str) {
+              return this.create(JSON.parse(str.replaceAll('=', ':')));
+            }
+          }
+        ],
         methods: [
           {
             name: 'toString',
             code: function() {
-              var arr = [];
+              var map = {};
               for ( var prop in this.instance_ ) {
-                arr.push( this[prop] ? this[prop].toString() : '' );
+                if ( prop && this[prop] ) {
+                  map[prop] = this[prop].toString();
+                }
               }
-              return arr.join('-');
+              return JSON.stringify(map).replaceAll(':', '=');
             },
+            // TODO: Should java also return a stringified map? Otherwise the id is useless
             javaCode: javaToStringMethod
           }
         ]
