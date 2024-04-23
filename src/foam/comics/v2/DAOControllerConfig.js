@@ -242,6 +242,17 @@ foam.CLASS({
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'copyPredicate',
+      documentation: 'If set to false, the "Copy" button will not be visible.',
+      factory: function() {
+        return this.createPredicate;
+      },
+      javaFactory: `
+        return getCreatePredicate();
+      `
+    },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
       name: 'editPredicate',
       documentation: 'True to enable the edit button.',
       factory: function() {

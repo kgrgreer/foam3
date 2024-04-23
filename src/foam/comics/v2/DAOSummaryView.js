@@ -204,7 +204,7 @@ foam.CLASS({
       },
       isAvailable: function(config) {
         try {
-          return config.createPredicate.f();
+          return config.copyPredicate.f();
         } catch(e) {
           return false;
         }
