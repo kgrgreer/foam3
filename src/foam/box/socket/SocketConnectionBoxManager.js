@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.box.socket',
   name: 'SocketConnectionBoxManager',
 
-  documentation: 'Manages Socket boxes, providing reuse of established connections for send and recieve.',
+  documentation: 'Manages Socket boxes, providing reuse of established connections for send and receive.',
   
   implements: [
     'foam.nanos.NanoService'

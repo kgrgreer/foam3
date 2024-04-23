@@ -11,7 +11,7 @@ foam.CLASS({
 
   abstract: true,
   
-  documentation: `All DAO operations will blocked while condition is true, and unblocked when a particular CMD is recieved.`,
+  documentation: `All DAO operations will blocked while condition is true, and unblocked when a particular CMD is received.`,
 
   javaImports: [
     'foam.dao.DAO',

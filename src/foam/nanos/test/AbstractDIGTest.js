@@ -36,7 +36,7 @@ foam.CLASS({
       value: 3600
     },
     {
-      documentation: 'last recieved dug object',
+      documentation: 'last received dug object',
       name: 'dugData',
       class: 'FObjectProperty'
     },

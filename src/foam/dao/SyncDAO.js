@@ -414,7 +414,7 @@ foam.CLASS({
           if ( this.VersionTrait.DELETED_.f(obj) ) this.removeFromRemote_(obj);
           else                                     this.putFromRemote_(obj);
         } else if ( event === 'remove' ) {
-          throw new Error(`SyncDAO recieved remove() event;
+          throw new Error(`SyncDAO received remove() event;
                               expected put(deleted)-as-remove()`);
         } else if ( event === 'reset' ) {
           this.resetFromRemote_();

@@ -41,7 +41,7 @@ foam.CLASS({
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
 
       ClusterConfig config = (ClusterConfig) ((DAO) x.get("localClusterConfigDAO")).find(nu.getId());
-      if ( config != null && // May have recieved a base Health object.
+      if ( config != null && // May have received a base Health object.
            ! config.getId().equals(myConfig.getId()) && 
            ( old == null ||
              old.getStatus() != nu.getStatus() ||

@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Handle socket recieve events.
+ * Handle socket receive events.
  * Determine the appropriate SocketWebAgent and route them
  * through the SessionServerBox
  */

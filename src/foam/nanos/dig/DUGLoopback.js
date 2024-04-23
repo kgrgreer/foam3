@@ -14,7 +14,7 @@ foam.CLASS({
       class: 'String'
     },
     {
-      documentation: 'Last recieved HTTP post data',
+      documentation: 'Last received HTTP post data',
       name: 'data',
       class: 'String'
     },
