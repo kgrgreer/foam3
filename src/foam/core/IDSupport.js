@@ -143,6 +143,7 @@ foam.CLASS({
         constants: [
           {
             name: 'FROM_STRING',
+            flags: ['js|web'],
             value: function(str) {
               return this.create(JSON.parse(str.replaceAll('=', ':')));
             }
