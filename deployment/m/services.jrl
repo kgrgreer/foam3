@@ -229,6 +229,17 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "mode":1
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"medusaSupport",
   "lazy":false,
   "service": {
