@@ -516,6 +516,7 @@ foam.CLASS({
 
     async function initMenu() {
       var menu;
+      var route_initialized = this.route && this.initSubject;
 
       // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
       if ( this.route ) {
@@ -535,7 +536,7 @@ foam.CLASS({
           // only push the unauthenticated menu if there is no subject
           // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
           // use the route instead of the menu so that the menu could be re-created under the updated context
-          this.routeTo(menu.id);
+          route_initialized ? this.routeTo(menu.id) : this.pushMenu(menu);
           this.languageInstalled.resolve();
           return 1;
         }
@@ -633,7 +634,6 @@ foam.CLASS({
     async function fetchSubject(promptLogin = true) {
       /** Get current user, else show login. */
       try {
-        this.initSubject = true;
         var result = await this.client.auth.getCurrentSubject(null);
         if ( result && result.user ) await this.reloadClient();
 
@@ -645,6 +645,8 @@ foam.CLASS({
         this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
+      } finally {
+        this.initSubject = true;
       }
     },
 

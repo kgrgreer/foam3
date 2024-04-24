@@ -13,8 +13,8 @@ foam.CLASS({
 
   imports: [
     'menuDAO',
-    'pushMenu',
     'pushDefaultMenu',
+    'routeTo',
     'window'
   ],
 
@@ -55,7 +55,7 @@ foam.CLASS({
       for ( menu of this.menus ) {
         let found = await this.menuDAO.find(menu);
         if ( found ) {
-          this.pushMenu(menu);
+          this.routeTo(menu);
           break;
         }
       }
