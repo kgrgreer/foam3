@@ -17,6 +17,7 @@ foam.CLASS({
   imports: [
     'dashboardController',
     'menu',
+    'routeTo',
     'stack'
   ],
 
