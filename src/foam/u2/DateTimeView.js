@@ -41,17 +41,6 @@ foam.CLASS({
       this.setAttribute('placeholder', 'yyyy/mm/dd hh:mm');
     },
 
-    // function link() {
-    //   this.data$.relateTo(
-    //       this.attrSlot(null, this.onKey ? 'input' : null),
-    //       function(date) {
-    //         return date ? date.toISOString().substring(0,16) : date;
-    //       },
-    //       function(value) {
-    //         return new Date(value);
-    //       }
-    //   );
-    // }
     function link() {
       if ( this.linked ) return;
       this.linked = true;
@@ -61,8 +50,6 @@ foam.CLASS({
 
       function updateSlot() {
         var date = self.data;
-        // if ( focused ) return;
-        // if ( foam.Number.isInstance(date) ) date = new Date(date);
         if ( ! date ) {
           slot.set('');
         } else {
