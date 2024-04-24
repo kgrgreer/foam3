@@ -25,7 +25,6 @@ foam.CLASS({
     'flowAgent?',
     'stack',
     'popupManager',
-    'pushDefaultMenu',
     'wizardClosing',
     'wizardController?'
   ],
@@ -64,11 +63,8 @@ foam.CLASS({
         if ( v == this.WizardStatus.IN_PROGRESS ) return;
         this.resolveAgent();
         let closePromise = this.wizardController.onClose();
-        if ( closePromise?.then ) {
-          closePromise.then(self.pushDefault)
-        } else {
-          self.pushDefault()
-        }
+        if ( closePromise?.then )
+          closePromise.then(() => {})
       }));
 
       if ( (view?.class || view?.cls_?.id).endsWith('ScrollingStepWizardView') ) {
@@ -113,16 +109,6 @@ foam.CLASS({
     }
   ],
   listeners: [
-    function pushDefault() {
-      // Prevent sending the user to the default menu when finishing the wizard
-      // in an iframe as it makes more sense to yield the control back to the
-      // parent window instead of redirecting to the home page.
-      if ( this.isIframe() ) return;
-
-      if ( this.stack.pos < 0 ) {
-        this.pushDefaultMenu('');
-      }  
-    },
     function resolveAgent() {
       if ( this.wizardClosing ) return;
       this.wizardClosing = true;

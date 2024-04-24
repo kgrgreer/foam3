@@ -27,6 +27,7 @@ foam.POM({
     { name: "agents/AlternateFlowAgent",               flags: "web" },
     { name: "agents/AnalyticEventsAgent",              flags: "web" },
     { name: "agents/NullEventHandlerAgent",            flags: "web" },
+    { name: "agents/ReturnToLaunchPointAgent",         flags: "web" },
     { name: "agents/QuickAgent",                       flags: "web" },
     { name: "analytics/AnalyticsEventHandlerAgent",    flags: "web" },
     { name: "analytics/WizardEventRefinement",         flags: "web" },
