@@ -16,8 +16,7 @@ foam.CLASS({
     'currentMenu',
     'ctrl',
     'isIframe',
-    'pushDefaultMenu',
-    'stack'
+    'pushDefaultMenu'
   ],
 
   implements: [
@@ -28,7 +27,7 @@ foam.CLASS({
     async function execute() {
       if ( this.isIframe() ) return;
       if ( this.currentMenu.id === this.ctrl.route ) {
-        if ( this.stack.pos >= 0 && window.history.length > 1 )
+        if ( window.history.length > 1 )
           window.history.back();
         else 
           this.pushDefaultMenu('');
