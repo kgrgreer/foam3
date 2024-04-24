@@ -185,18 +185,8 @@ foam.CLASS({
     {
       name: 'viewMoreAction',
       label: 'View more activities',
-      code: async function() {
-        let menu;
-        if ( this.viewMoreMenuItem ) {
-          menu = await this.viewMoreMenuItem$find;
-        }
-        this.stack.push(this.StackBlock.create({
-          view: {
-            class: this.DAOBrowseControllerView,
-            data: this.dao.where(this.predicate),
-            ...( menu ? { config: menu.handler.config.clone() } : {} )
-          }, parent: this.__subContext__
-        }));
+      code: function() {
+        this.routeTo(this.viewMoreMenuItem);
       }
     }
   ],
