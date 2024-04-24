@@ -88,7 +88,11 @@ foam.CLASS({
         return stack_[pos];
       }
     },
-    'trailingContainer', [ 'titleMap_', {} ],
+    'trailingContainer', 
+    { 
+      class: 'Map', 
+      name: 'titleMap_'
+    },
     // If set, takes over stack operations, useful for overriding stack behaviour in routers
     'delegate_', 
     'header_', 'breadcrumbs_', ['stuck_', false]
@@ -190,9 +194,12 @@ foam.CLASS({
     },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
-      this.titleMap_[view.__subContext__.stackPos || this.pos] = title;
+      this.titleMap_[(view.__subContext__.stackPos ?? this.pos)] = title;
       if ( foam.core.Slot.isInstance(title) ) {
-        view.onDetach(() => this.titleMap_[this.pos] = null);
+        view.onDetach(() => { 
+          if ( title == this.titleMap_[this.pos] ) 
+            this.titleMap_[this.pos] = null; 
+        });
       }
       this.propertyChange.pub('titleMap_', this.titleMap_$);
     },

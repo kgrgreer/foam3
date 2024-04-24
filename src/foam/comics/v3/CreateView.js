@@ -29,8 +29,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
     'currentMenu?',
+    'daoController',
+    'notify',
     'stack',
     'translationService'
   ],
@@ -91,29 +92,29 @@ foam.CLASS({
           if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
             var currentFeedback = o.userFeedback;
             while ( currentFeedback ) {
-              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+              this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
               currentFeedback = currentFeedback.next;
             }
           } else {
             var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
             var title = this.translationService.getTranslation(foam.locale, menuId + '.browseTitle', this.config.browseTitle);
 
-            this.ctrl.notify(title + " " + this.CREATED, '', this.LogLevel.INFO, true);
+            this.notify(title + ' ' + this.CREATED, '', this.LogLevel.INFO, true);
           }
-
+          this.daoController && (this.daoController.route = o.id);
         }, e => {
           this.throwError.pub(e);
 
           if ( e.exception && e.exception.userFeedback  ) {
             var currentFeedback = e.exception.userFeedback;
             while ( currentFeedback ) {
-              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+              this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
 
               currentFeedback = currentFeedback.next;
             }
 
           } else {
-            this.ctrl.notify(e.message, '', this.LogLevel.ERROR, true);
+            this.notify(e.message, '', this.LogLevel.ERROR, true);
           }
         });
       }

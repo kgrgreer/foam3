@@ -34,7 +34,8 @@ foam.CLASS({
     'notify',
     'setControllerMode?',
     'stack?',
-    'controlBorder'
+    'controlBorder',
+    'daoController'
   ],
 
   exports: [
@@ -402,7 +403,7 @@ foam.CLASS({
           dao: this.config.dao,
           onDelete: () => {
             this.finished.pub();
-            this.stack.back();
+            this.daoController.route = '';
           },
           data: this.data
         }));
