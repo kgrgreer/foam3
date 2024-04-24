@@ -116,7 +116,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
-        return this.config?.detailView ?? foam.u2.detail.VerticalDetailView;
+        return this.config?.detailView ?? foam.u2.detail.TabbedDetailView;
       }
     },
     {
