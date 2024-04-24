@@ -70,6 +70,7 @@ foam.CLASS({
     'foam.u2.wizard.agents.SpinnerAgent',
     'foam.u2.wizard.agents.DetachSpinnerAgent',
     'foam.u2.wizard.agents.NullEventHandlerAgent',
+    'foam.u2.wizard.agents.ReturnToLaunchPointAgent',
     'foam.u2.wizard.debug.WizardInspector',
     'foam.u2.wizard.wao.TopicWAO',
     'foam.util.async.Sequence',
@@ -166,6 +167,7 @@ foam.CLASS({
           .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           .add(this.StatusPageAgent)
+          .add(this.ReturnToLaunchPointAgent)
           // .add(this.TestAgent)
           ;
       }
