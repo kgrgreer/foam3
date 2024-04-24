@@ -14,7 +14,10 @@ foam.CLASS({
 
   imports: [
     'currentMenu',
-    'ctrl'
+    'ctrl',
+    'isIframe',
+    'pushDefaultMenu',
+    'stack'
   ],
 
   implements: [
@@ -23,8 +26,13 @@ foam.CLASS({
 
   methods: [
     async function execute() {
+      if ( this.isIframe() ) return;
       if ( this.currentMenu.id === this.ctrl.route ) {
-        window.history.back();
+        if ( this.stack.pos >= 0 && window.history.length > 1 )
+          window.history.back();
+        else 
+          this.pushDefaultMenu('');
+ 
       }
     }
   ]
