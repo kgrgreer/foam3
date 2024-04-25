@@ -231,7 +231,12 @@ foam.CLASS({
 
       this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
-      self.obj?.sub(function() {
+      // sub to actions from view
+      self.obj?.sub('action', function() {
+        self.overlay_.close();
+      });
+      // sub to actions from view data
+      self.obj?.data.sub('action', function() {
         self.overlay_.close();
       });
 
