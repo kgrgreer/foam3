@@ -29,6 +29,10 @@ foam.CLASS({
 
   methods: [
     function select(X, menu) {
+      if ( this.popup ) {
+        X.pushMenu(menu.id);
+        return;
+      }
       /** Called when a menu is selected. **/
       X.routeTo(menu.id, true);
     },
