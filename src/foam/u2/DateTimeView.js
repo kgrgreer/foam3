@@ -42,15 +42,46 @@ foam.CLASS({
     },
 
     function link() {
-      this.data$.relateTo(
-          this.attrSlot(null, this.onKey ? 'input' : null),
-          function(date) {
-            return date ? date.toISOString().substring(0,16) : date;
-          },
-          function(value) {
-            return new Date(value);
-          }
-      );
+      if ( this.linked ) return;
+      this.linked = true;
+      var self    = this;
+      var focused = false;
+      var slot    = this.attrSlot(); //null, this.onKey ? 'input' : null);
+
+      function updateSlot() {
+        var date = self.data;
+        if ( ! date ) {
+          slot.set('');
+        } else {
+          slot.set(date ? date.toISOString().substring(0,16) : '');
+        }
+      }
+
+      function updateData() {
+        var value = slot.get();
+
+        var date;
+        if ( value ) {
+          date = Date.parse(value);
+          if ( isNaN(date) ) date = undefined;
+        } else {
+          date = null;
+        }
+
+        self.data = date;
+      }
+
+      if ( this.onKey ) {
+        var focused = false;
+        this.on('focus', () => { focused = true; });
+        this.on('blur',  () => { focused = false; });
+        this.on('change', updateData);
+      } else {
+        this.on('blur', updateData);
+      }
+
+      updateSlot();
+      this.onDetach(this.data$.sub(updateSlot));
     }
   ]
 });
