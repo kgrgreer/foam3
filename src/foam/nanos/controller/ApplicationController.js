@@ -795,21 +795,19 @@ foam.CLASS({
       // don't go to log in screen if going to reset password screen
       if ( location.hash && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push(self.StackBlock.create({ view: {
+          self.stack.set({
             class: 'foam.nanos.auth.ChangePasswordView',
             modelOf: 'foam.nanos.auth.resetPassword.ResetPasswordByToken'
-           }}));
+           }, self);
           self.loginSuccess$.sub(resolve);
         });
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push(self.StackBlock.create({
-          view: {
+        self.stack.set({
             ...(self.loginView ?? { class: 'BaseUnAuthBorder' }),
             children: [ { class: 'foam.u2.view.LoginView', mode_: 'SignIn' } ]
-          },
-          parent: self }));
+          },self);
         self.loginSuccess$.sub(resolve);
       });
     },
