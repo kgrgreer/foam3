@@ -67,7 +67,7 @@
       justify-content: space-between;
     }
 
-    ^tbody ^tr:hover {
+    ^tbody ^clickable^tr:hover {
       background: $grey50;
       border-radius: 4px;
       cursor: pointer;
@@ -148,7 +148,7 @@
       cursor: col-resize;
     }
 
-    ^resizeButton svg{
+    ^resizeButton.foam-u2-ActionView svg{
       width: 0.8em;
       height: 0.8em;
     }
