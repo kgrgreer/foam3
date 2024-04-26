@@ -173,10 +173,7 @@ foam.CLASS({
       if ( this.stack_[this.pos] ) {
         this.stack_.splice(this.pos).forEach(v => v.remove())
       }
-      // Maybe just move to router? It is only used by breadcrumbs
-      if ( foam.u2.Routable.isInstance(v) ) {
-        v.stackPos = this.pos;
-      }
+      v.stackPos = this.pos;
       this.stack_[this.pos] = v;
       this.posUpdated.pub('new');
       return v;
@@ -194,7 +191,8 @@ foam.CLASS({
     },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
-      this.titleMap_[(view.__subContext__.stackPos ?? this.pos)] = title;
+      let pos = view.__subContext__.stackPos ?? this.pos;
+      this.titleMap_[pos] = title;
       if ( foam.core.Slot.isInstance(title) ) {
         view.onDetach(() => { 
           if ( title == this.titleMap_[this.pos] ) 
@@ -209,6 +207,23 @@ foam.CLASS({
       view.show(this.pos$.map(v => v == pos));
       this.trailingContainer.add(view);
       return { detach: () => { this.trailingContainer.removeChild(view); }}
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.nanos.u2.navigation',
+  name: 'StackElementRefinement',
+  refines: 'foam.u2.Element',
+  documentation: 'Adds stack revelant props to elements allowing them to be pushed to the stack',
+  exports: ['stackPos'],
+  properties: [
+    {
+      class: 'Int',
+      name: 'stackPos',
+      factory: function() {
+        return this.__context__.stackPos ?? undefined;
+      }
     }
   ]
 });

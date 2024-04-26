@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'DAOController',
   extends: 'foam.u2.View',
 
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   documentation: `
     // TODO

@@ -11,7 +11,7 @@ foam.CLASS({
 
   requires: [ 'foam.nanos.menu.SubMenuView' ],
 
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   methods: [
     function select() {

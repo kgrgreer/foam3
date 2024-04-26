@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v3',
   name: 'CreateView',
   extends: 'foam.u2.View',
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   topics: [
     'finished',
