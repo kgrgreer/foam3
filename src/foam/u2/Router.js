@@ -9,12 +9,13 @@ foam.CLASS({
   name: 'Router',
   extends: 'foam.u2.Controller',
   mixins: [ 'foam.u2.memento.Memorable' ],
+  implements: ['foam.u2.Routable'],
 
   documentation: `A special type of controller class that simplifies handling of breadcrumbs, stacks and mementos.
     Routers must instantiate using the addCrumb() (usually in the init()).
   `,
 
-  exports: [ 'route', 'stackPos' ],
+  exports: [ 'route' ],
   imports: ['breadcrumbs?', 'stack?'],
 
   // topics: ['routedTo'],
@@ -22,13 +23,6 @@ foam.CLASS({
     {
       name: 'route',
       memorable: true
-    },
-    {
-      class: 'Int',
-      name: 'stackPos',
-      factory: function() {
-        return this.__context__.stackPos || undefined;
-      }
     },
     ['routingFeedback_', false]
   ],
@@ -63,10 +57,8 @@ foam.CLASS({
   ]
 });
 
-
-// TODO: unsure why above class cant be an interface but something about the mixin breaks it
+// Used to test if classes mixing in Router are routeable
 foam.INTERFACE({
   package: 'foam.u2',
-  name: 'Routable',
-  mixins: [ 'foam.u2.Router' ]
+  name: 'Routable'
 });

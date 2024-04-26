@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'DataManagement',
   extends: 'foam.u2.Controller',
 
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   documentation: 'Data Management UI for browsing all DAOs.',
 
