@@ -16,8 +16,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder'
+    'foam.comics.v2.DAOBrowserView'
   ],
 
   cssTokens: [
@@ -85,14 +84,11 @@ foam.CLASS({
       });
       this
         .addClass()  
-        .start(self.CardBorder)
-        .style({ position: 'relative', 'min-height': this.config.minHeight + 'px' })
         .start(this.config.browseBorder)
-          .call(function() {
-            this.add(self.slot(function(browseView) {
+        .style({ position: 'relative', 'min-height': this.config.minHeight + 'px'})
+            .add(self.slot(function(browseView) {
               return self.E().tag(browseView, { data: this.data, config: this.config } );
-            }));
-          })
+            }))
         .end();
     }
   ],

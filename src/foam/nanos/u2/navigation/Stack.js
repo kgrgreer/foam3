@@ -21,6 +21,8 @@ foam.CLASS({
       flex-direction: column;
       overflow: auto;
       position: relative;
+    }
+    ^header-gap {
       gap: 1.6rem;
     }
     ^content {
@@ -95,26 +97,19 @@ foam.CLASS({
     },
     // If set, takes over stack operations, useful for overriding stack behaviour in routers
     'delegate_', 
-    'header_', 'breadcrumbs_', ['stuck_', false]
+    'header_', ['stuck_', false], 'headerVisibility'
     // TODO: add stack default
   ],
   methods: [
     function render() {
-      let headerVisibility$ = this.slot(function(titleMap_, pos, trailingContainer) {
-        return titleMap_[pos] || trailingContainer?.childNodes.length;
-      });
       this.addClass()
-      // Theoretically we shouldnt need this as views should be taking up all the space they get
-      // But since old stack didnt have styling we need this until we can go through the old views
-      // and update them
-      .enableClass(this.myClass('padding'), headerVisibility$.or(this.breadcrumbs_$.dot('shown')))
+      .enableClass(this.myClass('padding'), this.headerVisibility$)
+      .enableClass(this.myClass('header-gap'), this.headerVisibility$)
       .start('', {}, this.header_$)
         .addClass(this.myClass('header-container'))
-        .show(headerVisibility$.or(this.breadcrumbs_$.dot('shown')))
         .enableClass(this.myClass('stuck'), this.stuck_$)
-        .tag(foam.u2.stack.BreadcrumbView, {}, this.breadcrumbs_$)
+        .tag(foam.u2.stack.BreadcrumbView)
         .start(this.Cols)
-          .show(headerVisibility$)
           .start()
             .addClass('h100', this.myClass('browse-title'))
             .add(this.dynamic(function(pos, titleMap_) {
@@ -144,11 +139,20 @@ foam.CLASS({
     async function addHeaderObserver() {
       const root = await this.el();
       const options = { root, threshold: [1.0] };
-
+      let el = await this.header_.el();
+      const isVisible = () => {
+        let flag = false
+        el.childNodes?.forEach(v => {
+          if ( v.offsetHeight ) flag = true;
+        })
+        this.headerVisibility = flag;
+      }
+      isVisible()
       const observer = new IntersectionObserver(([e]) => { this.stuck_ = e.intersectionRatio < 1; }, options);
-      (async () => {
-        observer.observe(await this.header_.el());
-      })();
+      const resize = new ResizeObserver(isVisible)
+      observer.observe(el);
+      resize.observe(el);
+      this.onDetach(() => { observer.disconnect(); resize.disconnect(); })
     },
     function resetStack() {
       if ( this.delegate_ ) return this.delegate_.resetStack();

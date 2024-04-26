@@ -99,14 +99,15 @@ foam.CLASS({
 
   methods: [
     function render() {
+      let size = foam.core.Int.isInstance(this.size) ? this.size+'px' : this.size;
       this
         .addClass(this.myClass())
         .style({
           'background-color': this.backgroundColor,
           'border-color': this.stateBorderColor_$,
-          'width': this.size + 'px',
-          'height': this.size + 'px',
-          'font-size': this.size * 0.65,
+          'width': size,
+          'height': size,
+          'font-size': '65%',
           'color': this.textColor$,
           'border': this.borderThickness + 'px solid',
           'padding': this.padding,
