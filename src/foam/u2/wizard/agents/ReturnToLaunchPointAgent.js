@@ -13,8 +13,9 @@ foam.CLASS({
   `,
 
   imports: [
-    'currentMenu',
+    'crunchController',
     'ctrl',
+    'currentMenu',
     'isIframe',
     'pushDefaultMenu'
   ],
@@ -25,6 +26,8 @@ foam.CLASS({
 
   methods: [
     async function execute() {
+      if ( this.crunchController.lastActiveWizard?.status == foam.u2.wizard.WizardStatus.IN_PROGRESS )
+        return;
       if ( this.isIframe() ) return;
       if ( this.currentMenu.id === this.ctrl.route ) {
         if ( window.history.length > 1 )
