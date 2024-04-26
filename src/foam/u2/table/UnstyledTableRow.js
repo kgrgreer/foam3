@@ -50,7 +50,7 @@ foam.CLASS({
       this.addClass(this.data.myClass('tr')).
       on('mouseover', () => self.hoverSelection = obj).
       call(this.insertClick, [obj]). // TODO: why the bind(), call should apply to this anyway?
-      enableClass(this.myClass('clickable'), ! this.config.disableSelection).
+      enableClass(this.data.myClass('clickable'), ! this.config.disableSelection).
       addClass(this.data.myClass('row')).
       style({ 'min-width': this.data.tableWidth_$ }).
 
