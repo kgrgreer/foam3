@@ -255,6 +255,7 @@ foam.CLASS({
             options: { inline: true }
           }, ctx);
           wizardRunner.sequence
+          .remove('ReturnToLaunchPointAgent')
           .addBefore('ConfigureFlowAgent', {
             class: 'foam.u2.wizard.agents.AnalyticEventsAgent',
             createTraceID: true,
