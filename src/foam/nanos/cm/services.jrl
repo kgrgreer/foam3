@@ -9,7 +9,9 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("cms")
       .setOf(foam.nanos.cm.CM.getOwnClassInfo())
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.cm.CM.EXPIRY });
+
     return new foam.nanos.cm.CMUpdateDAO(x, dao);
   """,
   "client":"""{"of":"foam.nanos.cm.CM"}"""
