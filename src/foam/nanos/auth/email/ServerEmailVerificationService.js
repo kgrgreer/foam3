@@ -54,6 +54,10 @@ foam.CLASS({
           AND(
             identifierPredicate,
             EQ(User.LOGIN_ENABLED, true),
+            OR(
+              EQ(User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
+              EQ(User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.PENDING)
+            ),
             OR(EQ(spid, null), EQ(User.SPID, spid)) // null check done for running in test mode as we don't always set up spid
           ))
           .limit(2);
