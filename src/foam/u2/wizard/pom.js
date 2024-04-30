@@ -91,6 +91,7 @@ foam.POM({
     { name: "data/CapableLoader",                      flags: "web" },
     { name: "data/EasyLoader",                         flags: "web" },
     { name: "data/CreateLoader",                       flags: "web" },
+    { name: "data/MemorableLoader",                    flags: "web" },
     { name: "data/DAOArrayLoader",                     flags: "web" },
     { name: "data/ContextLoader",                      flags: "web" },
     { name: "data/PurgeCacheSaver",                    flags: "web" },
