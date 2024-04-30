@@ -69,7 +69,7 @@ foam.CLASS({
         testAddress = crunchService.updateJunctionFor(x, "test.onboarding.address", addressData, CapabilityJunctionStatus.GRANTED, user, user);
 
         // 4. Grant general capability and try to edit all 3, only PermissiveEditBehaviour should be able to
-        var GenCapUCJ = crunchService.updateJunctionFor(x, "testOnboarding", null, CapabilityJunctionStatus.GRANTED, user, user);
+        var genCapUCJ = crunchService.updateJunctionFor(x, "testOnboarding", null, CapabilityJunctionStatus.GRANTED, user, user);
 
         testFullName = crunchService.updateJunctionFor(x, "test.onboarding.full-name", fullNameData, CapabilityJunctionStatus.GRANTED, user, user);
         testPhoneNumber = crunchService.updateJunctionFor(x, "test.onboarding.phone-number", phoneNumberData2, CapabilityJunctionStatus.GRANTED, user, user);

@@ -28,8 +28,8 @@ foam.CLASS({
         Group userGroup = (Group) ((DAO) systemX.get("groupDAO")).find(user.getGroup());
 
         CrunchService crunchService = (CrunchService) systemX.get("crunchService");
-        var GenCapUCJ = crunchService.getJunction(userX, userGroup.getGeneralCapability());
-        if (GenCapUCJ == null || GenCapUCJ.getStatus() != CapabilityJunctionStatus.GRANTED) { 
+        var genCapUCJ = crunchService.getJunction(userX, userGroup.getGeneralCapability());
+        if (genCapUCJ == null || genCapUCJ.getStatus() != CapabilityJunctionStatus.GRANTED) { 
           ucj.setData(newData);
           return true;
         } else {
