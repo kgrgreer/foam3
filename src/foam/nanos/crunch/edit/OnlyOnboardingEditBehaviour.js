@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.crunch.edit',
   name: 'OnlyOnboardingEditBehaviour',
   extends: 'foam.nanos.crunch.edit.AbstractEditBehaviour',
+  documentation: "Allows user to edit only during onboarding before general capability has been granted",
 
   javaImports: [
     'foam.nanos.crunch.CrunchService',
