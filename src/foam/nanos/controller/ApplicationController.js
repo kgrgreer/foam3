@@ -890,6 +890,7 @@ foam.CLASS({
         source: group.wizardFlow || group.generalCapability,
         options: {inline: false, returnCompletionPromise: true}
       });
+      wizardRunner.sequence.remove('ReturnToLaunchPointAgent');
       // TODO: figure out why this cant be inlined
       let retPromise = await wizardRunner.launch();
       await retPromise;
