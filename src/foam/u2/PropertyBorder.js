@@ -24,6 +24,7 @@ foam.CLASS({
   requires: [
     'foam.core.ArraySlot',
     'foam.core.ConstantSlot',
+    'foam.core.SimpleSlot',
     'foam.u2.borders.ExpandableBorder',
     'foam.u2.DisplayMode',
     'foam.u2.tag.CircleIndicator'
@@ -80,11 +81,20 @@ foam.CLASS({
       var errorSlot = prop.validators && prop.validationTextVisible ?
         foam.core.Validation.orValidators(data, prop.validators) :
         this.ConstantSlot.create({ value: null });
-        */
+      */
 
-      var errorSlot = prop.validateObj && prop.validationTextVisible ?
-        data.slot(prop.validateObj) :
-        this.ConstantSlot.create({ value: null });
+
+      var errorSlot;
+      if ( prop.validateObj && prop.validationTextVisible ) {
+        errorSlot = this.SimpleSlot.create({ value: null })
+        let linkErrorSlot = () => {
+          errorSlot.follow(this.data.slot(prop.validateObj))
+        }
+        this.data$.sub(linkErrorSlot);
+        linkErrorSlot();
+      } else {
+        errorSlot = this.ConstantSlot.create({ value: null })
+      }
 
       var modeSlot = this.prop.createVisibilityFor(
         this.data$,
