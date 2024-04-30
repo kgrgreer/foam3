@@ -56,7 +56,8 @@ foam.CLASS({
         // Test 3: current time is after both schedules
         now = LocalDate.now().atTime(22, 0);
         next = dateToLocalDateTime(testTOD.getNextScheduledTime(x, localDateTimeToDate(now)));
-        expected = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth() + 1, 14, 0);
+        expected = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 14, 0);
+        expected = expected.plusDays(1);
 
         test(next.equals(expected),
           "Same timezone: current time after both schedules - Expected: " + expected + ", Received: " + next);

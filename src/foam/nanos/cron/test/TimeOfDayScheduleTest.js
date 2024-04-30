@@ -73,8 +73,9 @@ foam.CLASS({
 
         LocalDateTime next = dateToLocalDateTime(testTOD.getNextScheduledTime(x, localDateTimeToDate(now)));
 
-        LocalDateTime expected = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth() + 1,
+        LocalDateTime expected = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(),
           13, 2, 3);
+        expected = expected.plusDays(1);
 
         test(next.equals(expected),
           "testAfterScheduled - Expected: " + expected + ", Received: " + next);
