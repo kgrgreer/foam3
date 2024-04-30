@@ -33,7 +33,7 @@ foam.CLASS({
         }
       }
 
-      return this.dao?.find(this.route);
+      return await this.dao?.find(this.route);
     }
   ]
 });
