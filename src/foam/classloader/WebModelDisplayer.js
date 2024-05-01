@@ -29,7 +29,7 @@ foam.CLASS({
   requires: [
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
-    'foam.classloader.OrDAO',
+    'foam.dao.OrDAO',
     'foam.apploader.WebModelFileDAO',
     'foam.apploader.ClassLoader'
   ],

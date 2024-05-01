@@ -21,8 +21,8 @@ have multiple classloaders running alongside eachother`
 ],*/
 
   requires: [
-    'foam.classloader.OrDAO',
     'foam.core.Script',
+    'foam.dao.OrDAO',
     'foam.dao.Relationship',
     'foam.apploader.SubClassLoader',
     {

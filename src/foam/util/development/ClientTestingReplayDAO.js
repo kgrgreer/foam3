@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.util.development',
   name: 'ClientTestingReplayDAO',
-  extends: 'foam.classloader.OrDAO',
+  extends: 'foam.dao.OrDAO',
   javaExtends: '',
   documentation: `
     /!\ warning: production use not advised /!\
