@@ -334,6 +334,7 @@ foam.CLASS({
           if ( ! this.data.equals(o) ) {
             this.data = o;
             this.finished.pub();
+            this.config.dao.on.reset.pub();
             if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
               var currentFeedback = o.userFeedback;
               while ( currentFeedback ) {
