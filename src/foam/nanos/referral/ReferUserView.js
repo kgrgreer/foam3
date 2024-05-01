@@ -94,7 +94,7 @@ foam.CLASS({
   ],
 
   methods: [
-    function render() {
+    async function render() {
       let self = this;
       this.refLink = this.subject.user.referralCodes.where(
         this.Eq.create({arg1: foam.nanos.referral.ReferralCode.AUTO_GENERATED, arg2: true})
