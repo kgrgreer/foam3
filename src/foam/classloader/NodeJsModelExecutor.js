@@ -22,7 +22,7 @@ foam.CLASS({
   requires: [
     'foam.apploader.ClassLoader',
     'foam.apploader.NodeModelFileDAO',
-    'foam.classloader.OrDAO',
+    'foam.dao.OrDAO',
   ],
 
   imports: [
