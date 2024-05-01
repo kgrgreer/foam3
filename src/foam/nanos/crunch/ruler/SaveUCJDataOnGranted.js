@@ -68,17 +68,10 @@ foam.CLASS({
                     oldUcj != null &&
                     oldUcj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
                 // ! isInRenewable -> isInRenewable
-                if ( ! oldUcj.getIsInRenewable() &&
-                      ucj.getIsInRenewable() ) {
-                  save = true;
+                if ( ucj.getIsInRenewable() ) {
+                  save = ! oldUcj.getIsInRenewable();
                 } else {
-                  // editBehaviour
-                  if ( ucj.getSkipEditBehaviour() == true ) {
-                    // REVIEW: this update is not persisted
-                    ucj.setSkipEditBehaviour(false);
-                  } else {
-                    save = capability.getEditBehaviour().maybeApplyEdit(x, systemX, (Subject) x.get("subject"), ucj, ucj.getData());
-                  }
+                  save = true;
                 }
               }
             }
