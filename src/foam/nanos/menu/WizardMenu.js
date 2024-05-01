@@ -47,7 +47,7 @@ foam.CLASS({
       const runner = this.WizardRunner.create({
         source: this.source
       }, x)
-
+      runner.sequence.remove('ReturnToLaunchPointAgent');
       runner.sequence.addBefore('ConfigureFlowAgent', this.config)
       runner.launch()
     }
