@@ -16,7 +16,7 @@ foam.CLASS({
   `,
 
   css: `
-    ^content > *  { height: 100%; }
+    ^content, ^content > *  { height: 100%; }
   `,
   imports: [
     'auth',
