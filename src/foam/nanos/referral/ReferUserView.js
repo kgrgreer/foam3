@@ -25,7 +25,6 @@ foam.CLASS({
       padding: 1.5rem;
       text-align: center;
       width: 100%;
-      word-break: break-all;
     }
     ^error^copy-box {
       background: $destructive50;
