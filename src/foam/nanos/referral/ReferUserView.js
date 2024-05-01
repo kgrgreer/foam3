@@ -80,7 +80,7 @@ foam.CLASS({
   ],
 
   messages: [
-     { name: 'HEADER_1', message: 'Share ${appName} With a Friend!', template: true },
+     { name: 'HEADER', message: 'Share ${appName} With a Friend!', template: true },
      { name: 'COPY_FAIL', message: 'Failed to copy!' },
      { name: 'COPYTEXT', message: 'Refer a friend' }
    ],
@@ -112,25 +112,32 @@ foam.CLASS({
       let button = navigator.canShare?.({text: this.referralText}) ? this.SHARE_TEXT : this.COPY_TEXT;
       this
         .addClass(this.myClass('container'))
-        .call(this.addContent())
         .start()
-            .addClass(this.myClass('copy-box'))
-            .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
-            .add(this.dynamic(function(refLink) {
-              this.removeAllChildren()
-              if (refLink) {
-                this.add(self.COPYTEXT)
-                .tag('br')
-                .tag('br')
-                .add(self.refLink);
-              } else {
-                this.add('Something went wrong, please try again');
-              }
-            }))
-          .end()
-          .startContext({data:this})
-            .start(button, { buttonStyle: 'PRIMARY', size: 'LARGE' }).addClass(this.myClass('share-button')).end()
-          .endContext()
+          .addClass(this.myClass('header'))
+          .start().addClass('h300').add(this.HEADER({ appName: this.theme.appName })).end()
+        .end()
+        .start()
+          .addClass(this.myClass('content'))
+          .call(this.addContent())
+        .end()
+        .start()
+          .addClass(this.myClass('copy-box'))
+          .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
+          .add(this.dynamic(function(refLink) {
+            this.removeAllChildren()
+            if (refLink) {
+              this.add(self.COPYTEXT)
+              .tag('br')
+              .tag('br')
+              .add(self.refLink);
+            } else {
+              this.add('Something went wrong, please try again');
+            }
+          }))
+        .end()
+        .startContext({data:this})
+          .start(button, { buttonStyle: 'PRIMARY', size: 'LARGE' }).addClass(this.myClass('share-button')).end()
+        .endContext()
     },
     {
       name: 'addContent',
