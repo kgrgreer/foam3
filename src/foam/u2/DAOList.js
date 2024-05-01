@@ -96,7 +96,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'loadLatch',
     },
-    'groupBy',
+    {
+      class: 'foam.mlang.ExprProperty',
+      name: 'groupBy'
+    },
     'order',
     ['invertGroupingOrder', false]
   ],
@@ -185,7 +188,7 @@ foam.CLASS({
     documentation: 'A wrapper view that adds click functionality to the list rows',
 
     mixins: ['foam.comics.v2.Clickable'],
-    imports: ['theme?'],
+    imports: ['theme?', 'config'],
     css: `
       ^ {
         display: flex;
@@ -200,7 +203,7 @@ foam.CLASS({
       ^ > :first-child {
         flex: 1;
       }
-      ^:hover {
+      ^clickable:hover {
         background: $grey50;
         cursor: pointer;
       }
@@ -225,10 +228,13 @@ foam.CLASS({
     methods: [
       function render() {
         var self = this;
-        this.addClass().start(this.rowView, { data: this.data })
+        this.addClass()
+        .enableClass(this.myClass('clickable'), ! this.config?.disableSelection)
+        .start(this.rowView, { data: this.data })
           .call(this.insertClick.bind(self), [this.data])
         .end()
         .start().addClass(self.myClass('svg-wrapper'))
+          .hide(this.config?.disableSelection$)
           .start({ class: 'foam.u2.tag.Image', glyph: self.theme?.glyphs.next, role: 'presentation' })
           .end()
         .end();
