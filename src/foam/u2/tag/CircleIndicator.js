@@ -26,7 +26,7 @@ foam.CLASS({
       text-align: center;
       display: inline-flex;
       overflow: hidden;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
     }
     ^ > img {
@@ -106,7 +106,6 @@ foam.CLASS({
           'border-color': this.stateBorderColor_$,
           'width': size,
           'height': size,
-          'font-size': '65%',
           'color': this.textColor$,
           'border': this.borderThickness + 'px solid',
           'padding': this.padding,
