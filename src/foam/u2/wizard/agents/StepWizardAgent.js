@@ -30,6 +30,8 @@ foam.CLASS({
     'wizardController?'
   ],
 
+  exports: ['wizardView'],
+
   requires: [
     'foam.u2.dialog.Popup',
     'foam.u2.stack.StackBlock',
