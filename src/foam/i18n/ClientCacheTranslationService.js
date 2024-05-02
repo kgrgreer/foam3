@@ -126,7 +126,7 @@ foam.CLASS({
       code: function(locale, source, defaultText) {
         var txt = this.localeEntries[source];
         this.translation.pub(locale, source, txt, defaultText);
-        return txt || defaultText;
+        return txt ?? defaultText;
       }
     },
     function loadTheme() {

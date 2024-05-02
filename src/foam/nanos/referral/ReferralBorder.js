@@ -44,6 +44,8 @@ foam.CLASS({
     }
   `,
 
+  messages: [{ name: 'TITLE', message: 'Available Rewards' }],
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -60,7 +62,7 @@ foam.CLASS({
           .addClass(this.myClass('wrapper'))
           .tag(this.contentView)
           .start()
-            .start().addClass('h500').add('Rewards History').end()
+            .start().addClass('h500').add(this.TITLE).end()
             .start(foam.u2.borders.CardBorder).style({ width: '100%' }).tag('', {}, this.content$).end()
           .end()
         .end()
