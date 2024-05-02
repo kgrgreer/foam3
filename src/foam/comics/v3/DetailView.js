@@ -166,6 +166,10 @@ foam.CLASS({
       var id = this.data?.id ?? this.idOfRecord;
       this.addCrumb();
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
+        if ( ! d ) {
+          this.daoController.route = '';
+          return;
+        } 
         self.data = d;
         if ( this.controllerMode == 'EDIT' ) this.edit();
         this.populatePrimaryAction(self.config.of, self.data);
