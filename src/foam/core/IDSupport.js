@@ -180,14 +180,17 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.core',
   name: 'ModelIDRefine',
   refines: 'foam.core.Model',
+
   requires: [
     'foam.core.IDAlias',
-    'foam.core.MultiPartID',
+    'foam.core.MultiPartID'
   ],
+
   properties: [
     {
       name: 'ids',
