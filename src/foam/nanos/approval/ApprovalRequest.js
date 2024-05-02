@@ -1007,22 +1007,7 @@ foam.CLASS({
 
         // else pass general view with modeled data for display
         // this is for create, deleting object approvals
-        X.stack.push(self.StackBlock.create({
-          view: {
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: obj,
-            of: of,
-            config: foam.comics.v2.DAOControllerConfig.create({
-              daoKey: daoKey,
-              of: of,
-              editPredicate: foam.mlang.predicate.False.create(),
-              createPredicate: foam.mlang.predicate.False.create(),
-              deletePredicate: foam.mlang.predicate.False.create()
-            }, X),
-            mementoHead: null,
-          },
-          parent: X.createSubContext({ stack: self.stack })
-        }));
+        X.routeToDAO(x[daoKey], obj.id);
       }
     },
     {
