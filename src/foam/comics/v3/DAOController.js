@@ -9,14 +9,14 @@ foam.CLASS({
   name: 'DAOController',
   extends: 'foam.u2.View',
 
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   documentation: `
     // TODO
   `,
 
   css: `
-    ^content > *  { height: 100%; }
+    ^content, ^content > *  { height: 100%; }
   `,
   imports: [
     'auth',
@@ -99,7 +99,7 @@ foam.CLASS({
         if ( route == 'create' ) {
           if ( this.config.createMenu ) {
             self.pushMenu(self.config.createMenu);
-            return self.renderDAOView();
+            this.route = '';
           }
           if ( this.config.createController ) {
             this.stack.push({

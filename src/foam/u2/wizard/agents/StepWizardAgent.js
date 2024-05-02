@@ -23,11 +23,14 @@ foam.CLASS({
     'isIframe',
     'popupMode',
     'flowAgent?',
+    'sequence',
     'stack',
     'popupManager',
     'wizardClosing',
     'wizardController?'
   ],
+
+  exports: ['wizardView'],
 
   requires: [
     'foam.u2.dialog.Popup',
@@ -95,6 +98,8 @@ foam.CLASS({
           this.wizardView = this.popupManager.push(view, this, this.config.popup || {})
         } else {
           this.wizardView = this.stack.push(view, this)
+          // If wizard uses stack then remove returnToLaunchPointAgent
+          this.sequence.remove('ReturnToLaunchPointAgent');
         }
 
         this.wizardView.onDetach(() => {

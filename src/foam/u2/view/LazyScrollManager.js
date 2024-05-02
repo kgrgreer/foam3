@@ -23,6 +23,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  imports: ['config'],
+
   constants: [
     {
       type: 'Float',
@@ -39,6 +41,18 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'NO_DATA', message: 'No ${modelName} found', template: true}
+  ],
+
+  css: `
+    ^no-data{
+      display:flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+  `,
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -219,6 +233,13 @@ foam.CLASS({
           resize.observe(el);
         })
       })
+      // Render empty view if dao is empty
+      // Change to dynamic after U3
+      this.appendTo.add(this.slot(function(daoCount, isInit) { 
+        if ( isInit || daoCount ) return;
+        return this.E().addClass(self.myClass('no-data'))
+          .add(self.NO_DATA({ modelName: self.config?.browseTitle ?? 'data' }));
+      }));
 
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
       // This needs to be here because intersectionObserver does not bind the correct this during callback

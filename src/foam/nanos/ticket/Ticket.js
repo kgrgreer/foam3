@@ -651,12 +651,6 @@ foam.CLASS({
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
@@ -679,12 +673,6 @@ foam.CLASS({
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
         }, e => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);
@@ -728,13 +716,6 @@ foam.CLASS({
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
-
-          if (
-            X.stack.top &&
-            ( X.currentMenu.id !== X.stack.top[2] )
-          ) {
-            X.stack.back();
-          }
         }, (e) => {
           this.throwError.pub(e);
           this.notify(e.message, '', this.LogLevel.ERROR, true);

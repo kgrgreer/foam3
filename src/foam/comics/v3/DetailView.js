@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v3',
   name: 'DetailView',
   extends: 'foam.u2.View',
-  implements: ['foam.u2.Routable'],
+  mixins: ['foam.u2.Router'],
 
   documentation: `Detail view for displaying objects in comics 3 controller`,
 
@@ -47,6 +47,10 @@ foam.CLASS({
   topics: [
     'finished',
     'throwError'
+  ],
+
+  messages: [
+    { name: 'UPDATED',   message: 'Updated' }
   ],
 
   classes: [
@@ -162,6 +166,10 @@ foam.CLASS({
       var id = this.data?.id ?? this.idOfRecord;
       this.addCrumb();
       self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
+        if ( ! d ) {
+          this.daoController.route = '';
+          return;
+        } 
         self.data = d;
         if ( this.controllerMode == 'EDIT' ) this.edit();
         this.populatePrimaryAction(self.config.of, self.data);
@@ -334,6 +342,7 @@ foam.CLASS({
           if ( ! this.data.equals(o) ) {
             this.data = o;
             this.finished.pub();
+            this.config.dao.on.reset.pub();
             if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
               var currentFeedback = o.userFeedback;
               while ( currentFeedback ) {

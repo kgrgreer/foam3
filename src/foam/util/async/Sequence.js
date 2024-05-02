@@ -264,6 +264,23 @@ foam.CLASS({
           }
         }));
       });
+    },
+    function describe() {
+      let map = this.contextAgentSpecs.map(v => {
+        let spec = v.spec;
+        let args = v.args;
+        if ( this.ContextAgent.isInstance(spec) ) {
+          spec = spec.cls_.name;
+        } else if ( spec.create ) {
+          spec = spec.name;
+        } else {
+          var cls = foam.core.FObject.isSubClass(spec.class)
+            ? spec.class : this.__subContext__.lookup(spec.class);
+          spec = cls.name;
+        }
+        return {name: v.name, class: spec, args: args};
+      })
+      console.table(map);
     }
   ],
 

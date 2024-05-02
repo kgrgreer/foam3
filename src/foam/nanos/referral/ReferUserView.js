@@ -11,38 +11,63 @@ foam.CLASS({
 
   css: `
     ^container{
-      width: min(90vw, 424px);
-      padding: 2rem;
+      container: wrapper / inline-size;
+      height: fit-content;
+      align-items: center;
+      justify-content: space-between;
       display: flex;
       flex-direction: column;
       gap: 2rem;
-      align-items: center;
-      justify-content: space-between;
     }
     ^copy-box{
       background: $primary50;
       border: 1px dashed $primary400;
       padding: 1.5rem;
       text-align: center;
+      width: 100%;
     }
     ^error^copy-box {
       background: $destructive50;
       border-color: $destructive400;
     }
     ^header{
-      font-size:3rem;
-      color: $primary400;
+      display: flex; 
+      flex-direction: column;
+      gap: 1.2rem;
       text-align: center;
+    }
+    ^header > .h300{
       font-weight: 900;
+      color: $primary400;
     }
-    ^ img{
-      height: 5rem;
-      width: 5rem;
+    ^item .h400 {
+      line-height: 32px;
+      color: $primary400;
     }
-
-    @media only screen and (min-width: /*%DISPLAYWIDTH.MD%*/ 768px) {
-      ^container{
-        padding: 4rem 3rem;
+    ^header > .p,^item .p {
+      color: $grey500;
+    }
+    ^item {
+      display: flex;
+      gap: 0.4rem;
+      align-self: flex-start;
+    }
+    ^item > *:last-child {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    ^item img {
+      height: 16;
+      align-self: center;
+    }
+    @container wrapper (width > 576px) {
+      ^copy-box {
+        width: fit-content;
+      }
+      ^item {
+        text-align: center;
+        align-self: inherit;
       }
     }
   `,
@@ -54,9 +79,8 @@ foam.CLASS({
     'subject'
   ],
 
-   messages: [
-     { name: 'HEADER_1', message: 'Share ' },
-     { name: 'HEADER_2', message: ' With a Friend!' },
+  messages: [
+     { name: 'HEADER', message: 'Share ${appName} With a Friend!', template: true },
      { name: 'COPY_FAIL', message: 'Failed to copy!' },
      { name: 'COPYTEXT', message: 'Refer a friend' }
    ],
@@ -66,49 +90,60 @@ foam.CLASS({
       name: 'referralText',
       class: 'String'
     },
-    'refLink',
-    'foam.mlang.predicate.Eq'
+    'refLink'
   ],
 
   methods: [
     async function render() {
       let self = this;
-      this.refLink = (await this.subject.user.referralCodes.where(
+      this.refLink = this.subject.user.referralCodes.where(
         this.Eq.create({arg1: foam.nanos.referral.ReferralCode.AUTO_GENERATED, arg2: true})
-      ).select()).array[0]?.url;
-      this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
+      ).select().then(v => {
+        this.refLink = v.array[0]?.url;
+        this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
+      });
+
+      let iconConfig = {
+        size: 32,
+        backgroundColor: this.color = foam.CSS.returnTokenValue('$primary50', this.cls_, this.__subContext__)
+      }
+      let fill = foam.CSS.returnTokenValue('$primary700', this.cls_, this.__subContext__)
 
       let button = navigator.canShare?.({text: this.referralText}) ? this.SHARE_TEXT : this.COPY_TEXT;
-
-      this.addClass(this.myClass('container'))
-
-        .start('img')
-          .attr('src', this.theme.logo)
-          .addClass(this.myClass('logo'))
+      this
+        .addClass(this.myClass('container'))
+        .start()
+          .addClass(this.myClass('header'))
+          .start().addClass('h300').add(this.HEADER({ appName: this.theme.appName })).end()
         .end()
-
-        .start().addClass(this.myClass('header'))
-          .add(this.HEADER_1)
-          .add(this.theme.appName)
-          .add(this.HEADER_2)
+        .start()
+          .addClass(this.myClass('content'))
+          .call(this.addContent())
         .end()
-
         .start()
           .addClass(this.myClass('copy-box'))
           .enableClass(this.myClass('error'), this.refLink$.map(v => ! v))
-          .callIfElse(this.refLink, function() {
-            this.add(self.COPYTEXT)
-            .tag('br')
-            .tag('br')
-            .add(self.refLink);
-          }, function() {
-            this.add('Something went wrong, please try again');
-          })
+          .add(this.dynamic(function(refLink) {
+            this.removeAllChildren()
+            if (refLink) {
+              this.add(self.COPYTEXT)
+              .tag('br')
+              .tag('br')
+              .add(self.refLink);
+            } else {
+              this.add('Something went wrong, please try again');
+            }
+          }))
         .end()
-
         .startContext({data:this})
           .start(button, { buttonStyle: 'PRIMARY', size: 'LARGE' }).addClass(this.myClass('share-button')).end()
-        .endContext();
+        .endContext()
+    },
+    {
+      name: 'addContent',
+      code: function() {
+        // nop
+      }
     }
   ],
   actions: [
