@@ -39,10 +39,6 @@ foam.CLASS({
   ],
   
   methods: [
-    function select(X, menu) {
-      /** Called when a menu is selected. **/
-      return X.pushMenu(menu.id, true);
-    },
     function launch(x, menu) {
       const runner = this.WizardRunner.create({
         source: this.source
