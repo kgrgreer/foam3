@@ -49,6 +49,10 @@ foam.CLASS({
     'throwError'
   ],
 
+  messages: [
+    { name: 'UPDATED',   message: 'Updated' }
+  ],
+
   classes: [
     {
       name: 'Stack',
