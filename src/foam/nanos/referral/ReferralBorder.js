@@ -50,7 +50,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'contentView',
-      value: 'foam.nanos.referral.ReferUserView'
+      value: { class: 'foam.nanos.referral.ReferUserView' }
     }
   ],
 
