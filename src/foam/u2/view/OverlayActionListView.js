@@ -236,7 +236,7 @@ foam.CLASS({
         self.overlay_.close();
       });
       // sub to actions from view data
-      self.obj?.data.sub('action', function() {
+      self.obj?.data?.sub('action', function() {
         self.overlay_.close();
       });
 
