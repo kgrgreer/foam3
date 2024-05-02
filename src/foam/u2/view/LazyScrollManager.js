@@ -238,7 +238,7 @@ foam.CLASS({
       this.appendTo.add(this.slot(function(daoCount, isInit) { 
         if ( isInit || daoCount ) return;
         return this.E().addClass(self.myClass('no-data'))
-          .add(self.NO_DATA({ modelName: self.config?.of.model_.plural ?? 'data' }));
+          .add(self.NO_DATA({ modelName: self.config?.browseTitle ?? 'data' }));
       }));
 
       this.rowObserver = new IntersectionObserver(handleIntersect, options);
