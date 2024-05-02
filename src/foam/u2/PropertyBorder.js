@@ -211,7 +211,8 @@ foam.CLASS({
             this.start().addClass(self.myClass('helper-icon'))
               .start('', { tooltip: prop.help.length < 60 ? prop.help : self.LEARN_MORE })
                 .start(self.CircleIndicator, {
-                  icon: self.theme ? self.theme.glyphs.helpIcon.getDataUrl({ fill: self.theme.black }) : '/images/question-icon.svg',
+                  glyph: 'helpIcon',
+                  icon: '/images/question-icon.svg',
                   size: 20
                 })
                   .on('click', () => { self.helpEnabled = ! self.helpEnabled; })

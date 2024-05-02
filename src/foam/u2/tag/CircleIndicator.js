@@ -16,7 +16,8 @@ foam.CLASS({
 
   requires: [
     'foam.core.ExpressionSlot',
-    'foam.u2.LoadingSpinner'
+    'foam.u2.LoadingSpinner',
+    'foam.u2.tag.Image'
   ],
 
   css: `
@@ -64,6 +65,9 @@ foam.CLASS({
     {
       name: 'icon',
       class: 'Image'
+    },
+    {
+      name: 'glyph'
     },
     {
       name: 'size',
@@ -124,9 +128,8 @@ foam.CLASS({
         })
         .attr('border');
 
-      if ( this.icon ) {
-        this.start('img')
-          .attr('src', this.icon$)
+      if ( this.glyph || this.icon ) {
+        this.start(this.Image, { data: this.icon, glyph: this.glyph })
         .end();
       }
 
