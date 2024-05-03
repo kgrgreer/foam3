@@ -19,7 +19,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'controllerMode',
     'currentData as data',
     'currentData as objData'
   ],
@@ -228,7 +227,6 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
 
