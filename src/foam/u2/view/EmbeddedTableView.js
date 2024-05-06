@@ -26,7 +26,7 @@ foam.CLASS({
     'config'
   ],
 
-  documentation: `A summary view for tables that shows the first n rows 
+  documentation: `A summary view for tables that shows the first n rows
   in a table with an action to expand the table to DAOBrowseControllerView`,
 
   css: `
@@ -82,10 +82,11 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     async function render() {
       // Default controller config that would be used for nested tables if no menu config can be found.
-      // Update this  to be a fallback for menuKeys when we have menuKeys for references, DAOproperties and relationships
+      // Update this to be a fallback for menuKeys when we have menuKeys for references, DAOproperties and relationships
       this.config.editPredicate =   foam.mlang.predicate.False.create();
       this.config.createPredicate = foam.mlang.predicate.False.create();
       this.config.deletePredicate = foam.mlang.predicate.False.create();
@@ -116,10 +117,10 @@ foam.CLASS({
     function handlePropertyRouting() {
       if ( ! this.detailView.route ) return;
       if ( this.detailView.route == this.prop?.name ) {
-        if ( this.view_?.shown ) { 
-          return; 
+        if ( this.view_?.shown ) {
+          return;
         }
-        this.view_ = undefined; 
+        this.view_ = undefined;
         this.openFullTable();
       }
     },
@@ -136,6 +137,7 @@ foam.CLASS({
         }, this);
     }
   ],
+
   actions: [
     {
       name: 'openTable',
