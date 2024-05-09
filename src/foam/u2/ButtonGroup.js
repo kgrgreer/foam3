@@ -65,7 +65,8 @@ foam.CLASS({
     {
       name: 'overlaySpec'
     },
-    'notContent'
+    'notContent',
+    'overlay_'
   ],
   methods: [
     function init() {
@@ -74,7 +75,7 @@ foam.CLASS({
         .addClass()
         .enableClass(this.myClass('vertical'), this.direction$.map(v => v == 'VERTICAL'))
         .start('', {}, this.notContent$).style({ display:'contents'}).end()
-        .tag(this.OverlayActionListView, { data$: this.data$, ...this.overlaySpec })
+        .tag(this.OverlayActionListView, { data$: this.data$, ...this.overlaySpec }, this.overlay_$)
       this.content = this.notContent;
     },
     function startOverlay() {
@@ -87,7 +88,7 @@ foam.CLASS({
     },
     function createChild_(spec, args) {
       if ( this.__subSubContext__.overlay ) {
-        this.data$push(spec);
+        this.overlay_.data$push(spec);
         return;
       }
       args = {...args, ...this.overrides};
