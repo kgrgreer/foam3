@@ -5,19 +5,10 @@
 
 Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/AuthService.js
 
-If youf method returns a value to the client, make sure to include
+If your method returns a value to the client, make sure to include
 "async: true" so that the client gets the return value.
 
-2. In classes.js, include the Interface for which a skeleton will be generated
-Eg:
-```
-var skeletons = [
-  'com.google.foam.demos.appengine.TestService',
-  'foam.dao.DAO',
-  'foam.mop.MOP',
-  'foam.nanos.auth.AuthService'
-];
-```
+2. In your foam.INTERFACE, include the property "skeleton: true", which will cause a skeleton to be generated
 
 A skeleton is a server component which receives network messages and then converts them into calls
 to the server implementation. If the method has return values or throws exceptions, it is also
@@ -35,7 +26,8 @@ the skeleton's responsibility to then marshal these return values or exceptions 
 
 ### CLIENT SIDE
 4. Create stub for Service on the client side
-Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/ClientAuthService.js
+Eg: https://github.com/foam-framework/foam3/blob/master/src/foam/nanos/auth/ClientAuthService.js,
+or id you don't require any special client behaviour, just add the "client: true" property to your foam.INTERFACE.
 
 A stub does the reverse job of the skeleton. It implements the provided interface, but when called, it marshals the method name and parameters into a network call which is then sent to the server to be received by the skeleton, and then subsequently, by the actual server implementation. The stub then parses the result created by the skeleton and converts them into method return values.
 
