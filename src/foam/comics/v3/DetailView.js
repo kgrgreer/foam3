@@ -231,6 +231,7 @@ foam.CLASS({
         .end();
     },
     async function populatePrimaryAction(of, data) {
+      var self = this;
       var allActions = of.getAxiomsByClass(foam.core.Action);
       var defaultAction = allActions.filter((a) => a.isDefault);
       var acArray = defaultAction.length >= 1
@@ -256,8 +257,8 @@ foam.CLASS({
       if ( this.buttonGroup_ ) {
         this.buttonGroup_
           .startOverlay()
-          .forEach(self.actionArray, function(v) {
-            self.buttonGroup_.addActionReference(v, self.data$)
+          .forEach(this.actionArray, function(v) {
+            this.addActionReference(v, self.data$)
           })
           .endOverlay()
       }
