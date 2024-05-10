@@ -27,7 +27,15 @@ foam.CLASS({
     function init() {
       this.events.forEach(v => {
         this.sourceDAO.on[v].sub(() => {
+          /*
+            Calls cmds rather than the topic as the cmd gets to the base dao
+            and then propogates up as a topic anyway. TTLCaching daos dont care 
+            about topics and need purge cmd so this is the only way to ensure 
+            fresh data
+          */
           this.targetDAO.cmd(foam.dao.DAO.RESET_CMD);
+          this.targetDAO.cmd(foam.dao.DAO.PURGE_CMD);
+          // this.targetDAO.on.reset.pub();
         });
       });
     }

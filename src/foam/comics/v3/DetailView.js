@@ -88,7 +88,12 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'data'
+      name: 'data',
+      postSet: function(o, n) {
+        if ( n ) {
+          n.sub('action', this.loadData)
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -162,46 +167,40 @@ foam.CLASS({
     function init() {
       // This is needed to ensure data is available for the viewTitle
       this.SUPER();
-      var self = this;
-      var id = this.data?.id ?? this.idOfRecord;
       this.addCrumb();
-      self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
-        if ( ! d ) {
-          this.daoController.route = '';
-          return;
-        } 
-        self.data = d;
-        if ( this.controllerMode == 'EDIT' ) this.edit();
-        this.populatePrimaryAction(self.config.of, self.data);
-      });
+      this.loadData();
     },
     function render() {
       var self = this;
       this.stack?.setTitle(this.viewTitle$, this);
       this.SUPER();
-      let d = self.stack.setTrailingContainer(
-        this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
-            showDropdownIcon: false  }}, this.buttonGroup_$)
-          .addClass(this.myClass('buttonGroup'))
-          .add(self.slot(function(primary) {
-            return this.E()
-              .hide(self.controllerMode$.map(c => c == 'EDIT' ))
-              .startContext({ data: self.data })
-                .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
-              .endContext();
-          }))
-          .startContext({ data: self })
-            .tag(self.EDIT)
-            .tag(self.CANCEL_EDIT)
-            .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
-          .endContext()
-          .startOverlay()
-            .tag(self.COPY)
-            .tag(self.DELETE)
-          .endOverlay()
-        .end()
-      )
-      self.onDetach(d);
+      let d;
+      this.onDetach(this.dynamic(function(data){
+        d?.detach?.();
+        d = self.stack.setTrailingContainer(
+          this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
+              showDropdownIcon: false  }}, this.buttonGroup_$)
+            .addClass(this.myClass('buttonGroup'))
+            .add(self.slot(function(primary) {
+              return this.E()
+                .hide(self.controllerMode$.map(c => c == 'EDIT' ))
+                .startContext({ data: self.data })
+                  .tag(primary, { buttonStyle: 'PRIMARY', size: 'SMALL' })
+                .endContext();
+            }))
+            .startContext({ data: self })
+              .tag(self.EDIT)
+              .tag(self.CANCEL_EDIT)
+              .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
+            .endContext()
+            .startOverlay()
+              .tag(self.COPY)
+              .tag(self.DELETE)
+            .endOverlay()
+          .end()
+        )
+        self.onDetach(d);
+      }))
       this.dynamic(function(route, data) {
         if ( ! data ) return;
         /* 
@@ -261,6 +260,27 @@ foam.CLASS({
             this.addActionReference(v, self.data$)
           })
           .endOverlay()
+      }
+    }
+  ],
+  
+  listeners: [
+    {
+      name: 'loadData',
+      isIdled: true,
+      delay: 100,
+      code: function() {
+        let self = this;
+        let id = this.data?.id ?? this.idOfRecord;
+        self.config.unfilteredDAO.inX(self.__subContext__).find(id).then(d => {
+          if ( ! d ) {
+            this.daoController.route = '';
+            return;
+          } 
+          self.data = d;
+          if ( this.controllerMode == 'EDIT' ) this.edit();
+          this.populatePrimaryAction(self.config.of, self.data);
+        });
       }
     }
   ],

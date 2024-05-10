@@ -26,7 +26,8 @@ foam.CLASS({
     'nestedPropsAndIndexes',
     'propertyNamesToQuery',
     'props',
-    'stack?'
+    'stack?',
+    'table'
   ],
 
   properties: [
@@ -124,6 +125,11 @@ foam.CLASS({
 
       // Object actions
       var actions = this.data.getActionsForRow(obj);
+      // When an action is taken, update the table
+      obj?.sub('action', function() {
+        if ( ! self.table ) return;
+        self.table.updateValues = ! self.table.updateValues;
+      });
       self
         .start('')
           .addClass(this.data.myClass('td'))

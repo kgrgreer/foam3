@@ -140,6 +140,10 @@ foam.CLASS({
       code: function() {
         this.SUPER();
         var self = this;
+        this.data$.sub(() => {
+          this.enableLink = true;
+          this.configLink();
+        })
         this.add(this.slot(function(obj, enableLink) {
             if ( ! obj ) return '';
 
