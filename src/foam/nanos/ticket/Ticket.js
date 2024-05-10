@@ -646,7 +646,7 @@ foam.CLASS({
         assignedTicket.assignedTo = X.subject.user.id;
         assignedTicket.clearProperty('assignedToGroup');
 
-        this.ticketDAO.put(assignedTicket).then(req => {
+        return this.ticketDAO.put(assignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
@@ -668,7 +668,7 @@ foam.CLASS({
         unassignedTicket.clearProperty('assignedTo');
         unassignedTicket.clearProperty('assignedToGroup');
 
-        this.ticketDAO.put(unassignedTicket).then(req => {
+        return this.ticketDAO.put(unassignedTicket).then(req => {
           this.ticketDAO.cmd(this.AbstractDAO.PURGE_CMD);
           this.ticketDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
@@ -694,7 +694,7 @@ foam.CLASS({
           ticket: this.id
         });
 
-        this.ticketDAO.cmd(ticketCloseCommand).then(function(res) {
+        return this.ticketDAO.cmd(ticketCloseCommand).then(function(res) {
           if ( res?.status === 'CLOSED' ) {
             this.copyFrom(res);
             this.notify(this.SUCCESS_CLOSED, '', this.LogLevel.INFO, true);

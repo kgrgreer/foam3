@@ -41,33 +41,35 @@ foam.CLASS({
 
   methods: [
     function render() {
-      var data = this.data;
       this.SUPER();
-      var color = this.resolveColor(this.data.color);
-      var background = this.resolveColor(this.data.background);
-      var isPill = this.isFancy(this.data.VALUES);
-      this
-        .enableClass(this.myClass('pill'), isPill)
-        .addClass('enum-label', this.myClass())
-        .style({
-          'background-color': background,
-          'color': color,
-          'border-color': background.includes('#FFFFFF') || ! background ? color : background
-        })
-        .callIf(this.showGlyph && data.glyph, () => {
-          var icon = {
-            size: 14,
-            backgroundColor: color,
-            icon: data.glyph.clone(this).getDataUrl({
-              fill: background || color
-            })
-          };
-          this.start(this.CircleIndicator, icon).addClass(this.myClass('icon')).end();
-        })
-        .callIfElse(isPill,
-          () => { this.start().add(data.label).end(); },
-          () => { this.start().addClass('p').add(data.label).end(); }
-        );
+      this.dynamic(function(data) {
+        this.removeAllChildren();
+        var color = this.resolveColor(this.data.color);
+        var background = this.resolveColor(this.data.background);
+        var isPill = this.isFancy(this.data.VALUES);
+        this
+          .enableClass(this.myClass('pill'), isPill)
+          .addClass('enum-label', this.myClass())
+          .style({
+            'background-color': background,
+            'color': color,
+            'border-color': background.includes('#FFFFFF') || ! background ? color : background
+          })
+          .callIf(this.showGlyph && data.glyph, () => {
+            var icon = {
+              size: 14,
+              backgroundColor: color,
+              icon: data.glyph.clone(this).getDataUrl({
+                fill: background || color
+              })
+            };
+            this.start(this.CircleIndicator, icon).addClass(this.myClass('icon')).end();
+          })
+          .callIfElse(isPill,
+            () => { this.start().add(data.label).end(); },
+            () => { this.start().addClass('p').add(data.label).end(); }
+          );
+      });
     },
     {
       name: 'isFancy',

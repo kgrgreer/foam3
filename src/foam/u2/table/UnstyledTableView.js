@@ -32,6 +32,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'as table',
     'columns',
     'colWidthUpdated',
     'config',
