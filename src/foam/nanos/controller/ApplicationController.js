@@ -902,7 +902,7 @@ foam.CLASS({
       this.__subContext__.userCapabilityJunctionDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
       let postCheck = await ucjCheck();
       if ( postCheck == null || postCheck.status != this.CapabilityJunctionStatus.GRANTED ) {
-        this.add(foam.u2.dialog.ConfirmationModal.create({
+        let popup = foam.u2.dialog.ConfirmationModal.create({
           title: this.GC_ERROR_TITLE,
           modalStyle: 'DESTRUCTIVE',
           primaryAction: { name: 'close', code: () => this.pushMenu('sign-out') },
@@ -912,7 +912,8 @@ foam.CLASS({
           .start()
           .style({ 'min-width': '25vw'})
           .add(this.GC_ERROR)
-          .end());
+          .end();
+        popup.open();
         return false;
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);

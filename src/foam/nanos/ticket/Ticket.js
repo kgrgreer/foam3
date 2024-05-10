@@ -110,19 +110,19 @@ foam.CLASS({
       order: 0
     },
     {
-      name: 'commentsSection',
-      isAvailable: function(id) {
-        return !! id;
-      },
-      title: 'Comments',
-      order: 1
-    },
-    {
       name: 'metaSection',
       isAvailable: function(id) {
         return !! id;
       },
       title: 'Audit',
+      order: 1
+    },
+    {
+      name: 'commentsSection',
+      isAvailable: function(id) {
+        return !! id;
+      },
+      title: 'Comments',
       order: 3
     },
     {
