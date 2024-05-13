@@ -214,7 +214,7 @@ foam.CLASS({
       this.ctrl.add(this.overlay_);
       this.overlay_.open(x, y);
 
-      if ( this.obj && this.dao ) {
+      if ( ! this.obj && this.dao ) {
         this.obj = await this.dao.inX(this.__context__).find(this.obj.id);
       }
 
