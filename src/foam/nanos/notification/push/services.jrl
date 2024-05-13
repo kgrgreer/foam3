@@ -1,0 +1,21 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"pushRegistry",
+  "lazy":true,
+  "serve":true,
+  "authenticate":false,
+  "boxClass":"foam.nanos.notification.push.PushRegistrySkeleton",
+  "serviceClass":"foam.nanos.notification.push.PushRegistryService",
+  "client":"""
+    {
+      "class":"foam.nanos.notification.push.ClientPushRegistry",
+      "delegate": {
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":"service/pushRegistry"
+        }
+      }
+    }
+  """
+})
