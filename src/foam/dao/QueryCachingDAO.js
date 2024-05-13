@@ -26,11 +26,11 @@ foam.CLASS({
       // if anything changes in the delegate -> clear cache
       // Can happen if the dao is modified outside the DAOController (for eg. in wizards)
       this.onDetach(this.delegate.listen(this.FnSink.create({ fn: () => this.purgeCache() })));
+      this.onDetach(this.on.reset.sub(this.purgeCache.bind(this)));
     },
 
     function purgeCache() {
       this.cache = {};
-      this.on.reset.pub();
     },
 
     function detach() {
