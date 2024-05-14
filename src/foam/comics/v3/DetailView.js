@@ -278,6 +278,7 @@ foam.CLASS({
             return;
           } 
           self.data = d;
+          self.data.__subContext__ = self.data.__subContext__.startSubContext({ controllerMode: this.controllerMode$ });
           if ( this.controllerMode == 'EDIT' ) this.edit();
           this.populatePrimaryAction(self.config.of, self.data);
         });
