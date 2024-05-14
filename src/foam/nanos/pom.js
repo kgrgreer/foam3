@@ -455,6 +455,7 @@ foam.POM({
     { name: "notification/sms/ProxySMSService",                                           flags: "js|java" },
 //    { name: "notification/push/PushService",                                              flags: "js|java" },
 //    { name: "notification/push/FirebasePushService",                                      flags: "js|java" },
+    { name: "notification/push/PushRegistration",                                         flags: "js|java" },
     { name: "notification/push/PushRegistry",                                             flags: "js|java" },
     { name: "notification/push/PushRegistryService",                                      flags: "java" },
     { name: "notification/sms/SMSMessage",                                                flags: "js|java" },
