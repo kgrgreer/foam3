@@ -9,13 +9,26 @@ foam.CLASS({
   name: 'PushRegistryService',
   implements: [ 'foam.nanos.notification.push.PushRegistry' ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User'
+  ],
+
   methods: [
     {
       name: 'subscribe',
       type: 'Void',
       args: 'Context x, String sub',
       javaCode: `
-        System.err.println("******************** REGISTER: " + sub);
+        User user = ((Subject) x.get("subject")).getUser();
+        if ( user == null ) throw new IllegalArgumentException("Missing user.");
+
+        PushRegistration reg = new PushRegistration();
+        reg.setUser(user.getId());
+        reg.setSubscription(sub);
+        DAO dao = (DAO) x.get("pushRegistrationDAO");
+        dao.put(reg);
       `
     }
   ]

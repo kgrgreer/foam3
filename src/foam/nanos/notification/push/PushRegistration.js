@@ -13,7 +13,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id',
+      name: 'id'
     },
     {
       class: 'String',
