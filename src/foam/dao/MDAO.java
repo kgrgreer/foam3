@@ -195,8 +195,16 @@ public class MDAO
     return objOut(
       getOf().isInstance(o)
         ? (FObject) index_.planFind(state, getPrimaryKey().get(o)).find(state, getPrimaryKey().get(o))
-        : (FObject) index_.planFind(state, o).find(state, o)
+        : ( o instanceof Predicate )
+          ? (FObject) findByPredicate_(x, (Predicate) o)
+          : (FObject) index_.planFind(state, o).find(state, o)
     );
+  }
+
+  protected FObject findByPredicate_(X x, Predicate predicate) {
+    var sink = select_(x, new ArraySink(), 0, 1, null, predicate);
+    var l = ((ArraySink) sink).getArray();
+    return l.size() == 1 ? (FObject) l.get(0) : null;
   }
 
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
