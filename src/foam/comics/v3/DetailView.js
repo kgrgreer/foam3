@@ -233,12 +233,8 @@ foam.CLASS({
       var self = this;
       var allActions = of.getAxiomsByClass(foam.core.Action);
       var defaultAction = allActions.filter((a) => a.isDefault);
-      var acArray = defaultAction.length >= 1
-        ? defaultAction
-        : allActions.length >= 1
-          ? allActions
-          : null;
-      this.actionArray = allActions
+      var acArray = [...defaultAction, ...allActions];
+      this.actionArray = allActions;
       if ( acArray && acArray.length ) {
         let res;
         for ( let a of acArray ) {
@@ -248,7 +244,7 @@ foam.CLASS({
             await aSlot.promise;
             b = aSlot.get();
           }
-          if (b) res = a;
+          if (b) { res = a; break; }
         }  
         this.primary = res;
         this.actionArray = this.actionArray.filter(v => v !== res);
