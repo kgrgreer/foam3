@@ -122,8 +122,8 @@ foam.CLASS({
       .end()
       .start('', {}, this.content$).addClass(this.myClass('content')).end();
       this.addHeaderObserver();
-      this.stackReset.sub(() => { this.content?.removeAllChildren(); })
-      this.posUpdated.sub((_, p, type) => {
+      this.onDetach(this.stackReset.sub(() => { this.content?.removeAllChildren(); }))
+      this.onDetach(this.posUpdated.sub((_, p, type) => {
         // this.current.hide();
         if ( type == 'new' )
           this.content.add(this.current);
@@ -135,7 +135,7 @@ foam.CLASS({
             v.show();
           }
         })
-      })
+      }))
     },
     async function addHeaderObserver() {
       const root = await this.el();
