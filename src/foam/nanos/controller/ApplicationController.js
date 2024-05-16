@@ -566,6 +566,8 @@ foam.CLASS({
       // TODO: find a better way to resub on client reloads
       this.subToNotifications();
       this.fetchTheme();
+      // Rebuild stack with correct context 
+      this.stack = this.Stack.create({ ...this.stack, state: foam.u2.Element.INITIAL }, this.__subContext__);
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
@@ -930,7 +932,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .tag(this.NavigationController, {
           topNav$: this.topNavigation_$,
-          mainView: this.stack,
+          mainView$: this.stack$,
           footer$: this.footerView_$,
           sideNav$: this.sideNav_$
         });

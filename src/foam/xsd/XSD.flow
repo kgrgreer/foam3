@@ -29,3 +29,6 @@ foam.POM({
     { name: "T4Generator",         flags: "java|js" }
   ]
 });
+
+Learn about the XSD format at: https://www.w3.org/TR/xmlschema-0/
+

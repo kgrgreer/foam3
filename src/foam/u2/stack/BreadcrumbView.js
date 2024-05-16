@@ -13,7 +13,8 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
-    'foam.u2.view.OverlayActionListView'
+    'foam.u2.view.OverlayActionListView',
+    'foam.u2.ActionReference'
   ],
 
   css: `
@@ -63,6 +64,7 @@ foam.CLASS({
       var self = this;
       this.breadcrumbs?.dynamic(function(pos, stack$pos, current) {
         self.removeAllChildren(); // Remove in U3
+        self.actionArray = [];
         let endPos = pos
         if ( self.stack.pos != self.breadcrumbs.current?.view.__subContext__.stackPos ) {
           endPos = pos + 1
@@ -77,36 +79,42 @@ foam.CLASS({
         self.addClass(self.myClass('display'));
         let themeIcon = navStack.length == 1 ? 'back' : '';
         navStack.forEach((v, i) => {
-          let jumpAction = self.Action.create({
-            name: 'back',
-            code: () => {
-              v.go();
-            }
-          });
-          jumpAction.label$.follow(v.title$);
           if ( navStack.length <= self.collapseBreakpoint || i < self.maxHead || i >= navStack.length - self.maxTail ) {
-            self.start(jumpAction, {
+            self.start(self.BACK, {
+              data: v,
+              label$: v.title$,
               themeIcon:   themeIcon,
               buttonStyle: 'LINK',
               size:        'SMALL'
             }).show(v.title$).addClass(self.myClass('breadCrumb')).end();
           } else if ( i == self.maxHead ) {
-            self.tag(this.OverlayActionListView, {
+            self.tag(self.OverlayActionListView, {
               label:            '...',
               data$:            self.actionArray$,
               obj:              self,
               buttonStyle:      'LINK',
               showDropdownIcon: false
             });
-            self.actionArray.push(jumpAction);
+            self.actionArray.push(self.makeActionReference(v));
           } else {
-            self.actionArray.push(jumpAction);
+            self.actionArray.push(self.makeActionReference(v));
           }
           if ( navStack.length != 1 && i != navStack.length -1 && ( i <= self.maxHead || i >= navStack.length - self.maxTail ) ) {
             self.start('span').addClass(self.myClass('slash')).show(v.title$).add('/').end();
           }
         });
       });
+    },
+    function makeActionReference(v) {
+      return this.ActionReference.create({ data: v, action: this.BACK.clone().copyFrom({ label$: v.title$ }) })
+    }
+  ],
+  actions: [
+    {
+      name: 'back',
+      code: function(X) {
+        this.go();
+      }
     }
   ]
 });

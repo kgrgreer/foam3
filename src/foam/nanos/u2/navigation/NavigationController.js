@@ -179,9 +179,12 @@ foam.CLASS({
             .enableClass(this.myClass('sidebar'), this.isMenuOpen$)
             .addClass(this.myClass('sideNav'));
         }))
-        .start(this.mainView)
-          .addClass(this.myClass('stack-view'))
-        .end();
+        .add(this.slot( async function(mainView) {
+          return this.E()
+            .add(mainView)
+            .addClass(this.myClass('stack-view'));
+        }))
+        
       // TODO: Maybe add footer support if needed
     }
   ],
