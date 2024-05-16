@@ -477,7 +477,7 @@ foam.CLASS({
           await self.client.promise;
           // Rebuild stack with correct context 
           self.stack = self.Stack.create({}, self.__subContext__);
-          self.routeTo(window.location.hash.substring(1));
+          self.routeTo(self.window.location.hash.substring(1));
         }
 
         await self.fetchGroup();
@@ -569,8 +569,6 @@ foam.CLASS({
       // TODO: find a better way to resub on client reloads
       this.subToNotifications();
       this.fetchTheme();
-      // Rebuild stack with correct context 
-      this.stack = this.Stack.create({ ...this.stack, state: foam.u2.Element.INITIAL }, this.__subContext__);
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
       this.subject = await this.client.auth.getCurrentSubject(null);
     },
