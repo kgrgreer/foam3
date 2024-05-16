@@ -21,6 +21,7 @@ foam.CLASS({
       'xs:long'         : 'foam.core.Long',
       'xs:short'        : 'foam.core.Int',
       'xs:double'       : 'foam.core.Double',
+      'xs:float'        : 'foam.core.Float',
       'xsd:boolean'     : 'foam.core.Boolean',
       'xsd:date'        : 'foam.core.Date',
       'xsd:dateTime'    : 'foam.core.Date',
@@ -31,6 +32,7 @@ foam.CLASS({
       'xsd:int'         : 'foam.core.Int',
       'xsd:long'        : 'foam.core.Long',
       'xsd:short'       : 'foam.core.Int',
+      'xsd:float'       : 'foam.core.Float',
       'xsd:double'      : 'foam.core.Double'
     }
   },
@@ -289,6 +291,7 @@ foam.CLASS({
           value = this.escape(value);
         }
 
+// console.log('XSD Property: ', child.localName);
         // add the property
         m.properties.push({
           class: isNumeric ? 'Int' : 'String',
@@ -504,6 +507,7 @@ foam.CLASS({
     },
 
     function createProperty(modelName, type, name) {
+      // console.log('**** XSD createProperty:', modelName, type, name);
       return {
         class: this.getPropType(type),
         name: this.toPropertyName(name),
@@ -537,8 +541,7 @@ foam.CLASS({
         return;
       }
 
-      let property  = this.createProperty(m.name, doc.getAttribute('type'), doc.getAttribute('name'));
-
+      let property = this.createProperty(m.name, doc.getAttribute('type'), doc.getAttribute('name'));
       /*
       // for ISO 20022 properties convert short name to long name and add documentation
       let iso20022Type = iso20022Types[m.name];
@@ -709,7 +712,7 @@ foam.CLASS({
             }
           }
         } else {
-          console.log("preparse, not parsed", child.localName);
+          console.log("XSD preparse, not parsed '" + child.localName + "'", name);
         }
       }
     },
@@ -722,6 +725,7 @@ foam.CLASS({
      */
     function genModel(m, modelType) {
       modelType = modelType || 'CLASS';
+// console.log('***** XSD genModel', modelType, m.package, m.name, m);
       return foam[modelType](m);
     },
 
@@ -733,8 +737,7 @@ foam.CLASS({
     },
 
     function compile() {
-      if ( ! this.xsd )
-        return;
+      if ( ! this.xsd ) return;
 
       var parser = new (globalThis.DOMParser || require('xmldom').DOMParser)();
 
@@ -760,13 +763,14 @@ foam.CLASS({
 
         var name = child.getAttribute('name');
         this.process(child, name);
-     }
+      }
     },
 
     function compileAll() {
       this.xmlns = '';
 
       this.files.forEach(file => {
+        // console.log('*************************** XSD FILE: ', file);
         this.fetch(this.xsdPath + '/' + file).then(content => {
           this.xsd = content || '';
           this.compile();
@@ -776,14 +780,15 @@ foam.CLASS({
 
     function process(child, name) {
       var id = this.package + '.' + name;
+      // console.log('************************************* XSD process() id:', id);
 
       // There is a top-level <xs:element name="Document" type="Document"/>
       // in each document, but the real definition will appear below
       // as <xs:complexType name="Document">, so skip this one.
-      if ( child.localName == 'element' ) return;
+      if ( child.localName == 'element' )  { /* console.log('**** XSD No local name'); */ return; }
 
       // Avoid duplicating models which appear in more than one XSD file (like ISO20022)
-      if ( name !== 'Document' && foam.maybeLookup(id) ) return;
+      if ( name !== 'Document' && foam.maybeLookup(id) ) { /* console.log('*** XSD remove duplicate:', id); */ return; }
 
       // create foam model
       var m = this.createClass(this.package, name);
@@ -846,11 +851,13 @@ foam.CLASS({
 
 foam.XSD = function(model) {
   var compiler = foam.xsd.XSDCompiler.create(model);
+  // console.log('***************************************** XSD COMPILER ', model.xsdPath, model.files);
   if ( compiler.xsdPath && compiler.files.length > 0 ) {
     compiler.compileAll();
   } else if ( compiler.xsd ) {
     compiler.compile();
   } else {
+    // console.log('****************************************************************** XSD ERROR');
     throw new Error("compiler neither xsd or xsdPath set");
   }
 };
