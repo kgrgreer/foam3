@@ -33,6 +33,9 @@ foam.CLASS({
       var i = 0;
       var props = obj.cls_.getAxiomsByClass(foam.nanos.fs.FileProperty);
 
+      // clone the object if we need to update the file properties
+      if ( props.length > 0 ) obj = obj.clone();
+
       return Promise.resolve().then(async function a() {
         var prop = props[i++];
 
