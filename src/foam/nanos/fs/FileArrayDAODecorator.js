@@ -46,6 +46,10 @@ foam.CLASS({
 
     async function processFiles(obj) {
       var props1 = obj.cls_.getAxiomsByClass(foam.nanos.fs.FileArray);
+
+      // clone the object if we need to update the file properties
+      if ( props1.length > 0 ) obj = obj.clone();
+
       let label, capabilityId;
       if ( foam.nanos.crunch.document.Document.isInstance(obj) ) {
         label = obj.capability.label;
