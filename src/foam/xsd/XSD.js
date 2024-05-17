@@ -648,7 +648,7 @@ foam.CLASS({
 
     /**
      * Preparses the XSD definition file and creates a map
-     * for simple types.
+     * for simple types in this.simpleTypes.
      * @param {DOMElement} docElement dom tree
      */
     function preparse(docElement) {
@@ -709,7 +709,7 @@ foam.CLASS({
             }
           }
         } else {
-          console.log("preparse, not parsed", child.localName);
+          console.log("XSD unable to preparse '" + child.localName + "'", name);
         }
       }
     },
@@ -722,6 +722,7 @@ foam.CLASS({
      */
     function genModel(m, modelType) {
       modelType = modelType || 'CLASS';
+      if ( m.package === 'net.nanopay.partner.scotiabank.api' ) console.log('***** XSD genModel', modelType, m.package, m.name, m);
       return foam[modelType](m);
     },
 
@@ -767,6 +768,7 @@ foam.CLASS({
       this.xmlns = '';
 
       this.files.forEach(file => {
+        console.log('*************************** XSD FILE:', file);
         this.fetch(this.xsdPath + '/' + file).then(content => {
           this.xsd = content || '';
           this.compile();
