@@ -58,6 +58,7 @@ foam.POM({
       'org.java-websocket:Java-WebSocket:1.5.0',
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
-      'org.postgresql:postgresql:42.3.8'
+      'org.postgresql:postgresql:42.3.8',
+      'nl.martijndwars:web-push:5.1.1' // https://github.com/web-push-libs/webpush-java
     ]
 });
