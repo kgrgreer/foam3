@@ -19,6 +19,18 @@ foam.CLASS({
       class: 'String',
       name: 'subscription',
       view: { class: 'foam.u2.tag.TextArea', rows: 8, cols: 80 }
+    },
+    {
+      class: 'String',
+      name: 'endpoint'
+    },
+    {
+      class: 'String',
+      name: 'key'
+    },
+    {
+      class: 'String',
+      name: 'auth'
     }
   ]
 });
