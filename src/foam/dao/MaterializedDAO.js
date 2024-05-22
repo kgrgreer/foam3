@@ -264,7 +264,9 @@ foam.CLASS({
               value = (FObject) cmd[1];
 
               if ( getPredicate().f(value) ) {
-                getDelegate().remove(getAdapter().fastAdapt(value));
+                var obj = getAdapter().fastAdapt(value);
+                if ( obj != null )
+                  getDelegate().remove(obj);
               }
             } else /* removeAll */ {
               getDelegate().removeAll();
