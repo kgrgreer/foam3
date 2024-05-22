@@ -311,7 +311,7 @@ foam.CLASS({
       on: ['this.propertyChange.data'],
       code: function() {
         let availSlots = this.data.map(action => {
-          if (  foam.u2.ActionReference.isInstance(action) ) return action.action.createIsAvailable$(this.__context__, action.data)
+          if (  foam.u2.ActionReference.isInstance(action) && action.data ) return action.action.createIsAvailable$(this.__context__, action.data)
           if ( ! foam.core.Action.isInstance(action) ) return foam.core.SimpleSlot.create({ value: true }, this);
           return action.createIsAvailable$(this.__context__, this.obj)
         })
