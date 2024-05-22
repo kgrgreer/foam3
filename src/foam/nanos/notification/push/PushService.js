@@ -8,6 +8,11 @@ foam.INTERFACE({
   package: 'foam.nanos.notification.push',
   name: 'PushService',
 
+  // TODO: remove client and skeleton before production
+  client:   true,
+  proxy:    true,
+  skeleton: true,
+
   methods: [
     {
       name: 'sendPush',
@@ -17,6 +22,25 @@ foam.INTERFACE({
         {
           name: 'user',
           type: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'msg',
+          type: 'String'
+        },
+        {
+          name: 'data',
+          type: 'Map'
+        }
+      ]
+    },
+    {
+      name: 'sendPushById',
+      async: true,
+      type: 'Boolean',
+      args: [
+        {
+          name: 'id',
+          type: 'Long'
         },
         {
           name: 'msg',
