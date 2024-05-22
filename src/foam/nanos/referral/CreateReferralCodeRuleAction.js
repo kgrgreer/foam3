@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.referral',
-  name: 'CreateReferralCode',
+  name: 'CreateReferralCodeRuleAction',
 
   documentation: `Create a referral code on user creation.`,
 
