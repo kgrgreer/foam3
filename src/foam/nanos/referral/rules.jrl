@@ -1,5 +1,27 @@
 p({
   "class": "foam.nanos.ruler.Rule",
+  "id":"foam_nanos_referral_BuildReferralCodeURL",
+  "name":"foam_nanos_referral_BuildReferralCodeURL",
+  "priority": 100,
+  "documentation": "Construct ReferralCode URL when manually created",
+  "ruleGroup": "Referrals",
+  "daoKey": "referralCodeDAO",
+  "operation": 3,
+  "after": true,
+  predicate: {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: '(o !exists&&n.url !exists)||(o exists&&n.menu exists&&n.website exists&&(n.menu!=o.menu||n.website!=o.website))'
+  },
+  "action":{
+    "class":"foam.nanos.referral.BuildReferralCodeURLRuleAction"
+  },
+  "enabled": true,
+  "saveHistory": false,
+  "lifecycleState":1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
   "id":"create-referralCode",
   "name": "Create referral code",
   "priority": 100,
@@ -13,7 +35,7 @@ p({
   "operation": 0,
   "after": true,
   "action":{
-    "class":"foam.nanos.referral.CreateReferralCode"
+    "class":"foam.nanos.referral.CreateReferralCodeRuleAction"
   },
   "enabled": true,
   "saveHistory": false,
