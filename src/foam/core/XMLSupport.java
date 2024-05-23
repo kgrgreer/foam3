@@ -109,7 +109,7 @@ public class XMLSupport {
   public static void copyFromXML(X x, FObject obj, XMLStreamReader reader) throws XMLStreamException {
     try {
       var cInfo = obj.getClassInfo();
-      var objClassName = obj.getClass().getSimpleName();
+      var objElName = reader.getLocalName();
       while ( reader.hasNext() ) {
         int eventType;
         eventType = reader.next();
@@ -122,7 +122,7 @@ public class XMLSupport {
             }
             break;
           case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName().equals(objClassName) ) {
+            if ( reader.getLocalName().equals(objElName) ) {
               return;
             }
             break;
