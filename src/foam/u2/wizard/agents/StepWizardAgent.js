@@ -110,6 +110,8 @@ foam.CLASS({
           }
           resolve();
         })
+      }).catch(e => {
+        this.resolveAgent();
       });
     }
   ],
