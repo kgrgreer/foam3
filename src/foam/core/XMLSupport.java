@@ -41,11 +41,12 @@ public class XMLSupport {
         eventType = xmlr.next();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
-            if ( xmlr.getLocalName().equals("object") ) {
-              FObject obj = createObj(x, xmlr, defaultClass);
-              if ( obj != null ) {
-                objList.add(obj);
-              }
+            var elName = xmlr.getLocalName();
+            var objClass = defaultClass != null && elName.equals(defaultClass.getSimpleName()) ? defaultClass : null;
+
+            var obj = createObj(x, xmlr, objClass);
+            if ( obj != null ) {
+              objList.add(obj);
             }
             break;
         }
@@ -84,7 +85,7 @@ public class XMLSupport {
       Logger logger = (Logger) x.get("logger");
       logger.error("Error while reading file");
     } catch (Throwable t) {
-      Logger logger = (Logger) x.get("logger");
+      // noop
     }
     return (FObject) clsInstance;
   }
@@ -107,21 +108,21 @@ public class XMLSupport {
 
   public static void copyFromXML(X x, FObject obj, XMLStreamReader reader) throws XMLStreamException {
     try {
-      PropertyInfo prop = null;
+      var cInfo = obj.getClassInfo();
+      var objElName = reader.getLocalName();
       while ( reader.hasNext() ) {
         int eventType;
         eventType = reader.next();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
-            ClassInfo cInfo = obj.getClassInfo();
-            prop = (PropertyInfo) cInfo.getAxiomByName(reader.getLocalName());
+            var prop = (PropertyInfo) cInfo.getAxiomByName(reader.getLocalName());
             if ( prop != null ) {
               prop.set(obj, prop.fromXML(x, reader));
               prop = null;
             }
             break;
           case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName().equals("object") ) {
+            if ( reader.getLocalName().equals(objElName) ) {
               return;
             }
             break;
