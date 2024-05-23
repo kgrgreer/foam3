@@ -41,6 +41,7 @@ foam.CLASS({
     /*Scroll*/
     flex: 1;
     max-height: 100%;
+    height: -webkit-fill-available;
     position: relative;
     overflow: auto;
     overscroll-behavior-y: contain;
