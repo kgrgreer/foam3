@@ -24,7 +24,7 @@ foam.CLASS({
     'loginSuccess',
     'loginView?',
     'notify?',
-    'pushMenu',
+    'routeTo',
     'stack',
     'subject',
     'theme',
@@ -328,7 +328,7 @@ foam.CLASS({
       label: 'Sign in',
       buttonStyle: 'TEXT',
       code: function(X) {
-        X.pushMenu('sign-in');
+        X.routeTo('sign-in');
       }
     },
     {
