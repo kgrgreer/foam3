@@ -35,16 +35,17 @@ public abstract class AbstractFObjectPropertyInfo
   @Override
   public Object fromXML(X x, XMLStreamReader reader) {
     FObject obj = null;
+    Class defaultClass = this.of().getObjClass();
     try {
       while ( reader.hasNext() ) {
         int eventType;
-        eventType = reader.next();
+        eventType = reader.getEventType();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
-            if (reader.getLocalName().equals("object")) {
-              obj = XMLSupport.createObj(x, reader);
-              return obj;
-            }
+            var elName = reader.getLocalName();
+//            var objClass = defaultClass != null && elName.equals(defaultClass.getSimpleName()) ? defaultClass : null;
+            obj = XMLSupport.createObj(x, reader, defaultClass);
+            return obj;
           case XMLStreamConstants.END_ELEMENT:
             break;
         }
