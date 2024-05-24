@@ -197,7 +197,7 @@ foam.CLASS({
               .tag(self.COPY)
               .tag(self.DELETE)
             .endOverlay()
-            .call(function() { self.populatePrimaryAction(self.config.of, self.data) })
+            .callIf(data, function() { self.populatePrimaryAction(self.config.of, self.data) })
           .end()
         )
         self.onDetach(d);
