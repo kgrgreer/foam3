@@ -89,8 +89,8 @@ foam.CLASS({
      { name: 'COPY_FAIL', message: 'Failed to copy!' },
      { name: 'COPYTEXT', message: 'Refer a friend' },
      //TODO: AMOUNTS SHOULD BE FETCHED FROM CREDIT CODES
-     { name: 'AMOUNT_1', message: '$10.00' },
-     { name: 'AMOUNT_2', message: '$10.00' }
+     { name: 'AMOUNT_1', message: '$20.00' },
+     { name: 'AMOUNT_2', message: '$20.00' }
    ],
 
   properties: [
