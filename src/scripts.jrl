@@ -344,8 +344,8 @@ var caps = await x.capabilityDAO.select(); caps = caps.array;
 
 function table(data, columns) {
   console.table(data);
-  var output = columns.join('|') + '\n';
-  output += data.map(a => a.join('|')).join('\n');
+  var output = columns.join('|') + '\\n';
+  output += data.map(a => a.join('|')).join('\\n');
   console.log(output);
 }
 
