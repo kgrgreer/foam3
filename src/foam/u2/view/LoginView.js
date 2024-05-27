@@ -143,6 +143,13 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'detach',
+      code: function() {
+        this.SUPER();
+        this.data.detach();
+      }
+    },
     function init() {
       // Use passed in values or default loginVariables defined on ApplicationControllers
       this.param = Object.assign(this.loginVariables, this.param)

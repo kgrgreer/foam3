@@ -22,7 +22,7 @@ foam.CLASS({
     'loginView?',
     'memento_',
     'menuDAO',
-    'pushMenu',
+    'routeTo',
     'stack',
     'subject',
     'window'
@@ -285,7 +285,7 @@ foam.CLASS({
       buttonStyle: 'TEXT',
       isAvailable: function(showAction) { return showAction; },
       code: function(X) {
-        X.pushMenu('sign-up');
+        X.routeTo('sign-up');
       }
     },
     {

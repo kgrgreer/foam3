@@ -286,6 +286,19 @@ foam.CLASS({
               });
             }
 
+            if ( x.event == self.WizardEventType.WIZARDLET_CRITICAL_FAIL )  {
+              self.notify(
+                x.exception?.title ?? self.WIZARDLET_UNHANDLED_ERROR,
+                x.exception?.message,
+                self.LogLevel.ERROR,
+                true
+              );
+              x.wizardController.lastException = x.exception;
+              return x.createSubContext({
+                hint: self.WizardErrorHint.AWAIT_FURTHER_ACTION,
+              });
+            }
+
             // If we fail on wizardlet load we have nowhere to display an
             // error, so the wizard's own error handling will take over
             return x.createSubContext({

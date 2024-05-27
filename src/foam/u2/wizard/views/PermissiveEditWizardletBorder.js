@@ -89,6 +89,9 @@ foam.CLASS({
       isAvailable: function(controllerMode) {
         return this.controllerMode === foam.u2.ControllerMode.EDIT
       },
+      isEnabled: function(wizardlet$data$errors_) {
+        return !wizardlet$data$errors_
+      },
       code: async function () {      
        try {
         await this.wizardlet.save()

@@ -26,6 +26,12 @@ foam.ENUM({
       documentation: `
         A wizardlet's next() method was called
       `
+    },
+    {
+      name: 'WIZARDLET_CRITICAL_FAIL',
+      documentation: `
+        Can be thrown by a wizardlet during any load/save, causes the wizard to close
+      `
     }
   ]
 });
