@@ -120,6 +120,7 @@ public class XMLSupport {
               if (prop.getName().equals(reader.getLocalName()) || prop.getShortName() != null && prop.getShortName().equals(reader.getLocalName())) {
                 prop.set(obj, prop.fromXML(x, reader));
                 prop = null;
+                break;
               }
             }
             break;

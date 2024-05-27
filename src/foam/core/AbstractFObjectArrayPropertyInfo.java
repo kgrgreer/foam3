@@ -34,20 +34,27 @@ public abstract class AbstractFObjectArrayPropertyInfo
   public Object fromXML(X x, XMLStreamReader reader) {
     List objList = new ArrayList();
     String startTag = reader.getLocalName();
-
+    Class defaultClass = this.getClassInfo().getObjClass();
+    Class<?> clazz;
+    try {
+       clazz = Class.forName(this.of());
+       defaultClass = clazz;
+    } catch (Throwable th) {
+      int a = 9;
+    }
     try {
       int eventType;
       while ( reader.hasNext() ) {
-        eventType = reader.next();
+        eventType = reader.getEventType();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
             // Nested object in array
-            if ( reader.getLocalName().equals("object") ) {
-              FObject o = XMLSupport.createObj(x, reader);
+//            if ( reader.getLocalName().equals("object") ) {
+              FObject o = XMLSupport.createObj(x, reader, defaultClass);
               if ( o != null ) {
                 objList.add(o);
               }
-            }
+//            }
             break;
           case XMLStreamConstants.END_ELEMENT:
             if ( reader.getLocalName().equals(startTag) ) {
