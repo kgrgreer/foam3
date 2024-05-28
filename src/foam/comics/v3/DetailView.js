@@ -300,10 +300,10 @@ foam.CLASS({
         }
         return this.data;
       },
-      isAvailable: function(config, controllerMode) {
+      isAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
-          return config.editPredicate.f();
+          return config.editPredicate.f(data);
         } catch(e) {
           return false;
         }
@@ -326,10 +326,10 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config, controllerMode) {
+      isAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
-          return config.copyPredicate.f();
+          return config.copyPredicate.f(data);
         } catch(e) {
           return false;
         }
@@ -417,10 +417,10 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config, controllerMode) {
+      isAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
-          return config.deletePredicate.f();
+          return config.deletePredicate.f(data);
         } catch(e) {
           return false;
         }
