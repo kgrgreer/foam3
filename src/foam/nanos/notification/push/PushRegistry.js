@@ -16,7 +16,7 @@ foam.INTERFACE({
     {
       name: 'subscribe',
       type: 'Void',
-      args: 'Context x, String sub, String endpoint, String key, String auth'
+      args: 'Context x, String endpoint, String key, String auth'
     }
   ]
 });

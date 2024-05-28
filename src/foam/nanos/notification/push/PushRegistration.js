@@ -8,19 +8,11 @@ foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'PushRegistration',
 
-  tableColumns: [ 'user', 'id' ],
+  tableColumns: [ 'endpoint', 'user' ],
 
   properties: [
     {
-      class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'subscription',
-      view: { class: 'foam.u2.tag.TextArea', rows: 8, cols: 80 }
-    },
-    {
+      // primary key
       class: 'String',
       name: 'endpoint'
     },
