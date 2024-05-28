@@ -76,9 +76,8 @@ foam.CLASS({
     },
 
     function substring(end) {
-      foam.assert(this.str === end.str &&
-                  end.pos >= this.pos,
-                  'Cannot make substring: end PStream is not a tail of this.');
+      foam.assert(this.str === end.str && end.pos >= this.pos,
+        'Cannot make substring: end PStream is not a tail of this.');
 
       return this.str[0].substring(this.pos, end.pos);
     },
