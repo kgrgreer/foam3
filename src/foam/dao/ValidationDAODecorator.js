@@ -28,9 +28,10 @@ foam.CLASS({
         }));
       }
       return Promise.resolve(obj);
-    },
+    }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.dao',
@@ -42,7 +43,7 @@ foam.CLASS({
       name: 'message',
       expression: function(errors) {
         return errors.join(', ');
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
