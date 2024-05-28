@@ -49,12 +49,10 @@ public abstract class AbstractFObjectArrayPropertyInfo
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
             // Nested object in array
-//            if ( reader.getLocalName().equals("object") ) {
               FObject o = XMLSupport.createObj(x, reader, defaultClass);
               if ( o != null ) {
                 objList.add(o);
               }
-//            }
             break;
           case XMLStreamConstants.END_ELEMENT:
             if ( reader.getLocalName().equals(startTag) ) {
