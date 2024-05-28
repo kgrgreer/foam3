@@ -52,12 +52,12 @@ foam.CLASS({
     'foam.dao.IDBDAO',
     {
       path: 'foam.dao.JDAO',
-      flags: ['js'],
+      flags: ['js']
     },
     {
       name: 'JDAOJava',
       path: 'foam.dao.java.JDAO',
-      flags: ['java'],
+      flags: ['java']
     },
     'foam.dao.MDAO',
     'foam.dao.OrderedDAO',
@@ -1256,8 +1256,7 @@ model from which to test ServiceProvider ID (spid)`,
 
         foam.dao.ProxyDAO decoratorptr = decorator;
 
-        while ( decorator.getDelegate() != null &&
-                decorator.getDelegate() instanceof ProxyDAO )
+        while ( decorator.getDelegate() != null && decorator.getDelegate() instanceof ProxyDAO )
           decorator = (ProxyDAO) decorator.getDelegate();
         decorator.setDelegate(proxy.getDelegate());
         proxy.setDelegate(decoratorptr);
@@ -1271,8 +1270,7 @@ model from which to test ServiceProvider ID (spid)`,
       javaCode: `
         StringBuilder sb = new StringBuilder();
         foam.dao.DAO delegate = this;
-        while ( delegate != null &&
-                delegate instanceof foam.dao.ProxyDAO) {
+        while ( delegate != null && delegate instanceof foam.dao.ProxyDAO ) {
           sb.append(delegate.getClass().getSimpleName());
           sb.append(":");
           delegate = ((foam.dao.ProxyDAO) delegate).getDelegate();
