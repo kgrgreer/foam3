@@ -257,7 +257,8 @@ foam.CLASS({
     },
 
     function onResize() {
-      this.close();
+      // this.close();
+      this.setPosition();
       window.removeEventListener('resize', onResize);
     }
   ]
