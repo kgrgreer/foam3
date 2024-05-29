@@ -11,9 +11,14 @@
 
   properties: [
     {
+      class: 'foam.util.FObjectSpecArray',
+      name: 'savers'
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      name: 'savers',
+      name: 'savers_',
+      transient: true,
       postSet: function(_, n) {
         if ( n.length < 2 ) return;
         for ( let i = 0; i < n.length - 1; i++ ) {
@@ -27,9 +32,19 @@
 
   methods: [
     async function save(data) {
-      if ( ! this.savers[this.savers.length-1].delegate )
-        this.savers[this.savers.length-1].delegate = this.delegate;
-      return await this.savers[0].save(data);
+      if ( ! this.savers_.length )
+        this.buildSavers();
+      if ( ! this.savers_[this.savers_.length-1].delegate )
+        this.savers_[this.savers_.length-1].delegate = this.delegate;
+      return await this.savers_[0].save(data);
+    },
+    function buildSavers() {
+      let arr = [];
+      this.savers.forEach(e => {
+        let s = foam.json.parse(e, undefined, this.__subContext__);
+        arr.push(s);
+      });
+      this.savers_ = arr;
     }
   ]
 });
