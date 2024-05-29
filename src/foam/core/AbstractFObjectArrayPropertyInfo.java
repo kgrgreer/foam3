@@ -40,7 +40,8 @@ public abstract class AbstractFObjectArrayPropertyInfo
        clazz = Class.forName(this.of());
        defaultClass = clazz;
     } catch (Throwable th) {
-      int a = 9;
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Can not crate class from class name");
     }
     try {
       int eventType;
