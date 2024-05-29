@@ -593,7 +593,7 @@ foam.CLASS({
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
-                    self.inputView.focused = true;
+                    // self.inputView.focused = true;
                   }
                   e.preventDefault();
                   e.stopPropagation();
