@@ -54,9 +54,7 @@ p({
   "client":"""
     {
       "of":"foam.nanos.crunch.Capability",
-      "ttlSelectPurgeTime": 0,
-      "ttlPurgeTime": 0,
-      "cache": true
+      "cache": false
     }
   """
 })
@@ -210,16 +208,7 @@ p({
 
     return dao;
   """,
-  "client":
-  """
-  {
-    "of":"foam.nanos.crunch.CapabilityCapabilityJunction",
-    "remoteListenerSupport": false,
-    "ttlSelectPurgeTime": 0,
-    "ttlPurgeTime": 0,
-    "cache": true
-  }
-  """
+  "client":"{\"of\":\"foam.nanos.crunch.CapabilityCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
 
 p({
