@@ -11,14 +11,19 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.util.FObjectSpecArray',
+      name: 'loaders',
+    },
+    {
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      name: 'loaders',
-      postSet: function (_, n) {
+      name: 'loaders_',
+      transient: true,
+      postSet: function(_, n) {
         if ( n.length < 2 ) return;
-        for ( let i = 0 ; i < n.length - 1 ; i++ ) {
-          if ( ! foam.u2.wizard.data.ProxyLoader.isInstance(n[i]) )
-            console.warn('Loaders inside EasyLoader must extend ProxyLoader');
+        for ( let i = 0; i < n.length - 1; i++ ) {
+          if ( ! foam.u2.wizard.data.ProxySaver.isInstance(n[i]) )
+            console.log('Loaders inside EasySaver must extend ProxySaver');
           n[i].delegate = n[i+1];
         }
       }
@@ -27,9 +32,19 @@ foam.CLASS({
 
   methods: [
     async function load({ old }) {
-      if ( ! this.loaders[this.loaders.length-1].delegate )
-        this.loaders[this.loaders.length-1].delegate = this.delegate;
-      return await this.loaders[0].load(...arguments);
+      if ( ! this.loaders_.length )
+        this.buildLoaders();
+      if ( ! this.loaders_[this.loaders_.length-1].delegate )
+        this.loaders_[this.loaders_.length-1].delegate = this.delegate;
+      return await this.loaders_[0].load(...arguments);
+    },
+    function buildLoaders() {
+      let arr = [];
+      this.loaders.forEach(e => {
+        let s = foam.json.parse(e, undefined, this.__subContext__);
+        arr.push(s);
+      });
+      this.loaders_ = arr;
     }
   ]
 });
