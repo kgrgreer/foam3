@@ -43,6 +43,7 @@ foam.CLASS({
       class: 'Object',
       of: 'nl.martijndwars.webpush.PushService',
       name: 'pushService',
+      transient: true,
       javaFactory: `
       try {
         if ( Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null ) {

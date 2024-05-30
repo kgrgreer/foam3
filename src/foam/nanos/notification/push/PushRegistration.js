@@ -10,6 +10,8 @@ foam.CLASS({
 
   tableColumns: [ 'endpoint', 'user' ],
 
+  ids: [ 'endpoint' ],
+
   properties: [
     {
       // primary key
