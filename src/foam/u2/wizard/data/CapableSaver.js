@@ -19,19 +19,26 @@
   ],
 
   requires: [
-    'foam.nanos.crunch.CapabilityJunctionPayload'
+    'foam.nanos.crunch.CapabilityJunctionPayload',
+    'foam.u2.wizard.data.NullLoader',
+    'foam.u2.wizard.data.ProxyLoader'
   ],
 
   properties: [
     {
       name: 'capability'
     },
-    'loader'
+    {
+      name:'loader',
+      class: 'foam.util.FObjectSpec'
+    }
   ],
 
   methods: [
     async function save(data) {
-      const root = await this.loader?.load({}) ?? this.capable;
+      const loader = foam.json.parse(this.loader, undefined, this.__subContext__);
+      foam.u2.wizard.data.ensureTerminal(loader, this.ProxyLoader, this.NullLoader);
+      const root = await loader?.load({}) ?? this.capable;
       let a = await root.getCapablePayloadDAO().put(
         this.makePayload(data)
       );
