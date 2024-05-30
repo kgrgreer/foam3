@@ -67,8 +67,6 @@ foam.CLASS({
   DAO  userDAO = (DAO) getX().get("localUserDAO");
   User user    = (User) userDAO.find(id);
 
-  System.err.println("UserFound");
-
   sendPush(user, msg, data);
 
   return true;
@@ -102,10 +100,12 @@ foam.CLASS({
       args: 'PushRegistration sub, String msg',
       type: 'Void',
       javaCode: `
+      /*
       System.err.println("  Sending:    " + msg);
       System.err.println("    endpoint: " + sub.getEndpoint());
       System.err.println("         key: " + sub.getKey());
       System.err.println("        auth: " + sub.getAuth());
+      */
         try {
           Notification n = new Notification(
             sub.getEndpoint(),
