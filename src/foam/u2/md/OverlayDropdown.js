@@ -117,7 +117,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'lockToParentWidth'
     },
-    'ro_'
+    'ro_', 'x', 'y'
   ],
 
   methods: [
@@ -133,34 +133,35 @@ foam.CLASS({
     },
 
     function open(x, y) {
-      this.setPosition(x, y);
+      this.x = x; this.y = y;
+      this.setPosition();
       this.ro_?.observe(this.parentEl);
       this.opened = true;
       this.window.addEventListener('resize', this.onResize);
     },
 
-    function setPosition(x, y) {
+    function setPosition() {
       var screenWidth  = this.window.innerWidth;
       var domRect      = this.parentEl.getBoundingClientRect();
       var screenHeight = this.window.innerHeight;
       var scrollY      = this.window.scrollY;
       var parentCheck  = this.parentEdgePadding > -1;
       if ( domRect.top - scrollY < screenHeight / 2 ) {
-        this.top = parentCheck ? domRect.bottom + this.parentEdgePadding : y; 
+        this.top = parentCheck ? domRect.bottom + this.parentEdgePadding : this.y; 
         this.bottom = 'auto';
       } else {
         this.top = 'auto'; 
         this.bottom = parentCheck ? 
-          screenHeight - domRect.top + this.parentEdgePadding : screenHeight - y;
+          screenHeight - domRect.top + this.parentEdgePadding : screenHeight - this.y;
       }
       if ( domRect.left > 3 * (screenWidth / 4) ) {
         this.left = 'auto';
-        this.right = parentCheck ? screenWidth - domRect.right : screenWidth - x + 10;
+        this.right = parentCheck ? screenWidth - domRect.right : screenWidth - this.x + 10;
       } else if (domRect.left < 75) {
-        this.left = parentCheck ? domRect.left : x + 10;
+        this.left = parentCheck ? domRect.left : this.x + 10;
         this.right = 'auto';
       } else {
-        this.left = parentCheck ? domRect.left : x - 75;
+        this.left = parentCheck ? domRect.left : this.x - 75;
         this.right = 'auto';
       }
     },
@@ -256,8 +257,8 @@ foam.CLASS({
       e.stopPropagation();
     },
 
-    function onResize() {
-      this.close();
+    function onResize(e) {
+      this.setPosition();
       window.removeEventListener('resize', onResize);
     }
   ]
