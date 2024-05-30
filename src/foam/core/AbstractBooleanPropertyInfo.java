@@ -23,12 +23,6 @@ public abstract class AbstractBooleanPropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Boolean.parseBoolean(reader.getText());
-  }
-
-  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     boolean val = (boolean) get(obj);
@@ -41,25 +35,25 @@ public abstract class AbstractBooleanPropertyInfo
     boolean val = (boolean) get(obj);
     sig.update((byte) (val ? 1 : 0));
   }
-  
+
   public String getSQLType() {
     return "BOOLEAN";
   }
-  
+
   public Class getValueClass() {
     return boolean.class;
   }
-  
+
   public boolean cast(Object o) {
     return ((Boolean) o).booleanValue();
   }
-  
+
   public Object get(Object o) {
     return get_(o);
   }
-  
+
   protected abstract boolean get_(Object o);
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }
@@ -71,7 +65,7 @@ public abstract class AbstractBooleanPropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
-  
+
   public foam.lib.parse.Parser jsonParser() {
     return foam.lib.json.BooleanParser.instance();
   }
@@ -83,11 +77,11 @@ public abstract class AbstractBooleanPropertyInfo
   public foam.lib.parse.Parser csvParser() {
     return foam.lib.json.BooleanParser.instance();
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), true) == 0;
   }
-  
+
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     formatter.output(get_(obj));
   }

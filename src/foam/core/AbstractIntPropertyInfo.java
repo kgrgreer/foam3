@@ -13,7 +13,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 
 public abstract class AbstractIntPropertyInfo
-    extends AbstractPropertyInfo
+  extends AbstractPropertyInfo
 {
   protected static final ThreadLocal<ByteBuffer> bb = new ThreadLocal<ByteBuffer>() {
     @Override
@@ -35,12 +35,6 @@ public abstract class AbstractIntPropertyInfo
 
   public Object fromString(String value) {
     return Integer.valueOf(value);
-  }
-
-  @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Integer.valueOf(reader.getText());
   }
 
   @Override

@@ -40,10 +40,8 @@ public abstract class AbstractEnumPropertyInfo
   public abstract void           toJSON(foam.lib.json.Outputter outputter, Object value);
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    FObject obj = null;
+  public void copyFromXML(X x, FObject fobj, XMLStreamReader reader) {
     try {
-
       while ( reader.hasNext() ) {
         switch ( reader.getEventType() ) {
           case XMLStreamConstants.START_ELEMENT:
@@ -53,7 +51,8 @@ public abstract class AbstractEnumPropertyInfo
               reader.next();
               Integer ordinalVal = Integer.parseInt(reader.getText());
               // Searches forOrdinal in relation to the specific ENUM that's created
-              return this.forOrdinal(ordinalVal);
+              set(fobj, this.forOrdinal(ordinalVal));
+              return;
             }
           case XMLStreamConstants.END_ELEMENT:
             break;
@@ -64,7 +63,6 @@ public abstract class AbstractEnumPropertyInfo
       Logger logger = (Logger) x.get("logger");
       logger.error("Premature end of xml file while reading property", this.getName());
     }
-    return obj;
   }
 
   @Override

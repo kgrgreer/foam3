@@ -26,8 +26,7 @@ public abstract class AbstractObjectPropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    return "";
+  public void copyFromXML(X x, FObject obj, XMLStreamReader reader) {
   }
 
   @Override
@@ -52,7 +51,7 @@ public abstract class AbstractObjectPropertyInfo
     this.set(diff, this.get(o2));
     return true;
   }
-  
+
   public String getSQLType() {
     return "";
   }

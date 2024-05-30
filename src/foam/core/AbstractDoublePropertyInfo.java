@@ -38,12 +38,6 @@ public abstract class AbstractDoublePropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Double.parseDouble(reader.getText());
-  }
-
-  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     double val = (double) get(obj);
@@ -56,26 +50,26 @@ public abstract class AbstractDoublePropertyInfo
     double val = (double) get(obj);
     sig.update((ByteBuffer) bb.get().putDouble(val).flip());
   }
-  
+
   public String getSQLType() {
     return "DOUBLE PRECISION";
   }
-  
+
   public Class getValueClass() {
     return double.class;
   }
-  
+
   public double cast(Object o) {
     double d = ( o instanceof String ) ? Double.parseDouble((String) o) : (double)o;
     return ( o instanceof Number ) ? ((Number)o).doubleValue() : d;
   }
-  
+
   public Object get(Object o) {
     return get_(o);
   }
 
   protected abstract double get_(Object o);
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }
@@ -87,7 +81,7 @@ public abstract class AbstractDoublePropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
-  
+
   public foam.lib.parse.Parser jsonParser() {
     return foam.lib.json.DoubleParser.instance();
   }
@@ -99,7 +93,7 @@ public abstract class AbstractDoublePropertyInfo
   public foam.lib.parse.Parser csvParser() {
     return foam.lib.json.DoubleParser.instance();
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), 0) == 0;
   }

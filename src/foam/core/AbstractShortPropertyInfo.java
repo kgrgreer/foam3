@@ -42,12 +42,6 @@ public abstract class AbstractShortPropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Short.valueOf(reader.getText());
-  }
-
-  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     short val = (short) get(obj);
@@ -60,26 +54,26 @@ public abstract class AbstractShortPropertyInfo
     short val = (short) get(obj);
     sig.update((ByteBuffer) bb.get().putShort(val).flip());
   }
-  
+
   public String getSQLType() {
     return "SMALLINT";
   }
-  
+
   public Class getValueClass() {
     return short.class;
   }
-  
+
   public short cast(Object o) {
     short s = ( o instanceof String ) ? Short.valueOf((String) o) : (short)o;
     return ( o instanceof Number ) ? ((Number)o).shortValue() : s;
   }
-  
+
   public Object get(Object o) {
     return get_(o);
   }
 
   protected abstract short get_(Object o);
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }
@@ -91,7 +85,7 @@ public abstract class AbstractShortPropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
-  
+
   public foam.lib.parse.Parser jsonParser() {
     return foam.lib.json.ShortParser.instance();
   }
@@ -103,7 +97,7 @@ public abstract class AbstractShortPropertyInfo
   public foam.lib.parse.Parser csvParser() {
     return foam.lib.json.ShortParser.instance();
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), 0) == 0;
   }

@@ -38,12 +38,6 @@ public abstract class AbstractLongPropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Long.valueOf(reader.getText());
-  }
-
-  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     long val = (long) get(obj);

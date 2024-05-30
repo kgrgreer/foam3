@@ -89,7 +89,7 @@ foam.INTERFACE({
     },
     'Object fromString(String value)',
     'void setFromString(Object obj, String value) { this.set(obj, fromString(value));}',
-    `Object fromXML(X x, javax.xml.stream.XMLStreamReader reader) {
+    `void copyFromXML(X x, FObject obj, javax.xml.stream.XMLStreamReader reader) {
       // Moves reader to characters state in order for value reading for various data types (date, boolean, short ...)
       try {
         reader.next();
@@ -97,8 +97,7 @@ foam.INTERFACE({
         foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.error("Premature end of XML file");
       }
-
-      return "";
+      set(obj, fromString(reader.getText()));
     }`,
     'int comparePropertyToObject(Object key, Object o)',
     'int comparePropertyToValue(Object key, Object value)',

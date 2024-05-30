@@ -33,7 +33,7 @@ public abstract class AbstractFObjectPropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
+  public void copyFromXML(X x, FObject fobj, XMLStreamReader reader) {
     FObject obj = null;
     try {
       while ( reader.hasNext() ) {
@@ -43,7 +43,8 @@ public abstract class AbstractFObjectPropertyInfo
           case XMLStreamConstants.START_ELEMENT:
             if (reader.getLocalName().equals("object")) {
               obj = XMLSupport.createObj(x, reader);
-              return obj;
+              set(fobj, obj);
+              return;
             }
           case XMLStreamConstants.END_ELEMENT:
             break;
@@ -53,7 +54,6 @@ public abstract class AbstractFObjectPropertyInfo
       Logger logger = (Logger) x.get("logger");
       logger.error("Premature end of xml file while reading property", this.getName());
     }
-    return obj;
   }
 
   @Override

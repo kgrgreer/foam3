@@ -45,15 +45,9 @@ public abstract class AbstractDatePropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return fromString(reader.getText());
-  }
-
-  @Override
   public void cloneProperty(FObject source, FObject dest) {
     set(dest, get(source));
-  } 
+  }
 
   @Override
   public void updateDigest(FObject obj, MessageDigest md) {

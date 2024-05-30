@@ -28,13 +28,7 @@ public abstract class AbstractStringPropertyInfo
     return value;
   }
 
-  @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return reader.getText();
-  }
-
-  @Override
+ @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     String val = (String) get(obj);
@@ -49,14 +43,13 @@ public abstract class AbstractStringPropertyInfo
     if ( SafetyUtil.isEmpty(val) ) return;
     sig.update(val.getBytes(StandardCharsets.UTF_8));
   }
-  
+
   public Class getValueClass() {
     return String.class;
   }
 
   public String cast(Object o) {
-    return ( o instanceof Number ) ?
-            ((Number) o).toString() : (String) o;
+    return ( o instanceof Number ) ? ((Number) o).toString() : (String) o;
   }
 
   public abstract Object get(Object o) ;
@@ -84,7 +77,7 @@ public abstract class AbstractStringPropertyInfo
   public foam.lib.parse.Parser csvParser() {
     return foam.lib.csv.CSVStringParser.instance();
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), "") == 0;
   }

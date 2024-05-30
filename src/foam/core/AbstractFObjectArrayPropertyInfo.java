@@ -31,8 +31,8 @@ public abstract class AbstractFObjectArrayPropertyInfo
 
   // NESTED ARRAY
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    List objList = new ArrayList();
+  public void copyFromXML(X x, FObject obj, XMLStreamReader reader) {
+    List   objList  = new ArrayList();
     String startTag = reader.getLocalName();
 
     try {
@@ -50,16 +50,14 @@ public abstract class AbstractFObjectArrayPropertyInfo
             }
             break;
           case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName().equals(startTag) ) {
-              return objList.toArray();
-            }
+            if ( reader.getLocalName().equals(startTag) ) break;
         }
       }
     } catch(XMLStreamException ex) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Premature end of XML file");
     }
-    return objList.toArray();
+    set(obj, objList.toArray());
   }
 
   @Override

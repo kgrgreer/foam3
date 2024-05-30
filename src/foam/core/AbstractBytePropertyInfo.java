@@ -23,12 +23,6 @@ public abstract class AbstractBytePropertyInfo
   }
 
   @Override
-  public Object fromXML(X x, XMLStreamReader reader) {
-    super.fromXML(x, reader);
-    return Byte.valueOf(reader.getText());
-  }
-
-  @Override
   public void updateDigest(FObject obj, MessageDigest md) {
     if ( ! includeInDigest() ) return;
     md.update((byte) get(obj));
@@ -39,26 +33,26 @@ public abstract class AbstractBytePropertyInfo
     if ( ! includeInSignature() ) return;
     sig.update((byte) get(obj));
   }
-  
+
   public String getSQLType() {
     return "SMALLINT";
   }
-  
+
   public Class getValueClass() {
     return byte.class;
   }
-  
+
   public byte cast(Object o) {
     byte b = ( o instanceof String ) ? Byte.valueOf((String) o) : (byte)o;
             return ( o instanceof Number ) ? ((Number)o).byteValue() : b;
   }
-  
+
   public Object get(Object o) {
     return get_(o);
   }
 
   protected abstract byte get_(Object o);
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }
@@ -70,7 +64,7 @@ public abstract class AbstractBytePropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
-  
+
   public foam.lib.parse.Parser jsonParser() {
     return foam.lib.json.ByteParser.instance();
   }
@@ -82,7 +76,7 @@ public abstract class AbstractBytePropertyInfo
   public foam.lib.parse.Parser csvParser() {
     return foam.lib.json.ByteParser.instance();
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), 0) == 0;
   }
