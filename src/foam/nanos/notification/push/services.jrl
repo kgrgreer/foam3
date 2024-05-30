@@ -43,26 +43,3 @@ p({
     }
   """
 })
-
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"pushService",
-  "lazy":true,
-  "serve":true, // set to false when done testing
-  "authenticate":false,
-  "boxClass":"foam.nanos.notification.push.PushServiceSkeleton",
-  "serviceClass":"foam.nanos.notification.push.WebPushService",
-  "client":"""
-    {
-      "class":"foam.nanos.notification.push.ClientPushService",
-      "delegate": {
-        "class":"foam.box.SessionClientBox",
-        "delegate": {
-          "class":"foam.box.HTTPBox",
-          "url":"service/pushService"
-        }
-      }
-    }
-  """
-})
