@@ -752,7 +752,7 @@ foam.CLASS({
           await this.fetchSubject();
           return;
         }
-        await this.routeTo(menu?.id || '');
+        await this.pushDefaultMenu();
         return;
       }
 
