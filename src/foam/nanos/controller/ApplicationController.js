@@ -752,8 +752,7 @@ foam.CLASS({
           await this.fetchSubject();
           return;
         }
-        menu = await this.findFirstMenuIHavePermissionFor(dao);
-        menu?.launch?.(this.__subContext__);
+        await this.pushDefaultMenu();
         return;
       }
 
