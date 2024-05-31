@@ -27,37 +27,22 @@ public abstract class AbstractFObjectArrayPropertyInfo
     return null;
   }
 
-  public abstract String of();
-
   // NESTED ARRAY
   @Override
   public void copyFromXML(X x, FObject obj, XMLStreamReader reader) {
-    List   objList  = new ArrayList();
-    String startTag = reader.getLocalName();
+    FObject[] oldArr = (FObject[]) get(obj);
+    FObject[] newArr = new FObject[oldArr.length+1];
+
+    System.arraycopy(oldArr, 0, newArr, 0, oldArr.length);
 
     try {
-      int eventType;
-      while ( reader.hasNext() ) {
-        eventType = reader.next();
-        switch ( eventType ) {
-          case XMLStreamConstants.START_ELEMENT:
-            // Nested object in array
-            if ( reader.getLocalName().equals("object") ) {
-              FObject o = XMLSupport.createObj(x, reader);
-              if ( o != null ) {
-                objList.add(o);
-              }
-            }
-            break;
-          case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName().equals(startTag) ) break;
-        }
+      FObject o = XMLSupport.createObj(x, reader, Class.forName(of()));
+      if ( o != null ) {
+        newArr[oldArr.length] = o;
+        set(obj, newArr);
       }
-    } catch(XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of XML file");
+    } catch (ClassNotFoundException e) {
     }
-    set(obj, objList.toArray());
   }
 
   @Override
