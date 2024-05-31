@@ -5,6 +5,11 @@
  */
 
 // See: https://github.com/web-push-libs/webpush-java
+//
+// To generate public/private keys:
+// npm install web-push --save
+// ./node_modules2/.bin/web-push generate-vapid-keys --json
+
 foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'WebPushService',
