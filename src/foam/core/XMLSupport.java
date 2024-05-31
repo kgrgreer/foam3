@@ -59,11 +59,11 @@ public class XMLSupport {
     return objList;
   }
 
-  public static FObject createObj (X x, XMLStreamReader xmlr) {
+  public static FObject createObj(X x, XMLStreamReader xmlr) {
     return createObj(x, xmlr, null);
   }
 
-  public static FObject createObj (X x, XMLStreamReader xmlr, Class defaultClass) {
+  public static FObject createObj(X x, XMLStreamReader xmlr, Class defaultClass) {
     Object clsInstance = null;
     String objClass;
     try {
