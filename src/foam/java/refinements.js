@@ -245,8 +245,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'javaValidateObj',
-      expression: function(validationPredicates) {
-        return validationPredicates.length == 0 ? `` : `var sps    = new foam.lib.parse.StringPStream();
+      expression: function(required, validationPredicates) {
+        return validationPredicates.length == 0 ? `` : (required ? 'super.validateObj(x, obj);' : '') + `
+var sps    = new foam.lib.parse.StringPStream();
 var parser = new foam.parse.FScriptParser(this);
 var px = new foam.lib.parse.ParserContextImpl();` +
         validationPredicates
