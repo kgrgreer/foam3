@@ -120,8 +120,9 @@ foam.CLASS({
           javaType: 'foam.mlang.Expr'
         }
       ],
-      code: function (of, propName, i, expr) {
-        var prop = of.getAxiomByName(propName[i]);
+      code: function (clsof, propName, i, expr) {
+        clsof = foam.maybeLookup(clsof);
+        var prop = clsof.getAxiomByName(propName[i]);
         if ( ! prop ) return null;
 
         if ( i === propName.length - 1 )
@@ -279,7 +280,7 @@ foam.CLASS({
       code: function(objClass, propNames) {
         var exprArray = [];
         for ( var propName of propNames ) {
-          var expr = foam.nanos.column.NestedPropertiesExpression.create({ objClass: objClass, nestedProperty: propName });
+          var expr = objClass.getAxiomByName(propName) || foam.nanos.column.NestedPropertiesExpression.create({ objClass: objClass, nestedProperty: propName });
           if ( expr )
             exprArray.push(expr);
         }
