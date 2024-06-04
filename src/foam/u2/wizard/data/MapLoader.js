@@ -27,11 +27,12 @@ foam.CLASS({
       name: 'bind'
     },
     {
-      name: 'delegate',
-      factory: function () {
-        return this.CreateLoader.create({
+      name: 'delegate_',
+      factory: function() {
+        return {
+          class: 'foam.u2.wizard.data.CreateLoader',
           spec: { class: 'foam.core.MapHolder' }
-        });
+        };
       }
     },
     {
