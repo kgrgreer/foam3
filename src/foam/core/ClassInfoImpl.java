@@ -7,16 +7,18 @@
 package foam.core;
 
 import java.util.*;
+import foam.util.SafetyUtil;
 
 public class ClassInfoImpl
   implements ClassInfo
 {
   private List      axioms;
   private String    id;
-  private HashMap   axiomsByName_ = new HashMap();
-  private ClassInfo parent_       = null;
-  private List      allAxioms_    = null;
-  private HashMap   axiomMap_     = new HashMap();
+  private HashMap   axiomsByName_            = new HashMap();
+  private HashMap   axiomsByNameOrShortName_ = null;
+  private ClassInfo parent_                  = null;
+  private List      allAxioms_               = null;
+  private HashMap   axiomMap_                = new HashMap();
   private Class     class_;
 
   public ClassInfoImpl() {
@@ -126,6 +128,32 @@ public class ClassInfoImpl
     if ( ret == null ) {
       ret = getParent().getAxiomByName(name);
     }
+    return ret;
+  }
+
+  public Object getAxiomByNameOrShortName(String name) {
+    if ( axiomsByNameOrShortName_ == null ) {
+      axiomsByNameOrShortName_ = new HashMap();
+
+      for ( Object o : axioms ) {
+        Axiom a = (Axiom) o;
+
+        axiomsByNameOrShortName_.put(a.getName(), a);
+
+        if ( a instanceof PropertyInfo ) {
+          PropertyInfo p = (PropertyInfo) a;
+          if ( ! SafetyUtil.isEmpty(p.getShortName()) ) {
+            axiomsByNameOrShortName_.put(p.getShortName(), a);
+          }
+        }
+      }
+    }
+
+    Object ret = axiomsByNameOrShortName_.get(name);
+    if ( ret == null ) {
+      ret = getParent().getAxiomByNameOrShortName(name);
+    }
+
     return ret;
   }
 

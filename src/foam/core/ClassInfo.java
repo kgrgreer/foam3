@@ -27,5 +27,6 @@ public interface ClassInfo
 
   List        getAxioms();
   Object      getAxiomByName(String name);
+  Object      getAxiomByNameOrShortName(String name);
   <T> List<T> getAxiomsByClass(Class<T> cls);
 }
