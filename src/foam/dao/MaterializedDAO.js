@@ -257,7 +257,7 @@ foam.CLASS({
         // to threadpool
         // Transition from PARALLEL to SERIAL needs to block until
         // pool is drained. Might be easier to have own pool to make
-        // this easier.
+        // this easier. Or maintain a count.
         while ( true ) {
           try {
             cmd = (Object[]) getQueue().take();
