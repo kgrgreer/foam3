@@ -40,14 +40,14 @@ the notification will be handled. `,
       code: function(x, obj) {
         if ( obj.template != null && '' != obj.template ) {
           return this.notificationTemplateDAO.where(this.EQ(Notification.TEMPLATE, obj.template))
-            .select().then(function(sink) {
+            .limit(2).select().then(function(sink) {
               var template = obj;
               if ( sink.array.size == 1 ) {
                 template = sink.array[0];
                 template.copyFrom(obj);
                 return this.delegate.put_(x, template);
               } else {
-                console.err('Notification template '+obj.template+' not found.');
+                console.err('Notification template ' + obj.template + ' not found.');
                 return obj;
               }
             }).bind(this);
@@ -55,12 +55,13 @@ the notification will be handled. `,
         return this.delegate.put_(x, obj);
       },
       javaCode: `
-        Logger logger = Loggers.logger(x, this);
+        Logger       logger       = Loggers.logger(x, this);
         Notification notification = (Notification) obj;
-        Notification template = notification;
+        Notification template     = notification;
 
         if ( ! foam.util.SafetyUtil.isEmpty(notification.getTemplate()) ) {
           List templates = ((ArraySink) ((DAO) x.get("notificationTemplateDAO"))
+            .limit(2)
             .where(foam.mlang.MLang.EQ(Notification.TEMPLATE, notification.getTemplate()))
             .select(new ArraySink()))
             .getArray();
@@ -68,7 +69,8 @@ the notification will be handled. `,
           if ( templates.size() > 1 ) {
             logger.info("ERROR,Multiple templates found", notification.getTemplate());
             return notification;
-          } else if ( templates.size() == 1 ) {
+          }
+          if ( templates.size() == 1 ) {
             template = (Notification) ((FObject)templates.get(0)).fclone();
 
             Notification.ID.clear(template);
