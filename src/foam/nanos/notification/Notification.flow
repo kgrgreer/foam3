@@ -33,4 +33,4 @@ via email.  The notification and/or notification template carries
 key-value arguments which are used to populate the email template.
 
 <h1>services localNotifcationDAO vs notificationDAO</h1>
-All DAO operations shall be against the notificationDAO. The localNotificationDAO is only meant to be used by the Notification system itself.
+All DAO operations should be against the notificationDAO. The localNotificationDAO is only meant to be used by the Notification system itself.
