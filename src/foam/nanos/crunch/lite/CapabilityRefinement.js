@@ -27,7 +27,7 @@ foam.CLASS({
         CrunchService crunchService = (CrunchService) x.get("crunchService");
         List<String> prereqCapIds = crunchService.getPrereqs(x, getId(), null);
 
-        if ( prereqCapIds == null || prereqCapIds.size() == 0 ) return GRANTED;
+        if ( prereqCapIds == null || prereqCapIds.size() == 0 ) return payload.getStatus();
 
         boolean isPending = false;
         boolean isRejected = false;
@@ -47,16 +47,13 @@ foam.CLASS({
             case GRANTED:
               continue;
             case REJECTED:
-              isRejected = true;
-              break;
+              return REJECTED;
             default:
               return ACTION_REQUIRED;
           }
         }
 
-        return isRejected
-                ? REJECTED
-                : isPending ? PENDING : GRANTED;
+        return isPending ? PENDING : GRANTED;
       `
     }
   ]

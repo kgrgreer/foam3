@@ -49,6 +49,7 @@ foam.CLASS({
 
           try {
             payload.validate(x);
+            payload.setStatus(defaultStatus);
           } catch ( Exception e ) {
             payload.setStatus(ACTION_REQUIRED);
             return;
@@ -59,7 +60,9 @@ foam.CLASS({
           var oldStatus = payload.getStatus();
           var newStatus = cap.getCapableChainedStatus(x, payloadDAO, payload);
 
-          if ( oldStatus != newStatus )  {
+          // if payload is validated, use the capableChainedStatus
+          // otherwise, use ACTION_REQUIRED
+          if ( oldStatus == PENDING ) {
             payload.setStatus(newStatus);
           }
         }
