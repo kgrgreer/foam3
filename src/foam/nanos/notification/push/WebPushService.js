@@ -34,6 +34,7 @@ foam.CLASS({
       name: 'supportEmail',
       required: true
     },
+    // TODO: move to KeyPairDAO
     {
       class: 'String',
       name: 'publicKey',
@@ -72,7 +73,7 @@ foam.CLASS({
   DAO  userDAO = (DAO) getX().get("localUserDAO");
   User user    = (User) userDAO.find(id);
 
-  sendPush(user, msg, data);
+  sendPush(user, title, body);
 
   return true;
 `
@@ -90,7 +91,9 @@ foam.CLASS({
   System.err.println("Push to User: " + user.getId());
   DAO pushRegistrationDAO = user.getPushRegistrations(getX());
 
-  List subs = ((ArraySink) pushRegistrationDAO.select(new ArraySink())).getArray();
+  List   subs = ((ArraySink) pushRegistrationDAO.select(new ArraySink())).getArray();
+  // TODO: remove " characters or escape properly.
+  String msg  = "{\\"title\\":\\"" + title + "\\",\\"body\\":\\"" + body + "\\"}";
 
   for ( Object obj : subs ) {
     PushRegistration sub = (PushRegistration) obj;

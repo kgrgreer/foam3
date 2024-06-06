@@ -88,7 +88,7 @@ p({
       "ttlPurgeTime": 0,
       "ttlSelectPurgeTime": 0,
       "decorators": [
-        { 
+        {
           "class":"foam.nanos.notification.ToastNotificationDAO"
         }
       ]
@@ -214,4 +214,31 @@ p({
         }
       }
     """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"pushService",
+  "lazy":true,
+  "serve":false, // set to true if testing
+  "authenticate":true,
+  "boxClass":"foam.nanos.notification.push.PushServiceSkeleton",
+  "service":{
+    class:"foam.nanos.notification.push.WebPushService",
+    supportEmail:"", // required
+    publicKey:"",    // required
+    privateKey:""    // required
+  },
+  "client":"""
+    {
+      "class":"foam.nanos.notification.push.ClientPushService",
+      "delegate": {
+        "class":"foam.box.SessionClientBox",
+        "delegate": {
+          "class":"foam.box.HTTPBox",
+          "url":"service/pushService"
+        }
+      }
+    }
+  """
 })

@@ -4,6 +4,12 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// x.pushService.sendPushById(1348, 'foo', 'bar');
+
+// n = foam.nanos.notification.Notification.create({userId:1348, enablePush: true, toastMessage: 'title', toastSubMessage: 'body'});
+// x.notificationDAO.put(n);
+
+
 foam.INTERFACE({
   package: 'foam.nanos.notification.push',
   name: 'PushService',
@@ -20,16 +26,16 @@ foam.INTERFACE({
       type: 'Boolean',
       args: [
         {
-          name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User',
+          name: 'user'
         },
         {
-          name: 'msg',
-          type: 'String'
+          type: 'String',
+          name: 'title'
         },
         {
-          name: 'data',
-          type: 'Map'
+          type: 'String',
+          name: 'body'
         }
       ]
     },
@@ -43,12 +49,12 @@ foam.INTERFACE({
           type: 'Long'
         },
         {
-          name: 'msg',
-          type: 'String'
+          type: 'String',
+          name: 'title'
         },
         {
-          name: 'data',
-          type: 'Map'
+          type: 'String',
+          name: 'body'
         }
       ]
     }
