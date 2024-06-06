@@ -17,7 +17,7 @@ foam.CLASS({
       var sub = globalThis.__PUSH_SUBSCRIPTION__;
       if ( ! sub ) return;
 
-      globalThis.__PUSH_SUBSCRIPTION__ = undefined;
+//       globalThis.__PUSH_SUBSCRIPTION__ = undefined;
 
       var endpoint = sub.endpoint;
       var key      = sub.keys.p256dh;
