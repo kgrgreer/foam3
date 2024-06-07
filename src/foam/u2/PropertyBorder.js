@@ -66,7 +66,7 @@ foam.CLASS({
   methods: [
     function render() {
       var self = this;
-      var prop = this.prop = this.prop.clone().copyFrom(this.config);
+      var prop = this.prop = this.prop.clone(this.__subContext__).copyFrom(this.config);
 
       this.SUPER();
 

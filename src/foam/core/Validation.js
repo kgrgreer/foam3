@@ -208,6 +208,8 @@ foam.CLASS({
   methods: [
     function init() {
       // Needed for props that override the default validateObj
+      // Clearing required to recheck predicate on property clone
+      this.clearProperty('localeValidationPredicate')
       if ( this.hasOwnProperty('validateObj') && this.localeValidationPredicate ) {
         let currValidate = this.validateObj;
         let vp = this.localeValidationPredicate;
