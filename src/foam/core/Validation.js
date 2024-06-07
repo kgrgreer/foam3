@@ -148,7 +148,10 @@ foam.CLASS({
     { name: 'REQUIRED',        message: 'Required' },
     { name: 'SHOULD_BE_LEAST', message: 'should be at least' },
     { name: 'SHOULD_BE_MOST',  message: 'should be at most' },
-    { name: 'CHARACTER',       message: 'character' }
+    { name: 'CHARACTER',       message: 'character' },
+    // To be populated by locale where required
+    { name: 'LOCALE_VALIDATION_REGEX', message: '' },
+    { name: 'LOCALE_VALIDATION_ERROR_MESSAGE', message: '' }
   ],
 
   properties: [
@@ -158,6 +161,14 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
       name: 'validationPredicates',
+      adapt: function(o, a, prop) {
+        a = foam.core.FObjectArray.ADAPT.value.call(this, o, a, prop);
+        if ( ! this.localeValidationPredicate || a.find(v => v == this.localeValidationPredicate ) ) {
+          return a;
+        }
+        a.unshift(this.localeValidationPredicate);
+        return a;
+      },
       factory: function() {
         var self = this;
         var a    = [];
@@ -178,6 +189,49 @@ foam.CLASS({
           });
         }
         return a;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.ValidationPredicate',
+      name: 'localeValidationPredicate',
+      factory: function() {
+        if ( ! foam.core.String.LOCALE_VALIDATION_REGEX ) return null;
+        return {
+          args: [this.name],
+          query: this.name + '!exists||' + this.name + '~' + foam.core.String.LOCALE_VALIDATION_REGEX,
+          errorString: `${this.label} ${foam.core.String.LOCALE_VALIDATION_ERROR_MESSAGE}`
+        };
+      }
+    }
+  ],
+  methods: [
+    function init() {
+      // Needed for props that override the default validateObj
+      if ( this.hasOwnProperty('validateObj') && this.localeValidationPredicate ) {
+        let currValidate = this.validateObj;
+        let vp = this.localeValidationPredicate;
+        // Duplicates code from original ValidateObj
+        let self_ = this;
+        let args = [];
+        let validateFn = currValidate;
+        if ( typeof currValidate === 'function' ) {
+          // Break apart old validate into args and code
+          args = foam.Function.argNames(currValidate) || [];
+        } else if ( Array.isArray(currValidate) ) {
+          [ args, validateFn ] = currValidate;
+        } else {
+          args = [];
+        }
+        let allArgs = foam.Array.unique([...vp.args, ...args]);
+        // set the hijacked validate
+        this.validateObj = [allArgs, function() {;
+          var self = this;
+          if ( vp.jsFunc.call(self_, this) ) return vp.jsErr.call(this, this);
+          return validateFn?.apply(this, args.map(function(a) {
+            return self[a];
+          }));
+        }];
       }
     }
   ]
