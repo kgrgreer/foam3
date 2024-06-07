@@ -17,62 +17,18 @@ foam.CLASS({
     'serviceName'
   ],
 
-  messages: [
-    { name: 'EXPORT',        message: 'Export' },
-    { name: 'DATA_TYPE_MSG', message: 'Data Type' },
-    { name: 'RESPONSE',      message: 'Response' }
-  ],
-
   requires: [
     'foam.u2.layout.Cols',
-    'foam.u2.ModalHeader'
+    'foam.u2.layout.Rows'
   ],
 
   css: `
     ^{
       width: 448px;
       margin: auto;
-      padding-bottom: 24px;
     }
-    ^ .property-dataType {
-      margin-right: 24px;
-    }
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      border-radius: 0;
-      padding: 6px 10px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color:$white;
-      outline: none;
-      background: #ffffff url('/images/dropdown-icon.svg') no-repeat 98% 50%;
-      -webkit-appearance: none;
-    }
-    ^ .foam-u2-ModalHeader {
-      border-bottom: none;
-    }
-    ^ .foam-u2-tag-Select:hover {
-      cursor: pointer;
-    }
-    ^ .foam-u2-tag-Select:focus {
-      border: solid 1px #59A5D5;
-    }
-    ^ .label {
-      color: #000000;
-      font-size: medium;
-      margin: 10px 0px 0px 24px;
-    }
-    ^ .note {
-      height: 150px;
-      width: 398px;
-      margin-left: 24px;
-    }
-    ^buttons {
-      padding: 12px 12px 0px 24px;
-      position: relative;
-      top: 10;
-    }
-    ^ .foam-u2-ActionView-primary {
-      margin: 12px;
+    ^ > *, ^ .foam-u2-layout-Grid {
+      gap: 12px;
     }
   `,
 
@@ -98,6 +54,7 @@ foam.CLASS({
     },
     {
       name: 'note',
+      label: 'Response',
       view: 'foam.u2.tag.TextArea',
       value: ''
     },
@@ -161,22 +118,19 @@ foam.CLASS({
       });
 
       this
-      .tag(this.ModalHeader.create({
-        title: this.EXPORT
-      }))
       .addClass(this.myClass())
       .startContext({ data: this })
-        .start()
-          .start().addClass('p-legal-light', 'label').style({'padding-top': '14px'}).add(this.DATA_TYPE_MSG).end()
-          .start().style({'margin-left': '24px'}).add(this.DATA_TYPE).end()
+        .start(this.Rows)
+          .tag(this.DATA_TYPE.__)
           .add(this.slot(function (exportDriver) {
             return this.E()
               .show(exportDriver && exportDriver.cls_.getAxiomsByClass(foam.core.Property).some(p => ! p.hidden))
-              .start({class: 'foam.u2.detail.MDDetailView', data: exportDriver}).style({'margin-left': '-22px'}).end();
+              .start({class: 'foam.u2.detail.VerticalDetailView', data: exportDriver}).end();
           }))
-          .start().show(this.isDataTypeSelected$)
-            .start().addClass('p-legal-light', 'label').style({'padding-top': '14px'}).add(this.RESPONSE).end()
-            .start(this.NOTE).addClass('input-box').addClass('note').end()
+          .start()
+            .style({ display: 'contents' })
+            .show(this.isDataTypeSelected$)
+            .start(this.NOTE.__).end()
             .add(
               self.slot(function(exportDriverReg$exportAllColumns) {
                 if ( exportDriverReg$exportAllColumns ) {
@@ -184,7 +138,7 @@ foam.CLASS({
                 }
               })
             )
-            .start(this.Cols).style({ 'justify-content': 'flex-start' }).addClass(this.myClass('buttons'))
+            .start(this.Cols).style({ 'justify-content': 'flex-start' })
               .start(this.DOWNLOAD).end()
               .start(this.CONVERT).end()
               .start(this.OPEN).end()
