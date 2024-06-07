@@ -24,7 +24,7 @@ foam.CLASS({
       var auth     = sub.keys.auth;
 
       console.log('PushRegistryAgent executed.');
-      this.pushRegistry.subscribe(x, endpoint, key, auth);
+      this.pushRegistry.subscribe(null, endpoint, key, auth);
     }
   ]
 });
