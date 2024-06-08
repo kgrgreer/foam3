@@ -119,7 +119,6 @@ public class XMLSupport {
               if ( prop != null ) {
                 prop.copyFromXML(x, obj, reader);
                 prop = null;
-                break;
               }
             break;
           case XMLStreamConstants.END_ELEMENT:
