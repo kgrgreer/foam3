@@ -3,7 +3,17 @@
  * Copyright 2017 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+/*
+ p({
+   "class": "foam.nanos.boot.NSpec",
+   "name": "push",
+   "description": "Connects to google's firebase API and sends a message and notification pair to be processed by the interface.",
+   "documentation": "Pushes a message to google's firebase API. See https://firebase.google.com/docs/reference for information on how to use google's firebase API.",
+   "serviceClass": "foam.nanos.notification.push.FirebasePushService",
+   "service": {"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}
+ })
 
+*/
 /* refinement to add device token property for Firebase */
 foam.CLASS({
   package: 'foam.nanos.auth',

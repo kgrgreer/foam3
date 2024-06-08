@@ -59,6 +59,10 @@ public class EmptyClassInfo
     return null;
   }
 
+  public Object getAxiomByNameOrShortName(String name) {
+    return null;
+  }
+
   public List getAxiomsByClass(Class cls) {
     return Collections.emptyList();
   }

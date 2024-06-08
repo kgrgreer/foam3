@@ -166,7 +166,10 @@ foam.CLASS({
 
           cmd.setIndex(new MaterializedDAOIndex(this));
 
+          // TODO: Set mode to PARALLEL to predicate and adapt
+          // initial data being loaded concurrently.
           getSourceDAO().cmd(cmd);
+          // TODO: Now set mode to SERIAL to prevent timing ordering issues
 
           String[] daoKeys = getObservedDAOs();
           if ( daoKeys.length != 0 ) {
@@ -248,6 +251,13 @@ foam.CLASS({
 
         foam.core.XLocator.set(getX());
 
+        // TODO: Support two modes: SERIAL and PARALLEL
+        // SERIAL mode is as below
+        // PARALLEL mode only has to handle PUT, can just submit
+        // to threadpool
+        // Transition from PARALLEL to SERIAL needs to block until
+        // pool is drained. Might be easier to have own pool to make
+        // this easier. Or maintain a count.
         while ( true ) {
           try {
             cmd = (Object[]) getQueue().take();

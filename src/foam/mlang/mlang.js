@@ -3073,7 +3073,21 @@ foam.CLASS({
       documentation: 'The projection with the class removed and all values in the same position as in "exprs".',
       name: 'projection',
       transient: true,
-      getter: function() { return this.projectionWithClass.map(p => p.slice(this.PROJECTION_VALUES_OFFSET)); },
+      factory: function() { 
+        let val = []
+        this.projectionWithClass.forEach(v => {
+          let res = v.slice(this.PROJECTION_VALUES_OFFSET);
+          if ( ! this.useProjection ) {
+            this.exprs.forEach((e, i) => {
+              if ( foam.core.Property.isInstance(e) ) {
+                res[i] = e.f(v[this.CLS_OR_OBJ_INDEX]);
+              }
+            })
+          }
+          val.push(res);
+        });
+        return val;
+      },
       javaFactory: `
         List result = new ArrayList();
         if ( getProjectionWithClass() != null ) {

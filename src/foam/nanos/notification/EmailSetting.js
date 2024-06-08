@@ -43,7 +43,7 @@ foam.CLASS({
         Logger logger = Loggers.logger(x, this);
 
         Iterator entries = arguments.entrySet().iterator();
-        while (entries.hasNext()) {
+        while ( entries.hasNext() ) {
           Map.Entry entry = (Map.Entry) entries.next();
           if ( entry.getValue() instanceof PropertyInfo ) {
             if ( ! ((PropertyInfo) entry.getValue()).getClassInfo().getObjClass().isAssignableFrom(user.getClass()) ) {

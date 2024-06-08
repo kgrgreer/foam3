@@ -22,6 +22,7 @@ foam.CLASS({
 //      args: 'Context x, String sub, String endpoint, String key, String auth'
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
+
         if ( user == null ) throw new IllegalArgumentException("Missing user.");
 
         PushRegistration r = new PushRegistration();

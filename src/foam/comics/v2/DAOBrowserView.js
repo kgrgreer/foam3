@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.ActionView',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.StyledModal',
     'foam.u2.filter.FilterView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.DisplayWidth',
@@ -413,11 +414,11 @@ foam.CLASS({
           foam.Object.forEach(this.config.summaryView.selectedObjects, function(y) { adao.put(y) })
         }
 
-        this.add(this.Popup.create(null, X).tag({
+        this.StyledModal.create({ title: 'Export', maxWidth: '90vw'}, X).tag({
           class: 'foam.u2.ExportModal',
           exportData: adao ? adao : this.predicatedDAO$proxy,
           predicate: this.config.filterExportPredicate
-        }));
+        }).open();
       }
     },
     {

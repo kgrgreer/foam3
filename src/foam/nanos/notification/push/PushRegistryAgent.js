@@ -15,17 +15,16 @@ foam.CLASS({
   methods: [
     function init() {
       var sub = globalThis.__PUSH_SUBSCRIPTION__;
-
       if ( ! sub ) return;
 
-      globalThis.__PUSH_SUBSCRIPTION__ = undefined;
+//       globalThis.__PUSH_SUBSCRIPTION__ = undefined;
 
       var endpoint = sub.endpoint;
       var key      = sub.keys.p256dh;
       var auth     = sub.keys.auth;
 
       console.log('PushRegistryAgent executed.');
-      this.pushRegistry.subscribe(x, endpoint, key, auth);
+      this.pushRegistry.subscribe(null, endpoint, key, auth);
     }
   ]
 });
