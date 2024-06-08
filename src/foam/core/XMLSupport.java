@@ -115,11 +115,11 @@ public class XMLSupport {
         eventType = reader.next();
         switch ( eventType ) {
           case XMLStreamConstants.START_ELEMENT:
-              var prop = (PropertyInfo) cInfo.getAxiomByNameOrShortName(reader.getLocalName());
-              if ( prop != null ) {
-                prop.copyFromXML(x, obj, reader);
-                prop = null;
-              }
+            var prop = (PropertyInfo) cInfo.getAxiomByNameOrShortName(reader.getLocalName());
+            if ( prop != null ) {
+              prop.copyFromXML(x, obj, reader);
+              prop = null;
+            }
             break;
           case XMLStreamConstants.END_ELEMENT:
             if ( reader.getLocalName().equals(objElName) ) {
