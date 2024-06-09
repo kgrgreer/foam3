@@ -274,10 +274,11 @@ foam.CLASS({
           ),
 
           regex:
-            seq1(1,
+            seq(
               '/',
               str(repeat(alt('\\/', notChars('/'),))),
-              '/'
+              '/',
+              optional(sym('word'))
             ),
 
           fieldLen: seq(
@@ -489,8 +490,9 @@ foam.CLASS({
           },
 
           regex: function(v) {
-            return new RegExp(v);
+            return new RegExp(v[1], v[3] || '');
           },
+
 
           date: function(v) {
           if ( 'now' === v ) return self.NOW();
