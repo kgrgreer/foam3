@@ -7,9 +7,9 @@
 foam.CLASS({
   package: 'foam.u2.wizard.wao',
   name: 'DAOWAO',
+  extends: 'foam.u2.wizard.wao.ProxyWAO',
   implements: [
-    'foam.mlang.Expressions',
-    'foam.u2.wizard.wao.WAO'
+    'foam.mlang.Expressions'
   ],
 
   requires: [
@@ -70,7 +70,7 @@ foam.CLASS({
 
       let dataToPut = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
 
-      return await this.dao.put(dataToPut).then(savedData => {
+      wizardlet.data = await this.dao.put(dataToPut).then(savedData => {
           this.setValue_(wizardlet, savedData);
           return savedData;
         })
@@ -81,9 +81,11 @@ foam.CLASS({
       .finally(() => {
         wizardlet.loading = false;
       });
+      await this.delegate.save(wizardlet);
     },
     async function load(wizardlet) {
       if ( wizardlet.loading ) return;
+      await this.delegate.load(wizardlet);
       if ( ! this.disableFind ) {
 
         let dataToFind = this.path ? this.path.f(wizardlet.data) : wizardlet.data;
