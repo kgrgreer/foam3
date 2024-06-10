@@ -220,14 +220,14 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"pushService",
   "lazy":true,
-  "serve":false, // set to true if testing
+  "serve":false,
   "authenticate":true,
   "boxClass":"foam.nanos.notification.push.PushServiceSkeleton",
   "service":{
-    class:"foam.nanos.notification.push.WebPushService",
-    supportEmail:"", // required
-    publicKey:"",    // required
-    privateKey:""    // required
+    "class":"foam.nanos.notification.push.WebPushService",
+    "supportEmail":"",
+    "publicKey":"",
+    "privateKey":""
   },
   "client":"""
     {
