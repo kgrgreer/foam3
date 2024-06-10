@@ -35,25 +35,29 @@ public abstract class AbstractFObjectPropertyInfo
   @Override
   public void copyFromXML(X x, FObject fobj, XMLStreamReader reader) {
     FObject obj = null;
-    try {
-      while ( reader.hasNext() ) {
-        int eventType;
-        eventType = reader.next();
-        switch ( eventType ) {
-          case XMLStreamConstants.START_ELEMENT:
-            if (reader.getLocalName().equals("object")) {
-              obj = XMLSupport.createObj(x, reader);
-              set(fobj, obj);
-              return;
-            }
-          case XMLStreamConstants.END_ELEMENT:
-            break;
-        }
-      }
-    } catch ( XMLStreamException ex) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("Premature end of xml file while reading property", this.getName());
-    }
+    Class defaultClass = this.of().getObjClass();
+    obj = XMLSupport.createObj(x, reader, defaultClass);
+    set(fobj, obj);
+//    FObject obj = null;
+//    try {
+//      while ( reader.hasNext() ) {
+//        int eventType;
+//        eventType = reader.next();
+//        switch ( eventType ) {
+//          case XMLStreamConstants.START_ELEMENT:
+//            if (reader.getLocalName().equals("object")) {
+//              obj = XMLSupport.createObj(x, reader);
+//              set(fobj, obj);
+//              return;
+//            }
+//          case XMLStreamConstants.END_ELEMENT:
+//            break;
+//        }
+//      }
+//    } catch ( XMLStreamException ex) {
+//      Logger logger = (Logger) x.get("logger");
+//      logger.error("Premature end of xml file while reading property", this.getName());
+//    }
   }
 
   @Override
