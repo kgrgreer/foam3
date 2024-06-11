@@ -1997,6 +1997,26 @@ foam.CLASS({
     ['javaType',       'boolean'],
     ['javaInfoType',   'foam.core.AbstractBooleanPropertyInfo'],
     ['javaCompare',    '']
+  ],
+
+  methods: [
+    function createJavaPropertyInfo_(cls) {
+      var info = this.SUPER(cls);
+
+      if ( this.value ) {
+        info.method({
+          name: 'isDefaultValue',
+          visibility: 'public',
+          args: [
+            { name: 'o', type: 'Object'}
+          ],
+          type: 'boolean',
+          body: `return get_(o);`
+        });
+      }
+
+      return info;
+    }
   ]
 });
 
