@@ -90,18 +90,21 @@ foam.CLASS({
       name: 'referralText',
       class: 'String'
     },
-    'refLink'
+    'refLink',
+    'contentData'
   ],
 
   methods: [
-    async function render() {
-      let self = this;
+    function init() {
       this.refLink = this.subject.user.referralCodes.where(
         this.Eq.create({arg1: foam.nanos.referral.ReferralCode.AUTO_GENERATED, arg2: true})
       ).select().then(v => {
         this.refLink = v.array[0]?.url;
         this.referralText = this.COPYTEXT + '\n\n' + this.refLink;
       });
+    },
+    function render() {
+      let self = this;
 
       let iconConfig = {
         size: 32,
@@ -118,7 +121,10 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('content'))
-          .call(this.addContent())
+          .add(this.slot(function(contentData) {
+            var e = this.E();
+            return this.addContent(e);
+          }))
         .end()
         .start()
           .addClass(this.myClass('copy-box'))
