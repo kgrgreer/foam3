@@ -49,7 +49,12 @@ public abstract class AbstractEnumPropertyInfo
             if ( reader.getLocalName().equals(this.getName()) || reader.getLocalName().equals(this.getShortName()) ) {
               // Move to characters within tags to extract ordinal value
               reader.next();
-              Integer ordinalVal = Integer.parseInt(reader.getText());
+              Integer ordinalVal;
+              try {
+                ordinalVal = Integer.parseInt(reader.getText());
+              } catch (NumberFormatException e) {
+                return;
+              }
               // Searches forOrdinal in relation to the specific ENUM that's created
               set(fobj, this.forOrdinal(ordinalVal));
               return;
