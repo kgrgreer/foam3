@@ -281,7 +281,8 @@ foam.CLASS({
         var exprArray = [];
         for ( var propName of propNames ) {
           var expr = objClass.getAxiomByName(propName) || foam.nanos.column.NestedPropertiesExpression.create({ objClass: objClass, nestedProperty: propName });
-          if ( foam.dao.OneToManyRelationshipProperty.isInstance(expr) ||
+          if ( foam.dao.DAOProperty.isInstance(expr) ||
+               foam.dao.OneToManyRelationshipProperty.isInstance(expr) ||
                foam.dao.ManyToManyRelationshipProperty.isInstance(expr) ) 
             continue
           if ( expr )
