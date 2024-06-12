@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.notification.push.iOSNativePushRegistration'
   ],
 
@@ -36,9 +37,22 @@ foam.CLASS({
           ir.setEndpoint(token);
           r = ir;
         }
-      
-        r.setUser(user.getId());
+        
+        // Check if this entry exists in dao and belongs to a real user, if yes, dont override;
+        // Otherwise we lose the user's endpoint every time they sign out
         DAO dao = (DAO) x.get("pushRegistrationDAO");
+        boolean isAnonymous = ((AuthService) x.get("auth")).isAnonymous(x);
+        if ( isAnonymous ) {
+          PushRegistration p = (PushRegistration) dao.find(r.getEndpoint());
+          if ( p != null && p.getUser() != user.getId() ) {
+            return;
+          }
+        }
+
+        // Possible issue: User A signs in and gets access to notifications then user B signs in and gets access to notifications. 
+        // Now device owner can see user B's notifications till they sign in themselves
+
+        r.setUser(user.getId());
         dao.put(r);
       `
     }
