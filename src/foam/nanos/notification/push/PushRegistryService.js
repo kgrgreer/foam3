@@ -12,23 +12,31 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.push.iOSNativePushRegistration'
   ],
 
   methods: [
     {
       name: 'subscribe',
 //      type: 'Void',
-//      args: 'Context x, String sub, String endpoint, String key, String auth'
+//      args: 'Context x, String sub, String endpoint, String key, String auth, String token'
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
 
         if ( user == null ) throw new IllegalArgumentException("Missing user.");
-
-        PushRegistration r = new PushRegistration();
-        r.setEndpoint(endpoint);
-        r.setKey(key);
-        r.setAuth(auth);
+        PushRegistration r;
+        if ( token == null ) {
+          r = new PushRegistration();
+          r.setEndpoint(endpoint);
+          r.setKey(key);
+          r.setAuth(auth);
+        } else {
+          iOSNativePushRegistration ir =  (iOSNativePushRegistration) new iOSNativePushRegistration();
+          ir.setEndpoint(token);
+          r = ir;
+        }
+      
         r.setUser(user.getId());
         DAO dao = (DAO) x.get("pushRegistrationDAO");
         dao.put(r);

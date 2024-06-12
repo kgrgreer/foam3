@@ -25,7 +25,8 @@ foam.CLASS({
     'foam.nanos.auth.*',
     'java.util.List',
     'nl.martijndwars.webpush.Notification',
-    'org.bouncycastle.jce.provider.BouncyCastleProvider'
+    'org.bouncycastle.jce.provider.BouncyCastleProvider',
+    'foam.nanos.notification.push.iOSNativePushRegistration'
   ],
 
   properties: [
@@ -116,14 +117,22 @@ foam.CLASS({
       System.err.println("        auth: " + sub.getAuth());
       */
         try {
-          Notification n = new Notification(
-            sub.getEndpoint(),
-            sub.getKey(),  // sub.getUserPublicKey(),
-            sub.getAuth(), // sub.getAuthAsBytes(),
-            msg
-          );
+          if ( sub instanceof foam.nanos.notification.push.iOSNativePushRegistration ) {
+            APNSPushService APNSpushService = (APNSPushService) getX().get("APNSpushService");
+            if ( APNSpushService == null ) {
+              throw new RuntimeException("Missing Apple Push Notification Service in Context");
+            }
+            APNSpushService.send((iOSNativePushRegistration) sub, msg);
+          } else { 
+            Notification n = new Notification(
+              sub.getEndpoint(),
+              sub.getKey(),  // sub.getUserPublicKey(),
+              sub.getAuth(), // sub.getAuthAsBytes(),
+              msg
+            );
 
-          ((nl.martijndwars.webpush.PushService) getPushService()).sendAsync(n);
+            ((nl.martijndwars.webpush.PushService) getPushService()).sendAsync(n);
+          }
         } catch (Throwable t) {
           t.printStackTrace();
         }

@@ -241,4 +241,16 @@ p({
       }
     }
   """
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"APNSpushService",
+  "lazy":true,
+  "serve":false,
+  "authenticate":true,
+  "boxClass":"foam.nanos.notification.push.PushServiceSkeleton",
+  "service":{
+    class:"foam.nanos.notification.push.APNSPushService"
+  }
+})
 })
