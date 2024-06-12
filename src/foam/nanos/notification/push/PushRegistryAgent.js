@@ -24,7 +24,6 @@ foam.CLASS({
       // This isnt actually needed since on client reload ^ will be called anyway
       // this.__subContext__.loginSuccess$.sub(() => { this.register(); })
       this.window.addEventListener('push-permission-token', event => {
-        console.log(event.detail);
         this.subObj = { token: event.detail.token };
         this.register();
       });
@@ -43,34 +42,33 @@ foam.CLASS({
         console.warn('Invalid push registry');
       }
 
-      console.log('PushRegistryAgent executed.');
       this.pushRegistry.subscribe(null, endpoint, key, auth, token);
     },
     function subWhenReady() {
       let self = this;
       function subWhenReady_(reg) {
-        console.log('Service worker registration ready:', reg);
+        console.debug('Service worker registration ready:', reg);
         reg.pushManager.subscribe({
           // exported by RegisterServiecWorker
           applicationServerKey: globalThis.pushPublicKey,
           userVisibleOnly: true
         }).then(sub => {
           if ( sub ) {
-            console.log('Push Manager subscription succeeded:', sub);
+            console.debug('Push Manager subscription succeeded:', sub);
             self.subObj = JSON.parse(JSON.stringify(sub));
             self.register();
           } else {
-            console.log('Push Manager no permission to receive notifications:', sub);
+            console.warn('Push Manager no permission to receive notifications:', sub);
           }
         },
         error => {
-          console.log('Service worker push subscription failed:', error);
+          console.warn('Service worker push subscription failed:', error);
         });
       }
     
       return globalThis.swPromise.then(
         reg => subWhenReady_(reg),
-        err => console.log('Error waiting for service worker to become ready:', err)
+        err => console.warn('Error waiting for service worker to become ready:', err)
       );
     },
     function shouldRequestWebNotificationPermission() {
