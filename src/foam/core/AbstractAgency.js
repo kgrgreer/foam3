@@ -21,8 +21,8 @@ foam.CLASS({
   ],
 
   javaCode: `
-    private static final Timer TIMER = new Timer();
-    private static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
+    protected static final Timer TIMER = new Timer("Agency Scheduler");
+    protected static final ConcurrentHashMap<String, TimerTask> TASK_QUEUE = new ConcurrentHashMap<>();
 
     public void schedule(X x, ContextAgent agent, String key, long delay) {
       if ( delay <= 0 ) {
@@ -30,27 +30,35 @@ foam.CLASS({
         return;
       }
 
+      var logger = Loggers.logger(x, this, "schedule");
+
       // Do not re-schedule existing task with the same key. Subsequent attempts
       // to schedule the same task/key are ignored until the task is executed
       // and removed from the queue.
-      if ( ! TASK_QUEUE.containsKey(key) ) {
-        var task = new TimerTask() {
-          public void run() {
-            X oldX = ((ProxyX) XLocator.get()).getX();
-            XLocator.set(x);
-            try {
-              agent.execute(x);
-            } catch ( java.lang.Exception e ) {
-              Loggers.logger(x, this).error("schedule", "failed", key, e);
-            } finally {
-              XLocator.set(oldX);
-            }
-            TASK_QUEUE.remove(key);
-          }
-        };
-        TASK_QUEUE.put(key, task);
-        TIMER.schedule(task, delay);
+      if ( TASK_QUEUE.containsKey(key) ) {
+        logger.info("ignored re-scheduling existing task", key);
+        return;
       }
+
+      // Schedule new task to execute the agent
+      var task = new TimerTask() {
+        public void run() {
+          logger.debug("running", key, delay);
+          submit(x,
+            (x) -> {
+              try {
+                agent.execute(x);
+              } catch ( Throwable t ) {
+                logger.error("failed", key, t);
+              } finally {
+                TASK_QUEUE.remove(key);
+              }
+            }
+            , key);
+        }
+      };
+      TASK_QUEUE.put(key, task);
+      TIMER.schedule(task, delay);
     }
   `
 });
