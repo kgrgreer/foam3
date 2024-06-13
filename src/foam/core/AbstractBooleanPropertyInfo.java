@@ -79,7 +79,7 @@ public abstract class AbstractBooleanPropertyInfo
   }
 
   public boolean isDefaultValue(Object o) {
-    return foam.util.SafetyUtil.compare(get_(o), true) == 0;
+    return ! get_(o);
   }
 
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
