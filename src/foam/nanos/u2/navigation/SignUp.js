@@ -190,6 +190,11 @@ foam.CLASS({
       class: 'String',
       name: 'referralToken',
       documentation: `Input to associate new user with something.`,
+      postSet(_, n) {
+        if ( n ) {
+          this.logAnalyticEvent('SIGNUP_WITH_REFERRAL_CODE', '', x.sessionID, n);
+        }
+      },
       factory: function() {
         var searchParams = new URLSearchParams(location.search);
         return searchParams.get('referral');
