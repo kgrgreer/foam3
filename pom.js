@@ -59,6 +59,18 @@ foam.POM({
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
       'org.postgresql:postgresql:42.3.8',
-      'nl.martijndwars:web-push:5.1.1' // https://github.com/web-push-libs/webpush-java
+      'nl.martijndwars:web-push:5.1.1', // https://github.com/web-push-libs/webpush-java
+      'com.eatthepath:pushy:0.15.4',
+      'com.eatthepath:fast-uuid:0.2.0',
+      'io.netty:netty-tcnative-boringssl-static:2.0.62.Final',
+      'io.netty:netty-codec-http2:4.1.104.Final',
+      'io.netty:netty-handler-proxy:4.1.104.Final',
+      'io.netty:netty-resolver-dns:4.1.104.Final',
+      'io.netty:netty-transport-native-kqueue:4.1.104.Final',
+      'io.netty:netty-transport-native-epoll:4.1.104.Final',
+      'org.junit.jupiter:junit-jupiter-engine:5.6.0',
+      'org.junit.jupiter:junit-jupiter-params:5.6.0',
+      'org.junit.platform:junit-platform-launcher:1.6.0',
+      'org.slf4j:slf4j-simple:1.7.21'
     ]
 });

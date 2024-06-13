@@ -26,7 +26,8 @@ foam.CLASS({
     'java.util.List',
     'nl.martijndwars.webpush.Notification',
     'org.bouncycastle.jce.provider.BouncyCastleProvider',
-    'foam.nanos.notification.push.iOSNativePushRegistration'
+    'foam.nanos.notification.push.iOSNativePushRegistration',
+    'foam.nanos.notification.push.APNSPushService'
   ],
 
   properties: [
