@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'MaterializedDAO',
   extends: 'foam.dao.ReadOnlyDAO',
 
+  javaImplements: [
+    'Runnable',
+    'foam.nanos.NanoService'
+  ],
+
   constants: [
     { type: 'String', name: 'PUT',        value: 'PUT' },
     { type: 'String', name: 'REMOVE',     value: 'REMOVE' },
@@ -23,7 +28,6 @@ foam.CLASS({
     'foam.core.Detachable'
   ],
 
-  javaImplements: [ 'Runnable' ],
 
   documentation: `
     Create a Materialized View from a source DAO.
@@ -43,6 +47,11 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      documentation: 'When true, DAO will be initialized (loaded) immediately on startup of the system, rather than wait for first user request.',
+      class: 'Boolean',
+      name: 'autoStart',
+    },
     {
       class: 'Object',
       name: 'queue',
@@ -284,7 +293,12 @@ foam.CLASS({
           } catch (InterruptedException e) {}
         }
       `
+    },
+    {
+      name: 'start',
+      javaCode: `
+      if ( getAutoStart() ) maybeInit();
+      `
     }
-
   ]
 });
