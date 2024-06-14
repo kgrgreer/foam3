@@ -21,13 +21,18 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.Detachable',
     'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
+    'foam.mlang.sink.Count',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.True',
-    'foam.core.Detachable'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine'
   ],
-
 
   documentation: `
     Create a Materialized View from a source DAO.
@@ -59,8 +64,14 @@ foam.CLASS({
       javaFactory: 'return new java.util.concurrent.LinkedBlockingQueue();'
     },
     {
+      documentation: 'true after maybeInit has started the worker thread',
       class: 'Boolean',
       name: 'initialized'
+    },
+    {
+      documentation: 'true when autoStart loading',
+      class: 'Boolean',
+      name: 'initializing'
     },
     {
       class: 'Object',
@@ -164,21 +175,21 @@ foam.CLASS({
       javaType: 'void',
       synchronized: true,
       javaCode: `
-        if ( ! getInitialized() ) {
+        if ( getInitializing() ||
+             getInitialized() ) return;
+
           Thread t = new Thread(this);
           t.setName("MaterializedDAO Processor: " + getDelegate());
           t.setDaemon(true);
           t.start();
 
           setInitialized(true);
-          AddIndexCommand cmd = new AddIndexCommand();
 
-          cmd.setIndex(new MaterializedDAOIndex(this));
-
-          // TODO: Set mode to PARALLEL to predicate and adapt
-          // initial data being loaded concurrently.
-          getSourceDAO().cmd(cmd);
-          // TODO: Now set mode to SERIAL to prevent timing ordering issues
+          if ( ! getAutoStart() ) {
+            AddIndexCommand cmd = new AddIndexCommand();
+            cmd.setIndex(new MaterializedDAOIndex(this));
+            getSourceDAO().cmd(cmd);
+          }
 
           String[] daoKeys = getObservedDAOs();
           if ( daoKeys.length != 0 ) {
@@ -192,7 +203,6 @@ foam.CLASS({
               }, foam.mlang.MLang.TRUE);
             }
           }
-      }
       `
     },
     {
@@ -250,54 +260,88 @@ foam.CLASS({
         return this;
       `
     },
-
     {
       name: 'run',
       type: 'void',
       javaCode: `
         Object[] cmd;
-        FObject  value;
 
         foam.core.XLocator.set(getX());
 
-        // TODO: Support two modes: SERIAL and PARALLEL
-        // SERIAL mode is as below
-        // PARALLEL mode only has to handle PUT, can just submit
-        // to threadpool
-        // Transition from PARALLEL to SERIAL needs to block until
-        // pool is drained. Might be easier to have own pool to make
-        // this easier. Or maintain a count.
         while ( true ) {
           try {
             cmd = (Object[]) getQueue().take();
-
-            if ( cmd[0] == PUT ) {
-              value = (FObject) cmd[1];
-
-              if ( getPredicate().f(value) ) {
-                var obj = adapt(value);
-                if ( obj != null )
-                  getDelegate().put(obj);
-              }
-            } else if ( cmd[0] == REMOVE ) {
-              value = (FObject) cmd[1];
-
-              if ( getPredicate().f(value) ) {
-                var obj = getAdapter().fastAdapt(value);
-                if ( obj != null )
-                  getDelegate().remove(obj);
-              }
-            } else /* removeAll */ {
-              getDelegate().removeAll();
-            }
+            process(cmd);
           } catch (InterruptedException e) {}
+        }
+      `
+    },
+    {
+      name: 'process',
+      args: 'Object[] cmd',
+      javaCode: `
+        FObject  value;
+        if ( cmd[0] == PUT ) {
+          value = (FObject) cmd[1];
+
+          if ( getPredicate().f(value) ) {
+            var obj = adapt(value);
+            if ( obj != null )
+              getDelegate().put(obj);
+          }
+        } else if ( cmd[0] == REMOVE ) {
+          value = (FObject) cmd[1];
+
+          if ( getPredicate().f(value) ) {
+            var obj = getAdapter().fastAdapt(value);
+            if ( obj != null )
+              getDelegate().remove(obj);
+          }
+        } else /* removeAll */ {
+          getDelegate().removeAll();
         }
       `
     },
     {
       name: 'start',
       javaCode: `
-      if ( getAutoStart() ) maybeInit();
+      if ( getAutoStart() ) {
+        synchronized ( this ) {
+          if ( getInitialized() ||
+               getInitializing() ) return;
+          setInitializing(true);
+       }
+       Logger logger = Loggers.logger(getX(), this, getSourceDAO().getOf().getObjClass().getSimpleName(), "start");
+
+       foam.core.XLocator.set(getX());
+       try {
+          long count = ((Count) getSourceDAO().select(new Count())).getValue();
+          logger.info("initializing", count);
+          long processed = 0L;
+
+          AddIndexCommand indexCmd = new AddIndexCommand();
+          indexCmd.setIndex(new MaterializedDAOIndex(this));
+          getSourceDAO().cmd(indexCmd);
+
+          AssemblyLine line = new AsyncAssemblyLine(getX(), this.getClass().getSimpleName());
+          while ( processed < count ) {
+            try {
+              Object[] cmd = (Object[]) getQueue().take();
+              process(cmd);
+              processed += 1;
+            } catch (InterruptedException e) {
+              break;
+            }
+          }
+          line.shutdown();
+          logger.info("initialized", processed);
+        } catch (Throwable t) {
+          // ??
+        } finally {
+          setInitializing(false);
+          maybeInit();
+        }
+      }
       `
     }
   ]
