@@ -32,18 +32,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'supportEmail',
-      required: true
+      javaPostSet: 'clearPushService();'
     },
     // TODO: move to KeyPairDAO
     {
       class: 'String',
       name: 'publicKey',
-      required: true
+      javaPostSet: 'clearPushService();'
     },
     {
       class: 'String',
       name: 'privateKey',
-      required: true
+      javaPostSet: 'clearPushService();'
     },
     {
       class: 'Object',
@@ -51,6 +51,7 @@ foam.CLASS({
       name: 'pushService',
       transient: true,
       javaFactory: `
+      // TODO: rebuild if settings change
       try {
         if ( Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null ) {
           Security.addProvider(new BouncyCastleProvider());
