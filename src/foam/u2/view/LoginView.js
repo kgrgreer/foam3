@@ -154,7 +154,7 @@ foam.CLASS({
       // Use passed in values or default loginVariables defined on ApplicationControllers
       this.param = Object.assign(this.loginVariables, this.param)
       try {
-        var cls = foam.lookup(this.modelCls_);
+        var cls = this.__subContext__.lookup(this.modelCls_);
 
         if ( this.data &&  cls.isInstance(this.data) ) return;
 
