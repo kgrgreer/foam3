@@ -283,19 +283,9 @@ foam.CLASS({
         if ( variant ) language.variant = variant;
         return language;
       }
-    }
-  ],
-
-  actions: [
+    },
     {
-      name: 'login',
-      label: 'Get started',
-      section: 'footerSection',
-      buttonStyle: 'PRIMARY',
-      isEnabled: function(errors_, isLoading_) {
-        return ! errors_ && ! isLoading_;
-      },
-      isAvailable: function(showAction) { return showAction; },
+      name: 'login_',
       code: async function(x) {
         this.logAnalyticEvent('USER_CLICKED_GET_STARTED', '', this.sessionID, '' );
         let createdUser = this.User.create({
@@ -325,6 +315,22 @@ foam.CLASS({
           this.notify(this.ERROR_MSG, '', this.LogLevel.ERROR, true);
         }
         // TODO: Add functionality to push to sign in if the user email already exists
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'login',
+      label: 'Get started',
+      section: 'footerSection',
+      buttonStyle: 'PRIMARY',
+      isEnabled: function(errors_, isLoading_) {
+        return ! errors_ && ! isLoading_;
+      },
+      isAvailable: function(showAction) { return showAction; },
+      code: async function(x) {
+        this.login_(x);
       }
     },
     {
