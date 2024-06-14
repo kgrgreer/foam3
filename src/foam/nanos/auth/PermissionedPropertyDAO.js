@@ -147,7 +147,7 @@ foam.CLASS({
       ],
       javaCode: `
       String      of   = oldObj.getClass().getSimpleName().toLowerCase();
-      FObject     obj  = oldObj.fclone();
+      FObject     obj  = oldObj;
       AuthService auth = (AuthService) x.get("auth");
 
       if ( ! propMap.containsKey(of) ) {
@@ -179,7 +179,6 @@ foam.CLASS({
 
       while ( e.hasNext() ) {
         PropertyInfo axiom = (PropertyInfo) e.next();
-        axiom.clear(obj);
       }
 
       return obj;
