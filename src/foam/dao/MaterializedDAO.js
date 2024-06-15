@@ -264,14 +264,10 @@ foam.CLASS({
       name: 'run',
       type: 'void',
       javaCode: `
-        Object[] cmd;
-
         foam.core.XLocator.set(getX());
-
         while ( true ) {
           try {
-            cmd = (Object[]) getQueue().take();
-            process(cmd);
+            process((Object[]) getQueue().take());
           } catch (InterruptedException e) {}
         }
       `
@@ -319,15 +315,14 @@ foam.CLASS({
           logger.info("initializing", count);
           long processed = 0L;
 
-          AddIndexCommand indexCmd = new AddIndexCommand();
-          indexCmd.setIndex(new MaterializedDAOIndex(this));
-          getSourceDAO().cmd(indexCmd);
+          AddIndexCommand cmd = new AddIndexCommand();
+          cmd.setIndex(new MaterializedDAOIndex(this));
+          getSourceDAO().cmd(cmd);
 
           AssemblyLine line = new AsyncAssemblyLine(getX(), this.getClass().getSimpleName());
           while ( processed < count ) {
             try {
-              Object[] cmd = (Object[]) getQueue().take();
-              process(cmd);
+              process((Object[]) getQueue().take());
               processed += 1;
             } catch (InterruptedException e) {
               break;
@@ -336,7 +331,7 @@ foam.CLASS({
           line.shutdown();
           logger.info("initialized", processed);
         } catch (Throwable t) {
-          // ??
+          logger.error(t);
         } finally {
           setInitializing(false);
           maybeInit();
