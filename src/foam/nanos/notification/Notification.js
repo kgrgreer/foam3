@@ -180,15 +180,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'userId',
       documentation: 'User notification will be sent to.',
-      view: { class: 'foam.u2.view.StringView', placeholder: 'select user' }
-      // view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select user' }
+      view: { class: 'foam.u2.view.RichChoiceReferenceView', placeholder: 'select user' }
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'groupId',
       documentation: 'Group notification will be sent to.',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' },
+      view: { class: 'foam.u2.view.RichChoiceReferenceView', placeholder: 'select group' },
       menuKeys: ['admin.groups']
     },
     {
