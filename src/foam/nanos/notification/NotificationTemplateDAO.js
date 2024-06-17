@@ -91,7 +91,10 @@ the notification will be handled. `,
               template.setSpid(notification.getSpid());
             }
             if ( Notification.TOAST_MESSAGE.isSet(notification) ) {
-              template.setTemplate(notification.getToastMessage());
+              template.setToastMessage(notification.getToastMessage());
+            }
+            if ( Notification.TOAST_SUB_MESSAGE.isSet(notification) ) {
+              template.setToastSubMessage(notification.getToastSubMessage());
             }
             if ( Notification.EMAIL_ARGS.isSet(notification) &&
                  Notification.EMAIL_ARGS.isSet(template) ) {
