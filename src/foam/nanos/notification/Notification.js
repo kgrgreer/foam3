@@ -180,7 +180,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'userId',
       documentation: 'User notification will be sent to.',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select user' }
+      view: { class: 'foam.u2.view.StringView', placeholder: 'select user' }
+      // view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select user' }
     },
     {
       class: 'Reference',
