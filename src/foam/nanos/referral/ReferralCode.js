@@ -62,8 +62,19 @@ foam.CLASS({
       name: 'website',
       required: true,
       factory: function() {
-        return this.appConfig.url + '/?referral=';
+        return this.appConfig.url;
       }
+    },
+    {
+      class: 'String',
+      name: 'query',
+      factory: function() {
+        return 'referral';
+      }
+    },
+    {
+      class: 'String',
+      name: 'customReferralCode'
     },
     {
       class: 'Reference',

@@ -11,7 +11,8 @@ p({
     .setJournalName("referralCodes")
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setOf(foam.nanos.referral.ReferralCode.getOwnClassInfo())
-    .build();
+    .build()
+    .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.referral.ReferralCode.CUSTOM_REFERRAL_CODE });
   """,
   "client": """
   {
