@@ -10,7 +10,7 @@ p({
   "after": true,
   predicate: {
     class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
-    query: '(o !exists&&n.url !exists)||(o exists&&n.menu exists&&n.website exists&&(n.menu!=o.menu||n.website!=o.website))'
+    query: '(o !exists&&n.url !exists)||(o exists&&n.menu exists&&n.website exists&&(n.menu!=o.menu||n.website!=o.website||n.customReferralCode!=o.customReferralCode))'
   },
   "action":{
     "class":"foam.nanos.referral.BuildReferralCodeURLRuleAction"
