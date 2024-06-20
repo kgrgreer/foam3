@@ -55,7 +55,7 @@ public class NSpecFactory
 
     // Avoid infinite recursions when creating services
     if ( creatingThread_ == Thread.currentThread() ) {
-      logger.warning("Recursive Service Factory", spec_.getName(), new java.lang.Exception("Recursive Service Factory "+spec_.getName()));
+      logger.warning("Recursive Service Factory", spec_.getName());
       return;
     }
     creatingThread_ = Thread.currentThread();
