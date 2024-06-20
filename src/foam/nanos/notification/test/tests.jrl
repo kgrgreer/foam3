@@ -2,3 +2,7 @@ p({
   class: "foam.nanos.notification.test.DAONotificationTest",
   id: "DAONotificationTest"
 })
+p({
+  class: "foam.nanos.notification.test.EmailNotificationTest",
+  id: "EmailNotificationTest"
+})
