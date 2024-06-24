@@ -8,7 +8,8 @@ foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'APNSPushService',
 
-  documentation: `Not called directly, called through WebPushService`,
+  documentation: `Not called directly, called through WebPushService 
+  TODO: not very msp friendly at the moment, there is no way for WebPushService to find the right apnsPushService for a given app`,
 
   implements: [
     'foam.nanos.notification.push.PushService',
@@ -52,12 +53,17 @@ foam.CLASS({
       `
     },
     {
+      class: 'String',
+      name: 'apnsCredentialId',
+      documentation: 'credential id to find for host and key data'
+    },
+    {
       class: 'Object',
       of: 'foam.nanos.notification.push.APNSCredential',
       name: 'apnsCredential',
       transient: true,
       javaFactory: `
-        return getCredentials(getX(), (String) getSpid());
+        return getCredentials(getX());
       `
     }
   ],
@@ -148,16 +154,12 @@ foam.CLASS({
 
     {
       name: 'getCredentials',
-      args: 'X x, String spid',
+      args: 'X x',
       type: 'APNSCredential',
       javaCode: `
         APNSCredential credentials = null;
         DAO credentialDAO = (DAO) x.get("credentialsDAO");
-        ArraySink arraySink = new ArraySink();
-        credentialDAO.where(MLang.EQ(APNSCredential.SPID, spid)).select(arraySink);
-        if ( arraySink.getArray().size() > 0 ) {
-          credentials = (APNSCredential) (arraySink.getArray()).get(0);
-        }
+        credentials = (APNSCredential) credentialDAO.find(MLang.EQ(APNSCredential.ID, getApnsCredentialId()));
         return credentials;
       `
     }
