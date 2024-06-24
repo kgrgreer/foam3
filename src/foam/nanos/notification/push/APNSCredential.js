@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'APNSCredential',
+  extends: 'foam.nanos.auth.Credential',
 
   implements: [
     'foam.nanos.auth.ServiceProviderAware'

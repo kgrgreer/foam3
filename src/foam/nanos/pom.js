@@ -456,7 +456,7 @@ foam.POM({
     { name: "notification/push/PushService",                                              flags: "js|java" },
     { name: "notification/push/WebPushService",                                           flags: "js|java" },
     { name: "notification/push/APNSPushService",                                          flags: "java" },
-    { name: "notification/push/APNSCredential",                                           flags: "java" },
+    { name: "notification/push/APNSCredential",                                           flags: "js|java" },
 //    { name: "notification/push/FirebasePushService",                                      flags: "js|java" },
     { name: "notification/push/PushRegistration",                                         flags: "js|java" },
     { name: "notification/push/iosNativePushRegistration",                                flags: "js|java" },
