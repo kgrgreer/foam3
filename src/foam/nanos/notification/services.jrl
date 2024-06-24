@@ -241,6 +241,7 @@ p({
       }
     }
   """
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
@@ -252,5 +253,4 @@ p({
   "service":{
     class:"foam.nanos.notification.push.APNSPushService"
   }
-})
 })

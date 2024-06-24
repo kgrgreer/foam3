@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.auth.*',
     'java.util.List',
+    'java.util.HashMap',
     'nl.martijndwars.webpush.Notification',
     'org.bouncycastle.jce.provider.BouncyCastleProvider',
     'foam.nanos.notification.push.iOSNativePushRegistration',
@@ -71,44 +72,49 @@ foam.CLASS({
     {
       name: 'sendPushById',
       javaCode:
-`
-  System.err.println("Push to User: " + id);
-  DAO  userDAO = (DAO) getX().get("localUserDAO");
-  User user    = (User) userDAO.find(id);
+      `
+        System.err.println("Push to User: " + id);
+        DAO  userDAO = (DAO) getX().get("localUserDAO");
+        User user    = (User) userDAO.find(id);
 
-  sendPush(user, title, body);
+        sendPush(user, title, body);
 
-  return true;
-`
-},
+        return true;
+      `
+    },
     {
       name: 'sendPush',
       javaCode:
-`
-  if ( user == null ) {
-    throw new RuntimeException("Invalid Parameters: Missing user");
-  }
+      `
+        if ( user == null ) {
+          throw new RuntimeException("Invalid Parameters: Missing user");
+        }
 
-  getPushService();
+        getPushService();
 
-  System.err.println("Push to User: " + user.getId());
-  DAO pushRegistrationDAO = user.getPushRegistrations(getX());
+        System.err.println("Push to User: " + user.getId());
+        DAO pushRegistrationDAO = user.getPushRegistrations(getX());
 
-  List   subs = ((ArraySink) pushRegistrationDAO.select(new ArraySink())).getArray();
-  // TODO: remove " characters or escape properly.
-  String msg  = "{\\"title\\":\\"" + title + "\\",\\"body\\":\\"" + body + "\\"}";
+        List   subs = ((ArraySink) pushRegistrationDAO.select(new ArraySink())).getArray();
+        HashMap msgMap = new HashMap<String, String>()
+          {
+              {
+                  put("title", title);
+                  put("body", body);
+              }
+          };
 
-  for ( Object obj : subs ) {
-    PushRegistration sub = (PushRegistration) obj;
-    send(sub, msg);
-  }
+        for ( Object obj : subs ) {
+          PushRegistration sub = (PushRegistration) obj;
+          send(sub, msgMap);
+        }
 
-  return true;
-`
+        return true;
+      `
     },
     {
       name: 'send',
-      args: 'PushRegistration sub, String msg',
+      args: 'PushRegistration sub, HashMap msgMap',
       type: 'Void',
       javaCode: `
       /*
@@ -123,8 +129,9 @@ foam.CLASS({
             if ( APNSpushService == null ) {
               throw new RuntimeException("Missing Apple Push Notification Service in Context");
             }
-            APNSpushService.send((iOSNativePushRegistration) sub, msg);
+            APNSpushService.send((iOSNativePushRegistration) sub, msgMap);
           } else { 
+            String msg  = "{\\"title\\":\\"" + msgMap.get("title") + "\\",\\"body\\":\\"" + msgMap.get("body") + "\\"}";
             Notification n = new Notification(
               sub.getEndpoint(),
               sub.getKey(),  // sub.getUserPublicKey(),
@@ -135,6 +142,7 @@ foam.CLASS({
             ((nl.martijndwars.webpush.PushService) getPushService()).sendAsync(n);
           }
         } catch (Throwable t) {
+          //TODO: add alarm
           t.printStackTrace();
         }
       `

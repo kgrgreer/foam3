@@ -20,6 +20,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'host'
+    },
+    {
+      class: 'String',
+      name: 'certificateAlias'
+    },
+    {
+      class: 'String',
+      name: 'keyAlias'
+    },
+    {
+      class: 'String',
+      name: 'appBundleId'
     }
   ]
 });
