@@ -12,10 +12,30 @@ foam.CLASS({
 
   imports: [ 'pushRegistry', 'window' ],
 
+  requires: ['foam.core.Latch'],
+
   properties: [
     {
       name: 'subObj'
-    }
+    },
+    {
+      name: 'isGranted',
+      factory: function() {
+        return this.Latch.create();
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'supportsNotifications',
+      factory: function() {
+        if ( globalThis.isIOSApp ) {
+          // Any ios client using WKWebView as a wrapper for a foam app needs to use this handler to return
+          // the endpoint to push to.
+          return this.window.webkit.messageHandlers['push-token'];
+        }
+        return 'Notification' in this.window;
+      }
+    },
   ],
 
   methods: [
@@ -42,6 +62,7 @@ foam.CLASS({
         console.warn('Invalid push registry');
       }
 
+      this.isGranted.resolve(true);
       this.pushRegistry.subscribe(null, endpoint, key, auth, token);
     },
     function subWhenReady() {
@@ -75,16 +96,20 @@ foam.CLASS({
       return 'Notification' in window && Notification.permission !== 'granted';
     },
     async function requestNotificationPermission() {
+      // Reset latch when asking for permission
+      this.isGranted = this.Latch.create();
       if ( globalThis.isIOSApp ) {
         // Ask ios app to ask for permission
         // Returned by the app listener event;
         return this.window.webkit.messageHandlers['push-permission-request'].postMessage('');
       }
-      if ( ! this.shouldRequestWebNotificationPermission() ) return;
+      if ( ! this.shouldRequestWebNotificationPermission() )
+        return this.isGranted.resolve(true);
       let ret = await Notification.requestPermission();
-      if ( ret.status == 'granted' ) {
-        return subWhenReady();
+      if ( ret == 'granted' ) {
+        return this.subWhenReady();
       }
+      this.isGranted.resolve(false);
     },
     async function safeRegisterSub() {
       // Only registers subscription if notification has been already granted
@@ -92,19 +117,21 @@ foam.CLASS({
       if ( globalThis.isIOSApp ) {
         try {
           let state = await this.window.webkit.messageHandlers['push-permission-state'].postMessage('');
-          if ( this.MapiOSState(state) == 'granted' ) {
-            this.window.webkit.messageHandlers['push-token'].postMessage('');
+          if ( this.MapIOSState(state) == 'granted' ) {
+            return this.window.webkit.messageHandlers['push-token'].postMessage('');
           }
-        } catch (e) { 
-          console.error(e); 
+        } catch (e) {
+          console.error(e);
         }
       } else {
         if ( 'Notification' in window && Notification.permission === 'granted' ) {
           await this.subWhenReady();
+          return;
         }
       }
+      return this.isGranted.resolve(false);
     },
-    function MapiOSState(state) {
+    function MapIOSState(state) {
       // Maps ios notification states to equivalent webPush states
       switch ( state ) {
         case 'notDetermined':
