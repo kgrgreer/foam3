@@ -115,8 +115,8 @@ foam.CLASS({
   methods: [
     async function execute(x) {
       // If this agent ever needs to enable or disable this behaviour for the user it should start using a capability to render this view, but for now, this is per device so it doesnt
-      let isGranted = await this.pushRegistryAgent.isGranted;
-      if ( isGranted || ! this.pushRegistryAgent.supportsNotifications || localStorage.getItem('refusedNotification') ) return;
+      let currentState = await this.pushRegistryAgent.currentState;
+      if ( currentState != 'DEFAULT' || ! this.pushRegistryAgent.supportsNotifications || localStorage.getItem('refusedNotification') ) return;
 
       this.popup = this.StyledModal.create({ title$: this.title$, closeable: false }).tag(this.RequestPermissionView, { prefix$: this.desc$ });
       this.popup.open();

@@ -14,12 +14,23 @@ foam.CLASS({
 
   requires: ['foam.core.Latch'],
 
+  enums: [
+    {
+      name: 'State',
+      values: [
+        'DEFAULT',
+        'GRANTED',
+        'DENIED',
+      ]
+    }
+  ],
+
   properties: [
     {
       name: 'subObj'
     },
     {
-      name: 'isGranted',
+      name: 'currentState',
       factory: function() {
         return this.Latch.create();
       }
@@ -97,15 +108,18 @@ foam.CLASS({
     },
     async function requestNotificationPermission() {
       // Reset latch when asking for permission
-      this.isGranted = this.Latch.create();
+      this.currentState = this.Latch.create();
       if ( globalThis.isIOSApp ) {
         // Ask ios app to ask for permission
         // Returned by the app listener event;
-        return this.window.webkit.messageHandlers['push-permission-request'].postMessage('');
+        let ret = await this.window.webkit.messageHandlers['push-permission-request'].postMessage('');
+        this.currentState.resolve(ret.toUpperCase());
+        return;
       }
       if ( ! this.shouldRequestWebNotificationPermission() )
-        return this.isGranted.resolve(true);
+        return this.currentState.resolve('GRANTED');
       let ret = await Notification.requestPermission();
+      this.currentState.resolve(ret.toUpperCase());
       if ( ret == 'granted' ) {
         return this.subWhenReady();
       }
@@ -117,9 +131,11 @@ foam.CLASS({
       if ( globalThis.isIOSApp ) {
         try {
           let state = await this.window.webkit.messageHandlers['push-permission-state'].postMessage('');
-          if ( this.MapIOSState(state) == 'granted' ) {
+          state = this.MapIOSState(state);
+          if ( state == 'GRANTED' ) {
             return this.window.webkit.messageHandlers['push-token'].postMessage('');
           }
+          this.currentState.resolve(state);
         } catch (e) {
           console.error(e);
         }
@@ -128,6 +144,7 @@ foam.CLASS({
           await this.subWhenReady();
           return;
         }
+        this.currentState.resolve(Notification.permission.toUpperCase());
       }
       return this.isGranted.resolve(false);
     },
@@ -135,13 +152,13 @@ foam.CLASS({
       // Maps ios notification states to equivalent webPush states
       switch ( state ) {
         case 'notDetermined':
-          return 'default';
+          return 'DEFAULT';
         case 'denied':
-          return 'denied';
+          return 'DENIED';
         case 'authorized':
         case 'ephemeral':
         case 'provisional':
-          return 'granted';
+          return 'GRANTED';
         case 'unknown':
         default:
           break;
