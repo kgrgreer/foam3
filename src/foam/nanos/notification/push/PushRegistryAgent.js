@@ -73,7 +73,6 @@ foam.CLASS({
         console.warn('Invalid push registry');
       }
 
-      this.isGranted.resolve(true);
       this.pushRegistry.subscribe(null, endpoint, key, auth, token);
     },
     function subWhenReady() {
@@ -146,7 +145,6 @@ foam.CLASS({
         }
         this.currentState.resolve(Notification.permission.toUpperCase());
       }
-      return this.isGranted.resolve(false);
     },
     function MapIOSState(state) {
       // Maps ios notification states to equivalent webPush states
