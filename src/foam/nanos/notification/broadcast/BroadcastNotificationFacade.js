@@ -40,8 +40,13 @@ foam.CLASS({
         const group = foam.nanos.auth.Group;
         var dao = X[X.data.GROUP_ID.targetDAOKey] || X.data[X.data.GROUP_ID.name + '$dao'];
         // TODO: find a better way to only pick children
-        dao = dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
-        return { class: 'foam.u2.view.ReferenceView', dao: dao };
+        let dao$ = foam.core.PromiseSlot.create({
+          promise: X.auth.check(null, '*').then(value => {
+            if ( value ) return dao;
+            return dao.where(e.CONTAINS(group.ID, X.subject.user.spid));
+          })
+        }, X);
+        return { class: 'foam.u2.view.ReferenceView', dao$: dao$ };
       }
     },
     {
