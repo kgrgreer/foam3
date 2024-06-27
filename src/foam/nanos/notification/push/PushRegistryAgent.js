@@ -122,7 +122,6 @@ foam.CLASS({
       if ( ret == 'granted' ) {
         return this.subWhenReady();
       }
-      this.isGranted.resolve(false);
     },
     async function safeRegisterSub() {
       // Only registers subscription if notification has been already granted
@@ -131,17 +130,16 @@ foam.CLASS({
         try {
           let state = await this.window.webkit.messageHandlers['push-permission-state'].postMessage('');
           state = this.MapIOSState(state);
+          this.currentState.resolve(state);
           if ( state == 'GRANTED' ) {
             return this.window.webkit.messageHandlers['push-token'].postMessage('');
           }
-          this.currentState.resolve(state);
         } catch (e) {
           console.error(e);
         }
       } else {
         if ( 'Notification' in window && Notification.permission === 'granted' ) {
           await this.subWhenReady();
-          return;
         }
         this.currentState.resolve(Notification.permission.toUpperCase());
       }
