@@ -21,9 +21,11 @@ foam.CLASS({
     'ctrl',
     'emailVerificationService',
     'logAnalyticEvent',
+    'login',
     'loginSuccess',
     'loginView?',
     'notify?',
+    'pushMenu',
     'routeTo',
     'stack',
     'subject',
@@ -216,11 +218,7 @@ foam.CLASS({
       name: 'emailVerifiedListener',
       code: async function() {
         try {
-          await this.auth.login(x, this.userName, this.desiredPassword);
-          this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
-          this.loginSuccess = true;
-          await this.ctrl.reloadClient();
-          await this.ctrl.onUserAgentAndGroupLoaded();
+          await this.login(this.userName, this.desiredPassword);
         } catch(err) {
           this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
