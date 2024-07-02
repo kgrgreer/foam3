@@ -85,6 +85,7 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'initSubject',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
