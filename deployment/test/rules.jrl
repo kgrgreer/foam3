@@ -14,3 +14,22 @@ p({
     "query":'o.name != n.name'
   }
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"DAONotificationRuleActionTest",
+  "name":"DAONotificationRuleActionTest",
+  "priority":100,
+  "ruleGroup":"Notifications",
+  "enabled":true,
+  "after":false,
+  "daoKey":"localCountryDAO",
+  "operation":1,
+  "action": {
+    class:"foam.nanos.notification.DAONotificationRuleAction",
+    notificationTemplate: "DAONotificationTest-test",
+    group: "test"
+  },
+  "saveHistory":false,
+  "lifecycleState":1
+})
