@@ -54,7 +54,7 @@ foam.CLASS({
           break;
         }
       }
-      test( message != null, "email subject has expected text: DAONotifcationEmailTemplateTest ["+message.getSubject()+"] body: ["+message.getBody()+"] message: "+message.toString());
+      test( message != null, (message == null ? "message is null" : "email subject has expected text: DAONotifcationEmailTemplateTest ["+message.getSubject()+"] body: ["+message.getBody()+"] message: "+message.toString()));
       `
     }
   ]
