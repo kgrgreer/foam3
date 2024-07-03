@@ -12,7 +12,7 @@ foam.CLASS({
     Requests user for push notification permissions based on a predicate. Does nothing if already granted on device.
   `,
 
-  imports: ['pushRegistryAgent', 'wizardController'],
+  imports: ['pushRegistryAgent', 'wizardController?'],
 
   requires: [
     'foam.u2.dialog.StyledModal'
@@ -115,7 +115,7 @@ foam.CLASS({
   methods: [
     async function execute(x) {
       // If the wizard didnt complete, return
-      if ( this.wizardController.status != 'COMPLETED' ) return;
+      if ( this.wizardController && this.wizardController.status != 'COMPLETED' ) return;
       // If this agent ever needs to enable or disable this behaviour for the user it should start using a capability to render this view, but for now, this is per device so it doesnt
       let currentState = await this.pushRegistryAgent.currentState;
       if ( currentState != 'DEFAULT' || ! this.pushRegistryAgent.supportsNotifications || localStorage.getItem('refusedNotification') ) return;
