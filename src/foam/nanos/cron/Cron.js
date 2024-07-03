@@ -234,7 +234,7 @@ foam.CLASS({
       },
       javaCode: `
       if ( getReattemptRequested() &&
-           getReattempts() < getMaxReattempts() ) {
+          (getReattempts() < getMaxReattempts() || !getDisableOnReattemptFailure()) ) {
         setReattempts(getReattempts() +1);
         setReattemptRequested(false);
         String attempt = "reattempt ("+getReattempts()+" of "+getMaxReattempts()+")";
