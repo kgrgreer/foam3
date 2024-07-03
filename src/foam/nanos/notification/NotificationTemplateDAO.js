@@ -90,9 +90,6 @@ the notification will be handled. `,
             if ( Notification.SPID.isSet(notification) ) {
               template.setSpid(notification.getSpid());
             }
-            if ( Notification.GROUP_ID.isSet(notification) ) {
-              template.setGroupId(notification.getGroupId());
-            }
             if ( Notification.TOAST_MESSAGE.isSet(notification) ) {
               template.setToastMessage(notification.getToastMessage());
             }
