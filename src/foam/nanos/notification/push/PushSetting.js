@@ -10,6 +10,8 @@ foam.CLASS({
   extends: 'foam.nanos.notification.NotificationSetting',
 
   javaImports: [
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
     'foam.core.FObject',
     'foam.core.X',
     'foam.core.XLocator',
@@ -18,21 +20,35 @@ foam.CLASS({
     'foam.nanos.notification.push.PushService'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'threadPoolName',
+      value: 'threadPool'
+    }
+  ],
+
   methods: [
     {
       name: 'sendNotification',
       javaCode: `
-      try {
         if ( ! notification.getPushEnabled() )
           return;
 
-        PushService pushService = (PushService) XLocator.get().get("pushService");
-        String title = notification.getToastMessage();    // restricted to 30 chars
-        String body  = notification.getToastSubMessage(); // restricted to 60 chars
-        pushService.sendPush(user, title, body);
-      } catch (Throwable t) {
-        Loggers.logger(x, this).error(t);
-      }
+        Agency agency = (Agency) x.get(getThreadPoolName());
+        agency.submit(x, new ContextAgent() {
+          public void execute(X x) {
+            x = XLocator.get();
+            PushService pushService = (PushService) x.get("pushService");
+            String title = notification.getToastMessage();    // restricted to 30 chars
+            String body  = notification.getToastSubMessage(); // restricted to 60 chars
+            try {
+              pushService.sendPush(user, title, body);
+            } catch (Throwable t) {
+              Loggers.logger(x, this).error(t);
+            }
+          }
+        }, "PushService");
       `
     }
   ]

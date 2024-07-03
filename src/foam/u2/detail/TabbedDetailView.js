@@ -55,7 +55,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(this.slot(function(sections) {
+        .add(this.slot(function(sections, data) {
           var arraySlot = foam.core.ArraySlot.create({
             slots: sections.map((s) => s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
           });

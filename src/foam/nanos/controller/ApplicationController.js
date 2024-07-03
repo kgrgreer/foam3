@@ -85,11 +85,13 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'initSubject',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
     'logAnalyticEvent',
+    'login',
     'loginSuccess',
     'loginVariables',
     'loginView',
@@ -811,6 +813,12 @@ foam.CLASS({
           },self);
         self.loginSuccess$.sub(resolve);
       });
+    },
+
+    async function login(identifier, password) {
+      await this.client.auth.login(this, identifier, password);
+      await this.fetchSubject();
+      await this.onUserAgentAndGroupLoaded();
     },
 
     function notify(toastMessage, toastSubMessage, severity, transient, icon) {

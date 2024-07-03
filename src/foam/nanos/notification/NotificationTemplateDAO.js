@@ -91,7 +91,10 @@ the notification will be handled. `,
               template.setSpid(notification.getSpid());
             }
             if ( Notification.TOAST_MESSAGE.isSet(notification) ) {
-              template.setTemplate(notification.getToastMessage());
+              template.setToastMessage(notification.getToastMessage());
+            }
+            if ( Notification.TOAST_SUB_MESSAGE.isSet(notification) ) {
+              template.setToastSubMessage(notification.getToastSubMessage());
             }
             if ( Notification.EMAIL_ARGS.isSet(notification) &&
                  Notification.EMAIL_ARGS.isSet(template) ) {
@@ -109,6 +112,14 @@ the notification will be handled. `,
             if ( Notification.USER_ID.isSet(notification) &&
                  ! Notification.USER_ID.isSet(template) ) {
               template.setUserId(notification.getUserId());
+            }
+            if ( Notification.GROUP_ID.isSet(notification) &&
+                 ! Notification.GROUP_ID.isSet(template) ) {
+              template.setGroupId(notification.getGroupId());
+            }
+            if ( Notification.BROADCASTED.isSet(notification) &&
+                 ! Notification.BROADCASTED.isSet(template) ) {
+              template.setBroadcasted(notification.getBroadcasted());
             }
           } else {
             // NOTE: do not generate an error or warning log as this

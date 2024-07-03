@@ -902,17 +902,27 @@ foam.CLASS({
     {
       name: 'doNotify',
       javaCode: `
-        // Get the default settings for the user if none are already defined
+        HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
+
+        // Defaults for system
         List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO"))
-          .where(EQ(foam.nanos.notification.NotificationSetting.SPID, getSpid()))
+          .where(EQ(foam.nanos.notification.NotificationSetting.SPID, "*"))
           .select(new ArraySink()))
           .getArray();
-        HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
         for ( NotificationSetting setting : settingDefaults ) {
           settingsMap.put(setting.getClassInfo().getId(), setting);
         }
 
-        // Get the configured notifications settings for the user and overwrite the defaults
+        // Spid specific
+        settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO"))
+          .where(EQ(foam.nanos.notification.NotificationSetting.SPID, getSpid()))
+          .select(new ArraySink()))
+          .getArray();
+        for ( NotificationSetting setting : settingDefaults ) {
+          settingsMap.put(setting.getClassInfo().getId(), setting);
+        }
+
+        // User explicit settings
         List<NotificationSetting> settings = ((ArraySink) getNotificationSettings(x).select(new ArraySink())).getArray();
         for ( NotificationSetting setting : settings ) {
           settingsMap.put(setting.getClassInfo().getId(), setting);

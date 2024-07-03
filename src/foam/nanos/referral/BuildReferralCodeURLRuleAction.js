@@ -29,7 +29,8 @@ foam.CLASS({
           DAO referralCodeDAO = (DAO) ruler.getX().get("referralCodeDAO");
           ReferralCode referralCode = (ReferralCode) obj;
           if ( SafetyUtil.isEmpty(referralCode.getId()) ) return;
-          referralCode.setUrl(referralCode.getWebsite() + referralCode.getId() + "#" + referralCode.getMenu());
+          String code = SafetyUtil.isEmpty(referralCode.getCustomReferralCode()) ? referralCode.getId() : referralCode.getCustomReferralCode();
+          referralCode.setUrl(referralCode.getWebsite() + "/?" + referralCode.getQuery() + "=" + code + "#" + referralCode.getMenu());
         }
       }, "BuildReferralCodeUrl");
       `
