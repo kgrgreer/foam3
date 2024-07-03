@@ -186,9 +186,7 @@ foam.CLASS({
           setInitialized(true);
 
           if ( ! getAutoStart() ) {
-            AddIndexCommand cmd = new AddIndexCommand();
-            cmd.setIndex(new MaterializedDAOIndex(this));
-            getSourceDAO().cmd(cmd);
+            addIndex();
           }
 
           String[] daoKeys = getObservedDAOs();
@@ -299,6 +297,14 @@ foam.CLASS({
       `
     },
     {
+      name: 'addIndex',
+      javaCode: `
+        AddIndexCommand cmd = new AddIndexCommand();
+        cmd.setIndex(new MaterializedDAOIndex(this));
+        getSourceDAO().cmd(cmd);
+      `
+    },
+    {
       name: 'start',
       javaCode: `
       if ( getAutoStart() ) {
@@ -315,9 +321,7 @@ foam.CLASS({
           logger.info("initializing", count);
           long processed = 0L;
 
-          AddIndexCommand cmd = new AddIndexCommand();
-          cmd.setIndex(new MaterializedDAOIndex(this));
-          getSourceDAO().cmd(cmd);
+          addIndex();
 
           AssemblyLine line = new AsyncAssemblyLine(getX(), this.getClass().getSimpleName());
           while ( processed < count ) {
