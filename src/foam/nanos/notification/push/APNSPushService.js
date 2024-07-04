@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'APNSPushService',
 
-  documentation: `Not called directly, called through WebPushService 
+  documentation: `Not called directly, called through WebPushService
   TODO: not very msp friendly at the moment, there is no way for WebPushService to find the right apnsPushService for a given app`,
 
   implements: [
@@ -91,6 +91,7 @@ foam.CLASS({
       throws: 'IOException',
       javaCode:
       `
+      return null;
         // Implement in a refinement, based on certificate and pub priv key location
       `
     },
@@ -111,20 +112,20 @@ foam.CLASS({
           String payload = payloadBuilder.build();
           // Add a ttl for notifications on the payload
           String token = TokenUtil.sanitizeTokenString(sub.getEndpoint());
-          
+
           // TTL for notification delivery, after this time apns will stop trying to deliver this notification
-          // Currently hardcoded to 7 days 
-          Instant instant = Instant.now(); 
-          instant = instant.plus(7, ChronoUnit.DAYS); 
+          // Currently hardcoded to 7 days
+          Instant instant = Instant.now();
+          instant = instant.plus(7, ChronoUnit.DAYS);
           SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, cred.getAppBundleId(), payload, instant);
 
          try {
-            // Asking the APNs client to send the notification 
-            // and creating the future that will return the status 
-            // of the push after it's sent.  
-            final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = ((com.eatthepath.pushy.apns.ApnsClient) getApnsClient()).sendNotification(pushNotification);  
+            // Asking the APNs client to send the notification
+            // and creating the future that will return the status
+            // of the push after it's sent.
+            final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendNotificationFuture = ((com.eatthepath.pushy.apns.ApnsClient) getApnsClient()).sendNotification(pushNotification);
 
-            // getting the response from APNs 
+            // getting the response from APNs
             final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse = sendNotificationFuture.get();
             if (pushNotificationResponse.isAccepted()) {
                 // TODO: Replace with log
