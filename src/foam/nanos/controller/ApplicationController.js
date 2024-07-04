@@ -480,7 +480,7 @@ foam.CLASS({
         if ( self.client != client ) {
           console.log('Stale Client in ApplicationController, waiting for update.');
           await self.client.promise;
-          // Rebuild stack with correct context 
+          // Rebuild stack with correct context
           self.stack = self.Stack.create({}, self.__subContext__);
           self.routeTo(self.window.location.hash.substring(1));
         }
@@ -833,7 +833,7 @@ foam.CLASS({
       notification.toastSubMessage = toastSubMessage;
       notification.toastState      = this.ToastState.REQUESTED;
       notification.severity        = severity || this.LogLevel.INFO;
-      notification.transient       = transient;
+      notification.transient       = foam.Undefined.isInstance(transient) ? true : transient;
       notification.icon            = icon;
       this.__subContext__.myNotificationDAO?.put(notification);
     },
