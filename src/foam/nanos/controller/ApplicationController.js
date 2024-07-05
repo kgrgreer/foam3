@@ -208,9 +208,13 @@ foam.CLASS({
     {
       name: 'sessionID',
       factory: function() {
-        var urlSession = this.params.sessionId;
-        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
-          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        var urlSession = this.params.sessionId || localStorage[this.sessionName];
+
+        if ( ! urlSession ) {
+          urlSession = ( localStorage[this.sessionName] = foam.uuid.randomGUID() + this.window.location.search );
+        }
+
+        return urlSession;
       }
     },
     {
