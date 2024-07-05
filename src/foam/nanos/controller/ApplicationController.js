@@ -72,6 +72,7 @@ foam.CLASS({
     'capabilityDAO',
     'installCSS',
     'notificationDAO',
+    'params',
     'sessionSuccess',
     'window'
   ],
@@ -207,11 +208,7 @@ foam.CLASS({
     {
       name: 'sessionID',
       factory: function() {
-        var urlSession = '';
-        try {
-          urlSession = window.location.search.substring(1).split('&')
-           .find(element => element.startsWith("sessionId")).split('=')[1];
-        } catch { };
+        var urlSession = this.params.sessionId;
         return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
           ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
       }
