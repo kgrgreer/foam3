@@ -201,7 +201,6 @@ foam.CLASS({
       class: 'String',
       name: 'emailName',
       label: 'Email template name',
-      value: 'notification',
       documentation: 'Email template name.'
     },
     {
