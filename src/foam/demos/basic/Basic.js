@@ -409,7 +409,7 @@ foam.CLASS({
 
   ^ textarea { font-size: 10px; }
 
-  ^ .property-sourceCode, .property-targetCode {
+  ^ .property-sourceCode, ^ .property-targetCode {
     display: inline-flex;
     padding: 6px;
     width: 48%;
@@ -420,10 +420,14 @@ foam.CLASS({
     {
       name: 'program',
       view: { class: 'foam.u2.view.ChoiceView', choices: foam.demos.basic.Programs.PROGRAMS },
-      postSet: function(o, n) { this.sourceCode = n.trim(); }
+      postSet: function(o, n) {
+        // The replaceAll() is because the Ace editor uses \r\n endlines but the parser expects \n
+        this.sourceCode = n.trim().replaceAll('\r\n', '\n');
+      }
     },
-    { class: 'Code', name: 'sourceCode' },
-    { class: 'Code', name: 'targetCode' },
+    // If you don't want to use the Ace code editor, then remove the 'xxx's from the next two lines.
+    { class: 'Code', name: 'sourceCode', xxxview: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80 } },
+    { class: 'Code', name: 'targetCode', xxxview: { class: 'foam.u2.tag.TextArea', rows: 24, cols: 80 } },
     { name: 'rom', factory: function() { return foam.demos.basic.Stdlib.create({}, this); } },
     'terminal',
     'status'
