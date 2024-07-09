@@ -263,6 +263,7 @@ foam.CLASS({
 });
 
 
+// TODO: configure left editor for VBScript and right for Javascript
 foam.CLASS({
   package: 'foam.demos.basic',
   name: 'Terminal',
