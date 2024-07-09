@@ -38,7 +38,8 @@ foam.CLASS({
     'logAnalyticEvent',
     'loginSuccess',
     'currentMenu?',
-    'sessionID'
+    'sessionID',
+    'params'
   ],
 
   requires: [
@@ -236,7 +237,7 @@ foam.CLASS({
                 this.start().add(disclaimer).end()
               }
             ).callIf(self.data.showAction, function () {
-              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
+              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken || self.params['utm_id']})
             }) 
           })
         )
