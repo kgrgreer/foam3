@@ -120,6 +120,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
+      .setServiceProviderAware(false)
       .setGuid(true)
       .setPm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -137,6 +138,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.NotificationSetting.getOwnClassInfo())
       .setPm(true)
+      .setServiceProviderAware(false)
       .setAuthorize(true)
       .setPermissionPrefix("notificationsettingdefaults")
       .setInnerDAO((foam.dao.DAO) x.get("localNotificationSettingDefaultsDAO"))

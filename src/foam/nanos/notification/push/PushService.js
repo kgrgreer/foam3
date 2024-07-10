@@ -14,10 +14,7 @@ foam.INTERFACE({
   package: 'foam.nanos.notification.push',
   name: 'PushService',
 
-  // TODO: remove client and skeleton before production
-  client:   true,
   proxy:    true,
-  skeleton: true,
 
   methods: [
     {

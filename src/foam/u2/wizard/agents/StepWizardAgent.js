@@ -97,7 +97,7 @@ foam.CLASS({
         if ( this.popupMode ) {
           this.wizardView = this.popupManager.push(view, this, this.config.popup || {})
         } else {
-          this.wizardView = this.stack.push(view, this)
+          this.wizardView = this.stack.set(view, this)
           // If wizard uses stack then remove returnToLaunchPointAgent
           this.sequence.remove('ReturnToLaunchPointAgent');
         }

@@ -9,6 +9,7 @@ foam.CLASS({
   package: 'foam.nanos.notification',
   name: 'SlackSetting',
   extends: 'foam.nanos.notification.NotificationSetting',
+  label: 'Slack Notifications',
 
   javaImports: [
     'foam.core.FObject',

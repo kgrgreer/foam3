@@ -9,6 +9,7 @@ foam.CLASS({
   package: 'foam.nanos.notification',
   name: 'EmailSetting',
   extends: 'foam.nanos.notification.NotificationSetting',
+  label: 'Email Notifications',
 
   javaImports: [
     'foam.core.PropertyInfo',
