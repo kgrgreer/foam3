@@ -95,7 +95,7 @@ foam.CLASS({
         start('span').addClass(this.myClass('flag')).add('\u2691').end();
 
       if ( this.mined ) {
-        this.start('font').style({'padding-left':'4px'}).add('\u2699').end();
+        this.start('font').add('\u2699').end();
       }
 
       if ( ! this.mined && this.mineCount ) {
