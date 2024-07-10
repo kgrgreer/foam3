@@ -80,9 +80,8 @@ foam.CLASS({
     {
       name: 'remove_',
       code: function(x, obj) {
-        // written by OpenAI
         for ( var i = 0 ; i < this.array.length ; i++ ) {
-          if ( obj.compareTo(this.identityExpr.f(this.array[i])) === 0 ) {
+          if ( this.identityExpr.compare(obj, this.array[i]) === 0 ) {
             this.array.splice(i, 1);
             break;
           }
