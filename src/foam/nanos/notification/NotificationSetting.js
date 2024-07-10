@@ -129,7 +129,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, "notificationsetting.create") )  throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       `
     },
@@ -137,7 +137,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update")) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       `
     },
@@ -145,7 +145,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, createPermission("remove")) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
       `
     },
