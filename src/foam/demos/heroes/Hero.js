@@ -10,7 +10,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'id',
       final: true // TODO: implement
     },
