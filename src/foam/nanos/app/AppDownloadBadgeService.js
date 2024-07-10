@@ -25,7 +25,8 @@ foam.CLASS({
     'document',
     'initLayout',
     'loginSuccess',
-    'theme'
+    'theme',
+    'params'
   ],
   messages: [
     { name: 'APP_DOWNLOAD_TITLE', message: 'Fast and Free Money Transfers, directly from your phone'},
@@ -78,7 +79,7 @@ foam.CLASS({
           // Needed since ctrl sometimes rebuilds this
           // Prevents duplicate popups, check again after ZAC
           let existing = this.document.querySelector(`.${this.myClass('appDownloadPopup')}`);
-          if ( this.referralToken && this.appConfig.playLink && ! existing ) {
+          if (  (this.referralToken || this.params['utm_id']) && this.appConfig.playLink && ! existing ) {
             this.popup = this.StyledModal.create();
             this.popup.start().addClass(this.myClass('appDownloadPopup'))
             .start('img')
@@ -96,6 +97,7 @@ foam.CLASS({
             // Remove the referral token from the URL
             let url = new URL(window.location.href);
             url.searchParams.delete('referral');
+            url.searchParams.delete('utm_id');
             window.history.replaceState('', '', url);
 
           }})
