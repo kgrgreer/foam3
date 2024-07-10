@@ -304,7 +304,7 @@ foam.CLASS({
           this.self.appendChild_ = c => {
             this.self.element_.insertBefore(c, this.element_);
           };
-          var e = this.code.call(this.self, d);
+          var e = this.code.call(this.self.startContext({data: d}), d);
           if ( e ) {
             // TODO: remove after port from U2 to U3
             console.log('Deprecated use of select({return E}). Just do self.start() instead.');
