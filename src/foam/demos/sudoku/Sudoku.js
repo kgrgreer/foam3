@@ -12,6 +12,7 @@ foam.CLASS({
   documentation: `
     Animated Sudoku solver.
     Explanation: https://0x657573.wordpress.com/2010/11/30/3x3-sudoku-puzzle-solver/
+    This was my very first ever JS program.
     Author: Kevin G. R. Greer
   `,
 
