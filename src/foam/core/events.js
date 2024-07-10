@@ -39,6 +39,8 @@ foam.LIB({
       };
     },
     function discardStale(listener) {
+      // Useful for making async calls which are sensative to getting data from the latest call
+      // Any listener wrapped in this method will discard old async results if a newer one is in flight
       let ret =  function() {
         ret.callId = {}.$UID;
         const localId = ret.callId;

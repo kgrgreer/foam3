@@ -167,7 +167,6 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
 
         if ( user == null ) return false;
-        System.err.println("**********OWNER" + user.getId() + "****" + getOwner());
         return getUserJunction() != null && ( getUserJunction().getTargetId() == user.getId() ) || getOwner() == user.getId();
       `
     },

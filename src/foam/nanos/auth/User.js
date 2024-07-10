@@ -907,7 +907,6 @@ foam.CLASS({
 
         settingsMap = getImpliedNotificationSettings(x);
         for ( NotificationSetting setting : settingsMap.values() ) {
-          System.err.println(setting.getClassInfo().getId());
           setting.doNotify(x, this, notification);
         }
       `
