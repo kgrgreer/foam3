@@ -80,8 +80,7 @@ foam.CLASS({
   ],
 
   css: `
-    body {
-      }
+    body { }
     ^ th {
       text-align: left;
     }
@@ -205,12 +204,12 @@ foam.CLASS({
               start('tr').
                 start('th').
                   add(c).
-                  forEach(self.projects, function(p) {
-                    this.start('td').call(function() {
-                      cells[p + ':' + c] = this;
-                    }).end();
-                  }).
                 end().
+                forEach(self.projects, function(p) {
+                  this.start('td').call(function() {
+                    cells[p + ':' + c] = this;
+                  }).end();
+                }).
               end();
           }).
         end();
