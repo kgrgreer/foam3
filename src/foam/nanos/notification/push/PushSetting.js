@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.notification.push',
   name: 'PushSetting',
   extends: 'foam.nanos.notification.NotificationSetting',
+  label: 'Push Notifications',
 
   javaImports: [
     'foam.core.Agency',
@@ -32,7 +33,7 @@ foam.CLASS({
     {
       name: 'sendNotification',
       javaCode: `
-        if ( ! notification.getPushEnabled() )
+        if ( ! notification.getPushEnabled() || ! getEnabled() )
           return;
 
         Agency agency = (Agency) x.get(getThreadPoolName());

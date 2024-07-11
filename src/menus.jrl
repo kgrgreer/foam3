@@ -27,6 +27,7 @@ p({
 //        "foam.nanos.er.logMessageWidget": "6/1",
 p({"class":"foam.nanos.menu.Menu","id":"user-config","label":"User Config","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"settings","label":"Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":"user-config"})
+
 p({"class":"foam.nanos.menu.Menu","id":"admin.all-views","label":"All Views","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.demos.u2.AllViews"}},"parent":"admin"})
 p({
   "class":"foam.nanos.menu.Menu",

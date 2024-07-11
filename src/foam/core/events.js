@@ -37,6 +37,21 @@ foam.LIB({
         console.log(args);
         listener && listener.apply(this, args);
       };
+    },
+    function discardStale(listener) {
+      // Useful for making async calls which are sensative to getting data from the latest call
+      // Any listener wrapped in this method will discard old async results if a newer one is in flight
+      let ret =  function() {
+        ret.callId = {}.$UID;
+        const localId = ret.callId;
+        return listener.call(this, ...arguments).then(v => {
+          if ( localId == ret.callId ) {
+            return v;
+          }
+          throw new Error('stale response');
+        });
+      };
+      return ret;
     }
   ]
 });

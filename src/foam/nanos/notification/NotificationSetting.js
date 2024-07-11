@@ -8,6 +8,7 @@
 foam.CLASS({
   package: 'foam.nanos.notification',
   name: 'NotificationSetting',
+  label: 'In-App Notifications',
 
   implements: [
     'foam.nanos.auth.Authorizable',
@@ -128,6 +129,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, "notificationsetting.create") )  throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       `
     },
@@ -135,6 +137,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update")) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       `
     },
@@ -142,6 +145,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, createPermission("remove")) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
       `
     },
@@ -149,6 +153,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
+      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
       if ( ! checkOwnership(x) && ! auth.check(x, createPermission("read")) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
       `
     },
@@ -162,8 +167,22 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
 
         if ( user == null ) return false;
-
         return getUserJunction() != null && ( getUserJunction().getTargetId() == user.getId() ) || getOwner() == user.getId();
+      `
+    },
+    {
+      name: 'checkSpid',
+      documentation: `Allow user to access global spid defaults
+        NOTE: should not circumvent permission and ownership checks
+      `,
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        if ( isGlobalSpid() )
+          return true;
+        return ((String) x.get("spid")) == getSpid();
       `
     },
     {
