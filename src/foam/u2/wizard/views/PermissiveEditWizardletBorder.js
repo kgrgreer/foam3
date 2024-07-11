@@ -49,7 +49,7 @@ foam.CLASS({
     function init() {
       // set in init as factories are lazy
       this.wizardlet.loadEvent.sub(() => {
-        this.oldData = this.wizardlet.data.clone()
+        this.oldData = this.wizardlet.data?.clone()
       })
 
       this

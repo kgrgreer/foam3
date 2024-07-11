@@ -1,0 +1,13 @@
+p({
+  class: 'foam.nanos.menu.Menu',
+  id: 'notification-settings',
+  label: 'Notification Settings',
+  parent: 'settings',
+  handler: {
+    class: "foam.nanos.menu.ViewMenu",
+    view: {
+      class: 'foam.nanos.notification.NotificationSettingsView'
+    }
+  },
+  order: 2
+})

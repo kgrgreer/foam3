@@ -39,6 +39,7 @@ foam.CLASS({
     }
     ^browse-title {
       transition: all 0.2s ease;
+      font-weight: 700;
     }
     ^header-container {
       display: flex;
@@ -72,6 +73,13 @@ foam.CLASS({
     ^stuck .h600, ^stuck {
       font-size: 1.2rem;
     }
+    @media only screen and (min-width:  /*%DISPLAYWIDTH.MD%*/ 768px) {
+      ^compact {
+        width: clamp(32rem, 75%, 100rem);
+        margin: auto;
+      }
+    }
+    
   `,
   topics: ['stackReset', 'posUpdated', 'viewVisible'],
   properties: [
@@ -94,7 +102,16 @@ foam.CLASS({
     'trailingContainer', 
     { 
       class: 'Map', 
-      name: 'titleMap_'
+      name: 'specMap_',
+      description: 'stores a map of preferred visibility specs of various stack views at different postions, such as title and properties like compact'
+    },
+    {
+      class: 'Boolean',
+      name: 'compact_',
+      description: 'Reduces the max-width of the stack to be narrower than full screen, useful for control views like settings or to improve legibility of docs, accessed through setCompact method',
+      expression: function(specMap_, pos) {
+        return specMap_[pos]?.compact ?? false;
+      }
     },
     // If set, takes over stack operations, useful for overriding stack behaviour in routers
     'delegate_', 
@@ -104,6 +121,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.addClass()
+      .enableClass(this.myClass('compact'), this.compact_$)
       .enableClass(this.myClass('padding'), this.headerVisibility$)
       .enableClass(this.myClass('header-gap'), this.headerVisibility$)
       .start('', {}, this.header_$)
@@ -112,9 +130,9 @@ foam.CLASS({
         .tag(foam.u2.stack.BreadcrumbView)
         .start(this.Cols)
           .start()
-            .addClass('h100', this.myClass('browse-title'))
-            .add(this.dynamic(function(pos, titleMap_) {
-              this.add(titleMap_[pos]);
+            .addClass('h200', this.myClass('browse-title'))
+            .add(this.dynamic(function(pos, specMap_) {
+              this.add(specMap_[pos]?.title);
             }))
           .end()
           .tag('', {}, this.trailingContainer$)
@@ -158,7 +176,7 @@ foam.CLASS({
     function resetStack() {
       if ( this.delegate_ ) return this.delegate_.resetStack();
       this.stack_ = [];
-      this.titleMap_ = {};
+      this.specMap_ = {};
       this.pos = -1;
       this.stackReset.pub();
     },
@@ -196,15 +214,25 @@ foam.CLASS({
     },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
+      this.setSpec_('title', title, view);
+    },
+    function setCompact(isCompact, view) {
+      if ( this.delegate_ ) return this.delegate_.setCompact(...arguments);
+      this.setSpec_('compact', isCompact, view);
+    },
+    function setSpec_(spec, value, view) {
+      // Should never be called on anything that has a delegate
+      if ( this.delegate_ ) return;
       let pos = view.__subContext__.stackPos ?? this.pos;
-      this.titleMap_[pos] = title;
-      if ( foam.core.Slot.isInstance(title) ) {
+      this.specMap_[pos] = this.specMap_[pos] || {};
+      this.specMap_[pos][spec] = value;
+      if ( foam.core.Slot.isInstance(value) ) {
         view.onDetach(() => { 
-          if ( title == this.titleMap_[this.pos] ) 
-            this.titleMap_[this.pos] = null; 
+          if ( value == this.specMap_[this.pos]?.[spec] ) 
+            this.specMap_[this.pos][spec] = null; 
         });
       }
-      this.propertyChange.pub('titleMap_', this.titleMap_$);
+      this.propertyChange.pub('specMap_', this.specMap_$);
     },
     function setTrailingContainer(view) {
       if ( this.delegate_ ) return this.delegate_.setTrailingContainer(...arguments);

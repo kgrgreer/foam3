@@ -10,6 +10,7 @@ foam.CLASS({
   plural: 'Users',
 
   implements: [
+    'foam.mlang.Expressions',
     'foam.nanos.auth.Authorizable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.EnabledAware',
@@ -904,8 +905,46 @@ foam.CLASS({
       javaCode: `
         HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
 
+        settingsMap = getImpliedNotificationSettings(x);
+        for ( NotificationSetting setting : settingsMap.values() ) {
+          setting.doNotify(x, this, notification);
+        }
+      `
+    },
+    {
+      name: 'getImpliedNotificationSettings',
+      args: 'Context x',
+      type: 'java.util.HashMap',
+      code: async function(x) {
+        x = x || this.__subContext__;
+        let map = {};
+        // System defaults
+        (await x.notificationSettingDefaultsDAO.where(this.EQ(foam.nanos.notification.NotificationSetting.SPID, '*')).select())?.array?.map(a => {
+           map[a.model_.label] = a;
+        });
+
+        // Spid defaults
+        (await x.notificationSettingDefaultsDAO.where(this.EQ(foam.nanos.notification.NotificationSetting.SPID, x.theme.spid)).select())?.array?.map(a => {
+           map[a.model_.label] = a;
+        });
+
+        // Wipe ids and spids for any defaults
+        Object.keys(map).forEach(key => {
+          map[key].id = undefined;
+          map[key].spid = undefined;
+        });
+
+        // User Preference
+        (await this.notificationSettings.select())?.array?.map(a => {
+           map[a.model_.label] = a;
+        });
+        return map;
+      },
+      javaCode: `
+        HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
+
         // Defaults for system
-        List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO"))
+        List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO")).inX(x)
           .where(EQ(foam.nanos.notification.NotificationSetting.SPID, "*"))
           .select(new ArraySink()))
           .getArray();
@@ -914,7 +953,7 @@ foam.CLASS({
         }
 
         // Spid specific
-        settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO"))
+        settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO")).inX(x)
           .where(EQ(foam.nanos.notification.NotificationSetting.SPID, getSpid()))
           .select(new ArraySink()))
           .getArray();
@@ -927,10 +966,8 @@ foam.CLASS({
         for ( NotificationSetting setting : settings ) {
           settingsMap.put(setting.getClassInfo().getId(), setting);
         }
-
-        for ( NotificationSetting setting : settingsMap.values() ) {
-          setting.doNotify(x, this, notification);
-        }
+        
+        return settingsMap;
       `
     },
     {

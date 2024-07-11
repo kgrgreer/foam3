@@ -17,7 +17,7 @@ foam.CLASS({
     a wizardlet is rendered in.
   `,
 
-  imports: ['wizardController'],
+  imports: ['wizardController', 'stack'],
 
   requires: [
     'foam.u2.borders.Block',
@@ -37,7 +37,6 @@ foam.CLASS({
     display: flex;
     flex-direction: column;
     gap: 2.4rem;
-    overflow: auto;
   }
   ^menu-header{
     align-self: flex-start
@@ -59,19 +58,20 @@ foam.CLASS({
       const self = this
       this
         .dynamic(function (data$wizardlets) {
+          self.stack.setCompact(true, self);
+          self.stack.setTitle(self.title$, self);
           this
-          .start().addClass('h300', this.myClass('menu-header')).add(this.title$).end()
-          .addClass()
-          .forEach(data$wizardlets, function (wizardlet) {
-            wizardlet.load()
-            const x = this.__subContext__.createSubContext({wizardlet})
-            self.wrapBorder_(x, this, wizardlet, function() {
-              this
-                .forEach(wizardlet.sections, function (section) {
-                  this.tag(section.createView( {}, { controllerMode: this.__subSubContext__.controllerMode$ } ) ?? this.E());
-                })
-            })
-          });
+            .addClass()
+            .forEach(data$wizardlets, function (wizardlet) {
+              wizardlet.load()
+              const x = this.__subContext__.createSubContext({wizardlet})
+              self.wrapBorder_(x, this, wizardlet, function() {
+                this
+                  .forEach(wizardlet.sections, function (section) {
+                    this.tag(section.createView( {}, { controllerMode: this.__subSubContext__.controllerMode$ } ) ?? this.E());
+                  })
+              })
+            });
         });
     },
 

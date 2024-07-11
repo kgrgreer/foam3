@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.notification.sms',
   name: 'SMSSetting',
   extends: 'foam.nanos.notification.NotificationSetting',
+  label: 'SMS Notifications',
 
   javaImports: [
     'foam.core.PropertyInfo',
