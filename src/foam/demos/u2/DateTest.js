@@ -12,6 +12,8 @@ foam.CLASS({
       class: 'Date',
       name: 'date'
     },
+    // TODO: MD fields don't work embedded in a regular DetailView
+    // because they show their own label
     {
       class: 'Date',
       name: 'datePicker',
