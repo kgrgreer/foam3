@@ -74,6 +74,8 @@ foam.CLASS({
 
   properties: [ 'element_' ],
 
+  constants: { U3: true },
+
   methods: [
     function toE() { return this; },
 
