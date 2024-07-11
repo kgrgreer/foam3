@@ -65,7 +65,7 @@ foam.CLASS({
     {
       name: 'color',
       factory: function() {
-        this.theme$.sub(this.setColor);
+        this.theme$?.sub(this.setColor);
         this.cssTokenOverrideService?.cacheUpdated.sub(this.setColor);
         this.setColor();
       }
@@ -122,7 +122,7 @@ foam.CLASS({
       name: 'setColor',
       isFramed: true,
       code: function() {
-        this.color = this.theme ?  foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea';
+        this.color = this.theme ? foam.CSS.returnTokenValue('$primary400', this.cls_, this.__subContext__) : '#406dea';
       }
     },
     {
