@@ -7,22 +7,7 @@
         background: #eee;
       }
     </style>
-    <script>
-      foam.CLASS({
-        name: 'Sample',
-        extends: 'foam.u2.Element',
-
-        methods: [
-          function render() {
-            this.start().setID(456).addClass('chapter').style({padding: '4px'}).on('click', () => alert('clicked')).
-              start('img').attr('src', '/foam3/src/foam/u2/images/foam_red.png').end().
-              tag('hr').
-              start('center').add('FOAM Logo').end().
-            end();
-          }
-        ]
-      });
-    </script>
+    <script src="Sample.js"></script>
   </head>
 
   <body>
