@@ -77,9 +77,9 @@ foam.CLASS({
         .add(this.ENUM_VALUE)
         .br()
         .add(this.enumValue$.dot('name'))
-        .br()
+        .br().br()
         .tag({class: 'foam.u2.view.ReadOnlyEnumView'}, { data$: this.enumValue$})
-        .br()
+        .br().br()
         .add(this.slot(function (enumValue) {
           return self.E().addClasses(enumValue.classes()).style(enumValue.toStyle()).add(enumValue.name);
         }))
