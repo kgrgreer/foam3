@@ -16,7 +16,7 @@ exports.args = [
   }
 ];
 
-const path_                                                    = require('path');
+const path_                                                          = require('path');
 const { execSync, ensureDir, adaptOrCreateArgs, writeFileIfUpdated } = require('./buildlib');
 
 const javaDependencies = [];
