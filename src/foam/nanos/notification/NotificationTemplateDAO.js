@@ -78,6 +78,9 @@ the notification will be handled. `,
 
             // Can't use copyFrom which tests isSet, as we don't
             // want all properties copied.
+            if ( Notification.IN_APP_ENABLED.isSet(notification) ) {
+              template.setInAppEnabled(notification.getInAppEnabled());
+            }
             if ( Notification.BODY.isSet(notification) ) {
               template.setBody(notification.getBody());
             }
