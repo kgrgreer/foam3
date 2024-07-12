@@ -34,6 +34,7 @@ foam.CLASS({
         if ( user == null ) return sink;
         return getDelegate().where(MLang.AND(
             MLang.EQ(Notification.USER_ID, user.getId()),
+            MLang. EQ (Notification. IN_APP_ENABLED, true),
             MLang.NOT(MLang.IN(Notification.NOTIFICATION_TYPE, user.getDisabledTopics()))
           )).select_(getX(), sink, skip, limit, order, predicate);
       `
