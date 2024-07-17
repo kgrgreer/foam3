@@ -1068,11 +1068,10 @@ foam.CLASS({
           // menus.push(menuDAOs[i]);
       }
     },
-    function logAnalyticEvent(evtName, evtTraceId, evtSessionId, evtExtra) {
+    function logAnalyticEvent(evtName, evtTraceId, evtSessionId /* not used */, evtExtra) {
       this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(
         {
           name: evtName,
-          sessionId: evtSessionId,
           traceId: evtTraceId,
           extra: evtExtra
         }
