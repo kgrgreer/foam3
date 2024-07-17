@@ -258,7 +258,7 @@ foam.CLASS({
         String name = (String) obj.getProperty("firstName");
         if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
 
-        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() )
           throw new IllegalStateException(foam.nanos.auth.User.INVALID_FIRST_NAME + name);
       `
     },
@@ -301,7 +301,7 @@ foam.CLASS({
         String name = (String) obj.getProperty("middleName");
         if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
 
-        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() )
           throw new IllegalStateException(foam.nanos.auth.User.INVALID_MIDDLE_NAME + name);
       `
     },
@@ -335,7 +335,7 @@ foam.CLASS({
         String name = (String) obj.getProperty("lastName");
         if ( name.length() == 0 || appConfig.getMode() == foam.nanos.app.Mode.TEST ) return;
 
-        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() ) 
+        if ( ! foam.nanos.auth.User.NAME_MATCHER.matcher(name).matches() )
           throw new IllegalStateException(foam.nanos.auth.User.INVALID_LAST_NAME + name);
       `
     },
@@ -791,6 +791,11 @@ foam.CLASS({
       externalTransient: true,
       columnPermissionRequired: true
     },
+    {
+      class: 'String',
+      name: 'trackingId',
+      documentation: 'Unique id optionally used to track a user.'
+    }
   ],
 
   methods: [
@@ -966,7 +971,7 @@ foam.CLASS({
         for ( NotificationSetting setting : settings ) {
           settingsMap.put(setting.getClassInfo().getId(), setting);
         }
-        
+
         return settingsMap;
       `
     },
