@@ -137,8 +137,9 @@ foam.CLASS({
           console.error(e);
         }
       } else {
-        this.currentState.resolve(Notification?.permission.toUpperCase());
-        if ( 'Notification' in window && Notification.permission === 'granted' ) {
+        if ( ! this.supportsNotifications ) return this.currentState.resolve('');
+        this.currentState.resolve(Notification.permission.toUpperCase() );
+        if ( Notification.permission === 'granted' ) {
           await this.subWhenReady();
         }
       }
