@@ -11,10 +11,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.mlang.MLang',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.notification.push.iOSNativePushRegistration'
+    'foam.nanos.notification.push.iOSNativePushRegistration',
+    'foam.nanos.session.Session'
   ],
 
   methods: [
@@ -37,7 +39,10 @@ foam.CLASS({
           ir.setEndpoint(token);
           r = ir;
         }
-        
+        r.setLastKnownState(currentState);
+        Session session = x.get(Session.class);
+        if ( session != null ) r.setSession(session.getId());
+
         // Check if this entry exists in dao and belongs to a real user, if yes, dont override;
         // Otherwise we lose the user's endpoint every time they sign out
         DAO dao = (DAO) x.get("pushRegistrationDAO");
@@ -54,6 +59,22 @@ foam.CLASS({
 
         r.setUser(user.getId());
         dao.put(r);
+      `
+    },
+    {
+      name: 'updatePermissionState',
+      // type: 'Void',
+      // args: 'Context x, String state',
+      javaCode: `
+        DAO dao = (DAO) x.get("pushRegistrationDAO");
+        Session session = x.get(Session.class);
+        if ( ! session ) return;
+        PushRegistration p = (PushRegistration) dao.find(MLang.EQ(PushRegistration.SESSION, session.getId()));
+        if ( p != null ) {
+          PushRegistration newP = (PushRegistration) p.fclone();
+          newP.setLastKnownState(state);
+          dao.put(newP);
+        }
       `
     }
   ]

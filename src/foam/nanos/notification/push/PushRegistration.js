@@ -25,6 +25,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'auth'
+    },
+    {
+      class: 'String',
+      name: 'lastKnownState'
+    },
+    {
+      class: 'String',
+      name: 'session'
     }
   ]
 });
