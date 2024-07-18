@@ -68,7 +68,7 @@ foam.CLASS({
       javaCode: `
         DAO dao = (DAO) x.get("pushRegistrationDAO");
         Session session = x.get(Session.class);
-        if ( ! session ) return;
+        if ( session == null ) return;
         PushRegistration p = (PushRegistration) dao.find(MLang.EQ(PushRegistration.SESSION, session.getId()));
         if ( p != null ) {
           PushRegistration newP = (PushRegistration) p.fclone();
