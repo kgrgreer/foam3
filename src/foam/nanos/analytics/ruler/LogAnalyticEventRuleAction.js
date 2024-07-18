@@ -49,7 +49,6 @@ foam.CLASS({
             event.setTraceId(getTraceId(obj));
 
             var session = x.get(Session.class);
-            event.setSessionId(session.getId());
             event.setExtra(obj.getClass().getSimpleName() + " " + rule.getOperation().toString());
             if ( getTags().length > 0 ) event.setTags(getTags_(obj));
 

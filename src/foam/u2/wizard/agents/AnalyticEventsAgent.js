@@ -13,7 +13,6 @@ foam.CLASS({
 
   imports: [
     'analyticEventDAO',
-    'sessionID',
     'window'
   ],
 
@@ -103,12 +102,11 @@ foam.CLASS({
     },
 
     async function logAnalyticsEvent(evt) {
-      var traceId = this.traceIDKey$get(this.__subContext__) || this.wizardTraceID;
-      var objectId = this.objectIDKey$get(this.__subContext__);
-      var sessionId = this.sessionID;
-      
+      var traceId   = this.traceIDKey$get(this.__subContext__) || this.wizardTraceID;
+      var objectId  = this.objectIDKey$get(this.__subContext__);
+
       // TODO: add subclass support
-      var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId, sessionId});
+      var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId});
       await this.analyticEventDAO.put(analyticEvent);
     }
   ]

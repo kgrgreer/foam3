@@ -168,7 +168,11 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.logAnalyticEvent("VIEW_LOAD_LoginView_" + this.currentMenu?.id, '', this.sessionID, '');
+      if ( this.currentMenu ) {
+        this.logAnalyticEvent("VIEW_LOAD_LoginView_" + this.currentMenu.id, '', this.sessionID, '');
+      } else {
+        this.logAnalyticEvent("VIEW_LOAD_LoginView", '', this.sessionID, '');
+      }
       // CREATE DATA VIEW
       this
         // Title txt and Data
@@ -238,10 +242,10 @@ foam.CLASS({
               }
             ).callIf(self.data.showAction, function () {
               this.tag(self.AppBadgeView, {isReferral: self.data.referralToken || self.params['utm_id']})
-            }) 
+            })
           })
         )
-        
+
     }
   ]
 });
