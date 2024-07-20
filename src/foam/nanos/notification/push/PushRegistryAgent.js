@@ -134,6 +134,7 @@ foam.CLASS({
             return this.window.webkit.messageHandlers['push-token'].postMessage('');
           }
         } catch (e) {
+          this.currentState.resolve('');
           console.error(e);
         }
       } else {
