@@ -12,17 +12,12 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  imports: [
-    'logAnalyticEvent'
-  ],
-
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.analytics.AnalyticEvent',
-    'foam.nanos.session.Session',
     'java.util.Date'
   ],
 
@@ -48,15 +43,15 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            var evt = {
-              name:    getEventName(),
-              traceId: getTraceId(obj),
-              extras:  obj.getClass().getSimpleName() + " " + rule.getOperation().toString()
-            };
+            var event = new AnalyticEvent();
+            event.setName(getEventName());
+            event.setTraceId(getTraceId(obj));
 
-            if ( getTags().length > 0 ) evt.tags = getTags_(obj)
+            event.setExtra(obj.getClass().getSimpleName() + " " + rule.getOperation().toString());
+            if ( getTags().length > 0 ) event.setTags(getTags_(obj));
 
-            this.logAnalyticEvent(evt);
+            ((DAO) x.get("analyticEventDAO")).put(event);
+          }
         }, "Log Analytic Event");
       `
     },
