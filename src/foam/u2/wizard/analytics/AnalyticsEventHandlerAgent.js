@@ -15,6 +15,7 @@ foam.CLASS({
   exports: [
     'handleEvent'
   ],
+
   methods: [
     async function execute() {},
     function handleEvent (event) {
