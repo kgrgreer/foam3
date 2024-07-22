@@ -14,7 +14,7 @@ foam.CLASS({
       name: 'WIZARD_NAME_TO_ANALYTIC',
       documentation: 'Map WizardEvent names to analytic event names',
       value: {
-        WIZARDLET_SAVE: 'COMPLETE', //here
+        WIZARDLET_SAVE: 'COMPLETE',
         WIZARDLET_GO_NEXT: 'USER_CLICKED_NEXT_BUTTON'
       }
     }
