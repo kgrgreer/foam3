@@ -1168,6 +1168,7 @@ foam.POM({
     { name: "foam/nanos/analytics/DAOFoldManager",                    flags: "js|java" },
     { name: "foam/nanos/analytics/DAOReduceManager",                  flags: "js|java" },
     { name: "foam/nanos/analytics/mixpanel/MixpanelAnalyticEventDAO", flags: "js|java" },
+    { name: "foam/nanos/analytics/mixpanel/CreateMixpanelProfileAction",  flags: "js|java" },
     { name: "foam/java/ParseTemplateTest",                            flags: "js|java" },
     { name: "foam/i18n/LocaleTranslationService",                     flags: "js|java" },
     { name: "foam/u2/view/ComparisonView",                            flags: "web" },
