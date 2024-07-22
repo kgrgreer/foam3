@@ -78,8 +78,7 @@ foam3_MAVEN_DEPS = \
 	com.google.appengine:appengine-api-1.0-sdk:1.9.24 \
 	io.methvin:directory-watcher:0.9.10 \
   	org.apache.xmlgraphics:batik-transcoder:1.14 \
-  	org.apache.xmlgraphics:batik-codec:1.14 \
-	com.mixpanel:mixpanel-java:1.5.2
+  	org.apache.xmlgraphics:batik-codec:1.14
 
 java_JARS = foam3
 

@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.analytics.mixpanel',
   name: 'MixpanelMessageDAO',
   extends: 'foam.dao.ProxyDAO',
+  documentation: 'Decorate AnalyticEventDAO to send event data to Mixpanel',
 
   javaImports: [
     'com.mixpanel.mixpanelapi.ClientDelivery',
