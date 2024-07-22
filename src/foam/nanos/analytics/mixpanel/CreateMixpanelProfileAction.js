@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'CreateMixpanelProfileAction',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
   documentation: `
-    On analyticEventPut, if user cannot be found with trackingId matching analytic event
+    On user put, if user cannot be found with trackingId matching analytic event
     sessionID, create a new mixpanel profile with the sessionID
   `,
 
