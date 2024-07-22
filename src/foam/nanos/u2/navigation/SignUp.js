@@ -194,7 +194,7 @@ foam.CLASS({
       documentation: `Input to associate new user with something.`,
       postSet(_, n) {
         if ( n ) {
-          this.logAnalyticEvent('SIGNUP_WITH_REFERRAL_CODE', '', x.sessionID, n);
+          this.logAnalyticEvent({ name: 'SIGNUP_WITH_REFERRAL_CODE', extra: n });
         }
       },
       factory: function() {
@@ -285,7 +285,7 @@ foam.CLASS({
     {
       name: 'login_',
       code: async function(x) {
-        this.logAnalyticEvent('USER_CLICKED_GET_STARTED', '', this.sessionID, '' );
+        this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED' });
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
@@ -305,7 +305,7 @@ foam.CLASS({
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
-          this.logAnalyticEvent('USER_CREATED_SIGN_UP', '', this.sessionID, 'User ID: ' + user.id + ' Email: ' + user.email );
+          this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: 'User ID: ' + user.id + ' Email: ' + user.email });
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {

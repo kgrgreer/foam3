@@ -1068,14 +1068,8 @@ foam.CLASS({
           // menus.push(menuDAOs[i]);
       }
     },
-    function logAnalyticEvent(evtName, evtTraceId, evtSessionId /* not used */, evtExtra) {
-      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(
-        {
-          name: evtName,
-          traceId: evtTraceId,
-          extra: evtExtra
-        }
-      ), this);
+    function logAnalyticEvent(evt) {
+      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(evt), this);
     }
   ]
 });
