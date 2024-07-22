@@ -31,7 +31,7 @@ foam.CLASS({
       height: 26px;
       text-align: center;
       vertical-align: middle;
-      width: 26px;
+      width: 60px;
     }
     ^covered {
       background: #ccc;

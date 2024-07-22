@@ -51,7 +51,8 @@ foam.CLASS({
       class: 'String',
       name: 'sessionId',
       factory: function() {
-        var user = this.__context__.user;
+        var subject = this.__context__.subject;
+        var user    = subject.user;
         if ( user && user.id > 0 ) {
           return user.trackingId || user.id;
         }

@@ -14,17 +14,6 @@ foam.CLASS({
 
   requires: ['foam.core.Latch'],
 
-  enums: [
-    {
-      name: 'State',
-      values: [
-        'DEFAULT',
-        'GRANTED',
-        'DENIED',
-      ]
-    }
-  ],
-
   properties: [
     {
       name: 'subObj'
@@ -61,8 +50,14 @@ foam.CLASS({
         this.subObj = { token: event.detail.token };
         this.register();
       });
+      this.updateState();
     },
-    function register(sub) {
+    function updateState() {
+      this.currentState.then(v => {
+        this.pushRegistry.updatePermissionState(null, v);
+      })
+    },
+    async function register(sub) {
       sub = this.subObj;
       if ( ! sub ) return;
 
@@ -75,8 +70,8 @@ foam.CLASS({
       } else {
         console.warn('Invalid push registry');
       }
-
-      this.pushRegistry.subscribe(null, endpoint, key, auth, token);
+      let state = await this.currentState;
+      this.pushRegistry.subscribe(null, endpoint, key, auth, token, state);
     },
     function subWhenReady() {
       let self = this;
@@ -111,6 +106,7 @@ foam.CLASS({
     async function requestNotificationPermission() {
       // Reset latch when asking for permission
       this.currentState = this.Latch.create();
+      this.updateState();
       if ( globalThis.isIOSApp ) {
         // Ask ios app to ask for permission
         // Returned by the app listener event;
@@ -138,13 +134,15 @@ foam.CLASS({
             return this.window.webkit.messageHandlers['push-token'].postMessage('');
           }
         } catch (e) {
+          this.currentState.resolve('');
           console.error(e);
         }
       } else {
-        if ( 'Notification' in window && Notification.permission === 'granted' ) {
+        if ( ! this.supportsNotifications ) return this.currentState.resolve('');
+        this.currentState.resolve(Notification.permission.toUpperCase() );
+        if ( Notification.permission === 'granted' ) {
           await this.subWhenReady();
         }
-        this.currentState.resolve(Notification.permission.toUpperCase());
       }
     },
     function MapIOSState(state) {

@@ -38,7 +38,6 @@ foam.CLASS({
     'logAnalyticEvent',
     'loginSuccess',
     'currentMenu?',
-    'sessionID',
     'params'
   ],
 
@@ -169,9 +168,9 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       if ( this.currentMenu ) {
-        this.logAnalyticEvent("VIEW_LOAD_LoginView_" + this.currentMenu.id, '', this.sessionID, '');
+        this.logAnalyticEvent({ name: "VIEW_LOAD_LoginView_" + this.currentMenu.id });
       } else {
-        this.logAnalyticEvent("VIEW_LOAD_LoginView", '', this.sessionID, '');
+        this.logAnalyticEvent({ name: "VIEW_LOAD_LoginView" });
       }
       // CREATE DATA VIEW
       this

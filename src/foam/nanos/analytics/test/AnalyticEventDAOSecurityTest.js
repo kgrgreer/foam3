@@ -66,7 +66,6 @@ foam.CLASS({
         // create analytic event
         AnalyticEvent event = new AnalyticEvent();
         event.setName("test");
-        event.setSessionId(sessionId);
 
         try {
           event = (AnalyticEvent) analyticEventDAO.put(event);
