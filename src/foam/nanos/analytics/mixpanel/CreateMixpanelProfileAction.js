@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Loggers',
     'foam.nanos.session.Session',
     'java.io.IOException',
     'org.json.JSONObject'
@@ -45,7 +46,7 @@ foam.CLASS({
             User user = (User) obj;
             String trackingId = user.getTrackingId();
 
-            MessageBuilder messageBuilder = new MessageBuilder(this.PROJECT_TOKEN);
+            MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
             MixpanelAPI mixpanel = new MixpanelAPI();
 
             // create user profile
@@ -66,7 +67,7 @@ foam.CLASS({
               try {
                 mixpanel.sendMessage(createProfile);
               } catch (IOException e) {
-                Loggers.logger(x, this).error("Failed sending user data:", event.getId(), "Can't communicate with Mixpanel");
+                Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
               }
             }
           }
