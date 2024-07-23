@@ -54,8 +54,8 @@ foam.CLASS({
         var subject = this.__context__.subject;
         if ( subject ) {
           var user = subject.user;
-          if ( user && user.id > 0 ) {
-            return user.trackingId || user.id;
+          if ( user && user.id > 0 && user.trackingId ) {
+            return user.trackingId;
           }
         }
         return this.__context__.sessionID;
