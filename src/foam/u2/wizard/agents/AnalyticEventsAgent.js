@@ -56,8 +56,8 @@ foam.CLASS({
         self.logAnalyticEvent({
           name:     evt.name,
           extra:    evt.extra,
-          traceId:  this.traceIDKey$get(this.__subContext__) || this.wizardTraceID,
-          objectId: this.objectIDKey$get(this.__subContext__)
+          traceId:  self.traceIDKey$get(self.__subContext__) || self.wizardTraceID,
+          objectId: self.objectIDKey$get(self.__subContext__)
         });
       });
 
