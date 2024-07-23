@@ -52,9 +52,11 @@ foam.CLASS({
       name: 'sessionId',
       factory: function() {
         var subject = this.__context__.subject;
-        var user    = subject.user;
-        if ( user && user.id > 0 ) {
-          return user.trackingId || user.id;
+        if ( subject ) {
+          var user = subject.user;
+          if ( user && user.id > 0 ) {
+            return user.trackingId || user.id;
+          }
         }
         return this.__context__.sessionID;
       },
