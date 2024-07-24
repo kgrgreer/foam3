@@ -81,6 +81,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'extra'
+    },
+    {
+      class: 'String',
+      name: 'userAgent',
+      factory: function() {
+        return window.navigator.userAgent;
+      }
     }
   ],
 
@@ -88,6 +95,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.sessionId;
+      this.userAgent;
     },
     {
       name: 'authorizeOnCreate',
