@@ -9,6 +9,7 @@ foam.POM({
     version: 3,
     excludes: [ 'node_modules' ],
     projects: [
+      { name: 'GeoLite2-City/pom' },
       { name: 'src/pom' },
       { name: 'src/foam/nanos/pom' },
       { name: 'src/foam/u2/wizard/pom' },
@@ -26,7 +27,6 @@ foam.POM({
       'com.google.apis:google-api-services-sheets:v4-rev567-1.22.0',
       'com.google.oauth-client:google-oauth-client-jetty:1.22.0 -org.mortbay.jetty',
       'com.twilio.sdk:twilio:7.50.1',
-      'com.maxmind.geoip2:geoip2:4.2.0',
       'com.mixpanel:mixpanel-java:1.5.2',
       'commons-codec:commons-codec:1.15',
       'commons-io:commons-io:2.13.0',
