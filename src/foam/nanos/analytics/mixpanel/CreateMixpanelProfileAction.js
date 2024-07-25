@@ -59,9 +59,7 @@ foam.CLASS({
 
             if ( ! isAdmin && ! isAnonymous ) {
               JSONObject userProps = new JSONObject();
-              userProps.put("$id", trackingId);
-              userProps.put("$userId", user.getId());
-              userProps.put("$email", user.getEmail());
+              userProps.put("$user_id", user.getUserName());
               JSONObject createProfile = messageBuilder.set(trackingId, userProps);
 
               try {
