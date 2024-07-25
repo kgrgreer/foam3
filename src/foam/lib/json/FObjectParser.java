@@ -94,7 +94,11 @@ public class FObjectParser
             ps = ps.apply(subParser, subx);
 
             if ( ps != null ) {
-              return ps.setValue(subx.get("obj"));
+              var ret = subx.get("obj");
+              if ( ret instanceof FObject )
+                ((FObject) ret).init_();
+
+              return ps.setValue(ret);
             }
             return null;
           } catch (Throwable t) {
