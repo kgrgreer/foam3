@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
+    'foam.net.IPSupport',
     'foam.util.SafetyUtil',
 
     'java.io.File',
@@ -58,10 +59,11 @@ foam.CLASS({
 
             // build message
             JSONObject props = new JSONObject();
-            setLocation(x, props);
+            // setLocation(x, props);
             props.put("$event_id", event.getId());
             props.put("time", event.getTimestamp());
             props.put("$os", event.getUserAgent());
+            props.put("$ip", event.getIp());
             props.put("$event_extras", event.getExtra());
             JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
@@ -82,7 +84,8 @@ foam.CLASS({
       args: 'X x, JSONObject props',
       javaCode: `
       try {
-        var ipStr = x.get(javax.servlet.http.HttpServletRequest.class).getRemoteAddr();
+
+        var ipStr = IPSupport.instance().getRemoteIp(x);
         var ip = InetAddress.getByName(ipStr);
         File database = new File("./foam3/GeoLite2-City/GeoLite2-City.mmdb");
         try {

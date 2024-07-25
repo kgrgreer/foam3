@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
@@ -88,6 +89,14 @@ foam.CLASS({
       factory: function() {
         return window.navigator.userAgent;
       }
+    },
+    {
+      class: 'String',
+      name: 'ip',
+      javaFactory: `
+        X x = foam.core.XLocator.get();
+        return foam.net.IPSupport.instance().getRemoteIp(x);
+      `
     }
   ],
 
