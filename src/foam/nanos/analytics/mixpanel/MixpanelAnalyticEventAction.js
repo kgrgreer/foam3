@@ -60,7 +60,7 @@ foam.CLASS({
             props.put("$event_extras", event.getExtra());
 
             GeolocationSupport location = GeolocationSupport.instance();
-            props.put("$country_code", location.getCountry());
+            props.put("mp_country_code", location.getCountry());
             props.put("$city", location.getCity());
 
             JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
