@@ -48,6 +48,7 @@ foam.CLASS({
 
   methods: [
     function render() {
+      debugger;
       this.start(this.view, {
         data$:            this.data$,
         label$:           this.label$,
@@ -55,6 +56,7 @@ foam.CLASS({
         type:             this.type,
         onKey:            this.onKey
       }, this.elm_$)
+        .style({background: 'pink'})
         .attrs({
           placeholder: this.placeholder$,
         })
