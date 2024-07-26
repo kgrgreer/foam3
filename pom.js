@@ -9,6 +9,7 @@ foam.POM({
     version: 3,
     excludes: [ 'node_modules' ],
     projects: [
+      { name: 'GeoLite2-City/pom' },
       { name: 'src/pom' },
       { name: 'src/foam/nanos/pom' },
       { name: 'src/foam/nanos/analytics/mixpanel/pom' },
