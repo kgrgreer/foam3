@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.swift.parse.json',
   name: 'MapParser',
   extends: 'foam.swift.parse.parser.ProxyParser',
+
   requires: [
     'foam.swift.parse.json.AnyKeyParser',
     'foam.swift.parse.json.Whitespace',
@@ -17,9 +18,11 @@ foam.CLASS({
     'foam.swift.parse.parser.Seq1',
     'foam.swift.parse.parser.Seq2',
   ],
+
   axioms: [
     foam.pattern.Singleton.create()
   ],
+
   properties: [
     {
       name: 'delegate',
@@ -65,7 +68,7 @@ if ps != nil {
   return ps!.setValue(map)
 }
 return ps
-      `,
-    },
-  ],
+      `
+    }
+  ]
 });
