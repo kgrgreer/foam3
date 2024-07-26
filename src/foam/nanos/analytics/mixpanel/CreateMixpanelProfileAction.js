@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
     'foam.nanos.session.Session',
+    'foam.net.IPSupport',
     'java.io.IOException',
     'org.json.JSONObject'
   ],
@@ -61,6 +62,7 @@ foam.CLASS({
               JSONObject userProps = new JSONObject();
               userProps.put("$id", user.getId());
               userProps.put("$user_name", user.getUserName());
+              userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
               JSONObject createProfile = messageBuilder.set(trackingId, userProps);
 
               try {
