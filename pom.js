@@ -11,6 +11,7 @@ foam.POM({
     projects: [
       { name: 'src/pom' },
       { name: 'src/foam/nanos/pom' },
+      { name: 'src/foam/nanos/analytics/mixpanel/pom' },
       { name: 'src/foam/u2/wizard/pom' },
       { name: 'src/foam/flow/laminar/pom' },
       { name: 'src/io/c9/ace/pom' },
@@ -26,7 +27,6 @@ foam.POM({
       'com.google.apis:google-api-services-sheets:v4-rev567-1.22.0',
       'com.google.oauth-client:google-oauth-client-jetty:1.22.0 -org.mortbay.jetty',
       'com.twilio.sdk:twilio:7.50.1',
-      'com.mixpanel:mixpanel-java:1.5.2',
       'commons-codec:commons-codec:1.15',
       'commons-io:commons-io:2.13.0',
       'commons-lang:commons-lang:2.6',
