@@ -14,10 +14,11 @@ foam.CLASS({
       // Set this field to override the default logic for choosing a view.
       class: 'foam.u2.ViewSpec',
       name: 'searchView',
-      value: { class: 'foam.u2.search.GroupAutocompleteSearchView' }
+      value: { class: 'foam.u2.filter.properties.StringFilterView' }
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.filter',

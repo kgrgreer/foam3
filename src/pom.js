@@ -705,7 +705,6 @@ foam.POM({
     { name: "foam/u2/filter/properties/ReferenceFilterView",          flags: "web" },
     { name: "foam/u2/search/FilterController",                        flags: "web" },
     { name: "foam/u2/search/GroupCompleter",                          flags: "web" },
-    { name: "foam/u2/search/GroupAutocompleteSearchView",             flags: "web" },
     { name: "foam/u2/search/GroupBySearchView",                       flags: "web" },
     { name: "foam/u2/search/SearchManager",                           flags: "web" },
     { name: "foam/u2/search/TextSearchView",                          flags: "web" },
