@@ -59,7 +59,8 @@ foam.CLASS({
 
             if ( ! isAdmin && ! isAnonymous ) {
               JSONObject userProps = new JSONObject();
-              userProps.put("$user_id", user.getUserName());
+              userProps.put("$id", user.getId());
+              userProps.put("$user_name", user.getUserName());
               JSONObject createProfile = messageBuilder.set(trackingId, userProps);
 
               try {
@@ -71,6 +72,6 @@ foam.CLASS({
           }
         }, "Create Mixpanel profile");
       `
-    }
+    }// this is not sending
   ]
 });
