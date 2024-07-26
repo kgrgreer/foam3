@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
+    'foam.util.geo.GeolocationSupport',
 
     'java.io.IOException',
 
@@ -52,6 +53,16 @@ foam.CLASS({
 
             // build message
             JSONObject props = new JSONObject(event.toJSON());
+            props.put("$event_id", event.getId());
+            props.put("time", event.getTimestamp());
+            props.put("$os", event.getUserAgent());
+            props.put("$ip", event.getIp());
+            props.put("$event_extras", event.getExtra());
+
+            GeolocationSupport location = GeolocationSupport.instance();
+            props.put("mp_country_code", location.getCountry());
+            props.put("$city", location.getCity());
+
             JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
             ClientDelivery delivery = new ClientDelivery();
