@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.util',
+  package: 'foam.util.geo',
   name: 'GeolocationSupport',
 
   documentation: 'Geolocation support methods',
@@ -46,21 +46,21 @@ foam.CLASS({
       name: 'getCity',
       javaType: 'String',
       javaCode: `
-        return getCityResponse().getCity().getNames().get("en");
+        return getCityResponse() == null ? "" : getCityResponse().getCity().getNames().get("en");
       `
     },
     {
       name: 'getCountry',
       javaType: 'String',
       javaCode: `
-        return getCityResponse().getCountry().getIsoCode();
+        return getCityResponse() == null ? "" : getCityResponse().getCountry().getIsoCode();
       `
     },
     {
       name: 'getPostalCode',
       javaType: 'String',
       javaCode: `
-        return getCityResponse().getPostal().getCode();
+        return getCityResponse() == null ? "" : getCityResponse().getPostal().getCode();
       `
     }
     
