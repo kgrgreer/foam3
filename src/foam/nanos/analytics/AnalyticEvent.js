@@ -13,6 +13,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
@@ -81,6 +82,21 @@ foam.CLASS({
     {
       class: 'String',
       name: 'extra'
+    },
+    {
+      class: 'String',
+      name: 'userAgent',
+      factory: function() {
+        return window.navigator.userAgent;
+      }
+    },
+    {
+      class: 'String',
+      name: 'ip',
+      javaFactory: `
+        X x = foam.core.XLocator.get();
+        return foam.net.IPSupport.instance().getRemoteIp(x);
+      `
     }
   ],
 
@@ -88,6 +104,7 @@ foam.CLASS({
     function init() {
       this.SUPER();
       this.sessionId;
+      this.userAgent;
     },
     {
       name: 'authorizeOnCreate',
