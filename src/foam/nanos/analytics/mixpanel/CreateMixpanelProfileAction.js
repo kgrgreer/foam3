@@ -62,6 +62,7 @@ foam.CLASS({
             if ( ! isAdmin && ! isAnonymous ) {
               JSONObject userProps = new JSONObject();
               userProps.put("$id", user.getId());
+              userProps.put("$name", user.getUserName());
               userProps.put("$user_name", user.getUserName());
               userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
               userProps.put("$city", GeolocationSupport.instance().getCity());
