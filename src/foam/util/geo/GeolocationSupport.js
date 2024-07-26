@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
+    'foam.net.IPSupport',
     'java.io.File',
     'java.io.IOException',
     'java.net.InetAddress',
