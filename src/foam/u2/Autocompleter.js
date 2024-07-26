@@ -65,7 +65,8 @@ foam.CLASS({
       code: function onUpdate() {
         if ( ! this.dao ) return;
         this.filteredDAO = this.partial ?
-            this.dao.where(this.queryFactory(this.partial)) : this.dao;
+          this.dao.where(this.queryFactory(this.partial)) :
+          this.dao;
       }
     }
   ]
