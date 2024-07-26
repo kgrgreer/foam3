@@ -22,6 +22,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'starred'
+    },
+    {
+      name: 'label',
+      hidden: true,
+      transient: true,
+      expression: function(id, name) { return id + ' ' + name; }
     }
   ]
 });
