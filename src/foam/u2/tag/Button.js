@@ -460,7 +460,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.ButtonStyle',
       name: 'buttonStyle',
-      value: 'SECONDARY'
+      value: 'TERTIARY'
     },
     {
       class: 'Boolean',

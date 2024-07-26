@@ -48,7 +48,6 @@ foam.CLASS({
       box-sizing: border-box;
       height: 100%;
       justify-content: flex-start;
-      background-color:$white;
     }
 
     ^top-bar {
@@ -324,7 +323,7 @@ foam.CLASS({
           if ( summaryView.selectedObjects )
             self.config.selectedObjs$ = summaryView.selectedObjects$;
 
-          var buttonStyle = { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true };
+          var buttonStyle = { size: 'SMALL', isIconAfter: true };
 
           return self.E()
             .start(self.Rows)
