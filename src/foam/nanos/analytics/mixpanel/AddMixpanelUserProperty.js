@@ -6,25 +6,22 @@
 
 foam.CLASS({
   package: 'foam.nanos.analytics.mixpanel',
-  name: 'CreateMixpanelProfileAction',
+  name: 'AddMixpanelUserProperty',
   implements: [ 'foam.nanos.ruler.RuleAction' ],
   documentation: `
-    On user put, if user cannot be found with trackingId matching analytic event
-    sessionID, create a new mixpanel profile with the sessionID
+    When a specified user property has been set, add the user property to its
+    corresponding mixpanel profile.
   `,
 
   javaImports: [
     'com.mixpanel.mixpanelapi.MessageBuilder',
     'com.mixpanel.mixpanelapi.MixpanelAPI',
     'foam.core.ContextAgent',
+    'foam.core.PropertyInfo',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
-    'foam.nanos.session.Session',
-    'foam.net.IPSupport',
     'java.io.IOException',
     'org.json.JSONObject'
   ],
@@ -34,6 +31,18 @@ foam.CLASS({
       type: 'String',
       name: 'PROJECT_TOKEN',
       value: '2cf01d4604ecf0ba8038c7034fe7851d'
+    }
+  ],
+
+  properties: [
+    {
+      class: 'Array',
+      of: 'PropertyInfo',
+      name: 'userProp'
+    },
+    {
+      class: 'String',
+      name: 'mixpanelUserProp'
     }
   ],
 
@@ -60,20 +69,30 @@ foam.CLASS({
 
             if ( ! isAdmin && ! isAnonymous ) {
               JSONObject userProps = new JSONObject();
-              userProps.put("$id", user.getId());
-              userProps.put("$user_name", user.getUserName());
-              userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
-              JSONObject createProfile = messageBuilder.set(trackingId, userProps);
+              userProps.put(getMixpanelUserProp(), getProp(x, user));
+              JSONObject updateProfile = messageBuilder.set(trackingId, userProps);
 
               try {
-                mixpanel.sendMessage(createProfile);
+                mixpanel.sendMessage(updateProfile);
               } catch (IOException e) {
                 Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
               }
             }
           }
-        }, "Create Mixpanel profile");
+        }, "Update Mixpanel user property");
       `
-    }// this is not sending
+    },
+    {
+      name: 'getProp',
+      args: 'X x, User user',
+      javaType: 'String',
+      javaCode: `
+        Object ret = (Object) user;
+        for ( int i = 0; i < this.getUserProp().length; i++ ) {
+          ret = (Object) ((PropertyInfo) this.getUserProp()[i]).f(ret);
+        }
+        return ret.toString();
+      `
+    }
   ]
 });
