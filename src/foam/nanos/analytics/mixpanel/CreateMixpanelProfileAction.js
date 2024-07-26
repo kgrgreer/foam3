@@ -27,6 +27,8 @@ foam.CLASS({
     'foam.net.IPSupport',
     'foam.util.geo.GeolocationSupport',
     'java.io.IOException',
+    'java.io.UnsupportedEncodingException',
+    'java.net.URLDecoder',
     'org.json.JSONObject'
   ],
 
@@ -66,6 +68,7 @@ foam.CLASS({
               userProps.put("$user_name", user.getUserName());
               userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
               userProps.put("$city", GeolocationSupport.instance().getCity());
+              setUTMParams(x, trackingId, userProps);
               JSONObject createProfile = messageBuilder.set(trackingId, userProps);
 
               try {
@@ -77,6 +80,28 @@ foam.CLASS({
           }
         }, "Create Mixpanel profile");
       `
-    }// this is not sending
+    },
+    {
+      name: 'setUTMParams',
+      args: 'X x, String url, JSONObject userProps',
+      javaCode: `
+        var paramIdx = url.indexOf("?");
+        if ( paramIdx == -1 ) return;
+        url = url.substring(paramIdx + 1);
+
+        String[] pairs = url.split("&");
+        for (String pair : pairs) {
+          int idx = pair.indexOf("=");
+          try {
+            var key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+            if ( key.indexOf("utm") >= 0 )
+              userProps.put(key, URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+          } catch (UnsupportedEncodingException e) {
+            Loggers.logger(x, this).error("cannot decode param:", pair, e.getMessage());
+          }
+        }
+        
+      `
+    }
   ]
 });
