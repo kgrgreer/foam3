@@ -9,11 +9,11 @@ foam.POM({
     version: 3,
     excludes: [ 'node_modules' ],
     projects: [
-      { name: 'GeoLite2-City/pom' },
       { name: 'src/pom' },
       { name: 'src/foam/nanos/pom' },
       { name: 'src/foam/nanos/analytics/mixpanel/pom' },
       { name: 'src/foam/u2/wizard/pom' },
+      { name: 'src/foam/util/geo/pom'},
       { name: 'src/foam/flow/laminar/pom' },
       { name: 'src/io/c9/ace/pom' },
       { name: 'webroot/pom' }
