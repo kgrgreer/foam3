@@ -34,9 +34,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'MORNING_TITLE', message: 'Good morning' },
+    { name: 'MORNING_TITLE',   message: 'Good morning' },
     { name: 'AFTERNOON_TITLE', message: 'Good afternoon' },
-    { name: 'EVENING_TITLE', message: 'Good evening' }
+    { name: 'EVENING_TITLE',   message: 'Good evening' }
   ],
 
   properties: [
