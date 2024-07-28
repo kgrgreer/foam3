@@ -3,6 +3,7 @@
  * Copyright 2022 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
+
  foam.CLASS({
   package: 'foam.u2.view',
   name: 'SuggestedTextField',
@@ -55,9 +56,9 @@
   `,
 
   messages: [
-    { name: 'SUGGESTIONS_MSG', message: 'Suggestions' },
+    { name: 'SUGGESTIONS_MSG',    message: 'Suggestions' },
     { name: 'NO_SUGGESTIONS_MSG', message: 'No Suggestions' },
-    { name: 'MORE_SUGGESTIONS', message: 'Refine search to see more results' }
+    { name: 'MORE_SUGGESTIONS',   message: 'Refine search to see more results' }
   ],
 
   properties: [
@@ -169,7 +170,7 @@
              // otherwise when using click the blur gets fired first and the row listener is never called
                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
                self.inputFocused = false;
-               
+
                e.preventDefault();
              })
           .end();
