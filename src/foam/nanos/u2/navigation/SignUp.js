@@ -285,7 +285,13 @@ foam.CLASS({
     {
       name: 'login_',
       code: async function(x) {
-        this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED' });
+        var urlParams = new URLSearchParams(window.location.search);
+        var eventExtras = {
+          utm_source: urlParams.get('utm_source'),
+          utm_medium: urlParams.get('utm_medium'), 
+          utm_campaign: urlParams.get('utm_campaign')
+        }
+        this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED', extra: foam.json.stringify(eventExtras) });
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
@@ -305,7 +311,9 @@ foam.CLASS({
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
-          this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: foam.json.stringify({ 'User ID': user.id, 'Email': user.email }) });
+          eventExtras['User ID'] = user.id;
+          eventExtras['Email'] = user.email;
+          this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: foam.json.stringify(eventExtras) });
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {
