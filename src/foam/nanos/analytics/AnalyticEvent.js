@@ -81,7 +81,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'extra'
+      name: 'extra',
+      documentation: 'a string or a json string'
     },
     {
       class: 'String',
