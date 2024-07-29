@@ -35,15 +35,15 @@ foam.CLASS({
       padding: 6px 8px;
       padding-right: 4px;
       border-radius: 3px;
-      border: solid 1px #cbcfd4;
+      background: $grey50;
     }
 
     ^container-property:hover {
       cursor: pointer;
     }
 
-    ^container-property-active {
-      background-color: #f5f7fa;
+    ^container-property-active, ^container-property-filtering {
+      background-color: $primary50;
     }
 
     ^label-property {
@@ -145,6 +145,7 @@ foam.CLASS({
       this.addClass()
         .start().addClass(this.myClass('container-property'))
           .enableClass(this.myClass('container-property-active'), this.active$)
+          .enableClass(this.myClass('container-property-filtering'), this.activeFilterCheck_$.not())
           .on('click', this.switchActive)
           .start('p').addClass('p-label-lg', this.myClass('label-property'))
             .add(`${this.property.label}: `)
