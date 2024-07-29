@@ -90,17 +90,17 @@ foam.CLASS({
       if ( this.logDeviceInfo ) {
         this.analyticsAgent.pub('event', {
           name: 'USER_AGENT',
-          extra: this.window.navigator.userAgent
+          extra: foam.json.stringify({ userAgent: this.window.navigator.userAgent })
         });
 
         this.analyticsAgent.pub('event', {
           name: 'SCREEN_RESOLUTION',
-          extra: `${this.window.screen.width}x${this.window.screen.height}`
+          extra: foam.json.stringify({ screenResolution: `${this.window.screen.width}x${this.window.screen.height}` })
         });
 
         this.analyticsAgent.pub('event', {
           name: 'WINDOW_RESOLUTION',
-          extra: `${this.window.innerWidth}x${this.window.innerHeight}`
+          extra: foam.json.stringify({ windowResolution: `${this.window.innerWidth}x${this.window.innerHeight}` })
         });
       }
     }
