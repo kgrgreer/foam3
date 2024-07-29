@@ -36,6 +36,12 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'suggested',
+      units: 'units',
+      view: function(_, x) { return { class: 'foam.u2.view.SuggestedTextField', choices: CHOICES } }
+    },
+    {
+      class: 'String',
       name: 'choiceViewDAO',
       units: 'units',
       view: function(_, x) { return { class: 'foam.u2.view.ChoiceView', dao: x.data.dao } }
