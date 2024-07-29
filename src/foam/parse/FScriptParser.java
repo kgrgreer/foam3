@@ -203,6 +203,12 @@ public class FScriptParser
           public Object value() {
             return new RegExp();
           }
+        },
+        new AbstractLiteral("%")  {
+          @Override
+          public Object value() {
+            return new In();
+          }
         }
       ),
       Whitespace.instance(),
@@ -227,7 +233,7 @@ public class FScriptParser
       }
 
       Binary bin = ( Binary ) values[1];
-      bin.setArg1((Expr) values[0]);
+      bin.setArg1(( values[0] instanceof Expr ) ? ( Expr ) values[0] : new foam.mlang.Constant (values[0]));
       bin.setArg2(( values[2] instanceof Expr ) ? ( Expr ) values[2] : new foam.mlang.Constant (values[2]));
       return bin;
     });
