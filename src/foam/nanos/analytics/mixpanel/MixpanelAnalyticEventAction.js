@@ -52,7 +52,7 @@ foam.CLASS({
             MixpanelAPI mixpanel = new MixpanelAPI();
 
             // build message
-            JSONObject props = new JSONObject(event.toJSON());
+            JSONObject props = new JSONObject();
             props.put("$event_id", event.getId());
             props.put("time", event.getTimestamp());
             props.put("$os", event.getUserAgent());
