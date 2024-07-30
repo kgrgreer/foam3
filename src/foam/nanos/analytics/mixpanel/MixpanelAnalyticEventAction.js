@@ -26,7 +26,9 @@ foam.CLASS({
     'foam.util.geo.GeolocationSupport',
 
     'java.io.IOException',
+    'java.util.Iterator',
 
+    'org.json.JSONException',
     'org.json.JSONObject'
   ],
 
@@ -52,12 +54,25 @@ foam.CLASS({
             MixpanelAPI mixpanel = new MixpanelAPI();
 
             // build message
-            JSONObject props = new JSONObject(event.toJSON());
+            JSONObject props = new JSONObject();
             props.put("$event_id", event.getId());
             props.put("time", event.getTimestamp());
             props.put("$os", event.getUserAgent());
             props.put("$ip", event.getIp());
-            props.put("$event_extras", event.getExtra());
+
+            // add event extras
+            JSONObject eventExtras;
+            try {
+              eventExtras = new JSONObject(event.getExtra());
+              Iterator<String> keys = eventExtras.keys();
+              while(keys.hasNext()) {
+                String key = keys.next();
+                props.put(key, eventExtras.get(key));
+              }
+            } catch ( JSONException e) {
+              eventExtras = new JSONObject();
+              props.put("$event_extra", event.getExtra());
+            }
 
             GeolocationSupport location = GeolocationSupport.instance();
             props.put("mp_country_code", location.getCountry());
