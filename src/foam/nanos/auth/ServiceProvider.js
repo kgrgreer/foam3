@@ -69,6 +69,11 @@ foam.CLASS({
       class: 'Long',
       name: 'anonymousUser',
       documentation: 'Reference to anonymous user relative to spid. See the **authorizeAnonymous** method in AuthService.js for further documentation.'
+    },
+    {
+      class: 'StringArray',
+      name: 'mixpanelWhitelist',
+      documentation: 'list of whitelisted analyticevents to send to mixpanel'
     }
   ],
 
