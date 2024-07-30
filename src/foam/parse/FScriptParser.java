@@ -204,7 +204,7 @@ public class FScriptParser
             return new RegExp();
           }
         },
-        new AbstractLiteral("%")  {
+        new AbstractLiteral(":")  {
           @Override
           public Object value() {
             return new In();
