@@ -68,6 +68,7 @@ foam.CLASS({
     'placeholder',
     'ariaLabel',
     [ 'autocomplete', true ],
+//    'autocompleter',
     'inputMode', // Allows a browser to display an appropriate virtual keyboard
     {
       name: 'choices',
@@ -120,18 +121,27 @@ foam.CLASS({
       );
       if ( this.choices && this.choices.length ) {
         this.
-          setAttribute('list', this.id + '-datalist').
+          setAttribute('list', this.id + '-choices').
           start('datalist').
-            // TODO: I should be able to just set the 'id' in the start() above
-            // but it doesn't work. Find out why.
-            call(function() { this.id = self.id + '-datalist' }).
+            setID(self.id + '-choices').
             forEach(this.choices, function(c) {
               var key   = c[0];
               var label = c[1];
               this.start('option').attrs({value: key}).add(label).end();
             }).
           end();
-      }
+      } /* Was for compatibility with foam.u2.view.TextField, which no longer exists.
+      else if ( this.autocompleter ) {
+        this.
+          setAttribute('list', this.id + '-autocomplete').
+          start('datalist').
+            setID(self.id + '-autocomplete').
+            select(self.autocompleter.dao, function(o) {
+              var label = o.label;
+              this.start('option').add(label).end();
+            }).
+          end();
+      } */
 
       this.initCls();
       this.link();
