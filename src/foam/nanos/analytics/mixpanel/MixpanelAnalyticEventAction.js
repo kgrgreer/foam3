@@ -11,38 +11,13 @@ foam.CLASS({
   documentation: 'Rule to send analyticEvent data to Mixpanel',
 
   javaImports: [
-    'com.mixpanel.mixpanelapi.ClientDelivery',
-    'com.mixpanel.mixpanelapi.MessageBuilder',
-    'com.mixpanel.mixpanelapi.MixpanelAPI',
-
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.analytics.AnalyticEvent',
-    'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.ServiceProvider',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Loggers',
-    'foam.util.SafetyUtil',
     'foam.util.geo.GeolocationSupport',
-
-    'java.io.File',
-    'java.io.IOException',
     'java.util.Iterator',
-
     'org.json.JSONException',
-    'org.json.JSONObject',
-
-    'static foam.mlang.MLang.IN',
-
-  ],
-
-  constants: [
-    {
-      type: 'String',
-      name: 'PROJECT_TOKEN',
-      value: '2cf01d4604ecf0ba8038c7034fe7851d'
-    }
+    'org.json.JSONObject'
   ],
 
   methods: [
@@ -53,20 +28,14 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             AnalyticEvent event = (AnalyticEvent) obj;
-            if ( ! isWhitelisted(x, event) ) return;
-
-            String trackingId = event.getSessionId();
-
-            MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
-            MixpanelAPI mixpanel = new MixpanelAPI();
-
+    
             // build message
             JSONObject props = new JSONObject();
             props.put("$event_id", event.getId());
             props.put("time", event.getTimestamp());
             props.put("$os", event.getUserAgent());
             props.put("$ip", event.getIp());
-
+    
             // add event extras
             JSONObject eventExtras;
             try {
@@ -80,34 +49,13 @@ foam.CLASS({
               eventExtras = new JSONObject();
               props.put("$event_extra", event.getExtra());
             }
-
+    
             GeolocationSupport location = GeolocationSupport.instance();
             props.put("mp_country_code", location.getCountry());
             props.put("$city", location.getCity());
-
-            JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
-
-            ClientDelivery delivery = new ClientDelivery();
-            delivery.addMessage(sentEvent);
-
-            try {
-              mixpanel.deliver(delivery);
-            } catch (IOException e) {
-              Loggers.logger(x, this).error("Failed sending analyticEvent:", event.getId(), "Can't communicate with Mixpanel");
-            }
+            ((MixpanelService) x.get("mixpanelService")).sendMixpanelEvent(x, event, props);
           }
         }, "Send message to mixpanel");
-      `
-    },
-    {
-      name: 'isWhitelisted',
-      args: 'X x, AnalyticEvent event',
-      javaType: 'Boolean',
-      javaCode: `
-        ServiceProvider spid = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find((String) x.get("spid"));
-        String[] whitelist = spid.getMixpanelWhitelist();
-        var pred = IN(foam.nanos.analytics.AnalyticEvent.NAME, whitelist);
-        return pred.f(event);
       `
     }
   ]

@@ -14,30 +14,16 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'com.mixpanel.mixpanelapi.MessageBuilder',
-    'com.mixpanel.mixpanelapi.MixpanelAPI',
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
     'foam.nanos.session.Session',
     'foam.net.IPSupport',
     'foam.util.geo.GeolocationSupport',
-    'java.io.IOException',
     'java.io.UnsupportedEncodingException',
     'java.net.URLDecoder',
     'org.json.JSONObject'
-  ],
-
-  constants: [
-    {
-      type: 'String',
-      name: 'PROJECT_TOKEN',
-      value: '2cf01d4604ecf0ba8038c7034fe7851d'
-    }
   ],
 
   methods: [
@@ -50,33 +36,16 @@ foam.CLASS({
             User user = (User) obj;
             String trackingId = user.getTrackingId();
 
-            MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
-            MixpanelAPI mixpanel = new MixpanelAPI();
+            JSONObject userProps = new JSONObject();
+            userProps.put("$id", user.getId());
+            userProps.put("$name", user.getUserName());
+            userProps.put("$user_name", user.getUserName());
+            userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
+            userProps.put("$city", GeolocationSupport.instance().getCity());
+            setUTMParams(x, trackingId, userProps);
 
-            // create user profile
-            AuthService auth = (AuthService) x.get("auth");
-            var isAdmin = user != null
-                && (user.getId() == User.SYSTEM_USER_ID
-                || user.getGroup().equals("admin")
-                || user.getGroup().equals("system"));
-            var isAnonymous = user != null && auth.isUserAnonymous(x, user.getId());
+            ((MixpanelService) x.get("mixpanelService")).sendUserProperties(x, user, userProps);
 
-            if ( ! isAdmin && ! isAnonymous ) {
-              JSONObject userProps = new JSONObject();
-              userProps.put("$id", user.getId());
-              userProps.put("$name", user.getUserName());
-              userProps.put("$user_name", user.getUserName());
-              userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
-              userProps.put("$city", GeolocationSupport.instance().getCity());
-              setUTMParams(x, trackingId, userProps);
-              JSONObject createProfile = messageBuilder.set(trackingId, userProps);
-
-              try {
-                mixpanel.sendMessage(createProfile);
-              } catch (IOException e) {
-                Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
-              }
-            }
           }
         }, "Create Mixpanel profile");
       `
