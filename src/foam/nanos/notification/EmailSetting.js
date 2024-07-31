@@ -35,11 +35,7 @@ foam.CLASS({
           Iterate through arguments to replace propertyInfo values with the notified user' values.
           TODO: Handle nested FObjects passed in as propertyInfo.
       `,
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'arguments', type: 'Map' },
-        { name: 'user', type: 'User' }
-      ],
+      args: 'Context x, Map arguments, User user',
       javaCode: `
         Logger logger = Loggers.logger(x, this);
 
@@ -85,6 +81,8 @@ foam.CLASS({
         message.setClusterable(notification.getClusterable());
         notification = (Notification) notification.fclone();
 
+        if ( notification.BODY.isSet(notification) ) message.setBody(notification.getBody());
+
         if ( notification.getEmailArgs() != null ) {
           Map<String, Object> emailArgs = resolveNotificationArguments(x, notification.getEmailArgs(), user);
           notification.setEmailArgs(emailArgs);
@@ -110,7 +108,7 @@ foam.CLASS({
             message.setTemplateArguments(args);
             ((DAO) x.get("emailMessageDAO")).put(message);
           } else {
-            logger.warning("EmailTemplate not found", notification.getEmailName());
+            logger.warning("EmailTemplate not specified.");
           }
         } catch(Throwable t) {
           logger.error("Error sending notification email message", message, t.getMessage(), t);

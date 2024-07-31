@@ -1,15 +1,9 @@
-
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "DAONotificationEmailTemplateTest-test",
-  "name": "DAONotificationEmailTemplateTest",
+  "name": "DAONotificationEmailTemplateTest-test",
   "group": "test",
   "locale": "en",
   "displayName": "{{appName}}",
-  "subject": "DAONotificationEmailTemplateTest - {{appName}}",
-  "body": """
-Test test test
-of: {{of}}
-dop: {{dop}}
-  """
+  "subject": "DAONotificationEmailTemplateTest"
 })

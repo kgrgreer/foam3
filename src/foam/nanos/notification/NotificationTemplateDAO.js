@@ -87,6 +87,9 @@ the notification will be handled. `,
             if ( Notification.CLUSTERABLE.isSet(notification) ) {
               template.setClusterable(notification.getClusterable());
             }
+            if ( Notification.EMAIL_NAME.isSet(notification) ) {
+              template.setEmailName(notification.getEmailName());
+            }
             if ( Notification.READ.isSet(notification) ) {
               template.setRead(notification.getRead());
             }
