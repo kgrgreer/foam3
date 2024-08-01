@@ -138,7 +138,7 @@ foam.CLASS({
       class: 'Date',
       name: 'returnDate',
       validateObj: function(returnFlight, departureDate, returnDate) {
-        if ( returnFlight && ! returnDate ) return 'Return date require for return flights.';
+        if ( returnFlight && ! returnDate ) return 'Return date required for return flights.';
         if ( ! returnFlight && returnDate ) return "Return date can't be specified for non return flights.";
         if ( foam.Date.compare(returnDate, departureDate) < 0 ) return "Can't return before you depart.";
       }
