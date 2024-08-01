@@ -1,6 +1,0 @@
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"mixpanelService",
-  "serve":false,
-  "serviceClass":"foam.nanos.analytics.mixpanel.MixpanelService"
-})
