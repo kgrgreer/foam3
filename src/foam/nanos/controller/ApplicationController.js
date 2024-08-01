@@ -456,6 +456,15 @@ foam.CLASS({
       var self = this;
 
       this.clientPromise.then(async function(client) {
+        if ( self.client != client ) {
+          console.log('Stale Client in ApplicationController, waiting for update.');
+          await self.client.promise;
+          client = self.client;
+          // Rebuild stack with correct context
+          self.stack = self.Stack.create({}, self.__subContext__);
+          self.routeTo(self.window.location.hash.substring(1));
+        }
+
         self.originalSubContext = self.__subContext__;
         self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
 
@@ -477,14 +486,6 @@ foam.CLASS({
         if ( ret ) return;
 
         await self.fetchSubject();
-
-        if ( self.client != client ) {
-          console.log('Stale Client in ApplicationController, waiting for update.');
-          await self.client.promise;
-          // Rebuild stack with correct context
-          self.stack = self.Stack.create({}, self.__subContext__);
-          self.routeTo(self.window.location.hash.substring(1));
-        }
 
         await self.fetchGroup();
 
