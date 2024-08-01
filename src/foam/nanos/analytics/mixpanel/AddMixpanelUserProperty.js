@@ -14,24 +14,11 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'com.mixpanel.mixpanelapi.MessageBuilder',
-    'com.mixpanel.mixpanelapi.MixpanelAPI',
     'foam.core.ContextAgent',
     'foam.core.PropertyInfo',
     'foam.core.X',
-    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Loggers',
-    'java.io.IOException',
     'org.json.JSONObject'
-  ],
-
-  constants: [
-    {
-      type: 'String',
-      name: 'PROJECT_TOKEN',
-      value: '2cf01d4604ecf0ba8038c7034fe7851d'
-    }
   ],
 
   properties: [
@@ -54,30 +41,11 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             User user = (User) obj;
-            String trackingId = user.getTrackingId();
 
-            MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
-            MixpanelAPI mixpanel = new MixpanelAPI();
+            JSONObject userProps = new JSONObject();
+            userProps.put(getMixpanelUserProp(), getProp(x, user));
 
-            // create user profile
-            AuthService auth = (AuthService) x.get("auth");
-            var isAdmin = user != null
-                && (user.getId() == User.SYSTEM_USER_ID
-                || user.getGroup().equals("admin")
-                || user.getGroup().equals("system"));
-            var isAnonymous = user != null && auth.isUserAnonymous(x, user.getId());
-
-            if ( ! isAdmin && ! isAnonymous ) {
-              JSONObject userProps = new JSONObject();
-              userProps.put(getMixpanelUserProp(), getProp(x, user));
-              JSONObject updateProfile = messageBuilder.set(trackingId, userProps);
-
-              try {
-                mixpanel.sendMessage(updateProfile);
-              } catch (IOException e) {
-                Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
-              }
-            }
+            ((MixpanelService) x.get("mixpanelService")).sendUserProperties(x, user, userProps);
           }
         }, "Update Mixpanel user property");
       `
