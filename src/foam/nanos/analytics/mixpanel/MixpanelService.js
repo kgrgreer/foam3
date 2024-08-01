@@ -26,14 +26,15 @@ foam.CLASS({
     'java.io.IOException',
     'java.util.Arrays',
     'java.util.concurrent.ConcurrentHashMap',
-    'java.util.HashSet'
+    'java.util.HashSet',
+    'org.json.JSONObject'
   ],
 
   properties: [
     {
       class: 'Map',
       name: 'whitelistCache',
-      javaType: 'Map<String, HashSet<String>>',
+      javaType: 'ConcurrentHashMap<String, HashSet<String>>',
       javaFactory: `
         return new ConcurrentHashMap<String, HashSet<String>>();
       `
@@ -51,7 +52,7 @@ foam.CLASS({
       javaCode: `
         if ( ! isWhitelisted(x, event) ) return;
         String trackingId = event.getSessionId();
-        MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
+        MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
         MixpanelAPI mixpanel = new MixpanelAPI();
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
@@ -71,7 +72,7 @@ foam.CLASS({
       javaCode: `
         String trackingId = user.getTrackingId();
 
-        MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
+        MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
         MixpanelAPI mixpanel = new MixpanelAPI();
 
         AuthService auth = (AuthService) x.get("auth");
@@ -98,12 +99,12 @@ foam.CLASS({
       javaType: 'Boolean',
       javaCode: `
         var spid = (String) x.get("spid");
-        var whitelist = whitelistCache_.get(spid);
+        var whitelist = getWhitelistCache().get(spid);
         if ( whitelist == null ) {
           var spidObj = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find(spid);
           if ( spidObj.getMixpanelWhitelist() == null ) return false;
           whitelist = new HashSet<String>(Arrays.asList(spidObj.getMixpanelWhitelist()));
-          whitelistCache_.put(spid, whitelist);
+          getWhitelistCache().put(spid, whitelist);
         }
         return whitelist.contains(event.getName());
       `
