@@ -35,7 +35,7 @@ foam.CLASS({
             props.put("time", event.getTimestamp());
             props.put("$os", event.getUserAgent());
             props.put("$ip", event.getIp());
-    
+
             // add event extras
             JSONObject eventExtras;
             try {
@@ -49,7 +49,7 @@ foam.CLASS({
               eventExtras = new JSONObject();
               props.put("$event_extra", event.getExtra());
             }
-    
+
             GeolocationSupport location = GeolocationSupport.instance();
             props.put("mp_country_code", location.getCountry());
             props.put("$city", location.getCity());
