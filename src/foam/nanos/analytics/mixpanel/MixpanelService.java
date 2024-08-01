@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2024 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package foam.nanos.analytics.mixpanel;
 
 import com.mixpanel.mixpanelapi.ClientDelivery;
@@ -16,7 +22,7 @@ import foam.nanos.NanoService;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 
 import org.json.JSONObject;
@@ -24,7 +30,7 @@ import org.json.JSONObject;
 public class MixpanelService extends ContextAwareSupport implements NanoService {
 
   private static final String PROJECT_TOKEN = "2cf01d4604ecf0ba8038c7034fe7851d";
-  private static final HashMap<String, HashSet<String>> whitelistCache_ = new HashMap<String, HashSet<String>>();
+  private final ConcurrentHashMap<String, HashSet<String>> whitelistCache_ = new ConcurrentHashMap<String, HashSet<String>>();
 
   public void sendMixpanelEvent(X x, AnalyticEvent event, JSONObject props) {
     if ( ! isWhitelisted(x, event) ) return;
