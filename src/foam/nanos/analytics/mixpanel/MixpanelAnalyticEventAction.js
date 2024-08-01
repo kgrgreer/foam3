@@ -20,16 +20,21 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Loggers',
     'foam.util.SafetyUtil',
     'foam.util.geo.GeolocationSupport',
 
+    'java.io.File',
     'java.io.IOException',
     'java.util.Iterator',
 
     'org.json.JSONException',
-    'org.json.JSONObject'
+    'org.json.JSONObject',
+
+    'static foam.mlang.MLang.IN',
+
   ],
 
   constants: [
@@ -48,6 +53,8 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             AnalyticEvent event = (AnalyticEvent) obj;
+            if ( ! isWhitelisted(x, event) ) return;
+
             String trackingId = event.getSessionId();
 
             MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
@@ -90,6 +97,17 @@ foam.CLASS({
             }
           }
         }, "Send message to mixpanel");
+      `
+    },
+    {
+      name: 'isWhitelisted',
+      args: 'X x, AnalyticEvent event',
+      javaType: 'Boolean',
+      javaCode: `
+        ServiceProvider spid = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find((String) x.get("spid"));
+        String[] whitelist = spid.getMixpanelWhitelist();
+        var pred = IN(foam.nanos.analytics.AnalyticEvent.NAME, whitelist);
+        return pred.f(event);
       `
     }
   ]
