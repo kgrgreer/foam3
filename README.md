@@ -71,6 +71,12 @@ To access, run the following in the parent directory of foam3:
 All code should follow the [style guide.](doc/guides/StyleGuide.md)
 
 ## Testing
+To run all Java tests from the command-line, run:
+`./tools/build.js -t`
+
+To run individual tests from the command-line, run:
+`./tools/build.js -TtestName1,testName2,...testNameN`
+
 <!--
 * _npm test_ runs standard unit tests.
 
@@ -80,7 +86,7 @@ All code should follow the [style guide.](doc/guides/StyleGuide.md)
 
 For in-browser testing, run your favorite web server at the root of the FOAM
 repository. In a browser, navigate to
-[http://localhost:8000/test/browser/SpecRunner.html](http://localhost:8000/test/browser/SpecRunner.html)
+[http://localhost:8080/test/browser/SpecRunner.html](http://localhost:8000/test/browser/SpecRunner.html)
 to run the unit tests.
 -->
 # Documentation
