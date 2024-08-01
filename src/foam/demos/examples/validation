@@ -63,7 +63,8 @@ foam.CLASS({
       class: 'Int',
       name: 'age',
       minValue: 0,
-      maValue: 130
+      maValue: 130,
+      autoValidate: true
     },
     {
       class: 'String',
