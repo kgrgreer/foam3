@@ -194,7 +194,7 @@ foam.CLASS({
                 var args = [];
                 for ( var i = 0 ; i < arguments.length ; i++ ) {
                   if ( i ) args.push(' ');
-                  if ( arguments[i] == false )
+                  if ( arguments[i] === false )
                     args.push('false');
                   else
                     args.push(arguments[i]);
