@@ -23,7 +23,7 @@ foam.CLASS({
 //    { class: 'Float', name: '' },
 //    { class: 'Double', name: '' },
     { class: 'EMail', name: 'email' },
-    { class: 'PhoneNumber', name: 'phoneNumber' },
+//    { class: 'PhoneNumber', name: 'phoneNumber' }, // TODO: has REGEX problem
     { class: 'URL', name: 'url' },
     { class: 'Website', name: 'website' },
 //    { class: '', name: '' },
