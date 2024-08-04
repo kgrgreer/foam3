@@ -125,6 +125,71 @@ foam.CLASS({
       `
     },
     {
+      name: 'loginUser',
+      documentation: 'Logs the current session into the provided user if possible',
+      type: 'User',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'User'
+        },
+      ],
+      javaThrows: ['foam.nanos.auth.AuthenticationException'],
+      javaCode: `
+      if ( user == null ) {
+        throw new UserNotFoundException();
+      }
+      
+      // check if user enabled
+      user.validateAuth(x);
+      
+      X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+      
+      // check if group enabled
+      Group group = user.findGroup(userX);
+      if ( group != null && ! group.getEnabled() ) {
+        throw new AccessDeniedException();
+      }
+      try {
+        group.validateCidrWhiteList(x);
+      } catch (foam.core.ValidationException e) {
+        throw new AccessDeniedException(e);
+      }
+
+      // ensure session exists
+      Session session = x.get(Session.class);
+      if ( session == null ) {
+        throw new AuthenticationException("No session exists.");
+      }
+      
+      // check for two-factor authentication
+      if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
+        throw new AuthenticationException("User requires two-factor authentication");
+      }
+      
+      // Re use the session context if the current session context's user id matches the id of the user trying to log in
+      if ( session.getUserId() == user.getId() ) {
+        return user;
+      }
+
+      // Freeze user
+      user = (User) user.fclone();
+      user.freeze();
+      session.setUserId(user.getId());
+      if ( check(userX, "*") ) {
+        String msg = "Admin login for " + user.getId() + " succeeded on " + System.getProperty("hostname", "localhost");
+        ((foam.nanos.logger.Logger) x.get("logger")).warning(msg);
+      }
+      ((DAO) getLocalSessionDAO()).inX(x).put(session);
+      session.setContext(session.applyTo(session.getContext()));
+      return user;
+      `
+    },
+    {
       name: 'loginHelper',
       documentation: `Helper function to reduce duplicated code.`,
       type: 'User',
@@ -145,58 +210,13 @@ foam.CLASS({
       javaThrows: ['foam.nanos.auth.AuthenticationException'],
       javaCode: `
       try {
-        if ( user == null ) {
-          throw new UserNotFoundException();
-        }
-        user.validateAuth(x);
-        // check if user enabled
-        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
-          throw new AccessDeniedException();
-        }
-        // check if user login enabled
-        if ( ! user.getLoginEnabled() ) {
-          throw new AccessDeniedException();
-        }
-        // check if group enabled
-        X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-        Group group = user.findGroup(userX);
-        if ( group != null && ! group.getEnabled() ) {
-          throw new AccessDeniedException();
-        }
         if ( ! Password.verify(password, user.getPassword()) ) {
           throw new InvalidPasswordException();
         }
-        if ( ! user.getEmailVerified() ) {
-          throw new UnverifiedEmailException();
-        }
-        try {
-          group.validateCidrWhiteList(x);
-        } catch (foam.core.ValidationException e) {
-          throw new AccessDeniedException(e);
-        }
-
-        Session session = x.get(Session.class);
-        // check for two-factor authentication
-        if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
-          throw new AuthenticationException("User requires two-factor authentication");
-        }
-        // Re use the session context if the current session context's user id matches the id of the user trying to log in
-        if ( session.getUserId() == user.getId() ) {
-          return user;
-        }
-
-        // Freeze user
-        user = (User) user.fclone();
-        user.freeze();
-        session.setUserId(user.getId());
-        if ( check(userX, "*") ) {
-          String msg = "Admin login for " + user.getId() + " succeeded on " + System.getProperty("hostname", "localhost");
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(msg);
-        }
-        ((DAO) getLocalSessionDAO()).inX(x).put(session);
-        session.setContext(session.applyTo(session.getContext()));
-        return user;
+        
+        return loginUser(x, user)
       } catch ( AuthenticationException e ) {
+        // TODO What is this doing?
         if ( user != null &&
              ( check(x.put("subject", new Subject.Builder(x).setUser(user).build()), "*") ) ) {
           String msg = "Admin login for " + user.getId() + " failed on " + System.getProperty("hostname", "localhost");

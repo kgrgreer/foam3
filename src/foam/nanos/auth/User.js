@@ -935,24 +935,23 @@ foam.CLASS({
     },
     {
       name: 'validateAuth',
+      documentation: `Check that the user can be signed in`,
       args: [
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-
         // check if user enabled
         if ( getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
           throw new AuthenticationException("User disabled");
         }
-
-        // fetch context from session and check two factor success if enabled.
-        Session session = x.get(Session.class);
-        if ( session == null ) {
-          throw new AuthenticationException("No session exists.");
+        
+        // check if user login enabled
+        if ( ! user.getLoginEnabled() ) {
+          throw new AccessDeniedException();
         }
-
-        if ( this instanceof LifecycleAware && ((LifecycleAware) this).getLifecycleState() != LifecycleState.ACTIVE ) {
-          throw new AuthenticationException("User is not active");
+        
+        if ( ! getEmailVerified() ) {
+          throw new UnverifiedEmailException();
         }
       `
     }
