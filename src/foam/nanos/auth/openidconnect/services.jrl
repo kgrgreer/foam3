@@ -1,0 +1,23 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "jwtAuth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.openidconnect.JWTAuthServiceSkeleton",
+  "serviceScript": """
+    auth = new foam.nanos.auth.JWTAuthServiceImpl(x);
+    return auth;
+  """,
+  "client":"""
+    {
+      "class": "foam.nanos.auth.AuthorizeAnonymousClientDecorator",
+      "delegate":
+      {
+        "class":"foam.nanos.auth.CachedAuthServiceProxy",
+        "delegate":{
+          "class":"foam.nanos.auth.ClientLoginAuthService"
+        }
+      }
+    }
+  """
+})

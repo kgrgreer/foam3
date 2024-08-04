@@ -202,6 +202,8 @@ foam.POM({
     { name: "auth/LastModifiedByAwareDAO",                                                flags: "js|java" },
     { name: "auth/PermissionedPropertyDAO",                                               flags: "js|java" },
     { name: "auth/ProfilePictureView",                                                    flags: "web" },
+    { name: "auth/openidconnect/JWTLoginService",                                         flags: "js|java" },
+    { name: "auth/openidconnect/JWTLoginServiceImpl",                                     flags: "js|java" },
     { name: "auth/twofactor/OTPAuthService",                                              flags: "js|java" },
     { name: "auth/twofactor/AbstractOTPAuthService",                                      flags: "js|java" },
     { name: "auth/twofactor/AbstractTOTPAuthService",                                     flags: "js|java" },
