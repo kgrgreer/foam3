@@ -46,7 +46,20 @@ foam.CLASS({
 
         ^view { display: inline; }
 
-        ^errorText { font-size: smaller; }
+        ^errorText {
+          align-items: center;
+          display: flex;
+          font-size: smaller;
+          gap: 0.2rem;
+          justify-content: flex-start;
+          min-height: 1.25em;
+          padding: 4px 0;
+        }
+
+        ^errorText svg {
+          width: 1rem;
+          height: 1rem;
+        }
 
         ^helper-icon { display: inline; vertical-align: middle; margin-left: 4px; }
 
