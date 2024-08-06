@@ -810,11 +810,16 @@ foam.CLASS({
       // pull JWT from hash if present and use it to login
 
       if ( hashParams.id_token ) {
-        return this.clientPromise.then(c =>
-          c.auth.loginWithCredentials(this.__context__, this.JWTCredentials.create({
-            token: hashParams.id_token
-          }))
-        )
+        return new Promise(function(resolve, reject) {
+          self.loginSuccess$.sub(resolve);
+          self.clientPromise.then(c =>
+              c.auth.loginWithCredentials(this.__context__, self.JWTCredentials.create({
+                token: hashParams.id_token
+              })).then(() => {
+                location.hash = '';
+                self.loginSuccess = true;
+              }));
+        });
       }
 
       return new Promise(function(resolve, reject) {
