@@ -6,6 +6,9 @@ p({
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
     auth = new foam.nanos.auth.UserAndGroupAuthService(x);
+    auth = new foam.nanos.auth.JWTAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
       .setDelegate(auth)
       .build();

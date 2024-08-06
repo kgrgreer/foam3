@@ -186,6 +186,7 @@ foam.CLASS({
         .start(this.data.LOGIN)
           .attrs({ type: 'submit', form: 'login' })
         .end()
+        .tag(this.data.SIGN_IN_WITH_GOOGLE)
         .add(
           this.slot(function(data$showAction, data$disclaimer, appConfig) {
             var disclaimer = self.E().style({ display: 'contents' }).callIf(data$disclaimer && appConfig, function() {

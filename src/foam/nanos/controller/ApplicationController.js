@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.nanos.controller.Fonts',
     'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.JWTCredentials',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.CapabilityIntercept',
@@ -793,8 +794,10 @@ foam.CLASS({
     function requestLogin() {
       var self = this;
 
+      var hashParams = Object.fromEntries(location.hash.substring(1).split('&').map(c => c.split('=').map(v => decodeURIComponent(v))));
+
       // don't go to log in screen if going to reset password screen
-      if ( location.hash && location.hash === '#reset' ) {
+      if ( Object.hasOwnProperty(hashParams, "reset") ) {
         return new Promise(function(resolve, reject) {
           self.stack.set({
             class: 'foam.nanos.auth.ChangePasswordView',
@@ -802,6 +805,16 @@ foam.CLASS({
            }, self);
           self.loginSuccess$.sub(resolve);
         });
+      }
+
+      // pull JWT from hash if present and use it to login
+
+      if ( hashParams.id_token ) {
+        return this.clientPromise.then(c =>
+          c.auth.loginWithCredentials(this.__context__, this.JWTCredentials.create({
+            token: hashParams.id_token
+          }))
+        )
       }
 
       return new Promise(function(resolve, reject) {

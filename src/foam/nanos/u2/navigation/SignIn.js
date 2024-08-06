@@ -279,6 +279,28 @@ foam.CLASS({
       }
     },
     {
+      name: 'signInWithGoogle',
+      label: 'Sign in With Google',
+      section: 'footerSection',
+      isAvailable: function(showAction) { return showAction; },
+      code: function(X) {
+        var nonce = crypto.randomUUID();
+
+        var reqParams = {
+          response_type: 'id_token',
+          client_id: '459191378068-1mtto5algfu1q4b7oc33tj7ci7hm82ua.apps.googleusercontent.com',
+          scope: 'openid email',
+          redirect_uri: 'http://localhost:8080',
+          nonce: nonce
+        }
+
+        var uri = 'https://accounts.google.com/o/oauth2/v2/auth'
+
+        // TODO Run this in a separate window supported by nanos?
+        window.location = uri + '?' + Object.entries(reqParams).map(v => v.map(p => encodeURIComponent(p)).join('=')).join('&')
+      }
+    },
+    {
       name: 'footer',
       label: 'Create an Account',
       section: 'footerSection',

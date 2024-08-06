@@ -28,7 +28,8 @@ foam.CLASS({
   imports: [
     'DAO localGroupDAO',
     'DAO localSessionDAO',
-    'DAO localUserDAO'
+    'DAO localUserDAO',
+    'UniqueUserService uniqueUserService'
   ],
 
   javaImports: [
@@ -99,6 +100,30 @@ foam.CLASS({
       javaCode: '// nothing here'
     },
     {
+      name: 'loginWithCredentials',
+      javaCode: `
+        if ( ! ( credentials instanceof UsernamePasswordCredentials ) ) {
+          throw new AuthenticationException("unsupported credentials");
+        }
+        
+        UsernamePasswordCredentials creds = (UsernamePasswordCredentials)credentials;
+        String username = creds.getUsername();
+        String password = creds.getPassword();
+        
+        User user = getUniqueUserService().getUser(x, username);
+        
+        if ( user == null ) {
+          throw new UserNotFoundException();
+        }
+        
+        if ( ! Password.verify(password, user.getPassword()) ) {
+          throw new InvalidPasswordException();
+        }
+        
+        return UserAndGroupAuthService.loginUser(getX(), x, user); 
+      `
+    },
+    {
       name: 'getCurrentSubject',
       javaCode: `
         try {
@@ -125,117 +150,11 @@ foam.CLASS({
       `
     },
     {
-      name: 'loginUser',
-      documentation: 'Logs the current session into the provided user if possible',
-      type: 'User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'user',
-          type: 'User'
-        },
-      ],
-      javaThrows: ['foam.nanos.auth.AuthenticationException'],
-      javaCode: `
-      if ( user == null ) {
-        throw new UserNotFoundException();
-      }
-      
-      // check if user enabled
-      user.validateAuth(x);
-      
-      X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-      
-      // check if group enabled
-      Group group = user.findGroup(userX);
-      if ( group != null && ! group.getEnabled() ) {
-        throw new AccessDeniedException();
-      }
-      try {
-        group.validateCidrWhiteList(x);
-      } catch (foam.core.ValidationException e) {
-        throw new AccessDeniedException(e);
-      }
-
-      // ensure session exists
-      Session session = x.get(Session.class);
-      if ( session == null ) {
-        throw new AuthenticationException("No session exists.");
-      }
-      
-      // check for two-factor authentication
-      if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
-        throw new AuthenticationException("User requires two-factor authentication");
-      }
-      
-      // Re use the session context if the current session context's user id matches the id of the user trying to log in
-      if ( session.getUserId() == user.getId() ) {
-        return user;
-      }
-
-      // Freeze user
-      user = (User) user.fclone();
-      user.freeze();
-      session.setUserId(user.getId());
-      if ( check(userX, "*") ) {
-        String msg = "Admin login for " + user.getId() + " succeeded on " + System.getProperty("hostname", "localhost");
-        ((foam.nanos.logger.Logger) x.get("logger")).warning(msg);
-      }
-      ((DAO) getLocalSessionDAO()).inX(x).put(session);
-      session.setContext(session.applyTo(session.getContext()));
-      return user;
-      `
-    },
-    {
-      name: 'loginHelper',
-      documentation: `Helper function to reduce duplicated code.`,
-      type: 'User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'user',
-          type: 'User'
-        },
-        {
-          name: 'password',
-          type: 'String'
-        }
-      ],
-      javaThrows: ['foam.nanos.auth.AuthenticationException'],
-      javaCode: `
-      try {
-        if ( ! Password.verify(password, user.getPassword()) ) {
-          throw new InvalidPasswordException();
-        }
-        
-        return loginUser(x, user)
-      } catch ( AuthenticationException e ) {
-        // TODO What is this doing?
-        if ( user != null &&
-             ( check(x.put("subject", new Subject.Builder(x).setUser(user).build()), "*") ) ) {
-          String msg = "Admin login for " + user.getId() + " failed on " + System.getProperty("hostname", "localhost");
-          ((foam.nanos.logger.Logger) x.get("logger")).warning(msg);
-        }
-        throw e;
-      }
-      `
-    },
-    {
       name: 'login',
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        User user = ((UniqueUserService) x.get("uniqueUserService")).getUser(x, identifier, password);
-        if ( user == null ) {
-          throw new UserNotFoundException();
-        }
-        return loginHelper(x, user, password);
+        return loginWithCredentials(x, new UsernamePasswordCredentials(x, identifier, password));
       `
     },
     {
@@ -498,5 +417,83 @@ foam.CLASS({
         return true;
       `
     }
+  ],
+  static: [
+    {
+      name: 'loginUser',
+      documentation: `Helper function to reduce duplicated code.`,
+      type: 'User',
+      args: [
+        {
+          name: 'serviceX',
+          type: 'Context'
+        },
+        {
+          name: 'requestX',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'User'
+        },
+      ],
+      javaThrows: ['foam.nanos.auth.AuthenticationException'],
+      javaCode: `
+      try {
+        if ( user == null ) {
+          throw new UserNotFoundException();
+        }
+        user.validateAuth(requestX);
+        // check if user enabled
+        if ( user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) {
+          throw new AccessDeniedException();
+        }
+        // check if user login enabled
+        if ( ! user.getLoginEnabled() ) {
+          throw new AccessDeniedException();
+        }
+        // check if group enabled
+        X userX = requestX.put("subject", new Subject.Builder(requestX).setUser(user).build());
+        Group group = user.findGroup(userX);
+        if ( group != null && ! group.getEnabled() ) {
+          throw new AccessDeniedException();
+        }
+        try {
+          group.validateCidrWhiteList(requestX);
+        } catch (foam.core.ValidationException e) {
+          throw new AccessDeniedException(e);
+        }
+
+        Session session = requestX.get(Session.class);
+        // check for two-factor authentication
+        if ( user.getTwoFactorEnabled() && ! session.getTwoFactorSuccess() ) {
+          throw new AuthenticationException("User requires two-factor authentication");
+        }
+        // Re use the session context if the current session context's user id matches the id of the user trying to log in
+        if ( session.getUserId() == user.getId() ) {
+          return user;
+        }
+
+        // Freeze user
+        user = (User) user.fclone();
+        user.freeze();
+        session.setUserId(user.getId());
+        if ( ((AuthService)serviceX.get("auth")).check(userX, "*") ) {
+          String msg = "Admin login for " + user.getId() + " succeeded on " + System.getProperty("hostname", "localhost");
+          ((foam.nanos.logger.Logger) requestX.get("logger")).warning(msg);
+        }
+        ((DAO)serviceX.get("localSessionDAO")).inX(requestX).put(session);
+        session.setContext(session.applyTo(session.getContext()));
+        return user;
+      } catch ( AuthenticationException e ) {
+        if ( user != null &&
+             ( ((AuthService)serviceX.get("auth")).check(requestX.put("subject", new Subject.Builder(requestX).setUser(user).build()), "*") ) ) {
+          String msg = "Admin login for " + user.getId() + " failed on " + System.getProperty("hostname", "localhost");
+          ((foam.nanos.logger.Logger) requestX.get("logger")).warning(msg);
+        }
+        throw e;
+      }
+      `
+    },
   ]
 });

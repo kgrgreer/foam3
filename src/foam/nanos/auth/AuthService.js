@@ -67,6 +67,26 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'loginWithCredentials',
+      documentation: `
+        Log in the user with the provided credentials
+      `,
+      async: true,
+      type: 'foam.nanos.auth.User',
+      javaThrows: ['foam.nanos.auth.AuthenticationException'],
+      swiftThrows: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'credentials',
+          type: 'Object'
+        }
+      ]
+    },
+    {
       name: 'login',
       documentation: `
         Log the user in using their identifier (email or username) and password to

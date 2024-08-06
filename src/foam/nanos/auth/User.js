@@ -946,7 +946,7 @@ foam.CLASS({
         }
         
         // check if user login enabled
-        if ( ! user.getLoginEnabled() ) {
+        if ( ! getLoginEnabled() ) {
           throw new AccessDeniedException();
         }
         
