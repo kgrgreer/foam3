@@ -41,6 +41,8 @@ foam.CLASS({
     ^ .table-row {
       padding-left: 20px;
       padding-right: 20px;
+      border-bottom: 1px solid $grey200;
+      
     }
     ^ div.table-row:last-child > div {
       border-bottom: none;
@@ -64,7 +66,6 @@ foam.CLASS({
     }
     ^grid-container {
       display: grid;
-      grid-template-rows: repeat(6, 1fr);
       height: 100%;
     }
   `,

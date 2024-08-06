@@ -72,7 +72,7 @@ foam.CLASS({
       font-style: normal;
       font-weight: 600;
       font-size: 1.4rem;
-      line-height: 1.29;
+      line-height: 1.5;
       margin: 0;
     }
     .h700{
@@ -221,7 +221,7 @@ foam.CLASS({
 
     .enum-label {
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: normal;
       line-height: 2.1em;
       text-align: center;
