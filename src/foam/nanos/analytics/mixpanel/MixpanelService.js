@@ -25,6 +25,7 @@ foam.CLASS({
 
     'java.io.IOException',
     'java.util.Arrays',
+    'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.HashSet',
     'org.json.JSONObject'
@@ -42,6 +43,18 @@ foam.CLASS({
     {
       class: 'String',
       name: 'projectToken'
+    },
+    {
+      class: 'Object',
+      name: 'deliveryQueue',
+      documentation: `
+        sendMixpanelEvent pushes messages to queue for mixpaneldeliverythread
+        to poll and send to mixpanel in batches
+      `,
+      javaType: 'ConcurrentLinkedQueue<JSONObject>',
+      javaFactory: `
+        return new ConcurrentLinkedQueue<JSONObject>();
+      `
     }
   ],
 
@@ -53,17 +66,10 @@ foam.CLASS({
         if ( ! isWhitelisted(x, event) ) return;
         String trackingId = event.getSessionId();
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
-        MixpanelAPI mixpanel = new MixpanelAPI();
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
-        ClientDelivery delivery = new ClientDelivery();
-        delivery.addMessage(sentEvent);
-        try {
-          mixpanel.deliver(delivery);
-        } catch (IOException e) {
-          Loggers.logger(x, this).error("Failed sending analyticEvent:", event.getId(), "Can't communicate with Mixpanel");
-        }
+        getDeliveryQueue().add(sentEvent);
       `
     },
     {
