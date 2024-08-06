@@ -23,7 +23,6 @@ foam.CLASS({
 
     'foam.core.X',
     'foam.nanos.logger.Loggers',
-    'foam.nanos.NanoService',
 
     'java.io.IOException',
     'org.json.JSONObject'
