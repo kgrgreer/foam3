@@ -41,7 +41,6 @@ foam.CLASS({
             userProps.put("$name", user.getUserName());
             userProps.put("$user_name", user.getUserName());
             userProps.put("$ip", IPSupport.instance().getRemoteIp(x));
-            userProps.put("$city", GeolocationSupport.instance().getCity());
             setUTMParams(x, trackingId, userProps);
 
             ((MixpanelService) x.get("mixpanelService")).sendUserProperties(x, user, userProps);
