@@ -48,8 +48,8 @@ foam.CLASS({
       class: 'Object',
       name: 'deliveryQueue',
       documentation: `
-        sendMixpanelEvent pushes messages to queue for mixpaneldeliverythread
-        to poll and send to mixpanel in batches
+        sendMixpanelEvent pushes messages to queue for minutely
+        cronjob to batch send to mixpanel
       `,
       javaType: 'ConcurrentLinkedQueue<JSONObject>',
       javaFactory: `
