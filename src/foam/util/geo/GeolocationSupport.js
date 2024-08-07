@@ -15,7 +15,6 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
     'java.io.File',
@@ -76,7 +75,8 @@ foam.CLASS({
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
           var ip = InetAddress.getByName(ipStr);
-          File database = new File("./foam3/GeoLite2-City/GeoLite2-City.mmdb");
+          var filePath = System.getProperty("JOURNAL_HOME") + "/GeoLite2-City/GeoLite2-City.mmdb";
+          File database = new File(filePath);
           try {
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
             try {
