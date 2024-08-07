@@ -55,6 +55,14 @@ foam.CLASS({
       javaFactory: `
         return new ConcurrentLinkedQueue<JSONObject>();
       `
+    },
+    {
+      class: 'Object',
+      name: 'mixpanel',
+      javaType: 'MixpanelAPI',
+      javaFactory: `
+        return new MixpanelAPI();
+      `
     }
   ],
 
@@ -62,6 +70,9 @@ foam.CLASS({
     {
       name: 'sendMixpanelEvent',
       args: 'X x, AnalyticEvent event, JSONObject props',
+      documentation: `
+        add event to deliveryqueue to be delivered by a cronjob
+      `,
       javaCode: `
         if ( ! isWhitelisted(x, event) ) return;
         String trackingId = event.getSessionId();
@@ -69,7 +80,7 @@ foam.CLASS({
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
-        getDeliveryQueue().add(sentEvent);
+        put(sentEvent);
       `
     },
     {
@@ -79,7 +90,6 @@ foam.CLASS({
         String trackingId = user.getTrackingId();
 
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
-        MixpanelAPI mixpanel = new MixpanelAPI();
 
         AuthService auth = (AuthService) x.get("auth");
         var isAdmin = user != null
@@ -92,7 +102,7 @@ foam.CLASS({
           JSONObject updateProfile = messageBuilder.set(trackingId, props);
 
           try {
-            mixpanel.sendMessage(updateProfile);
+            getMixpanel().sendMessage(updateProfile);
           } catch (IOException e) {
             Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
           }
@@ -113,6 +123,42 @@ foam.CLASS({
           getWhitelistCache().put(spid, whitelist);
         }
         return whitelist.contains(event.getName());
+      `
+    },
+    {
+      name: 'put',
+      documentation: `add message to deliveryqueue`,
+      args: 'JSONObject message',
+      javaCode: `
+        getDeliveryQueue().add(message);
+      `
+    },
+    {
+      name: 'deliver',
+      args: 'X x',
+      documentation: `batch deliver all messages in queue, called from cronjob`,
+      javaCode: `
+        var counter = getDeliveryQueue().size();
+        int messageCount = 0;
+        try {
+          ClientDelivery clientDelivery = new ClientDelivery();
+          JSONObject message = null;
+          while ( counter > 0 ) {
+            // add Messages
+            message = getDeliveryQueue().poll();
+            if ( message != null && clientDelivery.isValidMessage(message) ) {
+              messageCount++;
+              counter--;
+              clientDelivery.addMessage(message);
+            } else {
+              Loggers.logger(x, this).error("Invalid mixpanel message:", message.toString());
+            }
+          }
+          if ( messageCount > 0 ) getMixpanel().deliver(clientDelivery);
+          Loggers.logger(x, this).info("Delivered", messageCount, " messages to mixpanel");
+        } catch (IOException e) {
+          Loggers.logger(x, this).error("Can't communicate with Mixpanel.", e.getMessage());
+        }
       `
     }
   ]
