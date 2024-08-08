@@ -394,7 +394,7 @@ foam.CLASS({
     {
       name: 'isUserAnonymous',
       documentation: `
-        Returns true if user being checked matches the anonymus user of the current spid.
+        Returns true if user being checked matches the anonymous user of the current spid.
       `,
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");

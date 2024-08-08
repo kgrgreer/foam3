@@ -17,12 +17,10 @@ foam.CLASS({
   css: `
     ^ {
       padding-right: 8px;
-      margin: 8px;
       display: flex;
       background: #EEE;
       width: 220px;
       border-radius: 5px;
-      height: 44px;
     }
     ^:hover {
       background: #DDD;
@@ -43,7 +41,6 @@ foam.CLASS({
       border: none;
       border-radius: 4px;
       margin: 4px;
-      margin-right: -4px;
       background: gray;
       color: white;
     }

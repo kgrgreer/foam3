@@ -110,7 +110,7 @@ foam.CLASS({
             return data$mode == 'config' ? 'inherit' : ( width + 'px' );
           }),
           height: this.slot(function(data$mode, height) {
-            return data$mode == 'config' ? 'inherit' : ( height + 'px' );
+            return data$mode == 'config' ? 'fit-content' : ( height + 'px' );
           })
         }).
         addClass(this.myClass()).

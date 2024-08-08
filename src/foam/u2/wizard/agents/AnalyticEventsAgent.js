@@ -12,14 +12,12 @@ foam.CLASS({
   requires: ['foam.nanos.analytics.AnalyticEvent'],
 
   imports: [
-    'analyticEventDAO',
-    'sessionID',
+    'logAnalyticEvent',
     'window'
   ],
 
   exports: [
     'analyticsAgent',
-    'logAnalyticsEvent',
     'wizardTraceID'
   ],
 
@@ -55,7 +53,12 @@ foam.CLASS({
     function execute() {
       var self = this;
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
-        self.logAnalyticsEvent(evt);
+        self.logAnalyticEvent({
+          name:     evt.name,
+          extra:    evt.extra,
+          traceId:  self.traceIDKey$get(self.__subContext__) || self.wizardTraceID,
+          objectId: self.objectIDKey$get(self.__subContext__)
+        });
       });
 
       if (this.createTraceID && !this.traceIdKey) {
@@ -87,29 +90,19 @@ foam.CLASS({
       if ( this.logDeviceInfo ) {
         this.analyticsAgent.pub('event', {
           name: 'USER_AGENT',
-          extra: this.window.navigator.userAgent
+          extra: foam.json.stringify({ model: this.window.navigator.userAgent })
         });
 
         this.analyticsAgent.pub('event', {
           name: 'SCREEN_RESOLUTION',
-          extra: `${this.window.screen.width}x${this.window.screen.height}`
+          extra: foam.json.stringify({ screenResolution: `${this.window.screen.width}x${this.window.screen.height}` })
         });
 
         this.analyticsAgent.pub('event', {
           name: 'WINDOW_RESOLUTION',
-          extra: `${this.window.innerWidth}x${this.window.innerHeight}`
+          extra: foam.json.stringify({ resolution: `${this.window.innerWidth}x${this.window.innerHeight}` })
         });
       }
-    },
-
-    async function logAnalyticsEvent(evt) {
-      var traceId = this.traceIDKey$get(this.__subContext__) || this.wizardTraceID;
-      var objectId = this.objectIDKey$get(this.__subContext__);
-      var sessionId = this.sessionID;
-      
-      // TODO: add subclass support
-      var analyticEvent = this.AnalyticEvent.create({...evt, traceId, objectId, sessionId});
-      await this.analyticEventDAO.put(analyticEvent);
     }
   ]
 });

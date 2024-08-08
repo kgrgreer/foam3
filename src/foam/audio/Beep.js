@@ -89,16 +89,22 @@ foam.CLASS({
 
   actions: [
     function play() {
-      var audio       = new this.window.AudioContext();
-      var now         = audio.currentTime;
-      var destination = audio.destination;
-      var o           = audio.createOscillator();
+      var cleanupAgents = [];
+      var audio         = new this.window.AudioContext();
+      var now           = audio.currentTime;
+      var destination   = audio.destination;
+      var o             = audio.createOscillator();
       var gain, fm, fmGain, am, amGain, env;
+
+      function connect(src, destination) {
+        src.connect(destination);
+        cleanupAgents.push(() => src.disconnect(destination));
+      }
 
       if ( this.gain !== 1 || this.amFrequency ) {
         gain = audio.createGain();
         gain.gain.value = this.gain;
-        gain.connect(destination);
+        connect(gain, destination);
         destination = gain;
       }
 
@@ -111,22 +117,23 @@ foam.CLASS({
  //       env.gain.linearRampToValueAtTime(this.sustain/100, now+(this.duration-this.release)/1000);
         env.gain.setValueAtTime(this.sustain/100, now+(this.duration-this.release)/1000);
         env.gain.linearRampToValueAtTime(0, now+this.duration/1000);
-        env.connect(destination);
+        connect(env, destination);
         destination = env;
       }
 
       o.frequency.value = this.frequency;
       o.type = this.type;
-      o.connect(destination);
+      connect(o, destination);
 
       if ( this.fmFrequency ) {
         fmGain = audio.createGain();
         fmGain.gain.value = this.fmAmplitude;
         fm = audio.createOscillator();
+        cleanupAgents.push(() => fm.stop(0));
         fm.frequency.value = this.fmFrequency;
         fm.type = this.fmType;
-        fm.connect(fmGain);
-        fmGain.connect(o.frequency);
+        connect(fm, fmGain);
+        connect(fmGain, o.frequency);
         fm.start();
       }
 
@@ -134,10 +141,11 @@ foam.CLASS({
         amGain = audio.createGain();
         amGain.gain.value = this.amAmplitude / 100;
         am = audio.createOscillator();
+        cleanupAgents.push(() => am.stop(0));
         am.frequency.value = this.amFrequency;
         am.type = this.amType;
-        am.connect(amGain);
-        amGain.connect(gain.gain);
+        connect(am, amGain);
+        connect(amGain, gain.gain);
         am.start();
       }
 
@@ -146,13 +154,7 @@ foam.CLASS({
 
       // There should be a better way to know when to cleanup.
       this.setTimeout(function() {
-        if ( gain   ) gain.disconnect(audio.destination);
-        if ( env    ) env.disconnect(audio.destination);
-        if ( fmGain ) fmGain.disconnect(o.frequency);
-        if ( fm     ) fm.stop(0);
-        if ( amGain ) amGain.disconnect(gain.gain);
-        if ( am     ) am.stop(0);
-        o.disconnect(destination);
+        cleanupAgents.forEach(agent => agent());
         audio.close();
       }, this.duration+1000);
     }

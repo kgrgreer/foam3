@@ -22,29 +22,18 @@ foam.INTERFACE({
       name: 'createSession',
       documentation: 'Creates a new session for the given user/agent. Returns the access token for the new session.',
       type: 'String',
-      args: [
-        { name: 'x',      type: 'Context' },
-        { name: 'userId', type: 'Long' },
-        { name: 'agentId', type: 'Long' }
-      ]
+      args: 'Context x, Long userId, Long agentId'
     },
     {
       name: 'createSessionWithTTL',
       documentation: 'Creates a new session for the given user/agent with the specified time to live. Returns the access token for the new session.',
       type: 'String',
-      args: [
-        { name: 'x',      type: 'Context' },
-        { name: 'userId', type: 'Long' },
-        { name: 'agentId', type: 'Long' },
-        { name: 'ttl',    type: 'Long' }
-      ]
+      args: 'Context x, Long userId, Long agentId, Long ttl'
     },
     {
       name: 'expireSession',
       documentation: 'Expire your own session',
-      args: [
-        { name: 'x',      type: 'Context' }
-      ]
+      args: 'Context x'
     }
   ],
 });

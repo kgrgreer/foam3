@@ -74,6 +74,8 @@ foam.CLASS({
 
   properties: [ 'element_' ],
 
+  constants: { U3: true },
+
   methods: [
     function toE() { return this; },
 
@@ -144,6 +146,8 @@ foam.CLASS({
       code: function() {
         var update_ = val => {
           var n;
+
+          if ( foam.core.Slot.isInstance(val) ) { debugger; }
 
           if ( val === undefined || val === null ) {
             n = foam.u2.Text.create({}, this);
@@ -302,7 +306,7 @@ foam.CLASS({
           this.self.appendChild_ = c => {
             this.self.element_.insertBefore(c, this.element_);
           };
-          var e = this.code.call(this.self, d);
+          var e = this.code.call(this.self.startContext({data: d}), d);
           if ( e ) {
             // TODO: remove after port from U2 to U3
             console.log('Deprecated use of select({return E}). Just do self.start() instead.');
@@ -1062,10 +1066,14 @@ foam.CLASS({
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          if ( enabled ) {
-            this.element_.classList.add(parts[i]);
+          if ( ! this.element_.classList ) {
+            console.warn("Can't set class of document fragments.");
           } else {
-            this.element_.classList.remove(parts[i]);
+            if ( enabled ) {
+              this.element_.classList.add(parts[i]);
+            } else {
+              this.element_.classList.remove(parts[i]);
+            }
           }
         }
       }
@@ -1192,6 +1200,12 @@ foam.CLASS({
 
     function addChild_(c, parentNode) {
       if ( c === null || c === undefined ) return;
+
+      if ( foam.Array.isInstance(c) ) {
+        for ( var i = 0 ; i < c.length ; i++ )
+          this.addChild_(c[i], parentNode);
+        return;
+      }
 
       if ( c.toE ) {
         c = c.toE(null, this.__subSubContext__);

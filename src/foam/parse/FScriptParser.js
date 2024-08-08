@@ -108,6 +108,7 @@ foam.CLASS({
       testOutput('1==1 ||2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
       testOutput('1==1|| 2==2' , m.OR (m.EQ(1, 1), m.EQ(2, 2)));
       testOutput('1==1 || 2==2', m.OR (m.EQ(1, 1), m.EQ(2, 2)));
+      testOutput('"K":firstName', m.IN('K', foam.parse.Test.FIRST_NAME));
     },
 
     function test2__() {
@@ -194,7 +195,8 @@ foam.CLASS({
               literal('>=', this.GTE),
               literal('<',  this.LT),
               literal('>',  this.GT),
-              literal('~',  this.REG_EXP)
+              literal('~',  this.REG_EXP),
+              literal(':',  this.IN)
             ),
             optional(' '),
             sym('value')),

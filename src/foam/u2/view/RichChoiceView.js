@@ -460,6 +460,7 @@ foam.CLASS({
       class: 'String',
       value: 'id'
     },
+    'inputField',
     {
       class: 'FObjectProperty',
       of: 'foam.u2.Element',
@@ -471,13 +472,6 @@ foam.CLASS({
           parentEdgePadding: '4',
           lockToParentWidth: true
         });
-      }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'inputView',
-      factory: function() {
-        return foam.u2.tag.Input.create({focused: true});
       }
     },
     'selectionEl_'
@@ -523,12 +517,12 @@ foam.CLASS({
                 .end()
                 .startContext({ data: self })
                   .addClass(self.myClass('search'))
-                  .add(self.FILTER_.clone().copyFrom({ view: {
-                    class: 'foam.u2.view.TextField',
+                  .tag(self.FILTER_.clone().copyFrom({ view: {
+                    class: 'foam.u2.TextField',
                     placeholder: this.searchPlaceholder || 'Search... ',
-                    onKey: true,
-                    view: self.inputView
-                  } }))
+                    focused: true,
+                    onKey: true
+                  } }), {}, self.inputField$)
                 .endContext()
               .end();
           }))
@@ -593,7 +587,7 @@ foam.CLASS({
                   if ( self.mode === foam.u2.DisplayMode.RW ) {
                     self.dropdown_.parentEl = self.selectionEl_.el_();
                     self.dropdown_.open(x, y);
-                    self.inputView.focused = true;
+                    if ( self.inputField ) self.inputField.focused = true;
                   }
                   e.preventDefault();
                   e.stopPropagation();

@@ -46,7 +46,7 @@ public abstract class AbstractArrayPropertyInfo
             }
             break;
           case XMLStreamConstants.END_ELEMENT:
-            if ( reader.getLocalName().equals(startTag) ) break;
+            if ( reader.getLocalName().equals(startTag) ) return;
         }
       }
     } catch (XMLStreamException ex) {

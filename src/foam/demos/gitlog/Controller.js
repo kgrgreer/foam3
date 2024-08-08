@@ -173,6 +173,8 @@ foam.CLASS({
         aCounts[month]++;
       });
 
+      self.data.authorTotalSalaries = {};
+
       this.
         addClass(this.myClass()).
         start('table')
@@ -217,6 +219,7 @@ foam.CLASS({
 
             // Totals
             start('th').attr('nowrap', true).call(function() {
+              self.data.authorTotalSalaries[a[0]] = ( total / allTotal ) * salaryTotal;
               self.cell(this, total, allTotal, salaryTotal);
             }).end().
           end();
@@ -229,7 +232,6 @@ foam.CLASS({
             this.start('th').attr('nowrap', true).call(function() {
               var monthlySalaryTotal = Object.values(salaries).reduce((sum, s) => s[i] + sum, 0);
               totalSalary += monthlySalaryTotal;
-              debugger;
               self.cell(this, c, allCounts[i], monthlySalaryTotal);
             }).end();
           }).
@@ -985,6 +987,33 @@ var commits = this.commits.filter(c => this.match(c, this.query, this.author, '/
           end();
         }).
       end();
+    },
+
+    function sredReport() {
+      var output = '';
+      function o(...args) {
+        output += args.join('');
+      }
+//      o('Employee Name,SR&ED Role,Salary,Bonus & Taxable Benefits,Total Hours,SR&ED Hours,SR&ED %,SR&ED Salary,SR&ED Bonus & Taxable Benefits,Salary for Proxy Overhead,Province\n');
+      o('Employee Name,SR&ED Role,Salary,Bonus & Taxable Benefits,SR&ED %,SR&ED Salary,SR&ED Bonus & Taxable Benefits,Salary for Proxy Overhead,Total,Province\n');
+      this.authors.slice(1).forEach(a => {
+        a = a[0];
+        var salary      = this.salaries[a].reduce((sum, s) => s + sum, 0);
+        var p           = this.authorTotalSalaries[a] / salary;
+        var sredSalary  = this.authorTotalSalaries[a]; // p * salary;
+        var proxySalary = 0.55 * sredSalary;
+
+        o(a, ',', 'Product,');
+        o('$', Math.round(salary));
+        o(',,');
+        o(Math.round(100*p), '%',);
+        o(',$', Math.round(sredSalary), ',');
+        o(',$', Math.round(proxySalary));
+        o(',$', Math.round(sredSalary + proxySalary));
+        o(',ON\n');
+      });
+      document.body.innerText = output;
+      return output;
     }
   ]
 });

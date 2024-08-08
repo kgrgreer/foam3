@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 foam.CLASS({
   package: 'foam.demos.u2',
   name: 'VisibilityTest',
@@ -147,7 +148,7 @@ foam.CLASS({
   requires: [
     'foam.demos.u2.VisibilityTest',
     'foam.u2.ControllerMode',
-    'foam.u2.detail.SectionedDetailView',
+    'foam.u2.detail.VerticalDetailView as DetailView',
     'foam.u2.layout.DisplayWidth',
     'foam.u2.layout.Grid',
     'foam.u2.layout.GUnit'
@@ -367,22 +368,22 @@ foam.CLASS({
               .start(this.GUnit, { columns: 4 })
                 .startContext({ controllerMode: this.ControllerMode.CREATE })
                   .start('h2').add('Create').end()
-                  .tag(this.SectionedDetailView, { data: this.VisibilityTest.create() })
+                  .tag(this.DetailView, { data: this.VisibilityTest.create() })
                 .endContext()
               .end()
               .start(this.GUnit, { columns: 4 })
                 .startContext({ controllerMode: this.ControllerMode.VIEW })
                   .start('h2').add('View').end()
-                  .tag(this.SectionedDetailView, { data: this.VisibilityTest.create() })
+                  .tag(this.DetailView, { data: this.VisibilityTest.create() })
                 .endContext()
               .end()
               .start(this.GUnit, { columns: 4 })
                 .startContext({ controllerMode: this.ControllerMode.EDIT })
                   .start('h2').add('Edit').end()
-                  .tag(this.SectionedDetailView, { data: this.VisibilityTest.create() })
+                  .tag(this.DetailView, { data: this.VisibilityTest.create() })
                 .endContext()
               .end()
-            .end()
+            .end();
         }))
 
         .start('h2')

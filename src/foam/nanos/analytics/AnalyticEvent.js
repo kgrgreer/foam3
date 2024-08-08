@@ -13,8 +13,12 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.AuthorizationException'
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.session.Session'
   ],
 
   properties: [
@@ -47,13 +51,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sessionId',
-      preSet: function(old, nu) {
-        return nu && nu.split('-')[0] || nu;
+      factory: function() {
+        var subject = this.__context__.subject;
+        if ( subject ) {
+          var user = subject.user;
+          if ( user && user.id > 0 && user.trackingId ) {
+            return user.trackingId;
+          }
+        }
+        return this.__context__.sessionID;
       },
-      javaPreSet: `
-      if ( ! foam.util.SafetyUtil.isEmpty(val) ) {
-        val = val.split("-")[0];
-      }
+      javaFactory: `
+        Subject subject = (Subject) getX().get("subject");
+        if ( subject != null ) {
+          User user = subject.getUser();
+          if ( user != null && user.getId() > 0 ) {
+            if ( ! "".equals(user.getTrackingId()) ) return user.getTrackingId();
+            return String.valueOf(user.getId());
+          }
+        }
+        Session session = getX().get(Session.class);
+        if ( session != null ) return session.getId();
+        return "system";
       `
     },
     {
@@ -62,16 +81,35 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'extra'
+      name: 'extra',
+      documentation: 'a string or a json string'
+    },
+    {
+      class: 'String',
+      name: 'userAgent',
+      factory: function() {
+        return window.navigator.userAgent;
+      }
+    },
+    {
+      class: 'String',
+      name: 'ip',
+      javaFactory: `
+        X x = foam.core.XLocator.get();
+        return foam.net.IPSupport.instance().getRemoteIp(x);
+      `
     }
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      this.sessionId;
+      this.userAgent;
+    },
     {
       name: 'authorizeOnCreate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // nop - open to write
@@ -79,9 +117,7 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnRead',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -94,9 +130,7 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnUpdate',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -109,9 +143,7 @@ foam.CLASS({
     },
     {
       name: 'authorizeOnDelete',
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
+      args: 'Context x',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -121,6 +153,6 @@ foam.CLASS({
           throw new AuthorizationException();
         }
       `
-    },
+    }
   ]
 })

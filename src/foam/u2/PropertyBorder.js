@@ -164,6 +164,7 @@ foam.CLASS({
         May cause weird styling outside nanos
       */
       min-height: 1.25em;
+      font-size: smaller;
       justify-content: flex-start;
       gap: 0.2rem;
     }

@@ -21,9 +21,11 @@ foam.CLASS({
     'ctrl',
     'emailVerificationService',
     'logAnalyticEvent',
+    'login',
     'loginSuccess',
     'loginView?',
     'notify?',
+    'pushMenu',
     'routeTo',
     'stack',
     'subject',
@@ -192,7 +194,7 @@ foam.CLASS({
       documentation: `Input to associate new user with something.`,
       postSet(_, n) {
         if ( n ) {
-          this.logAnalyticEvent('SIGNUP_WITH_REFERRAL_CODE', '', x.sessionID, n);
+          this.logAnalyticEvent({ name: 'SIGNUP_WITH_REFERRAL_CODE', extra: foam.json.stringify({ referralToken: n }) });
         }
       },
       factory: function() {
@@ -216,11 +218,7 @@ foam.CLASS({
       name: 'emailVerifiedListener',
       code: async function() {
         try {
-          await this.auth.login(x, this.userName, this.desiredPassword);
-          this.subject = this.ctrl.__subContext__.auth.getCurrentSubject(null);
-          this.loginSuccess = true;
-          await this.ctrl.reloadClient();
-          await this.ctrl.onUserAgentAndGroupLoaded();
+          await this.login(this.userName, this.desiredPassword);
         } catch(err) {
           this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
@@ -287,7 +285,13 @@ foam.CLASS({
     {
       name: 'login_',
       code: async function(x) {
-        this.logAnalyticEvent('USER_CLICKED_GET_STARTED', '', this.sessionID, '' );
+        var urlParams = new URLSearchParams(window.location.search);
+        var eventExtras = {
+          utm_source: urlParams.get('utm_source'),
+          utm_medium: urlParams.get('utm_medium'), 
+          utm_campaign: urlParams.get('utm_campaign')
+        }
+        this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED', extra: foam.json.stringify(eventExtras) });
         let createdUser = this.User.create({
           userName: this.userName,
           email: this.email,
@@ -307,7 +311,9 @@ foam.CLASS({
         if ( user ) {
           this.subject.realUser = user;
           this.subject.user = user;
-          this.logAnalyticEvent('USER_CREATED_SIGN_UP', '', this.sessionID, 'User ID: ' + user.id + ' Email: ' + user.email );
+          eventExtras['User ID'] = user.id;
+          eventExtras['Email'] = user.email;
+          this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: foam.json.stringify(eventExtras) });
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {

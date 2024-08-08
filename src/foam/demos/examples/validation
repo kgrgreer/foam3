@@ -23,7 +23,7 @@ foam.CLASS({
 //    { class: 'Float', name: '' },
 //    { class: 'Double', name: '' },
     { class: 'EMail', name: 'email' },
-//    { class: 'PhoneNumber', name: 'phoneNumber' }, // TODO: has REGEX problem
+    { class: 'PhoneNumber', name: 'phoneNumber' },
     { class: 'URL', name: 'url' },
     { class: 'Website', name: 'website' },
 //    { class: '', name: '' },
@@ -63,7 +63,8 @@ foam.CLASS({
       class: 'Int',
       name: 'age',
       minValue: 0,
-      maValue: 130
+      maValue: 130,
+      autoValidate: true
     },
     {
       class: 'String',
@@ -138,7 +139,7 @@ foam.CLASS({
       class: 'Date',
       name: 'returnDate',
       validateObj: function(returnFlight, departureDate, returnDate) {
-        if ( returnFlight && ! returnDate ) return 'Return date require for return flights.';
+        if ( returnFlight && ! returnDate ) return 'Return date required for return flights.';
         if ( ! returnFlight && returnDate ) return "Return date can't be specified for non return flights.";
         if ( foam.Date.compare(returnDate, departureDate) < 0 ) return "Can't return before you depart.";
       }
@@ -188,7 +189,7 @@ validateFlight();
 ##  Validation Errors in GUI
 --
 var f = Flight.create();
-// add(f);
+add(f);
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
 
 ## ValidationPredicates

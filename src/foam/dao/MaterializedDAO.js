@@ -21,13 +21,18 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.Detachable',
     'foam.core.FObject',
     'foam.dao.index.AddIndexCommand',
+    'foam.mlang.sink.Count',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.True',
-    'foam.core.Detachable'
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.Loggers',
+    'foam.util.concurrent.AbstractAssembly',
+    'foam.util.concurrent.AssemblyLine',
+    'foam.util.concurrent.AsyncAssemblyLine'
   ],
-
 
   documentation: `
     Create a Materialized View from a source DAO.
@@ -59,8 +64,14 @@ foam.CLASS({
       javaFactory: 'return new java.util.concurrent.LinkedBlockingQueue();'
     },
     {
+      documentation: 'true after maybeInit has started the worker thread',
       class: 'Boolean',
       name: 'initialized'
+    },
+    {
+      documentation: 'true when autoStart loading',
+      class: 'Boolean',
+      name: 'initializing'
     },
     {
       class: 'Object',
@@ -164,21 +175,19 @@ foam.CLASS({
       javaType: 'void',
       synchronized: true,
       javaCode: `
-        if ( ! getInitialized() ) {
+        if ( getInitializing() ||
+             getInitialized() ) return;
+
           Thread t = new Thread(this);
           t.setName("MaterializedDAO Processor: " + getDelegate());
           t.setDaemon(true);
           t.start();
 
           setInitialized(true);
-          AddIndexCommand cmd = new AddIndexCommand();
 
-          cmd.setIndex(new MaterializedDAOIndex(this));
-
-          // TODO: Set mode to PARALLEL to predicate and adapt
-          // initial data being loaded concurrently.
-          getSourceDAO().cmd(cmd);
-          // TODO: Now set mode to SERIAL to prevent timing ordering issues
+          if ( ! getAutoStart() ) {
+            addIndex();
+          }
 
           String[] daoKeys = getObservedDAOs();
           if ( daoKeys.length != 0 ) {
@@ -192,7 +201,6 @@ foam.CLASS({
               }, foam.mlang.MLang.TRUE);
             }
           }
-      }
       `
     },
     {
@@ -250,54 +258,101 @@ foam.CLASS({
         return this;
       `
     },
-
     {
       name: 'run',
       type: 'void',
       javaCode: `
-        Object[] cmd;
-        FObject  value;
-
         foam.core.XLocator.set(getX());
-
-        // TODO: Support two modes: SERIAL and PARALLEL
-        // SERIAL mode is as below
-        // PARALLEL mode only has to handle PUT, can just submit
-        // to threadpool
-        // Transition from PARALLEL to SERIAL needs to block until
-        // pool is drained. Might be easier to have own pool to make
-        // this easier. Or maintain a count.
         while ( true ) {
           try {
-            cmd = (Object[]) getQueue().take();
-
-            if ( cmd[0] == PUT ) {
-              value = (FObject) cmd[1];
-
-              if ( getPredicate().f(value) ) {
-                var obj = adapt(value);
-                if ( obj != null )
-                  getDelegate().put(obj);
-              }
-            } else if ( cmd[0] == REMOVE ) {
-              value = (FObject) cmd[1];
-
-              if ( getPredicate().f(value) ) {
-                var obj = getAdapter().fastAdapt(value);
-                if ( obj != null )
-                  getDelegate().remove(obj);
-              }
-            } else /* removeAll */ {
-              getDelegate().removeAll();
-            }
+            process((Object[]) getQueue().take());
           } catch (InterruptedException e) {}
         }
       `
     },
     {
+      name: 'process',
+      args: 'Object[] cmd',
+      javaCode: `
+        FObject  value;
+        if ( cmd[0] == PUT ) {
+          value = (FObject) cmd[1];
+
+          if ( getPredicate().f(value) ) {
+            var obj = adapt(value);
+            if ( obj != null )
+              getDelegate().put(obj);
+          }
+        } else if ( cmd[0] == REMOVE ) {
+          value = (FObject) cmd[1];
+
+          if ( getPredicate().f(value) ) {
+            var obj = getAdapter().fastAdapt(value);
+            if ( obj != null )
+              getDelegate().remove(obj);
+          }
+        } else /* removeAll */ {
+          getDelegate().removeAll();
+        }
+      `
+    },
+    {
+      name: 'addIndex',
+      javaCode: `
+        AddIndexCommand cmd = new AddIndexCommand();
+        cmd.setIndex(new MaterializedDAOIndex(this));
+        getSourceDAO().cmd(cmd);
+      `
+    },
+    {
       name: 'start',
       javaCode: `
-      if ( getAutoStart() ) maybeInit();
+      if ( getAutoStart() ) {
+        synchronized ( this ) {
+          if ( getInitialized() || getInitializing() ) return;
+          setInitializing(true);
+        }
+
+        Logger logger = Loggers.logger(getX(), this, getSourceDAO().getOf().getObjClass().getSimpleName(), "start");
+
+        foam.core.XLocator.set(getX());
+
+        try {
+          long count = ((Count) getSourceDAO().select(new Count())).getValue();
+          logger.info("initializing", count);
+          long processed = 0L;
+
+          addIndex();
+
+          AssemblyLine line = new AsyncAssemblyLine(getX(), this.getClass().getSimpleName());
+
+          // KGR: There is an unlikely race-condition with this design because an object could be
+          // deleted between when we do the Count and when we add the Index. Not very likely
+          // but possible. One fix would be to modify the Index interface so that the owning DAO
+          // would report to the Index when it is done feeding it with initial data. This would
+          // allow Indices to optimize that phase of the loading (like we're doing here).
+          // However, a much simpler fix is just to subtract some number from the count. Say:
+          count -= 100;
+          // It is very very unlikely the system could delete more than a hundred objects between
+          // two statements.
+
+          while ( processed < count ) {
+            try {
+              process((Object[]) getQueue().take());
+              processed += 1;
+            } catch (InterruptedException e) {
+              break;
+            }
+          }
+          line.shutdown();
+          logger.info("initialized", processed);
+        } catch (Throwable t) {
+          logger.error(t);
+        } finally {
+          setInitializing(false);
+          maybeInit();
+        }
+      }
       `
     }
   ]

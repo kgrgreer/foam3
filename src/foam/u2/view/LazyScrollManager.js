@@ -459,6 +459,11 @@ foam.CLASS({
           }
         });
 
+        // Only applicable for grouped lists as group headers would be the ones intersecting and the "topRow" would eval to 0 in the code above
+        if ( ! self.topRow && entries.length  ) {
+          self.topRow = entries[0].target.dataset.idx;
+        }
+
         if ( ! self.bottomRow && self.displayedRowCount_ <= 0 )
           self.bottomRow = self.pageSize_ > entries.length ? entries.length : self.pageSize_;
       }

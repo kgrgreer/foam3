@@ -176,6 +176,12 @@ foam.CLASS({
       documentation: 'Determines if notification is sent to all users in a group or system.'
     },
     {
+      class: 'Boolean',
+      name: 'inAppEnabled',
+      documentation: 'Determines if notification is displayed in the application.',
+      value: true
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
@@ -201,7 +207,6 @@ foam.CLASS({
       class: 'String',
       name: 'emailName',
       label: 'Email template name',
-      value: 'notification',
       documentation: 'Email template name.'
     },
     {

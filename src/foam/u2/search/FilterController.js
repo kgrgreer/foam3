@@ -25,7 +25,6 @@ foam.CLASS({
     'foam.u2.search.StringRefinement',
     'foam.u2.search.BooleanRefinement',
     'foam.u2.search.EnumRefinement',
-    'foam.u2.search.GroupAutocompleteSearchView',
     'foam.u2.search.GroupBySearchView',
     'foam.u2.search.PropertyRefinement',
     'foam.u2.search.SearchManager',

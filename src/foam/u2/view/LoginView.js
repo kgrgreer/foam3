@@ -38,7 +38,7 @@ foam.CLASS({
     'logAnalyticEvent',
     'loginSuccess',
     'currentMenu?',
-    'sessionID'
+    'params'
   ],
 
   requires: [
@@ -167,7 +167,11 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      this.logAnalyticEvent("VIEW_LOAD_LoginView_" + this.currentMenu?.id, '', this.sessionID, '');
+      if ( this.currentMenu ) {
+        this.logAnalyticEvent({ name: "VIEW_LOAD_LoginView_" + this.currentMenu.id });
+      } else {
+        this.logAnalyticEvent({ name: "VIEW_LOAD_LoginView" });
+      }
       // CREATE DATA VIEW
       this
         // Title txt and Data
@@ -237,11 +241,11 @@ foam.CLASS({
                 this.start().add(disclaimer).end()
               }
             ).callIf(self.data.showAction, function () {
-              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken})
-            }) 
+              this.tag(self.AppBadgeView, {isReferral: self.data.referralToken || self.params['utm_id']})
+            })
           })
         )
-        
+
     }
   ]
 });

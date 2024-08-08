@@ -68,11 +68,7 @@ foam.CLASS({
     },
     {
       name: 'hasSPIDPermission',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'operation', type: 'String' },
-        { name: 'userId', type: 'Long' }
-      ],
+      args: 'Context x, String operation, Long userId',
       type: 'Boolean',
       javaCode: `
         AuthService auth         = (AuthService) getAuth();
@@ -89,9 +85,9 @@ foam.CLASS({
     {
       name: 'expireSession',
       javaCode: `
-      var sessionId = ((Session)x.get(Session.class)).getId();
+      var sessionId  = ((Session)x.get(Session.class)).getId();
       var sessionDAO = (DAO) getX().get("sessionDAO");
-      var session = (Session) sessionDAO.find(sessionId);
+      var session    = (Session) sessionDAO.find(sessionId);
 
       if ( session == null ) throw new AuthenticationException("Current session not found");
 

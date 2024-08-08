@@ -1,7 +1,7 @@
 p({
-  class:"foam.nanos.notification.Notification",
-  id: 761590193,
-  template: "DAONotificationTest",
-  emailName: "DAONotificationEmailTemplateTest",
-  spid: "test"
+  "class":"foam.nanos.notification.Notification",
+  "id": 761590193,
+  "template": "761590193",
+  "emailName": "DAONotificationEmailTemplateTest-test",
+  "spid": "test"
 })

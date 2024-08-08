@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.analytics.AnalyticEvent',
-    'foam.nanos.session.Session',
     'java.util.Date'
   ],
 
@@ -48,8 +47,6 @@ foam.CLASS({
             event.setName(getEventName());
             event.setTraceId(getTraceId(obj));
 
-            var session = x.get(Session.class);
-            event.setSessionId(session.getId());
             event.setExtra(obj.getClass().getSimpleName() + " " + rule.getOperation().toString());
             if ( getTags().length > 0 ) event.setTags(getTags_(obj));
 

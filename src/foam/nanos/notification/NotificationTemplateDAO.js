@@ -78,11 +78,17 @@ the notification will be handled. `,
 
             // Can't use copyFrom which tests isSet, as we don't
             // want all properties copied.
+            if ( Notification.IN_APP_ENABLED.isSet(notification) ) {
+              template.setInAppEnabled(notification.getInAppEnabled());
+            }
             if ( Notification.BODY.isSet(notification) ) {
               template.setBody(notification.getBody());
             }
             if ( Notification.CLUSTERABLE.isSet(notification) ) {
               template.setClusterable(notification.getClusterable());
+            }
+            if ( Notification.EMAIL_NAME.isSet(notification) ) {
+              template.setEmailName(notification.getEmailName());
             }
             if ( Notification.READ.isSet(notification) ) {
               template.setRead(notification.getRead());
@@ -112,6 +118,14 @@ the notification will be handled. `,
             if ( Notification.USER_ID.isSet(notification) &&
                  ! Notification.USER_ID.isSet(template) ) {
               template.setUserId(notification.getUserId());
+            }
+            if ( Notification.GROUP_ID.isSet(notification) &&
+                 ! Notification.GROUP_ID.isSet(template) ) {
+              template.setGroupId(notification.getGroupId());
+            }
+            if ( Notification.BROADCASTED.isSet(notification) &&
+                 ! Notification.BROADCASTED.isSet(template) ) {
+              template.setBroadcasted(notification.getBroadcasted());
             }
           } else {
             // NOTE: do not generate an error or warning log as this

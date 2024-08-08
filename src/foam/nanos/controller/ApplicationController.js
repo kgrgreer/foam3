@@ -73,6 +73,7 @@ foam.CLASS({
     'capabilityDAO',
     'installCSS',
     'notificationDAO',
+    'params',
     'sessionSuccess',
     'window'
   ],
@@ -86,11 +87,13 @@ foam.CLASS({
     'displayWidth',
     'group',
     'initLayout',
+    'initSubject',
     'isMenuOpen',
     'lastMenuLaunched',
     'lastMenuLaunchedListener',
     'layoutInitialized',
     'logAnalyticEvent',
+    'login',
     'loginSuccess',
     'loginVariables',
     'loginView',
@@ -206,13 +209,13 @@ foam.CLASS({
     {
       name: 'sessionID',
       factory: function() {
-        var urlSession = '';
-        try {
-          urlSession = window.location.search.substring(1).split('&')
-           .find(element => element.startsWith("sessionId")).split('=')[1];
-        } catch { };
-        return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
-          ( localStorage[this.sessionName] = foam.uuid.randomGUID() );
+        var urlSession = this.params.sessionId || localStorage[this.sessionName];
+
+        if ( ! urlSession ) {
+          urlSession = ( localStorage[this.sessionName] = foam.uuid.randomGUID() + this.window.location.search );
+        }
+
+        return urlSession;
       }
     },
     {
@@ -438,6 +441,9 @@ foam.CLASS({
     {
       name: 'groupLoadingHandled',
       class: 'Boolean'
+    },
+    {
+      name: 'notificationSub'
     }
   ],
 
@@ -451,6 +457,15 @@ foam.CLASS({
       var self = this;
 
       this.clientPromise.then(async function(client) {
+        if ( self.client != client ) {
+          console.log('Stale Client in ApplicationController, waiting for update.');
+          await self.client.promise;
+          client = self.client;
+          // Rebuild stack with correct context
+          self.stack = self.Stack.create({}, self.__subContext__);
+          self.routeTo(self.window.location.hash.substring(1));
+        }
+
         self.originalSubContext = self.__subContext__;
         self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
 
@@ -472,14 +487,6 @@ foam.CLASS({
         if ( ret ) return;
 
         await self.fetchSubject();
-
-        if ( self.client != client ) {
-          console.log('Stale Client in ApplicationController, waiting for update.');
-          await self.client.promise;
-          // Rebuild stack with correct context 
-          self.stack = self.Stack.create({}, self.__subContext__);
-          self.routeTo(self.window.location.hash.substring(1));
-        }
 
         await self.fetchGroup();
 
@@ -831,6 +838,12 @@ foam.CLASS({
       });
     },
 
+    async function login(identifier, password) {
+      await this.client.auth.login(this, identifier, password);
+      await this.fetchSubject();
+      await this.onUserAgentAndGroupLoaded();
+    },
+
     function notify(toastMessage, toastSubMessage, severity, transient, icon) {
       var notification = this.Notification.create();
 
@@ -840,7 +853,7 @@ foam.CLASS({
       notification.toastSubMessage = toastSubMessage;
       notification.toastState      = this.ToastState.REQUESTED;
       notification.severity        = severity || this.LogLevel.INFO;
-      notification.transient       = transient;
+      notification.transient       = foam.Undefined.isInstance(transient) ? true : transient;
       notification.icon            = icon;
       this.__subContext__.myNotificationDAO?.put(notification);
     },
@@ -857,7 +870,7 @@ foam.CLASS({
         if ( ! obj.transient ) {
           var clonedNotification = obj.clone();
           clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
+          this.__subContext__.notificationDAO.put(clonedNotification);
         }
       }
     }
@@ -956,7 +969,10 @@ foam.CLASS({
     },
 
     function subToNotifications() {
-      this.__subContext__.myNotificationDAO?.on.put.sub(this.displayToastMessage.bind(this));
+      let unsub = () => { this.notificationSub?.detach(); this.notificationSub = undefined; }
+      if ( this.notificationSub ) unsub();
+      this.notificationSub =  this.__subContext__.myNotificationDAO?.on.put.sub(this.displayToastMessage.bind(this));
+      this.clientReloading.sub(unsub);
     },
 
     function menuListener(m) {
@@ -1071,15 +1087,8 @@ foam.CLASS({
           // menus.push(menuDAOs[i]);
       }
     },
-    function logAnalyticEvent(evtName, evtTraceId, evtSessionId, evtExtra) {
-      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(
-        {
-          name: evtName,
-          sessionId: evtSessionId,
-          traceId: evtTraceId,
-          extra: evtExtra
-        }
-      ), this);
+    function logAnalyticEvent(evt) {
+      this.__subContext__.analyticEventDAO.put(this.AnalyticEvent.create(evt), this);
     }
   ]
 });

@@ -77,7 +77,7 @@ foam.CLASS({
           break;
         }
       }
-      test( message != null, "email subject contains expected text: EventRecordTest == ["+message.getSubject()+"]");
+      test( message != null, (message == null ? "message is null" : "email subject contains expected text: EventRecordTest == ["+message.getSubject()+"]"));
       `
     }
   ]

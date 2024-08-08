@@ -79,12 +79,6 @@ p({
     {
       "of": "foam.nanos.notification.Notification",
       "cache": true,
-      "pollingInterval": 30000,
-      "pollingProperty": {
-        "class": "__Property__",
-        "forClass_": "foam.nanos.notification.Notification",
-        "name": "created"
-      },
       "ttlPurgeTime": 0,
       "ttlSelectPurgeTime": 0,
       "decorators": [
@@ -120,6 +114,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
+      .setServiceProviderAware(false)
       .setGuid(true)
       .setPm(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -137,6 +132,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.notification.NotificationSetting.getOwnClassInfo())
       .setPm(true)
+      .setServiceProviderAware(false)
       .setAuthorize(true)
       .setPermissionPrefix("notificationsettingdefaults")
       .setInnerDAO((foam.dao.DAO) x.get("localNotificationSettingDefaultsDAO"))
@@ -241,4 +237,16 @@ p({
       }
     }
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"APNSpushService",
+  "lazy":true,
+  "serve":false,
+  "authenticate":true,
+  "boxClass":"foam.nanos.notification.push.PushServiceSkeleton",
+  "service":{
+    class:"foam.nanos.notification.push.APNSPushService"
+  }
 })

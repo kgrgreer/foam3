@@ -25,10 +25,16 @@ foam.CLASS({
   properties: [
     {
       name: 'value',
-      value: 'aaaa'
+      value: 'tick'
+    },
+    {
+      class: 'Int',
+      name: 'second',
+      expression: function(timer$second) { return timer$second; }
     },
     {
       name: 'timer',
+      hidden: true,
       factory: function() {
         return this.Timer.create();
       }
@@ -39,12 +45,14 @@ foam.CLASS({
     function init() {
       this.timer.start();
       this.timer.propertyChange.sub('second', this.onTimer);
+      // This would do the same thing but with less code:
+      // this.timer.second$.sub(this.onTimer);
     }
   ],
 
   listeners: [
     function onTimer() {
-      this.value = this.value === 'aaaa' ? 'bbbb' : 'aaaa';
+      this.value = this.value === 'tick' ? 'tock' : 'tick';
     }
   ]
 });
@@ -56,5 +64,5 @@ timer.start();
 var E = foam.__context__.E.bind(foam.__context__);
 
 var e13 = E('div').add(
-  'dynamic value: ', timer.i$);
+  'dynamic value (timer.i): ', timer.i$);
 e13.write();

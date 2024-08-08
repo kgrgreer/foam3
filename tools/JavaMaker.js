@@ -42,7 +42,7 @@ exports.end = function() {
   // Build Java Classes
   for ( var key in foam.USED ) try {
     mCount++;
-    if ( foam.maybeLookup(key).model_.targetJava(X) ) {
+    if ( foam.maybeLookup(key)?.model_.targetJava(X) ) {
       jCount++;
     }
   } catch(x) {

@@ -28,10 +28,10 @@ foam.CLASS({
       name: 'setUp',
       args: 'X x',
       javaCode: `
-      // see deployment/test for 
-      // groups, users, 
+      // see deployment/test for
+      // groups, users,
       // emailTemplate, notificationTemplate
-      // notificationSettings, ... 
+      // notificationSettings, ...
       `
     },
     {
@@ -48,7 +48,7 @@ foam.CLASS({
       List<EmailMessage> emailMessages = (List) ((ArraySink) emailMessageDAO.select(new ArraySink())).getArray();
       EmailMessage message = null;
       for ( EmailMessage msg : emailMessages ) {
-        if ( msg.getUser() == notification.getUserId() && msg.getBody().contains(notification.getBody()) && msg.getSubject().equals("Notification from FOAM") ) {
+        if ( msg.getUser() == notification.getUserId() && msg.getBody().contains(notification.getBody()) && msg.getSubject().equals("DAONotificationEmailTemplateTest") ) {
           message = msg;
           break;
         }

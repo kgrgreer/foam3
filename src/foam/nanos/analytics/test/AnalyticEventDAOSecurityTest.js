@@ -71,7 +71,8 @@ foam.CLASS({
         try {
           event = (AnalyticEvent) analyticEventDAO.put(event);
           test ( true, "Regular user can put");
-          test (event.getSessionId().equals(sessionId.split("-")[0]), "Session id truncated");
+          // sessionIDs are no longer truncated.
+          // test (event.getSessionId().equals(sessionId.split("-")[0]), "Session id truncated");
         } catch (Throwable t) {
           test ( false, "Regular user can put. "+t.getMessage());
         }

@@ -31,6 +31,14 @@ foam.CLASS({
   ],
 
   css: `
+    ^ { width: 600px; }
+    ^ .property-filteredDAO .foam-u2-rowWrapper { padding: 2px; }
+    ^ .property-starredHeroDAO .foam-u2-rowWrapper {
+      background: #607d8b;
+      padding: 2px;
+      margin: 4px;
+    }
+    ^ .property-heroName { width: 450px; }
     h2 { color: #aaa; }
     h3 {
       color: #444;
@@ -150,6 +158,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.
+        addClass().
         start('h2').add('Tour of Heroes').end().
           // TODO: start(this.HEROES) and set class
         add('Search: ', this.QUERY).

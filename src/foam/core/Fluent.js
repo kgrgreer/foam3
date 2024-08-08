@@ -16,9 +16,13 @@ foam.CLASS({
   `,
 
   methods: [
+    /**
+     * TODO: there is a bug where mixin properties aren't installed with the
+     * correct priority so can't be overriden. Uncomment when fixed.
     function add() {
       throw new Error('This DSL cannot ".add()"');
     },
+    */
 
     function call(f, args) {
       f.apply(this, args);

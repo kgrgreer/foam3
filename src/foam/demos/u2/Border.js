@@ -332,6 +332,7 @@ foam.CLASS({
     }
     ^title {
       background:$white;
+      left: 6px;
       padding: 3px;
       position: relative;
       top: -3px;

@@ -5,7 +5,7 @@
  */
 
 var d = Tabata.create();
-foam.u2.DetailView.create({ data: d, showActions: true }).write();
+foam.u2.DetailView.create({ data: d, showActions: true }).style({width: '502px'}).write();
 //      TabataBarCView.create({ data: d }).write();
 
 document.write('<br>');

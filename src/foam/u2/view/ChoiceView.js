@@ -144,6 +144,7 @@ foam.CLASS({
     {
       class: 'Function',
       name: 'objToChoice',
+      value: function(o) { return [ o.id, o.label ]; },
       documentation: 'A function which adapts an object from the DAO to a [key, value] choice. Required when a DAO is provided.'
     },
     {

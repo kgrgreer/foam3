@@ -104,8 +104,8 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       required: true,
-      view: { 
-        class: 'foam.u2.view.PasswordView', 
+      view: {
+        class: 'foam.u2.view.PasswordView',
         passwordIcon: true,
         autocomplete: 'current-password'
       },
@@ -213,7 +213,7 @@ foam.CLASS({
             return;
           }
           try {
-            this.logAnalyticEvent('USER_CLICKED_SIGN_IN', '', this.sessionID, '');
+            this.logAnalyticEvent({ name: 'USER_CLICKED_SIGN_IN' });
             var loginId = this.usernameRequired ? this.username : this.identifier;
             let logedInUser = await this.auth.login(x, loginId, this.password);
             this.loginFailed = false;
