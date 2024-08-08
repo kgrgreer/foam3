@@ -90,25 +90,34 @@ foam.CLASS({
 
   methods: [
     function render() {
-
+      let renderIOS = this.isIOS && this.appConfig.appLink;
+      let renderAndroid = this.isAndroid && this.appConfig.playLink;
       this.addClass(this.myClass()).show(this.showBadges)
       .start().addClass(this.myClass('badge-container'))
-        .start('a').addClass(this.myClass('appStoreBadge')).hide(this.isAndroid || !this.appConfig.appLink).attrs({ href: this.appConfig.appLink })
-          .start('img')
-            .attrs({ alt:'Download on the App Store', src:'/images/app-store-badge.svg'})
-          .end()
-        .end()
-        .start('a').addClass(this.myClass('playStoreBadge')).hide(this.isIOS || !this.appConfig.playLink).attrs({ href: this.appConfig.playLink })
-          .start('img')
-            .attrs({ alt:'Get it on Google Play', src:'/images/play-store-badge.svg'})
-          .end()
-        .end()
-      .end()
-
-      .start().addClass('p-legal', this.myClass('legal')).enableClass(this.myClass('legal-container'), this.legalTextAbsolute$)
-        .start().hide(this.isAndroid || !this.appConfig.appLink).add(this.APPSTORE_LEGAL).end()
-        .start().hide(this.isIOS || !this.appConfig.playLink).add(this.GPLAY_LEGAL).end()
+        .callIf(renderIOS, function() {
+          this.start('a').addClass(this.myClass('appStoreBadge')).attrs({ href: this.appConfig.appLink })
+            .start('img')
+              .attrs({ loading:'lazy', alt:'Download on the App Store', src:'/images/app-store-badge.svg'})
+            .end()
+          .end();
+        })
+        .callIf(renderAndroid, function() {
+          this.start('a').addClass(this.myClass('playStoreBadge')).attrs({ href: this.appConfig.playLink })
+            .start('img')
+              .attrs({ loading:'lazy', alt:'Get it on Google Play', src:'/images/play-store-badge.svg'})
+            .end()
+          .end();
+        })
       .end();
+      if ( ! (renderAndroid || renderIOS) ) return;
+      this.start().addClass('p-legal', this.myClass('legal')).enableClass(this.myClass('legal-container'), this.legalTextAbsolute$);
+      if ( renderIOS ) {
+        this.start().hide(this.isAndroid || !this.appConfig.appLink).add(this.APPSTORE_LEGAL).end()
+      }
+      if ( renderAndroid ) {
+        this.start().hide(this.isIOS || !this.appConfig.playLink).add(this.GPLAY_LEGAL).end()
+      }
+      this.end();
     }
     
   ]

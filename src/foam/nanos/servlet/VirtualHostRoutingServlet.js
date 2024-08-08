@@ -99,6 +99,33 @@ foam.CLASS({
       out.print(theme.getAppName());
       out.println("</title>");
 
+       // custom scripts
+      if ( headConfig != null && headConfig.containsKey("customScripts") ) {
+        try {
+          String[] scriptTags = (String[]) headConfig.get("customScripts");
+          for ( String tag : scriptTags ) {
+            out.println(tag);
+          }
+        }
+        catch ( Exception e ) {
+          logger.error(e);
+          customScriptsFailed = true;
+        }
+      }
+
+      // default scripts
+      if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
+        if ( server.getIsResourceStorage() ) {
+          // jar file deployment
+          out.print("<script defer fetchpriority='high' language=\\"javascript\\" src=\\"/foam-bin-");
+          out.print(appConfig.getVersion());
+          out.println(".js\\"></script>");
+        } else {
+          // development
+          out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
+        }
+      }
+
       // custom favicon
       if ( headConfig != null && headConfig.containsKey("customFavIcon") ) {
         try {
@@ -125,33 +152,6 @@ foam.CLASS({
         out.println("<meta name=\\"theme-color\\" content=\\"#ffffff\\">");
       }
 
-      // custom scripts
-      if ( headConfig != null && headConfig.containsKey("customScripts") ) {
-        try {
-          String[] scriptTags = (String[]) headConfig.get("customScripts");
-          for ( String tag : scriptTags ) {
-            out.println(tag);
-          }
-        }
-        catch ( Exception e ) {
-          logger.error(e);
-          customScriptsFailed = true;
-        }
-      }
-
-      // default scripts
-      if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
-        if ( server.getIsResourceStorage() ) {
-          // jar file deployment
-          out.print("<script async language=\\"javascript\\" src=\\"/foam-bin-");
-          out.print(appConfig.getVersion());
-          out.println(".js\\"></script>");
-        } else {
-          // development
-          out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
-        }
-      }
-
       // custom fonts
       if ( headConfig != null && headConfig.containsKey("customFonts") ) {
         try {
@@ -167,9 +167,7 @@ foam.CLASS({
       }
       // default fonts
       if ( headConfig == null || ! headConfig.containsKey("customFonts") || customFontsFailed ) {
-        out.println("<link href=\\"https://fonts.googleapis.com/css?family=Roboto:100,300,400,500\\" rel=\\"stylesheet\\">");
-        out.println("<link href=\\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i,900,900i\\" rel=\\"stylesheet\\">");
-        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap\\" rel=\\"stylesheet\\">");
+        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap\\" rel=\\"stylesheet\\">");
       }
       `
     },
