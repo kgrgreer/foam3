@@ -151,8 +151,10 @@ foam.CLASS({
               Loggers.logger(x, this).error("Invalid mixpanel message:", message.toString());
             }
           }
-          if ( messageCount > 0 ) getMixpanel().deliver(clientDelivery);
-          Loggers.logger(x, this).info("Delivered", messageCount, " messages to mixpanel");
+          if ( messageCount > 0 ) {
+            getMixpanel().deliver(clientDelivery);
+            Loggers.logger(x, this).info("Delivered", messageCount, " messages to mixpanel");
+          }
         } catch (IOException e) {
           Loggers.logger(x, this).error("Can't communicate with Mixpanel.", e.getMessage());
         }
