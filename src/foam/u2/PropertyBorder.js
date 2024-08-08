@@ -88,6 +88,7 @@ foam.CLASS({
       if ( prop.validateObj && prop.validationTextVisible ) {
         errorSlot = this.SimpleSlot.create({ value: null })
         let linkErrorSlot = () => {
+          if ( ! this.data ) return;
           errorSlot.follow(this.data.slot(prop.validateObj))
         }
         this.data$.sub(linkErrorSlot);
