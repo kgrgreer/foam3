@@ -138,17 +138,14 @@ foam.CLASS({
       args: 'X x',
       documentation: `batch deliver all messages in queue, called from cronjob`,
       javaCode: `
-        var counter = getDeliveryQueue().size();
         int messageCount = 0;
         try {
           ClientDelivery clientDelivery = new ClientDelivery();
           JSONObject message = null;
-          while ( counter > 0 ) {
-            // add Messages
-            message = getDeliveryQueue().poll();
-            if ( message != null && clientDelivery.isValidMessage(message) ) {
+          while ( ( message = getDeliveryQueue().poll() ) != null ) {
+            // add Message
+            if ( clientDelivery.isValidMessage(message) ) {
               messageCount++;
-              counter--;
               clientDelivery.addMessage(message);
             } else {
               Loggers.logger(x, this).error("Invalid mixpanel message:", message.toString());
