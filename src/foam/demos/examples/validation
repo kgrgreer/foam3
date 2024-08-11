@@ -35,7 +35,9 @@ add(foam.u2.detail.SectionedDetailView.create({data: t}));
 ##  AssertValue
 The simplest form of validation is to specify an assertValue property on a property.
 The assertValue function receives the old and new values of the property and if
-it throws an exception the new value is refused.
+it throws an exception the new value is refused. Asserts do not provide GUI validation
+because they aren't externally visible because the object never actually transitions to
+the invalid value. (But could be added to errors_. Would that be a good idea?)
 --
 foam.CLASS({
   name: 'Test',
