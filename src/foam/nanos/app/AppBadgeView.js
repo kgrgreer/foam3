@@ -45,11 +45,6 @@ foam.CLASS({
       width: 125px;
       height: 62px;
     }
-    ^legal-container {
-      position: absolute;
-      bottom: 1.2rem;
-      left: 0;
-    }
   }
   `,
   properties: [
