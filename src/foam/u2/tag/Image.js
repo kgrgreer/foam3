@@ -63,7 +63,7 @@ foam.CLASS({
     function requestWithCache(data) {
       if ( ! this.CACHE[data] ) {
         this.CACHE[data] = new Promise(resolve => {
-          this.HTTPRequest.create({method: 'GET', path: data}).send().then(resp => {
+          this.HTTPRequest.create({method: 'GET', path: data, cache: true}).send().then(resp => {
             resp.resp.text().then(t => resolve(t));
           } );
         });
