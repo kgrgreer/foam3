@@ -179,7 +179,7 @@ foam.CLASS({
             .enableClass(this.myClass('sidebar'), this.isMenuOpen$)
             .addClass(this.myClass('sideNav'));
         }))
-        .add(this.slot( async function(mainView) {
+        .add(this.slot(function(mainView) {
           return this.E()
             .add(mainView)
             .addClass(this.myClass('stack-view'));

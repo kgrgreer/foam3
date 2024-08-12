@@ -78,7 +78,7 @@ p({
   "client": """
     {
       "of": "foam.nanos.notification.Notification",
-      "cache": true,
+      "cache": false,
       "ttlPurgeTime": 0,
       "ttlSelectPurgeTime": 0,
       "decorators": [
