@@ -111,6 +111,7 @@ foam.CLASS({
         // Ask ios app to ask for permission
         // Returned by the app listener event;
         let ret = await this.window.webkit.messageHandlers['push-permission-request'].postMessage('');
+        ret = this.MapIOSState(ret);
         this.currentState.resolve(ret.toUpperCase());
         return;
       }
