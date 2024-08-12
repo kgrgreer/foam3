@@ -50,11 +50,12 @@ foam.CLASS({
     },
 
     function loadTokenCache() {
+      if ( ! this.theme ) return Promise.resolve('');
       this.initLatch.then(() => {
         this.cached_ = true;
         this.cacheUpdated.pub();
       })
-      return this.tokenOverrideDAO.where(this.EQ(this.CSSTokenOverride.ENABLED, true)).select(token => {
+      return this.tokenOverrideDAO.where(this.AND(this.EQ(this.CSSTokenOverride.ENABLED, true), this.EQ(this.CSSTokenOverride.THEME, this.theme?.id))).select(token => {
         var themeMap = this.themeMap(token.theme)[token.source] = token.target;
       }).then(() => this.initLatch.resolve());
     },
