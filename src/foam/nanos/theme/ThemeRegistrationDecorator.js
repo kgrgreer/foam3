@@ -8,14 +8,15 @@ foam.CLASS({
   package: 'foam.nanos.theme',
   name: 'ThemeRegistrationDecorator',
   extends: 'foam.nanos.theme.ProxyThemeService',
-  documentation: `Decorator for theme service that registrs refinements and classes from fetched theme into context`,
+  documentation: `Decorator for theme service that loads refinements and registers classes from fetched theme into context`,
 
   implements: [
     'foam.nanos.theme.ThemeService'
   ],
 
   requires: [
-    'foam.box.HTTPBox'
+    'foam.box.HTTPBox',
+    'foam.nanos.theme.Themes'
   ],
 
   methods: [
@@ -31,7 +32,7 @@ foam.CLASS({
         return theme;
       }
 
-      return foam.nanos.theme.Theme.create({name: 'foam', appName: 'FOAM'});
+      return this.Themes.create().findTheme(x);
     }
   ]
 });
