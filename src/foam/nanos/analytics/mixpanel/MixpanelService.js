@@ -77,6 +77,7 @@ foam.CLASS({
         if ( ! isWhitelisted(x, event) ) return;
         String trackingId = event.getSessionId();
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
+
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
         put(sentEvent);
