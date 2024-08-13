@@ -10,10 +10,6 @@ foam.CLASS({
   extends: 'foam.nanos.theme.ProxyThemeService',
   documentation: `Decorator for theme service that loads refinements and registers classes from fetched theme into context`,
 
-  implements: [
-    'foam.nanos.theme.ThemeService'
-  ],
-
   requires: [
     'foam.box.HTTPBox',
     'foam.nanos.theme.Themes'
