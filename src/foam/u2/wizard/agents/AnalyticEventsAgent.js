@@ -53,6 +53,7 @@ foam.CLASS({
     function execute() {
       var self = this;
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
+        // debugger
         self.logAnalyticEvent({
           name:     evt.name,
           extra:    evt.extra,
