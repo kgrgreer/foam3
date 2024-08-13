@@ -262,7 +262,8 @@ foam.CLASS({
           .addBefore('ConfigureFlowAgent', {
             class: 'foam.u2.wizard.agents.AnalyticEventsAgent',
             createTraceID: true,
-            traceIDKey: 'wizardTraceID'
+            traceIDKey: 'wizardTraceID',
+            wizardName: 'VERIFY_EMAIL_WIZARD'
           })
           .addBefore('ConfigureFlowAgent', {
             class: 'foam.u2.wizard.analytics.AnalyticsEventHandlerAgent'
