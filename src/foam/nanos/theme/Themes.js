@@ -11,7 +11,8 @@ foam.CLASS({
   documentation: 'Support methods for Theme',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'foam.nanos.theme.ThemeService'
   ],
 
   requires: [
@@ -47,6 +48,7 @@ Later themes:
       name: 'findTheme',
       type: 'foam.nanos.theme.Theme',
       args: 'Context x',
+      async: true,
       code: async function(x) {
         var theme;
         var themeDomain;

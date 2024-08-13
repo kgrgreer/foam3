@@ -450,8 +450,6 @@ foam.CLASS({
 
       var self = this;
 
-      
-
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
@@ -505,7 +503,7 @@ foam.CLASS({
         globalThis.MLang = foam.mlang.Expressions.create();
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.locale;
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme?.defaultLocaleLanguage || foam.locale;
 
         client.translationService.initLatch.then(() => {
           self.installLanguage();
@@ -513,7 +511,6 @@ foam.CLASS({
 
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
-        self.subToNotifications();
 
         let ret = await self.initMenu();
         if ( ret ) return;
@@ -978,7 +975,7 @@ foam.CLASS({
        */
       var lastTheme = this.theme;
       try {
-        this.theme = await this.Themes.create().findTheme(this);
+        this.theme = await this.__subContext__.themes.findTheme(this);
         this.appConfig.copyFrom(this.theme.appConfig)
       } catch (err) {
         this.notify(this.LOOK_AND_FEEL_NOT_FOUND, '', this.LogLevel.ERROR, true);
