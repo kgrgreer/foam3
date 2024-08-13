@@ -248,11 +248,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'languageInstalled',
-      documentation: 'Latch to denote language has been installed',
-      factory: function() { return this.Latch.create(); }
-    },
-    {
       name: 'client',
     },
     {
@@ -455,71 +450,6 @@ foam.CLASS({
 
       var self = this;
 
-      this.clientPromise.then(async function(client) {
-        if ( self.client != client ) {
-          console.log('Stale Client in ApplicationController, waiting for update.');
-          await self.client.promise;
-          client = self.client;
-          // Rebuild stack with correct context
-          self.stack = self.Stack.create({}, self.__subContext__);
-          self.routeTo(self.window.location.hash.substring(1));
-        }
-
-        self.originalSubContext = self.__subContext__;
-        self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
-
-        // For testing purposes only. Do not use in code.
-        globalThis.x     = self.__subContext__;
-        globalThis.MLang = foam.mlang.Expressions.create();
-
-        await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || foam.locale;
-
-        await client.translationService.initLatch;
-        self.installLanguage();
-
-        self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
-
-        self.subToNotifications();
-
-        let ret = await self.initMenu();
-        if ( ret ) return;
-
-        await self.fetchSubject();
-
-        await self.fetchGroup();
-
-        // For anonymous users, we shouldn't reinstall the language
-        // because the user's language setting isn't meaningful.
-        if ( self?.subject?.realUser && ! ( await client.auth.isAnonymous() ) ) {
-          await self.maybeReinstallLanguage(self.client);
-        }
-
-        self.languageInstalled.resolve();
-        // add user and agent for backward compatibility
-        Object.defineProperty(self, 'user', {
-          get: function() {
-            console.info("Deprecated use of user. Use Subject to retrieve user");
-            return this.subject.user;
-          },
-          set: function(newValue) {
-            console.warn("Deprecated use of user setter");
-            this.subject.user = newValue;
-          }
-        });
-        Object.defineProperty(self, 'agent', {
-          get: function() {
-            console.warn("Deprecated use of agent");
-            return this.subject.realUser;
-          }
-        });
-
-        // Fetch the group only once the user has logged in. That's why we await
-        // the line above before executing this one.
-        await self.fetchTheme();
-        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
-      });
-
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', this.reloadStyles));
     },
@@ -547,14 +477,82 @@ foam.CLASS({
           // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
           // use the route instead of the menu so that the menu could be re-created under the updated context
           route_initialized ? this.routeTo(menu.id) : this.pushMenu(menu);
-          this.languageInstalled.resolve();
+          // this.languageInstalled.resolve();
           return 1;
         }
       }
-   },
+    },
+
+    function onClientLoad() {
+      let self = this;
+      this.clientPromise.then(async function(client) {
+        if ( self.client != client ) {
+          console.log('Stale Client in ApplicationController, waiting for update.');
+          await self.client.promise;
+          client = self.client;
+          // Rebuild stack with correct context
+          self.stack = self.Stack.create({}, self.__subContext__);
+          self.routeTo(self.window.location.hash.substring(1));
+        }
+
+        self.originalSubContext = self.__subContext__;
+        self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
+
+        // For testing purposes only. Do not use in code.
+        globalThis.x     = self.__subContext__;
+        globalThis.MLang = foam.mlang.Expressions.create();
+
+        await self.fetchTheme();
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme?.defaultLocaleLanguage || foam.locale;
+
+        client.translationService.initLatch.then(() => {
+          self.installLanguage();
+        });
+
+        self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
+
+
+        let ret = await self.initMenu();
+        if ( ret ) return;
+
+        await self.fetchSubject();
+
+        await self.fetchGroup();
+
+        // For anonymous users, we shouldn't reinstall the language
+        // because the user's language setting isn't meaningful.
+        if ( self?.subject?.realUser && ! ( await client.auth.isAnonymous() ) ) {
+          await self.maybeReinstallLanguage(self.client);
+        }
+
+        // add user and agent for backward compatibility
+        Object.defineProperty(self, 'user', {
+          get: function() {
+            console.info("Deprecated use of user. Use Subject to retrieve user");
+            return this.subject.user;
+          },
+          set: function(newValue) {
+            console.warn("Deprecated use of user setter");
+            this.subject.user = newValue;
+          }
+        });
+        Object.defineProperty(self, 'agent', {
+          get: function() {
+            console.warn("Deprecated use of agent");
+            return this.subject.realUser;
+          }
+        });
+
+        // Fetch the group only once the user has logged in. That's why we await
+        // the line above before executing this one.
+        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
+      });
+    },
 
     function render() {
       var self = this;
+      self.addMacroLayout();
+      this.onClientLoad();
       this.initLayout.then(() => {
         this.layoutInitialized = true;
       });
@@ -564,8 +562,6 @@ foam.CLASS({
 
       self.AppStyles.create();
       self.Fonts.create();
-
-      self.addMacroLayout();
     },
 
     async function reloadClient() {
@@ -652,7 +648,6 @@ foam.CLASS({
         if ( ! result || ! result.user ) throw new Error();
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
-        this.languageInstalled.resolve();
         await this.requestLogin();
         return await this.fetchSubject();
       } finally {
@@ -980,7 +975,7 @@ foam.CLASS({
        */
       var lastTheme = this.theme;
       try {
-        this.theme = await this.Themes.create().findTheme(this);
+        this.theme = await this.__subContext__.themes.findTheme(this);
         this.appConfig.copyFrom(this.theme.appConfig)
       } catch (err) {
         this.notify(this.LOOK_AND_FEEL_NOT_FOUND, '', this.LogLevel.ERROR, true);

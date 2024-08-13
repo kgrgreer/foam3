@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'cached_',
-      class: 'Boolean'
+      class: 'String'
     }
   ],
 
@@ -50,11 +50,12 @@ foam.CLASS({
     },
 
     function loadTokenCache() {
+      if ( ! this.theme ) return Promise.resolve('');
       this.initLatch.then(() => {
-        this.cached_ = true;
+        this.cached_ = this.theme.id;
         this.cacheUpdated.pub();
       })
-      return this.tokenOverrideDAO.where(this.EQ(this.CSSTokenOverride.ENABLED, true)).select(token => {
+      return this.tokenOverrideDAO.where(this.AND(this.EQ(this.CSSTokenOverride.ENABLED, true), this.EQ(this.CSSTokenOverride.THEME, this.theme?.id))).select(token => {
         var themeMap = this.themeMap(token.theme)[token.source] = token.target;
       }).then(() => this.initLatch.resolve());
     },
@@ -65,14 +66,18 @@ foam.CLASS({
   ],
 
   listeners: [
-    function maybeReload() {
-      this.initLatch = this.Latch.create();
-      this.clearProperty('tokenCache');
-      this.clearProperty('cached_');
-      this.loadTokenCache();
-      return this.initLatch;
+    {
+      name: 'maybeReload',
+      isMerged: true,
+      code: function() {
+        if ( this.theme.id == this.cached_ ) return;
+        this.initLatch = this.Latch.create();
+        this.clearProperty('tokenCache');
+        this.clearProperty('cached_');
+        this.loadTokenCache();
+        return this.initLatch;
+      }
     },
-
     function getTokenValue(tokenString, cls, ctx) {
       if ( ! tokenString.startsWith('$') ) return tokenString;
       var self = this;

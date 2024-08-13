@@ -117,7 +117,7 @@ foam.CLASS({
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( server.getIsResourceStorage() ) {
           // jar file deployment
-          out.print("<script defer fetchpriority='high' language=\\"javascript\\" src=\\"/foam-bin-");
+          out.print("<script async fetchpriority='high' language=\\"javascript\\" src=\\"/foam-bin-");
           out.print(appConfig.getVersion());
           out.println(".js\\"></script>");
         } else {
@@ -167,7 +167,9 @@ foam.CLASS({
       }
       // default fonts
       if ( headConfig == null || ! headConfig.containsKey("customFonts") || customFontsFailed ) {
-        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap\\" rel=\\"stylesheet\\">");
+        out.println("<link rel=\\"preconnect\\" href=\\"https://fonts.gstatic.com/\\">");
+        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap\\" rel=\\"preload\\" as=\\"style\\" crossorigin=\\"anonymous\\">");
+        out.println("<link href=\\"https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap\\" rel=\\"stylesheet\\" crossorigin=\\"anonymous\\">");
       }
       `
     },
