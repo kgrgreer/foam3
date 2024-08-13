@@ -58,7 +58,6 @@ foam.CLASS({
     function execute() {
       var self = this;
       this.analyticsAgent.sub('event', function(_, __, ___, evt) {
-        // debugger
         self.logAnalyticEvent({
           name:     evt.name,
           extra:    evt.extra,
@@ -92,11 +91,11 @@ foam.CLASS({
           });
         };
       }
-      // if ( this.wizardName ) {
-      //   this.analyticsAgent.pub('event', {
-      //     name: this.wizardName + '_STARTED',
-      //   });
-      // }
+      if ( this.wizardName ) {
+        this.analyticsAgent.pub('event', {
+          name: this.wizardName + '_STARTED',
+        });
+      }
 
       // Log device info
       if ( this.logDeviceInfo ) {
