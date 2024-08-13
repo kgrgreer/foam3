@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.theme',
-  name: 'ThemeRegistrationDecorator',
+  name: 'ContextRegistrationThemeService',
   extends: 'foam.nanos.theme.ProxyThemeService',
   documentation: `Decorator for theme service that loads refinements and registers classes from fetched theme into context`,
 

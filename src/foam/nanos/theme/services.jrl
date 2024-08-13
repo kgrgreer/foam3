@@ -83,7 +83,7 @@ p({
   "serviceClass": "foam.nanos.theme.Themes",
   "client": """
     { 
-      "class": "foam.nanos.theme.ThemeRegistrationDecorator",
+      "class": "foam.nanos.theme.ContextRegistrationThemeService",
       "delegate": { 
         "class": "foam.nanos.theme.ClientThemeService",
         "delegate": {
