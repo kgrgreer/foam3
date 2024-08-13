@@ -144,6 +144,8 @@ foam.POM({
     { name: "theme/FilteredSubdomainDAO",                                                 flags: "js|java" },
     { name: "theme/ThemeDomainsDAO",                                                      flags: "js|java" },
     { name: "theme/Themes",                                                               flags: "js|java" },
+    { name: "theme/ThemeService",                                                         flags: "js|java" },
+    { name: "theme/ContextRegistrationThemeService",                                           flags: "js" },
     { name: "theme/customisation/CSSTokenOverride",                                       flags: "js|java" },
     { name: "theme/customisation/CSSTokenOverrideService",                                flags: "web" },
     { name: "auth/User",                                                                  flags: "js|java" },
