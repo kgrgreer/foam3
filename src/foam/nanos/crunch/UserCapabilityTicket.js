@@ -21,10 +21,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'spid',
-      order: 1
-    },
-    {
       name: 'capability',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
