@@ -11,7 +11,8 @@ foam.CLASS({
   documentation: 'Support methods for Theme',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'foam.nanos.theme.ThemeService'
   ],
 
   requires: [
@@ -47,6 +48,7 @@ Later themes:
       name: 'findTheme',
       type: 'foam.nanos.theme.Theme',
       args: 'Context x',
+      async: true,
       code: async function(x) {
         var theme;
         var themeDomain;
@@ -85,7 +87,8 @@ Later themes:
         }
 
         var group = x.group;
-        if ( user && group ) { // non-null when logged in.
+        // Turn off group theme merging until fixed
+        if ( false && user && group ) { // non-null when logged in.
           group           = group || await user.group$find;
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
@@ -202,7 +205,8 @@ Later themes:
       }
 
       // Merge the theme with group and user themes
-      if ( user != null ) {
+      // Turn off group theme merging until fixed
+      if ( false && user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
         String[] defaultMenu = group != null ? group.getDefaultMenu() : null;

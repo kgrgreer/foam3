@@ -116,20 +116,25 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
+        CapabilityJunctionPayload obj = null;
         String idString = null;
+
         if ( id instanceof CapabilityJunctionPayload ) {
-          idString = ((CapabilityJunctionPayload) id).getCapability();
+          obj = (CapabilityJunctionPayload) id;
+          idString = obj.getCapability();
         } else {
           idString = (String) id;
         }
-        CapabilityJunctionPayload[] payloads = getCapable().getCapablePayloads();
+
+        var payloads = getCapable().getCapablePayloads();
         for ( int i = 0 ; i < payloads.length ; i++ ) {
-          if (
-            payloads[i].getCapability().equals(idString)
+          if ( payloads[i] == obj
+            || payloads[i].getCapability().equals(idString)
           ) {
             return payloads[i];
           }
         }
+
         return null;
       `,
       code: async function (x, obj) {

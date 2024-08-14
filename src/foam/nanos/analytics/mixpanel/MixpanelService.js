@@ -25,6 +25,7 @@ foam.CLASS({
 
     'java.io.IOException',
     'java.util.Arrays',
+    'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.HashSet',
     'org.json.JSONObject'
@@ -42,6 +43,26 @@ foam.CLASS({
     {
       class: 'String',
       name: 'projectToken'
+    },
+    {
+      class: 'Object',
+      name: 'deliveryQueue',
+      documentation: `
+        sendMixpanelEvent pushes messages to queue for minutely
+        cronjob to batch send to mixpanel
+      `,
+      javaType: 'ConcurrentLinkedQueue<JSONObject>',
+      javaFactory: `
+        return new ConcurrentLinkedQueue<JSONObject>();
+      `
+    },
+    {
+      class: 'Object',
+      name: 'mixpanel',
+      javaType: 'MixpanelAPI',
+      javaFactory: `
+        return new MixpanelAPI();
+      `
     }
   ],
 
@@ -49,21 +70,17 @@ foam.CLASS({
     {
       name: 'sendMixpanelEvent',
       args: 'X x, AnalyticEvent event, JSONObject props',
+      documentation: `
+        add event to deliveryqueue to be delivered by a cronjob
+      `,
       javaCode: `
         if ( ! isWhitelisted(x, event) ) return;
         String trackingId = event.getSessionId();
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
-        MixpanelAPI mixpanel = new MixpanelAPI();
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
 
-        ClientDelivery delivery = new ClientDelivery();
-        delivery.addMessage(sentEvent);
-        try {
-          mixpanel.deliver(delivery);
-        } catch (IOException e) {
-          Loggers.logger(x, this).error("Failed sending analyticEvent:", event.getId(), "Can't communicate with Mixpanel");
-        }
+        put(sentEvent);
       `
     },
     {
@@ -73,7 +90,6 @@ foam.CLASS({
         String trackingId = user.getTrackingId();
 
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
-        MixpanelAPI mixpanel = new MixpanelAPI();
 
         AuthService auth = (AuthService) x.get("auth");
         var isAdmin = user != null
@@ -86,7 +102,7 @@ foam.CLASS({
           JSONObject updateProfile = messageBuilder.set(trackingId, props);
 
           try {
-            mixpanel.sendMessage(updateProfile);
+            getMixpanel().sendMessage(updateProfile);
           } catch (IOException e) {
             Loggers.logger(x, this).error("Failed sending user data:", user.getId(), "Can't communicate with Mixpanel");
           }
@@ -107,6 +123,41 @@ foam.CLASS({
           getWhitelistCache().put(spid, whitelist);
         }
         return whitelist.contains(event.getName());
+      `
+    },
+    {
+      name: 'put',
+      documentation: `add message to deliveryqueue`,
+      args: 'JSONObject message',
+      javaCode: `
+        getDeliveryQueue().add(message);
+      `
+    },
+    {
+      name: 'deliver',
+      args: 'X x',
+      documentation: `batch deliver all messages in queue, called from cronjob`,
+      javaCode: `
+        int messageCount = 0;
+        try {
+          ClientDelivery clientDelivery = new ClientDelivery();
+          JSONObject message = null;
+          while ( ( message = getDeliveryQueue().poll() ) != null ) {
+            // add Message
+            if ( clientDelivery.isValidMessage(message) ) {
+              messageCount++;
+              clientDelivery.addMessage(message);
+            } else {
+              Loggers.logger(x, this).error("Invalid mixpanel message:", message.toString());
+            }
+          }
+          if ( messageCount > 0 ) {
+            getMixpanel().deliver(clientDelivery);
+            Loggers.logger(x, this).info("Delivered", messageCount, " messages to mixpanel");
+          }
+        } catch (IOException e) {
+          Loggers.logger(x, this).error("Can't communicate with Mixpanel.", e.getMessage());
+        }
       `
     }
   ]

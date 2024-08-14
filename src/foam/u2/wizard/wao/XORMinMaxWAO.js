@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.wizard.wao',
   name: 'XORMinMaxWAO',
   implements: [ 'foam.u2.wizard.wao.WAO' ],

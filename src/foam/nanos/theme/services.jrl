@@ -76,8 +76,26 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "themes",
-  "serve": false,
+  "serve": true,
+  "authenticate":false,
+  "lazy": false,
+  "boxClass":"foam.nanos.theme.ThemeServiceSkeleton",
   "serviceClass": "foam.nanos.theme.Themes",
+  "client": """
+    { 
+      "class": "foam.nanos.theme.ContextRegistrationThemeService",
+      "delegate": { 
+        "class": "foam.nanos.theme.ClientThemeService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url": "service/themes"
+          }
+        }
+      }
+    }
+  """
 })
 
 p({

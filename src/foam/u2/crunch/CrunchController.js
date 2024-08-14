@@ -556,7 +556,7 @@ foam.CLASS({
 
       intercept.capables.forEach(capable => {
         capable.capabilityIds.forEach((c) => {
-          var seq = this.createCapableWizardSequence(intercept, capable, c, x);
+          var seq = this.toGraphAgentWizard(this.createCapableWizardSequence(intercept, capable, c, x));
           p = p.then(() => {
             return seq.execute().then(x => x);
           });
