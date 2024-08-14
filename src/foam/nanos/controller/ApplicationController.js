@@ -474,7 +474,6 @@ foam.CLASS({
           self.routeTo(self.window.location.hash.substring(1));
         }
        
-        // self.theme = self.client.theme;
         self.originalSubContext = self.__subContext__;
         self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
         self.subject = self.client.initSubject;
@@ -522,10 +521,6 @@ foam.CLASS({
             return this.subject.realUser;
           }
         });
-
-        // Fetch the group only once the user has logged in. That's why we await
-        // the line above before executing this one.
-        // if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
     },
 
