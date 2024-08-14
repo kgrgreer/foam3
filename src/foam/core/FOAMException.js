@@ -64,6 +64,10 @@ foam.CLASS({
       getHostname();
     }
 
+    public FOAMException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+      super(message, cause, enableSuppression, writableStackTrace);
+    }
+
     protected static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("\\\\{\\\\{.*?\\\\}\\\\}");
   `,
 

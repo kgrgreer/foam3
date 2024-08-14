@@ -190,6 +190,10 @@ foam.CLASS({
     // TODO: permissions, parent
   ],
 
+  javaCode: `
+    protected final static AuthorizationException ACCESS_DENIED = new AuthorizationException("You do not have permission to access the service.", (Throwable) null, false, false);
+  `,
+
   methods: [
     {
       name: 'createService',
@@ -231,15 +235,13 @@ foam.CLASS({
         Given a user's session context, throw an exception if the user doesn't
         have permission to access this service.
       `,
-      args: [
-        { type: 'Context', name: 'x' }
-      ],
+      args: 'Context x',
       javaCode: `
         if ( ! getAuthenticate() ) return;
 
         AuthService auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "service." + getName()) ) {
-          throw new AuthorizationException("You do not have permission to access the service named " + getName());
+          throw ACCESS_DENIED;
         }
       `,
     },
@@ -267,14 +269,7 @@ foam.CLASS({
       ],
       type: 'Void',
       javaThrows: ['AuthorizationException'],
-      javaCode: `
-        try {
-          checkAuthorization(x);
-        } catch ( AuthorizationException e ) {
-          ((foam.nanos.logger.Logger) x.get("logger")).debug("AuthorizableAuthorizer", "Permission denied", "service." + getId());
-          throw new AuthorizationException("Permission denied: Cannot read this NSpec.");
-        }
-      `
+      javaCode: 'checkAuthorization(x);'
     },
     {
       name: 'authorizeOnUpdate',

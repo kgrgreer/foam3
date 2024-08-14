@@ -31,6 +31,10 @@
     'foam.nanos.auth.AuthorizationException'
   ],
 
+  javaCode: `
+    protected final static AuthorizationException ACCESS_DENIED = new AuthorizationException("You do not have permission to access this menu.", (Throwable) null, false, false);
+  `,
+
   properties: [
     {
       class: 'String',
@@ -220,18 +224,17 @@
       javaCode: `
         // Authentication is only skipped for anonymous sessions, logged in users still require menu.read.<menu_id> permission
         AuthService auth = (AuthService) x.get("auth");
-        boolean unauthenticated = false;
-        try {
-          var subject = auth.getCurrentSubject(x);
-          if ( subject == null || auth.isUserAnonymous(x, subject.getUser().getId()) )
-            unauthenticated = true;
-        } catch(foam.nanos.auth.AuthenticationException e) {
-          unauthenticated = true;
+        if ( ! getAuthenticate() ) {
+          try {
+            var subject = auth.getCurrentSubject(x);
+            if ( subject == null || auth.isUserAnonymous(x, subject.getUser().getId()) )
+              return;
+          } catch(foam.nanos.auth.AuthenticationException e) {
+            return;
+          }
         }
-        if ( ! getAuthenticate() && unauthenticated ) return;
-        if ( ! ( f(x) &&
-                 auth.check(x, "menu.read." + getId()) ) ) {
-          throw new AuthorizationException("You do not have permission to read this menu.");
+        if ( ! ( f(x) && auth.check(x, "menu.read." + getId()) ) ) {
+          throw ACCESS_DENIED;
         }
       `
     }
