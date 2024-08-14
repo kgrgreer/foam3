@@ -454,35 +454,12 @@ foam.CLASS({
     },
 
     async function initMenu() {
-      var menu;
-      var route_initialized = this.route && this.initSubject;
-
-      // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
       if ( this.route ) {
-        // menu = await this.__subContext__.menuDAO.find(this.route);
         this.pushMenu_(null, this.route)
       } else  {
         this.pushDefaultMenu();
         return 1;
       }
-      // // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
-      // if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
-      //   menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
-      // }
-
-      // // explicitly check that the menu is unauthenticated
-      // // since if there is a user session on refresh, this would also
-      // // find authenticated menus to try to push before fetching subject
-      // if ( menu && menu.authenticate === false ) {
-      //   if ( ! this.subject?.user || ( await this.__subContext__.auth.isAnonymous() ) ) {
-      //     // only push the unauthenticated menu if there is no subject
-      //     // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-      //     // use the route instead of the menu so that the menu could be re-created under the updated context
-      //     route_initialized ? this.routeTo(menu.id) : this.pushMenu(menu);
-      //     // this.languageInstalled.resolve();
-      //     return 1;
-      //   }
-      // }
     },
 
     function onClientLoad() {
