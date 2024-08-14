@@ -31,6 +31,10 @@
     'foam.nanos.auth.AuthorizationException'
   ],
 
+  javaCode: `
+    protected final static AuthorizationException ACCESS_DENIED = new AuthorizationException("You do not have permission to access this menu.", (Throwable) null, false, false);
+  `,
+
   properties: [
     {
       class: 'String',
@@ -230,7 +234,7 @@
           }
         }
         if ( ! ( f(x) && auth.check(x, "menu.read." + getId()) ) ) {
-          throw new AuthorizationException("You do not have permission to read this menu.");
+          throw ACCESS_DENIED;
         }
       `
     }
