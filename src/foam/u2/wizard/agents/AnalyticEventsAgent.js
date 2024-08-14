@@ -25,6 +25,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'wizardName',
+      documentation: 'name to be logged when the wizard is started'
+    },
+    {
       class: 'foam.u2.wizard.PathProperty',
       name: 'traceIDKey',
       documentation: 'Context key for preferred traceID of AnalyticEvent'
@@ -86,6 +91,12 @@ foam.CLASS({
           });
         };
       }
+      if ( this.wizardName ) {
+        this.analyticsAgent.pub('event', {
+          name: this.wizardName + '_STARTED',
+        });
+      }
+
       // Log device info
       if ( this.logDeviceInfo ) {
         this.analyticsAgent.pub('event', {
