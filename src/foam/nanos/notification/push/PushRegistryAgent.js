@@ -40,6 +40,10 @@ foam.CLASS({
 
   methods: [
     function init() {
+      if ( ! globalThis.swPromise ) {
+        console.warn("PushRegistryAgent run without ServiceWorker creating globalThis.swPromise.");
+        return;
+      }
       // If there is no subject yet, this agent is useless
       // On subject change, this will be rebuilt anyway
       if ( ! this.initSubject ) return;
@@ -94,7 +98,7 @@ foam.CLASS({
           console.warn('Service worker push subscription failed:', error);
         });
       }
-    
+
       return globalThis.swPromise.then(
         reg => subWhenReady_(reg),
         err => console.warn('Error waiting for service worker to become ready:', err)
