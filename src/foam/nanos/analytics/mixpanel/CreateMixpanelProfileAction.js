@@ -64,6 +64,8 @@ foam.CLASS({
             var key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
             if ( key.indexOf("utm") >= 0 )
               userProps.put(key, URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+            else if ( key.indexOf("referral") >= 0 )
+              userProps.put(key, URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
           } catch (UnsupportedEncodingException e) {
             Loggers.logger(x, this).error("cannot decode param:", pair, e.getMessage());
           }
