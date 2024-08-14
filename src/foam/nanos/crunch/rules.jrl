@@ -32,3 +32,28 @@ p({
   "action":{"class":"foam.nanos.crunch.RemoveJunctionsOnUserRemoval"},
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e9-crunch3",
+  "name":"Add capability for the user",
+  "documentation": "Manually grant Capability to User",
+  "enabled":true,
+  "saveHistory":false,
+  "ruleGroup": "crunch",
+  "daoKey": "localTicketDAO",
+  "operation": 0,
+  "after": true,
+  "lifecycleState": 1,
+  "predicate": {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: 'n instanceof foam.nanos.crunch.UserCapabilityTicket && n.status == "OPEN"'
+  },
+  checkerPredicate: {
+    class: "foam.nanos.ruler.predicate.FScriptRulePredicate",
+    query: '1==0'
+  },
+  action: {
+    "class": "foam.nanos.crunch.ruler.UserCapabilityTicketRuleAction"
+  }
+})

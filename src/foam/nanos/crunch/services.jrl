@@ -333,3 +333,24 @@ p({
   `,
   client: "{\"of\":\"foam.nanos.crunch.ui.WizardState\"}"
 })
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "userCapabilityTicketDAO",
+  serve: true,
+  serviceScript: """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.ticket.Ticket.getOwnClassInfo())
+      .setInnerDAO((foam.dao.DAO) x.get("ticketDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(foam.nanos.crunch.UserCapabilityTicket.class))
+        .build())
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.ticket.Ticket.CREATED).build()
+      })
+      .build();
+
+  """,
+  "client":"{\"of\":\"foam.nanos.ticket.Ticket\"}"
+})
