@@ -241,8 +241,8 @@ foam.CLASS({
       factory: function() {
         /* ignoreWarning */
         var self = this;
-        return self.ClientBuilder.create({}, this).promise.then(function(cls) {
-          self.client = cls.create(null, self);
+        return self.ClientBuilder.create({}, this).promise.then(function(client) {
+          self.client = client;
           return self.client;
         });
       }
@@ -283,8 +283,7 @@ foam.CLASS({
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.nanos.auth.Subject',
-      name: 'subject',
-      factory: function() { return this.Subject.create(); }
+      name: 'subject'
     },
     {
       class: 'foam.core.FObjectProperty',
@@ -460,27 +459,30 @@ foam.CLASS({
 
       // TODO Interim solution to pushing unauthenticated menu while applicationcontroller refactor is still WIP
       if ( this.route ) {
-        menu = await this.__subContext__.menuDAO.find(this.route);
+        // menu = await this.__subContext__.menuDAO.find(this.route);
+        this.pushMenu_(null, this.route)
+      } else  {
+        this.pushDefaultMenu();
+        return 1;
       }
-      // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
-      if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
-        menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
-      }
+      // // Check route again so that default theme menu doesnt override an auth menu the user is trying to go to
+      // if ( ! this.route && ! menu && this.theme.unauthenticatedDefaultMenu ) {
+      //   menu = await this.__subContext__.menuDAO.find(this.theme.unauthenticatedDefaultMenu)
+      // }
 
-      // explicitly check that the menu is unauthenticated
-      // since if there is a user session on refresh, this would also
-      // find authenticated menus to try to push before fetching subject
-      if ( menu && menu.authenticate === false ) {
-        await this.fetchSubject(false);
-        if ( ! this.subject?.user || ( await this.__subContext__.auth.isAnonymous() ) ) {
-          // only push the unauthenticated menu if there is no subject
-          // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
-          // use the route instead of the menu so that the menu could be re-created under the updated context
-          route_initialized ? this.routeTo(menu.id) : this.pushMenu(menu);
-          // this.languageInstalled.resolve();
-          return 1;
-        }
-      }
+      // // explicitly check that the menu is unauthenticated
+      // // since if there is a user session on refresh, this would also
+      // // find authenticated menus to try to push before fetching subject
+      // if ( menu && menu.authenticate === false ) {
+      //   if ( ! this.subject?.user || ( await this.__subContext__.auth.isAnonymous() ) ) {
+      //     // only push the unauthenticated menu if there is no subject
+      //     // if client is authenticated, go on to fetch theme and set loginsuccess before pushing menu
+      //     // use the route instead of the menu so that the menu could be re-created under the updated context
+      //     route_initialized ? this.routeTo(menu.id) : this.pushMenu(menu);
+      //     // this.languageInstalled.resolve();
+      //     return 1;
+      //   }
+      // }
     },
 
     function onClientLoad() {
@@ -494,15 +496,17 @@ foam.CLASS({
           self.stack = self.Stack.create({}, self.__subContext__);
           self.routeTo(self.window.location.hash.substring(1));
         }
-
+       
+        // self.theme = self.client.theme;
         self.originalSubContext = self.__subContext__;
         self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
-
+        self.subject = self.client.initSubject;
+        self.initSubject = true;
         // For testing purposes only. Do not use in code.
         globalThis.x     = self.__subContext__;
         globalThis.MLang = foam.mlang.Expressions.create();
 
-        await self.fetchTheme();
+        self.fetchTheme();
         foam.locale = localStorage.getItem('localeLanguage') || self.theme?.defaultLocaleLanguage || foam.locale;
 
         client.translationService.initLatch.then(() => {
@@ -515,14 +519,13 @@ foam.CLASS({
         let ret = await self.initMenu();
         if ( ret ) return;
 
-        await self.fetchSubject();
-
         await self.fetchGroup();
 
         // For anonymous users, we shouldn't reinstall the language
         // because the user's language setting isn't meaningful.
         if ( self?.subject?.realUser && ! ( await client.auth.isAnonymous() ) ) {
           await self.maybeReinstallLanguage(self.client);
+          await self.onUserAgentAndGroupLoaded();
         }
 
         // add user and agent for backward compatibility
@@ -545,7 +548,7 @@ foam.CLASS({
 
         // Fetch the group only once the user has logged in. That's why we await
         // the line above before executing this one.
-        if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
+        // if ( ! self.groupLoadingHandled ) await self.onUserAgentAndGroupLoaded();
       });
     },
 
@@ -566,14 +569,13 @@ foam.CLASS({
 
     async function reloadClient() {
       this.clientReloading.pub();
-      var newClient = await this.ClientBuilder.create({}, this.originalSubContext).promise;
-      this.client = newClient.create(null, this.originalSubContext);
+      this.client = await this.ClientBuilder.create({}, this.originalSubContext).promise;
       this.__subContext__.__proto__ = this.client.__subContext__;
       // TODO: find a better way to resub on client reloads
       this.subToNotifications();
       this.fetchTheme();
       this.onDetach(this.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(this.reloadStyles));
-      this.subject = await this.client.auth.getCurrentSubject(null);
+      this.subject = this.client.initSubject;
     },
 
     function installLanguage() {
@@ -641,7 +643,8 @@ foam.CLASS({
       /** Get current user, else show login. */
       try {
         var result = await this.client.auth.getCurrentSubject(null);
-        if ( result && result.user ) await this.reloadClient();
+        // If client was built for a different subject, rebuild the client
+        if ( result && result.user?.id != this.client.initSubject.user?.id ) await this.reloadClient();
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
@@ -968,14 +971,14 @@ foam.CLASS({
       this.lastMenuLaunched = m;
     },
 
-    async function fetchTheme() {
+    function fetchTheme() {
       /**
        * Get the most appropriate Theme object from the server and use it to
        * customize the look and feel of the application.
        */
       var lastTheme = this.theme;
       try {
-        this.theme = await this.__subContext__.themes.findTheme(this);
+        this.theme = this.client.theme;
         this.appConfig.copyFrom(this.theme.appConfig)
       } catch (err) {
         this.notify(this.LOOK_AND_FEEL_NOT_FOUND, '', this.LogLevel.ERROR, true);

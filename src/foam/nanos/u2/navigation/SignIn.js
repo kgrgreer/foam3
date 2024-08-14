@@ -238,8 +238,8 @@ foam.CLASS({
 
             // Reload only if it wasn't done by the 'nextStep()' call
             if ( ! this.loginSuccess ) {
-              this.loginSuccess = true;
               await this.ctrl.reloadClient();
+              this.loginSuccess = true;
               // Temp fix to prevent breaking wizard sign in since that also calls this function
               if ( ! this.pureLoginFunction )
                 await this.ctrl.onUserAgentAndGroupLoaded();

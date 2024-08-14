@@ -1,0 +1,20 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clientBuilderService",
+  "serve":true,
+  "authenticate": false,
+  "boxClass":"foam.nanos.client.ClientBuilderServiceSkeleton",
+  "serviceClass":"foam.nanos.client.BaseClientBuilderService",
+  "client":"""
+    {
+      "class": "foam.nanos.client.ClientClientBuilderService",
+      "delegate": {
+        "class": "foam.box.SessionClientBox",
+        "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/clientBuilderService"
+        }
+      }
+    }
+  """
+})
