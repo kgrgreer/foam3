@@ -107,7 +107,6 @@ foam.CLASS({
     'returnExpandedCSS',
     'routeTo',
     'routeToDAO',
-    'sessionID',
     'sessionTimer',
     'showFooter',
     'showNav',
@@ -200,23 +199,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'String',
-      name: 'sessionName',
-      value: 'defaultSession'
-    },
-    {
-      name: 'sessionID',
-      factory: function() {
-        var urlSession = this.params.sessionId || localStorage[this.sessionName];
-
-        if ( ! urlSession ) {
-          urlSession = ( localStorage[this.sessionName] = foam.uuid.randomGUID() + this.window.location.search );
-        }
-
-        return urlSession;
-      }
-    },
     {
       name: 'loginVariables',
       expression: function(client$userDAO) {
@@ -841,8 +823,6 @@ foam.CLASS({
       this.loginSuccess = true;
       let check = await this.checkGeneralCapability();
       if ( ! check ) return;
-      this.stack.resetStack();
-      this.initLayout.resolve();
       await this.fetchTheme();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
@@ -851,6 +831,7 @@ foam.CLASS({
       } else {
         this.pushDefaultMenu();
       }
+      this.initLayout.resolve();
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
     },

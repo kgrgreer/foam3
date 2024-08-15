@@ -20,12 +20,32 @@ foam.CLASS({
     'foam.dao.RequestResponseClientDAO',
     'foam.nanos.app.ClientAppConfigService',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.crunch.box.CrunchClientBox'
+    'foam.nanos.crunch.box.CrunchClientBox',
+    'foam.nanos.auth.Subject'
   ],
 
-  imports: [ 'error' ],
+  imports: [ 'error', 'params', 'window'],
+
+  exports: ['sessionID'],
 
   properties: [
+    {
+      class: 'String',
+      name: 'sessionName',
+      value: 'defaultSession'
+    },
+    {
+      name: 'sessionID',
+      factory: function() {
+        var urlSession = this.params.sessionId || localStorage[this.sessionName];
+
+        if ( ! urlSession ) {
+          urlSession = ( localStorage[this.sessionName] = foam.uuid.randomGUID() + this.window.location.search );
+        }
+
+        return urlSession;
+      }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.nanos.boot.NSpec',
@@ -68,9 +88,16 @@ foam.CLASS({
           var client = {
             package:    'foam.nanos.client',
             name:       'Client',
-            exports:    ['theme', 'as client'],
+            imports:    ['params', 'window'],
+            exports:    ['as client', 'theme',  'sessionID'],
             constants:  { eagerClients_: [] },
             properties: [
+              {
+                __copyFrom__: 'foam.nanos.client.ClientBuilder.SESSION_NAME',
+              },
+              {
+                __copyFrom__: 'foam.nanos.client.ClientBuilder.SESSION_ID',
+              },
               {
                 class: 'foam.core.FObjectProperty',
                 of: 'foam.nanos.auth.Subject',
@@ -189,7 +216,11 @@ foam.CLASS({
                   /*Promise.allSettled(references.concat(appConfigPromise))*/
                   Promise.all([appConfigPromise, subjectPromise, themePromise]).then(async function([appConfig, subject, theme]) {
                     client = foam.core.Model.create(client).buildClass();
-                    client = client.create({ theme: theme, initSubject: subject }, self.__context__);
+                    client = client.create({ 
+                      theme: theme,
+                      initSubject: subject || self.Subject.create(),
+                      sessionID: self.sessionID
+                    }, self.__context__);
                     // console.timeEnd('clientBuild');
                     // Preload menuDAO, remove when we have pre-cached daos from the server
                     client.menuDAO.select();
@@ -200,6 +231,12 @@ foam.CLASS({
           });
         });
       }
+    }
+  ],
+  methods: [
+    function init() {
+      // Wake up and find/create a sessionID for building the client
+      this.sessionID;
     }
   ]
 });
