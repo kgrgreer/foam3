@@ -45,8 +45,8 @@ foam.CLASS({
 
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(x);
         var spid = theme.getSpid();
-        if ( "email".equals(targetProperty) && PreventDuplicateEmailAction.spidGrantsDuplicateEmailPermission(getX(), spid) ) {
-          return true;
+        if ( "email".equals(targetProperty) && PreventDuplicateEmailAction.spidPreventDuplicateEmailPermission(getX(), spid) ) {
+          return false;
         }
 
         DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);

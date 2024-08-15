@@ -31,7 +31,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.PermissionedUserRule",
+  "class":"foam.nanos.ruler.Rule",
   "id":"user-prevent-duplicate-email-rule",
   "name":"Prevent Duplicate Email Rule",
   "priority": 100,
