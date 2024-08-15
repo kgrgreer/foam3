@@ -103,13 +103,20 @@ foam.CLASS({
                 of: 'foam.nanos.auth.Subject',
                 name: 'initSubject',
                 description: 'subject that was used to create the client',
-                final: true
+                final: true,
+                adapt: function(_, n) {
+                  // Recreate Subject in the correct context
+                  return n?.clone(this);
+                }
               },
               {
                 class: 'foam.core.FObjectProperty',
                 of: 'foam.nanos.theme.Theme',
                 name: 'theme',
                 description: 'theme that was used to create the client',
+                adapt: function(_, n) {
+                  return n?.clone(this);
+                }
               }
             ],
             methods: [
@@ -217,11 +224,9 @@ foam.CLASS({
                     client = foam.core.Model.create(client).buildClass();
                     client = client.create({
                       theme: theme,
+                      initSubject: subject,
                       sessionID: self.sessionID
                     }, self.__context__);
-                    // Recreate Subject in the correct context
-                    // Move to whatever client side auth service exports subject
-                    client.initSubject = subject.clone(client);
                     // console.timeEnd('clientBuild');
                     // Preload menuDAO, remove when we have pre-cached daos from the server
                     client.menuDAO.select();
