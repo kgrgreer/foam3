@@ -97,11 +97,7 @@ foam.CLASS({
           // var references = [];
 
           let nspec = foam.nanos.boot.NSpec;
-          let query = self.EQ(self.NSpec.SERVE, true);
 
-          if ( ! self.authenticate ) {
-            query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
-          }
           // console.time('clientBuild');
           /*
             We can bundle these into a single call but bundling hurts performance marginally:
