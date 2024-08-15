@@ -75,7 +75,8 @@ foam.CLASS({
     'foam.nanos.boot.NSpec',
     'foam.nanos.logger.Logger',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.session.Session'
+    'foam.nanos.session.Session',
+    'foam.nanos.auth.AuthenticationException'
   ],
 
   methods: [
@@ -160,7 +161,16 @@ foam.CLASS({
       async: true,
       javaCode: `
         AuthService auth     = (AuthService) x.get("auth");
-        return (Subject) auth.getCurrentSubject(x);
+        try {
+          return (Subject) auth.getCurrentSubject(x);
+        } catch ( AuthenticationException e ) {
+          /* 
+           * No-op:
+           * Suppress auth exceptions as it is normal to request 
+           * not find a subject for a new session
+          */
+          return null;
+        }
       `
     }
   ]
