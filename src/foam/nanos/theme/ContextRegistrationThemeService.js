@@ -16,12 +16,15 @@ foam.CLASS({
   ],
 
   imports: [ 'theme?', 'client?' ],
-
+  // exports: ['theme'],
   methods: [
     function init() {
       // If there is a theme in the client register it
-      if ( this.theme && this.client )
+      if ( this.theme && this.client ) {
+        // recreate theme after client has been created
+        this.theme = this.theme.clone(this.client);
         this.registerTheme(this.client, this.theme);
+      }
     },
     async function findTheme(x) {
       var theme = await this.delegate.findTheme();

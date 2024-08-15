@@ -109,8 +109,7 @@ foam.CLASS({
                 class: 'foam.core.FObjectProperty',
                 of: 'foam.nanos.theme.Theme',
                 name: 'theme',
-                description: 'subject that was used to create the client',
-                final: true
+                description: 'theme that was used to create the client',
               }
             ],
             methods: [
@@ -216,11 +215,13 @@ foam.CLASS({
                   /*Promise.allSettled(references.concat(appConfigPromise))*/
                   Promise.all([appConfigPromise, subjectPromise, themePromise]).then(async function([appConfig, subject, theme]) {
                     client = foam.core.Model.create(client).buildClass();
-                    client = client.create({ 
+                    client = client.create({
                       theme: theme,
-                      initSubject: subject || self.Subject.create(),
                       sessionID: self.sessionID
                     }, self.__context__);
+                    // Recreate Subject in the correct context
+                    // Move to whatever client side auth service exports subject
+                    client.initSubject = subject.clone(client);
                     // console.timeEnd('clientBuild');
                     // Preload menuDAO, remove when we have pre-cached daos from the server
                     client.menuDAO.select();
