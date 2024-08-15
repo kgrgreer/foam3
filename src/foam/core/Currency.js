@@ -42,9 +42,11 @@
   ],
 
   properties: [
+    [ 'precision', 2 ],
     {
       class: 'Long',
       name: 'numericCode',
+      shortName: 'nc',
       documentation: 'The numeric code associated with a type of currency.',
       required: true
     },
@@ -59,26 +61,33 @@
     {
       class: 'String',
       name: 'delimiter',
+      shortName: 'd',
+      value: ',',
       documentation: 'The character used to delimit groups of 3 digits.',
       required: true
     },
     {
       class: 'String',
       name: 'decimalCharacter',
+      shortName: 'dc',
+      value: '.',
       documentation: 'The character used as a decimal.',
       required: true
     },
     {
       class: 'String',
       name: 'symbol',
+      shortName: 's',
       documentation: 'The symbol used for the type of currency. Eg: $ for CAD.',
       required: true
     },
     {
       class: 'String',
       name: 'leftOrRight',
+      shortName: 'lr',
       documentation: `The side of the digits that the symbol should be displayed on.`,
       required: true,
+      value: 'left',
       validateObj: function(leftOrRight) {
         if ( leftOrRight !== 'left' && leftOrRight !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
       }
@@ -92,6 +101,7 @@
     {
       class: 'String',
       name: 'colour',
+      shortName: 'c',
       value: '#406dea',
       documentation: `The colour that represents this currency`
     },
@@ -103,9 +113,11 @@
     {
       class: 'Boolean',
       name: 'showSpace',
+      shortName: 'ss',
       documentation: `Determines whether there is a space between the symbol and
         the number when the currency is displayed.
       `,
+      value: false,
       required: true
     },
     {

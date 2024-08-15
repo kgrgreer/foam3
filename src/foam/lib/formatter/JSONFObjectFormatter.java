@@ -346,7 +346,9 @@ public class JSONFObjectFormatter
   }
 
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
-    if ( ! outputDefaultValues_ && ! prop.isSet(fo) ) return false;
+    if ( ! outputDefaultValues_ ) {
+      if ( ! prop.isSet(fo) || prop.isDefaultValue(fo) ) return false;
+    }
 
     Object value = prop.get(fo);
     if ( value == null || ( isArray(value) && Array.getLength(value) == 0 ) || ( value instanceof FObject && value.equals(fo) ) ) {
@@ -381,7 +383,7 @@ public class JSONFObjectFormatter
 
     append('{');
     addInnerNewline();
-    if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
+    if ( outputClassNames_ && ( outputDefaultClassNames_ || newInfo != defaultClass ) ) {
       outputKey("class");
       append(':');
       output(newInfo.getId());
