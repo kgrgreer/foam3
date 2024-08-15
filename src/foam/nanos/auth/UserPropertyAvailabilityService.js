@@ -45,16 +45,25 @@ foam.CLASS({
 
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(x);
         var spid = theme.getSpid();
-        if ( "email".equals(targetProperty) && PreventDuplicateEmailAction.spidPreventDuplicateEmailPermission(getX(), spid) ) {
-          return false;
-        }
-
         DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);
+        if ( "email".equals(targetProperty) ) {
+          if ( PreventDuplicateEmailAction.spidPreventDuplicateEmailPermission(getX(), spid) ) {
+            return
+              (
+                userDAO
+                .find(AND(
+                  EQ(User.EMAIL, value),
+                  EQ(User.TYPE, "User"),
+                  EQ(User.SPID, spid)))
+              ) == null;
+          }
+          return true;
+        }
         return
           (
             userDAO
             .find(AND(
-              EQ("email".equals(targetProperty) ? User.EMAIL : User.USER_NAME, value),
+              EQ(User.USER_NAME, value),
               EQ(User.TYPE, "User"),
               EQ(User.SPID, spid)))
           ) == null;
