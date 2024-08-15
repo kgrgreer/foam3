@@ -31,9 +31,9 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME',
+      name: 'PREVENT_DUPLICATE_EMAIL_PERMISSION_NAME',
       type: 'String',
-      value: 'spid.default.allowDuplicateEmails'
+      value: 'prevent-duplicate-email'
     }
   ],
 
@@ -65,13 +65,11 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
-        // check if the allowDuplicateEmail permission has been granted;
+        // check if the preventDuplicateEmail permission has been granted;
         // if it has, then skip over the duplicate email check below.
-        if ( spidGrantsDuplicateEmailPermission(getX(), spid) ) {
-          return;
+        if ( spidPreventDuplicateEmailPermission(getX(), spid) ) {
+          checkExistingUsers(x, user, spid);
         }
-
-        checkExistingUsers(x, user, spid);
       `
     },
     {
@@ -99,7 +97,7 @@ foam.CLASS({
 
   static: [
     {
-      name: 'spidGrantsDuplicateEmailPermission',
+      name: 'spidPreventDuplicateEmailPermission',
       type: 'Boolean',
       documentation: `
       Common function for checking if the given SPID allows
@@ -126,7 +124,7 @@ foam.CLASS({
       // a crash
       sp.setX(x);
 
-      return sp.grantsPermission(x, ALLOW_DUPLICATE_EMAIL_PERMISSION_NAME);
+      return sp.grantsPermission(x, PREVENT_DUPLICATE_EMAIL_PERMISSION_NAME);
       `
     }
   ]
