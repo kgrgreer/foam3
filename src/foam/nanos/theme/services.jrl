@@ -79,6 +79,7 @@ p({
   "serve": true,
   "authenticate":false,
   "lazy": false,
+  "lazyClient": false,
   "boxClass":"foam.nanos.theme.ThemeServiceSkeleton",
   "serviceClass": "foam.nanos.theme.Themes",
   "client": """
