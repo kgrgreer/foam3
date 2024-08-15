@@ -35,7 +35,7 @@ p({
   "id":"user-prevent-duplicate-email-rule",
   "name":"Prevent Duplicate Email Rule",
   "priority": 100,
-  "enabled": true,
+  "enabled": false,
   "ruleGroup": "auth",
   "documentation": "Prevent Duplicate Email Rule",
   "daoKey": "localUserDAO",
