@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   imports: [ 'theme?', 'client?' ],
-  // exports: ['theme'],
+
   methods: [
     function init() {
       // If there is a theme in the client register it
