@@ -347,7 +347,12 @@ public class JSONFObjectFormatter
 
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
     if ( ! outputDefaultValues_ ) {
-      if ( ! prop.isSet(fo) || prop.isDefaultValue(fo) ) return false;
+      if ( ! prop.isSet(fo) ) return false;
+
+      // TODO: This isn't safe for all property types (for unknown reason), so just restrict
+      // to safe classes for now.
+      if ( prop instanceof foam.core.AbstractStringPropertyInfo || prop instanceof foam.core.AbstractIntPropertyInfo || prop instanceof foam.core.AbstractBooleanPropertyInfo )
+        if ( prop.isDefaultValue(fo) ) return false;
     }
 
     Object value = prop.get(fo);
