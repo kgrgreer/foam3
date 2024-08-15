@@ -31,11 +31,11 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"foam.nanos.ruler.PermissionedUserRule",
   "id":"user-prevent-duplicate-email-rule",
   "name":"Prevent Duplicate Email Rule",
   "priority": 100,
-  "enabled": false,
+  "enabled": true,
   "ruleGroup": "auth",
   "documentation": "Prevent Duplicate Email Rule",
   "daoKey": "localUserDAO",
