@@ -166,7 +166,7 @@ foam.CLASS({
         } catch ( AuthenticationException e ) {
           /* 
            * No-op:
-           * Suppress auth exceptions as it is normal to request 
+           * Suppress auth exceptions as it is normal to request and
            * not find a subject for a new session
           */
           return null;
