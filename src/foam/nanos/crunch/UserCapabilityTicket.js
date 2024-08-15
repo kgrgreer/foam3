@@ -21,11 +21,18 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'spid',
+      section: 'infoSection',
+      required: true,
+      order: 2
+    },
+    {
       name: 'capability',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
       section: 'infoSection',
-      required: true
+      required: true,
+      order: 3
     },
     {
       class: 'Array',
@@ -33,6 +40,7 @@ foam.CLASS({
       label: 'Users',
       documentation: 'Users/businesses this ticket is created for.',
       section: 'infoSection',
+      order: 4,
       view: function(_, X) {
         var userDAOSlot = X.data.slot(spid => {
           return X.userDAO.where(X.data.EQ(X.data.User.SPID, spid));
@@ -55,6 +63,11 @@ foam.CLASS({
       }
     },
     {
+      name: 'status',
+      order: 5,
+      createVisibility: 'HIDDEN'
+    },
+    {
       name: 'createdFor',
       hidden: true,
       required: false
@@ -73,6 +86,10 @@ foam.CLASS({
     },
     {
       name: 'externalComment',
+      hidden: true
+    },
+    {
+      name: 'type',
       hidden: true
     }
   ]
