@@ -27,6 +27,7 @@
     {
       class: 'Int',
       name: 'precision',
+      shortName: 'p',
       documentation: 'Defines the number of digits that come after the decimal point. ',
       required: true
     }
