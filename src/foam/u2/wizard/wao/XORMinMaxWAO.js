@@ -61,6 +61,7 @@ foam.CLASS({
 
   methods: [
     async function load(wizardlet) {
+      await this.delegate.load(wizardlet);
       wizardlet.isLoaded = false;
 
       const isDescendantCheck = this.capabilityToPrerequisite[`${wizardlet.id}:${this.minMaxCapabilityId}`];
