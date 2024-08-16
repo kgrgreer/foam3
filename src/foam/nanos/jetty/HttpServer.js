@@ -41,17 +41,18 @@ foam.CLASS({
     'org.eclipse.jetty.proxy.ProxyServlet',
     'org.eclipse.jetty.proxy.ProxyServlet.Transparent',
     'org.eclipse.jetty.server.*',
-    'org.eclipse.jetty.server.handler.IPAccessHandler',
+    'org.eclipse.jetty.io.ConnectionStatistics',
+    'org.eclipse.jetty.server.handler.InetAccessHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
     'org.eclipse.jetty.servlet.ServletHolder',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool',
-    'org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter',
-    'org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest',
-    'org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse',
-    'org.eclipse.jetty.websocket.servlet.WebSocketCreator',
+    // 'org.eclipse.jetty.websocket.servlet.WebSocketUpgradeFilter',
+    // 'org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest',
+    // 'org.eclipse.jetty.websocket.server.JettyServerUpgradeResponse',
+    // 'org.eclipse.jetty.websocket.server.JettyWebSocketCreator',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -193,7 +194,7 @@ foam.CLASS({
         threadPool.setMinThreads(jettyThreadPoolConfig.getMinThreads());
         threadPool.setIdleTimeout(jettyThreadPoolConfig.getIdleTimeout());
 
-        ConnectorStatistics stats = new ConnectorStatistics();
+        ConnectionStatistics stats = new ConnectionStatistics();
         org.eclipse.jetty.server.Server server =
           new org.eclipse.jetty.server.Server(threadPool);
 
@@ -315,7 +316,7 @@ foam.CLASS({
 
         // set error handler
         handler.setErrorHandler(errorHandler);
-
+/*
         // Add websocket upgrade filter
         WebSocketUpgradeFilter wsFilter = WebSocketUpgradeFilter.configureContext(handler);
         // set idle time out to 10s
@@ -323,15 +324,15 @@ foam.CLASS({
         // add mapping
         wsFilter.addMapping(new ServletPathSpec("/service/*"), new WebSocketCreator() {
           @Override
-          public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
+          public Object createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp) {
             return new foam.nanos.ws.NanoWebSocket(getX());
           }
         });
-
+*/
         addJettyShutdownHook(server);
 
-        // IPAccessHandler
-        IPAccessHandler ipAccessHandler = new IPAccessHandler();
+        // InetAccessHandler (previously InetAccessHandler)
+        InetAccessHandler ipAccessHandler = new InetAccessHandler();
         ipAccessHandler.setHandler(handler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
 
@@ -486,7 +487,7 @@ foam.CLASS({
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
             new HttpConnectionFactory(https));
           sslConnector.setPort(port);
-          sslConnector.addBean(new ConnectorStatistics());
+          sslConnector.addBean(new ConnectionStatistics());
 
           server.addConnector(sslConnector);
 
@@ -547,7 +548,7 @@ foam.CLASS({
         for ( Connector connector : server.getConnectors() ) {
           if ( connector instanceof Container ) {
             Container container = (Container)connector;
-            ConnectorStatistics stats = container.getBean(ConnectorStatistics.class);
+            ConnectionStatistics stats = container.getBean(ConnectionStatistics.class);
             ps.printf("Connector: %s%n",connector);
             if ( stats != null ) {
               stats.dump(ps,"  ");
