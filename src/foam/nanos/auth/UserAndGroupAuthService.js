@@ -69,7 +69,7 @@ foam.CLASS({
     {
       name: 'authorizeAnonymous',
       documentation: `
-        Authorizes a anonymous user that has no true ownership. The assigned anonymous user is relative to a spid,
+        Authorizes an anonymous user that has no true ownership. The assigned anonymous user is relative to a spid,
         holding various permissions allowing a user who has not logged into the system to interact with it as if they had.
       `,
       javaCode: `
