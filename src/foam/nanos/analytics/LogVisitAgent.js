@@ -12,6 +12,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'params',
     'window'
   ],
 
@@ -28,19 +29,18 @@ foam.CLASS({
       mergeDelay: 20000,
       code: function() {
         if ( ! this.window.location.search ) return;
-        extras = Object.fromEntries(
-          [...(new URLSearchParams(this.window.location.search))]
-            .filter(
-              ([key]) => key.startsWith('utm_') || key == 'referral'
-            )
-        );
+        var extras = Object.keys(this.params)
+          .filter(key => key.startsWith('utm_') || key == 'referral')
+          .reduce((obj, key) => {
+              obj[key] = this.params[key];
+              return obj;
+            }, {});
         this.__subContext__.analyticEventDAO.put(
           foam.nanos.analytics.AnalyticEvent.create({
             name: 'REFERRAL_OR_AD_CAMPAIGN_VISIT',
             extra: foam.json.stringify(extras)
           }),
           this);
-        localStorage['visited'] = this.window.location.search;
       }
     }
   ]
