@@ -20,8 +20,9 @@ foam.CLASS({
   methods: [
     function init() {
       // If there is a theme in the client register it
-      if ( this.theme && this.client )
+      if ( this.theme && this.client ) {
         this.registerTheme(this.client, this.theme);
+      }
     },
     async function findTheme(x) {
       var theme = await this.delegate.findTheme();
@@ -43,3 +44,4 @@ foam.CLASS({
     }
   ]
 });
+ 

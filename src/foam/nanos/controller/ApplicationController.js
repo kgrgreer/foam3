@@ -598,11 +598,12 @@ foam.CLASS({
       try {
         var result = await this.client.auth.getCurrentSubject(null);
         // If client was built for a different subject, rebuild the client
-        if ( result && result.user?.id != this.client.initSubject.user?.id ) await this.reloadClient();
+        if ( result && result.user?.id != this.subject.user?.id ) await this.reloadClient();
 
         promptLogin = promptLogin && await this.client.auth.check(this, 'auth.promptlogin');
         var authResult =  await this.client.auth.check(this, '*');
         if ( ! result || ! result.user ) throw new Error();
+        this.fetchGroup();
       } catch (err) {
         if ( ! promptLogin || authResult ) return;
         await this.requestLogin();
@@ -931,7 +932,7 @@ foam.CLASS({
        */
       var lastTheme = this.theme;
       try {
-        this.theme = this.client.theme;
+        this.theme = this.__subContext__.theme;
         this.appConfig.copyFrom(this.theme.appConfig)
       } catch (err) {
         this.notify(this.LOOK_AND_FEEL_NOT_FOUND, '', this.LogLevel.ERROR, true);

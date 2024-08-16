@@ -21,6 +21,7 @@ foam.CLASS({
     'ctrl',
     'emailVerificationService',
     'logAnalyticEvent',
+    'login as importedLogin',
     'login',
     'loginSuccess',
     'loginView?',
@@ -218,8 +219,8 @@ foam.CLASS({
       name: 'emailVerifiedListener',
       code: async function() {
         try {
-          await this.login(this.userName, this.desiredPassword);
-        } catch(err) {
+          await this.importedLogin(this.userName, this.desiredPassword);
+        } catch (err) {
           this.notify(this.ERROR_MSG_LOGIN, '', this.LogLevel.ERROR, true);
           this.pushMenu('sign-in', true);
         }

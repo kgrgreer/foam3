@@ -103,14 +103,20 @@ foam.CLASS({
                 of: 'foam.nanos.auth.Subject',
                 name: 'initSubject',
                 description: 'subject that was used to create the client',
-                final: true
+                final: true,
+                adapt: function(_, n) {
+                  // Recreate Subject in the correct context
+                  return n?.clone(this);
+                }
               },
               {
                 class: 'foam.core.FObjectProperty',
                 of: 'foam.nanos.theme.Theme',
                 name: 'theme',
-                description: 'subject that was used to create the client',
-                final: true
+                description: 'theme that was used to create the client',
+                adapt: function(_, n) {
+                  return n?.clone(this);
+                }
               }
             ],
             methods: [
@@ -216,9 +222,9 @@ foam.CLASS({
                   /*Promise.allSettled(references.concat(appConfigPromise))*/
                   Promise.all([appConfigPromise, subjectPromise, themePromise]).then(async function([appConfig, subject, theme]) {
                     client = foam.core.Model.create(client).buildClass();
-                    client = client.create({ 
+                    client = client.create({
                       theme: theme,
-                      initSubject: subject || self.Subject.create(),
+                      initSubject: subject,
                       sessionID: self.sessionID
                     }, self.__context__);
                     // console.timeEnd('clientBuild');
