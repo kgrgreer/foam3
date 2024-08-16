@@ -224,7 +224,7 @@ foam.CLASS({
                     client = foam.core.Model.create(client).buildClass();
                     client = client.create({
                       theme: theme,
-                      initSubject: subject,
+                      initSubject: subject || self.Subject.create({}),
                       sessionID: self.sessionID
                     }, self.__context__);
                     // console.timeEnd('clientBuild');
