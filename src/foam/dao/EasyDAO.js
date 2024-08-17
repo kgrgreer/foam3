@@ -689,14 +689,14 @@ foam.CLASS({
             this.WebSocketBox.create({ uri: this.serviceName }) :
             this.HTTPBox.create({ url: this.serviceName })
         });
+        if ( this.crunchBoxEnabled ) {
+          box = this.CrunchClientBox.create({ delegate: box });
+        }
         if ( this.retryBoxMaxAttempts != 0 ) {
           box = this.RetryBox.create({
             maxAttempts: this.retryBoxMaxAttempts,
             delegate: box,
           })
-        }
-        if ( this.crunchBoxEnabled ) {
-          box = this.CrunchClientBox.create({ delegate: box });
         }
         return this.SessionClientBox.create({ delegate: box });
       }

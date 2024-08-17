@@ -998,11 +998,13 @@ foam.CLASS({
     async function routeToDAO(dao, id) {
       // Check if current menu has object
       if ( id && foam.nanos.menu.DAOMenu2.isInstance(this.currentMenu.handler) ) {
-        var result = await this.currentMenu.handler.config.dao.find(id);
-        if ( result ) {
-          this.routeTo(this.currentMenu.id + '/' + id);
-          return;
-        }
+        try {
+          let result = await this.currentMenu.handler.config.dao.find(id);
+          if ( result ) {
+            this.routeTo(this.currentMenu.id + '/' + id);
+            return;
+          }
+        } catch(e) {}
       }
       // Finds the correct menu for a given dao and optionally an object
       let menuDAOs = (await this.__subContext__.menuDAO.select())
