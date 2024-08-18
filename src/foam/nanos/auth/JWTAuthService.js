@@ -43,7 +43,8 @@ foam.CLASS({
             reader.close();
             
             // TODO validate JWT
-            
+
+                        
             if (!bodyObject.getBoolean("email_verified")) {
                 throw new AuthenticationException("email is not verified");
             }

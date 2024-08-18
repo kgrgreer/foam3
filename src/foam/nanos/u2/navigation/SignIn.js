@@ -286,6 +286,7 @@ foam.CLASS({
       code: function(X) {
         var nonce = crypto.randomUUID();
 
+
         var reqParams = {
           response_type: 'id_token',
           client_id: '459191378068-1mtto5algfu1q4b7oc33tj7ci7hm82ua.apps.googleusercontent.com',
@@ -296,7 +297,7 @@ foam.CLASS({
 
         var uri = 'https://accounts.google.com/o/oauth2/v2/auth'
 
-        // TODO Run this in a separate window supported by nanos?
+        // Could also run this in a separate popup window as a separate webapp, but this works for now
         window.location = uri + '?' + Object.entries(reqParams).map(v => v.map(p => encodeURIComponent(p)).join('=')).join('&')
       }
     },

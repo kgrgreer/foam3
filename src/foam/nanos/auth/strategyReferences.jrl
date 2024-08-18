@@ -1,0 +1,6 @@
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"dbc65f86-165e-462f-bbaf-4e0864ceb3d9",
+  "desiredModelId":"foam.nanos.auth.JWK",
+  "strategy":"foam.nanos.auth.RSA256JWK"
+})

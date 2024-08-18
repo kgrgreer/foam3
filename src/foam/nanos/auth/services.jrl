@@ -437,3 +437,22 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "jwkDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.JWK.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setPermissioned(true)
+      .setJournalName("jwks")
+      .build();
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.auth.JWK"
+    }
+  """
+})
