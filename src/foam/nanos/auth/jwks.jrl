@@ -1,0 +1,26 @@
+// imported from https://www.googleapis.com/oauth2/v3/certs from https://accounts.google.com/.well-known/openid-configuration
+// on August 19 2024
+// TODO: Fetch these dynamically as needed
+
+p({
+  class:"foam.nanos.auth.RSA256JWK",
+  n:"onV5tzUbqyPfkM6MwUqCtrqun9x20hEUbIUlmAYYuPuMhsaNHJqs1AVzRt2TzaNjmPVddEbU7VMDmeFWUt7vgDi7Xu0leevuIN4VSPbAMGBa0oj9Qopqkn9ePO_7DvIN13ktHgfQqatNBu6uXH6zkUl3VtXnubXrUhx7uyF22dARDc1-pJoj2NnsvgxDRElPMyDkU-siVv3c6cgIEwLEZZPWOcwplPTUB4qeTK6prrPBGQshuE1PWK2ZrYpIvXfzHyEbkGdPnrhcxgCzbKBUFvr8n_sfSurLRoDBLjkURKmgB8T8iRzLyXsCu9D3Hw61LKuex1aeSQLdwOFLuUEBdw",
+  e:"AQAB",
+  kid:"d2d444cf8c5e3ae8386d66a13a316976aa369991",
+  use:"sig",
+  origin:"https://accounts.google.com"
+})
+
+p({
+  class:"foam.nanos.auth.RSA256JWK",
+  origin:"https://accounts.google.com",
+  n:"v7hTj49pNGYjxKbgMx_iDyjeErhfJFepMl306IV_TW5T_CEGE4lWFfBe9w0cwpi5KD6XlC1GO1AsrtzcYF29wJ283GNBZRkbl8iTe-LQYdjQsBtf_1fLIVt6LR7H2U1RPqa3pY16Kq6i6yC2osVg6tD7ApBCGw1WKe8uU3cm28biJzuV4gv6PzcbOdErd-hb4Cv6n2SoMPYlBfT4pWee75poQh8DYoQ1KJwowz3U1MaxOBMP260hmDK-QK0q4LYabCQiBNsz4FWWcaAAFxZFbiqGY5Gdu18uOkpMbdAN5FoZ_6nMDMSTmlf0CHv7gZe_cL38kZvTaynkWwDxqsW_Xw",
+  use:"sig",
+  alg:"RS256",
+  kid:"a49391bf52b58c1d560255c2f2a04e59e22a7b65",
+  e:"AQAB"
+})
+
+// Set the keys to be trusted out of box
+p({class:"foam.nanos.auth.RSA256JWK",kid:"d2d444cf8c5e3ae8386d66a13a316976aa369991",origin:"https://accounts.google.com",trusted:true})
+p({class:"foam.nanos.auth.RSA256JWK",kid:"a49391bf52b58c1d560255c2f2a04e59e22a7b65",origin:"https://accounts.google.com",trusted:true})
