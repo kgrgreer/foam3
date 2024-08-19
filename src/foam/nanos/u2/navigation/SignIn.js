@@ -15,6 +15,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'appConfig',
     'ctrl',
     'emailVerificationService',
     'logAnalyticEvent',
@@ -282,16 +283,15 @@ foam.CLASS({
       name: 'signInWithGoogle',
       label: 'Sign in With Google',
       section: 'footerSection',
-      isAvailable: function(showAction) { return showAction; },
+      isAvailable: function(showAction, appConfig$googleSignInClientId) { return showAction && !!appConfig$googleSignInClientId; },
       code: function(X) {
         var nonce = crypto.randomUUID();
 
-
         var reqParams = {
           response_type: 'id_token',
-          client_id: '459191378068-1mtto5algfu1q4b7oc33tj7ci7hm82ua.apps.googleusercontent.com',
+          client_id: this.appConfig.googleSignInClientId,
           scope: 'openid email',
-          redirect_uri: 'http://localhost:8080',
+          redirect_uri: location.toString(),
           nonce: nonce
         }
 
