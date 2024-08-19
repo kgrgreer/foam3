@@ -94,9 +94,19 @@ foam.CLASS({
             } catch (java.security.SignatureException e) {
               throw new AuthenticationException("error validating signature", e);
             }
-                        
+                      
             if (!bodyObject.getBoolean("email_verified")) {
                 throw new AuthenticationException("email is not verified");
+            }
+            
+            if (bodyObject.getInt("exp", Integer.MAX_VALUE) < java.time.Instant.now().getEpochSecond()) {
+                throw new AuthenticationException("expired token");
+            }
+            
+            String expectedAudience = ((foam.nanos.app.AppConfig)(x.get("appConfig"))).getGoogleSignInClientId();
+            
+            if (!bodyObject.getString("aud").equals(expectedAudience)) {
+                throw new AuthenticationException("incorrect audience");
             }
             
             String email = bodyObject.getString("email");
