@@ -285,13 +285,14 @@ foam.CLASS({
       section: 'footerSection',
       isAvailable: function(showAction, appConfig$googleSignInClientId) { return showAction && !!appConfig$googleSignInClientId; },
       code: function(X) {
+        // TODO: Validate nonce
         var nonce = crypto.randomUUID();
 
         var reqParams = {
           response_type: 'id_token',
           client_id: this.appConfig.googleSignInClientId,
           scope: 'openid email',
-          redirect_uri: location.toString(),
+          redirect_uri: location.origin,
           nonce: nonce
         }
 
