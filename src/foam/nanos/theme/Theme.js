@@ -776,6 +776,10 @@ foam.CLASS({
       The above code if added to a theme jrl will replace all instances of 'foam.u2.PropertyBorder' with 'foam.u2.DetailView' when that theme is being used by a client. 
       `,
       name: 'registrations'
+    },
+    {
+      class: 'String',
+      name: 'googleSignInClientId'
     }
   ],
 
