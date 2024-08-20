@@ -556,7 +556,9 @@ foam.CLASS({
 
       intercept.capables.forEach(capable => {
         capable.capabilityIds.forEach((c) => {
-          var seq = this.toGraphAgentWizard(this.createCapableWizardSequence(intercept, capable, c, x));
+          // REVIEW: Launches a capable wizard per capable requirement i.e., capabilityId, should not return to launch point in the loop.
+          var seq = this.createCapableWizardSequence(intercept, capable, c, x);
+          seq = this.toGraphAgentWizard(seq.remove('ReturnToLaunchPointAgent'));
           p = p.then(() => {
             return seq.execute().then(x => x);
           });
