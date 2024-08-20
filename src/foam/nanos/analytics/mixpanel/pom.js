@@ -10,6 +10,6 @@ foam.POM({
     { name: "AddMixpanelUserProperty",                flags: "js|java" },
     { name: "CreateMixpanelProfileAction",            flags: "js|java" },
     { name: "MixpanelAnalyticEventAction",            flags: "js|java" },
-    { name: "MixpanelSpidRefine",                     flags: "js|java" }
+    { name: "Relationships",                          flags: "js|java" }
   ]
 });

@@ -16,6 +16,8 @@ foam.CLASS({
     'foam.core.ContextAwareSupport',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.mlang.Expr',
+    'foam.mlang.sink.Projection',
     'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.ServiceProvider',
@@ -24,7 +26,7 @@ foam.CLASS({
     'foam.nanos.NanoService',
 
     'java.io.IOException',
-    'java.util.Arrays',
+    'java.util.List',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.HashSet',
@@ -79,6 +81,7 @@ foam.CLASS({
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
+        System.out.println("SENDING EVENT: " + event.getName());
 
         put(sentEvent);
       `
@@ -118,8 +121,15 @@ foam.CLASS({
         var whitelist = getWhitelistCache().get(spid);
         if ( whitelist == null ) {
           var spidObj = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find(spid);
-          if ( spidObj.getMixpanelWhitelist() == null ) return false;
-          whitelist = new HashSet<String>(Arrays.asList(spidObj.getMixpanelWhitelist()));
+          var projection = new Projection.Builder(x).setExprs(new Expr[]{foam.nanos.analytics.AnalyticEvent.ID}).build();
+          spidObj.getWhitelistedEvents(getX()).getDAO().inX(getX()).select(projection);
+
+          whitelist = new HashSet<String>();
+          var counter = 1;
+          for ( Object[] proj : (List<Object[]>) projection.getProjection() ) {
+            System.out.println(counter + " - " + proj[0]);
+            whitelist.add((String) proj[0]);
+          }
           getWhitelistCache().put(spid, whitelist);
         }
         return whitelist.contains(event.getName());
