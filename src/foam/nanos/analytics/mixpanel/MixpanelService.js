@@ -121,7 +121,7 @@ foam.CLASS({
         if ( whitelist == null ) {
           var spidObj = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find(spid);
           var projection = new Projection.Builder(x).setExprs(new Expr[]{foam.nanos.analytics.AnalyticEvent.ID}).build();
-          spidObj.getWhitelistedEvents(getX()).getDAO().inX(getX()).select(projection);
+          spidObj.getWhitelistedEvents(getX()).getDAO().select(projection);
 
           whitelist = new HashSet<String>();
           for ( Object[] proj : (List<Object[]>) projection.getProjection() ) {
