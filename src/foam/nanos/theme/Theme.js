@@ -114,11 +114,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'registrationGroup',
+      shortName: 'rg',
       writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'description',
+      shortName: 'd',
       section: 'infoSection',
       writePermissionRequired: true
     },
@@ -150,12 +152,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'navigationRootMenu',
+      shortName: 'nrm',
       documentation: 'Specifies the root menu to be used in side navigation.',
       writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'settingsRootMenu',
+      shortName: 'srm',
       documentation: 'Specifies the root menu to be used in top navigation settings drop-down.',
       writePermissionRequired: true
     },
@@ -167,6 +171,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'defaultMenu',
+      shortName: 'dm',
       documentation: 'Menu user redirects to after login.',
       section: 'navigation',
       view: {
@@ -180,6 +185,7 @@ foam.CLASS({
       class: 'Reference',
       targetDAOKey: 'menuDAO',
       name: 'unauthenticatedDefaultMenu',
+      shortName: 'udm',
       documentation: 'Menu user redirects to before login.',
       of: 'foam.nanos.menu.Menu',
       section: 'navigation',
@@ -375,174 +381,203 @@ foam.CLASS({
     {
       class: 'Color',
       name: 'primary1',
+      shortName: 'p1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary2',
+      shortName: 'p2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary3',
+      shortName: 'p3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary4',
+      shortName: 'p4',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'primary5',
+      shortName: 'p5',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary1',
+      shortName: 's1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary2',
+      shortName: 's2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary3',
+      shortName: 's3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary4',
+      shortName: 's4',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'secondary5',
+      shortName: 's5',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval1',
+      shortName: 'a1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval2',
+      shortName: 'a2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval3',
+      shortName: 'a3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval4',
+      shortName: 'a4',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'approval5',
+      shortName: 'a5',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning1',
+      shortName: 'w1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning2',
+      shortName: 'w2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning3',
+      shortName: 'w3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning4',
+      shortName: 'w4',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'warning5',
+      shortName: 'w5',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive1',
+      shortName: 'd1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive2',
+      shortName: 'd2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive3',
+      shortName: 'd3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive4',
+      shortName: 'd4',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'destructive5',
+      shortName: 'd5',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey1',
+      shortName: 'g1',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey2',
+      shortName: 'g2',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey3',
+      shortName: 'g3',
       section: 'colours',
       writePermissionRequired: true
     },
     {
       class: 'Color',
       name: 'grey4',
+      shortName: 'g4',
       section: 'colours',
       writePermissionRequired: true
     },
@@ -574,12 +609,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'inputVerticalPadding',
+      shortName: 'ivp',
       section: 'inputs',
       writePermissionRequired: true
     },
     {
       class: 'String',
       name: 'inputHorizontalPadding',
+      shortName: 'ihp',
       section: 'inputs',
       writePermissionRequired: true
     },
@@ -773,7 +810,7 @@ foam.CLASS({
           "targetName":"foam.u2.PropertyBorder"
         }
       ]
-      The above code if added to a theme jrl will replace all instances of 'foam.u2.PropertyBorder' with 'foam.u2.DetailView' when that theme is being used by a client. 
+      The above code if added to a theme jrl will replace all instances of 'foam.u2.PropertyBorder' with 'foam.u2.DetailView' when that theme is being used by a client.
       `,
       name: 'registrations'
     }
