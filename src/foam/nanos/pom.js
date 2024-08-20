@@ -386,6 +386,7 @@ foam.POM({
     { name: "auth/ClientAgentAuthService",                                                flags: "js|java" },
     { name: "auth/UniqueUserService",                                                     flags: "js|java" },
     { name: "om/DAOOMLogger",                                                             flags: "js|java" },
+    { name: "measure/Measure",                                                                      flags: "java" },
     { name: "cm/CM",                                                                      flags: "js|java" },
     { name: "cm/DatasetCM",                                                                flags: "js|java" },
     { name: "cm/view/CMGraph",                                                            flags: "web" },
