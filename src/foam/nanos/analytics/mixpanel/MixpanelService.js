@@ -14,10 +14,10 @@ foam.CLASS({
     'com.mixpanel.mixpanelapi.MixpanelAPI',
 
     'foam.core.ContextAwareSupport',
+    'foam.core.Detachable',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.mlang.Expr',
-    'foam.mlang.sink.Projection',
+    'foam.dao.AbstractSink',
     'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.ServiceProvider',
@@ -26,7 +26,6 @@ foam.CLASS({
     'foam.nanos.NanoService',
 
     'java.io.IOException',
-    'java.util.List',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.HashSet',
@@ -120,14 +119,15 @@ foam.CLASS({
         var whitelist = getWhitelistCache().get(spid);
         if ( whitelist == null ) {
           var spidObj = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find(spid);
-          var projection = new Projection.Builder(x).setExprs(new Expr[]{foam.nanos.analytics.AnalyticEvent.ID}).build();
-          spidObj.getWhitelistedEvents(getX()).getDAO().select(projection);
+          final var evts = new HashSet<String>();
+          spidObj.getWhitelistedEvents(getX()).getDAO().select(new AbstractSink() {
+            public void put(Object o, Detachable d) {
+              evts.add(((AnalyticEvent) o).getId());
+            }
+          });
 
-          whitelist = new HashSet<String>();
-          for ( Object[] proj : (List<Object[]>) projection.getProjection() ) {
-            whitelist.add((String) proj[0]);
-          }
-          getWhitelistCache().put(spid, whitelist);
+          getWhitelistCache().put(spid, evts);
+          return evts.contains(event.getName());
         }
         return whitelist.contains(event.getName());
       `
