@@ -81,7 +81,6 @@ foam.CLASS({
         MessageBuilder messageBuilder = new MessageBuilder(getProjectToken());
 
         JSONObject sentEvent = messageBuilder.event(trackingId, event.getName(), props);
-        System.out.println("SENDING EVENT: " + event.getName());
 
         put(sentEvent);
       `
@@ -125,9 +124,7 @@ foam.CLASS({
           spidObj.getWhitelistedEvents(getX()).getDAO().inX(getX()).select(projection);
 
           whitelist = new HashSet<String>();
-          var counter = 1;
           for ( Object[] proj : (List<Object[]>) projection.getProjection() ) {
-            System.out.println(counter + " - " + proj[0]);
             whitelist.add((String) proj[0]);
           }
           getWhitelistCache().put(spid, whitelist);
