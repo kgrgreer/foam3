@@ -14,8 +14,10 @@ foam.CLASS({
     'com.mixpanel.mixpanelapi.MixpanelAPI',
 
     'foam.core.ContextAwareSupport',
+    'foam.core.Detachable',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.AbstractSink',
     'foam.nanos.analytics.AnalyticEvent',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.ServiceProvider',
@@ -24,7 +26,6 @@ foam.CLASS({
     'foam.nanos.NanoService',
 
     'java.io.IOException',
-    'java.util.Arrays',
     'java.util.concurrent.ConcurrentLinkedQueue',
     'java.util.concurrent.ConcurrentHashMap',
     'java.util.HashSet',
@@ -118,9 +119,15 @@ foam.CLASS({
         var whitelist = getWhitelistCache().get(spid);
         if ( whitelist == null ) {
           var spidObj = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find(spid);
-          if ( spidObj.getMixpanelWhitelist() == null ) return false;
-          whitelist = new HashSet<String>(Arrays.asList(spidObj.getMixpanelWhitelist()));
-          getWhitelistCache().put(spid, whitelist);
+          final var evts = new HashSet<String>();
+          spidObj.getWhitelistedEvents(getX()).getDAO().select(new AbstractSink() {
+            public void put(Object o, Detachable d) {
+              evts.add(((AnalyticEvent) o).getId());
+            }
+          });
+
+          getWhitelistCache().put(spid, evts);
+          return evts.contains(event.getName());
         }
         return whitelist.contains(event.getName());
       `

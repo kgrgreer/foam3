@@ -99,6 +99,9 @@ foam.CLASS({
     // Some models can include other models with file
     // Do recursive look up for fileArrays on inside models
     async function arrayRecursion(obj) {
+      // Some obj doesn't have cls_. E.g. primitives or views
+      if ( obj.cls_ == undefined ) return;
+
       if ( foam.nanos.fs.File.isInstance(obj) ) {
         await this.processFile(obj);
       } else {
