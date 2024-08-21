@@ -26,7 +26,7 @@ foam.CLASS({
   methods: [
     function init() {
       window.dataLayer = window.dataLayer || [];
-      this.sub('userCreated', this.userCreatedListener);
+      this.sub('userCreated', this.userOnboardingListener);
       this.sub('userOnboarded', this.userOnboardedListener);
     },
     function gtag(){
@@ -36,7 +36,7 @@ foam.CLASS({
   
   listeners: [
     {
-      name: 'userCreatedListener',
+      name: 'userOnboardingListener',
       isMerged: true,
       mergeDelay: 20000,
       code: function() {
