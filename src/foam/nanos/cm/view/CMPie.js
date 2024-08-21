@@ -30,7 +30,7 @@ foam.CLASS({
           labels: cm.labels,
           datasets: [{
             label: k,
-            data: v
+            data: v.values
           }]
         })
       }
