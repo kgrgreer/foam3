@@ -455,7 +455,7 @@ foam.CLASS({
           self.stack = self.Stack.create({}, self.__subContext__);
           self.routeTo(self.window.location.hash.substring(1));
         }
-       
+
         self.originalSubContext = self.__subContext__;
         self.setPrivate_('__subContext__', { name: 'ApplicationControllerProxy', __proto__: client.__subContext__});
         self.subject = self.client.initSubject;
@@ -746,8 +746,11 @@ foam.CLASS({
     async function pushDefaultMenu() {
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
-      await this.routeTo(defaultMenu.id);
-      return defaultMenu;
+      if ( defaultMenu ) {
+        await this.routeTo(defaultMenu.id ?? '');
+        return defaultMenu;
+      }
+      await this.fetchSubject();
     },
 
     function requestLogin() {

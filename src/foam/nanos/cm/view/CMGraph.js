@@ -111,7 +111,7 @@ foam.CLASS({
       for (const [k, v] of Object.entries(cm.dataset)) {
         dataSets['datasets'].push({
           label: k,
-          data: v,
+          data: v.values,
           borderWidth: 1
         })
       }
