@@ -413,11 +413,11 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
@@ -492,7 +492,7 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
     if ( PROFILER ) {
 
     } else if ( DEBUG ) {
-      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`
+      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`;
     }
 
     if ( WEB_PORT ) {
@@ -503,11 +503,14 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
 
     CLASSPATH = `${BUILD_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
-    if ( TEST || BENCHMARK ) {
-      if ( LOG_LEVEL ) {
-        JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
-      }
+    logLevelLower = 'info';
+    if ( LOG_LEVEL ) {
+      JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
+      logLevelLower = `${LOG_LEVEL}`.toLowerCase();
+    }
+    JAVA_OPTS = ` -Dorg.slf4j.simpleLogger.defaultLogLevel=${logLevelLower} ${JAVA_OPTS}`;
 
+    if ( TEST || BENCHMARK ) {
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 

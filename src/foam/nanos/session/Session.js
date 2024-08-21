@@ -36,7 +36,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.Random',
     'java.util.UUID',
-    'javax.servlet.http.HttpServletRequest',
+    'jakarta.servlet.http.HttpServletRequest',
     'org.eclipse.jetty.server.Request',
     'static foam.mlang.MLang.*'
   ],

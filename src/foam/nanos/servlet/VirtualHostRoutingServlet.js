@@ -24,11 +24,11 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.PrintWriter',
     'java.util.HashMap',
-    'javax.servlet.http.HttpServletRequest',
-    'javax.servlet.ServletConfig',
-    'javax.servlet.ServletException',
-    'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse'
+    'jakarta.servlet.http.HttpServletRequest',
+    'jakarta.servlet.ServletConfig',
+    'jakarta.servlet.ServletException',
+    'jakarta.servlet.ServletRequest',
+    'jakarta.servlet.ServletResponse'
   ],
 
   properties: [

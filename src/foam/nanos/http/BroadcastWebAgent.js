@@ -47,8 +47,8 @@ Otherwise, using AsyncAssemblyLine waits for all calls to fail before reporting 
     'java.util.Map',
     'java.util.StringTokenizer',
     'javax.net.ssl.SSLContext',
-    'javax.servlet.http.HttpServletRequest',
-    'javax.servlet.http.HttpServletResponse'
+    'jakarta.servlet.http.HttpServletRequest',
+    'jakarta.servlet.http.HttpServletResponse'
   ],
 
   properties: [

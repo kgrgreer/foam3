@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.blob.Blob',
     'foam.core.X',
     'foam.dao.DAO',
+    'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.TRUE',
     'foam.nanos.fs.File',
     'foam.nanos.fs.ResourceStorage',
@@ -36,24 +37,27 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.HashSet',
     'java.util.Set',
+    'jakarta.servlet.Servlet',
     'org.apache.commons.io.IOUtils',
+    'org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory',
+    'org.eclipse.jetty.io.ConnectionStatistics',
     'org.eclipse.jetty.http.pathmap.ServletPathSpec',
+    'org.eclipse.jetty.http2.HTTP2Cipher',
+    'org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory',
     'org.eclipse.jetty.proxy.ProxyServlet',
     'org.eclipse.jetty.proxy.ProxyServlet.Transparent',
     'org.eclipse.jetty.server.*',
-    'org.eclipse.jetty.io.ConnectionStatistics',
     'org.eclipse.jetty.server.handler.InetAccessHandler',
     'org.eclipse.jetty.server.handler.gzip.GzipHandler',
     'org.eclipse.jetty.server.handler.StatisticsHandler',
     'org.eclipse.jetty.servlet.ServletHolder',
+    'org.eclipse.jetty.websocket.server.JettyServerUpgradeResponse',
+    'org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest',
+    'org.eclipse.jetty.websocket.server.JettyWebSocketCreator',
+    'org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
-    'org.eclipse.jetty.util.thread.QueuedThreadPool',
-    // 'org.eclipse.jetty.websocket.servlet.WebSocketUpgradeFilter',
-    // 'org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest',
-    // 'org.eclipse.jetty.websocket.server.JettyServerUpgradeResponse',
-    // 'org.eclipse.jetty.websocket.server.JettyWebSocketCreator',
-    'static foam.mlang.MLang.EQ'
+    'org.eclipse.jetty.util.thread.QueuedThreadPool'
   ],
 
   properties: [
@@ -200,38 +204,15 @@ foam.CLASS({
 
         if ( getEnableHttp() ) {
           getLogger().info("Starting,HTTP,port", port);
-          ServerConnector connector = new ServerConnector(server);
+          ServerConnector connector = new ServerConnector(
+            server,
+            new HttpConnectionFactory());
           connector.setPort(port);
           connector.addBean(stats);
           server.addConnector(connector);
         }
         StatisticsHandler statisticsHandler = new StatisticsHandler();
         statisticsHandler.setServer(server);
-
-        /*
-          The following for loop will accomplish the following:
-          1. Prevent Jetty server from broadcasting its version number in the HTTP
-          response headers.
-          2. Configure Jetty server to interpret the X-Fowarded-for header
-        */
-
-        // we are converting the ForwardedForProxyWhitelist array into a set here
-        // so that it makes more sense algorithmically to check against IPs
-        Set<String> forwardedForProxyWhitelist = new HashSet<>(Arrays.asList(getForwardedForProxyWhitelist()));
-
-        for ( org.eclipse.jetty.server.Connector conn : server.getConnectors() ) {
-          for ( org.eclipse.jetty.server.ConnectionFactory f : conn.getConnectionFactories() ) {
-            if ( f instanceof org.eclipse.jetty.server.HttpConnectionFactory ) {
-
-              // 1. hiding the version number in response headers
-              ((org.eclipse.jetty.server.HttpConnectionFactory) f).getHttpConfiguration().setSendServerVersion(false);
-
-              // 2. handle the X-Forwarded-For headers depending on whether a whitelist is set up or not
-              // we need to pass the context into this customizer so that we can effectively log unauthorized proxies
-              ((org.eclipse.jetty.server.HttpConnectionFactory) f).getHttpConfiguration().addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
-            }
-          }
-        }
 
         org.eclipse.jetty.servlet.ServletContextHandler handler =
           new org.eclipse.jetty.servlet.ServletContextHandler();
@@ -251,10 +232,10 @@ foam.CLASS({
         // Install an ImageServlet
         if ( getImageDirs().length() > 0 ) {
           if ( getIsResourceStorage() ) {
-            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ResourceImageServlet.class, "/images/*");
+            ServletHolder imgServ = handler.getServletHandler().addServletWithMapping("foam.nanos.servlet.ResourceImageServlet", "/images/*");
             imgServ.setInitParameter("paths", getImageDirs());
           } else {
-            ServletHolder imgServ = handler.addServlet(foam.nanos.servlet.ImageServlet.class, "/images/*");
+            ServletHolder imgServ = handler.getServletHandler().addServletWithMapping("foam.nanos.servlet.ImageServlet", "/images/*");
             imgServ.setInitParameter("paths", getImageDirs());
           }
         }
@@ -263,11 +244,10 @@ foam.CLASS({
           ServletHolder holder;
 
           if ( mapping.getServletObject() != null ) {
-            holder = new ServletHolder(mapping.getServletObject());
-            handler.addServlet(holder, mapping.getPathSpec());
+            holder = new ServletHolder((Servlet) mapping.getServletObject());
+            handler.getServletHandler().addServletWithMapping(holder, mapping.getPathSpec());
           } else {
-            holder = handler.addServlet(
-                (Class<? extends javax.servlet.Servlet>)Class.forName(mapping.getClassName()), mapping.getPathSpec());
+            holder = handler.getServletHandler().addServletWithMapping(mapping.getClassName(), mapping.getPathSpec());
           }
 
           java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
@@ -282,7 +262,7 @@ foam.CLASS({
         }
 
         for ( foam.nanos.servlet.ProxyMapping mapping : getProxyMappings() ) {
-          ServletHolder holder = handler.addServlet(ProxyServlet.Transparent.class, mapping.getPathSpec());
+          ServletHolder holder = handler.getServletHandler().addServletWithMapping(ProxyServlet.Transparent.class, mapping.getPathSpec());
           holder.setInitOrder(1);
           holder.setInitParameter("proxyTo", mapping.getProxyTo());
           holder.setInitParameter("prefix",  mapping.getPrefix());
@@ -301,10 +281,10 @@ foam.CLASS({
 
         for ( foam.nanos.servlet.FilterMapping mapping : getFilterMappings() ) {
           org.eclipse.jetty.servlet.FilterHolder holder =
-            handler.addFilter(
-              (Class<? extends javax.servlet.Filter>)Class.forName(mapping.getFilterClass()),
+            handler.getServletHandler().addFilterWithMapping(
+              mapping.getFilterClass(),
               mapping.getPathSpec(),
-              java.util.EnumSet.of(javax.servlet.DispatcherType.REQUEST));
+              java.util.EnumSet.of(jakarta.servlet.DispatcherType.REQUEST));
 
           java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
 
@@ -316,19 +296,20 @@ foam.CLASS({
 
         // set error handler
         handler.setErrorHandler(errorHandler);
-/*
-        // Add websocket upgrade filter
-        WebSocketUpgradeFilter wsFilter = WebSocketUpgradeFilter.configureContext(handler);
-        // set idle time out to 10s
-        wsFilter.getFactory().getPolicy().setIdleTimeout(10000);
-        // add mapping
-        wsFilter.addMapping(new ServletPathSpec("/service/*"), new WebSocketCreator() {
-          @Override
-          public Object createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp) {
-            return new foam.nanos.ws.NanoWebSocket(getX());
-          }
+
+
+        // WebSocket
+        JettyWebSocketServletContainerInitializer.configure(handler, (servletContext, container) -> {
+          // container.setIdleTimeout(java.time.Duration.ofMillis(10000L));
+
+          container.addMapping("/service/*", new JettyWebSocketCreator() {
+            @Override
+            public Object createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp) {
+              return new foam.nanos.ws.NanoWebSocket(getX());
+            }
+          });
         });
-*/
+
         addJettyShutdownHook(server);
 
         // InetAccessHandler (previously InetAccessHandler)
@@ -362,6 +343,34 @@ foam.CLASS({
         server.setHandler(gzipHandler);
 
         this.configHttps(server);
+
+        /*
+          The following for loop will accomplish the following:
+          1. Prevent Jetty server from broadcasting its version number in the HTTP
+          response headers.
+          2. Configure Jetty server to interpret the X-Fowarded-for header
+        */
+
+        // we are converting the ForwardedForProxyWhitelist array into a set here
+        // so that it makes more sense algorithmically to check against IPs
+        Set<String> forwardedForProxyWhitelist = new HashSet<>(Arrays.asList(getForwardedForProxyWhitelist()));
+
+        for ( org.eclipse.jetty.server.Connector conn : server.getConnectors() ) {
+          for ( org.eclipse.jetty.server.ConnectionFactory f : conn.getConnectionFactories() ) {
+            if ( f instanceof org.eclipse.jetty.server.HttpConnectionFactory ) {
+              HttpConfiguration config = ((org.eclipse.jetty.server.HttpConnectionFactory) f).getHttpConfiguration();
+
+              // 1. hiding the version number in response headers
+              config.setSendServerVersion(false);
+
+              // 2. handle the X-Forwarded-For headers depending on whether a whitelist is set up or not
+              // we need to pass the context into this customizer so that we can effectively log unauthorized proxies
+              config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
+
+              config.setIdleTimeout(10000L);
+            }
+          }
+        }
 
         server.start();
         setServer(server);
@@ -473,6 +482,7 @@ foam.CLASS({
           // 2. enable https
           HttpConfiguration https = new HttpConfiguration();
           https.addCustomizer(new SecureRequestCustomizer());
+
           SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
           sslContextFactory.setKeyStore(keyStore);
           sslContextFactory.setKeyStorePassword(this.getKeystorePassword());
@@ -481,11 +491,25 @@ foam.CLASS({
             sslContextFactory.setWantClientAuth(true);
             sslContextFactory.setNeedClientAuth(true);
           }
+          sslContextFactory.setCipherComparator(HTTP2Cipher.COMPARATOR);
+
+          HttpConnectionFactory http11 = new HttpConnectionFactory(https);
+          HTTP2ServerConnectionFactory http2 = new HTTP2ServerConnectionFactory(https);
+
+          ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory();
+          // default protocol when there is no negotiation.
+          alpn.setDefaultProtocol(http11.getProtocol());
+          // alpn.setDefaultProtocol(http2.getProtocol());
+
+          SslConnectionFactory ssl = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
 
           getLogger().info("Starting,HTTPS,port", port);
-          ServerConnector sslConnector = new ServerConnector(server,
-            new SslConnectionFactory(sslContextFactory, "http/1.1"),
-            new HttpConnectionFactory(https));
+          ServerConnector sslConnector = new ServerConnector(
+            server,
+            ssl,
+            alpn,
+            http2, /* order indicates priority, so h2, fallback h1 */
+            http11);
           sslConnector.setPort(port);
           sslConnector.addBean(new ConnectionStatistics());
 

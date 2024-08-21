@@ -24,7 +24,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.io.PrintWriter',
     'java.util.List',
-    'javax.servlet.http.HttpServletResponse'
+    'jakarta.servlet.http.HttpServletResponse'
   ],
 
   properties: [

@@ -34,9 +34,9 @@ foam.POM({
       'commons-net:commons-net:3.6',
       'jakarta.mail:jakarta.mail-api:2.1.2',
       'jakarta.activation:jakarta.activation-api:2.1.2',
+      // 'jakarta.servlet:jakarta.servlet-api:6.1.0',
       'javax.json:javax.json-api:1.0',
-      'javax.servlet:javax.servlet-api:3.1.0',
-      'javax.websocket:javax.websocket-api:1.1',
+      // 'javax.websocket:javax.websocket-api:1.1',
       'javax.ws.rs:javax.ws.rs-api:2.1.1',
       'jstl:jstl:1.2',
       'org.apache-extras.beanshell:bsh:2.0b6',
@@ -53,10 +53,11 @@ foam.POM({
       'org.eclipse.angus:angus-activation:2.0.1',
       'org.eclipse.angus:angus-mail:2.0.2',
       'org.eclipse.angus:imap:2.0.2',
-      'org.eclipse.jetty:jetty-server:10.0.22',
-      'org.eclipse.jetty:jetty-util:10.0.22',
-      'org.eclipse.jetty.websocket:websocket-jetty-server:10.0.22',
-      'org.eclipse.jetty:jetty-proxy:10.0.22',
+      'org.eclipse.jetty:jetty-proxy:11.0.22',
+      'org.eclipse.jetty:jetty-alpn-java-server:11.0.22',
+      'org.eclipse.jetty:jetty-util:11.0.22',
+      'org.eclipse.jetty.http2:http2-server:11.0.22',
+      'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.22',
       'org.java-websocket:Java-WebSocket:1.5.0',
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
@@ -73,6 +74,7 @@ foam.POM({
       'org.junit.jupiter:junit-jupiter-engine:5.6.0',
       'org.junit.jupiter:junit-jupiter-params:5.6.0',
       'org.junit.platform:junit-platform-launcher:1.6.0',
-      'org.slf4j:slf4j-simple:1.7.21'
+      'org.slf4j:slf4j-api:2.0.16',
+      'org.slf4j:slf4j-simple:2.0.16'
     ]
 });
