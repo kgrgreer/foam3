@@ -12,7 +12,8 @@ foam.CLASS({
 
   imports: [
     'capable',
-    'crunchService'
+    'crunchService',
+    'capabilityDAO'
   ],
 
   requires: [
