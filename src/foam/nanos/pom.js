@@ -389,6 +389,7 @@ foam.POM({
     { name: "measure/Measure",                                                            flags: "java"    },
     { name: "cm/CM",                                                                      flags: "js|java" },
     { name: "cm/DatasetCM",                                                               flags: "js|java" },
+    { name: "cm/DataSetCMItem",                                                           flags: "js|java" },
     { name: "cm/view/CMGraph",                                                            flags: "web" },
     { name: "cm/view/CMLine",                                                             flags: "web" },
     { name: "cm/view/CMBar",                                                              flags: "web" },
