@@ -22,7 +22,6 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.True',
-
     'java.text.SimpleDateFormat',
     'java.time.*',
     'java.util.*',
