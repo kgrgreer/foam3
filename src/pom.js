@@ -370,7 +370,7 @@ foam.POM({
     { name: "foam/dao/NoNeqDAO",                                      flags: "js" },
     { name: "foam/dao/FixedSizeDAO",                                  flags: "js|java" },
     { name: "foam/dao/PutOnlyDAO",                                    flags: "js|java" },
-    { name: "foam/glang/glang",                                       flags: "js|java" },
+    { name: "foam/glang/pom",                                         flags: "js|java" },
     { name: "foam/parse/QueryParser",                                 flags: "js" },
     { name: "foam/parse/FScriptParser",                               flags: "js" },
     { name: "foam/parse/test/FScriptParserTestUser",                  flags: "js|java" },
