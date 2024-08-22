@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 foam.CLASS({
-  package: 'net.nanopay.partner.nbp.cm',
+  package: 'foam.nanos.measure',
   name: 'Measure',
   documentation: `
     Common help methods for all Measures.
