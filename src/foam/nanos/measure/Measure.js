@@ -37,7 +37,7 @@ foam.CLASS({
       name: 'daoKey'
     },
     {
-      class: 'string',
+      class: 'String',
       name: 'timeZone',
       documentation: 'set default timezone to America/Toronto',
       value: 'America/Toronto'
