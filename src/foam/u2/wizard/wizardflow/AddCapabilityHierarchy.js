@@ -9,10 +9,7 @@ foam.CLASS({
   name: 'AddCapabilityHierarchy',
   implements: ['foam.core.ContextAgent'],
   imports: [
-    'wizardlets as previousWizardlets'
-  ],
-  exports: [
-    'wizardlets_ as wizardlets'
+    'wizardlets'
   ],
   requires: [
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
@@ -33,11 +30,6 @@ foam.CLASS({
       class: 'Enum',
       of: foam.u2.wizard.WizardType,
       name: 'type'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
-      name: 'wizardlets_'
     }
   ],
   static: [
@@ -51,16 +43,19 @@ foam.CLASS({
       const seq = this['createSequence_' + this.type.name](x);
 
       subX = await seq.execute();
-      this.wizardlets_ = [
-        ...(this.previousWizardlets || []),
-        ...subX.wizardlets
-      ];
+      // Limitation: two different heirarchies can not depend on each other as their wizardlets are loaded in different contexts
+      // Current solution is to add them to one larger heirarchy and then add that to the wizard flow
+      // TODO: fix
+      this.wizardlets.push(...subX.wizardlets);
+      // .forEach(w => w.__subContext__.wizardlets$.follow(this.wizardlets_$));
     },
 
     function createSequence_TRANSIENT (x) {
-      const capable = foam.nanos.crunch.lite.BaseCapable.create();
-      x = x || this.__subContext__;
-      x = x.createSubContext({ capable });
+      if ( ! this.__subContext__.capable$ ) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+      }
 
       return this.Sequence.create({}, x)
         .add(this.RootCapabilityAgent, {
@@ -78,10 +73,11 @@ foam.CLASS({
     },
 
     function createSequence_UCJ (x, waoSetting) {
-      const capable = foam.nanos.crunch.lite.BaseCapable.create();
-      x = x || this.__subContext__;
-      x = x.createSubContext({ capable });
-
+      if ( ! this.__subContext__.capable$ ) {
+        const capable = foam.nanos.crunch.lite.BaseCapable.create();
+        x = x || this.__subContext__;
+        x = x.createSubContext({ capable });
+      }
       return this.Sequence.create({}, x)
         .add(this.RootCapabilityAgent, {
           rootCapability: this.capability

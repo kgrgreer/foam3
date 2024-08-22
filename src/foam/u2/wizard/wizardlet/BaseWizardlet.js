@@ -365,6 +365,17 @@ foam.CLASS({
         This is useful because it allows us to use an AlternateFlowSaver which executes an AlternateFlow
         on wizardlet save.
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'storeOnCapable',
+      value: true,
+      documentation: `
+        If false, the wizardlet data is not stored on the capable object by CapableWAO
+        Note that data can still be saved on the object explicitly using CapableSaver.
+        Useful for ignoring capabilities that duplicate data or are present in the heirarchy 
+        only for gathering intermediate data from the user such as MinMax and Review/Success capabilities.
+      `
     }
   ],
 
