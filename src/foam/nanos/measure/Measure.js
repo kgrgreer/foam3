@@ -22,6 +22,7 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.predicate.True',
+
     'java.text.SimpleDateFormat',
     'java.time.*',
     'java.util.*',
@@ -37,7 +38,7 @@ foam.CLASS({
       name: 'daoKey'
     },
     {
-      class: 'string',
+      class: 'String',
       name: 'timeZone',
       documentation: 'set default timezone to America/Toronto',
       value: 'America/Toronto'
