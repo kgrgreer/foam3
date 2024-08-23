@@ -432,7 +432,6 @@ foam.POM({
     { name: "notification/NotificationNotificationView",                                  flags: "js" },
     { name: "notification/ResendNotificationServiceInterface",                            flags: "js|java" },
     { name: "notification/ScriptRunNotification",                                         flags: "js" },
-    { name: "notification/ScriptRunNotificationNotificationCitationView",                 flags: "js" },
     { name: "notification/SlackSetting",                                                  flags: "js|java" },
     { name: "notification/ToastNotificationDAO",                                          flags: "js|java" },
     { name: "notification/ToastState",                                                    flags: "js|java" },
