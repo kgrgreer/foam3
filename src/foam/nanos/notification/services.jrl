@@ -78,7 +78,13 @@ p({
   "client": """
     {
       "of": "foam.nanos.notification.Notification",
-      "cache": false,
+      "cache": true,
+      "pollingInterval": 25000,
+      "pollingProperty": {
+        "class":"__Property__",
+        "forClass_":"foam.nanos.notification.Notification",
+        "name":"created"
+      },
       "ttlPurgeTime": 0,
       "ttlSelectPurgeTime": 0,
       "decorators": [
