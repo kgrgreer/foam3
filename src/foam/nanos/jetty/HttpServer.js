@@ -354,9 +354,9 @@ foam.CLASS({
         gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
         // gzipHandler.setHandler(ipAccessHandler);
-        // server.setHandler(gzipHandler);
-        // gzipHandler.setHandler(handler);
-        server.setHandler(handler);
+        gzipHandler.setHandler(handler);
+        server.setHandler(gzipHandler);
+        // server.setHandler(handler);
 
         this.configHttps(server);
 
@@ -381,7 +381,7 @@ foam.CLASS({
 
               // 2. handle the X-Forwarded-For headers depending on whether a whitelist is set up or not
               // we need to pass the context into this customizer so that we can effectively log unauthorized proxies
-              config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
+              // config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
 
               config.setIdleTimeout(10000L);
             }
