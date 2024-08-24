@@ -429,6 +429,24 @@ task('Check dependencies for known vulnerabilities.', [], function checkDeps(sco
   }
 });
 
+task('Show JAR structure.', [], function showJARStructure(value) {
+  execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency:tree `, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
+});
+
+task('Get Maven java sources.', [], function mavenGetSources(value) {
+  execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency:sources -DincludeArtifactIds=${value} `, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
+});
+
 task('Generate and compile java source.', [ 'genJava', 'copyLib' ], function buildJava() {
   genJava();
   copyLib();
@@ -487,7 +505,10 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
 
     // process.chdir(PROJECT_HOME);
 
-    JAVA_OPTS += ` -Dhostname=${HOST_NAME}`;
+    if ( HOST_NAME ) {
+      info('HOST_NAME=${HOST_NAME}');
+      JAVA_OPTS += ` -Dhostname=${HOST_NAME} ${JAVA_OPTS}`;
+    }
 
     if ( PROFILER ) {
 
@@ -714,7 +735,7 @@ const ARGS = {
   F: [ '<rw | ro> : File System Read-Write (default) or Read-Only',
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
-    () => { statusNanos(); quit(0); } ],
+       () => { statusNanos(); quit(0); } ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',

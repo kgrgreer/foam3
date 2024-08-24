@@ -38,6 +38,7 @@ foam.CLASS({
     'java.util.HashSet',
     'java.util.Set',
     'jakarta.servlet.Servlet',
+    'jakarta.servlet.ServletContext',
     'org.apache.commons.io.IOUtils',
     'org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory',
     'org.eclipse.jetty.io.ConnectionStatistics',
@@ -55,6 +56,8 @@ foam.CLASS({
     'org.eclipse.jetty.websocket.server.JettyServerUpgradeRequest',
     'org.eclipse.jetty.websocket.server.JettyWebSocketCreator',
     'org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer',
+    'org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer.Configurator',
+    'org.eclipse.jetty.websocket.server.JettyWebSocketServerContainer',
     'org.eclipse.jetty.util.component.Container',
     'org.eclipse.jetty.util.ssl.SslContextFactory',
     'org.eclipse.jetty.util.thread.QueuedThreadPool'
@@ -183,6 +186,11 @@ foam.CLASS({
       javaCode: `
       clearLogger();
 
+      // java.util.Iterator<org.eclipse.jetty.http.HttpFieldPreEncoder> i = java.util.ServiceLoader.load(org.eclipse.jetty.http.HttpFieldPreEncoder.class,org.eclipse.jetty.http.PreEncodedHttpField.class.getClassLoader()).iterator();
+      // while ( i.hasNext() ) {
+      //   getLogger().info("ServiceLoader", i.next());
+      // }
+
       try {
         int port = getPort();
         try {
@@ -290,31 +298,36 @@ foam.CLASS({
 
           while ( iter.hasNext() ) {
             String key = (String)iter.next();
-            holder.setInitParameter(key, (String)mapping.getInitParameters().get(key));
+            holder.setInitParameter(key, foam.util.StringUtil.normalize((String)mapping.getInitParameters().get(key)));
           }
         }
 
         // set error handler
         handler.setErrorHandler(errorHandler);
 
-
         // WebSocket
-        JettyWebSocketServletContainerInitializer.configure(handler, (servletContext, container) -> {
-          // container.setIdleTimeout(java.time.Duration.ofMillis(10000L));
-
-          container.addMapping("/service/*", new JettyWebSocketCreator() {
+        JettyWebSocketServletContainerInitializer.configure(
+          handler,
+          new Configurator() {
             @Override
-            public Object createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp) {
-              return new foam.nanos.ws.NanoWebSocket(getX());
+            public void accept(ServletContext servletContext, JettyWebSocketServerContainer container) {
+              container.addMapping("/service/*",
+                new JettyWebSocketCreator() {
+                  public Object createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp) {
+                    return new foam.nanos.ws.NanoWebSocket(getX());
+                  }
+                }
+              );
             }
-          });
-        });
+          }
+        );
+        //   // container.setIdleTimeout(java.time.Duration.ofMillis(10000L));
 
         addJettyShutdownHook(server);
 
-        // InetAccessHandler (previously InetAccessHandler)
+        // InetAccessHandler (previously IPAccessHandler)
         InetAccessHandler ipAccessHandler = new InetAccessHandler();
-        ipAccessHandler.setHandler(handler);
+        // ipAccessHandler.setHandler(handler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
 
         // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
@@ -326,6 +339,7 @@ foam.CLASS({
         ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
         // initialilize
         ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));
+        // server.setHandler(ipAccessHandler);
 
         // Install GzipHandler to transparently gzip .js, .svg and .html files
         GzipHandler gzipHandler = new GzipHandler();
@@ -339,8 +353,10 @@ foam.CLASS({
         gzipHandler.addExcludedPaths(getExcludedGzipPaths());
         gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-        gzipHandler.setHandler(ipAccessHandler);
-        server.setHandler(gzipHandler);
+        // gzipHandler.setHandler(ipAccessHandler);
+        // server.setHandler(gzipHandler);
+        // gzipHandler.setHandler(handler);
+        server.setHandler(handler);
 
         this.configHttps(server);
 
@@ -480,8 +496,12 @@ foam.CLASS({
           }
 
           // 2. enable https
-          HttpConfiguration https = new HttpConfiguration();
-          https.addCustomizer(new SecureRequestCustomizer());
+          HttpConfiguration config = new HttpConfiguration();
+
+          SecureRequestCustomizer src = new SecureRequestCustomizer();
+          // Disable SNI checks for localhost development/testing
+          src.setSniHostCheck(! "localhost".equals(System.getProperty("hostname", "")));
+          config.addCustomizer(src);
 
           SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
           sslContextFactory.setKeyStore(keyStore);
@@ -493,27 +513,27 @@ foam.CLASS({
           }
           sslContextFactory.setCipherComparator(HTTP2Cipher.COMPARATOR);
 
-          HttpConnectionFactory http11 = new HttpConnectionFactory(https);
-          HTTP2ServerConnectionFactory http2 = new HTTP2ServerConnectionFactory(https);
+          HttpConnectionFactory http11 = new HttpConnectionFactory(config);
+          HTTP2ServerConnectionFactory http2 = new HTTP2ServerConnectionFactory(config);
 
           ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory();
           // default protocol when there is no negotiation.
-          alpn.setDefaultProtocol(http11.getProtocol());
-          // alpn.setDefaultProtocol(http2.getProtocol());
+          // alpn.setDefaultProtocol(http11.getProtocol());
+          alpn.setDefaultProtocol(http2.getProtocol());
 
           SslConnectionFactory ssl = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
 
           getLogger().info("Starting,HTTPS,port", port);
-          ServerConnector sslConnector = new ServerConnector(
+          ServerConnector connector = new ServerConnector(
             server,
             ssl,
             alpn,
             http2, /* order indicates priority, so h2, fallback h1 */
             http11);
-          sslConnector.setPort(port);
-          sslConnector.addBean(new ConnectionStatistics());
+          connector.setPort(port);
+          connector.addBean(new ConnectionStatistics());
 
-          server.addConnector(sslConnector);
+          server.addConnector(connector);
 
         } catch ( java.io.FileNotFoundException e ) {
           logger.error(e.getMessage(),
