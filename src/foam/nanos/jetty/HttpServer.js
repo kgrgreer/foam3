@@ -186,11 +186,6 @@ foam.CLASS({
       javaCode: `
       clearLogger();
 
-      // java.util.Iterator<org.eclipse.jetty.http.HttpFieldPreEncoder> i = java.util.ServiceLoader.load(org.eclipse.jetty.http.HttpFieldPreEncoder.class,org.eclipse.jetty.http.PreEncodedHttpField.class.getClassLoader()).iterator();
-      // while ( i.hasNext() ) {
-      //   getLogger().info("ServiceLoader", i.next());
-      // }
-
       try {
         int port = getPort();
         try {
@@ -321,13 +316,12 @@ foam.CLASS({
             }
           }
         );
-        //   // container.setIdleTimeout(java.time.Duration.ofMillis(10000L));
 
         addJettyShutdownHook(server);
 
         // InetAccessHandler (previously IPAccessHandler)
         InetAccessHandler ipAccessHandler = new InetAccessHandler();
-        // ipAccessHandler.setHandler(handler);
+        ipAccessHandler.setHandler(handler);
         DAO ipAccessDAO = (DAO) getX().get("jettyIPAccessDAO");
 
         // With Medusa (clustering) must listen on MDAO to receive updates from 'other' mediators.
@@ -353,8 +347,8 @@ foam.CLASS({
         gzipHandler.addExcludedPaths(getExcludedGzipPaths());
         gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
-        // gzipHandler.setHandler(ipAccessHandler);
-        gzipHandler.setHandler(handler);
+        gzipHandler.setHandler(ipAccessHandler);
+        // gzipHandler.setHandler(handler);
         server.setHandler(gzipHandler);
         // server.setHandler(handler);
 
@@ -381,7 +375,7 @@ foam.CLASS({
 
               // 2. handle the X-Forwarded-For headers depending on whether a whitelist is set up or not
               // we need to pass the context into this customizer so that we can effectively log unauthorized proxies
-              // config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
+              config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
 
               config.setIdleTimeout(10000L);
             }
