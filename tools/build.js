@@ -735,7 +735,7 @@ const ARGS = {
   F: [ '<rw | ro> : File System Read-Write (default) or Read-Only',
     args => FS = args ],
   g: [ 'Output running/notrunning status of daemonized nanos.',
-       () => { statusNanos(); quit(0); } ],
+    () => { statusNanos(); quit(0); } ],
   i: [ 'Install npm and git hooks',
     () => { install(); quit(0); } ],
   j: [ 'Delete runtime journals, build, and run app as usual.',
