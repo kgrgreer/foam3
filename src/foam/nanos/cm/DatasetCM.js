@@ -35,10 +35,10 @@ foam.CLASS({
       name: 'dataset',
       documentation: 'yAxis keys and data',
       storageTransient: true,
-      javaType: 'java.util.Map<String, java.util.List<Double>>',
+      javaType: 'java.util.Map<String, foam.nanos.cm.DatasetCMItem>',
       visibility: 'HIDDEN',
       javaFactory: `
-        return new java.util.HashMap<String, java.util.List<Double>>();
+        return new java.util.HashMap<String, foam.nanos.cm.DatasetCMItem>();
       `
     }
   ],
@@ -49,9 +49,9 @@ foam.CLASS({
       type: 'String',
       javaCode: `
         var ret = "";
-        for ( Map.Entry<String, List<Double>> e: getDataset().entrySet() ) {
+        for ( Map.Entry<String, foam.nanos.cm.DatasetCMItem> e: getDataset().entrySet() ) {
           var key = e.getKey();
-          var values = e.getValue();
+          var values = e.getValue().getValues();
 
           for ( int i = 0 ; i < values.size() && i < getLabels().size() ; i++ ) {
             ret += key + "-" + getLabels().get(i) + ": " + values.get(i) + ", ";
@@ -79,8 +79,8 @@ foam.CLASS({
       name: 'addDataPoint',
       args: 'String key, Double value',
       javaCode: `
-        var r = getDataset().getOrDefault(key, new java.util.ArrayList<Double>());
-        r.add(value);
+        var r = getDataset().getOrDefault(key, new DatasetCMItem());
+        r.getValues().add(value);
         getDataset().put(key, r);
       `
     }
