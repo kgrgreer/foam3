@@ -68,7 +68,7 @@ foam.CLASS({
       name: 'showBadges',
       expression: function() { 
         return (this.appConfig.playLink || this.appConfig.appLink) &&
-        (! (navigator.standalone || window.matchMedia('(display-mode: standalone)')) ) && 
+        (! (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) ) && 
         (! this.isReferral);
       }
     },
