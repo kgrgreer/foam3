@@ -337,7 +337,8 @@ foam.CLASS({
           "application/json",
           "application/json;charset=utf-8",
           "image/svg+xml",
-          "text/html"
+          "text/html",
+          "text/javascript"
         );
         gzipHandler.addExcludedPaths(getExcludedGzipPaths());
         gzipHandler.addIncludedMethods("GET", "POST");
