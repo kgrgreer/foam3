@@ -119,10 +119,6 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
-      name: 'forwardedForProxyWhitelist'
-    },
-    {
-      class: 'StringArray',
       name: 'hostDomains',
       javaPreSet: `
         Arrays.sort(val);
@@ -333,7 +329,6 @@ foam.CLASS({
         ipAccessDAO.listen(new IPAccessSink(ipAccessHandler, ipAccessDAO), TRUE);
         // initialilize
         ipAccessDAO.select(new IPAccessAddSink(ipAccessHandler));
-        // server.setHandler(ipAccessHandler);
 
         // Install GzipHandler to transparently gzip .js, .svg and .html files
         GzipHandler gzipHandler = new GzipHandler();
@@ -348,9 +343,8 @@ foam.CLASS({
         gzipHandler.addIncludedMethods("GET", "POST");
         gzipHandler.setInflateBufferSize(1024*64); // ???: What size is ideal?
         gzipHandler.setHandler(ipAccessHandler);
-        // gzipHandler.setHandler(handler);
+
         server.setHandler(gzipHandler);
-        // server.setHandler(handler);
 
         this.configHttps(server);
 
@@ -361,10 +355,6 @@ foam.CLASS({
           2. Configure Jetty server to interpret the X-Fowarded-for header
         */
 
-        // we are converting the ForwardedForProxyWhitelist array into a set here
-        // so that it makes more sense algorithmically to check against IPs
-        Set<String> forwardedForProxyWhitelist = new HashSet<>(Arrays.asList(getForwardedForProxyWhitelist()));
-
         for ( org.eclipse.jetty.server.Connector conn : server.getConnectors() ) {
           for ( org.eclipse.jetty.server.ConnectionFactory f : conn.getConnectionFactories() ) {
             if ( f instanceof org.eclipse.jetty.server.HttpConnectionFactory ) {
@@ -373,9 +363,9 @@ foam.CLASS({
               // 1. hiding the version number in response headers
               config.setSendServerVersion(false);
 
-              // 2. handle the X-Forwarded-For headers depending on whether a whitelist is set up or not
-              // we need to pass the context into this customizer so that we can effectively log unauthorized proxies
-              config.addCustomizer(new WhitelistedForwardedRequestCustomizer(getX(), forwardedForProxyWhitelist));
+              // 2. enable X-Forwarded-For headers
+              ForwardedRequestCustomizer forwarded = new ForwardedRequestCustomizer();
+              config.addCustomizer(forwarded);
 
               config.setIdleTimeout(10000L);
             }
@@ -512,7 +502,6 @@ foam.CLASS({
 
           ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory();
           // default protocol when there is no negotiation.
-          // alpn.setDefaultProtocol(http11.getProtocol());
           alpn.setDefaultProtocol(http2.getProtocol());
 
           SslConnectionFactory ssl = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
