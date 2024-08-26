@@ -86,9 +86,9 @@ foam.CLASS({
       name: 'sendPush',
       javaCode:
       `
-        if ( user == null ) {
-          throw new RuntimeException("Invalid Parameters: Missing user");
-        }
+      if ( user == null || title.isEmpty() ) {
+        throw new RuntimeException("Invalid Parameters: Missing user or title"); 
+      }
 
         getPushService();
 
