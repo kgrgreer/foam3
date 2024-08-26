@@ -13,7 +13,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'pushEnabled',
-      documentation: 'Determines if notification should be delivered as a push notification.'
+      documentation: 'Determines if notification should be delivered as a push notification. If title and template title are null, push will not be send'
     }
   ]
 });
