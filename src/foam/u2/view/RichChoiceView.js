@@ -12,6 +12,10 @@ foam.CLASS({
     'translationService?'
   ],
 
+  constants: {
+    CACHE: {}
+  },
+
   methods: [
     function compare(o1, o2) {
       var k1 = this.key(o1);
@@ -19,10 +23,12 @@ foam.CLASS({
       return foam.util.compare(k1, k2);
     },
     function key(o) {
+      if ( this.CACHE[o.id] ) return this.CACHE[o.id];
       var k = o.toSummary ? o.toSummary() : o.id;
       if ( this.translationService ) {
         k = this.translationService.getTranslation(foam.locale, k, k);
       }
+      this.CACHE[o.id] = k;
       return k;
     }
   ]
@@ -172,7 +178,6 @@ foam.CLASS({
       overflow-y: auto;
       box-sizing: border-box;
       width: 100%;
-      min-width: fit-content;
       border-radius: 3px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       z-index: 1000;
