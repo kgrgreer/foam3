@@ -21,14 +21,19 @@ foam.CLASS({
     {
       name: 'search',
       value: true
-    }
+    },
+    'choicesLimit'
   ],
 
   methods: [
     function fromProperty(prop) {
       if ( this.sections?.length == 0 ) {
         let dao = this.__context__[prop.targetDAOKey] || this.__context__[foam.String.daoize(prop.of.name)];
-        this.sections = [ this.RichChoiceViewSection.create({ heading: (prop.of?.model_?.plural || 'Selections'), dao: dao }) ];
+        this.sections = [ this.RichChoiceViewSection.create({
+          heading: (prop.of?.model_?.plural || 'Selections'),
+          dao: dao,
+          choicesLimit$: this.choicesLimit$
+        }) ];
       }
       this.SUPER(prop);
     }
