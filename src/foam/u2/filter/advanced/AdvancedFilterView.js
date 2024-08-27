@@ -38,7 +38,7 @@ foam.CLASS({
       height: 90%;
     }
 
-    ^ .foam-u2-filter-property-PropertyFilterView {
+    ^ .foam-u2-filter-properties-PropertyFilterView {
       margin-bottom: 0;
     }
 
