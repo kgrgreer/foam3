@@ -95,6 +95,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'allowSNIDisable',
+      documentation: 'Server Name Indication (SNI) enforces a match between hostname and TLS certificate domains, and does not allow localhost or self-sign certificates.  When true, enable test for development hostnames - localhost and other domain names without a TLD.',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'isResourceStorage',
       documentation: `If set to true, generate index file from jar file resources.`,
       value: false
@@ -417,7 +423,7 @@ foam.CLASS({
     },
     {
       name: 'configHttps',
-      documentation: 'https://docs.google.com/document/d/1hXVdHjL8eASG2AG2F7lPwpO1VmcW2PHnAW7LuDC5xgA/edit?usp=sharing',
+      documentation: 'https://docs.google.com/document/d/1hXVdHjL8eASG2AG2F7lPwpO1VmcW2PHnAW7LuDC5xgA/edit?usp=sharing, and example of Jetty SSL setup at https://gist.github.com/joakime/d6223a05b92f41c7cc80',
       args: [
         {
           name: 'server',
@@ -447,7 +453,7 @@ foam.CLASS({
             getLogger().debug("HttpServer","configHttps","KeyStoreManager",keyStoreManager.getKeyStore());
           } else {
             getLogger().debug("HttpServer","configHttps","KeyStore.instance()");
-            // 1. load the keystore to verify the keystore path and password.
+            // load the keystore to verify the keystore path and password.
             keyStore = KeyStore.getInstance("JKS");
 
             if ( System.getProperty("resource.journals.dir") != null ) {
@@ -487,12 +493,17 @@ foam.CLASS({
             keyStore.load(bais, this.getKeystorePassword().toCharArray());
           }
 
-          // 2. enable https
+          // Enable https
           HttpConfiguration config = new HttpConfiguration();
 
           SecureRequestCustomizer src = new SecureRequestCustomizer();
-          // Disable SNI checks for localhost development/testing
-          src.setSniHostCheck(! "localhost".equals(System.getProperty("hostname", "")));
+          if ( getAllowSNIDisable() ) {
+            String hostname = System.getProperty("hostname");
+            if ( hostname != null &&
+                 hostname.indexOf(".") < 0 ) {
+              src.setSniHostCheck(false);
+            }
+          }
           config.addCustomizer(src);
 
           SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
