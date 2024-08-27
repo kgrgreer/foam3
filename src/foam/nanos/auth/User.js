@@ -865,6 +865,11 @@ foam.CLASS({
         User        oldUser      = (User)        oldObj;
         User        user         = subject.getUser();
         User        agent        = subject.getRealUser();
+
+        if ( auth.isAnonymous(x) ) {
+          throw new AuthorizationException("You do not have permission to update this user.");
+        }
+
         boolean     updatingSelf =
           ( user  != null && SafetyUtil.equals(this.getId(), user.getId()) ) ||
           ( agent != null && SafetyUtil.equals(this.getId(), agent.getId()) );
