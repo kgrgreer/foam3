@@ -21,6 +21,7 @@ foam.CLASS({
     'static foam.mlang.MLang.TRUE',
     'foam.nanos.fs.File',
     'foam.nanos.fs.ResourceStorage',
+    'foam.nanos.http.HttpVersion',
     'foam.nanos.jetty.JettyThreadPoolConfig',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
@@ -80,6 +81,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enableHttps'
+    },
+    {
+      class: 'Enum',
+      of: 'foam.nanos.http.HttpVersion',
+      name: 'httpVersion',
+      value: 'V2'
     },
     {
       class: 'Boolean',
@@ -503,17 +510,30 @@ foam.CLASS({
 
           ALPNServerConnectionFactory alpn = new ALPNServerConnectionFactory();
           // default protocol when there is no negotiation.
-          alpn.setDefaultProtocol(http2.getProtocol());
+          if ( getHttpVersion() == HttpVersion.V2 ) {
+            alpn.setDefaultProtocol(http2.getProtocol());
+          } else {
+            alpn.setDefaultProtocol(http11.getProtocol());
+          }
 
           SslConnectionFactory ssl = new SslConnectionFactory(sslContextFactory, alpn.getProtocol());
 
           getLogger().info("Starting,HTTPS,port", port);
-          ServerConnector connector = new ServerConnector(
-            server,
-            ssl,
-            alpn,
-            http2, /* order indicates priority, so h2, fallback h1 */
-            http11);
+          ServerConnector connector = null;
+          if ( getHttpVersion() == HttpVersion.V2 ) {
+            connector = new ServerConnector(
+              server,
+              ssl,
+              alpn,
+              http2, /* order indicates priority, so h2, fallback h1 */
+              http11);
+          } else {
+            connector = new ServerConnector(
+              server,
+              ssl,
+              alpn,
+              http11);
+          }
           connector.setPort(port);
           connector.addBean(new ConnectionStatistics());
 
