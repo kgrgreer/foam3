@@ -43,6 +43,8 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("localUserDAO");
         Notification notif = (Notification) obj;
 
+        if (getDelegate().find_(x, notif.getId()) != null) return getDelegate().put_(x, notif);
+
         if ( notif.getBroadcasted() ) {
           Notification notification = (Notification) notif.fclone();
           Notification.ID.clear(notification);
