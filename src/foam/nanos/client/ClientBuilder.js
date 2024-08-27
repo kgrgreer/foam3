@@ -185,9 +185,16 @@ foam.CLASS({
                       self.error('invalid nspec.client', spec.client, err);
                     }
 
-                    if ( ! spec.lazyClient )
+                    if ( ! spec.lazyClient ) {
                       client.constants.eagerClients_.push(spec.name);
+                      let ce = foam.maybeLookup((json.class || ''))?.getAxiomByName('clientExports');
+                      if ( ce?.exportSpec.length )
+                        client.exports.push(...ce.exportSpec.map(v => {
+                          return spec.name + '.' + v;
+                        }));
+                    }
 
+                   
                     //references = references.concat(foam.json.references(self.__context__, json));
 
                     client.properties.push({
@@ -212,6 +219,7 @@ foam.CLASS({
                           if ( cls.getAxiomByName(k) && json[k] == undefined )
                             json[k] = defaults[k];
                         }
+                        
                         return foam.json.parse(json, null, this.__subContext__);
                       }
                     });
