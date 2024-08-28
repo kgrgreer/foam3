@@ -23,5 +23,6 @@ Tip to save the cost:
 
 ```
 var a = foam.nanos.place.model.PlaceAutocompleteReq.create({address1: "56 Colonsay"})
-await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
+var b = await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
+for(let p of b.predictions){console.log(p.description, p.placeId)}
 ```
