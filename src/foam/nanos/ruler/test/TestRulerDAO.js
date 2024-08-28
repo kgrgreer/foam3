@@ -33,9 +33,11 @@ foam.CLASS({
   methods: [
     {
       name: 'applyRules',
+      type: 'boolean',
       javaCode: `
-      var logger = (Logger) x.get("logger");
-      var ruleGroups = getRuleGroups().get(pred);
+      var     logger     = (Logger) x.get("logger");
+      var     ruleGroups = getRuleGroups().get(pred);
+      boolean locked     = false;
       logger.info("applyRules", "ruleGroups", ruleGroups.size(), "predicate", pred);
       var sink = getRulesList().get(pred);
       for ( var rg : ruleGroups ) {
@@ -44,7 +46,7 @@ foam.CLASS({
           var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
           if ( ! rules.isEmpty() ) {
             logger.debug("applyRules", "ruleGroup", rg.getId(), rules.size());
-            new TestRuleEngine(x, getX(), getDelegate()).execute(rules, obj, oldObj);
+            locked |= new TestRuleEngine(x, getX(), getDelegate(), getLock()).execute(rules, obj, oldObj);
           } else {
             logger.debug("applyRules", "ruleGroup", rg.getId(), 0);
           }
@@ -52,6 +54,7 @@ foam.CLASS({
           logger.debug("applyRules", "ruleGroup", rg.getId(), false);
         }
       }
+      return locked;
       `
     }
   ]

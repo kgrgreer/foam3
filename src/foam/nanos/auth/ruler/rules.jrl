@@ -27,6 +27,7 @@ p({
   "daoKey": "localUserDAO",
   "operation": 3,
   "after": false,
+  "requiresLock": true,
   "action":{ "class":"foam.nanos.auth.ruler.PreventDuplicateUsernameAction" },
   "lifecycleState":1
 })

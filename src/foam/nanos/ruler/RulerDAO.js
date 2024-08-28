@@ -23,12 +23,13 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.logger.Logger',
     'foam.mlang.order.Desc',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.GroupBy',
     'foam.nanos.dao.Operation',
+    'foam.nanos.logger.Logger',
     'java.util.ArrayList',
+    'java.util.concurrent.Semaphore',
     'java.util.List',
     'java.util.Map',
     'static foam.mlang.MLang.*'
@@ -39,6 +40,12 @@ foam.CLASS({
       class: 'String',
       name: 'daoKey',
       documentation: 'The dao name that rule needs to be applied on.'
+    },
+    {
+      class: 'Object',
+      name: 'lock',
+      javaType: 'java.util.concurrent.Semaphore',
+      javaFactory: 'return new Semaphore(1, true);'
     },
     {
       class: 'FObjectProperty',
@@ -163,17 +170,25 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `FObject oldObj = getDelegate().find_(x, obj);
-if ( oldObj == null ) {
-  applyRules(x, obj, oldObj, getCreateBefore());
-} else {
-  applyRules(x, obj, oldObj, getUpdateBefore());
+boolean locked = false;
+FObject ret;
+try {
+  if ( oldObj == null ) {
+    locked = applyRules(x, obj, oldObj, getCreateBefore());
+  } else {
+    locked = applyRules(x, obj, oldObj, getUpdateBefore());
+  }
+
+  // Clone and pass unfrozen object to 'sync' 'after' rules so, similar
+  // to 'before' rules, the rule is not responsible for put'ing
+  // and the updated object is properly passed on to the next rule.
+  // If the object was modified in an 'after' rule, then it is 'put'.
+
+  ret = getDelegate().put_(x, obj);
+} finally {
+  if ( locked ) getLock().release();
 }
 
-// Clone and pass unfrozen object to 'sync' 'after' rules so, similar
-// to 'before' rules, the rule is not responsible for put'ing
-// and the updated object is properly passed on to the next rule.
-// If the object was modified in an 'after' rule, then it is 'put'.
-FObject ret =  getDelegate().put_(x, obj);
 if ( ret != null ) {
   ret = ret.fclone();
   FObject before = ret.fclone();
@@ -209,46 +224,27 @@ return ret;`
     },
     {
       name: 'applyRules',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'foam.core.FObject'
-        },
-        {
-          name: 'oldObj',
-          type: 'foam.core.FObject'
-        },
-        {
-          name: 'pred',
-          type: 'Predicate'
-        }
-      ],
+      type: 'boolean',
+      args: 'Context x, foam.core.FObject obj, foam.core.FObject oldObj, Predicate pred',
       javaCode: `var logger = (Logger) x.get("logger");
-var ruleGroups = getRuleGroups().get(pred);
-var sink = getRulesList().get(pred);
+var     ruleGroups = getRuleGroups().get(pred);
+var     sink       = getRulesList().get(pred);
+boolean locked     = false;
 for ( var rg : ruleGroups ) {
-    if ( rg.f(x, obj, oldObj) ) {
-      var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
-      if ( ! rules.isEmpty() ) {
-        new RuleEngine(x, getX(), getDelegate()).execute(rules, obj, oldObj);
-      }
+  if ( rg.f(x, obj, oldObj) ) {
+    var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
+    if ( ! rules.isEmpty() ) {
+      locked |= new RuleEngine(x, getX(), getDelegate(), getLock()).execute(rules, obj, oldObj);
     }
-}`
+  }
+}
+return locked;
+`
     },
     {
       name: 'updateRules',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      javaCode: `DAO localRuleDAO = new foam.dao.ProxyDAO(x,
-  getDaoKey().equals("localRuleDAO") ? this : (DAO) x.get("localRuleDAO")
+      args: 'Context x',
+      javaCode: `DAO localRuleDAO = new foam.dao.ProxyDAO(x, getDaoKey().equals("localRuleDAO") ? this : (DAO) x.get("localRuleDAO")
 ).where( EQ(Rule.DAO_KEY, getDaoKey()) );
 
 localRuleDAO.listen(

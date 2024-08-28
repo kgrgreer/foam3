@@ -18,14 +18,15 @@ import java.util.List;
  */
 public class TestRuleEngine extends RuleEngine {
 
-  public TestRuleEngine(X x, X systemX, DAO delegate) {
-    super(x, systemX, delegate);
+  public TestRuleEngine(X x, X systemX, DAO delegate, java.util.concurrent.Semaphore lock) {
+    super(x, systemX, delegate, lock);
   }
 
-  public void execute(List<Rule> rules, FObject obj, FObject oldObj) {
+  public boolean execute(List<Rule> rules, FObject obj, FObject oldObj) {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
+    boolean               locked         = false;
 
     for ( Rule rule : rules ) {
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey(), rule.getId());
@@ -46,6 +47,13 @@ public class TestRuleEngine extends RuleEngine {
         if ( ! rule.f(userX_, obj, oldObj) ) {
           logger.debug(this.getClass().getSimpleName(), "id", rule.getId(), "!f");
           continue;
+        }
+
+        if ( ! locked && lock_ != null && rule.getRequiresLock() ) {
+          locked = true;
+          try {
+            lock_.acquire();
+          } catch (InterruptedException e) {}
         }
 
         logger.debug(this.getClass().getSimpleName(), "id", rule.getId(), "apply");
@@ -84,5 +92,7 @@ public class TestRuleEngine extends RuleEngine {
       // TODO: this breaks CI, enable when all test cases passing
       // throw new RuntimeException(message, e);
     }
+
+    return locked;
   }
 }

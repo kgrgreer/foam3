@@ -154,6 +154,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'requiresLock',
+      readPermissionRequired: true,
+      writePermissionRequired: true,
+      documentation: `Defines if the rule needs to be executed under lock to prevent concurrent operations. Only works with the CREATE operation on before actions.`
+    },
+    {
+      class: 'Boolean',
       name: 'async',
       value: false,
       readPermissionRequired: true,
