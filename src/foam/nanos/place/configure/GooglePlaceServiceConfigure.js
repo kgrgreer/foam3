@@ -32,10 +32,10 @@ foam.CLASS({
         A grouping of places to which you would like to restrict your results
         See: https://developers.google.com/maps/documentation/places/web-service/autocomplete#components
       `,
-      javaCode: `
+      javaFactory: `
         return new String[]{
           "ca", "pk"
-        }
+        };
       `
     },
     {
@@ -48,10 +48,10 @@ foam.CLASS({
         In our case, we mostly use the API for address completion to the customer home, so see
         https://developers.google.com/maps/documentation/geocoding/requests-geocoding#Types
       `,
-      javaCode: `
+      javaFactory: `
         return new String[]{
           "street_number", "route", "room", "postal_code", "locality"
-        }
+        };
       `
     },
     {
