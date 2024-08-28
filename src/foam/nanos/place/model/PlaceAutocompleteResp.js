@@ -16,7 +16,7 @@ foam.CLASS({
 			name: "predictions",
       shortName: 'predictions',
 			class: "FObjectArray",
-			of: "foam.nanos.place.model.Place"
+			of: "foam.nanos.place.model.Prediction"
 		}
   ]
 })
