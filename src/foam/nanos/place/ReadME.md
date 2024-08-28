@@ -26,3 +26,9 @@ var a = foam.nanos.place.model.PlaceAutocompleteReq.create({address1: "56 Colons
 var b = await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
 for(let p of b.predictions){console.log(p.description, p.placeId)}
 ```
+
+```
+var c = foam.nanos.place.model.PlaceDetailReq.create({placeId: "YOUR_PLACE_ID"})
+var d = await ctrl.__subContext__.placeService.placeDetail(null, c)
+for(let v of d.result.addressComponents){console.log(v.toSummary())}
+```
