@@ -22,7 +22,16 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+    'java.util.concurrent.Semaphore',
     'static foam.mlang.MLang.*'
+  ],
+
+  constants: [
+    {
+      type: 'Semaphore',
+      name: 'LOCK',
+      javaValue: 'new Semaphore(1, true)'
+    }
   ],
 
   messages: [
@@ -45,6 +54,10 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
+        try {
+          LOCK.acquire();
+        } catch (InterruptedException e) {}
+
         Count count = new Count();
         count = (Count) userDAO
             .where(AND(
@@ -56,6 +69,7 @@ foam.CLASS({
             )).limit(1).select(count);
 
         if ( count.getValue() == 1 ) {
+          LOCK.release();
           throw new DuplicateUserNameException();
         }
       `

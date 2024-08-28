@@ -25,9 +25,23 @@ p({
   "ruleGroup": "auth",
   "documentation": "Prevent Duplicate Username Rule",
   "daoKey": "localUserDAO",
-  "operation": 3, 
+  "operation": 3,
   "after": false,
   "action":{ "class":"foam.nanos.auth.ruler.PreventDuplicateUsernameAction" },
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"user-prevent-duplicate-usernames-rule-after",
+  "name":"Prevent Duplicate Username Rule (Release Lock After)",
+  "priority": 100,
+  "enabled": true,
+  "ruleGroup": "auth",
+  "documentation": "Release Lock after Prevent Duplicate Username Rule",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": true,
+  "action":{ "class":"foam.nanos.auth.ruler.PreventDuplicateUsernameAfterAction" },
   "lifecycleState":1
 })
 p({
@@ -39,7 +53,7 @@ p({
   "ruleGroup": "auth",
   "documentation": "Prevent Duplicate Email Rule",
   "daoKey": "localUserDAO",
-  "operation": 3, 
+  "operation": 3,
   "after": false,
   "action":{ "class":"foam.nanos.auth.ruler.PreventDuplicateEmailAction" },
   "lifecycleState":1
