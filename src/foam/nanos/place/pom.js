@@ -13,6 +13,10 @@ foam.POM({
       flags: "js|java" 
     },
     { 
+      name: "ClientPlaceService",
+      flags: "js" 
+    },
+    { 
       name: "GooglePlaceService",
       flags: "java" 
     },
@@ -44,5 +48,6 @@ foam.POM({
 
   javaDependencies: [
     'com.google.maps:google-maps-places:0.19.0',
+    'com.google.protobuf:protobuf-java:3.25.3'
   ],
 })

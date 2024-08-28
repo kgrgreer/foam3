@@ -8,9 +8,7 @@ foam.INTERFACE({
   package: 'foam.nanos.place',
   name: 'PlaceService',
 
-  proxy: true,
   skeleton: true,
-  client: true,
 
   methods: [
     {
