@@ -86,9 +86,6 @@ foam.CLASS({
       name: 'identifier',
       required: true,
       label: 'Email or Username',
-      preSet: function(_, n) {
-        return n.trim();
-      },
       view: {
         class: 'foam.u2.TextField',
         type: 'email',
