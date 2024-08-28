@@ -37,7 +37,7 @@ foam.POM({
       flags: "js|java" 
     },
     { 
-      name: "model/Prediction",
+      name: "model/PlaceAutocompletePrediction",
       flags: "js|java" 
     },
     { 
