@@ -6,16 +6,17 @@
 
 foam.CLASS({
   package: 'foam.nanos.place.model',
-  name: 'PlaceAutocomplete',
+  name: 'PlaceAutocompleteResp',
   documentation: `
     Model that using by 'placeAutocomplete' method in PlaceService 
   `,
 
   properties: [
 		{
-			name: "results",
+			name: "predictions",
+      shortName: 'predictions',
 			class: "FObjectArray",
-			of: "foam.nanos.place.model.PlaceAutocompleteItem"
+			of: "foam.nanos.place.model.Place"
 		}
   ]
 })

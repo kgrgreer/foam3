@@ -21,9 +21,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.model.*',
     'foam.nanos.place.configure.GooglePlaceServiceConfigure',
-    'com.google.maps.places.v1.AutocompletePlacesRequest',
-    'com.google.maps.places.v1.AutocompletePlacesResponse',
-    'com.google.maps.places.v1.PlacesClient',
+    'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',
   ],
@@ -50,7 +48,7 @@ foam.CLASS({
       async: true,
       javaCode: `
         var ret = new PlaceAutocomplete();
-=        try (PlacesClient placesClient = PlacesClient.create()) {
+        try (PlacesClient placesClient = PlacesClient.create()) {
           var config = getConfigure(x);
           var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();
           AutocompletePlacesRequest request =

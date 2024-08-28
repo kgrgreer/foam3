@@ -33,20 +33,16 @@ foam.POM({
       flags: "js|java" 
     },
     { 
-      name: "model/PlaceAutocomplete",
+      name: "model/PlaceAutocompleteResp",
       flags: "js|java" 
     },
     { 
-      name: "model/PlaceAutocompleteItem",
+      name: "model/Prediction",
       flags: "js|java" 
     },
     { 
       name: "model/PlaceAutocompleteReq",
       flags: "js|java" 
     },
-  ],
-
-  javaDependencies: [
-    'com.google.maps:google-maps-places:0.11.0',
   ],
 })
