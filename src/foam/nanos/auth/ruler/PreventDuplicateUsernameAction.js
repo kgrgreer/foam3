@@ -26,14 +26,6 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
-  constants: [
-    {
-      type: 'Semaphore',
-      name: 'LOCK',
-      javaValue: 'new Semaphore(1, true)'
-    }
-  ],
-
   messages: [
     { name: 'EMPTY_ERROR', message: 'Username required' }
   ],
@@ -54,10 +46,6 @@ foam.CLASS({
           spid = subject.getUser().getSpid();
         }
 
-        try {
-          LOCK.acquire();
-        } catch (InterruptedException e) {}
-
         Count count = new Count();
         count = (Count) userDAO
             .where(AND(
@@ -69,7 +57,6 @@ foam.CLASS({
             )).limit(1).select(count);
 
         if ( count.getValue() == 1 ) {
-          LOCK.release();
           throw new DuplicateUserNameException();
         }
       `
