@@ -79,6 +79,12 @@ foam.CLASS({
       name: 'NAME_MATCHER',
       type: 'Regex',
       javaValue: `Pattern.compile("^[\\\\p{L}\\\\s-.']+$", Pattern.UNICODE_CASE)`
+    },
+    {
+      name: 'USER_NAME_MATCHER',
+      type: 'Regex',
+      value: /^\w+$/,
+      javaValue: `Pattern.compile("^\\\\w+$")`
     }
   ],
 
@@ -87,7 +93,8 @@ foam.CLASS({
     { name: 'INVALID_FIRST_NAME', message: 'Invalid characters in first name: ' },
     { name: 'INVALID_MIDDLE_NAME', message: 'Invalid characters in middle name: ' },
     { name: 'INVALID_LAST_NAME', message: 'Invalid characters in last name: ' },
-    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" }
+    { name: 'INVALID_MATCHER', message: "[^\\p{Letter}\\s\\-.']" },
+    { name: 'INVALID_USERNAME', message: "Username can only contain alphanumeric characters and '_'" }
   ],
 
   sections: [
@@ -865,6 +872,11 @@ foam.CLASS({
         User        oldUser      = (User)        oldObj;
         User        user         = subject.getUser();
         User        agent        = subject.getRealUser();
+
+        if ( auth.isAnonymous(x) ) {
+          throw new AuthorizationException("You do not have permission to update this user.");
+        }
+
         boolean     updatingSelf =
           ( user  != null && SafetyUtil.equals(this.getId(), user.getId()) ) ||
           ( agent != null && SafetyUtil.equals(this.getId(), agent.getId()) );

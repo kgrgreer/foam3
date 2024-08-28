@@ -201,6 +201,7 @@ foam.POM({
     { name: "auth/ruler/PreventDuplicateEmailAction",                                     flags: "js|java" },
     { name: "auth/ruler/PreventDuplicateUsernameAction",                                  flags: "js|java" },
     { name: "auth/ruler/PreventDuplicateUsernameAfterAction",                             flags: "js|java" },
+    { name: "auth/ruler/PreventInvalidUsernameAction",                                    flags: "js|java" },
     { name: "auth/ruler/EnsurePropertyOnCreateRule",                                      flags: "js|java" },
     { name: "auth/test/PasswordPolicyTest",                                               flags: "js|java" },
     { name: "auth/LastModifiedByAwareDAO",                                                flags: "js|java" },

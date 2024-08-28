@@ -46,16 +46,17 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'onKey'
+      name: 'onKey',
+      value: true
     },
     {
       class: 'String',
       name: 'fromPropertyName'
     },
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'isAvailable',
-      documentation: `Binded property used for validation outside of view.`
+      documentation: `Bound property used for validation outside of view.`
     },
     {
       class: 'Boolean',
@@ -103,13 +104,6 @@ foam.CLASS({
           .addClass(this.myClass('input'))
           .attr('name', this.fromPropertyName + 'Input')
           .attr('autocapitalize', 'none')
-          .on('blur', this.checkAvailability )
-          .on('keyup', (e) => {
-            if ( this.restrictedCharacters && ! this.restrictedCharacters.test(e.key) ) {
-              e.preventDefault();
-            }
-            this.checkAvailability();
-          })
         .end()
       .end();
     },
@@ -127,17 +121,23 @@ foam.CLASS({
   ],
 
   listeners: [
-    function checkAvailability() {
-      if ( this.inputValidation && ! this.inputValidation.test(this.data) ) {
+    {
+      name: 'checkAvailability',
+      on: ['this.propertyChange.data', 'this.propertyChange.fromPropertyName'],
+      code: function() {
         this.showIcon = false;
-        return;
+        if ( ! this.fromPropertyName || ! this.data ) return;
+        if ( this.inputValidation && ! this.inputValidation.test(this.data) ) {
+          this.isAvailable = 'invalid';
+          return;
+        }
+        this.userPropertyAvailabilityService.checkAvailability(this, this.fromPropertyName, this.data)
+          .then(isAvailable => {
+            this.isAvailable = isAvailable ? 'available' : 'unavailable';
+            this.showIcon = isAvailable;
+          });
       }
-
-      this.userPropertyAvailabilityService.checkAvailability(this, this.fromPropertyName, this.data)
-        .then(( isAvailable ) => {
-          this.isAvailable = isAvailable;
-          this.showIcon = isAvailable;
-        });
     }
+    
   ]
 })

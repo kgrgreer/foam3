@@ -58,3 +58,17 @@ p({
   "action":{ "class":"foam.nanos.auth.ruler.PreventDuplicateEmailAction" },
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"user-prevent-invalid-username-rule",
+  "name":"Prevent Invalid Username",
+  "priority": 2,
+  "enabled": true,
+  "ruleGroup": "auth",
+  "documentation": "Prevent Invalid Username",
+  "daoKey": "localUserDAO",
+  "operation": 0, 
+  "after": false,
+  "action":{ "class":"foam.nanos.auth.ruler.PreventInvalidUsernameAction" },
+  "lifecycleState":1
+})
