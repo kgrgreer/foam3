@@ -15,6 +15,8 @@ foam.POM({
     { name: "ReferralBorder",
       flags: "web" },
     { name: "Relationships",
+      flags: "js|java" },
+    { name: "GrantAppStoreCapabilityRuleAction",
       flags: "js|java" }
   ]
 });
