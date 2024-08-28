@@ -25,7 +25,7 @@ foam.CLASS({
     'com.google.maps.places.v1.AutocompletePlacesResponse',
     'com.google.maps.places.v1.PlacesClient',
     'java.util.Arrays',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
   ],
 
   methods: [
@@ -50,8 +50,7 @@ foam.CLASS({
       async: true,
       javaCode: `
         var ret = new PlaceAutocomplete();
-        System.out.println("aaaaa");
-        try (PlacesClient placesClient = PlacesClient.create()) {
+=        try (PlacesClient placesClient = PlacesClient.create()) {
           var config = getConfigure(x);
           var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();
           AutocompletePlacesRequest request =

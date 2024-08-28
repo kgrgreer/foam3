@@ -16,6 +16,8 @@ see: https://github.com/googleapis/google-cloud-java/blob/main/java-maps-places/
 Example of Place Details API call in Java:
 https://github.com/googleapis/google-cloud-java/blob/main/java-maps-places/samples/snippets/generated/com/google/maps/places/v1/places/getplace/SyncGetPlaceString.java
 
+https://developers.google.com/maps/documentation/places/web-service/reference/rpc/google.maps.places.v1
+
 Tip to save the cost:
 1. use sessionToken.
 
