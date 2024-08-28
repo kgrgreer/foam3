@@ -63,8 +63,11 @@ foam.CLASS({
 
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json")
                       .addParameter("input", input)
+                      .addParameter("language", "en")
+                      .addParameter("components", String.join("|", config.getPlaceAutocompleteRegionCodes()))
+                      .addParameter("types", String.join("|", config.getPlaceAutocompleteTypes()))
                       .addParameter("key", config.getApiKey());
-
+          System.out.println("aaaaaaa: " + uri.toString());
           HttpGet request = new HttpGet(uri.toString());
 
           try (CloseableHttpClient httpClient = HttpClients.createDefault();
