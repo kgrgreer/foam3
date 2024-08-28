@@ -34,7 +34,7 @@ foam.CLASS({
       `,
       javaFactory: `
         return new String[]{
-          "ca", "pk"
+          "country:ca", "country:pk"
         };
       `
     },
