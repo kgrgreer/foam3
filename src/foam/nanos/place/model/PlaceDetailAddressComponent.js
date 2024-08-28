@@ -6,18 +6,22 @@
 
 foam.CLASS({
   package: 'foam.nanos.place.model',
-  name: 'PlaceAutocompletePrediction',
+  name: 'PlaceDetailAddressComponent',
 
   properties: [
     {
       class: 'String',
-      shortName: 'description',
-      name: 'description'
+      shortName: 'long_name',
+      name: 'longName'
     },
     {
       class: 'String',
-      shortName: 'place_id',
-      name: 'placeId'
+      shortName: 'short_name',
+      name: 'shortName'
+    },
+    {
+      class: 'StringArray',
+      name: 'types'
     }
   ]
 })

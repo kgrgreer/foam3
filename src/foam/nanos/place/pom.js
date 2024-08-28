@@ -25,11 +25,19 @@ foam.POM({
       flags: "js|java" 
     },
     { 
-      name: "model/PlaceDetail",
+      name: "model/PlaceDetailReq",
       flags: "js|java" 
     },
     { 
-      name: "model/PlaceDetailReq",
+      name: "model/PlaceDetailResp",
+      flags: "js|java" 
+    },
+    { 
+      name: "model/PlaceDetailResult",
+      flags: "js|java" 
+    },
+    { 
+      name: "model/PlaceDetailAddressComponent",
       flags: "js|java" 
     },
     { 
