@@ -25,6 +25,7 @@ foam.CLASS({
     'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',
+    'foam.lib.json.JSONParser',
     'org.apache.http.HttpEntity',
     'org.apache.http.HttpHeaders',
     'org.apache.http.client.methods.CloseableHttpResponse',
@@ -72,6 +73,12 @@ foam.CLASS({
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String rawResponse = EntityUtils.toString(entity);
+                JSONParser jsonParser = x.create(JSONParser.class);
+                var resp = (PlaceAutocompleteResp) jsonParser.parseString(rawResponse, PlaceAutocompleteResp.class);
+                if ( resp == null ) {
+                  throw new RuntimeException("json parse error with \`" +rawResponse + "\`");
+                }
+                ret = resp;
             }
 
           }
