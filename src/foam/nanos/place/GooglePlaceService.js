@@ -50,6 +50,7 @@ foam.CLASS({
       async: true,
       javaCode: `
         var ret = new PlaceAutocomplete();
+        System.out.println("aaaaa");
         try (PlacesClient placesClient = PlacesClient.create()) {
           var config = getConfigure(x);
           var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();

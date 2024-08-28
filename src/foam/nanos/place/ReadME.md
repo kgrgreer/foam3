@@ -18,3 +18,8 @@ https://github.com/googleapis/google-cloud-java/blob/main/java-maps-places/sampl
 
 Tip to save the cost:
 1. use sessionToken.
+
+```
+var a = foam.nanos.place.model.PlaceAutocompleteReq.create({address1: "56 Colonsay"})
+await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
+```
