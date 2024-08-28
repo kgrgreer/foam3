@@ -10,10 +10,10 @@ foam.CLASS({
 
   properties: [
 		{
-			name: "result",
-      shortName: 'result',
-			class: "FObjectProperty",
-			of: "foam.nanos.place.model.PlaceDetailResult"
+			name: "addressComponents",
+      shortName: 'address_components',
+			class: "FObjectArray",
+			of: "foam.nanos.place.model.PlaceDetailAddressComponent"
 		}
   ]
 })
