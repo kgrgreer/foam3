@@ -53,7 +53,7 @@ p({
   "ruleGroup": "auth",
   "documentation": "Prevent Invalid Username",
   "daoKey": "localUserDAO",
-  "operation": 3, 
+  "operation": 0, 
   "after": false,
   "action":{ "class":"foam.nanos.auth.ruler.PreventInvalidUsernameAction" },
   "lifecycleState":1
