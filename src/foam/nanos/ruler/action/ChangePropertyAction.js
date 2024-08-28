@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.ruler.action',
   name: 'ChangePropertyAction',
 
-  documentation: `set the value of a field to the result of an expression`,
+  documentation: 'Set the value of a field of the object',
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -18,8 +18,12 @@ foam.CLASS({
       name: 'propName'
     },
     {
-      class: 'foam.mlang.ExprProperty',
-      name: 'valueExpr'
+      class: 'Object',
+      name: 'value'
+    },
+    {
+      class: 'Boolean',
+      name: 'useAgency'
     }
   ],
 
@@ -27,7 +31,14 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        obj.setProperty(getPropName(),getValueExpr().f(x));
+        Object value = getValue() instanceof foam.mlang.Expr ? ((foam.mlang.Expr) getValue()).f(x) : getValue();
+        if ( getUseAgency() ) {
+          agency.submit(x, agencyX -> {
+            obj.setProperty(getPropName(), value);
+          }, "ChangePropertyAction");
+        } else {
+          obj.setProperty(getPropName(), value);
+        }
       `
     }
   ]
