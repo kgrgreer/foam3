@@ -50,9 +50,10 @@ foam.CLASS({
               props.put("$event_extra", event.getExtra());
             }
 
-            GeolocationSupport location = GeolocationSupport.instance();
-            props.put("mp_country_code", location.getCountry());
-            props.put("$city", location.getCity());
+            // TODO: figure out file location when running from jar
+            // GeolocationSupport location = GeolocationSupport.instance();
+            // props.put("mp_country_code", location.getCountry());
+            // props.put("$city", location.getCity());
             ((MixpanelService) x.get("mixpanelService")).sendMixpanelEvent(x, event, props);
           }
         }, "Send message to mixpanel");

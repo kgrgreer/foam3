@@ -346,7 +346,14 @@ public class JSONFObjectFormatter
   }
 
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
-    if ( ! outputDefaultValues_ && ! prop.isSet(fo) ) return false;
+    if ( ! outputDefaultValues_ ) {
+      if ( ! prop.isSet(fo) ) return false;
+
+      // TODO: This isn't safe for all property types (for unknown reason), so just restrict
+      // to safe classes for now.
+      if ( prop instanceof foam.core.AbstractStringPropertyInfo || prop instanceof foam.core.AbstractIntPropertyInfo || prop instanceof foam.core.AbstractBooleanPropertyInfo )
+        if ( prop.isDefaultValue(fo) ) return false;
+    }
 
     Object value = prop.get(fo);
     if ( value == null || ( isArray(value) && Array.getLength(value) == 0 ) || ( value instanceof FObject && value.equals(fo) ) ) {
@@ -381,7 +388,7 @@ public class JSONFObjectFormatter
 
     append('{');
     addInnerNewline();
-    if ( outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
+    if ( outputClassNames_ && ( outputDefaultClassNames_ || newInfo != defaultClass ) ) {
       outputKey("class");
       append(':');
       output(newInfo.getId());

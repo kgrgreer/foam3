@@ -28,7 +28,6 @@
         if ( ! flags.hasOwnProperty(key) )
           flags[key] = defaultFlags[key];
 
-
       if ( ! globalThis.document ) return;
 
       // Allow flags to be set in loading script tag.
@@ -110,12 +109,13 @@
     },
     loadJSLibs: function(libs) {
       libs && libs.forEach(f => {
-        var s = '<script type="text/javascript" src="' + f.name + '"';
-        if ( f.defer ) s += ' defer';
-        if ( f.async ) s += ' async';
-        s += '></script>\n';
-
-        document.writeln(s);
+        var head = document.getElementsByTagName('head').item(0);
+        var s    = document.createElement('script');
+        s.setAttribute('type', 'text/javascript');
+        s.setAttribute('src', f.name);
+        if ( f.defer ) s.setAttribute('defer', '');
+        if ( f.async ) s.setAttribute('async', '');
+        head.appendChild(s);
       });
     },
     flags:       {},
@@ -212,7 +212,6 @@
 
       pom.exclude && pom.exclude.forEach(f => {
         var path = foam.cwd + '/' + f + ".js";
-        console.log('**************** EXCLUDING', path);
         foam.excluded[path] = true;
       });
 

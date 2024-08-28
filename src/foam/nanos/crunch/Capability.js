@@ -204,6 +204,7 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'interceptIf',
+      shortName: 'iif',
       networkTransient: true,
       javaFactory: 'return foam.mlang.MLang.TRUE;',
       documentation: 'condition under which the permissions that may be intercepted by this capability will be intercepted.',
@@ -212,6 +213,7 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'availabilityPredicate',
+      shortName: 'aPred',
       networkTransient: true,
       javaFactory: 'return foam.mlang.MLang.TRUE;',
       documentation: 'Predicate used to omit or include capabilities from capabilityDAO',
@@ -220,6 +222,7 @@ foam.CLASS({
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'visibilityPredicate',
+      shortName: 'vPred',
       javaFactory: 'return foam.mlang.MLang.FALSE;',
       documentation: 'Predicate of the visibility for capabilities in the capability store/keyword sections',
       includeInDigest: true
@@ -241,6 +244,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       javaType: 'foam.nanos.crunch.edit.EditBehaviour',
       name: 'editBehaviour',
+      shortName: 'edB',
       javaFactory: `
         return new foam.nanos.crunch.edit.NullEditBehaviour();
       `

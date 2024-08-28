@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.approval',
+  package: 'foam.u2.view',
   name: 'NoBackStack',
   properties: [
     'delegate'

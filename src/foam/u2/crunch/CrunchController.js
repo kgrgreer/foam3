@@ -191,16 +191,20 @@ foam.CLASS({
         });
 
         const capableCapabilityId = capable && capable.capabilityIds[0];
-        return this.createWizardSequence(capabilityId || capableCapabilityId, x)
+        return this.toGraphAgentWizard(this.createWizardSequence(capabilityId || capableCapabilityId, x)
           .reconfigure('WAOSettingAgent', {
             waoSetting: this.WAOSettingAgent.WAOSetting.CAPABLE })
           .remove('SkipGrantedAgent')
           .remove('CheckRootIdAgent')
           .remove('CheckPendingAgent')
           .remove('CheckNoDataAgent')
+          .remove('WizardStateAgent') //Filters out granted payloads but also only checks ucj not in context of capable obj, needs a capable analog or can be ignored as it is now
+          .remove('FilterGrantModeAgent') // breaks for non-CapabilityWizardlet
+          .remove('AutoSaveWizardletsAgent')
+          .remove('ReturnToLaunchPointAgent')
           .addBefore('LoadTopConfig',this.CheckGrantedAgent)
           .addBefore('RequirementsPreviewAgent',this.ShowPreexistingAgent)
-          .add(this.MaybeDAOPutAgent)
+          .add(this.MaybeDAOPutAgent))
           ;
       }
     },
@@ -372,13 +376,13 @@ foam.CLASS({
 
       const wizardController = x.wizardController;
 
-      if ( wizardController.status == this.WizardStatus.COMPLETED ) {
+      if ( wizardController?.status == this.WizardStatus.COMPLETED ) {
         const returnObject = intercept.returnCapable || intercept.capables[0];
         intercept.resolve(returnObject);
         return;
       }
 
-      if ( wizardController.status == this.WizardStatus.DISCARDED ) {
+      if ( ! wizardController || wizardController.status == this.WizardStatus.DISCARDED ) {
         intercept.reject('cancelled by user');
         return;
       }

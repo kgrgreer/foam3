@@ -32,10 +32,6 @@ have multiple classloaders running alongside eachother`
     {
       path: 'foam.apploader.NodeModelFileDAO',
       flags: ['node']
-    },
-    {
-      path: 'foam.foamlink.FoamlinkNodeModelFileDAO',
-      flags: ['node']
     }
   ],
 

@@ -279,8 +279,9 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 
   execSync(__dirname + `/pmake.js -makers=Webroot -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
-  var foambin = `foam-bin-${VERSION}.js`;
-  copyFile('./' + foambin, webroot + '/' + foambin);
+  function copy(foambin) { copyFile('./' + foambin, webroot + '/' + foambin); }
+  copy(`foam-bin-${VERSION}.js`);
+  copy(`foam-bin-${VERSION}-1.js`);
 });
 
 
@@ -397,7 +398,8 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
 });
 
 
@@ -583,7 +585,6 @@ task('Show version information.', [ 'getProjectGitHash', 'getFOAMGitHash'], func
 
 task('Create empty build and deployment directory structures if required.', [], function setupDirs() {
   try {
-    // ensureDir(`${PROJECT_HOME}/.foam`); // Only used by foamlink?
     ensureDir(APP_HOME);
     if ( ensureDir(BUILD_DIR + '/lib') ) {
       // Remove stale pom.xml if the /lib dir needed to be created

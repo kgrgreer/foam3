@@ -5,6 +5,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO: Add optional 'main' property to POM's and allow for POM's to be specified.
 foam.CLASS({
   package: 'foam.u2',
   name: 'FoamTagLoader',

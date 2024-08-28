@@ -12,7 +12,8 @@ foam.CLASS({
 
   imports: [
     'capable',
-    'crunchService'
+    'crunchService',
+    'capabilityDAO'
   ],
 
   requires: [
@@ -30,7 +31,8 @@ foam.CLASS({
       if ( wizardlet.status === this.CapabilityJunctionStatus.AVAILABLE ) {
         wizardlet.status = this.CapabilityJunctionStatus.ACTION_REQUIRED;
       }
-
+      if ( ! this.capability )
+        this.capability = await this.capabilityDAO.find(wizardlet.id);
       return this.capable.getCapablePayloadDAO().put(
         this.makePayload(wizardlet)
       ).then(payload => {
@@ -58,7 +60,7 @@ foam.CLASS({
         return;
       }
 
-      this.load_(wizardlet, targetPayload);
+      await this.load_(wizardlet, targetPayload);
     },
     async function load_(wizardlet, payload) {
       wizardlet.isLoaded = true;
@@ -89,7 +91,7 @@ foam.CLASS({
         wizardlet.data = loadedData;
       }
 
-      foam.u2.wizard.Slot.blockFramed().then(() => {
+      return foam.u2.wizard.Slot.blockFramed().then(() => {
         wizardlet.loading = false;
       });
     },

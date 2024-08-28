@@ -103,7 +103,7 @@ public class NSpecFactory
           }
         }
         if ( ns instanceof NanoService )  {
-          logger.info("Starting Service", spec_.getName());
+          logger.info("Starting Service", spec_.getName(), ns.getClass().getName());
           ((NanoService) ns).start();
         }
         if ( ns instanceof ProxyDAO ) {

@@ -15,20 +15,33 @@ foam.CLASS({
     'foam.nanos.theme.Themes'
   ],
 
+  imports: [ 'theme?', 'client?' ],
+
   methods: [
+    function init() {
+      // If there is a theme in the client register it
+      if ( this.theme && this.client ) {
+        this.registerTheme(this.client, this.theme);
+      }
+    },
     async function findTheme(x) {
       var theme = await this.delegate.findTheme();
       if ( theme ) {
-        if ( theme.customRefinement ) await x.__subContext__.classloader.load(theme.customRefinement, []);
-        if ( theme.registrations ) {
-          theme.registrations.forEach(r => {
-            x.__subContext__.register(this.__subContext__.lookup(r.className), r.targetName);
-          });
-        }
+        await this.registerTheme(x, theme);
         return theme;
       }
 
       return this.Themes.create().findTheme(x);
+    },
+    async function registerTheme(x, theme) {
+      // Is this still used ??
+      if ( theme.customRefinement ) await x.__subContext__.classloader.load(theme.customRefinement, []);
+      if ( theme.registrations ) {
+        theme.registrations.forEach(r => {
+          x.__subContext__.register(this.__subContext__.lookup(r.className), r.targetName);
+        });
+      }
     }
   ]
 });
+ 

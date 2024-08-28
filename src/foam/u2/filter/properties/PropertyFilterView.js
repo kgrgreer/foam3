@@ -5,7 +5,7 @@
 */
 
 foam.CLASS({
-  package: 'foam.u2.filter.property',
+  package: 'foam.u2.filter.properties',
   name: 'PropertyFilterView',
   extends: 'foam.u2.View',
 

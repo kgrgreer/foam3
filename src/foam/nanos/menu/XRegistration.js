@@ -11,11 +11,13 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'targetName'
+      name: 'targetName',
+      shortName: 't'
     },
     {
       class: 'String',
-      name: 'className'
+      name: 'className',
+      shortName: 'c'
     }
   ]
 });

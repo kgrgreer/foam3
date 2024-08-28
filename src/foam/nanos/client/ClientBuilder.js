@@ -20,12 +20,32 @@ foam.CLASS({
     'foam.dao.RequestResponseClientDAO',
     'foam.nanos.app.ClientAppConfigService',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.crunch.box.CrunchClientBox'
+    'foam.nanos.crunch.box.CrunchClientBox',
+    'foam.nanos.auth.Subject'
   ],
 
-  imports: [ 'error' ],
+  imports: [ 'error', 'params', 'window'],
+
+  exports: ['sessionID'],
 
   properties: [
+    {
+      class: 'String',
+      name: 'sessionName',
+      value: 'defaultSession'
+    },
+    {
+      name: 'sessionID',
+      factory: function() {
+        var urlSession = this.params.sessionId || localStorage[this.sessionName];
+
+        if ( ! urlSession ) {
+          urlSession = ( localStorage[this.sessionName] = foam.uuid.randomGUID() + this.window.location.search );
+        }
+
+        return urlSession;
+      }
+    },
     {
       class: 'FObjectArray',
       of: 'foam.nanos.boot.NSpec',
@@ -37,24 +57,21 @@ foam.CLASS({
       value: true
     },
     {
-      name: 'nSpecDAO',
+      name: 'clientBuilderService',
       factory: function() {
         // The client completely fails if nSpecDAO fails to load, so infinitely retry
         // requests to nSpecDAO.
-        return this.RequestResponseClientDAO.create({
-          of: this.NSpec,
+        return foam.nanos.client.ClientClientBuilderService.create({
           delegate: this.SessionClientBox.create({
-            delegate: this.CrunchClientBox.create({
-              delegate: this.RetryBox.create({
-                maxAttempts: -1,
-                delegate: this.HTTPBox.create({
-                  method: 'POST',
-                  url: 'service/nSpecDAO'
-                })
+            delegate: this.RetryBox.create({
+              maxAttempts: -1,
+              delegate: this.HTTPBox.create({
+                method: 'POST',
+                url: 'service/clientBuilderService'
               })
             })
           })
-        });
+        }, this);
       }
     },
     {
@@ -62,7 +79,7 @@ foam.CLASS({
       factory: function() {
         /* ignoreWarning */
         var self = this;
-        return new Promise(function(resolve) {
+        return new Promise(async function(resolve) {
           // TODO: Instead of generating a model, generate and return a context.
           // We're not currently doing this because building a model with
           // properties that have factories allow those properties to get
@@ -71,9 +88,36 @@ foam.CLASS({
           var client = {
             package:    'foam.nanos.client',
             name:       'Client',
-            exports:    [],
+            imports:    ['params', 'window'],
+            exports:    ['as client', 'theme',  'sessionID'],
             constants:  { eagerClients_: [] },
             properties: [
+              {
+                __copyFrom__: 'foam.nanos.client.ClientBuilder.SESSION_NAME',
+              },
+              {
+                __copyFrom__: 'foam.nanos.client.ClientBuilder.SESSION_ID',
+              },
+              {
+                class: 'foam.core.FObjectProperty',
+                of: 'foam.nanos.auth.Subject',
+                name: 'initSubject',
+                description: 'subject that was used to create the client',
+                final: true,
+                adapt: function(_, n) {
+                  // Recreate Subject in the correct context
+                  return n?.clone(this);
+                }
+              },
+              {
+                class: 'foam.core.FObjectProperty',
+                of: 'foam.nanos.theme.Theme',
+                name: 'theme',
+                description: 'theme that was used to create the client',
+                adapt: function(_, n) {
+                  return n?.clone(this);
+                }
+              }
             ],
             methods: [
               function init() {
@@ -83,15 +127,30 @@ foam.CLASS({
             ]
           };
 
-          var references = [];
+          // var references = [];
+
+          let nspec = foam.nanos.boot.NSpec;
+
+          // console.time('clientBuild');
+          /*
+            We can bundle these into a single call but bundling hurts performance marginally:
+            Results as of last run(ms) on 2024/08/13 (Throttle using mid-tier mobile preset, Chrome dev tools):
+              Bundle:
+                Throttled: 808, 764, 786, 750, 767
+                Not Throttled: 89, 66, 70, 63, 71
+
+              Unbundled:
+                Throttled: 776, 792,793,782,783
+                Not Throttled: 52, 51, 53, 52, 56
+          */
+          let subjectPromise = self.clientBuilderService.getSubject();
+          let themePromise = self.clientBuilderService.getTheme();
+          let nSpecsPromise = self.clientBuilderService.getClient(this, self.PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT));
 
           // Force hard reload when app version updates
-          var appConfigPromise = self.nSpecDAO.find('appConfigService').then(function(a) {
-            a = foam.json.parseString(a.client, self.__context__);
-            return a.getAppConfig();
-          }).then(function(appConfig) {
+          var appConfigPromise = self.clientBuilderService.getAppConfig(this).then(function(appConfig) {
             client.exports.push('appConfig');
-            references = references.concat(foam.json.references(self.__context__, appConfig));
+            // references = references.concat(foam.json.references(self.__context__, appConfig));
             client.properties.push({
               name: 'appConfig',
               factory: function() {
@@ -111,18 +170,8 @@ foam.CLASS({
             }
           });
 
-          var query = self.EQ(self.NSpec.SERVE, true);
-
-          if ( ! self.authenticate ) {
-            query = self.AND(query, self.EQ(self.NSpec.AUTHENTICATE, false));
-          }
-
-          let nspec = foam.nanos.boot.NSpec;
-
-          self.nSpecDAO.where(query).select(
-            self.PROJECTION(nspec.NAME, nspec.CLIENT, nspec.LAZY_CLIENT))
-            .then(p => {
-              foam.dao.ArrayDAO.create({array: p.array.concat(self.extraServices)})
+          nSpecsPromise.then(p => {
+            foam.dao.ArrayDAO.create({array: p.array.concat(self.extraServices)})
               .select({
                 put: function(spec) {
                   if ( spec.client ) {
@@ -170,14 +219,30 @@ foam.CLASS({
                 },
                 eof: function() {
                   // disable class-loading
-                  /*Promise.allSettled(references.concat(appConfigPromise))*/appConfigPromise.then(function() {
-                    resolve(foam.core.Model.create(client).buildClass());
+                  /*Promise.allSettled(references.concat(appConfigPromise))*/
+                  Promise.all([appConfigPromise, subjectPromise, themePromise]).then(async function([appConfig, subject, theme]) {
+                    client = foam.core.Model.create(client).buildClass();
+                    client = client.create({
+                      theme: theme,
+                      initSubject: subject || self.Subject.create({}),
+                      sessionID: self.sessionID
+                    }, self.__context__);
+                    // console.timeEnd('clientBuild');
+                    // Preload menuDAO, remove when we have pre-cached daos from the server
+                    client.menuDAO.select();
+                    resolve(client);
                   });
                 }
               });
-            })
+          });
         });
       }
+    }
+  ],
+  methods: [
+    function init() {
+      // Wake up and find/create a sessionID for building the client
+      this.sessionID;
     }
   ]
 });

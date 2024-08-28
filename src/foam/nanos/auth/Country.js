@@ -22,6 +22,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'iso31661Code',
+      shortName: 'iso',
       label: 'ISO Code',
       documentation: `[ISO 3166](https://www.iso.org/iso-3166-country-codes.html)
         -1 alpha-3 country codes.`,
@@ -34,6 +35,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'nativeName',
+      shortName: 'native',
       factory: function() {
         return this.name
       }
@@ -41,6 +43,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'alternativeNames',
+      shortName: 'alt',
       documentation: `A list of known alternative country names.`,
     }
   ],

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2.crunch',
+  package: 'foam.u2.crunch.lab',
   name: 'CrunchLab',
   extends: 'foam.u2.Controller',
 
