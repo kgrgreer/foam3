@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.place.model',
-  name: 'PlaceDetailResult',
+  name: 'PlaceDetailResp',
 
   properties: [
 		{

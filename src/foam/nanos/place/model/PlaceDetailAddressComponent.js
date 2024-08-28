@@ -21,7 +21,21 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
-      name: 'types'
+      name: 'types',
+      shortName: 'types',
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.longName + " | " + this.shortName + " | " + this.types.join(",");
+      },
+      javaCode: `
+        return "";
+      `
     }
   ]
 })

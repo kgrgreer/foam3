@@ -91,6 +91,44 @@ foam.CLASS({
 
         return ret;
       `
+    },
+    {
+      name: 'placeDetail',
+      async: true,
+      args: 'Context x, PlaceDetailReq req',
+      type: 'PlaceDetailResp',
+      javaCode: `
+        var ret = new PlaceDetailResp();
+        try {
+          var config = getConfigure(x);
+
+          var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
+                      .addParameter("language", "en")
+                      .addParameter("place_id", req.getPlaceId())
+                      .addParameter("key", config.getApiKey());
+          System.out.println("aaaaaaa: " + uri.toString());
+          HttpGet request = new HttpGet(uri.toString());
+
+          try (CloseableHttpClient httpClient = HttpClients.createDefault();
+              CloseableHttpResponse response = httpClient.execute(request)) {
+
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                String rawResponse = EntityUtils.toString(entity);
+                JSONParser jsonParser = x.create(JSONParser.class);
+                var resp = (PlaceDetailResp) jsonParser.parseString(rawResponse, PlaceDetailResp.class);
+                if ( resp == null ) {
+                  throw new RuntimeException("json parse error with \`" +rawResponse + "\`");
+                }
+                ret = resp;
+            }
+
+          }
+        } catch ( Exception e ) {
+          Loggers.logger(x, this).error("placeAutocomplete", e);
+        }
+        return ret;
+      `
     }
   ]
 })

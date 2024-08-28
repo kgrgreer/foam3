@@ -16,6 +16,12 @@ foam.INTERFACE({
       async: true,
       args: 'Context x, foam.nanos.place.model.PlaceAutocompleteReq req',
       type: 'foam.nanos.place.model.PlaceAutocompleteResp',
+    },
+    {
+      name: 'placeDetail',
+      async: true,
+      args: 'Context x, foam.nanos.place.model.PlaceDetailReq req',
+      type: 'foam.nanos.place.model.PlaceDetailResp',
     }
   ]
 })
