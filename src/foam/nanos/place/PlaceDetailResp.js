@@ -5,7 +5,7 @@
 */
 
 foam.CLASS({
-  package: 'foam.nanos.place.model',
+  package: 'foam.nanos.place',
   name: 'PlaceDetailResp',
   
   properties: [
@@ -13,7 +13,7 @@ foam.CLASS({
       name: "result",
       shortName: 'result',
       class: "FObjectProperty",
-      of: "foam.nanos.place.model.PlaceDetailResult"
+      of: "foam.nanos.place.PlaceDetailResult"
     }
   ]
 })

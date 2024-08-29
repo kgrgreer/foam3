@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.nanos.pm.PM',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
-    'foam.nanos.place.model.*',
+    'foam.nanos.place.*',
     'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -54,7 +54,7 @@ foam.CLASS({
       name: 'placeAutocomplete',
       async: true,
       args: 'Context x, String input',
-      type: 'foam.nanos.place.model.PlaceAutocompleteResp',
+      type: 'PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
         Session session = x.get(Session.class);
