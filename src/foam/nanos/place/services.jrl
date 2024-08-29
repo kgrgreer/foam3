@@ -7,11 +7,11 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("googlePlaceServiceConfigures")
-      .setOf(foam.nanos.place.configure.GooglePlaceServiceConfigure.getOwnClassInfo())
+      .setOf(foam.nanos.place.configure.google.GooglePlaceServiceConfigure.getOwnClassInfo())
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.place.configure.GooglePlaceServiceConfigure.SPID } );
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.place.configure.google.GooglePlaceServiceConfigure.SPID } );
     `,
-  "client":"{\"of\":\"foam.nanos.place.configure.GooglePlaceServiceConfigure\"}"
+  "client":"{\"of\":\"foam.nanos.place.configure.google.GooglePlaceServiceConfigure\"}"
 })
 
 p({
@@ -20,7 +20,7 @@ p({
   "authenticate": true,
   "serve": true,
   "boxClass":"foam.nanos.place.PlaceServiceSkeleton",
-  "serviceClass": "foam.nanos.place.GooglePlaceService",
+  "serviceClass": "foam.nanos.place.google.GooglePlaceService",
   "client": """
       {
         "class":"foam.nanos.place.ClientPlaceService",

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.place',
+  package: 'foam.nanos.place.google',
   name: 'GooglePlaceService',
   documentation: `
     Implement PlaceService using Google Place Service API.
@@ -22,7 +22,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.model.*',
-    'foam.nanos.place.configure.GooglePlaceServiceConfigure',
     'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',

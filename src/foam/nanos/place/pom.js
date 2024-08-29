@@ -17,11 +17,11 @@ foam.POM({
       flags: "js" 
     },
     { 
-      name: "GooglePlaceService",
+      name: "google/GooglePlaceService",
       flags: "java" 
     },
     { 
-      name: "configure/GooglePlaceServiceConfigure",
+      name: "google/GooglePlaceServiceConfigure",
       flags: "js|java" 
     },
     { 

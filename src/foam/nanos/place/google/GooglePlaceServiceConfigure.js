@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.place.configure',
+  package: 'foam.nanos.place.google',
   name: 'GooglePlaceServiceConfigure',
 
   properties: [
