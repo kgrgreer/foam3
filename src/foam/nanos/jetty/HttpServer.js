@@ -37,6 +37,8 @@ foam.CLASS({
     'java.security.KeyStore',
     'java.util.Arrays',
     'java.util.HashSet',
+    'java.util.Map',
+    'java.util.Map.Entry',
     'java.util.Set',
     'jakarta.servlet.Servlet',
     'jakarta.servlet.ServletContext',
@@ -128,7 +130,7 @@ foam.CLASS({
       class: 'StringArray',
       name: 'excludedGzipPaths',
       documentation: 'Jetty style paths to exclude from gzipping: https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/gzip/GzipHandler.html#addExcludedPaths(java.lang.String...)',
-      javaFactory: 'return new String[] { "^.*/manifest.json", "^.*/logo.svg" };' // java regex format
+      javaFactory: 'return new String[] { "^.*/manifest.json", "^.*/logo.svg", "^.*/favicon*" };' // java regex format
     },
     {
       class: 'StringArray',
@@ -262,12 +264,16 @@ foam.CLASS({
             holder = handler.getServletHandler().addServletWithMapping(mapping.getClassName(), mapping.getPathSpec());
           }
 
-          java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
-
-          while ( iter.hasNext() ) {
-            String key = (String) iter.next();
-            holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
+          Map<String, String> params = mapping.getInitParameters();
+          for ( Map.Entry<String, String> entry : params.entrySet() ) {
+            holder.setInitParameter(entry.getKey().toString(), (String) entry.getValue().toString());
           }
+          // java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
+
+          // while ( iter.hasNext() ) {
+          //   String key = (String) iter.next();
+          //   holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
+          // }
           if ( getIsResourceStorage() ) {
             holder.setInitParameter("isResourceStorage", "true");
           }

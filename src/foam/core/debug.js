@@ -405,7 +405,7 @@ foam.SCRIPT({
   }
 });
 
-
+/*
 foam.CLASS({
   package: 'foam.core',
   name: 'FObjectValidateImportsRefinement',
@@ -429,7 +429,7 @@ foam.CLASS({
     }
   ]
 });
-
+*/
 
 foam.CLASS({
   package: 'foam.core',

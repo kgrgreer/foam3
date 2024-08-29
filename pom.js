@@ -54,7 +54,9 @@ foam.POM({
       'org.eclipse.jetty:jetty-proxy:11.0.23',
       'org.eclipse.jetty:jetty-alpn-java-server:11.0.23',
       'org.eclipse.jetty:jetty-http:11.0.23',
+      'org.eclipse.jetty:jetty-jmx:11.0.23', // for source build
       'org.eclipse.jetty:jetty-util:11.0.23',
+      'org.eclipse.jetty:jetty-util-ajax:11.0.23', // for source build
       'org.eclipse.jetty.http2:http2-server:11.0.23',
       'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.23',
       'org.java-websocket:Java-WebSocket:1.5.0',

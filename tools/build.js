@@ -282,6 +282,8 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
   function copy(foambin) { copyFile('./' + foambin, webroot + '/' + foambin); }
   copy(`foam-bin-${VERSION}.js`);
   copy(`foam-bin-${VERSION}-1.js`);
+  copy(`foam-bin-${VERSION}.gz`);
+  copy(`foam-bin-${VERSION}-1.gz`);
 });
 
 
@@ -530,6 +532,7 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
     if ( LOG_LEVEL ) {
       JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
       logLevelLower = `${LOG_LEVEL}`.toLowerCase();
+      JAVA_OPTS = ` -Dorg.eclipse.jetty.server.handler.gzip.LEVEL=${LOG_LEVEL} ${JAVA_OPTS}`;
     }
     JAVA_OPTS = ` -Dorg.slf4j.simpleLogger.defaultLogLevel=${logLevelLower} ${JAVA_OPTS}`;
 
@@ -935,4 +938,4 @@ quit(0);
 
 // IS_AWS, IS_MAC, IS_LINUX are no longer used
 // a note on 'c' clean on the current build.
-// if you issue 'c', and compilation fails, you need clean again to get a succesful deployment.
+// if you issue 'c', and compilation fails, you need clean again to get a succesful deployment

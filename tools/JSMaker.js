@@ -11,6 +11,7 @@ exports.description = 'create minified foam-bin.js distribution';
 const fs_      = require('fs');
 const path_    = require('path');
 const uglify_  = require('uglify-js');
+const zlib_    = require('zlib');
 
 const licenses = {};
 var version    = '';
@@ -130,7 +131,7 @@ if ( ! foam.flags.skipStage1 ) {
     foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
   } else {
     window.setTimeout(() =>
-      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000}),
+      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.gz'}]),{timeout:15000}),
       2000);
   }
 }
@@ -141,6 +142,17 @@ if ( ! foam.flags.skipStage1 ) {
 //  code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = fn(X.stage);
-  console.log('[JS] Writing', filename + '.js');
-  fs_.writeFileSync(filename + '.js', code);
+  // if ( X.stage !== '0' ) {
+    console.log('[JS] Writing', filename + '.js');
+    fs_.writeFileSync(filename + '.js', code);
+  // } else {
+    console.log('[JS] Writing', filename + '.gz');
+    zlib_.gzip(code, (err, buffer) => {
+      if ( ! err ) {
+        fs_.writeFileSync(filename + '.gz', buffer);
+      } else {
+        console.error(err);
+      }
+    });
+  //}
 }
