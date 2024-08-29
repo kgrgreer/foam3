@@ -747,7 +747,7 @@ foam.CLASS({
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
       if ( defaultMenu ) {
-        await this.routeTo(defaultMenu.id ?? '');
+        await this.pushMenu_('', defaultMenu.id ?? '');
         return defaultMenu;
       }
       await this.fetchSubject();
