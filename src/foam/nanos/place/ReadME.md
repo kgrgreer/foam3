@@ -24,16 +24,8 @@ Tip to save the cost:
 ## Test In UI Console:
 
 #### Place Autocomplete
-**With Well-Structured Address**
 ```
-var a = foam.nanos.place.model.PlaceAutocompleteReq.create({address1: "56 Colonsay"})
-var b = await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
-for(let p of b.predictions){console.log(p.description, p.placeId)}
-```
-or
-**Without Well-Structured Address**
-```
-var b = await ctrl.__subContext__.placeService.placeAutocompleteWithCustomInput(null, "56 Colonsay")
+var b = await ctrl.__subContext__.placeService.PlaceAutocompleteReq(null, "56 Colonsay")
 for(let p of b.predictions){console.log(p.description, p.placeId)}
 ```
 

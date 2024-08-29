@@ -52,7 +52,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'placeAutocompleteWithCustomInput',
+      name: 'placeAutocomplete',
       async: true,
       args: 'Context x, String input',
       type: 'foam.nanos.place.model.PlaceAutocompleteResp',
@@ -92,16 +92,6 @@ foam.CLASS({
         }
 
         return ret;
-      `
-    },
-    {
-      name: 'placeAutocomplete',
-      args: 'Context x, PlaceAutocompleteReq req',
-      type: 'PlaceAutocompleteResp',
-      async: true,
-      javaCode: `
-        var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();
-        return this.placeAutocompleteWithCustomInput(x, input);
       `
     },
     {
