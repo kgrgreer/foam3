@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.filter.property.PropertyFilterView',
+    'foam.u2.filter.properties.PropertyFilterView',
     'foam.u2.search.TextSearchView'
   ],
 
@@ -50,7 +50,7 @@ foam.CLASS({
       border: solid 1px #cbcfd4;
     }
 
-    ^ .foam-u2-filter-property-PropertyFilterView {
+    ^ .foam-u2-filter-properties-PropertyFilterView {
       flex: 1 1 250px;
     }
   `,

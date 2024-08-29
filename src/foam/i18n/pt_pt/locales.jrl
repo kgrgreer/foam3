@@ -479,8 +479,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.OPEN_A
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.BooleanFilterView.BOOL_T.label",target:"Verdadeiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.BooleanFilterView.BOOL_F.label",target:"Falso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.property.PropertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.property.PropertyFilterView.LABEL_PROPERTY_FILTER",target:"Filtrando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.PropertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.PropertyFilterView.LABEL_PROPERTY_FILTER",target:"Filtrando"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.DateFilterView.LABEL_ALL",target:"Todos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.DateFilterView.LABEL_AFTER",target:"Depois de"})

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,22 @@
  */
 
 foam.CLASS({
-  package: 'foam.version',
-  name: 'VersionedClassFactory',
+  package: 'foam.input',
+  name: 'TouchEvent',
 
-  requires: [
-    'foam.version.VersionTrait',
-    'foam.version.VersionedClass'
-  ],
-
-  methods: [
-    function get(cls) {
-      return this.VersionTrait.isSubClass(cls) ? cls :
-        this.VersionedClass.create({ of: cls }).versionedCls;
+  properties: [
+    {
+      class: 'Float',
+      name: 'x'
+    },
+    {
+      class: 'Float',
+      name: 'y'
+    },
+    {
+      class: 'Boolean',
+      name: 'claimed',
+      value: false
     }
   ]
-});
-
-
-foam.CLASS({
-  package: 'foam.version',
-  name: 'VersionedClassFactorySingleton',
-  extends: 'foam.version.VersionedClassFactory',
-
-  axioms: [ foam.pattern.Singleton.create() ],
 });

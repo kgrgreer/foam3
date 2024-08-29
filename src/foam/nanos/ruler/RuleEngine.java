@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.util.concurrent.Semaphore;
 
 public class RuleEngine extends ContextAwareSupport {
   protected DAO                      delegate_         = null;
@@ -29,6 +29,12 @@ public class RuleEngine extends ContextAwareSupport {
   protected Map<String, RuleHistory> savedRuleHistory_ = new HashMap<>();
   protected X                        userX_;
   protected CompoundContextAgency    asyncAgency_      = new CompoundContextAgency();
+  protected Semaphore                lock_             = null;
+
+  public RuleEngine(X x, X systemX, DAO delegate, Semaphore lock) {
+    this(x, systemX, delegate);
+    lock_ = lock;
+  }
 
   public RuleEngine(X x, X systemX, DAO delegate) {
     setX(systemX);
@@ -60,10 +66,11 @@ public class RuleEngine extends ContextAwareSupport {
    * @param oldObj - Old FObject supplied to rules for execution
    */
 
-  public void execute(List<Rule> rules, FObject obj, FObject oldObj) {
+  public boolean execute(List<Rule> rules, FObject obj, FObject oldObj) {
     CompoundContextAgency compoundAgency = new CompoundContextAgency();
     ContextualizingAgency agency         = new ContextualizingAgency(compoundAgency, userX_, getX());
     Logger                logger         = (Logger) getX().get("logger");
+    boolean               locked         = false;
 
     for ( Rule rule : rules ) {
       PM pm = PM.create(getX(), RulerDAO.getOwnClassInfo(), rule.getDaoKey(), rule.getId());
@@ -73,8 +80,16 @@ public class RuleEngine extends ContextAwareSupport {
         if ( ! checkPermission(rule, obj)  ) continue;
         if ( ! rule.f(userX_, obj, oldObj) ) continue;
 
+        if ( ! locked && lock_ != null && rule.getRequiresLock() ) {
+          locked = true;
+          try {
+            lock_.acquire();
+          } catch (InterruptedException e) {}
+        }
+
         applyRule(rule, obj, oldObj, agency);
       } catch (Exception e) {
+        if ( locked ) lock_.release();
         // To be expected if a rule blocks an operation. Not an error.
         logger.debug(this.getClass().getSimpleName(), "id", rule.getId(), "\\nrule", rule, "\\nobj", obj, "\\nold", oldObj, "\\n", e);
         throw e;
@@ -108,7 +123,9 @@ public class RuleEngine extends ContextAwareSupport {
       // TODO: this breaks CI, enable when all test cases passing
       // throw new RuntimeException(message, e);
     }
-  }
+
+    return locked;
+ }
 
   /**
    * Probes rules execution by applying actions and skipping

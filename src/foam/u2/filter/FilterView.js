@@ -27,7 +27,7 @@ foam.CLASS({
     'foam.core.SimpleSlot',
     'foam.u2.dialog.Popup',
     'foam.u2.filter.FilterController',
-    'foam.u2.filter.property.PropertyFilterView',
+    'foam.u2.filter.properties.PropertyFilterView',
     'foam.u2.search.TextSearchView',
     'foam.parse.QueryParser'
   ],

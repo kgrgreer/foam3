@@ -22,6 +22,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+    'java.util.concurrent.Semaphore',
     'static foam.mlang.MLang.*'
   ],
 
