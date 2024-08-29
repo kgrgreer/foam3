@@ -88,7 +88,6 @@ foam.CLASS({
       label: 'Email or Username',
       view: {
         class: 'foam.u2.TextField',
-        type: 'email',
         focused: true
       },
       trim: true,
