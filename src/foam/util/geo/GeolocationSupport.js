@@ -77,6 +77,7 @@ foam.CLASS({
           var ip = InetAddress.getByName(ipStr);
           File database = x.get(Storage.class).get("GeoLite2-City/GeoLite2-City.mmdb");
           try {
+            // REVIEW: should it keep the reference to dbReader instead of re-initializing the reader on every call to GeolocationSupport.instance()?
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
             try {
               CityResponse response = dbReader.city(ip);
