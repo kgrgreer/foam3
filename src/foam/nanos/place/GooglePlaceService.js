@@ -17,6 +17,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.pm.PM',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.model.*',
@@ -56,6 +57,7 @@ foam.CLASS({
       type: 'PlaceAutocompleteResp',
       async: true,
       javaCode: `
+        var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
         var ret = new PlaceAutocompleteResp();
         try {
           var config = getConfigure(x);
@@ -87,6 +89,8 @@ foam.CLASS({
           }
         } catch ( Exception e ) {
           Loggers.logger(x, this).error("placeAutocomplete", e);
+        } finally {
+          pm.log(getX());
         }
 
         return ret;
@@ -98,6 +102,7 @@ foam.CLASS({
       args: 'Context x, PlaceDetailReq req',
       type: 'PlaceDetailResp',
       javaCode: `
+        var pm = PM.create(x, "GooglePlaceService_placeDetail");
         var ret = new PlaceDetailResp();
         try {
           var config = getConfigure(x);
@@ -127,7 +132,10 @@ foam.CLASS({
           }
         } catch ( Exception e ) {
           Loggers.logger(x, this).error("placeAutocomplete", e);
+        } finally {
+          pm.log(getX());
         }
+
         return ret;
       `
     }
