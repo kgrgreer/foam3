@@ -25,7 +25,7 @@ Tip to save the cost:
 
 #### Place Autocomplete
 ```
-var b = await ctrl.__subContext__.placeService.PlaceAutocompleteReq(null, "56 Colonsay")
+var b = await ctrl.__subContext__.placeService.PlaceAutocomplete(null, "56 Colonsay")
 for(let p of b.predictions){console.log(p.description, p.placeId)}
 ```
 
