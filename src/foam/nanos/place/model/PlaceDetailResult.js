@@ -9,6 +9,11 @@ foam.CLASS({
   name: 'PlaceDetailResult',
 
   properties: [
+    {
+      name: "formattedAddress",
+      shortName: "formatted_address",
+      class: "String"
+    },
 		{
 			name: "addressComponents",
       shortName: 'address_components',
