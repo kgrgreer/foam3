@@ -52,17 +52,15 @@ foam.CLASS({
       `
     },
     {
-      name: 'placeAutocomplete',
-      args: 'Context x, PlaceAutocompleteReq req',
-      type: 'PlaceAutocompleteResp',
+      name: 'placeAutocompleteWithCustomInput',
       async: true,
+      args: 'Context x, String input',
+      type: 'foam.nanos.place.model.PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
         var ret = new PlaceAutocompleteResp();
         try {
           var config = getConfigure(x);
-          var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();
-
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json")
                       .addParameter("input", input)
                       .addParameter("language", "en")
@@ -97,9 +95,19 @@ foam.CLASS({
       `
     },
     {
+      name: 'placeAutocomplete',
+      args: 'Context x, PlaceAutocompleteReq req',
+      type: 'PlaceAutocompleteResp',
+      async: true,
+      javaCode: `
+        var input = req.getAddress1() +  ", " + req.getAddress2() + ", " + req.getCity() + ", " + req.getRegion() + ", " + req.getCountry() + ", " + req.getPostalCode();
+        return this.placeAutocompleteWithCustomInput(x, input);
+      `
+    },
+    {
       name: 'placeDetail',
       async: true,
-      args: 'Context x, PlaceDetailReq req',
+      args: 'Context x, String placeId',
       type: 'PlaceDetailResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeDetail");
@@ -109,7 +117,7 @@ foam.CLASS({
 
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
                       .addParameter("language", "en")
-                      .addParameter("place_id", req.getPlaceId())
+                      .addParameter("place_id", placeId)
                       .addParameter("fields", String.join(",", config.getPlaceDetailFields()))
                       .addParameter("key", config.getApiKey());
           System.out.println("aaaaaaa: " + uri.toString());

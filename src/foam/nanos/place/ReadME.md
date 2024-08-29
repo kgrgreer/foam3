@@ -1,8 +1,8 @@
-Google Places API Integration
+# Google Places API Integration
 
-API Doc:
-Overview: https://developers.google.com/maps/documentation/places/web-service/overview
-Place Autocomplete: https://developers.google.com/maps/documentation/places/web-service/autocomplete
+## API Document:
+Overview: *https://developers.google.com/maps/documentation/places/web-service/overview*
+Place Autocomplete: *https://developers.google.com/maps/documentation/places/web-service/autocomplete*
 
 JAVA JDK:
 https://github.com/googlemaps/google-maps-services-java
@@ -21,15 +21,22 @@ https://developers.google.com/maps/documentation/places/web-service/reference/rp
 Tip to save the cost:
 1. use sessionToken.
 
+## Test In UI Console:
+#### Place Autocomplete
 ```
 var a = foam.nanos.place.model.PlaceAutocompleteReq.create({address1: "56 Colonsay"})
 var b = await ctrl.__subContext__.placeService.placeAutocomplete(null, a)
 for(let p of b.predictions){console.log(p.description, p.placeId)}
 ```
-
+or
 ```
-var c = foam.nanos.place.model.PlaceDetailReq.create({placeId: "YOUR_PLACE_ID"})
-var d = await ctrl.__subContext__.placeService.placeDetail(null, c)
+var b = await ctrl.__subContext__.placeService.placeAutocompleteWithCustomInput(null, "56 Colonsay")
+for(let p of b.predictions){console.log(p.description, p.placeId)}
+```
+
+#### Place Detail
+```
+var d = await ctrl.__subContext__.placeService.placeDetail(null, "YOUR_PLACE_ID")
 console.log(d.result.formattedAddress)
 for(let v of d.result.addressComponents){console.log(v.toSummary())}
 ```
