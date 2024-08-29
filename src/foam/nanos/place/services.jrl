@@ -8,7 +8,8 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("googlePlaceServiceConfigures")
       .setOf(foam.nanos.place.configure.GooglePlaceServiceConfigure.getOwnClassInfo())
-      .build();
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.place.configure.GooglePlaceServiceConfigure.SPID } );
     `,
   "client":"{\"of\":\"foam.nanos.place.configure.GooglePlaceServiceConfigure\"}"
 })
