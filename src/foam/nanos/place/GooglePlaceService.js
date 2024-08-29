@@ -23,7 +23,6 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.model.*',
     'foam.nanos.place.configure.GooglePlaceServiceConfigure',
-    'org.apache.http.impl.client.HttpClients',
     'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -68,7 +67,7 @@ foam.CLASS({
                       .addParameter("language", "en")
                       .addParameter("components", String.join("|", config.getPlaceAutocompleteRegionCodes()))
                       .addParameter("types", String.join("|", config.getPlaceAutocompleteTypes()))
-                      .addParameter("sessiontoken", session != nill ? session.getId() : "")
+                      .addParameter("sessiontoken", session != null ? session.getId() : "")
                       .addParameter("key", config.getApiKey());
 
           Loggers.logger(x, this).debug("placeAutocomplete url", uri.toString());
@@ -113,7 +112,7 @@ foam.CLASS({
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
                       .addParameter("language", "en")
                       .addParameter("place_id", placeId)
-                      .addParameter("sessiontoken", session != nill ? session.getId() : "")
+                      .addParameter("sessiontoken", session != null ? session.getId() : "")
                       .addParameter("fields", String.join(",", config.getPlaceDetailFields()))
                       .addParameter("key", config.getApiKey());
 
