@@ -105,6 +105,7 @@ foam.CLASS({
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
                       .addParameter("language", "en")
                       .addParameter("place_id", req.getPlaceId())
+                      .addParameter("fields", String.join(",", config.getPlaceDetailFields()))
                       .addParameter("key", config.getApiKey());
           System.out.println("aaaaaaa: " + uri.toString());
           HttpGet request = new HttpGet(uri.toString());

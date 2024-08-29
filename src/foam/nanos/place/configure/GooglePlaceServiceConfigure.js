@@ -34,7 +34,7 @@ foam.CLASS({
       `,
       javaFactory: `
         return new String[]{
-          "country:ca", "country:pk"
+          "country:ca"
         };
       `
     },
@@ -51,6 +51,21 @@ foam.CLASS({
       javaFactory: `
         return new String[]{
           "postal_code", "street_number", "route", "room", "locality"
+        };
+      `
+    },
+    {
+      class: 'StringArray',
+      name: 'placeDetailFields',
+      documentation: `
+        Fields are divided into three billing categories: Basic, Contact, and Atmosphere. 
+        Basic fields are billed at base rate, and incur no additional charges. 
+        Contact and Atmosphere fields are billed at a higher rate.
+        See: https://developers.google.com/maps/documentation/places/web-service/details#fields
+      `,
+      javaFactory: `
+        return new String[]{
+          "address_components", "formatted_address"
         };
       `
     },
