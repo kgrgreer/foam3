@@ -51,8 +51,12 @@ exports.end = function() {
     if ( l.endsWith('pom.js') ) return;
     try {
       l = path_.resolve(__dirname, l);
-      if ( X.stage === '0' ? ! foam.excluded[l] : foam.excluded[l] )
+      if ( X.stage === '0' ? ! foam.excluded[l] : foam.excluded[l] ) {
+//        console.log('***** IN:', l);
         files[l] = fs_.readFileSync(l, "utf8");
+      } else {
+//        console.log('***** EX:', l);
+      }
     } catch (x) {
       // console.log('********************************* Unexpected Error: ', x);
     }
@@ -121,10 +125,14 @@ exports.end = function() {
 
   if ( X.stage === '0' ) {
     code += `
-if ( window.location.hash ) {
-  foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
-} else {
-  window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000});
+if ( ! foam.flags.skipStage1 ) {
+  if ( window.location.hash ) {
+    foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
+  } else {
+    window.setTimeout(() =>
+      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000}),
+      2000);
+  }
 }
 `;
   }
