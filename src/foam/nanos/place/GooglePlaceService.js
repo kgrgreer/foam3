@@ -17,6 +17,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.session.Session',
     'foam.nanos.pm.PM',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
@@ -58,6 +59,7 @@ foam.CLASS({
       type: 'foam.nanos.place.model.PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
+        Session session = x.get(Session.class);
         var ret = new PlaceAutocompleteResp();
         try {
           var config = getConfigure(x);
@@ -66,8 +68,10 @@ foam.CLASS({
                       .addParameter("language", "en")
                       .addParameter("components", String.join("|", config.getPlaceAutocompleteRegionCodes()))
                       .addParameter("types", String.join("|", config.getPlaceAutocompleteTypes()))
+                      .addParameter("sessiontoken", session != nill ? session.getId() : "")
                       .addParameter("key", config.getApiKey());
-          System.out.println("aaaaaaa: " + uri.toString());
+
+          Loggers.logger(x, this).debug("placeAutocomplete url", uri.toString());
           HttpGet request = new HttpGet(uri.toString());
 
           try (CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -102,15 +106,18 @@ foam.CLASS({
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeDetail");
         var ret = new PlaceDetailResp();
+        Session session = x.get(Session.class);
         try {
           var config = getConfigure(x);
 
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
                       .addParameter("language", "en")
                       .addParameter("place_id", placeId)
+                      .addParameter("sessiontoken", session != nill ? session.getId() : "")
                       .addParameter("fields", String.join(",", config.getPlaceDetailFields()))
                       .addParameter("key", config.getApiKey());
-          System.out.println("aaaaaaa: " + uri.toString());
+
+          Loggers.logger(x, this).debug("placeDetail url", uri.toString());
           HttpGet request = new HttpGet(uri.toString());
 
           try (CloseableHttpClient httpClient = HttpClients.createDefault();
