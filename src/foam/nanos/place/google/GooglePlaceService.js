@@ -22,12 +22,12 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.*',
-    'org.apache.http.client.utils.URIBuilder',
     'java.util.Arrays',
     'java.util.ArrayList',
     'foam.lib.json.JSONParser',
     'org.apache.http.HttpEntity',
     'org.apache.http.HttpHeaders',
+    'org.apache.http.client.utils.URIBuilder',
     'org.apache.http.client.methods.CloseableHttpResponse',
     'org.apache.http.client.methods.HttpGet',
     'org.apache.http.impl.client.CloseableHttpClient',
@@ -61,6 +61,10 @@ foam.CLASS({
         var ret = new PlaceAutocompleteResp();
         try {
           var config = getConfigure(x);
+          if ( !config.getIsEnable() ) {
+            ret.setPredictions(new PlaceAutocompletePrediction[]{});
+            return ret;
+          }
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json")
                       .addParameter("input", input)
                       .addParameter("language", "en")
@@ -107,6 +111,7 @@ foam.CLASS({
         Session session = x.get(Session.class);
         try {
           var config = getConfigure(x);
+          if ( !config.getIsEnable() ) return ret;
 
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/details/json")
                       .addParameter("language", "en")
