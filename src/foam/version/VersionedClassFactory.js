@@ -27,10 +27,11 @@ foam.CLASS({
   methods: [
     function get(cls) {
       return this.VersionTrait.isSubClass(cls) ? cls :
-          this.VersionedClass.create({ of: cls }).versionedCls;
+        this.VersionedClass.create({ of: cls }).versionedCls;
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.version',
