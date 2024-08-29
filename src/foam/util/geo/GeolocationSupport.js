@@ -75,7 +75,8 @@ foam.CLASS({
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
           var ip = InetAddress.getByName(ipStr);
-          File database = x.get(foam.nanos.fs.Storage.class).get("GeoLite2-City/GeoLite2-City.mmdb");
+          var jrlhome = System.getenv("JOURNAL_OUT");
+          File database = new File(jrlhome + "/GeoLite2-City/GeoLite2-City.mmdb");
           try {
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
             try {
