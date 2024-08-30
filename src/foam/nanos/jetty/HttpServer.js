@@ -243,17 +243,6 @@ foam.CLASS({
         handler.setAttribute("X", getX());
         handler.setAttribute("httpServer", this);
 
-        // Install an ImageServlet
-        if ( getImageDirs().length() > 0 ) {
-          if ( getIsResourceStorage() ) {
-            ServletHolder imgServ = handler.getServletHandler().addServletWithMapping("foam.nanos.servlet.ResourceImageServlet", "/images/*");
-            imgServ.setInitParameter("paths", getImageDirs());
-          } else {
-            ServletHolder imgServ = handler.getServletHandler().addServletWithMapping("foam.nanos.servlet.ImageServlet", "/images/*");
-            imgServ.setInitParameter("paths", getImageDirs());
-          }
-        }
-
         for ( foam.nanos.servlet.ServletMapping mapping : getServletMappings() ) {
           ServletHolder holder;
 
@@ -262,18 +251,17 @@ foam.CLASS({
             handler.getServletHandler().addServletWithMapping(holder, mapping.getPathSpec());
           } else {
             holder = handler.getServletHandler().addServletWithMapping(mapping.getClassName(), mapping.getPathSpec());
+            if ( mapping.getClassName().contains("ImageServlet") &&
+                 getImageDirs().length() > 0 ) {
+              holder.setInitParameter("paths", getImageDirs());
+            }
           }
 
           Map<String, String> params = mapping.getInitParameters();
           for ( Map.Entry<String, String> entry : params.entrySet() ) {
             holder.setInitParameter(entry.getKey().toString(), (String) entry.getValue().toString());
           }
-          // java.util.Iterator iter = mapping.getInitParameters().keySet().iterator();
 
-          // while ( iter.hasNext() ) {
-          //   String key = (String) iter.next();
-          //   holder.setInitParameter(key, ((String)mapping.getInitParameters().get(key)));
-          // }
           if ( getIsResourceStorage() ) {
             holder.setInitParameter("isResourceStorage", "true");
           }
