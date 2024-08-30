@@ -128,6 +128,15 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
+      name: 'disableSNIForHostnames',
+      factory: function() {
+        return [
+          'localhost'
+        ];
+      }
+    },
+    {
+      class: 'StringArray',
       name: 'excludedGzipPaths',
       documentation: 'Jetty style paths to exclude from gzipping: https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/gzip/GzipHandler.html#addExcludedPaths(java.lang.String...)',
       javaFactory: 'return new String[] { "^.*/manifest.json", "^.*/logo.svg", "^.*/favicon*" };' // java regex format
@@ -491,11 +500,11 @@ foam.CLASS({
           HttpConfiguration config = new HttpConfiguration();
 
           SecureRequestCustomizer src = new SecureRequestCustomizer();
-          if ( getAllowSNIDisable() ) {
-            String hostname = System.getProperty("hostname");
-            if ( hostname != null &&
-                 hostname.indexOf(".") < 0 ) {
+          String hostname = System.getProperty("hostname");
+          for ( String name : getDisableSNIForHostnames() ) {
+            if ( name.equals(hostname) ) {
               src.setSniHostCheck(false);
+              break;
             }
           }
           config.addCustomizer(src);
