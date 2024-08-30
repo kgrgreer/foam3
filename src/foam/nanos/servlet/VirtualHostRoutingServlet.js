@@ -24,6 +24,8 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.PrintWriter',
     'java.util.HashMap',
+    'java.util.Map',
+    'java.util.Map.Entry',
     'jakarta.servlet.http.HttpServletRequest',
     'jakarta.servlet.http.HttpServletResponse',
     'jakarta.servlet.ServletConfig',
@@ -52,6 +54,10 @@ foam.CLASS({
       class: 'String',
       name: 'controller',
       value: 'foam.nanos.controller.ApplicationController'
+    },
+    {
+      class: 'Map',
+      name: 'headerParameters'
     }
   ],
 
@@ -117,36 +123,7 @@ foam.CLASS({
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( server.getIsResourceStorage() ) {
-          // jar file deployment
-          out.println("<script async fetchpriority='high' language='javascript' type='text/javascript'>");
-            out.println("var self = this;");
-            out.println("fetch('/foam-bin-"+appConfig.getVersion()+".gz').then(resp => {");
-              out.println("resp.blob().then(cs => {");
-                out.println("let ds = cs.stream().pipeThrough(new DecompressionStream('gzip'));");
-                // out.println("new Response(ds).text().then(text => {");
-                //   out.println("with ( this ) { eval(text); }");
-                out.println("new Response(ds).blob().then(blob => {");
-                  out.println("var objectURL = URL.createObjectURL(blob);");
-                  out.println("var sc = document.createElement('script');");
-                  out.println("sc.setAttribute('async', '');");
-                  out.println("sc.setAttribute('src', objectURL);");
-                  out.println("sc.setAttribute('type', 'text/javascript');");
-                  out.println("sc.setAttribute('flags', document.currentScript?.getAttribute('flags'))");
-                  // out.println("if ( !document._write ) document._write = document.write;");
-                  // out.println("document.write = function (str) {");
-                  //   out.println("document.head.innerHTML += str;");
-                  // out.println("};");
-                  out.println("document.head.appendChild(sc);");
-                  // out.println("if ( sc.complete ) document.write = document._write;");
-                  // out.println("else sc.onload = function() {");
-                  //  out.println("/* Goes to the end of the run queue so that the script */");
-                  //  out.println("/* is guaranteed to run before this code */");
-                  //  out.println("setTimeout( function() { document.write = document._write; }, 0);");
-                 // out.println("};");
-                out.println("});");
-              out.println("});");
-            out.println("});");
-          out.println("</script>");
+          out.println("<script async fetchpriority='high' language='javascript' type='text/javascript' src='/foam-bin-"+appConfig.getVersion()+".js' ></script>");
         } else {
           // development
           out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
@@ -237,6 +214,11 @@ foam.CLASS({
 
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        Map<String, String> params = getHeaderParameters();
+        for ( Map.Entry<String, String> entry : params.entrySet() ) {
+          ((HttpServletResponse) response).setHeader(entry.getKey().toString(), (String) entry.getValue().toString());
+        }
 
         PrintWriter out = response.getWriter();
         out.println("<!DOCTYPE>");
