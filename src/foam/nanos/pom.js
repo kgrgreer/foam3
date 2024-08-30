@@ -489,7 +489,7 @@ foam.POM({
     { name: "http/Format",                                                                flags: "js|java" },
     { name: "http/HttpParameters",                                                        flags: "js|java" },
     { name: "http/HttpVersion",                                                           flags: "js|java" },
-   { name: "http/ProxyWebAgent",                                                         flags: "js|java" },
+    { name: "http/ProxyWebAgent",                                                         flags: "js|java" },
     { name: "http/WebAgent",                                                              flags: "js|java" },
     { name: "http/SendErrorHandler",                                                      flags: "js|java" },
     { name: "http/test/DIGBroadcastWebAgentTest",                                      flags: "js|java" },
