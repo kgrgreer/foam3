@@ -282,8 +282,8 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
   function copy(foambin) { copyFile('./' + foambin, webroot + '/' + foambin); }
   copy(`foam-bin-${VERSION}.js`);
   copy(`foam-bin-${VERSION}-1.js`);
-  copy(`foam-bin-${VERSION}.gz`);
-  copy(`foam-bin-${VERSION}-1.gz`);
+  copy(`foam-bin-${VERSION}.js.gz`);
+  copy(`foam-bin-${VERSION}-1.js.gz`);
 });
 
 

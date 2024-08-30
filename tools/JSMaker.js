@@ -131,7 +131,7 @@ if ( ! foam.flags.skipStage1 ) {
     foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
   } else {
     window.setTimeout(() =>
-      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.gz'}]),{timeout:15000}),
+      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000}),
       2000);
   }
 }
@@ -146,10 +146,10 @@ if ( ! foam.flags.skipStage1 ) {
     console.log('[JS] Writing', filename + '.js');
     fs_.writeFileSync(filename + '.js', code);
   // } else {
-    console.log('[JS] Writing', filename + '.gz');
+    console.log('[JS] Writing', filename + '.js.gz');
     zlib_.gzip(code, (err, buffer) => {
       if ( ! err ) {
-        fs_.writeFileSync(filename + '.gz', buffer);
+        fs_.writeFileSync(filename + '.js.gz', buffer);
       } else {
         console.error(err);
       }
