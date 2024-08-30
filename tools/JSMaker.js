@@ -51,11 +51,16 @@ exports.end = function() {
     if ( l.endsWith('pom.js') ) return;
     try {
       l = path_.resolve(__dirname, l);
-      if ( X.stage === '0' ? ! foam.excluded[l] : foam.excluded[l] ) {
-//        console.log('***** IN:', l);
+      if ( X.stage === undefined ) {
         files[l] = fs_.readFileSync(l, "utf8");
       } else {
-//        console.log('***** EX:', l);
+        var stage = foam.stages[l] ?? foam.defaultStage;
+        if ( X.stage == stage ) {
+//          console.log('***** IN stage:', X.stage,' *** file:', l);
+          files[l] = fs_.readFileSync(l, "utf8");
+        } else {
+//          console.log('***** EX stage:', X.stage, stage, ' *** file:', l);
+        }
       }
     } catch (x) {
       // console.log('********************************* Unexpected Error: ', x);
@@ -81,7 +86,7 @@ exports.end = function() {
       mangle:   false,
       output:   {
         semicolons: false,
-        preamble: `// Generated: ${new Date()}\n\n${license}\n` + (X.stage === '0' ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
+        preamble: `// Generated: ${new Date()}\n\n${license}\n` + ((! X.stage) ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
       }
     }).code;
 
@@ -123,6 +128,7 @@ exports.end = function() {
     return version ? `foam-bin-${version}${stage}` : `foam-bin{$stage}`;
   }
 
+  // TODO: check for next stage(s)
   if ( X.stage === '0' ) {
     code += `
 if ( ! foam.flags.skipStage1 ) {
