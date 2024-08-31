@@ -11,21 +11,12 @@ foam.INTERFACE({
     {
       name: 'submit',
       type: 'Void',
-      args: [
-        { name: 'x',           type: 'Context' },
-        { name: 'agent',       type: 'foam.core.ContextAgent' },
-        { name: 'description', type: 'String' }
-      ]
+      args: 'Context x, foam.core.ContextAgent agent, String description'
     },
     {
       name: 'schedule',
       type: 'Void',
-      args: [
-        { name: 'x',           type: 'Context' },
-        { name: 'agent',       type: 'foam.core.ContextAgent' },
-        { name: 'key',         type: 'String' },
-        { name: 'delay',       type: 'long' }
-      ]
+      args: 'Context x, foam.core.ContextAgent agent, String description, long delay'
     }
   ]
 });
