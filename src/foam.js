@@ -8,6 +8,8 @@
   var scripts = '';
   var FILES = [];
   var foam = globalThis.foam = Object.assign({
+    defaultStage: 0,
+    stages: {},
     FILES: FILES,
     CUR_FILES: FILES,
     isServer: false,
@@ -120,7 +122,6 @@
     },
     flags:       {},
     loaded:      {},
-    excluded:    {},
     seen:        function(fn) {
       if ( foam.loaded[fn] ) {
         console.warn(`Duplicated load of '${fn}'`);
@@ -210,10 +211,17 @@
         });
       }
 
-      pom.exclude && pom.exclude.forEach(f => {
-        var path = foam.cwd + '/' + f + ".js";
-        foam.excluded[path] = true;
-      });
+      if ( pom.defaultStage != undefined ) {
+        foam.defaultStage = pom.defaultStage;
+      }
+      if ( pom.stages ) {
+        for ( var stage in pom.stages ) {
+          pom.stages[stage].forEach(f => {
+            var path = foam.cwd + '/' + f + ".js";
+            foam.stages[path] = stage;
+          });
+        }
+      }
 
       // TODO: requireModule vs requireFile -> require
       (foam.loadModules || loadFiles)(pom.projects, true);
