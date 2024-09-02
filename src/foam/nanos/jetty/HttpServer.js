@@ -260,7 +260,7 @@ foam.CLASS({
             handler.getServletHandler().addServletWithMapping(holder, mapping.getPathSpec());
           } else {
             holder = handler.getServletHandler().addServletWithMapping(mapping.getClassName(), mapping.getPathSpec());
-            if ( mapping.getClassName().contains("ImageServlet") &&
+            if ( foam.nanos.servlet.ImageServlet.class.getName().equals(mapping.getClassName()) &&
                  getImageDirs().length() > 0 ) {
               holder.setInitParameter("paths", getImageDirs());
             }
