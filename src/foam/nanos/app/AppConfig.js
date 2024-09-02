@@ -11,7 +11,6 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
-    'jakarta.servlet.http.HttpServletRequest',
     'org.eclipse.jetty.server.Request'
   ],
 
