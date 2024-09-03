@@ -16,6 +16,7 @@ of .java source files.
 ### name
 
 ### vendorId
+Optional property which is used as the Maven GroupID when generating a Maven POM. If not specified, then the name: property is used instead.
 
 ### version
 
