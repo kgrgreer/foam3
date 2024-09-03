@@ -99,7 +99,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'disableSNIHostCheck',
       documentation: 'Server Name Indication (SNI) enforces a match between hostname and TLS certificate domains, and does not allow localhost or self-sign certificates.  When true, enable test for development hostnames - localhost and other domain names without a TLD.',
-      value: false
+      value: true
     },
     {
       class: 'Boolean',
