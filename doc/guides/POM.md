@@ -82,10 +82,10 @@ List of source files to be loaded.
 #### flags
 
 ```
-flags: "java"   		same as   flags: [ "java" ]
-flags: "java|web" 	same as   flags: [ "java", "web" ]
+flags: "java"       same as   flags: [ "java" ]
+flags: "java|web"   same as   flags: [ "java", "web" ]
 
-flags: "web&debug" 	same as
+flags: "web&debug"  same as
 predicate: () => foam.flags.web && foam.flags.debug;
 
 Can combine | and &:
