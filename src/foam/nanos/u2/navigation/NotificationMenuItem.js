@@ -98,7 +98,8 @@ foam.CLASS({
 
   constants: [
     { name: 'BELL_IMAGE', value: 'images/bell.png' },
-    { name: 'MENU_ID',    value: 'notifications' }
+    { name: 'MENU_ID',    value: 'notifications' },
+    { name: 'INITIAL_DELAY', value: 10000 }
   ],
 
   messages: [
@@ -108,9 +109,11 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
-      this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
-      this.onDAOUpdate();
+      setTimeout(() => {
+        this.onDetach(this.myNotificationDAO.on.sub(this.onDAOUpdate));
+        this.onDetach(this.subject.user$.dot('id').sub(this.onDAOUpdate));
+        this.onDAOUpdate();
+      }, this.INITIAL_DELAY);
       var self = this;
       this.addClass()
         .addClass('icon-container')

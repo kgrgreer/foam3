@@ -474,6 +474,7 @@ foam.CLASS({
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
 
+        self.subToNotifications();
         let ret = await self.initMenu();
         if ( ret ) return;
 
