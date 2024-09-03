@@ -16,9 +16,10 @@ of .java source files.
 ### name
 
 ### vendorId
-Optional property which is used as the Maven GroupID when generating a Maven POM. If not specified, then the name: property is used instead.
+Optional property which is used as the Maven <groupId> when generating a Maven POM. If not specified, then the name: property is used instead.
 
 ### version
+Optional property which is used as the Maven <version> when generating a Maven POM. Is also used as part of the filename when creating foam-bin JS files.
 
 ### licenses
 Specify license(s) to be included in the packaged JS binaries.
