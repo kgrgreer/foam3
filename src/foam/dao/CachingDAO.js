@@ -74,17 +74,14 @@ foam.CLASS({
       forwards: [ 'find_', 'select_' ],
       expression: function(src) {
         var cache = this.cache;
-        var delay = this.pollingInterval;
-        // The PromisedDAO resolves as our delegate when the cache is ready to use
+        // The PromisedDAO resolves as our delegatec when the cache is ready to use
         return this.PromisedDAO.create({
-          promise: new Promise((res) => 
-            setTimeout(async () => {
-              var a = await src.select();
-              await cache.removeAll();
-              a.array.forEach(o => cache.put(o));
-              res(cache);
-            }, delay)
-          )
+          promise: (async function() {
+            var a = await src.select();
+            await cache.removeAll();
+            a.array.forEach(o => cache.put(o));
+            return cache;
+          })()
         });
       }
     },
