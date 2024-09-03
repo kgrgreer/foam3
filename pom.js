@@ -18,9 +18,6 @@ foam.POM({
       { name: 'src/io/c9/ace/pom' },
       { name: 'webroot/pom' }
     ],
-    webroot: [
-      'favicon'
-    ],
     javaDependencies: [
       'com.authy:authy-java:1.1.0',
       'com.google.api-client:google-api-client:1.22.0',

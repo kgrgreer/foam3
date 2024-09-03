@@ -146,13 +146,13 @@ foam.CLASS({
 
       // default favicon
       if ( headConfig == null || ! headConfig.containsKey("customFavIcon") || customFavIconFailed ) {
-        out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/favicon/apple-touch-icon.png\\">");
-        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"32x32\\" href=\\"/favicon/favicon-32x32.png\\">");
-        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"16x16\\" href=\\"/favicon/favicon-16x16.png\\">");
-        out.println("<link rel=\\"manifest\\" href=\\"/favicon/manifest.json\\">");
-        out.println("<link rel=\\"mask-icon\\" href=\\"/favicon/safari-pinned-tab.svg\\" color=\\"#406dea\\">");
-        out.println("<link rel=\\"shortcut icon\\" href=\\"/favicon/favicon.ico\\">");
-        out.println("<meta name=\\"msapplication-config\\" content=\\"/favicon/browserconfig.xml\\">");
+        out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/images/apple-touch-icon.png\\">");
+        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"32x32\\" href=\\"/images/favicon-32x32.png\\">");
+        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"16x16\\" href=\\"/images/favicon-16x16.png\\">");
+        out.println("<link rel=\\"manifest\\" href=\\"/images/manifest.json\\">");
+        out.println("<link rel=\\"mask-icon\\" href=\\"/images/safari-pinned-tab.svg\\" color=\\"#406dea\\">");
+        out.println("<link rel=\\"shortcut icon\\" href=\\"/images/favicon.ico\\">");
+        out.println("<meta name=\\"msapplication-config\\" content=\\"/images/browserconfig.xml\\">");
         out.println("<meta name=\\"theme-color\\" content=\\"#ffffff\\">");
       }
 
