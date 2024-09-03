@@ -92,7 +92,7 @@ foam.CLASS({
           };
         });
       }
-    },
+    }
   ],
 
   methods: [
@@ -103,12 +103,16 @@ foam.CLASS({
     function serialize(obj) {
       return foam.json.Storage.objectify(obj);
     },
+
     function serializeId(id) {
       return this.of.ID.toJSON(id);
     },
 
     function withStore(mode, fn) {
       return this.withStore_(mode, fn);
+      /*
+      Unused experimental code to queue multiple updates as one transaction.
+
       if ( mode !== 'readwrite' ) return this.withStore_(mode, fn);
 
       var self = this;
@@ -128,6 +132,7 @@ foam.CLASS({
         // Diminishing returns after 10000 per batch
         if ( this.q_.length == 10000 ) this.q_ = undefined;
       }
+      */
     },
 
     function withStore_(mode, fn) {
