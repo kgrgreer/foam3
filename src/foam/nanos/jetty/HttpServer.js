@@ -97,9 +97,9 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'allowSNIDisable',
+      name: 'disableSNIHostCheck',
       documentation: 'Server Name Indication (SNI) enforces a match between hostname and TLS certificate domains, and does not allow localhost or self-sign certificates.  When true, enable test for development hostnames - localhost and other domain names without a TLD.',
-      value: true
+      value: false
     },
     {
       class: 'Boolean',
@@ -500,13 +500,7 @@ foam.CLASS({
           HttpConfiguration config = new HttpConfiguration();
 
           SecureRequestCustomizer src = new SecureRequestCustomizer();
-          String hostname = System.getProperty("hostname");
-          for ( String name : getDisableSNIForHostnames() ) {
-            if ( name.equals(hostname) ) {
-              src.setSniHostCheck(false);
-              break;
-            }
-          }
+          src.setSniHostCheck(!getDisableSNIHostCheck());
           config.addCustomizer(src);
 
           SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
