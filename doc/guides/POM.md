@@ -41,7 +41,32 @@ licenses: [
 ]
 ```
 
-### excludes
+### stages
+Stages provides information about which source files should appear in each stage
+of JS loading. If a file does not appear in stages:, then it defaults to the stage
+specified by defaultStage:, which itself defaults to 0 if not specified.
+The first stage to be loaded is stage 0 and is stored in the file named foam-bin-version.js.
+Later stages are named foam-bin-version-stage.js.
+The first 0 stage should contain all sources needed during your initial screen.
+The second 1 stage should contain sources likely to be needed.
+Later stages should include test or debug code, or code very unlikely to be needed.
+The use of stages is optional, but restricting your 0'th stage to only essential
+files helps with startup time.
+
+Ex.
+```
+  defaultStage: 0, // redundant
+  stages: {
+    1: [
+      "foam3/src/foam/u2/wizard/pom",
+      "foam3/src/foam/graphics/CView",
+      "foam3/src/foam/u2/AllViews"
+    ],
+    2: [
+      "foam3/src/foam/core/debug"
+    ]
+  }
+```
 
 ### projects
 
@@ -115,9 +140,17 @@ foam.POM({
       console.log('---------- my versions', JAR_OUT);
     }
   ],
-  excludes: [
-    'Something.java'
-  ],
+  defaultStage: 0, // redundant
+  stages: {
+    1: [
+      "foam3/src/foam/u2/wizard/pom",
+      "foam3/src/foam/graphics/CView",
+      "foam3/src/foam/u2/AllViews"
+    ],
+    2: [
+      "foam3/src/foam/core/debug"
+    ]
+  },
   files: [
     { name: "acme.app.Foo", flags: "js" },
     { name: "acme.app.Bar", flags: "js|java" },
