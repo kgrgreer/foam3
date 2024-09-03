@@ -92,7 +92,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'appLink',
-      value: 'https://www.apple.com/lae/ios/app-store/',
+      documentation: 'Link to Apple App Store for the app',
       visibility: 'HIDDEN'
     },
     {
@@ -104,6 +104,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'externalUrl'
+    },
+    {
+      class: 'String',
+      documentation: 'Used to identify the app to Google for Google Sign In support',
+      name: 'googleSignInClientId'
     }
   ],
 

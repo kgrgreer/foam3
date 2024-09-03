@@ -6,6 +6,9 @@ p({
   "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
   "serviceScript": """
     auth = new foam.nanos.auth.UserAndGroupAuthService(x);
+    auth = new foam.nanos.auth.JWTAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.EnabledCheckAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -194,9 +197,11 @@ p({
   "name":"languageDAO",
   "lazy":false,
   "serve":true,
+  "authenticate": false,
   "serviceScript":`
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("language"))
       .setAuthorize(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("languages")
@@ -429,6 +434,25 @@ p({
           "service/userQueryService"
         }
       }
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "jwkDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.JWK.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setPermissioned(true)
+      .setJournalName("jwks")
+      .build();
+  """,
+  "client":"""
+    {
+      "of":"foam.nanos.auth.JWK"
     }
   """
 })

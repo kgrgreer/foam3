@@ -45,7 +45,7 @@ foam.CLASS({
             EQ(User.SPID, getSuperSpid())));
 
         x = x.put("localUserUserDAO", userDAO);
-        return getDelegate().getUser(x, identifier, password);
+        return getDelegate().getUser(x, identifier);
       `
     }
   ]

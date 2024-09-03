@@ -15,6 +15,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'appConfig',
     'ctrl',
     'emailVerificationService',
     'logAnalyticEvent',
@@ -273,6 +274,29 @@ foam.CLASS({
           // TODO: Add functionality to push to sign up if the user identifier doesnt exist
           this.notifyUser(undefined, this.ERROR_MSG2, this.LogLevel.ERROR);
         }
+      }
+    },
+    {
+      name: 'signInWithGoogle',
+      label: 'Sign in With Google',
+      section: 'footerSection',
+      isAvailable: function(showAction, appConfig$googleSignInClientId) { return showAction && !!appConfig$googleSignInClientId; },
+      code: function(X) {
+        // TODO: Validate nonce
+        var nonce = crypto.randomUUID();
+
+        var reqParams = {
+          response_type: 'id_token',
+          client_id: this.appConfig.googleSignInClientId,
+          scope: 'openid email',
+          redirect_uri: location.origin,
+          nonce: nonce
+        }
+
+        var uri = 'https://accounts.google.com/o/oauth2/v2/auth'
+
+        // Could also run this in a separate popup window as a separate webapp, but this works for now
+        window.location = uri + '?' + Object.entries(reqParams).map(v => v.map(p => encodeURIComponent(p)).join('=')).join('&')
       }
     },
     {
