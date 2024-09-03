@@ -532,7 +532,6 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
     if ( LOG_LEVEL ) {
       JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
       logLevelLower = `${LOG_LEVEL}`.toLowerCase();
-      JAVA_OPTS = ` -Dorg.eclipse.jetty.server.handler.gzip.LEVEL=${LOG_LEVEL} ${JAVA_OPTS}`;
     }
     JAVA_OPTS = ` -Dorg.slf4j.simpleLogger.defaultLogLevel=${logLevelLower} ${JAVA_OPTS}`;
 

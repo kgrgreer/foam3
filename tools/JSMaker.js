@@ -145,20 +145,17 @@ if ( ! foam.flags.skipStage1 ) {
   }
   // Put each Model on its own line
   // not needed with the semicolons: false options set above
-//  code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
+  // code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = fn(X.stage);
-  // if ( X.stage !== '0' ) {
-    console.log('[JS] Writing', filename + '.js');
-    fs_.writeFileSync(filename + '.js', code);
-  // } else {
-    console.log('[JS] Writing', filename + '.js.gz');
-    zlib_.gzip(code, (err, buffer) => {
-      if ( ! err ) {
-        fs_.writeFileSync(filename + '.js.gz', buffer);
-      } else {
-        console.error(err);
-      }
-    });
-  //}
+  console.log('[JS] Writing', filename + '.js');
+  fs_.writeFileSync(filename + '.js', code);
+  console.log('[JS] Writing', filename + '.js.gz');
+  zlib_.gzip(code, (err, buffer) => {
+    if ( ! err ) {
+      fs_.writeFileSync(filename + '.js.gz', buffer);
+    } else {
+      console.error(err);
+    }
+  });
 }
