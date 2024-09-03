@@ -71,8 +71,13 @@ Ex.
 ```
 
 ### projects
+List of sub-projects / POM's to be recursively loaded. Sub-projects are loaded before files:.
+If you need a sub-project to be loaded after some files, then either move those files
+to another sub-project which is listed before the dependent POM, or else you can list
+a POM in the files section in the required position.
 
 ### files
+List of source files to be loaded.
 
 #### flags
 
@@ -91,7 +96,7 @@ flags: "java|web&debug"   (& is higher precedence)
 
 A predicate can be supplied which should return true if the file is to be loaded.
 This is useful for conditionally loading polyfills or for implementing logic more complex
-can be specified with & and | alone.
+than can be specified with & and | alone.
 
 ### javaDependencies
 
@@ -106,7 +111,15 @@ existing tasks and defining before and after tasks.
 
 Like adding a JSLib Axiom. Is read by POM() in foam.js in development mode and by the VirtualHostRoutingServlet when running from foam-bin.js.
 TODO: Add support to VirtualHostRoutingServlet for loading JSLibs.
-
+Warning: May be removed in famour of just using JSLib axioms in your models.
+Ex.:
+```
+axioms: [
+  foam.u2.JsLib.create({src: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js'})
+]
+```
+The advantage of using the JsLib axiom is that it defers the loading of the library until
+the component that uses it is created.
 
 ## Example
 
@@ -153,21 +166,23 @@ foam.POM({
       "foam3/src/foam/core/debug"
     ]
   },
-  files: [
-    { name: "acme.app.Foo", flags: "js" },
-    { name: "acme.app.Bar", flags: "js|java" },
-    { name: "acme.app.Demo", flags: "demo&ava" },
-  ],
   projects: [
     { name: 'acme/src/somepackage/pom' },
     { name: 'acme/src/someotherpackage/pom' },
+  ],
+  files: [
+    { name: "acme.app.Foo",  flags: "js" },
+    { name: "acme.app.Bar",  flags: "js|java" },
+    { name: "acme.app.Demo", flags: "demo&ava" },
   ],
   javaDependencies: [
     'commons-net:commons-net:3.6',
     'xerces:xercesImpl:2.12.0'
   ],
   JSLibs: [
-    'https://cdn.somecompany.com/link/v2/stable/lib.js'
+    'https://cdn.somecompany.com/link/v2/stable/lib.js',
+    { name: 'https://acme.com/link/v3/stable/lib.js', defer: true },
+    { name: 'https://somewhere.com/v4/stable/lib.js', async: true }
   ]
 });
 ```
