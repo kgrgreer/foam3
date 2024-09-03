@@ -20,6 +20,26 @@ of .java source files.
 ### version
 
 ### licenses
+Specify license(s) to be included in the packaged JS binaries.
+All licenses from sub-projects are included, with duplicates removed.
+
+```javascript
+licenses: `
+  [2023] Acme Corporation
+  All Rights Reserved.
+`,
+Or
+licenses: [
+  `
+  [2023] Acme Corporation
+  All Rights Reserved.
+`,
+`
+  [2023] Our Authors
+  All Rights Reserved.
+`
+]
+```
 
 ### excludes
 
