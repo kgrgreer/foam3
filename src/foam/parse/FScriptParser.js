@@ -15,8 +15,6 @@ foam.CLASS({
     { class: 'FObjectProperty', of: 'foam.nanos.auth.Address', name: 'address' }
   ]
 });
-*/
-
 
 foam.CLASS({
   package: 'foam.parse',
@@ -25,6 +23,8 @@ foam.CLASS({
     'city', 'province'
   ]
 });
+
+*/
 
 
 foam.CLASS({
