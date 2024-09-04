@@ -36,8 +36,8 @@ foam.CLASS({
   listeners: [
     {
       name: 'autoSave',
-      isIdled: true,
-      delay: 1500,
+      // Does not need idled or merged as the wizardlet data sub already does this
+      // isIdled: true,
       code: function(wizardlet) {
         wizardlet.save({ reloadData: wizardlet.reloadOnAutoSave });
       }
