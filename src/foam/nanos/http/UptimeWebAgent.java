@@ -8,7 +8,7 @@ package foam.nanos.http;
 
 import foam.core.X;
 import foam.nanos.boot.Boot;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 public class UptimeWebAgent

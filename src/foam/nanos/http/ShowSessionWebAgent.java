@@ -9,7 +9,7 @@ package foam.nanos.http;
 import foam.core.X;
 import foam.nanos.session.Session;
 import java.io.PrintWriter;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 public class ShowSessionWebAgent
   implements WebAgent

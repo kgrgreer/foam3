@@ -19,7 +19,7 @@ import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.dig.format.*;
 import foam.nanos.http.Format;
 import java.io.PrintWriter;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * DigUtil contains static utility methods for working with Dig and Sugar.

@@ -18,8 +18,8 @@ import foam.nanos.fs.File;
 import foam.util.SafetyUtil;
 import java.io.OutputStream;
 import java.util.Base64;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 public class FileService

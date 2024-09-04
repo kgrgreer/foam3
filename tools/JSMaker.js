@@ -11,7 +11,6 @@ exports.description = 'create minified foam-bin.js distribution';
 const fs_      = require('fs');
 const path_    = require('path');
 const uglify_  = require('uglify-js');
-const zlib_    = require('zlib');
 
 const licenses = {};
 var version    = '';
@@ -149,17 +148,9 @@ if ( ! foam.flags.skipStage1 ) {
   }
   // Put each Model on its own line
   // not needed with the semicolons: false options set above
-  // code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
+//  code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = fn(X.stage);
   console.log('[JS] Writing', filename + '.js');
   fs_.writeFileSync(filename + '.js', code);
-  console.log('[JS] Writing', filename + '.js.gz');
-  zlib_.gzip(code, (err, buffer) => {
-    if ( ! err ) {
-      fs_.writeFileSync(filename + '.js.gz', buffer);
-    } else {
-      console.error(err);
-    }
-  });
 }

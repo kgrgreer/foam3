@@ -13,7 +13,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'java.net.InetAddress',
-    'jakarta.servlet.http.HttpServletRequest'
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   javaCode: `

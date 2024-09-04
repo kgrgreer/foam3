@@ -8,9 +8,9 @@ foam.INTERFACE({
   package: 'foam.nanos.servlet',
   name: 'Servlet',
 
-  documentation: 'Modelled version of jakarta.servlet.Servlet for use on Client',
+  documentation: 'Modelled version of javax.servlet.Servlet for use on Client',
 
   javaImplements: [
-    'jakarta.servlet.Servlet'
+    'javax.servlet.Servlet'
   ]
 });

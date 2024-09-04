@@ -60,9 +60,9 @@ p({
         }
       },
       {
-        "class": "foam.nanos.servlet.ServletMapping",
+        "class": "foam.nanos.servlet.ServletMapping"
         "className": "foam.nanos.servlet.ImageServlet",
-        "pathSpec": "/images/*",
+        "pathSpec": "/favicon/*",
         "initParameters": {
           "paths": "/"
         }

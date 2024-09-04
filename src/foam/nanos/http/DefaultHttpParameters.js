@@ -111,7 +111,7 @@ foam.CLASS({
   if ( value != null ) {
     return value;
   }
-  jakarta.servlet.http.HttpServletRequest req = this.getX().get(jakarta.servlet.http.HttpServletRequest.class);
+  javax.servlet.http.HttpServletRequest req = this.getX().get(javax.servlet.http.HttpServletRequest.class);
   return req.getParameter(name.toString());
   `
     },

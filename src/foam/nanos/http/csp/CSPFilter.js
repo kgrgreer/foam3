@@ -10,11 +10,11 @@ foam.CLASS({
 
   documentation: 'Content-Security-Policy servlet filter',
 
-  javaImplements: [ 'jakarta.servlet.Filter' ],
+  javaImplements: [ 'javax.servlet.Filter' ],
 
   javaImports: [
-    'jakarta.servlet.*',
-    'jakarta.servlet.http.HttpServletResponse'
+    'javax.servlet.*',
+    'javax.servlet.http.HttpServletResponse'
   ],
 
   javaCode: `

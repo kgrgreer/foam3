@@ -28,7 +28,7 @@ foam.CLASS({
     'java.io.FileInputStream',
     'java.io.IOException',
     'java.io.InputStreamReader',
-    'jakarta.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletRequest',
     'java.util.Arrays',
     'java.util.List'
   ],

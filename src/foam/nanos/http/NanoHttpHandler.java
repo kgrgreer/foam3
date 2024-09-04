@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
-import jakarta.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServlet;
 
 public class NanoHttpHandler
   extends    ContextAwareSupport

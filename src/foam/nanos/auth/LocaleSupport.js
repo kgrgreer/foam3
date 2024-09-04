@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
-    'jakarta.servlet.http.HttpServletRequest'
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   axioms: [

@@ -55,7 +55,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     'java.util.Base64',
     'java.util.List',
     'javax.net.ssl.SSLContext',
-    'jakarta.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletRequest',
   ],
 
   imports: [

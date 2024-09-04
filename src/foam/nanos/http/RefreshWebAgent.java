@@ -10,7 +10,7 @@ import foam.core.*;
 import foam.nanos.http.ProxyWebAgent;
 import foam.nanos.http.WebAgent;
 import java.io.PrintWriter;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 public class RefreshWebAgent
   extends ProxyWebAgent

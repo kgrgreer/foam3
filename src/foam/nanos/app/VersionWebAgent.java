@@ -8,7 +8,7 @@ package foam.nanos.app;
 
 import foam.core.X;
 import foam.nanos.http.WebAgent;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 /**

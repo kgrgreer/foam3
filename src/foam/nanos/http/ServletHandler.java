@@ -10,8 +10,8 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.InetSocketAddress;
 import java.util.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -193,7 +193,7 @@ public class ServletHandler
     }
 
     @Override
-    public jakarta.servlet.ServletOutputStream getOutputStream() throws IOException {
+    public javax.servlet.ServletOutputStream getOutputStream() throws IOException {
       return servletOutputStream;
     }
 

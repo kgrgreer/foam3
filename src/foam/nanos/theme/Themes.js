@@ -34,7 +34,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'foam.util.Arrays',
-    'jakarta.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletRequest',
     'org.eclipse.jetty.server.Request'
   ],
 

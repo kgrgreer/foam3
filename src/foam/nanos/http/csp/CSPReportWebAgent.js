@@ -23,7 +23,7 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.UnsupportedEncodingException',
     'java.util.Date',
-    'jakarta.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletRequest',
 
   ],
 

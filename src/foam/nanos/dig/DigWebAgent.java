@@ -17,8 +17,8 @@ import foam.nanos.logger.Loggers;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import java.io.PrintWriter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class DigWebAgent extends ContextAwareSupport
   implements WebAgent, SendErrorHandler

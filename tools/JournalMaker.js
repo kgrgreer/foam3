@@ -41,7 +41,7 @@ exports.visitFile = function(pom, f, fn) {
 
 
 exports.visitDir = function(pom, f, fn) {
-  if ( f.name === 'images' || f.name === 'favicon' ) {
+  if ( f.name === 'images' ) {
     imageDirs.push(fn);
   }
 }

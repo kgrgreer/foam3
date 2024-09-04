@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package foam.nanos.servlet;
+package foam.nanos.tomcat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Typically used to alias short paths like "/" or "/merchant" to specific services.
+ * Subdomain Router
+ * Used to route sub projects to a more easily accessible path
  */
-public class RedirectServlet
+public class SubdomainRouter
     extends HttpServlet
 {
   @Override

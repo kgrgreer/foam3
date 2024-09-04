@@ -19,8 +19,8 @@ foam.CLASS({
     'foam.nanos.http.HttpParameters',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
-    'jakarta.servlet.http.HttpServletRequest',
-    'jakarta.servlet.http.HttpServletResponse'
+    'javax.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletResponse'
   ],
 
   methods: [

@@ -11,11 +11,11 @@ foam.CLASS({
   implements: ['foam.core.ContextAware'],
   flags: ['java'],
 
-  documentation: 'Jettys InetAccessHandler only supports add',
+  documentation: 'Jettys IPAccessHandler only supports add',
 
   javaImports: [
     'foam.nanos.logger.Loggers',
-    'org.eclipse.jetty.server.handler.InetAccessHandler'
+    'org.eclipse.jetty.server.handler.IPAccessHandler'
   ],
 
   properties: [
@@ -34,9 +34,9 @@ foam.CLASS({
       javaCode: `
       IPAccess ip = (IPAccess) obj;
       if ( ip.getBlock() ) {
-         ((InetAccessHandler)getIpAccessHandler()).exclude(ip.getId());
+         ((IPAccessHandler)getIpAccessHandler()).addBlack(ip.getId());
       } else {
-         ((InetAccessHandler)getIpAccessHandler()).include(ip.getId());
+         ((IPAccessHandler)getIpAccessHandler()).addWhite(ip.getId());
       }
       `
     }
