@@ -15,8 +15,8 @@ import foam.nanos.boot.NSpecAware;
 import foam.nanos.http.WebAgent;
 import org.apache.commons.io.IOUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;

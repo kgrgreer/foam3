@@ -25,7 +25,7 @@ foam.CLASS({
     'java.io.PrintWriter',
     'java.io.StringReader',
     'java.util.List',
-    'javax.servlet.http.HttpServletResponse',
+    'jakarta.servlet.http.HttpServletResponse',
     'javax.xml.stream.XMLInputFactory',
     'javax.xml.stream.XMLStreamReader'
   ],

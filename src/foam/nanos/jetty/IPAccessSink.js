@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.nanos.logger.Loggers',
-    'org.eclipse.jetty.server.handler.IPAccessHandler'
+    'org.eclipse.jetty.server.handler.InetAccessHandler'
   ],
 
   properties: [
@@ -51,12 +51,11 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Jettys IPAccessHandler does not support remove, so have to clear and re-add',
+      documentation: 'Jettys InetAccessHandler does not support remove, so have to clear and re-add',
       name: 'clear',
       javaCode: `
       Loggers.logger(getX(), this).info("clear");
-      ((IPAccessHandler)getIpAccessHandler()).setWhite(null);
-      ((IPAccessHandler)getIpAccessHandler()).setBlack(null);
+      ((InetAccessHandler)getIpAccessHandler()).clear();
       getDao().select(new IPAccessAddSink(getIpAccessHandler()));
       `
     }

@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.mlang.predicate.Predicate',
     'java.util.ArrayList',
-    'javax.servlet.http.HttpServletRequest'
+    'jakarta.servlet.http.HttpServletRequest'
   ],
 
   properties: [

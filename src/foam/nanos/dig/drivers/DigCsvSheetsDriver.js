@@ -30,7 +30,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Arrays',
     'java.util.List',
-    'javax.servlet.http.HttpServletResponse'
+    'jakarta.servlet.http.HttpServletResponse'
   ],
 
   properties: [

@@ -61,7 +61,7 @@ foam.CLASS({
       swiftCode: 'throw FoamError("unimplemented")',
       javaCode: `
 try {
-  javax.servlet.http.HttpServletResponse resp = (javax.servlet.http.HttpServletResponse) getX().get("httpResponse");
+  jakarta.servlet.http.HttpServletResponse resp = (jakarta.servlet.http.HttpServletResponse) getX().get("httpResponse");
   resp.setContentType("application/json");
 
   java.io.PrintWriter                 writer    = resp.getWriter();

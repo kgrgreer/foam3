@@ -18,7 +18,7 @@ foam.CLASS({
   implements: ['foam.core.Serializable'],
 
   javaImports: [
-    'javax.servlet.http.HttpServletRequest',
+    'jakarta.servlet.http.HttpServletRequest',
     'java.util.List',
 
     'foam.core.X',

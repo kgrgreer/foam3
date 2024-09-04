@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.dig.DIG',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
-    'javax.servlet.http.HttpServletRequest'
+    'jakarta.servlet.http.HttpServletRequest'
   ],
 
   properties: [
