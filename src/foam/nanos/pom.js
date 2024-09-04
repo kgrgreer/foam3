@@ -260,6 +260,7 @@ foam.POM({
     { name: "medusa/MedusaEntry",                                                         flags: "js|java" },
     { name: "medusa/MedusaSupport",                                                       flags: "js|java" },
     { name: "medusa/Clusterable",                                                         flags: "js|java" },
+    { name: "medusa/ClusterableDummy",                                                    flags: "js|java" },
     { name: "menu/XRegistration",                                                         flags: "js|java" },
     { name: "menu/AbstractMenu",                                                          flags: "js|java" },
     { name: "menu/DAOMenu",                                                               flags: "js" },
