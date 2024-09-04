@@ -53,7 +53,7 @@ foam.CLASS({
         var database = storage.getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
         try {
           ret.setDbReader(new DatabaseReader.Builder(database).build());
-        } catch ( IOException e ) {
+        } catch ( Exception e ) {
           Loggers.logger(x).error("GeolocationSupport", "Failed to load location db", e);
         }
       }
