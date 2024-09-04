@@ -132,12 +132,16 @@ exports.end = function() {
   if ( X.stage === '0' ) {
     code += `
 if ( ! foam.flags.skipStage1 ) {
+  var next = () => foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
+
   if ( window.location.hash ) {
-    foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
-  } else {
+    next();
+  } else if ( globalThis.requestIdleCallback ) {
     window.setTimeout(() =>
-      window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000}),
+      window.requestIdleCallback(next, {timeout:15000}),
       2000);
+  } else {
+    window.setTimeout(next, 2000);
   }
 }
 `;
