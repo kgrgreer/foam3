@@ -15,9 +15,11 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
+    'foam.nanos.fs.ResourceStorage',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
+    'foam.util.SafetyUtil',
     'java.io.File',
     'java.io.IOException',
     'java.net.InetAddress',
@@ -36,7 +38,14 @@ foam.CLASS({
     private final static GeolocationSupport instance__ = new GeolocationSupport();
     public static GeolocationSupport instance() {
       var ret = instance__;
-      init(foam.core.XLocator.get(), ret);
+      X x = foam.core.XLocator.get();
+      X resourceStorageX = x;
+      if ( ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir")) ) {
+        resourceStorageX = x.put(Storage.class,
+          new ResourceStorage(System.getProperty("resource.journals.dir")));
+      }
+
+      init(resourceStorageX, ret);
       return ret;
     }
   `,
@@ -75,7 +84,7 @@ foam.CLASS({
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
           var ip = InetAddress.getByName(ipStr);
-          File database = x.get(Storage.class).get("GeoLite2-City/GeoLite2-City.mmdb");
+          var database = x.get(Storage.class).getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
           try {
             // REVIEW: should it keep the reference to dbReader instead of re-initializing the reader on every call to GeolocationSupport.instance()?
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
