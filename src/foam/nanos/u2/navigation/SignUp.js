@@ -20,6 +20,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'emailVerificationService',
+    'googleTagAgent',
     'logAnalyticEvent',
     'login as importedLogin',
     'login',
@@ -337,6 +338,7 @@ foam.CLASS({
           eventExtras['User ID'] = user.id;
           eventExtras['Email'] = user.email;
           this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: foam.json.stringify(eventExtras) });
+          this.googleTagAgent?.pub('userCreated');
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {

@@ -614,6 +614,7 @@ foam.POM({
     { name: "analytics/Foldable",                                                         flags: "js|java" },
     { name: "analytics/PostToWindow",                                                     flags: "web" },
     { name: "analytics/test/AnalyticEventDAOSecurityTest",                                flags: "js|java" },
+    { name: "analytics/GoogleTagAgent",                                                   flags: "web" },
     { name: "analytics/LogVisitAgent",                                                    flags: "web" },
     { name: "test/ClientEchoService",                                                     flags: "js" },
     { name: "crunch/crunchtest/FakeTestObject",                                           flags: "js|java" },

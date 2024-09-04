@@ -888,6 +888,7 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        this.__subContext__.googleTagAgent?.pub('userOnboarded');
         await this.reloadClient();
         return true;
       }
