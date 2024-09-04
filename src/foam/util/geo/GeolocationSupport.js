@@ -31,6 +31,11 @@ foam.CLASS({
       class: 'Object',
       javaType: 'CityResponse',
       name: 'cityResponse',
+    },
+    {
+      class: 'Object',
+      javaType: 'DatabaseReader',
+      name: 'dbReader'
     }
   ],
 
@@ -39,13 +44,21 @@ foam.CLASS({
     public static GeolocationSupport instance() {
       var ret = instance__;
       X x = foam.core.XLocator.get();
-      X resourceStorageX = x;
-      if ( ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir")) ) {
-        resourceStorageX = x.put(Storage.class,
-          new ResourceStorage(System.getProperty("resource.journals.dir")));
+
+      // Load database
+      if ( ret.getDbReader() == null
+        && ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir"))
+      ) {
+        var storage = new ResourceStorage(System.getProperty("resource.journals.dir"));
+        var database = storage.getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
+        try {
+          ret.setDbReader(new DatabaseReader.Builder(database).build());
+        } catch ( IOException e ) {
+          Loggers.logger(x).error("GeolocationSupport", "Failed to load location db", e);
+        }
       }
 
-      init(resourceStorageX, ret);
+      resolveLocation(x, ret);
       return ret;
     }
   `,
@@ -76,7 +89,7 @@ foam.CLASS({
 
   static: [
     {
-      name: 'init',
+      name: 'resolveLocation',
       static: true,
       visibility: 'private',
       args: 'X x, GeolocationSupport support',
@@ -84,22 +97,19 @@ foam.CLASS({
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
           var ip = InetAddress.getByName(ipStr);
-          var database = x.get(Storage.class).getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
-          try {
-            // REVIEW: should it keep the reference to dbReader instead of re-initializing the reader on every call to GeolocationSupport.instance()?
-            DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
+          if ( support.getDbReader() != null ) {
             try {
-              CityResponse response = dbReader.city(ip);
+              CityResponse response = support.getDbReader().city(ip);
               if ( response == null ) {
                 Loggers.logger(x).error("GeolocationSupport", "Cannot find location");
                 return;
               }
               support.setCityResponse(response);
+            } catch (IOException e) {
+              Loggers.logger(x).error("GeolocationSupport", "Failed reading location db", e);
             } catch (GeoIp2Exception e) {
               Loggers.logger(x).error("GeolocationSupport", "Failed getting location response", "GeoIp2Exception", e.getMessage());
             }
-          } catch (IOException e) {
-            Loggers.logger(x).error("GeolocationSupport", "Failed reading location db", "IOException", e.getMessage());
           }
         } catch (UnknownHostException e) {
           Loggers.logger(x).error("GeolocationSupport", "Failed getting ip", "UnknownHostException", e.getMessage());
