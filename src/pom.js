@@ -420,9 +420,9 @@ foam.POM({
     { name: "foam/blob/BlobStore",                                    flags: "js|java" },
     { name: "foam/blob/FdBlob",                                       flags: "java|node" },
     { name: "lib/node/json_dao",                                      flags: "node" },
-    { name: "lib/utf8",                                               flags: "js" },
+    { name: "foam/encodings/UTF8",                                    flags: "js" },
     { name: "foam/net/CIDR",                                          flags: "js|java" },
-    { name: "foam/net/test/CIDRTest",                                 flags: "js|java" },
+    { name: "foam/net/test/CIDRTest",                                 flags: "js|java" }, // &test?
     { name: "foam/net/Host",                                          flags: "js|java" },
     { name: "foam/net/Port",                                          flags: "js|java" },
     { name: "foam/net/NotConnectedException",                         flags: "js" },
