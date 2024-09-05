@@ -87,7 +87,7 @@ exports.end = function() {
       mangle:   false,
       output:   {
         semicolons: false,
-        preamble: `// Generated: ${new Date()}\n\n${license}\n` + ((! X.stage) ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
+        preamble: `// Generated: ${new Date()}\n\n${license}\n` + ((X.stage === undefined || X.stage === '0') ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
       }
     }).code;
 
