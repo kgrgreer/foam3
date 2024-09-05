@@ -123,7 +123,7 @@ foam.CLASS({
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( server.getIsResourceStorage() ) {
-          out.println("<script async fetchpriority='high' language='javascript' type='text/javascript' src='/foam-bin-"+appConfig.getVersion()+".js' ></script>");
+          out.println("<script async src='/RegisterCachingServiceWorker-"+appConfig.getVersion()+".js'></script>");
         } else {
           // development
           out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
