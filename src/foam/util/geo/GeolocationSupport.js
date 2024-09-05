@@ -15,7 +15,6 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
-    'foam.nanos.fs.ResourceStorage',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
@@ -46,11 +45,8 @@ foam.CLASS({
       X x = foam.core.XLocator.get();
 
       // Load database
-      if ( ret.getDbReader() == null
-        && ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir"))
-      ) {
-        var storage = new ResourceStorage(System.getProperty("resource.journals.dir"));
-        var database = storage.getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
+      if ( ret.getDbReader() == null ) {
+        var database = x.get(Storage.class).getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
         try {
           ret.setDbReader(new DatabaseReader.Builder(database).build());
         } catch ( Exception e ) {
