@@ -91,10 +91,12 @@ exports.end = function() {
       }
     }).code;
 
+  /*
   if ( ! code ) {
     console.log('No output for stage:', X.stage);
     return;
   }
+  */
 
   // Remove most Java and Swift Code
   code = code.replace(/(java|swift)(DefaultValue|Type|Code|Setter|Getter|Factory|PreSet|PostSet|Extends):`(\\`|[^`])*`}/gm, '}');
