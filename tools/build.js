@@ -279,7 +279,11 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 
   execSync(__dirname + `/pmake.js -makers=Webroot -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
-  function copy(foambin) { copyFile('./' + foambin, webroot + '/' + foambin); }
+  function copy(foambin) {
+    if ( fs.existsSync('./' + foambin) ) {
+      copyFile('./' + foambin, webroot + '/' + foambin);
+    }
+  }
   copy(`foam-bin-${VERSION}.js`);
   copy(`foam-bin-${VERSION}-1.js`);
   copy(`foam-bin-${VERSION}.js.gz`);
