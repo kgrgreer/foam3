@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.analytics.AnalyticEvent',
-    'foam.util.geo.GeolocationSupport',
+    'foam.net.ip.GeolocationSupport',
     'java.util.Iterator',
     'org.json.JSONException',
     'org.json.JSONObject'

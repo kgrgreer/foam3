@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.util.geo',
+  package: 'foam.net.ip',
   name: 'GeolocationSupport',
 
   documentation: 'Geolocation support methods',
