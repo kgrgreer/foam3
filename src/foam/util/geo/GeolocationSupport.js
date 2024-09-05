@@ -15,8 +15,10 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
+    'foam.net.ip.IPGeolocationInfo',
     'java.io.File',
     'java.io.IOException',
     'java.net.InetAddress',
@@ -26,8 +28,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Object',
-      javaType: 'CityResponse',
-      name: 'cityResponse',
+      javaType: 'IPGeolocationInfo',
+      name: 'ipGeolocationInfo',
     }
   ],
 
@@ -45,21 +47,21 @@ foam.CLASS({
       name: 'getCity',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getCity().getNames().get("en");
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getCity();
       `
     },
     {
       name: 'getCountry',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getCountry().getIsoCode();
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getCountry();
       `
     },
     {
       name: 'getPostalCode',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getPostal().getCode();
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getPostalCode();
       `
     }
     
@@ -74,6 +76,15 @@ foam.CLASS({
       javaCode: `
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
+          
+          // lookup ipGeolocationInfoDAO
+          var ipGeolocationInfoDAO = (DAO) x.get("ipGeolocationInfoDAO");
+          var info = (IPGeolocationInfo) ipGeolocationInfoDAO.find(ipStr);
+          if ( info != null ) {
+            support.setIpGeolocationInfo(info);
+            return;
+          }
+
           var ip = InetAddress.getByName(ipStr);
           var jrlhome = System.getenv("JOURNAL_OUT");
           File database = new File(jrlhome + "/GeoLite2-City/GeoLite2-City.mmdb");
@@ -85,7 +96,14 @@ foam.CLASS({
                 Loggers.logger(x).error("GeolocationSupport", "Cannot find location");
                 return;
               }
-              support.setCityResponse(response);
+              info = new IPGeolocationInfo.Builder(x)
+                .setCity(response.getCity().getNames().get("en"))
+                .setPostalCode(response.getPostal().getCode())
+                .setCountry(response.getCountry().getIsoCode())
+                .setIp(ipStr)
+                .build();
+              support.setIpGeolocationInfo(info);
+              ipGeolocationInfoDAO.put(info);
             } catch (GeoIp2Exception e) {
               Loggers.logger(x).error("GeolocationSupport", "Failed getting location response", "GeoIp2Exception", e.getMessage());
             }
