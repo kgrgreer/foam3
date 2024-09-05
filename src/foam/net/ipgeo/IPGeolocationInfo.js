@@ -6,7 +6,7 @@
 
 
 foam.CLASS({
-  package: 'foam.net.ip',
+  package: 'foam.net.ipgeo',
   name: 'IPGeolocationInfo',
   ids: ['ip'],
 

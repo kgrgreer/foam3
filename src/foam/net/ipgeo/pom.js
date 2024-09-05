@@ -1,5 +1,5 @@
 foam.POM({
-  name: "ip",
+  name: "ipgeo",
 
   javaDependencies: [
     'com.maxmind.geoip2:geoip2:4.2.0',

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.net.ip',
+  package: 'foam.net.ipgeo',
   name: 'GeolocationSupport',
 
   documentation: 'Geolocation support methods',
@@ -18,7 +18,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
-    'foam.net.ip.IPGeolocationInfo',
+    'foam.net.ipgeo.IPGeolocationInfo',
     'java.io.File',
     'java.io.IOException',
     'java.net.InetAddress',

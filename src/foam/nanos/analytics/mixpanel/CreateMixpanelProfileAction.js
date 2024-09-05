@@ -20,7 +20,7 @@ foam.CLASS({
     'foam.nanos.logger.Loggers',
     'foam.nanos.session.Session',
     'foam.net.IPSupport',
-    'foam.net.ip.GeolocationSupport',
+    'foam.net.ipgeo.GeolocationSupport',
     'java.io.UnsupportedEncodingException',
     'java.net.URLDecoder',
     'org.json.JSONObject'
