@@ -41,23 +41,3 @@ p({
   "saveHistory": false,
   "lifecycleState":1
 })
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"app-store-capability-grant",
-  "name":"Grant app store permission when Referral Fee capability granted",
-  "ruleGroup":"ReferralFee",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":0,
-  "after":true,
-  "predicate":{
-    "class":"foam.nanos.ruler.predicate.FScriptRulePredicate",
-    "query":'n.targetId=="net.nanopay.partner.nbp.ReferralFee"'
-  },
-  "action":{
-    "class":"foam.nanos.referral.GrantAppStoreCapabilityRuleAction"
-  },
-  "priority":100,
-  "enabled":true,
-  "lifecycleState":1
-})

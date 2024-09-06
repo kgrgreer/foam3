@@ -35,6 +35,13 @@ foam.CLASS({
     'foam.nanos.crunch.CrunchService'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'capability'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -46,7 +53,7 @@ foam.CLASS({
             CrunchService crunchService = (CrunchService) x.get("crunchService");
             User user = ucj.findSourceId(x);
 
-            crunchService.updateJunctionFor(x, "net.nanopay.partner.nbp.AppStore", null, CapabilityJunctionStatus.GRANTED, user, user);
+            crunchService.updateJunctionFor(x, getCapability(), null, CapabilityJunctionStatus.GRANTED, user, user);
 
           }
         }, "Grant AppStore capability when user get referral fee capability");
