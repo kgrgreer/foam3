@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.io.BufferedReader',
     'java.util.concurrent.atomic.AtomicInteger',
-    'foam.nanos.fs.Storage',
     'foam.nanos.fs.FileSystemStorage',
     'foam.lib.formatter.JSONFObjectFormatter',
     'foam.dao.DAO',
@@ -36,7 +35,7 @@ foam.CLASS({
       name: 'fileSize',
       javaGetter: `
         try {
-          FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+          FileSystemStorage fileSystemStorage = getX().get(FileSystemStorage.class);
           File file = fileSystemStorage.get(getFilename());
           Path path = file.toPath();
           return Files.size(path);
@@ -50,7 +49,7 @@ foam.CLASS({
       name: 'fileExist',
       javaGetter: `
         try {
-          FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+          FileSystemStorage fileSystemStorage = getX().get(FileSystemStorage.class);
           File file = fileSystemStorage.get(getFilename());
           Path path = file.toPath();
           return Files.exists(path);
@@ -64,7 +63,7 @@ foam.CLASS({
       name: 'fileLastAccessTime',
       javaGetter: `
         try {
-          FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+          FileSystemStorage fileSystemStorage = getX().get(FileSystemStorage.class);
           File file = fileSystemStorage.get(getFilename());
           Path path = file.toPath();
           BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
@@ -75,7 +74,7 @@ foam.CLASS({
       `,
       javaSetter: `
         try {
-          FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+          FileSystemStorage fileSystemStorage = getX().get(FileSystemStorage.class);
           File file = fileSystemStorage.get(getFilename());
           Path path = file.toPath();
           FileTime fileTime = FileTime.fromMillis(val);
@@ -154,7 +153,7 @@ foam.CLASS({
       args: '',
       javaCode: `
       try {
-        FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+        FileSystemStorage fileSystemStorage = getX().get(FileSystemStorage.class);
         File file = fileSystemStorage.get(getFilename());
         Path path = file.toPath();
         Files.createFile(path);
