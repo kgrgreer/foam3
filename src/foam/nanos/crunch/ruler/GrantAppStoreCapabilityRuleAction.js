@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.nanos.referral',
+  package: 'foam.nanos.crunch.ruler',
   name: 'GrantAppStoreCapabilityRuleAction',
 
   documentation: 'Grant App Store capability when referralFee userCapabilityJunction created',
