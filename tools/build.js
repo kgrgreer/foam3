@@ -91,6 +91,7 @@ var
   EXPLICIT_JOURNALS         = '',
   FS                        = 'rw',
   GEN_JAVA                  = true,
+  STAGE_JS                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
   JOURNAL_CONFIG            = '',
@@ -285,11 +286,13 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
     }
   }
   copy(`foam-bin-${VERSION}.js`);
-  copy(`foam-bin-${VERSION}-1.js`);
-  copy(`foam-bin-${VERSION}-2.js`);
   copy(`foam-bin-${VERSION}.js.gz`);
-  copy(`foam-bin-${VERSION}-1.js.gz`);
-  copy(`foam-bin-${VERSION}-2.js.gz`);
+  if ( STAGE_JS ) {
+    copy(`foam-bin-${VERSION}-1.js`);
+    copy(`foam-bin-${VERSION}-2.js`);
+    copy(`foam-bin-${VERSION}-1.js.gz`);
+    copy(`foam-bin-${VERSION}-2.js.gz`);
+  }
 });
 
 
@@ -406,9 +409,13 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=2`, { stdio: 'inherit' });
+  if ( STAGE_JS ) {
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=2`, { stdio: 'inherit' });
+  } else {
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()}`, { stdio: 'inherit' });
+  }
 });
 
 
@@ -809,6 +816,10 @@ const ARGS = {
       VERSION = args;
       info('VERSION=' + VERSION);
     } ],
+  w: [ 'Without stages. Only generate a single foam-bin file.',
+      () => {
+        STAGE_JS = false;
+      } ],
   W: [ 'PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1',
     args => { WEB_PORT = args; info('WEB_PORT=' + WEB_PORT); } ],
   x: [ 'Check dependencies for known vulnerabilities.',

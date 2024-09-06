@@ -127,7 +127,7 @@ exports.end = function() {
   code = code.replaceAll(/^\s*/gm, '');
 
   function fn(s) {
-    var stage = s == '0' ? '' : '-' + s;
+    var stage = ( s === undefined || s == '0' ) ? '' : '-' + s;
     return version ? `foam-bin-${version}${stage}` : `foam-bin{$stage}`;
   }
 
