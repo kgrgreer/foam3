@@ -46,6 +46,10 @@ foam.CLASS({
 
       // Load database
       if ( ret.getDbReader() == null ) {
+        if ( ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir")) ) {
+          x = x.put(Storage.class, new ResourceStorage(System.getProperty("resource.journals.dir")));
+        }
+
         var database = x.get(Storage.class).getInputStream("GeoLite2-City/GeoLite2-City.mmdb");
         try {
           ret.setDbReader(new DatabaseReader.Builder(database).build());
