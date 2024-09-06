@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.box.socket',
   name: 'SslContextFactory',
   documentation: 'create SSL context from resource',
-  
+
   javaImports: [
     'foam.core.X',
     'foam.nanos.logger.PrefixLogger',
@@ -21,10 +21,9 @@ foam.CLASS({
     'java.net.Socket',
     'java.security.*',
     'java.security.cert.CertificateException',
-    'java.util.Arrays',
-    'foam.nanos.fs.ResourceStorage'
+    'java.util.Arrays'
   ],
-  
+
   properties: [
     {
       class: 'String',
@@ -73,7 +72,7 @@ foam.CLASS({
       value: false
     }
   ],
-  
+
   methods: [
     {
       name: 'getKeyManagers',
@@ -92,7 +91,7 @@ foam.CLASS({
         KeyManager[] keyManagers = null;
         KeyManagerFactory factory = null;
         KeyStore keyStore = null;
-        
+
         try {
           keyStore = getKeystore(storePath, storePass);
           factory = KeyManagerFactory.getInstance("SunX509");
@@ -128,7 +127,7 @@ foam.CLASS({
         TrustManager[] trustManagers = null;
         TrustManagerFactory factory = null;
         KeyStore keyStore = null;
-        
+
         try {
           keyStore = getKeystore(storePath, storePass);
           factory = TrustManagerFactory.getInstance("SunX509");
@@ -160,10 +159,8 @@ foam.CLASS({
       javaCode: `
         KeyStore keyStore = null;
         try {
-          X resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
-            new ResourceStorage(System.getProperty("resource.journals.dir")));
-          InputStream is = resourceStorageX.get(foam.nanos.fs.Storage.class).getInputStream(storePath);
-          
+          InputStream is = getX().get(foam.nanos.fs.Storage.class).getInputStream(storePath);
+
           keyStore = KeyStore.getInstance(getStoreType());
           keyStore.load(is, storePass == null ? null : storePass.toCharArray());
           is.close();

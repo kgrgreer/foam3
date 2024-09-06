@@ -19,7 +19,7 @@ foam.CLASS({
     'java.io.IOException',
     'org.apache.commons.codec.binary.Hex',
     'org.apache.commons.io.IOUtils',
-    'foam.nanos.fs.Storage'
+    'foam.nanos.fs.FileSystemStorage'
   ],
 
   constants: [
@@ -115,7 +115,7 @@ foam.CLASS({
         }
       },
       javaCode: `
-        File parsed = x.get(Storage.class).get(path);
+        File parsed = x.get(FileSystemStorage.class).get(path);
         if ( parsed.exists() && parsed.isDirectory() ) {
           return;
         }
@@ -159,7 +159,7 @@ foam.CLASS({
         });
       },
       javaCode: `String path = this.tmp_ + File.separator + (name++);
-File file = x.get(Storage.class).get(path);
+File file = x.get(FileSystemStorage.class).get(path);
 if ( file.exists() ) {
   return allocateTmp(x, name);
 }
@@ -252,7 +252,7 @@ try ( HashingOutputStream os = new HashingOutputStream(new FileOutputStream(tmp)
   os.close();
 
   String digest = new String(Hex.encodeHexString(os.digest()));
-  File dest = x.get(Storage.class).get(getDirectory() + File.separator + digest);
+  File dest = x.get(FileSystemStorage.class).get(getDirectory() + File.separator + digest);
   if ( ! tmp.renameTo(dest) ) {
     // File already exists, so remove tmp version
     try {
@@ -312,7 +312,7 @@ try ( HashingOutputStream os = new HashingOutputStream(new FileOutputStream(tmp)
     throw new RuntimeException("Invalid file name");
   }
 
-  File file = x.get(Storage.class).get(getDirectory() + File.separator + id);
+  File file = x.get(FileSystemStorage.class).get(getDirectory() + File.separator + id);
   if ( ! file.exists() ) {
     throw new RuntimeException("File does not exist");
   }

@@ -45,12 +45,12 @@ p({"class":"foam.nanos.test.Test","id":"FoldAndReduceTest","status":2,"output":"
 p({"class":"foam.nanos.test.Test","id":"FoldAndReduceTest","lastRun":"2019-06-17T19:39:12.053Z","lastDuration":57,"status":1,"output":"SUCCESS: Stock DAO has expected number of items\n\nHourly data validation\nSUCCESS: Hourly DAO has expected number of items\nSUCCESS: [] fields are set incorrectly\nSUCCESS: [] fields are set incorrectly\nSUCCESS: [] fields are set incorrectly\n\nDaily data validation\nSUCCESS: Daily DAO has expected number of items\nSUCCESS: [] fields are set incorrectly\nSUCCESS: [] fields are set incorrectly\n\nWeekly data validation\nSUCCESS: weekly DAO has expected number of items\nSUCCESS: [] fields are set incorrectly\nDone\n"})
 p({
   "class":"foam.nanos.test.Test",
-  "id":"Multi Line Output",
+  "id":"MultiLineOutput",
   "status":2,
   "code":
   """
-    home = System.getProperty("JOURNAL_HOME");
-    file = java.io.File.createTempFile(\"temp\", null, new java.io.File(home));
+    storage = x.get(foam.nanos.fs.FileSystemStorage.class);
+    file = java.io.File.createTempFile(\"temp\", null, storage.get("."));
     file.deleteOnExit();
     outputter = new foam.lib.json.Outputter(x, file);
     string = \"\\\\\\t line1 \\n   \\\\n  \\n line2 \\n line3 \\\" \\\\ \";
@@ -61,7 +61,9 @@ p({
     outputter.setMultiLine(true);
     outputter.outputJSONJFObject((foam.core.FObject) user);
     outputter.flush();
-    filejournal = new foam.dao.FileJournal(x);
+
+    storageX = x.put(foam.nanos.fs.Storage.class, storage);
+    filejournal = new foam.dao.FileJournal(storageX);
     filejournal.setMultiLineOutput(true);
     filejournal.setFilename(file.getName());
     firstread = filejournal.getEntry(filejournal.getReader());
@@ -119,7 +121,8 @@ factories_ = new HashMap();
 
 context = x;
 
-root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage("target/journals"));
+root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.ResourceStorage());
+root_.put(foam.nanos.fs.FileSystemStorage.class, new foam.nanos.fs.FileSystemStorage("target/journals"));
 obj = new foam.lib.parse.ErrorReportingPStreamFactory(null,null);
 obj.EmptyListErps();
 
@@ -130,7 +133,7 @@ obj.EmptyListErps();
     nSpecDAO_ = x.get("nSpecDAO");
     nspecs = nSpecDAO_.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink()).getArray();
 
-    for ( Object object : nspecs ) {
+    for ( object : nspecs ) {
       dao_ = x.get(object.id);
       if ( dao_ instanceof DAO ) {
         do {

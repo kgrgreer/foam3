@@ -26,7 +26,6 @@ In this current implementation setDelegate must be called last.`,
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.dao.WriteOnlyF3FileJournal',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.fs.ResourceStorage',
     'foam.nanos.ndiff.NDiffJournal'
   ],
 
@@ -94,33 +93,27 @@ In this current implementation setDelegate must be called last.`,
       javaFactory: 'return new MDAO(getOf());',
       javaPostSet: `
             var delegate = val;
+
             // Runtime Journal
+            X runtimeStorageX = getX().put(foam.nanos.fs.Storage.class, getX().get(foam.nanos.fs.FileSystemStorage.class));
             if ( getCluster() ) {
-              setJournal(new NullJournal.Builder(getX()).build());
+              setJournal(new NullJournal.Builder(runtimeStorageX).build());
             } else {
               if ( getReadOnly() ) {
-                setJournal(new ReadOnlyF3FileJournal.Builder(getX())
+                setJournal(new ReadOnlyF3FileJournal.Builder(runtimeStorageX)
                   .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(true)
                   .setSyncReplay(getSyncReplay())
                   .build());
               } else {
-                setJournal(new F3FileJournal.Builder(getX())
+                setJournal(new F3FileJournal.Builder(runtimeStorageX)
                   .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(false)
                   .setSyncReplay(getSyncReplay())
                   .build());
               }
-            }
-
-            /* Create a composite journal of repo journal and runtime journal
-              and load them all.*/
-            X resourceStorageX = getX();
-            if ( System.getProperty("resource.journals.dir") != null ) {
-              resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
-                  new ResourceStorage(System.getProperty("resource.journals.dir")));
             }
 
           Journal[] journals = null;
@@ -130,7 +123,7 @@ In this current implementation setDelegate must be called last.`,
             };
           } else {
             // Repo Journal
-            F3FileJournal journal0 = new ReadOnlyF3FileJournal.Builder(resourceStorageX)
+            F3FileJournal journal0 = new ReadOnlyF3FileJournal.Builder(getX())
               .setFilename(getFilename() + ".0")
               .build();
 
@@ -144,7 +137,7 @@ In this current implementation setDelegate must be called last.`,
               nSpecName = nspec.getName();
               journals = new Journal[] {
                 // replays the repo journal
-                new NDiffJournal.Builder(resourceStorageX)
+                new NDiffJournal.Builder(getX())
                 .setDelegate(journal0)
                 .setNSpecName(nSpecName)
                 .setRuntimeOrigin(false)
@@ -164,19 +157,18 @@ In this current implementation setDelegate must be called last.`,
               };
             }
           }
-            final Journal jnl = new CompositeJournal.Builder(resourceStorageX)
+            final Journal jnl = new CompositeJournal.Builder(getX())
               .setDelegates(journals)
               .build();
- 
+
             if ( getWaitReplay() ) {
-              jnl.replay(resourceStorageX, delegate);
+              jnl.replay(getX(), delegate);
             } else {
-              final X y = resourceStorageX;
               final String name = getFilename();
               Agency agency = (Agency) getX().get("threadPool");
               agency.submit(getX(), new ContextAgent() {
                 public void execute(X x) {
-                  jnl.replay(y, delegate);
+                  jnl.replay(getX(), delegate);
                 }
               }, this.getClass().getSimpleName()+"-replay");
             }

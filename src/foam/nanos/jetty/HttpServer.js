@@ -460,9 +460,7 @@ foam.CLASS({
             keyStore = KeyStore.getInstance("JKS");
 
             if ( System.getProperty("resource.journals.dir") != null ) {
-              X resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
-                new ResourceStorage(System.getProperty("resource.journals.dir")));
-              InputStream is = resourceStorageX.get(foam.nanos.fs.Storage.class).getInputStream(getKeystoreFileName());
+              InputStream is = getX().get(foam.nanos.fs.Storage.class).getInputStream(getKeystoreFileName());
               if ( is != null ) {
                 baos = new ByteArrayOutputStream();
 

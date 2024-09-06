@@ -12,6 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.F3FileJournal',
     'foam.dao.FileRollCmd',
+    'foam.nanos.fs.FileSystemStorage',
     'foam.nanos.fs.Storage',
     'foam.util.SafetyUtil',
     'java.io.File',
@@ -22,6 +23,7 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
+      x = x.put(Storage.class, x.get(FileSystemStorage.class));
       setX(x);
 
       // create File, write to it, roll it.
