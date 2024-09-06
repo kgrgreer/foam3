@@ -23,7 +23,6 @@ foam.CLASS({
     'googleTagAgent',
     'logAnalyticEvent',
     'login as importedLogin',
-    'login',
     'loginSuccess',
     'loginView?',
     'notify?',
@@ -312,7 +311,7 @@ foam.CLASS({
         var urlParams = new URLSearchParams(window.location.search);
         var eventExtras = {
           utm_source: urlParams.get('utm_source'),
-          utm_medium: urlParams.get('utm_medium'), 
+          utm_medium: urlParams.get('utm_medium'),
           utm_campaign: urlParams.get('utm_campaign')
         }
         this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED', extra: foam.json.stringify(eventExtras) });
