@@ -286,8 +286,10 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
   }
   copy(`foam-bin-${VERSION}.js`);
   copy(`foam-bin-${VERSION}-1.js`);
+  copy(`foam-bin-${VERSION}-2.js`);
   copy(`foam-bin-${VERSION}.js.gz`);
   copy(`foam-bin-${VERSION}-1.js.gz`);
+  copy(`foam-bin-${VERSION}-2.js.gz`);
 });
 
 
@@ -406,6 +408,7 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
   execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
   execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=2`, { stdio: 'inherit' });
 });
 
 

@@ -44,6 +44,7 @@ exports.end = function() {
   var loaded = Object.keys(globalThis.foam.loaded);
   loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 
+  // console.log(X.stage, foam.stages);
   // Build array of files for Uglify
   loaded.forEach(l => {
     // POM's can be included in files: so just ignore
@@ -57,10 +58,10 @@ exports.end = function() {
       } else {
         var stage = foam.stages[l] ?? foam.defaultStage;
         if ( X.stage == stage ) {
-//          console.log('***** IN stage:', X.stage,' *** file:', l);
+          // console.log('***** IN stage:', X.stage,' *** file:', l);
           files[l] = fs_.readFileSync(l, "utf8");
         } else {
-//          console.log('***** EX stage:', X.stage, stage, ' *** file:', l);
+          // console.log('***** EX stage:', X.stage, stage, ' *** file:', l);
         }
       }
     } catch (x) {
@@ -91,14 +92,11 @@ exports.end = function() {
       }
     }).code;
 
-  /*
   if ( ! code ) {
     console.log('No output for stage:', X.stage);
-    return;
+//    return;
+    code = '';
   }
-  */
-
-  code = code || '';
 
   // Remove most Java and Swift Code
   code = code.replace(/(java|swift)(DefaultValue|Type|Code|Setter|Getter|Factory|PreSet|PostSet|Extends):`(\\`|[^`])*`}/gm, '}');
@@ -133,7 +131,6 @@ exports.end = function() {
     return version ? `foam-bin-${version}${stage}` : `foam-bin{$stage}`;
   }
 
-  // TODO: check for next stage(s)
   if ( X.stage === '0' ) {
     code += `
 if ( ! foam.flags.skipStage1 ) {
@@ -150,7 +147,14 @@ if ( ! foam.flags.skipStage1 ) {
   }
 }
 `;
+  } else if ( X.stage === '1' ) {
+    code += `
+if ( ! foam.flags.skipStage2 ) {
+  foam.loadJSLibs([{name:'/${fn('2')}.js'}]);
+}
+`;
   }
+
   // Put each Model on its own line
   // not needed with the semicolons: false options set above
   // code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
