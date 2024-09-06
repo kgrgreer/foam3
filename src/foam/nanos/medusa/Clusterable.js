@@ -20,19 +20,3 @@ foam.INTERFACE({
     }
   ]
 });
-
-foam.CLASS({
-  package: 'foam.nanos.medusa',
-  name: 'ClusterableDummy',
-
-  properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'Boolean',
-      name: 'clusterable'
-    }
-  ]
-});

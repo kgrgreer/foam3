@@ -15,8 +15,8 @@ import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * ProxyWebAgent that checks for a sessionId in the query parameters of the request,

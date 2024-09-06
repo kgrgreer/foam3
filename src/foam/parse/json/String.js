@@ -112,16 +112,3 @@ foam.CLASS({
     }
   ]
 });
-
-
-foam.CLASS({
-  package: 'foam.parse.json',
-  name: 'Parsers',
-  extends: 'foam.parse.Parsers',
-
-  methods: [
-    function string() {
-      return foam.parse.json.String.create();
-    }
-  ]
-});

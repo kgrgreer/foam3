@@ -474,6 +474,7 @@ foam.CLASS({
         self.onDetach(self.__subContext__.cssTokenOverrideService?.cacheUpdated.sub(self.reloadStyles));
 
 
+        self.subToNotifications();
         let ret = await self.initMenu();
         if ( ret ) return;
 
@@ -747,7 +748,7 @@ foam.CLASS({
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
       if ( defaultMenu ) {
-        await this.routeTo(defaultMenu.id ?? '');
+        await this.pushMenu_('', defaultMenu.id ?? '');
         return defaultMenu;
       }
       await this.fetchSubject();
@@ -887,6 +888,7 @@ foam.CLASS({
       } else {
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.PURGE_CMD);
         this.__subContext__.menuDAO.cmd_(this, foam.dao.DAO.RESET_CMD);
+        this.__subContext__.googleTagAgent?.pub('userOnboarded');
         await this.reloadClient();
         return true;
       }

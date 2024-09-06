@@ -46,7 +46,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'javax.servlet.http.HttpServletRequest'
+    'jakarta.servlet.http.HttpServletRequest'
   ],
 
   imports: [

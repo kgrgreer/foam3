@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.util.geo',
+  package: 'foam.net.ipgeo',
   name: 'GeolocationSupport',
 
   documentation: 'Geolocation support methods',
@@ -15,10 +15,12 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.fs.ResourceStorage',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
+    'foam.net.ipgeo.IPGeolocationInfo',
     'foam.util.SafetyUtil',
     'java.io.File',
     'java.io.IOException',
@@ -29,8 +31,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Object',
-      javaType: 'CityResponse',
-      name: 'cityResponse',
+      javaType: 'IPGeolocationInfo',
+      name: 'ipGeolocationInfo'
     },
     {
       class: 'Object',
@@ -69,21 +71,21 @@ foam.CLASS({
       name: 'getCity',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getCity().getNames().get("en");
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getCity();
       `
     },
     {
       name: 'getCountry',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getCountry().getIsoCode();
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getCountry();
       `
     },
     {
       name: 'getPostalCode',
       javaType: 'String',
       javaCode: `
-        return getCityResponse() == null ? "" : getCityResponse().getPostal().getCode();
+        return getIpGeolocationInfo() == null ? "" : getIpGeolocationInfo().getPostalCode();
       `
     }
   ],
@@ -97,6 +99,15 @@ foam.CLASS({
       javaCode: `
         try {
           var ipStr = IPSupport.instance().getRemoteIp(x);
+
+          // lookup ipGeolocationInfoDAO
+          var ipGeolocationInfoDAO = (DAO) x.get("ipGeolocationInfoDAO");
+          var info = (IPGeolocationInfo) ipGeolocationInfoDAO.find(ipStr);
+          if ( info != null ) {
+            support.setIpGeolocationInfo(info);
+            return;
+          }
+
           var ip = InetAddress.getByName(ipStr);
           if ( support.getDbReader() != null ) {
             try {
@@ -105,7 +116,14 @@ foam.CLASS({
                 Loggers.logger(x).error("GeolocationSupport", "Cannot find location");
                 return;
               }
-              support.setCityResponse(response);
+              info = new IPGeolocationInfo.Builder(x)
+                .setCity(response.getCity().getNames().get("en"))
+                .setPostalCode(response.getPostal().getCode())
+                .setCountry(response.getCountry().getIsoCode())
+                .setIp(ipStr)
+                .build();
+              support.setIpGeolocationInfo(info);
+              ipGeolocationInfoDAO.put(info);
             } catch (IOException e) {
               Loggers.logger(x).error("GeolocationSupport", "Failed reading location db", e);
             } catch (GeoIp2Exception e) {

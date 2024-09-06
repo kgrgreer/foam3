@@ -648,6 +648,7 @@ foam.CLASS({
           wizardlet,
           eventType: this.WizardEventType.WIZARDLET_SAVE
         }));
+        this.googleTagAgent?.pub('wizardEvent');
       } catch (e) {
         // report analytics error without interrupting flow
         console.error('analyticsAgent.put failed', e);

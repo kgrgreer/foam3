@@ -27,7 +27,7 @@ import foam.util.SafetyUtil;
 import org.eclipse.jetty.server.Request;
 
 import java.util.StringTokenizer;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This Box decorator adds session support to boxes.

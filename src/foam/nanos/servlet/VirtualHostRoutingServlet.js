@@ -24,11 +24,14 @@ foam.CLASS({
     'java.io.IOException',
     'java.io.PrintWriter',
     'java.util.HashMap',
-    'javax.servlet.http.HttpServletRequest',
-    'javax.servlet.ServletConfig',
-    'javax.servlet.ServletException',
-    'javax.servlet.ServletRequest',
-    'javax.servlet.ServletResponse'
+    'java.util.Map',
+    'java.util.Map.Entry',
+    'jakarta.servlet.http.HttpServletRequest',
+    'jakarta.servlet.http.HttpServletResponse',
+    'jakarta.servlet.ServletConfig',
+    'jakarta.servlet.ServletException',
+    'jakarta.servlet.ServletRequest',
+    'jakarta.servlet.ServletResponse'
   ],
 
   properties: [
@@ -51,6 +54,10 @@ foam.CLASS({
       class: 'String',
       name: 'controller',
       value: 'foam.nanos.controller.ApplicationController'
+    },
+    {
+      class: 'Map',
+      name: 'headerParameters'
     }
   ],
 
@@ -116,10 +123,7 @@ foam.CLASS({
       // default scripts
       if ( headConfig == null || ! headConfig.containsKey("customScripts") || customScriptsFailed ) {
         if ( server.getIsResourceStorage() ) {
-          // jar file deployment
-          out.print("<script async fetchpriority='high' language=\\"javascript\\" src=\\"/foam-bin-");
-          out.print(appConfig.getVersion());
-          out.println(".js\\"></script>");
+          out.println("<script async fetchpriority='high' language='javascript' type='text/javascript' src='/foam-bin-"+appConfig.getVersion()+".js' ></script>");
         } else {
           // development
           out.println("<script language=\\"javascript\\" src=\\"" + appConfig.getFoamUrl() + "\\" project=\\"" + appConfig.getPom() + "\\"></script>");
@@ -142,13 +146,13 @@ foam.CLASS({
 
       // default favicon
       if ( headConfig == null || ! headConfig.containsKey("customFavIcon") || customFavIconFailed ) {
-        out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/favicon/apple-touch-icon.png\\">");
-        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"32x32\\" href=\\"/favicon/favicon-32x32.png\\">");
-        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"16x16\\" href=\\"/favicon/favicon-16x16.png\\">");
-        out.println("<link rel=\\"manifest\\" href=\\"/favicon/manifest.json\\">");
-        out.println("<link rel=\\"mask-icon\\" href=\\"/favicon/safari-pinned-tab.svg\\" color=\\"#406dea\\">");
-        out.println("<link rel=\\"shortcut icon\\" href=\\"/favicon/favicon.ico\\">");
-        out.println("<meta name=\\"msapplication-config\\" content=\\"/favicon/browserconfig.xml\\">");
+        out.println("<link rel=\\"apple-touch-icon\\" sizes=\\"180x180\\" href=\\"/images/apple-touch-icon.png\\">");
+        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"32x32\\" href=\\"/images/favicon-32x32.png\\">");
+        out.println("<link rel=\\"icon\\" type=\\"image/png\\" sizes=\\"16x16\\" href=\\"/images/favicon-16x16.png\\">");
+        out.println("<link rel=\\"manifest\\" href=\\"/images/manifest.json\\">");
+        out.println("<link rel=\\"mask-icon\\" href=\\"/images/safari-pinned-tab.svg\\" color=\\"#406dea\\">");
+        out.println("<link rel=\\"shortcut icon\\" href=\\"/images/favicon.ico\\">");
+        out.println("<meta name=\\"msapplication-config\\" content=\\"/images/browserconfig.xml\\">");
         out.println("<meta name=\\"theme-color\\" content=\\"#ffffff\\">");
       }
 
@@ -210,6 +214,11 @@ foam.CLASS({
 
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        Map<String, String> params = getHeaderParameters();
+        for ( Map.Entry<String, String> entry : params.entrySet() ) {
+          ((HttpServletResponse) response).setHeader(entry.getKey().toString(), (String) entry.getValue().toString());
+        }
 
         PrintWriter out = response.getWriter();
         out.println("<!DOCTYPE>");

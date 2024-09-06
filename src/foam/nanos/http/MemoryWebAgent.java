@@ -10,7 +10,7 @@ import foam.core.*;
 import java.io.PrintWriter;
 import java.lang.management.MemoryUsage;
 import java.lang.Runtime;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** Display memory usage statistics. **/
 public class MemoryWebAgent

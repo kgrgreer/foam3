@@ -15,7 +15,8 @@ foam.CLASS({
   imports: [
     'developerMode',
     'handleEvent?',
-    'analyticsAgent?'
+    'analyticsAgent?',
+    'googleTagAgent?'
   ],
 
   exports: ['as data'],

@@ -3,7 +3,7 @@
  * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
+/*
 foam.CLASS({
   package: 'foam.parse',
   name: 'Test',
@@ -16,7 +16,6 @@ foam.CLASS({
   ]
 });
 
-
 foam.CLASS({
   package: 'foam.parse',
   name: 'Address',
@@ -25,6 +24,8 @@ foam.CLASS({
   ]
 });
 
+*/
+
 
 foam.CLASS({
   package: 'foam.parse',
@@ -32,6 +33,7 @@ foam.CLASS({
 
   documentation: 'A simple scripting language.',
 
+/*
   static: [
     function test__() {
       var fs = foam.parse.FScriptParser.create({of: foam.parse.Test});
@@ -132,6 +134,7 @@ foam.CLASS({
       test('firstName=="Kevin"||id==42');
     }
   ],
+  */
 
   mixins: [ 'foam.mlang.Expressions' ],
 

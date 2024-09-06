@@ -1,0 +1,15 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ipGeolocationInfoDAO",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.net.ipgeo.IPGeolocationInfo.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ipGeolocationInfo")
+      .setAuthorize(false)
+      .setPm(true)
+      .build()
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.net.ipgeo.IPGeolocationInfo.IP });
+  """
+})
