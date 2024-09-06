@@ -113,7 +113,7 @@ foam.CLASS({
             try {
               CityResponse response = support.getDbReader().city(ip);
               if ( response == null ) {
-                Loggers.logger(x).error("GeolocationSupport", "Cannot find location");
+                Loggers.logger(x).warning("GeolocationSupport", "Cannot find location", ip);
                 return;
               }
               info = new IPGeolocationInfo.Builder(x)
