@@ -15,6 +15,7 @@ foam.CLASS({
     'com.maxmind.geoip2.exception.GeoIp2Exception',
     'com.maxmind.geoip2.model.CityResponse',
     'foam.core.X',
+    'foam.nanos.fs.ResourceStorage',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Loggers',
     'foam.net.IPSupport',
