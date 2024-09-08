@@ -260,15 +260,16 @@ foam.CLASS({
             handler.getServletHandler().addServletWithMapping(holder, mapping.getPathSpec());
           } else {
             holder = handler.getServletHandler().addServletWithMapping(mapping.getClassName(), mapping.getPathSpec());
-            if ( foam.nanos.servlet.ImageServlet.class.getName().equals(mapping.getClassName()) &&
-                 getImageDirs().length() > 0 ) {
-              holder.setInitParameter("paths", getImageDirs());
-            }
           }
 
           Map<String, String> params = mapping.getInitParameters();
           for ( Map.Entry<String, String> entry : params.entrySet() ) {
             holder.setInitParameter(entry.getKey().toString(), (String) entry.getValue().toString());
+          }
+          
+          if ( foam.nanos.servlet.ImageServlet.class.getName().equals(mapping.getClassName()) && 
+              getImageDirs().length() > 0 ) {
+            holder.setInitParameter("paths", getImageDirs());
           }
 
           if ( getIsResourceStorage() ) {
