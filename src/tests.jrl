@@ -98,8 +98,6 @@ p({
   class:"foam.nanos.test.Test",
   id:"jrlCheckTest",
   code:"""
-import java.util.HashMap;
-
 import foam.core.MutableX;
 import foam.core.ProxyX;
 import foam.dao.ArraySink;
@@ -109,45 +107,37 @@ import foam.dao.ProxyDAO;
 import foam.dao.java.JDAO;
 import foam.mlang.MLang;
 import foam.nanos.boot.NSpec;
-
-import foam.lib.parse.ErrorReportingPStream;
+import foam.lib.parse.ErrorReportingPStreamFactory;
 
 import static foam.mlang.MLang.*;
-import foam.dao.ArraySink;
 
-context = null;
 root_      = new MutableX();
-factories_ = new HashMap();
+jrlStorage = new foam.nanos.fs.FileSystemStorage("build/journals");
 
-context = x;
+root_.put(foam.nanos.fs.Storage.class, jrlStorage);
+root_.put(foam.nanos.fs.FileSystemStorage.class, jrlStorage);
 
-root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.ResourceStorage());
-root_.put(foam.nanos.fs.FileSystemStorage.class, new foam.nanos.fs.FileSystemStorage("target/journals"));
-obj = new foam.lib.parse.ErrorReportingPStreamFactory(null,null);
-obj.EmptyListErps();
+// Reset parsing error list when starting up the nSpecDAO on Boot
+ErrorReportingPStreamFactory.getListErps().clear();
 
-//1 find the list of all jrl
-//2 load one by one
-//3 throw exception
-
+  // 1. find the served DAOs to walk through its jrl entries
     nSpecDAO_ = x.get("nSpecDAO");
     nspecs = nSpecDAO_.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink()).getArray();
 
-    for ( object : nspecs ) {
-      dao_ = x.get(object.id);
+    for ( nspec : nspecs ) {
+      dao_ = x.get(nspec.id);
       if ( dao_ instanceof DAO ) {
         do {
           if ( dao_ instanceof EasyDAO ) {
             sc = dao_.getJournalName();
-            //read the jrl
             if ( ! "".equals(sc) ) {
               try {
-                print(sc);
+  // 2. replay the dao's .0 jrl file eg. users.0, groups.0
                 serviceDAO_ = new JDAO(((foam.core.ProxyX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), sc);
                 break;
               } catch (Exception e) {
-                test(false, sc + " has an error");
-                e.printStackTrace();
+                // JDAO initialization failed
+                test(false, nspec.id + " has an error");
               }
             }
           }
@@ -156,13 +146,19 @@ obj.EmptyListErps();
       }
     }
 
-    lst = obj.getListErps();
+  // 3. show parsing errors from JDAOs replay
+    jrlParsingErrList = ErrorReportingPStreamFactory.getListErps();
+    dedupFilename = new java.util.HashSet();
 
-    if ( lst.size() == 0 ) test(true,"jrl are fine");
-
-    for ( int i = 0; i < lst.size(); i++ ) {
-      print(lst.get(i));
-      test(false, lst.get(i).substring(0, lst.get(i).indexOf(";"))+" jrl file error");
+    if ( jrlParsingErrList.size() == 0 ) {
+      test(true, "jrl are fine");
+    } else {
+      for ( int i = 0; i < jrlParsingErrList.size(); i++ ) {
+        filename = jrlParsingErrList.get(i).substring(0, jrlParsingErrList.get(i).indexOf(";"));
+        if ( dedupFilename.add(filename) ) {
+          test(false, filename + " jrl file error");
+        }
+      }
     }
   """
 })
