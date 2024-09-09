@@ -91,6 +91,7 @@ var
   EXPLICIT_JOURNALS         = '',
   FS                        = 'rw',
   GEN_JAVA                  = true,
+  STAGE_JS                  = true,
   HOST_NAME                 = 'localhost',
   INSTANCE                  = 'localhost',
   JOURNAL_CONFIG            = '',
@@ -279,9 +280,19 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 
   execSync(__dirname + `/pmake.js -makers=Webroot -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
-  function copy(foambin) { copyFile('./' + foambin, webroot + '/' + foambin); }
+  function copy(foambin) {
+    if ( fs.existsSync('./' + foambin) ) {
+      copyFile('./' + foambin, webroot + '/' + foambin);
+    }
+  }
   copy(`foam-bin-${VERSION}.js`);
-  copy(`foam-bin-${VERSION}-1.js`);
+  copy(`foam-bin-${VERSION}.js.gz`);
+  if ( STAGE_JS ) {
+    copy(`foam-bin-${VERSION}-1.js`);
+    copy(`foam-bin-${VERSION}-2.js`);
+    copy(`foam-bin-${VERSION}-1.js.gz`);
+    copy(`foam-bin-${VERSION}-2.js.gz`);
+  }
 });
 
 
@@ -398,8 +409,13 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
-  execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+  if ( STAGE_JS ) {
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=2`, { stdio: 'inherit' });
+  } else {
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()}`, { stdio: 'inherit' });
+  }
 });
 
 
@@ -415,17 +431,35 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 11' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
   execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
   try {
     execSync(`mvn dependency-check:check -DfailBuildOnCVSS=${score || VULNERABILITY_CHECK_SCORE}`, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
+});
+
+task('Show JAR structure.', [], function showJARStructure(value) {
+  execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency:tree `, { stdio: 'inherit' });
+  } catch (_) {
+    // maven build error will be output to the console, no need to throw
+  }
+});
+
+task('Get Maven java sources.', [], function mavenGetSources(value) {
+  execSync(`node foam3/tools/pmake.js -makers=Maven -pom=${pom()}`, { stdio: 'inherit' });
+  try {
+    execSync(`mvn dependency:sources -DincludeArtifactIds=${value} `, { stdio: 'inherit' });
   } catch (_) {
     // maven build error will be output to the console, no need to throw
   }
@@ -489,12 +523,15 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
 
     // process.chdir(PROJECT_HOME);
 
-    JAVA_OPTS += ` -Dhostname=${HOST_NAME}`;
+    if ( HOST_NAME ) {
+      info('HOST_NAME=${HOST_NAME}');
+      JAVA_OPTS += ` -Dhostname=${HOST_NAME} ${JAVA_OPTS}`;
+    }
 
     if ( PROFILER ) {
 
     } else if ( DEBUG ) {
-      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`
+      JAVA_OPTS = `-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND ? 'y' : 'n'},address=*:${DEBUG_PORT} ${JAVA_OPTS}`;
     }
 
     if ( WEB_PORT ) {
@@ -505,11 +542,14 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
 
     CLASSPATH = `${BUILD_DIR}/lib/\*:${BUILD_DIR}/classes/java/main`;
 
-    if ( TEST || BENCHMARK ) {
-      if ( LOG_LEVEL ) {
-        JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
-      }
+    logLevelLower = 'info';
+    if ( LOG_LEVEL ) {
+      JAVA_OPTS = ` -Dlog.level=${LOG_LEVEL} ${JAVA_OPTS}`;
+      logLevelLower = `${LOG_LEVEL}`.toLowerCase();
+    }
+    JAVA_OPTS = ` -Dorg.slf4j.simpleLogger.defaultLogLevel=${logLevelLower} ${JAVA_OPTS}`;
 
+    if ( TEST || BENCHMARK ) {
       JAVA_OPTS += ' -Dresource.journals.dir=journals';
       JAVA_OPTS += ' -DRES_JAR_HOME=' + JAR_OUT;
 
@@ -776,6 +816,10 @@ const ARGS = {
       VERSION = args;
       info('VERSION=' + VERSION);
     } ],
+  w: [ 'Without stages. Only generate a single foam-bin file.',
+      () => {
+        STAGE_JS = false;
+      } ],
   W: [ 'PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1',
     args => { WEB_PORT = args; info('WEB_PORT=' + WEB_PORT); } ],
   x: [ 'Check dependencies for known vulnerabilities.',
@@ -911,4 +955,4 @@ quit(0);
 
 // IS_AWS, IS_MAC, IS_LINUX are no longer used
 // a note on 'c' clean on the current build.
-// if you issue 'c', and compilation fails, you need clean again to get a succesful deployment.
+// if you issue 'c', and compilation fails, you need clean again to get a succesful deployment

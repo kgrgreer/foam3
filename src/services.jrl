@@ -53,12 +53,16 @@ p({
         "class":"foam.nanos.servlet.ServletMapping",
         "className":"org.eclipse.jetty.servlet.DefaultServlet",
         "pathSpec":"/*",
-        "initParameters":{"dirAllowed":"true","redirectWelcome":"true"}
+        "initParameters":{
+          "cacheControl": "public,max-age=2419200",
+          "dirAllowed":"true",
+          "redirectWelcome":"true"
+        }
       },
       {
-        "class": "foam.nanos.servlet.ServletMapping"
+        "class": "foam.nanos.servlet.ServletMapping",
         "className": "foam.nanos.servlet.ImageServlet",
-        "pathSpec": "/favicon/*",
+        "pathSpec": "/images/*",
         "initParameters": {
           "paths": "/"
         }

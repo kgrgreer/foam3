@@ -16,24 +16,76 @@ of .java source files.
 ### name
 
 ### vendorId
+Optional property which is used as the Maven <groupId> when generating a Maven POM. If not specified, then the name: property is used instead.
 
 ### version
+Optional property which is used as the Maven <version> when generating a Maven POM. Is also used as part of the filename when creating foam-bin JS files.
 
 ### licenses
+Specify license(s) to be included in the packaged JS binaries.
+All licenses from sub-projects are included, with duplicates removed.
 
-### excludes
+```javascript
+licenses: `
+  [2023] Acme Corporation
+  All Rights Reserved.
+`,
+Or
+licenses: [
+  `
+  [2023] Acme Corporation
+  All Rights Reserved.
+`,
+`
+  [2023] Our Authors
+  All Rights Reserved.
+`
+]
+```
+
+### stages
+Stages provides information about which source files should appear in each stage
+of JS loading. If a file does not appear in stages:, then it defaults to the stage
+specified by defaultStage:, which itself defaults to 0 if not specified.
+The first stage to be loaded is stage 0 and is stored in the file named foam-bin-version.js.
+Later stages are named foam-bin-version-stage.js.
+The first 0 stage should contain all sources needed during your initial screen.
+The second 1 stage should contain sources likely to be needed.
+Later stages should include test or debug code, or code very unlikely to be needed.
+The use of stages is optional, but restricting your 0'th stage to only essential
+files helps with startup time.
+
+Ex.
+```
+  defaultStage: 0, // redundant
+  stages: {
+    1: [
+      "foam3/src/foam/u2/wizard/pom",
+      "foam3/src/foam/graphics/CView",
+      "foam3/src/foam/u2/AllViews"
+    ],
+    2: [
+      "foam3/src/foam/core/debug"
+    ]
+  }
+```
 
 ### projects
+List of sub-projects / POM's to be recursively loaded. Sub-projects are loaded before files:.
+If you need a sub-project to be loaded after some files, then either move those files
+to another sub-project which is listed before the dependent POM, or else you can list
+a POM in the files section in the required position.
 
 ### files
+List of source files to be loaded.
 
 #### flags
 
 ```
-flags: "java"   		same as   flags: [ "java" ]
-flags: "java|web" 	same as   flags: [ "java", "web" ]
+flags: "java"       same as   flags: [ "java" ]
+flags: "java|web"   same as   flags: [ "java", "web" ]
 
-flags: "web&debug" 	same as
+flags: "web&debug"  same as
 predicate: () => foam.flags.web && foam.flags.debug;
 
 Can combine | and &:
@@ -44,7 +96,7 @@ flags: "java|web&debug"   (& is higher precedence)
 
 A predicate can be supplied which should return true if the file is to be loaded.
 This is useful for conditionally loading polyfills or for implementing logic more complex
-can be specified with & and | alone.
+than can be specified with & and | alone.
 
 ### javaDependencies
 
@@ -59,7 +111,15 @@ existing tasks and defining before and after tasks.
 
 Like adding a JSLib Axiom. Is read by POM() in foam.js in development mode and by the VirtualHostRoutingServlet when running from foam-bin.js.
 TODO: Add support to VirtualHostRoutingServlet for loading JSLibs.
-
+Warning: May be removed in famour of just using JSLib axioms in your models.
+Ex.:
+```
+axioms: [
+  foam.u2.JsLib.create({src: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js'})
+]
+```
+The advantage of using the JsLib axiom is that it defers the loading of the library until
+the component that uses it is created.
 
 ## Example
 
@@ -95,24 +155,34 @@ foam.POM({
       console.log('---------- my versions', JAR_OUT);
     }
   ],
-  excludes: [
-    'Something.java'
-  ],
-  files: [
-    { name: "acme.app.Foo", flags: "js" },
-    { name: "acme.app.Bar", flags: "js|java" },
-    { name: "acme.app.Demo", flags: "demo&ava" },
-  ],
+  defaultStage: 0, // redundant
+  stages: {
+    1: [
+      "foam3/src/foam/u2/wizard/pom",
+      "foam3/src/foam/graphics/CView",
+      "foam3/src/foam/u2/AllViews"
+    ],
+    2: [
+      "foam3/src/foam/core/debug"
+    ]
+  },
   projects: [
     { name: 'acme/src/somepackage/pom' },
     { name: 'acme/src/someotherpackage/pom' },
+  ],
+  files: [
+    { name: "acme.app.Foo",  flags: "js" },
+    { name: "acme.app.Bar",  flags: "js|java" },
+    { name: "acme.app.Demo", flags: "demo&ava" },
   ],
   javaDependencies: [
     'commons-net:commons-net:3.6',
     'xerces:xercesImpl:2.12.0'
   ],
   JSLibs: [
-    'https://cdn.somecompany.com/link/v2/stable/lib.js'
+    'https://cdn.somecompany.com/link/v2/stable/lib.js',
+    { name: 'https://acme.com/link/v3/stable/lib.js', defer: true },
+    { name: 'https://somewhere.com/v4/stable/lib.js', async: true }
   ]
 });
 ```

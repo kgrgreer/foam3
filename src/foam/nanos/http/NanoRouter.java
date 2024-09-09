@@ -20,10 +20,10 @@ import foam.nanos.logger.StdoutLogger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.nanos.pm.PMWebAgent;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class NanoRouter
   protected DAO nSpecDAO_;
 
   @Override
-  public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException {
+  public void init(jakarta.servlet.ServletConfig config) throws jakarta.servlet.ServletException {
     Object x = config.getServletContext().getAttribute("X");
     if ( x != null && x instanceof foam.core.X ) x_ = (foam.core.X) x;
 

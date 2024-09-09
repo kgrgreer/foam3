@@ -17,7 +17,7 @@ import foam.nanos.http.Format;
 import foam.nanos.logger.Loggers;
 import foam.util.SafetyUtil;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;

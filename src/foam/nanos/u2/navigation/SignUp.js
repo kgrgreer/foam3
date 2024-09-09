@@ -20,9 +20,9 @@ foam.CLASS({
     'auth',
     'ctrl',
     'emailVerificationService',
+    'googleTagAgent',
     'logAnalyticEvent',
     'login as importedLogin',
-    'login',
     'loginSuccess',
     'loginView?',
     'notify?',
@@ -41,11 +41,21 @@ foam.CLASS({
     'foam.u2.stack.StackBlock'
   ],
 
+  constants: [
+    {
+      name: 'USERNAME_INVALID_ERR',
+      type: 'String',
+      factory: function() { return foam.nanos.auth.User.INVALID_USERNAME; },
+      javaValue: 'foam.nanos.auth.User.INVALID_USERNAME'
+    }
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Create an account' },
     { name: 'FOOTER_TXT', message: 'Already have an account?' },
     { name: 'ERROR_MSG', message: 'There was a problem creating your account' },
     { name: 'EMAIL_ERR', message: 'Required' },
+    { name: 'EMAIL_INVALID_ERR', message: 'Valid email address required' },
     { name: 'EMAIL_AVAILABILITY_ERR', message: 'This email is already in use. Please sign in or use a different email' },
     { name: 'USERNAME_EMPTY_ERR', message: 'Required' },
     { name: 'USERNAME_AVAILABILITY_ERR', message: 'This username is taken. Please try another.' },
@@ -95,10 +105,10 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'emailAvailable',
-      documentation: `Binded property used to display email not available error.`,
-      value: true,
+      documentation: `Bound property used to display email not available error.`,
+      value: 'valid',
       hidden: true
     },
     {
@@ -109,26 +119,32 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.UserPropertyAvailabilityView',
           icon: 'images/checkmark-small-green.svg',
-          onKey: true,
           isAvailable$: X.data.emailAvailable$,
           type: 'email',
+          // TODO: Move to validation predicated when validation is fixed
           inputValidation: /\S+@\S+\.\S+/,
-          restrictedCharacters: /^[^\s]$/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         };
       },
-      validateObj: function(email, emailAvailable) {
-        // Empty Check
-        if ( email.length === 0 || ! /\S+@\S+\.\S+/.test(email) ) return this.EMAIL_ERR;
-        // Availability Check
-        if ( ! emailAvailable ) return this.EMAIL_AVAILABILITY_ERR;
-      }
+      required: true,
+      validationPredicates: [
+        {
+          args: ['emailAvailable', 'email'],
+          query: 'emailAvailable!="invalid"',
+          errorMessage: 'EMAIL_INVALID_ERR'
+        },
+        {
+          args: ['emailAvailable', 'email'],
+          query: 'emailAvailable!="unavailable"',
+          errorMessage: 'EMAIL_AVAILABILITY_ERR'
+        }
+      ]
     },
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'usernameAvailable',
-      documentation: `Binded property used to display username not available error.`,
-      value: true,
+      documentation: `Bound property used to display username not available error.`,
+      value: 'valid',
       hidden: true
     },
     {
@@ -140,18 +156,23 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.UserPropertyAvailabilityView',
           icon: 'images/checkmark-small-green.svg',
-          onKey: true,
           isAvailable$: X.data.usernameAvailable$,
-          inputValidation: /^[^\s\/]+$/,
-          restrictedCharacters: /^[^\s\/]$/
+          inputValidation: X.data.User.USER_NAME_MATCHER
         };
       },
-      validateObj: function(userName, usernameAvailable) {
-        // Empty Check
-        if ( userName.length === 0 ) return this.USERNAME_EMPTY_ERR;
-        // Availability Check
-        if ( ! usernameAvailable ) return this.USERNAME_AVAILABILITY_ERR;
-      }
+      required: true,
+      validationPredicates: [
+        {
+          args: ['usernameAvailable', 'userName'],
+          query: 'usernameAvailable!="invalid"',
+          errorMessage: 'USERNAME_INVALID_ERR'
+        },
+        {
+          args: ['usernameAvailable', 'userName'],
+          query: 'usernameAvailable!="unavailable"',
+          errorMessage: 'USERNAME_AVAILABILITY_ERR'
+        }
+      ]
     },
     {
       class: 'Boolean',
@@ -290,7 +311,7 @@ foam.CLASS({
         var urlParams = new URLSearchParams(window.location.search);
         var eventExtras = {
           utm_source: urlParams.get('utm_source'),
-          utm_medium: urlParams.get('utm_medium'), 
+          utm_medium: urlParams.get('utm_medium'),
           utm_campaign: urlParams.get('utm_campaign')
         }
         this.logAnalyticEvent({ name: 'USER_CLICKED_GET_STARTED', extra: foam.json.stringify(eventExtras) });
@@ -316,6 +337,7 @@ foam.CLASS({
           eventExtras['User ID'] = user.id;
           eventExtras['Email'] = user.email;
           this.logAnalyticEvent({ name: 'USER_CREATED_SIGN_UP', extra: foam.json.stringify(eventExtras) });
+          this.googleTagAgent?.pub('userCreated');
           if ( ! this.pureLoginFunction ) await this.nextStep(x);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         } else {

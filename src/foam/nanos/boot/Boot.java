@@ -51,7 +51,15 @@ public class Boot {
       datadir = System.getProperty("JOURNAL_HOME");
     }
 
-    root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(datadir));
+    foam.nanos.fs.Storage storage = new foam.nanos.fs.FileSystemStorage(datadir);
+    root_.put(foam.nanos.fs.FileSystemStorage.class, storage);
+
+    var readStorage = storage;
+    if ( ! SafetyUtil.isEmpty(System.getProperty("resource.journals.dir")) ) {
+      readStorage = new foam.nanos.fs.ResourceStorage(System.getProperty("resource.journals.dir"));
+    }
+    root_.put(foam.nanos.fs.Storage.class, readStorage);
+
 
     // Used for all the services that will be required when Booting
     foam.dao.MDAO mdao = new foam.dao.MDAO(NSpec.getOwnClassInfo());

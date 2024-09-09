@@ -15,7 +15,8 @@ exports.init = function() {
 
 
 exports.visitDir = function(pom, f, fn) {
-  if ( f.name === 'images' ) {
+  if ( f.name === 'images' ||
+       ( f.name === 'favicon' && ! fn.includes('images') ) ) {
     console.log(`[Image Maker] Copying ${fn} to ${X.imagedir}`);
     b_.copyDir(fn, X.imagedir);
   }

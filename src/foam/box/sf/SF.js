@@ -293,7 +293,7 @@ foam.CLASS({
                     this.getFileName()
                   }, (Logger) x.get("logger"));
         createDelegate();
-        FileSystemStorage fileSystemStorage = (FileSystemStorage) getX().get(foam.nanos.fs.Storage.class);
+        FileSystemStorage fileSystemStorage = getX().get(foam.nanos.fs.FileSystemStorage.class);
         java.io.File folder = fileSystemStorage.get(getFilePrefix());
         if ( ! folder.exists() ) folder.mkdir();
         List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles(getFilePrefix(), getFileName()+".*"));

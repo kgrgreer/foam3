@@ -23,7 +23,8 @@ foam.CLASS({
       setDelegate(delegate);
 
       // create journal
-      setJournal(new foam.nanos.logger.LoggerJournal.Builder(x)
+      var y = x.put(foam.nanos.fs.Storage.class, x.get(foam.nanos.fs.FileSystemStorage.class));
+      setJournal(new foam.nanos.logger.LoggerJournal.Builder(y)
         .setFilename(filename)
         .setCreateFile(true)
         .setDao(getDelegate())

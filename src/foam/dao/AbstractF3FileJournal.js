@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.fs.FileSystemStorage',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -187,7 +188,7 @@ try {
       javaType: 'java.io.BufferedWriter',
       javaFactory: `
 try {
-  OutputStream os = getX().get(Storage.class).getOutputStream(getFilename());
+  OutputStream os = getX().get(FileSystemStorage.class).getOutputStream(getFilename());
   if ( os == null ) {
     getLogger().warning("File not found", "for writing", getFilename());
     return null;
@@ -510,7 +511,7 @@ try {
 
         File existing = x.get(Storage.class).get(filename);
         String backup = filename + "." + nextSuffix(x, filename);
-        File copy = x.get(Storage.class).get(backup);
+        File copy = x.get(FileSystemStorage.class).get(backup);
 
         // Copy - faster than Files.copy (apparently)
         try (

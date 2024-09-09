@@ -23,6 +23,7 @@ foam.CLASS({
       name: 'canvas',
       factory: function() { return this.Box.create({width$: this.width$, height$: this.height$}); }
     },
+    { class: 'Boolean', name: 'fast',          value: false, memorable: true },
     { class: 'Boolean', name: 'colour',        value: true,  memorable: true },
     { class: 'Int',     name: 'colourPeriod',  value: 256,   memorable: true },
     { class: 'Float',   name: 'colourPhase',   value: 0,     memorable: true, view: 'foam.u2.RangeView' },
@@ -48,7 +49,7 @@ foam.CLASS({
     function render() {
       this.SUPER();
 
-      this.sub(this.invalidate);
+      this.sub(this.reset);
 
       this.
         style({outline: 'none'}).
@@ -59,7 +60,7 @@ foam.CLASS({
         tag({
           class: 'foam.u2.DetailView',
           data: this,
-          properties: [ 'width', 'height', 'colour', 'colourPeriod', 'colourPhase', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
+          properties: [ 'width', 'height', 'fast', 'colour', 'colourPeriod', 'colourPhase', 'x1', 'y1', 'x2', 'y2', 'maxIterations' ]});
 
       this.canvas.paintSelf = ctx => {
         var start = performance.now();
@@ -73,23 +74,27 @@ foam.CLASS({
           return v[i] == undefined || v[i][j] == undefined || v[i][j] == c;
         }
 
+        const S = 8;
+
         if ( ! this.pass ) {
-          for ( var i = 0 ; i < width/10 ; i++ ) {
+          for ( var i = 0 ; i < width/S ; i++ ) {
             v[i] = [];
-            for ( var j = 0 ; j < height/10 ; j++ ) {
-              var x = i*10/width*xd+x1;
-              var y = j*10/height*yd+y1;
+            for ( var j = 0 ; j < height/S ; j++ ) {
+              var x = i*S/width*xd+x1;
+              var y = j*S/height*yd+y1;
               v[i][j] = this.calc(x, y);
             }
           }
         }
 
-        for ( var i = 0 ; i < width/10; i++ ) {
-          for ( var j = 0 ; j < height/10 ; j++ ) {
+        for ( var i = 0 ; i < width/S; i++ ) {
+          for ( var j = 0 ; j < height/S ; j++ ) {
             const c    = v[i][j];
-            const same = ! this.pass || eq(c, i-1, j) && eq(c, i+1, j) && eq(c, i, j-1) && eq(c, i, j+1);
-            for ( var i2 = i*10 ; i2 < i*10 + 10 ; i2++ ) {
-              for ( var j2 = j*10 ; j2 < j*10 + 10 ; j2++ ) {
+            // Makes about 5 times faster on the initial screen but is less effective
+            // as you zoom in to more detailed areas.
+            const same = ! this.pass || this.fast && eq(c, i-1, j) && eq(c, i+1, j) && eq(c, i, j-1) && eq(c, i, j+1);
+            for ( var i2 = i*S ; i2 < i*S + S ; i2++ ) {
+              for ( var j2 = j*S ; j2 < j*S + S ; j2++ ) {
                 if ( same ) {
                   this.set(i2, j2, c);
                 } else {
@@ -253,6 +258,14 @@ foam.CLASS({
   ],
 
   listeners: [
+    {
+      name: 'reset',
+      isFramed: true,
+      code: function() {
+        this.pass = false;
+        this.canvas.invalidate();
+      }
+    },
     {
       name: 'invalidate',
       isFramed: true,

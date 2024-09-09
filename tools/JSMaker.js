@@ -11,6 +11,7 @@ exports.description = 'create minified foam-bin.js distribution';
 const fs_      = require('fs');
 const path_    = require('path');
 const uglify_  = require('uglify-js');
+const zlib_    = require('zlib');
 
 const licenses = {};
 var version    = '';
@@ -43,6 +44,7 @@ exports.end = function() {
   var loaded = Object.keys(globalThis.foam.loaded);
   loaded.unshift(path_.dirname(__dirname) + '/src/foam.js');
 
+  // console.log(X.stage, foam.stages);
   // Build array of files for Uglify
   loaded.forEach(l => {
     // POM's can be included in files: so just ignore
@@ -51,8 +53,17 @@ exports.end = function() {
     if ( l.endsWith('pom.js') ) return;
     try {
       l = path_.resolve(__dirname, l);
-      if ( X.stage === '0' ? ! foam.excluded[l] : foam.excluded[l] )
+      if ( X.stage === undefined ) {
         files[l] = fs_.readFileSync(l, "utf8");
+      } else {
+        var stage = foam.stages[l] ?? foam.defaultStage;
+        if ( X.stage == stage ) {
+          // console.log('***** IN stage:', X.stage,' *** file:', l);
+          files[l] = fs_.readFileSync(l, "utf8");
+        } else {
+          // console.log('***** EX stage:', X.stage, stage, ' *** file:', l);
+        }
+      }
     } catch (x) {
       // console.log('********************************* Unexpected Error: ', x);
     }
@@ -77,13 +88,14 @@ exports.end = function() {
       mangle:   false,
       output:   {
         semicolons: false,
-        preamble: `// Generated: ${new Date()}\n\n${license}\n` + (X.stage === '0' ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
+        preamble: `// Generated: ${new Date()}\n\n${license}\n` + ((X.stage === undefined || X.stage === '0') ? `var foam = { main: function() { /* prevent POM loading since code is in-lined below */ } };\n` : '')
       }
     }).code;
 
   if ( ! code ) {
     console.log('No output for stage:', X.stage);
-    return;
+//    return;
+    code = '';
   }
 
   // Remove most Java and Swift Code
@@ -115,24 +127,47 @@ exports.end = function() {
   code = code.replaceAll(/^\s*/gm, '');
 
   function fn(s) {
-    var stage = s == '0' ? '' : '-' + s;
+    var stage = ( s === undefined || s == '0' ) ? '' : '-' + s;
     return version ? `foam-bin-${version}${stage}` : `foam-bin{$stage}`;
   }
 
   if ( X.stage === '0' ) {
     code += `
-if ( window.location.hash ) {
-  foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
-} else {
-  window.requestIdleCallback(() => foam.loadJSLibs([{name:'/${fn('1')}.js'}]),{timeout:15000});
+if ( ! foam.flags.skipStage1 ) {
+  var next = () => foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
+
+  if ( window.location.hash ) {
+    next();
+  } else if ( globalThis.requestIdleCallback ) {
+    window.setTimeout(() =>
+      window.requestIdleCallback(next, {timeout:15000}),
+      2000);
+  } else {
+    window.setTimeout(next, 2000);
+  }
+}
+`;
+  } else if ( X.stage === '1' ) {
+    code += `
+if ( ! foam.flags.skipStage2 ) {
+  foam.loadJSLibs([{name:'/${fn('2')}.js'}]);
 }
 `;
   }
+
   // Put each Model on its own line
   // not needed with the semicolons: false options set above
-//  code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
+  // code = code.replaceAll(/foam.CLASS\({/gm, '\nfoam.CLASS({');
 
   var filename = fn(X.stage);
   console.log('[JS] Writing', filename + '.js');
   fs_.writeFileSync(filename + '.js', code);
+  console.log('[JS] Writing', filename + '.js.gz');
+  zlib_.gzip(code, (err, buffer) => {
+    if ( ! err ) {
+      fs_.writeFileSync(filename + '.js.gz', buffer);
+    } else {
+      console.error(err);
+    }
+  });
 }

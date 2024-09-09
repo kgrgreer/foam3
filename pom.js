@@ -12,14 +12,11 @@ foam.POM({
       { name: 'src/pom' },
       { name: 'src/foam/nanos/pom' },
       { name: 'src/foam/nanos/analytics/mixpanel/pom' },
+      { name: 'src/foam/net/ipgeo/pom' },
       { name: 'src/foam/u2/wizard/pom' },
-      { name: 'src/foam/util/geo/pom'},
       { name: 'src/foam/flow/laminar/pom' },
       { name: 'src/io/c9/ace/pom' },
       { name: 'webroot/pom' }
-    ],
-    webroot: [
-      'favicon'
     ],
     javaDependencies: [
       'com.authy:authy-java:1.1.0',
@@ -35,8 +32,6 @@ foam.POM({
       'jakarta.mail:jakarta.mail-api:2.1.2',
       'jakarta.activation:jakarta.activation-api:2.1.2',
       'javax.json:javax.json-api:1.0',
-      'javax.servlet:javax.servlet-api:3.1.0',
-      'javax.websocket:javax.websocket-api:1.1',
       'javax.ws.rs:javax.ws.rs-api:2.1.1',
       'jstl:jstl:1.2',
       'org.apache-extras.beanshell:bsh:2.0b6',
@@ -53,10 +48,14 @@ foam.POM({
       'org.eclipse.angus:angus-activation:2.0.1',
       'org.eclipse.angus:angus-mail:2.0.2',
       'org.eclipse.angus:imap:2.0.2',
-      'org.eclipse.jetty:jetty-server:9.4.51.v20230217',
-      'org.eclipse.jetty:jetty-util:9.4.51.v20230217',
-      'org.eclipse.jetty.websocket:websocket-server:9.4.51.v20230217',
-      'org.eclipse.jetty:jetty-proxy:9.4.51.v20230217',
+      'org.eclipse.jetty:jetty-proxy:11.0.23',
+      'org.eclipse.jetty:jetty-alpn-java-server:11.0.23',
+      'org.eclipse.jetty:jetty-http:11.0.23',
+      'org.eclipse.jetty:jetty-jmx:11.0.23', // for source build
+      'org.eclipse.jetty:jetty-util:11.0.23',
+      'org.eclipse.jetty:jetty-util-ajax:11.0.23', // for source build
+      'org.eclipse.jetty.http2:http2-server:11.0.23',
+      'org.eclipse.jetty.websocket:websocket-jetty-server:11.0.23',
       'org.java-websocket:Java-WebSocket:1.5.0',
       'org.jtwig:jtwig-core:5.87.0.RELEASE',
       'org.mongodb:mongodb-driver:3.4.2',
@@ -64,15 +63,10 @@ foam.POM({
       'nl.martijndwars:web-push:5.1.1', // https://github.com/web-push-libs/webpush-java
       'com.eatthepath:pushy:0.15.4',
       'com.eatthepath:fast-uuid:0.2.0',
-      'io.netty:netty-tcnative-boringssl-static:2.0.62.Final',
-      'io.netty:netty-codec-http2:4.1.104.Final',
-      'io.netty:netty-handler-proxy:4.1.104.Final',
-      'io.netty:netty-resolver-dns:4.1.104.Final',
-      'io.netty:netty-transport-native-kqueue:4.1.104.Final',
-      'io.netty:netty-transport-native-epoll:4.1.104.Final',
       'org.junit.jupiter:junit-jupiter-engine:5.6.0',
       'org.junit.jupiter:junit-jupiter-params:5.6.0',
       'org.junit.platform:junit-platform-launcher:1.6.0',
-      'org.slf4j:slf4j-simple:1.7.21'
+      'org.slf4j:slf4j-api:2.0.16',
+      'org.slf4j:slf4j-simple:2.0.16'
     ]
 });

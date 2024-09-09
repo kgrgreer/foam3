@@ -86,14 +86,11 @@ foam.CLASS({
       name: 'identifier',
       required: true,
       label: 'Email or Username',
-      preSet: function(_, n) {
-        return n.trim();
-      },
       view: {
         class: 'foam.u2.TextField',
-        type: 'email',
         focused: true
       },
+      trim: true,
       visibility: function(disableIdentifier_, usernameRequired) {
         return usernameRequired ? foam.u2.DisplayMode.HIDDEN :
           disableIdentifier_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;

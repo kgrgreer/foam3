@@ -11,7 +11,7 @@ import foam.dao.DAO;
 import foam.nanos.http.WebAgent;
 import foam.nanos.http.Format;
 import foam.nanos.http.HttpParameters;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import foam.lib.json.OutputterMode;
 import foam.lib.formatter.FObjectFormatter;

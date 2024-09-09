@@ -10,7 +10,7 @@ import foam.core.*;
 import foam.nanos.http.WebAgent;
 import foam.util.SafetyUtil;
 import java.io.PrintWriter;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /** Display thread pool information. **/
 public class ThreadPoolWebAgent

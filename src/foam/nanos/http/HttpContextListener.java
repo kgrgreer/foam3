@@ -8,9 +8,9 @@ package foam.nanos.http;
 
 import foam.nanos.boot.Boot;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.http.HttpServlet;
 
 public abstract class HttpContextListener
   implements ServletContextListener
