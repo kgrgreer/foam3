@@ -445,7 +445,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       args: 'Context x, User user',
       javaCode: `
         if ( user == null ) {
-          Loggers.logger(x, this).warning("User not found", user.getId());
+          Loggers.logger(x, this).warning("User not found");
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
