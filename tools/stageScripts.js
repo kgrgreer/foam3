@@ -17,14 +17,28 @@ delete localStorage.UNUSED;
     console.log('size:', a.length, '->', b.length);
   }
 
-3. Run "All Screenshots screen, then run:
+3. Run "All Screenshots" script, then run:
 
-var a = JSON.parse(localStorage.UNUSED).map(f => {
+var stage1 = [], stage2 = [];
+JSON.parse(localStorage.UNUSED).forEach(c => {
+  if ( foam.UNUSED[f] ) {
+    stage2.push(f);
+  } else {
+    stage1.push(f);
+  }
+});
+
+function classToFile(f) {
   f = f.replaceAll('.', '/');
   if ( f.indexOf('nanopay') != -1 ) return 'nanopay/src/' + f;
   return 'foam3/src/' + f;
- });
- document.body.innerText = JSON.stringify(a, null, 4);
+}
+
+var stages = {
+  '1': stage1.map(classToFile),
+  '2': stage2.map(classToFile)
+};
+document.body.innerText = JSON.stringify(stages, null, 4);
 
 
 
