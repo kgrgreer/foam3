@@ -50,6 +50,7 @@ foam.CLASS({
         this
           .enableClass(this.myClass('pill'), isPill)
           .addClass('enum-label', this.myClass())
+          .style({ 'width': 'max-content' })
           .style({
             'background-color': background,
             'color': color,
