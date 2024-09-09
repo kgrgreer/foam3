@@ -14,7 +14,7 @@ foam.INTERFACE({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       value: 'PENDING',
-      updatePermissionRequired: true
+      writePermissionRequired: true
     }
   ]
 });
