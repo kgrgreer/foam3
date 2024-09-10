@@ -366,30 +366,6 @@ foam.CLASS({
 
         this.configHttps(server);
 
-        /*
-          The following for loop will accomplish the following:
-          1. Prevent Jetty server from broadcasting its version number in the HTTP
-          response headers.
-          2. Configure Jetty server to interpret the X-Fowarded-for header
-        */
-
-        for ( org.eclipse.jetty.server.Connector conn : server.getConnectors() ) {
-          for ( org.eclipse.jetty.server.ConnectionFactory f : conn.getConnectionFactories() ) {
-            if ( f instanceof org.eclipse.jetty.server.HttpConnectionFactory ) {
-              HttpConfiguration config = ((org.eclipse.jetty.server.HttpConnectionFactory) f).getHttpConfiguration();
-
-              // 1. hiding the version number in response headers
-              config.setSendServerVersion(false);
-
-              // 2. enable X-Forwarded-For headers
-              ForwardedRequestCustomizer forwarded = new ForwardedRequestCustomizer();
-              config.addCustomizer(forwarded);
-
-              config.setIdleTimeout(10000L);
-            }
-          }
-        }
-
         server.start();
         setServer(server);
       } catch(Exception e) {
@@ -497,6 +473,9 @@ foam.CLASS({
 
           // Enable https
           HttpConfiguration config = new HttpConfiguration();
+          ForwardedRequestCustomizer forwarded = new ForwardedRequestCustomizer();
+          config.addCustomizer(forwarded);
+          config.setSendServerVersion(false);
 
           SecureRequestCustomizer src = new SecureRequestCustomizer();
           src.setSniHostCheck(!getDisableSNIHostCheck());
