@@ -154,6 +154,7 @@ Later themes:
           // }
         }
         if ( td != null ) {
+          // logger.debug("Themes", "ThemeDomain found", domain, td.getId());
           theme = (Theme) themeDAO.find(
             MLang.AND(
               MLang.EQ(Theme.ID, td.getTheme()),
@@ -163,6 +164,7 @@ Later themes:
           //   logger.debug("Themes", "Theme not found", td.getTheme());
           // }
           if ( theme != null ) {
+            // logger.debug("Themes", "Theme found", domain, theme.getId());
             theme = (Theme) theme.fclone();
           }
         }
@@ -206,9 +208,10 @@ Later themes:
 
       // Merge the theme with group and user themes
       // Turn off group theme merging until fixed
+      Group group = null;
       if ( false && user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = user.findGroup(x);
+        group = user.findGroup(x);
         String[] defaultMenu = group != null ? group.getDefaultMenu() : null;
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
@@ -247,6 +250,8 @@ Later themes:
           appConfig.setUrl("https://"+domain);
         }
       }
+
+      // logger.debug("Themes", "domain", domain, "user", (user != null ? user.getId() : "null"), "group", (group != null ? group.getId() : "null") , "theme", theme.getId());
 
       return theme;
       `
