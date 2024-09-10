@@ -1,9 +1,9 @@
-1. Reset
+// 1. Reset
 
 delete localStorage.UNUSED;
 
 
-2. Load each initial screen and then run the following:
+// 2. Load each initial screen and then run the following:
 
 var a = Object.keys(foam.UNUSED).filter(f => {
   if ( f.indexOf('foam.core') != -1 ) return false;
@@ -13,20 +13,20 @@ if ( ! localStorage.UNUSED ) {
   localStorage.UNUSED = JSON.stringify(a);
 } else {
   var b = JSON.parse(localStorage.UNUSED);
-  b = a.filter(v => b.includes(v));
-  localStorage.UNUSED = JSON.stringify(b);
-  console.log('size:', a.length, '->', b.length);
+  var c = a.filter(v => b.includes(v));
+  localStorage.UNUSED = JSON.stringify(c);
+  console.log('size:', a.length, b.length, '->', c.length);
 }
 
 
-3. Run "All Screenshots" script, then run:
+// 3. Run "Generate Screenshots" script, then run:
 
 var stage1 = [], stage2 = [];
 JSON.parse(localStorage.UNUSED).forEach(c => {
-  if ( foam.UNUSED[f] ) {
-    stage2.push(f);
+  if ( foam.UNUSED[c] ) {
+    stage2.push(c);
   } else {
-    stage1.push(f);
+    stage1.push(c);
   }
 });
 
@@ -40,7 +40,7 @@ var stages = { name: 'staging', stages: {
   '1': stage1.map(classToFile),
   '2': stage2.map(classToFile)
 }};
-document.body.innerText = 'foam.POM(' + JSON.stringify(stages, null, 4) + ');\n';
+document.body.innerText = '// Generated with foam3/tools/stageScripts.js\nfoam.POM(' + JSON.stringify(stages, null, 4) + ');\n';
 
 
 
