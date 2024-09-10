@@ -3,7 +3,7 @@
 
 # HTTP Version
 # http1
-curl -k -v --http1 https://localhost:8443/index.html
+curl -k -v --http1.1 https://localhost:8443/index.html
 
 # http2
 curl -k -v --http2-prior-knowledge https://localhost:8443/index.html
