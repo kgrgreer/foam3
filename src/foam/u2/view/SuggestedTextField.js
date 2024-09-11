@@ -159,9 +159,9 @@
         .on('focus', () => {
           this.inputFocused = true;
         })
-        // .on('blur', () => {
-        //   this.inputFocused = false;
-        // })
+        .on('blur', () => {
+          this.inputFocused = false;
+        })
       .end()
       .add(this.slot(this.populate));
     },
