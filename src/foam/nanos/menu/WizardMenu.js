@@ -8,20 +8,18 @@ foam.CLASS({
   package: 'foam.nanos.menu',
   name: 'WizardMenu',
   extends: 'foam.nanos.menu.AbstractMenu',
-  
+
   requires: [
     'foam.util.async.Sequence',
     'foam.u2.crunch.WizardRunner',
     'foam.u2.crunch.EasyCrunchWizard'
   ],
-  
+
   properties: [
     {
+      class: 'foam.util.FObjectSpec',
       name: 'source',
-      adapt: function(o, n) {
-        if ( ! foam.Object.isInstance(n) ) return n
-        return foam.json.parse(n)
-      }
+      documentation: 'Either a capability, string or WizardFlow'
     },
     {
       class: 'Object',
@@ -33,15 +31,15 @@ foam.CLASS({
       factory: function() {
         return {
           class: 'foam.u2.crunch.EasyCrunchWizard'
-        } 
+        }
       }
     }
   ],
-  
+
   methods: [
     function launch(x, menu) {
       const runner = this.WizardRunner.create({
-        source: this.source
+        source: foam.String.isInstance(this.source) ? this.source : this.source$create({}, x)
       }, x)
 
       runner.sequence.addBefore('ConfigureFlowAgent', this.config)
