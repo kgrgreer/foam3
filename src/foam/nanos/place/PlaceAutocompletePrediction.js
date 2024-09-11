@@ -19,5 +19,10 @@ foam.CLASS({
       shortName: 'place_id',
       name: 'placeId'
     }
+  ],
+  methods: [
+    function toSummary() {
+      return this.description;
+    }
   ]
-})
+});
