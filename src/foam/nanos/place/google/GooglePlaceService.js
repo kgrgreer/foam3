@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.session.Session',
     'foam.nanos.pm.PM',
+    'foam.nanos.om.OMLogger',
     'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Loggers',
     'foam.nanos.place.*',
@@ -57,6 +58,7 @@ foam.CLASS({
       type: 'PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
+        ((OMLogger) x.get("OMLogger")).log("GooglePlaceService_placeAutocomplete");
         Session session = x.get(Session.class);
         var ret = new PlaceAutocompleteResp();
         try {
@@ -107,6 +109,7 @@ foam.CLASS({
       type: 'PlaceDetailResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeDetail");
+        ((OMLogger) x.get("OMLogger")).log("GooglePlaceService_placeDetail");
         var ret = new PlaceDetailResp();
         Session session = x.get(Session.class);
         try {
