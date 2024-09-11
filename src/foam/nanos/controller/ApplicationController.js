@@ -440,7 +440,6 @@ foam.CLASS({
         this.pushMenu_(null, this.route)
       } else  {
         this.pushDefaultMenu();
-        return 1;
       }
     },
 
@@ -476,7 +475,6 @@ foam.CLASS({
 
         self.subToNotifications();
         let ret = await self.initMenu();
-        if ( ret ) return;
 
         await self.fetchGroup();
 
