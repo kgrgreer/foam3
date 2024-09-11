@@ -17,7 +17,8 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Region',
-    'foam.u2.PropertyBorder'
+    'foam.u2.layout.Grid',
+    'foam.u2.layout.GUnit'
   ],
 
   imports: [
@@ -52,7 +53,7 @@ foam.CLASS({
       imports: ['placeService'],
 
       css: `
-          ^two-column {
+        ^two-column {
           display: grid;
           grid-template-columns: 3fr 1fr;
           grid-gap: 8px;
@@ -79,7 +80,7 @@ foam.CLASS({
             .style({ 'grid-column': self.data$.dot('structured').map(v => v ? 'span 1' :'span 2') })
           .end()
           .add(self.slot(function(data$structured) {
-            if ( ! data$structured ) return this.E();
+            if ( ! data$structured ) return this.E().hide();
             return this.E().style({ display: 'contents' })
             .start(self.data.SUITE.__)
             .end()
@@ -123,7 +124,7 @@ foam.CLASS({
               var a = self.Grid.create().addClass(self.myClass('grid'));
               const hasThreeColumns = arr.filter(el => el.visibility != 'HIDDEN').length == 3;
               for ( let prop of arr ) {
-                a.start(self.GUnit, { columns: hasThreeColumns ? prop.name == 'streetName' ? 6 : 3 : 6 })
+                a.start(self.GUnit, { columns: hasThreeColumns ? prop.gridColumns : 6 })
                   .tag(prop.__)
                 .end();
               }
@@ -134,12 +135,17 @@ foam.CLASS({
     },
     {
       name: 'UnstructuredAddressFields',
-      extends: 'foam.u2.View',
+      extends: 'foam.u2.layout.Grid',
+
+      requires: [
+        'foam.u2.layout.Grid',
+        'foam.u2.layout.GUnit'
+      ],
+
+      properties: ['data'],
 
       css:`
         ^two-column {
-          grid-template-columns: 1fr 1fr;
-          display: grid;
           align-items: start;
           gap: 8px;
         }
@@ -147,10 +153,11 @@ foam.CLASS({
 
       methods: [
         function render() {
+          this.SUPER();
           this
-          .addClass(this.myClass('two-column'))
-          .start(this.data.ADDRESS1.__).end()
-          .start(this.data.ADDRESS2.__).end();
+            .addClass(this.myClass('two-column'))
+            .start(this.GUnit, { columns: this.data.ADDRESS1.gridColumns  }).tag(this.data.ADDRESS1.__).end()
+            .start(this.GUnit, { columns: this.data.ADDRESS2.gridColumns }).tag(this.data.ADDRESS2.__).end();
         }
       ]
     }
@@ -244,22 +251,28 @@ foam.CLASS({
           }
         })
         .call(this.placeTopFields, [self])
-        .start().addClass(this.myClass('three-column'))
-          .tag(this.data.CITY.__)
-          .tag(this.data.REGION_ID.__, { 
-            config: {
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                placeholder: this.PLACE_HOLDER,
-                objToChoice: function(region) {
-                  return [region.id, region.name];
+        .start(this.Grid).addClass(this.myClass('three-column'))
+          .start(this.GUnit, { columns: this.data.CITY.gridColumns })
+            .tag(this.data.CITY.__)
+          .end()
+          .start(this.GUnit, { columns: this.data.REGION_ID.gridColumns })
+            .tag(this.data.REGION_ID.__, { 
+              config: {
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: this.PLACE_HOLDER,
+                  objToChoice: function(region) {
+                    return [region.id, region.name];
+                  },
+                  dao$: choices
                 },
-                dao$: choices
-              },
-              label$: this.regionLabel$
-            }
-          })
-          .tag(this.data.POSTAL_CODE.__, { config: { label$: this.postalCodeLabel$ }})
+                label$: this.regionLabel$
+              }
+            })
+          .end()
+          .start(this.GUnit, { columns: this.data.POSTAL_CODE.gridColumns })
+            .tag(this.data.POSTAL_CODE.__, { config: { label$: this.postalCodeLabel$ }})
+          .end()
         .end();
     },
     function placeTopFields(self) {

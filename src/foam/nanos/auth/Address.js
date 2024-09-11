@@ -61,6 +61,7 @@ foam.CLASS({
       label: 'Address',
       width: 70,
       displayWidth: 50,
+      gridColumns: 6,
       documentation: 'An unstructured field for the main postal address.',
       validationPredicates: [
         {
@@ -80,6 +81,7 @@ foam.CLASS({
       label: 'Address Line 2',
       width: 70,
       displayWidth: 50,
+      gridColumns: 6,
       documentation: 'An unstructured field for the sub postal address.',
       hidden: true
     },
@@ -135,7 +137,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Region',
       documentation: `A foreign key into the RegionDAO which represents
         the region of the country.`,
-      gridColumns: 6,
+      gridColumns: { columns: 4, xsColumns: 6, xxsColumns: 6 },
       view: function(_, X) {
         var choices = X.data.slot(function(countryId) {
           return X.regionDAO.where(X.data.EQ(X.data.Region.COUNTRY_ID, countryId || ""));
@@ -179,7 +181,7 @@ foam.CLASS({
       class: 'String',
       name: 'suite',
       documentation: 'The structured field for the suite number of the postal address.',
-      gridColumns: 3,
+      gridColumns: { columns: 3, xsColumns: 6, xxsColumns: 6 },
       width: 16
     },
     {
@@ -190,7 +192,7 @@ foam.CLASS({
       label: 'Street #',
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
-      gridColumns: 3,
+      gridColumns: { columns: 3, xsColumns: 6, xxsColumns: 6 },
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
@@ -219,7 +221,7 @@ foam.CLASS({
       name: 'city',
       documentation: 'The city of the postal address.',
       required: true,
-      gridColumns: 6
+      gridColumns: { columns: 4, xsColumns: 6, xxsColumns: 6 },
     },
     {
       class: 'String',
@@ -228,7 +230,7 @@ foam.CLASS({
       preSet: function(oldValue, newValue) {
         return newValue.toUpperCase();
       },
-      gridColumns: 6,
+      gridColumns: { columns: 4, xsColumns: 6, xxsColumns: 6 },
       validationPredicates: [
         // Requirement for PK is postalCode is optional
         // real country distictions to come with NP-8818-facade Address
