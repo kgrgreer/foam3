@@ -39,20 +39,18 @@
       flex-direction: column;
       height: auto;
       margin-top: 2px;
-      max-height: 14em;
       overflow: auto;
-      padding: 6px;
+      padding: 12px;
+      gap: 8px;
       position: absolute;
       width: 100%;
       z-index: 100;
     }
-    ^suggestions > * + * {
-      margin-top: 4px;
-    }
     ^row {
       color: $black;
       cursor: pointer;
-      padding: 4px 8px;
+      padding: 8px;
+      border-radius: 4px;
     }
   `,
 
@@ -161,9 +159,9 @@
         .on('focus', () => {
           this.inputFocused = true;
         })
-        .on('blur', () => {
-          this.inputFocused = false;
-        })
+        // .on('blur', () => {
+        //   this.inputFocused = false;
+        // })
       .end()
       .add(this.slot(this.populate));
     },
@@ -173,7 +171,7 @@
       if ( loading ) return this.E().addClass(this.myClass('suggestions')).tag(self.LoadingSpinner, {size: '32px'})
       if ( error ) return this.E().addClass(this.myClass('suggestions')).add(this.error);
       return this.E().addClass(this.myClass('suggestions'))
-        .start().addClass('p-legal').add(this.title).end()
+        .start().addClass('p-semiBold').add(this.title).end()
         .forEach(filteredValues, function(obj) {
           this
             .start(self.rowView, { data: obj })
@@ -188,7 +186,7 @@
               })
             .end();
         })
-        .add(this.refineInput$.map(v => v ? self.MORE_SUGGESTIONS : ""));
+        .add(this.refineInput$.map(v => v ? self.MORE_SUGGESTIONS : this.E().style({ display: 'contents' })));
     },
     function fromProperty(prop) {
       this.prop = prop;
