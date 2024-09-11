@@ -47,6 +47,10 @@ foam.CLASS({
       factory: function() {
         return this.dao;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'loading'
     }
   ],
 
@@ -63,10 +67,12 @@ foam.CLASS({
       name: 'onUpdate',
       isFramed: true,
       code: function onUpdate() {
+        this.loading = true;
         if ( ! this.dao ) return;
         this.filteredDAO = this.partial ?
           this.dao.where(this.queryFactory(this.partial)) :
           this.dao;
+        this.loading = false;
       }
     }
   ]

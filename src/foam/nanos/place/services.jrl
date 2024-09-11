@@ -7,11 +7,11 @@ p({
       .setFuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("googlePlaceServiceConfigures")
-      .setOf(foam.nanos.place.configure.google.GooglePlaceServiceConfigure.getOwnClassInfo())
+      .setOf(foam.nanos.place.google.GooglePlaceServiceConfigure.getOwnClassInfo())
       .build()
-      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.place.configure.google.GooglePlaceServiceConfigure.SPID } );
+      .addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.place.google.GooglePlaceServiceConfigure.SPID } );
     `,
-  "client":"{\"of\":\"foam.nanos.place.configure.google.GooglePlaceServiceConfigure\"}"
+  "client":"{\"of\":\"foam.nanos.place.google.GooglePlaceServiceConfigure\"}"
 })
 
 p({

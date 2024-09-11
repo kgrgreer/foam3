@@ -58,7 +58,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'address1',
-      label: 'Address Line 1',
+      label: 'Address',
       width: 70,
       displayWidth: 50,
       documentation: 'An unstructured field for the main postal address.',
@@ -69,6 +69,9 @@ foam.CLASS({
           errorMessage: 'INVALID_ADDRESS_1_REQUIRED'
         }
       ],
+      expression: function(suite, streetNumber, streetName) {
+        return [suite, streetNumber, streetName].filter(Boolean).join(' ');
+      },
       hidden: true
     },
     {
@@ -188,11 +191,6 @@ foam.CLASS({
       width: 16,
       documentation: 'The structured field for the street number of the postal address.',
       gridColumns: 3,
-      postSet: function(_, n) {
-        if ( this.structured ) {
-          this.address1 = `${n} ${this.streetName}`
-        }
-      },
       validationPredicates: [
         {
           args: ['structured', 'streetNumber'],
@@ -208,11 +206,6 @@ foam.CLASS({
       width: 70,
       documentation: 'The structured field for the street name of the postal address.',
       gridColumns: 6,
-      postSet: function(_, n) {
-        if ( this.structured ) {
-          this.address1 = `${this.streetNumber} ${n}`
-        }
-      },
       validationPredicates: [
         {
           args: ['structured', 'streetName'],
