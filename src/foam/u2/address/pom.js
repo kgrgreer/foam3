@@ -9,7 +9,6 @@ foam.POM({
   files: [
     { name: 'AddressAutocompleter',     flags: 'web' },
     { name: 'AddressCompleterField',    flags: 'web' },
-    { name: 'AddressAutocompleterView', flags: 'web' },
     { name: 'AddressView',              flags: 'web' },
     { name: 'AddressWriteView',         flags: 'web' }
   ]
