@@ -24,7 +24,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'foam.util.FObjectSpec',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
@@ -36,7 +36,7 @@ foam.CLASS({
   methods: [
     function createView(X) {
       return {
-        ...this.config.browseController,
+        ...this.config$create({}, X).browseController,
         data: this.config.dao,
         config: this.config
       };
