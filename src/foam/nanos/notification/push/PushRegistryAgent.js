@@ -10,7 +10,7 @@ foam.CLASS({
 
   documentation: 'Client-side NSpec which calls PushRegistry with subscription information.',
 
-  imports: [ 'pushRegistry', 'window', 'initSubject' ],
+  imports: [ 'pushRegistry', 'window', 'client' ],
 
   requires: ['foam.core.Latch'],
 
@@ -46,7 +46,7 @@ foam.CLASS({
       }
       // If there is no subject yet, this agent is useless
       // On subject change, this will be rebuilt anyway
-      if ( ! this.initSubject ) return;
+      if ( ! this.client?.initSubject?.user ) return;
       this.safeRegisterSub();
       // This isnt actually needed since on client reload ^ will be called anyway
       // this.__subContext__.loginSuccess$.sub(() => { this.register(); })
