@@ -55,7 +55,7 @@ foam.CLASS({
       name: 'placeAutocomplete',
       async: true,
       args: 'Context x, String input, String preferCountry',
-      type: 'foam.nanos.place.model.PlaceAutocompleteResp',
+      type: 'foam.nanos.place.PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
         ((OMLogger) x.get("OMLogger")).log("GooglePlaceService_placeAutocomplete");

@@ -15,7 +15,7 @@ foam.INTERFACE({
       name: 'placeAutocomplete',
       async: true,
       args: 'Context x, String input, String preferCountry',
-      type: 'foam.nanos.place.model.PlaceAutocompleteResp',
+      type: 'foam.nanos.place.PlaceAutocompleteResp',
     },
     {
       name: 'placeDetail',

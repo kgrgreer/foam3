@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.mlang.MLang',
     'foam.dao.DAO',
-    'foam.nanos.place.model.PlaceDetailAddressComponent'
+    'foam.nanos.place.PlaceDetailAddressComponent'
   ],
   
   implements: ['foam.mlang.Expressions'],
@@ -29,7 +29,7 @@ foam.CLASS({
       name: 'addressComponents',
       shortName: 'address_components',
       class: 'FObjectArray',
-      of: 'foam.nanos.place.model.PlaceDetailAddressComponent',
+      of: 'foam.nanos.place.PlaceDetailAddressComponent',
     },
     {
       name: 'address',
