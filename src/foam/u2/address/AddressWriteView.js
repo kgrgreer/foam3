@@ -216,7 +216,6 @@ foam.CLASS({
     function render() {
       this.SUPER();
       var self = this;
-      globalThis.add = this;
       // default translations
       self.defaultRegionLabel = self.regionLabel = this.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.REGION.label', self.Address.REGION_ID.label);
       self.defaultPostalCodeLabel = self.postalCodeLabel = this.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.label', self.Address.POSTAL_CODE.label);
