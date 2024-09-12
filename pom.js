@@ -14,6 +14,7 @@ foam.POM({
       { name: 'src/foam/nanos/analytics/mixpanel/pom' },
       { name: 'src/foam/net/ipgeo/pom' },
       { name: 'src/foam/u2/wizard/pom' },
+      { name: 'src/foam/u2/address/pom' },
       { name: 'src/foam/flow/laminar/pom' },
       { name: 'src/io/c9/ace/pom' },
       { name: 'webroot/pom' }

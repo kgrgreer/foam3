@@ -283,7 +283,7 @@ public class PreventPrivilegeEscalationTest
       .setGroup("admin")
       .setSpid(spid_)
       .setEmail("ppet+admin@example.com")
-      .setUserName("ppet+admin")
+      .setUserName("ppet-admin")
       .setDesiredPassword("!@#$ppet1234")
       .setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE)
       .build();
@@ -326,7 +326,7 @@ public class PreventPrivilegeEscalationTest
       .setGroup("anonymous")
       .setSpid(spid_)
       .setEmail("ppet1+admin@example.com")
-      .setUserName("ppet1+admin")
+      .setUserName("ppet1-admin")
       .setFirstName("ppet")
       .setLastName("ppet")
       .setDesiredPassword("!@#$ppet1234")
@@ -347,7 +347,7 @@ public class PreventPrivilegeEscalationTest
       // Try to update the user's group to "admin".
       u2 = (User) u1.fclone();
       u2.setEmail("ppet2+admin@example.com");
-      u2.setUserName("ppet2+admin");
+      u2.setUserName("ppet2-admin");
       u2.setGroup("admin");
       u2 = (User) userDAO.inX(userContext).put(u2);
 
