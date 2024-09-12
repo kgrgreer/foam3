@@ -32,6 +32,11 @@ foam.CLASS({
 
   methods: [
     async function init() {
+      var urlParams = new URLSearchParams(window.location.search);
+      if ( urlParams.get('utm_medium') != 'googleads' ) return;
+
+      foam.u2.JsLib.create({src: 'https://www.googletagmanager.com/gtag/js?id=AW-11362752358'}).installLib();
+
       this.pushEvent = await this.shouldTrackConversion();
       if ( ! this.pushEvent ) return;
       this.onDetach(this.__subContext__.subject$.sub(async(subject) => {
