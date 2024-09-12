@@ -10,7 +10,7 @@ foam.CLASS({
 
   tableColumns: [ 'endpoint', 'user' ],
 
-  ids: [ 'endpoint' ],
+  ids: [ 'session' ],
 
   properties: [
     {
