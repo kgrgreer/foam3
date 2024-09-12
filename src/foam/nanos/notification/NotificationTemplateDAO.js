@@ -62,11 +62,7 @@ the notification will be handled. `,
         if ( ! foam.util.SafetyUtil.isEmpty(notification.getTemplate()) ) {
           List templates = ((ArraySink) ((DAO) x.get("notificationTemplateDAO"))
             .limit(2)
-            .where(
-              foam.mlang.MLang.OR(
-                foam.mlang.MLang.EQ(Notification.TEMPLATE, notification.getTemplate()),
-                foam.mlang.MLang.EQ(Notification.ID, notification.getTemplate())
-              ))
+            .where(foam.mlang.MLang.EQ(Notification.TEMPLATE, notification.getTemplate()))
             .select(new ArraySink()))
             .getArray();
 
