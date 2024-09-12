@@ -30,8 +30,8 @@ exports.init = function() {
 
 
 exports.visitPOM = function(pom) {
+  if ( X.version ) version = X.version;
   if ( ! version && pom.version ) version = pom.version;
-
   if ( typeof pom.licenses === 'string' ) {
     addLicense(pom.licenses);
   } else if ( Array.isArray(pom.licenses) ) {
