@@ -43,6 +43,11 @@ foam.CLASS({
       notification.setBody("EmailNotificationTest");
       ((DAO) x.get("notificationDAO")).put_(x, notification);
 
+      try {
+        Thread.sleep(100L);
+      } catch (InterruptedException e ) {
+        // ignore - nop
+      }
       // test for email
       DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
       List<EmailMessage> emailMessages = (List) ((ArraySink) emailMessageDAO.select(new ArraySink())).getArray();

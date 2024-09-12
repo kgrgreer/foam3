@@ -4,7 +4,7 @@ p({
   "spid":"test",
   "firstName":"Generic",
   "lastName":"Test",
-  "email":"generic-test@nanopay.net",
+  "email":"generic-test@foam.net",
   "userName":"generic-test",
   "language":{"class":"foam.nanos.auth.LanguageId","code":"en","variant":"US"},
   "emailVerified":true,

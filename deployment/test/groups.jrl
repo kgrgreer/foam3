@@ -1,0 +1,5 @@
+p({
+  class:"foam.nanos.auth.Group",
+  id:"test",
+  description:"test"
+})
