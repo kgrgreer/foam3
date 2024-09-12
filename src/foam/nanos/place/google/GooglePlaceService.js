@@ -54,8 +54,8 @@ foam.CLASS({
     {
       name: 'placeAutocomplete',
       async: true,
-      args: 'Context x, String input',
-      type: 'PlaceAutocompleteResp',
+      args: 'Context x, String input, String preferCountry',
+      type: 'foam.nanos.place.PlaceAutocompleteResp',
       javaCode: `
         var pm = PM.create(x, "GooglePlaceService_placeAutocomplete");
         ((OMLogger) x.get("OMLogger")).log("GooglePlaceService_placeAutocomplete");
@@ -63,14 +63,21 @@ foam.CLASS({
         var ret = new PlaceAutocompleteResp();
         try {
           var config = getConfigure(x);
-          if ( !config.getIsEnable() ) {
-            ret.setPredictions(new PlaceAutocompletePrediction[]{});
-            return ret;
+          var countries = config.getPlaceAutocompleteRegionCodes().clone();
+          var validCountries = Arrays.asList(countries);
+          if ( preferCountry != null ) {
+            preferCountry = preferCountry.toLowerCase();
+            if ( validCountries.contains(preferCountry) )
+              countries = new String[]{preferCountry};
           }
+          for (int i = 0; i < countries.length; i++) {
+            countries[i] = "country:" + countries[i]; 
+          }
+          Loggers.logger(x, this).debug("placeAutocomplete url2", Arrays.asList(countries));
           var uri = new URIBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json")
                       .addParameter("input", input)
                       .addParameter("language", "en")
-                      .addParameter("components", String.join("|", config.getPlaceAutocompleteRegionCodes()))
+                      .addParameter("components", String.join("|", countries))
                       .addParameter("types", String.join("|", config.getPlaceAutocompleteTypes()))
                       .addParameter("sessiontoken", session != null ? session.getId() : "")
                       .addParameter("key", config.getApiKey());
@@ -103,6 +110,8 @@ foam.CLASS({
       `
     },
     {
+      // Maybe replace with the geocoding api as it is cheaper 
+      // https://developers.google.com/maps/documentation/places/web-service/autocomplete#cost_best_practices
       name: 'placeDetail',
       async: true,
       args: 'Context x, String placeId',
