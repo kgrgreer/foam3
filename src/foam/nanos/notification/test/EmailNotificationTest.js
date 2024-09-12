@@ -38,7 +38,7 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
       Notification notification = new Notification();
-      notification.setTemplate("761590193");
+      notification.setTemplate("DAONotificationTest-test");
       notification.setUserId(185426801);
       notification.setBody("EmailNotificationTest");
       ((DAO) x.get("notificationDAO")).put_(x, notification);
