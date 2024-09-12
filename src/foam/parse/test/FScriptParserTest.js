@@ -260,8 +260,8 @@ foam.CLASS({
     sps.setString("MONTHS(birthday) == 14");
     test(((Predicate) parser.parse(sps, px).value()).f(user), "MONTHS(now - 14m)==14");
 
-    sps.setString("DAYS(birthday) >= 425 && DAYS(birthday) <= 427");
-    test(((Predicate) parser.parse(sps, px).value()).f(user), "DAYS(now - 14m)~=426");
+    sps.setString("DAYS(birthday) >= 425 && DAYS(birthday) <= 428");
+    test(((Predicate) parser.parse(sps, px).value()).f(user), "DAYS(now - 14m)~=425 through 428");
 
     month = Date.from(LocalDate.now().minusMonths(14).plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
     user.setBirthday(month);
