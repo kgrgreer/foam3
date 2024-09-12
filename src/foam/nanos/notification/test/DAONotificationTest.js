@@ -18,7 +18,9 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.Sink',
     'foam.nanos.auth.Country',
+    'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.util.Auth',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -38,6 +40,11 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
       setUp(x);
+
+      // update as test-fraud-ops user.
+//      User user = (User) ((DAO) x.get("userDAO")).find(1012L);
+//      X y = Auth.sudo(x, user);
+
       DAO countryDAO = (DAO) x.get("countryDAO");
       Country country = (Country) countryDAO.find("CA");
       country = (Country) country.fclone();
