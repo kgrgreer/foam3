@@ -58,6 +58,8 @@ foam.CLASS({
     },
     function updateState() {
       this.currentState.then(v => {
+        // If granted the register() will update the status anyway so we dont need to do this
+        if ( v == 'GRANTED' ) return;
         this.pushRegistry.updatePermissionState(null, v);
       })
     },
