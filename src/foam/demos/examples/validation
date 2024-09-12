@@ -31,6 +31,7 @@ foam.CLASS({
 });
 var t = PropertyValidationTest.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
+add(foam.u2.DetailView.create({data: t}));
 
 ##  AssertValue
 The simplest form of validation is to specify an assertValue property on a property.
@@ -151,6 +152,7 @@ foam.CLASS({
 var f = Flight.create();
 
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
+add(foam.u2.DetailView.create({data: f}));
 
 f.errors_$.dedup().sub(() => {
   log('Sub:', f.errors_ || 'no errors');
@@ -190,8 +192,8 @@ validateFlight();
 ##  Validation Errors in GUI
 --
 var f = Flight.create();
-add(f);
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
+add(foam.u2.DetailView.create({data: f}));
 
 ## ValidationPredicates
 --
