@@ -37,6 +37,14 @@ foam.CLASS({
       properties: [ [ 'nodeName', 'TR' ] ],
 
       css: `
+        ^ .error input, ^ .error input:focus {
+          border-color: $destructive400!important;
+        }
+
+        ^colorText {
+          color: $destructive400;
+        }
+
         ^label {
           vertical-align: top;
           padding-top: 4px;
@@ -59,6 +67,12 @@ foam.CLASS({
         ^errorText svg {
           width: 1rem;
           height: 1rem;
+        }
+        ^ .error input, ^ .error input:focus {
+          border-color: $destructive400!important;
+        }
+        ^colorText {
+          color: $destructive400;
         }
 
         ^helper-icon { display: inline; vertical-align: middle; margin-left: 4px; }
