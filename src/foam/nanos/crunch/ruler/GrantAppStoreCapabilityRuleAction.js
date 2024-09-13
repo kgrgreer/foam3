@@ -21,7 +21,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.CrunchService'
+    'foam.nanos.crunch.CrunchService',
+    'foam.nanos.logger.Logger'
   ],
 
   properties: [
@@ -38,10 +39,14 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
+            Logger logger = (Logger) x.get("logger");
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             CrunchService crunchService = (CrunchService) x.get("crunchService");
             User user = ucj.findSourceId(x);
-
+            if ( getCapability == null ) {
+              logger.error("Capability is not provided for GrantAppStoreCapabilityRuleAction");
+              return;
+            }
             crunchService.updateJunctionFor(x, getCapability(), null, CapabilityJunctionStatus.GRANTED, user, user);
 
           }
