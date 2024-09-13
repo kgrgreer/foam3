@@ -45,7 +45,7 @@ foam.CLASS({
             crunchService.updateJunctionFor(x, getCapability(), null, CapabilityJunctionStatus.GRANTED, user, user);
 
           }
-        }, "Grant AppStore capability when user get referral fee capability");
+        }, "Grant AppStore capability when user gets capability");
       `
     }
   ]
