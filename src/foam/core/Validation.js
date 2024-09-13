@@ -145,10 +145,12 @@ foam.CLASS({
   refines: 'foam.core.String',
 
   messages: [
-    { name: 'REQUIRED',        message: 'Required' },
-    { name: 'SHOULD_BE_LEAST', message: 'should be at least' },
-    { name: 'SHOULD_BE_MOST',  message: 'should be at most' },
-    { name: 'CHARACTER',       message: 'character' },
+    { name: 'REQUIRED',          message: 'Required' },
+    { name: 'SHOULD_BE_LEAST',   message: 'should be at least' },
+    { name: 'SHOULD_BE_MOST',    message: 'should be at most' },
+    { name: 'SHOULD_BE_BETWEEN', message: 'should be between' },
+    { name: 'AND',               message: 'and' },
+    { name: 'CHARACTER',         message: 'character' },
     // To be populated by locale where required
     { name: 'LOCALE_VALIDATION_REGEX', message: '' },
     { name: 'LOCALE_VALIDATION_ERROR_MESSAGE', message: '' }
@@ -173,15 +175,20 @@ foam.CLASS({
         var self = this;
         var a    = [];
 
-        if ( foam.Number.isInstance(this.minLength) ) {
+        // TODO: internationalize error messages
+        if ( foam.Number.isInstance(this.minLength) && foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
-            query: 'thisValue.len>='+self.minLength,
+            query: this.name + '.len>=' + self.minLength + '&&' + this.name + '.len<=' + self.maxLength,
+            errorString: `${this.label} ${foam.core.String.SHOULD_BE_BETWEEN} ${this.minLength} ${foam.core.String.AND} ${this.maxLength} ${foam.core.String.CHARACTER}${this.maxLength>1?'s':''}`
+          });
+        } else if ( foam.Number.isInstance(this.minLength) ) {
+          a.push({
+            args: [this.name],
+            query: 'thisValue.len>=' + self.minLength,
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_LEAST} ${this.minLength} ${foam.core.String.CHARACTER}${this.minLength>1?'s':''}`
           });
-        }
-
-        if ( foam.Number.isInstance(this.maxLength) ) {
+        } else if ( foam.Number.isInstance(this.maxLength) ) {
           a.push({
             args: [this.name],
             query: this.name+'.len<='+self.maxLength,
@@ -205,6 +212,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function init() {
       // Needed for props that override the default validateObj
@@ -215,7 +223,7 @@ foam.CLASS({
         let vp = this.localeValidationPredicate;
         // Duplicates code from original ValidateObj
         let self_ = this;
-        let args = [];
+        let args  = [];
         let validateFn = currValidate;
         if ( typeof currValidate === 'function' ) {
           // Break apart old validate into args and code
@@ -318,28 +326,28 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'autoValidate'
-    },
-    {
       name: 'validationPredicates',
       factory: function() {
-        if ( ! this.autoValidate ) return [];
         var self = this;
         var a    = [];
-        if ( foam.Number.isInstance(self.min) ) {
+
+        if ( foam.Number.isInstance(self.min) && foam.Number.isInstance(self.max) ) {
           a.push({
             args: [self.name],
-            query: self.name+">="+self.min,
+            query: self.name + ">=" + self.min + '&&' + self.name + "<=" + self.max,
+            errorString: `Please enter ${self.label.toLowerCase()} greater than or equal to ${self.min} and less than or equal to ${self.max}.`
+          });
+        } else if ( foam.Number.isInstance(self.min) ) {
+          a.push({
+            args: [self.name],
+            query: self.name + ">=" + self.min,
             errorString: `Please enter ${self.label.toLowerCase()} greater than or equal to ${self.min}.`
           });
-        }
-
-        if ( foam.Number.isInstance(self.max) ) {
+        } else if ( foam.Number.isInstance(self.max) ) {
           a.push({
             args: [self.name],
-            query: self.name+"<="+self.max,
-            errorString: `Please enter ${self.label.toLowerCase()} less than or equal to ${self.max}`
+            query: self.name + "<=" + self.max,
+            errorString: `Please enter ${self.label.toLowerCase()} less than or equal to ${self.max}.`
           });
         }
 
