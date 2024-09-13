@@ -100,6 +100,11 @@ foam.CLASS({
       args: 'iOSNativePushRegistration sub, HashMap msg',
       type: 'Void',
       javaCode: `
+          // Dont send notifications to subs that are in denied state
+          if ( SafetyUtil.equals(sub.getLastKnownState(), "DENIED") ) {
+            return;
+          } 
+
           APNSCredential cred = (APNSCredential) getApnsCredential();
           if ( getApnsClient() == null || cred == null) {
             // TODO: replace with alarm
@@ -138,6 +143,10 @@ foam.CLASS({
                 if (pushNotificationResponse.getTokenInvalidationTimestamp() != null) {
                     System.out.println("\t…and the token is invalid as of " +
                         pushNotificationResponse.getTokenInvalidationTimestamp());
+
+                    // If notification is rejected with invalidation timestamp, change it's status
+                    sub.setLastKnownState("DENIED");
+                    ((DAO) getX().get("pushRegistrationDAO")).put(sub);
                 }
             }
           } catch (final ExecutionException e) {
