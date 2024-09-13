@@ -26,12 +26,12 @@ exports.init = function() {
   flags.java      = false;
   flags.web       = true;
   flags.loadFiles = true;
+  version = X.version || version;
 }
 
 
 exports.visitPOM = function(pom) {
   if ( ! version && pom.version ) version = pom.version;
-
   if ( typeof pom.licenses === 'string' ) {
     addLicense(pom.licenses);
   } else if ( Array.isArray(pom.licenses) ) {

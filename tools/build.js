@@ -131,7 +131,7 @@ globalThis.foam = {
   POM: function (pom) {
     // console.log('POM:', pom);
     PROJECT = pom;
-    VERSION = pom.version;
+    VERSION = pom.version + '-' + Date.now();
     TASKS   = pom.tasks;
   }
 };
@@ -280,18 +280,8 @@ task('Build web root directory for inclusion in JAR.', [], function jarWebroot()
 
   execSync(__dirname + `/pmake.js -makers=Webroot -pom=${pom()} -builddir=${BUILD_DIR}`, {stdio: 'inherit'});
 
-  function copy(foambin) {
-    if ( fs.existsSync('./' + foambin) ) {
-      copyFile('./' + foambin, webroot + '/' + foambin);
-    }
-  }
-  copy(`foam-bin-${VERSION}.js`);
-  copy(`foam-bin-${VERSION}.js.gz`);
-  if ( STAGE_JS ) {
-    copy(`foam-bin-${VERSION}-1.js`);
-    copy(`foam-bin-${VERSION}-2.js`);
-    copy(`foam-bin-${VERSION}-1.js.gz`);
-    copy(`foam-bin-${VERSION}-2.js.gz`);
+  if ( PACKAGE || RUN_JAR ) {
+    execSync(`cp foam-bin-* ${webroot + '/'}`, {stdio: 'inherit'});
   }
 });
 
@@ -397,9 +387,6 @@ task('Remove generated files.', [], function clean() {
       if ( f.isFile()      ) rmfile(fn);
     });
   }
-
-  // TODO: convert to Node to make Windows compatible
-  execSync('rm -f foam-bin*.js');
 });
 
 
@@ -409,19 +396,22 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
+  execSync('rm foam-bin-*');
   if ( STAGE_JS ) {
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=0`, { stdio: 'inherit' });
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=1`, { stdio: 'inherit' });
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()} -stage=2`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=0`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=2`, { stdio: 'inherit' });
   } else {
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -pom=${pom()}`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()}`, { stdio: 'inherit' });
   }
 });
 
 
 task('Generate Java and JS packages.', [ 'genJava', 'genJS' ], function packageFOAM() {
   genJava();
-  genJS();
+  if ( RUN_JAR ) {
+    genJS();
+  }
 });
 
 
@@ -431,11 +421,11 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17 -proc:none' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17 proc:none' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
