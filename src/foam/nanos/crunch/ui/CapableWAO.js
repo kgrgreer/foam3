@@ -24,7 +24,7 @@ foam.CLASS({
 
   methods: [
     async function save(wizardlet) {
-      if ( wizardlet.loading ) return;
+      if ( wizardlet.loading || ! wizardlet.storeOnCapable ) return;
       if ( ! wizardlet.isAvailable ) return;
       wizardlet.loading = true;
 

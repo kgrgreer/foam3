@@ -26,8 +26,12 @@ foam.CLASS({
 //      args: 'Context x, String sub, String endpoint, String key, String auth, String token'
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-
         if ( user == null ) throw new IllegalArgumentException("Missing user.");
+
+        Session session = x.get(Session.class);
+        if ( session == null ) {
+          throw new IllegalArgumentException("Trying to register push without session"); 
+        }  
         PushRegistration r;
         if ( token == null ) {
           r = new PushRegistration();
@@ -39,19 +43,24 @@ foam.CLASS({
           ir.setEndpoint(token);
           r = ir;
         }
+        r.setSession(session.getId());
         r.setLastKnownState(currentState);
-        Session session = x.get(Session.class);
-        if ( session != null ) r.setSession(session.getId());
 
         // Check if this entry exists in dao and belongs to a real user, if yes, dont override;
         // Otherwise we lose the user's endpoint every time they sign out
         DAO dao = (DAO) x.get("pushRegistrationDAO");
         boolean isAnonymous = ((AuthService) x.get("auth")).isAnonymous(x);
         if ( isAnonymous ) {
-          PushRegistration p = (PushRegistration) dao.find(r.getEndpoint());
+          PushRegistration p = (PushRegistration) dao.find(r.getSession());
           if ( p != null && p.getUser() != user.getId() ) {
             return;
           }
+        }
+        // Rare scenario where the user gets assigned a new session but their device maintains their old endpoint
+        PushRegistration p2 = (PushRegistration) dao.find(MLang.EQ(PushRegistration.ENDPOINT, endpoint));
+        if ( p2 != null ) {
+          // Can treat this as an invalid token and the entry can be deleted as it is about to be replaced
+          dao.remove(p2);
         }
 
         // Possible issue: User A signs in and gets access to notifications then user B signs in and gets access to notifications. 
@@ -68,13 +77,22 @@ foam.CLASS({
       javaCode: `
         DAO dao = (DAO) x.get("pushRegistrationDAO");
         Session session = x.get(Session.class);
-        if ( session == null ) return;
-        PushRegistration p = (PushRegistration) dao.find(MLang.EQ(PushRegistration.SESSION, session.getId()));
+        if ( session == null ) throw new IllegalArgumentException("Trying to register push without session");
+
+        User user = ((Subject) x.get("subject")).getUser();
+        if ( user == null ) throw new IllegalArgumentException("Missing user.");
+        
+        PushRegistration p = (PushRegistration) dao.find(session.getId());
+        PushRegistration newP;
         if ( p != null ) {
-          PushRegistration newP = (PushRegistration) p.fclone();
-          newP.setLastKnownState(state);
-          dao.put(newP);
+          newP = (PushRegistration) p.fclone();
+        } else {
+          newP = new PushRegistration();
+          newP.setSession(session.getId());
+          newP.setUser(user.getId());
         }
+        newP.setLastKnownState(state);
+        dao.put(newP);
       `
     }
   ]
