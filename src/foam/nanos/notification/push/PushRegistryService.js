@@ -29,11 +29,9 @@ foam.CLASS({
         if ( user == null ) throw new IllegalArgumentException("Missing user.");
 
         Session session = x.get(Session.class);
-        if ( session != null ) {
-          r.setSession(session.getId());
-        } else {
-          throw new IllegalArgumentException("Trying to register push without session");
-        }    
+        if ( session == null ) {
+          throw new IllegalArgumentException("Trying to register push without session"); 
+        }  
         PushRegistration r;
         if ( token == null ) {
           r = new PushRegistration();
@@ -45,6 +43,7 @@ foam.CLASS({
           ir.setEndpoint(token);
           r = ir;
         }
+        r.setSession(session.getId());
         r.setLastKnownState(currentState);
 
         // Check if this entry exists in dao and belongs to a real user, if yes, dont override;
