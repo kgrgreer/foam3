@@ -15,6 +15,7 @@ foam.POM({
     { name: "crunch/EditBehaviourRefinement",          flags: "js|java" },
     { name: "agents/ConfigureFlowAgent",               flags: "web" },
     { name: "agents/DeveloperModeAgent",               flags: "web" },
+    { name: "agents/AddCapableAgent",                  flags: "web" },
     { name: "agents/RootCapabilityAgent",              flags: "web" },
     { name: "agents/LoadScenarioAgent",                flags: "web" },
     { name: "agents/StepWizardAgent",                  flags: "web" },
