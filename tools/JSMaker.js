@@ -26,7 +26,7 @@ exports.init = function() {
   flags.java      = false;
   flags.web       = true;
   flags.loadFiles = true;
-  version = X.version || '';
+  version = X.version || version;
 }
 
 
