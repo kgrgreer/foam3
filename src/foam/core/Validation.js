@@ -23,8 +23,11 @@ foam.CLASS({
       // TODO: poor choice of name, should be something with 'assert'
       name: 'jsFunc',
       expression: function(query, jsErr) {
+        var predicate;
         return function(obj) {
-          var predicate = foam.mlang.predicate.FScript.create({query: query, prop: this});
+          if ( ! predicate ) {
+            predicate = foam.mlang.predicate.FScript.create({query: query, prop: this});
+          }
           if ( ! predicate.f(obj) ) {
             const prop = this.forClass_ + '.' + foam.String.constantize(this.name);
             console.debug(prop, 'validation failed:', query)
