@@ -1,6 +1,7 @@
 ## Validation2
+--
 
-##  Type Validation
+## Type Validation
 Standard FOAM Property types have built-in validation.
 --
 foam.CLASS({
@@ -33,7 +34,7 @@ var t = PropertyValidationTest.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 add(foam.u2.DetailView.create({data: t}));
 
-##  AssertValue
+## AssertValue
 The simplest form of validation is to specify an assertValue property on a property.
 The assertValue function receives the old and new values of the property and if
 it throws an exception the new value is refused. Asserts do not provide GUI validation
@@ -95,7 +96,7 @@ log(t.age);
 try { t.age = 200; } catch (x) { log(x); }
 log(t.age);
 
-##  validateObj
+## validateObj
 The limitation of assertValue, is that it only lets you perform validations involving a single value.
 If you want to perform validations that involve more than one property, then you can use validateObj.
 Another difference of validateObj is that it doesn't block setting the property to an incorrect value,
@@ -189,7 +190,7 @@ f.returnDate = new Date('2021/04/15');
 log('Validation 5');
 validateFlight();
 
-##  Validation Errors in GUI
+## Validation Errors in GUI
 --
 var f = Flight.create();
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
