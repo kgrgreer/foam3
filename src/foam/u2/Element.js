@@ -1374,7 +1374,7 @@ foam.CLASS({
       if ( foam.core.Slot.isInstance(enabled) ) {
         var self = this;
         var value = enabled;
-        var l = function() { self.enableClass(cls, value.get(), opt_negate); };
+        var l = function() { if (self.state == self.OUTPUT) return; self.enableClass(cls, value.get(), opt_negate); };
         this.onDetach(value.dedup().sub(l));
         l();
       } else {
