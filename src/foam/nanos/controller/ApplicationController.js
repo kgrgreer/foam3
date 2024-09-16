@@ -834,7 +834,7 @@ foam.CLASS({
       if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id ) {
         this.window.onpopstate();
       } else {
-        this.pushDefaultMenu();
+        await this.pushDefaultMenu();
       }
       this.initLayout.resolve();
 
