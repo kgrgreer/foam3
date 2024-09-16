@@ -10,6 +10,6 @@ p({
     "daysOfWeek":[{"class":"foam.time.DayOfWeek",ordinal:2},{"class":"foam.time.DayOfWeek",ordinal:5}]
   },
   code:"""
-    new foam.net.ipgeo.UpdateIPGeolocationInfoCron().execute(x);
+    new foam.net.ipgeo.UpdateIPGeolocationInfoAgent().execute(x);
   """
 })

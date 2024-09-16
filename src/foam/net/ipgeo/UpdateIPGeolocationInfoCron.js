@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.net.ipgeo',
-  name: 'UpdateIPGeolocationInfoCron',
+  name: 'UpdateIPGeolocationInfoAgent',
   implements: [ 'foam.core.ContextAgent' ],
   documentation: 'Update DAO with new data from Maxmind every Tuesday and Friday.',
 
@@ -49,9 +49,9 @@ foam.CLASS({
             info.setCountry(response.getCountry().getIsoCode());
             infoDAO.put_(x, info);
           } catch (IOException e) {
-            Loggers.logger(x).error("UpdateIPGeolocationInfoCron", "Failed reading location db for", info.getIp(), e);
+            Loggers.logger(x).error("UpdateIPGeolocationInfoAgent", "Failed reading location db for", info.getIp(), e);
           } catch (GeoIp2Exception e) {
-            Loggers.logger(x).error("UpdateIPGeolocationInfoCron", "Failed getting location response for", info.getIp(), "GeoIp2Exception", e.getMessage());
+            Loggers.logger(x).error("UpdateIPGeolocationInfoAgent", "Failed getting location response for", info.getIp(), "GeoIp2Exception", e.getMessage());
           }
         }
         
