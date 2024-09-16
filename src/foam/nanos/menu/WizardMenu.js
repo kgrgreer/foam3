@@ -19,7 +19,11 @@ foam.CLASS({
     {
       class: 'foam.util.FObjectSpec',
       name: 'source',
-      documentation: 'Either a capability, string or WizardFlow'
+      documentation: 'Either a capability, string or WizardFlow',
+      adapt: function(o,n) {
+        // Override default behaviour since this prop can accept string
+        return n;
+      }
     },
     {
       class: 'Object',
