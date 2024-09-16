@@ -12,7 +12,14 @@ foam.CLASS({
     Requests user for push notification permissions based on a predicate. Does nothing if already granted on device.
   `,
 
-  imports: ['pushRegistryAgent', 'wizardController?'],
+  imports: [
+    'pushRegistryAgent',
+    'wizardController?',
+    'currentMenu',
+    'logAnalyticEvent?'
+  ],
+
+  exports: ['logAnalytics'],
 
   requires: [
     'foam.u2.dialog.StyledModal'
@@ -77,12 +84,14 @@ foam.CLASS({
           code: async function(X) {
             X.closeDialog();
             await X.pushRegistryAgent.requestNotificationPermission();
+            X.logAnalytics('ALLOW');
           }
         },
         {
           name: 'notNow',
           buttonStyle: 'TEXT',
           code: function(X) {
+            X.logAnalytics('NOT_NOW');
             X.closeDialog();
           }
         },
@@ -90,6 +99,7 @@ foam.CLASS({
           name: 'dontShowAgain',
           buttonStyle: 'TEXT',
           code: function(X) {
+            X.logAnalytics('DONT_SHOW_AGAIN');
             localStorage.setItem('refusedNotification', true);
             X.closeDialog();
           }
@@ -143,6 +153,14 @@ foam.CLASS({
       this.popup.open();
 
       return;
+    },
+    async function logAnalytics(result) {
+      this.logAnalyticEvent({
+        name: `NOTIFICATION_PERMISSION_${result}`,
+        extra: foam.json.stringify({
+          fromMenu: this.currentMenu.id
+        })
+      });
     }
   ]
 });
