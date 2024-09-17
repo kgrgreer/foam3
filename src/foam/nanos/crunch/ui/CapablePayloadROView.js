@@ -20,7 +20,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-      this.tag({...this.viewView, data$: this.data.data$ });
+      this.tag({...this.viewView, data$: this.data$.dot('data') });
     }
   ]
 });
