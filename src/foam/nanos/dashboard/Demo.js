@@ -8,10 +8,13 @@ foam.CLASS({
   package: 'foam.nanos.dashboard',
   name: 'Demo',
   extends: 'foam.dashboard.view.Dashboard',
+
   flags: ['web'],
+
   imports: [
     'nSpecDAO',
   ],
+
   requires: [
     'foam.dashboard.model.Count',
     'foam.dashboard.model.GroupBy',
@@ -19,9 +22,11 @@ foam.CLASS({
     'foam.dashboard.model.Table',
     'foam.dashboard.model.VisualizationSize'
   ],
+
   properties: [
     [ 'nodeName', 'div' ]
   ],
+
   methods: [
     function render() {
       this.SUPER();

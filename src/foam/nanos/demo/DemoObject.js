@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'foam.nanos.demo',
   name: 'DemoObject',
+
   properties: [
     {
       class: 'String',
