@@ -29,6 +29,7 @@ foam.CLASS({
     }
     ^center {
       height: 100%;
+      min-height: 20rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -157,10 +158,9 @@ foam.CLASS({
           });
           return e
             .callIf(currentValues.length == 0, function() {
-              e.start().addClass(self.myClass('center'))
+              e.addClass(self.myClass('center'))
                 .start().addClass('p-semiBold').translate(self.emptyTitle, self.emptyTitle,).end()
-                .start().addClass('p').translate(self.emptySubTitle, self.emptySubTitle).end()
-              .end();
+                .start().addClass('p').translate(self.emptySubTitle, self.emptySubTitle).end();
             })
             .forEach(currentValues, function(obj) {
               e.start().addClass('table-row')
