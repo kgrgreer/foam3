@@ -61,7 +61,7 @@ foam.CLASS({
       name: 'clickHere',
       buttonStyle: 'LINK',
       code: async function(X) {
-        this.RequestNotificationPermissionAgent.create({ title: this.NOTIFICATION_PROMPT_TITLE }, X).execute();
+        this.RequestNotificationPermissionAgent.create({ title: this.NOTIFICATION_PROMPT_TITLE, affectUserChecks: false }, X).execute();
       }
     }
   ]
