@@ -15,6 +15,8 @@ foam.CLASS({
     { class: 'Int', name: 'min', min: 1 },
     { class: 'Int', name: 'max', max: 10 },
     { class: 'Int', name: 'minMax', min: 1, max: 10 },
+    { class: 'Int', name: 'odd', validateObj: function(odd) { if ( odd % 2 == 0 ) return 'Number should be odd.'; } },
+    { class: 'Int', name: 'minMaxOdd', min: 1, max: 10, validateObj: function(odd) { if ( odd % 2 == 0 ) return 'Number should be odd.'; } },
     { class: 'Date', name: 'date' },
     { class: 'DateTime', name: 'dateTime' },
     { class: 'Time', name: 'time' },
