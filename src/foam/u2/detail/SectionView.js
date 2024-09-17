@@ -186,7 +186,7 @@ foam.CLASS({
                     }
                   }
                   var shown$ = p.createVisibilityFor(self.data$, self.controllerMode$).map(mode => mode != self.DisplayMode.HIDDEN);
-                  this.start(self.GUnit, { columns$: p.gridColumns$ })
+                  this.start(self.GUnit, { columns$: p.gridColumns$, rwColumns$: p.rwGridColumns$, prop: p })
                     .show(shown$)
                     .add(shown$.map(shown => {
                       return shown ? p.toPropertyView({ data$: self.data$ }, self.__subContext__) :

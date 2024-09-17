@@ -92,6 +92,11 @@ foam.CLASS({
     {
       name: 'gridColumns',
       value: 12
+    },
+    {
+      name: 'rwGridColumns',
+      documentation: `Can be used to change the property's grid placement in RW mode`,
+      expression: function(gridColumns) { return gridColumns; }
     }
   ]
 })
