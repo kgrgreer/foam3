@@ -66,6 +66,9 @@ foam.CLASS({
   ],
 
   sections: [
+    {
+      name: '_defaultSection', title: 'General Information'
+    },
     { name: 'renewableSection' }
   ],
 
@@ -113,8 +116,7 @@ foam.CLASS({
       name: 'id',
       class: 'String',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      section: 'basicInfo'
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
