@@ -65,18 +65,8 @@ foam.CLASS({
             }
             width = Math.min(propCols || cols, cols);
           }
-          // var startCol = currentWidth + 1;
-          // currentWidth += width;
-
-          // if ( currentWidth > cols ) {
-          //   startCol = 1;
-          //   currentWidth = width;
-          // }
-
-          // var endCol = startCol + width;
 
           ret.style({
-            // 'grid-column': `${startCol} / ${endCol}`
             'grid-column': `span ${width}`
           });
         });
