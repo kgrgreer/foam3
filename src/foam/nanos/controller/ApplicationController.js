@@ -747,6 +747,7 @@ foam.CLASS({
       defaultMenu = defaultMenu != null ? defaultMenu : '';
       if ( defaultMenu ) {
         await this.pushMenu_('', defaultMenu.id ?? '');
+        this.route = '';
         return defaultMenu;
       }
       await this.fetchSubject();
@@ -829,10 +830,10 @@ foam.CLASS({
       await this.fetchTheme();
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
-      if ( hash && hash != 'null' /* How does it even get set to null? */ && hash != this.currentMenu?.id  ) {
+      if ( hash && hash != 'null' /* How does it even get set to null? */ && ( hash != this.currentMenu?.id || this.currentMenu.authenticate ) ) {
         this.window.onpopstate();
       } else {
-        this.pushDefaultMenu();
+        await this.pushDefaultMenu();
       }
       this.initLayout.resolve();
 

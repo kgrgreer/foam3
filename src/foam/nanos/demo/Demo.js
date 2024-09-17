@@ -19,15 +19,19 @@ foam.CLASS({
   package: 'foam.nanos.demo',
   name: 'Demo',
   extends: 'foam.u2.Controller',
+
   requires: [
     'foam.nanos.demo.DemoObject'
   ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
+
   imports: [
     'demoObjectDAO'
   ],
+
   properties: [
     {
       class: 'Int',
@@ -35,6 +39,7 @@ foam.CLASS({
       value: 1
     }
   ],
+
   methods: [
     function render() {
       var self = this;
@@ -54,6 +59,7 @@ foam.CLASS({
       this.add(this.CREATE_OBJECT, this.CREATE_OTHER_OBJECT, "Listening for objects.");
     }
   ],
+
   actions: [
     {
       name: 'createObject',
