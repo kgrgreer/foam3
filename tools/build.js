@@ -121,6 +121,7 @@ var PROJECT;
 
 // Short-form of PROJECT.version
 var VERSION;
+var TAR_VERSION;
 
 // Root POM tasks and exports
 var TASKS, EXPORTS;
@@ -131,6 +132,7 @@ globalThis.foam = {
   POM: function (pom) {
     // console.log('POM:', pom);
     PROJECT = pom;
+    TAR_VERSION = pom.version;
     VERSION = pom.version + '-' + Date.now();
     TASKS   = pom.tasks;
   }
@@ -396,7 +398,7 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 
 
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
-  execSync('rm foam-bin-*');
+  execSync('rm -f foam-bin-* >/dev/null 2>&1');
   if ( STAGE_JS ) {
     execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=0`, { stdio: 'inherit' });
     execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=1`, { stdio: 'inherit' });
@@ -477,7 +479,7 @@ task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
   ensureDir(BUILD_DIR + '/package');
-  execSync(`tar -a -cf ${BUILD_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${BUILD_DIR} lib`);
+  execSync(`tar -a -cf ${BUILD_DIR}/package/${PROJECT.name}-deploy-${TAR_VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${BUILD_DIR} lib`);
 });
 
 

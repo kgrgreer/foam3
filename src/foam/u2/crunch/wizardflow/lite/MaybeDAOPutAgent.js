@@ -16,9 +16,9 @@ foam.CLASS({
   `,
 
   imports: [
-    'intercept',
+    'intercept?',
     'submitted',
-    'capable',
+    'capable?',
   ],
 
   methods: [
