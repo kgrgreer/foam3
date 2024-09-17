@@ -41,7 +41,8 @@ foam.CLASS({
   methods: [
     function init() {
       if ( ! globalThis.swPromise ) {
-        console.warn("PushRegistryAgent run without ServiceWorker creating globalThis.swPromise.");
+        console.log("PushRegistryAgent run without ServiceWorker creating globalThis.swPromise.");
+        this.currentState.resolve('')
         return;
       }
       // If there is no subject yet, this agent is useless
@@ -146,7 +147,7 @@ foam.CLASS({
         }
       } else {
         if ( ! this.supportsNotifications ) return this.currentState.resolve('');
-        this.currentState.resolve(Notification.permission.toUpperCase() );
+        this.currentState.resolve(Notification.permission.toUpperCase());
         if ( Notification.permission === 'granted' ) {
           await this.subWhenReady();
         }

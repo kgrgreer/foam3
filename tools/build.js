@@ -121,10 +121,12 @@ var PROJECT;
 
 // Short-form of PROJECT.version
 var VERSION;
-var TAR_VERSION;
+var TIMESTAMP;
+var TIMESTAMP_VERSION;
 
 // Root POM tasks and exports
 var TASKS, EXPORTS;
+var JAVA_RELEASE = '17';
 
 var BUILD_DIR  = './build';
 
@@ -132,9 +134,11 @@ globalThis.foam = {
   POM: function (pom) {
     // console.log('POM:', pom);
     PROJECT = pom;
-    TAR_VERSION = pom.version;
-    VERSION = pom.version + '-' + Date.now();
+    TIMESTAMP = Date.now();
+    VERSION = pom.version;
+    TIMESTAMP_VERSION = `${VERSION}-${TIMESTAMP}`;
     TASKS   = pom.tasks;
+    JAVA_RELEASE = pom.java || JAVA_RELEASE;
   }
 };
 
@@ -239,9 +243,9 @@ Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
 Class-Path: ${jars}
 Implementation-Title: ${PROJECT.name}
-Implementation-Version: ${VERSION}
+Implementation-Version: ${TIMESTAMP_VERSION}
 Specification-Version: ${PROJECT_REVISION}
-Implementation-Timestamp: ${new Date()}
+Implementation-Timestamp: ${TIMESTAMP}
 ${PROJECT.name}-Revision: ${PROJECT_REVISION}
 FOAM-Revision: ${FOAM_REVISION}
 Implementation-Vendor: ${PROJECT.name}
@@ -400,11 +404,11 @@ task('Copy Java libraries from BUILD_DIR/lib to APP_HOME/lib.', [], function cop
 task("Call pmake with JS Maker to build 'foam-bin.js'.", [], function genJS() {
   execSync('rm -f foam-bin-* >/dev/null 2>&1');
   if ( STAGE_JS ) {
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=0`, { stdio: 'inherit' });
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=1`, { stdio: 'inherit' });
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()} -stage=2`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${TIMESTAMP_VERSION} -pom=${pom()} -stage=0`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${TIMESTAMP_VERSION} -pom=${pom()} -stage=1`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${TIMESTAMP_VERSION} -pom=${pom()} -stage=2`, { stdio: 'inherit' });
   } else {
-    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${VERSION} -pom=${pom()}`, { stdio: 'inherit' });
+    execSync(__dirname + `/pmake.js -flags=web,-java -makers=JS -version=${TIMESTAMP_VERSION} -pom=${pom()}`, { stdio: 'inherit' });
   }
 });
 
@@ -423,11 +427,11 @@ task('Call pmake to generate & compile java, collect journals, call Maven and co
   makers += GEN_JAVA ? 'Java,Maven,Javac' : 'Maven' ;
   makers += ',Journal,Doc';
   makers += ',Resource'; // TODO: get rid of ResourceMaker and move to custom task in NP pom
-  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17 -proc:none' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=${makers} ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release ${JAVA_RELEASE} -proc:none' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Call pmake to collect journals.', [], function genJournals() {
-  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release 17 proc:none' -pom=${pom()}`, { stdio: 'inherit' });
+  execSync(__dirname + `/pmake.js -makers=Journal ${VERBOSE} -d=${BUILD_DIR}/classes/java/main -builddir=${BUILD_DIR} -outdir=${BUILD_DIR}/src/java -javacParams='--release ${JAVA_RELEASE} proc:none' -pom=${pom()}`, { stdio: 'inherit' });
 });
 
 task('Check dependencies for known vulnerabilities.', [], function checkDeps(score) {
@@ -464,12 +468,15 @@ task('Generate and compile java source.', [ 'genJava', 'copyLib' ], function bui
 
 
 task('Build Java JAR file.', [ 'versions', 'jarWebroot', 'jarImages' ], function buildJar() {
+  // remove any previous timestamped versions
+  execSync(`rm -f ${JAR_LIB_DIR}/${PROJECT.name}-*.jar >/dev/null 2>&1`);
+  execSync(`rm -f ${BUILD_DIR}/lib/${PROJECT.name}-*.jar >/dev/null 2>&1`);
+
   versions();
   jarWebroot();
   jarImages();
   jarJournals();
 
-  rmfile(JAR_OUT);
   fs.writeFileSync(BUILD_DIR + '/MANIFEST.MF', manifest());
   execSync(`jar cfm ${JAR_OUT} ${BUILD_DIR}/MANIFEST.MF -C ${BUILD_DIR} documents ${JAR_INCLUDES} -C ${BUILD_DIR}/classes/java/main .`);
 });
@@ -479,7 +486,7 @@ task('Package files into a TAR archive', [], function buildTar() {
   // Notice that the argument to the second -C is relative to the directory from the first -C, since -C
   // switches the current directory.
   ensureDir(BUILD_DIR + '/package');
-  execSync(`tar -a -cf ${BUILD_DIR}/package/${PROJECT.name}-deploy-${TAR_VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${BUILD_DIR} lib`);
+  execSync(`tar -a -cf ${BUILD_DIR}/package/${PROJECT.name}-deploy-${VERSION}.tar.gz -C ./deploy bin etc -C ../ -C${BUILD_DIR} lib`);
 });
 
 
@@ -509,7 +516,7 @@ task('Start NANOS application server.', [ 'setenv' ], function startNanos() {
 
     if ( RUN_USER ) OPT_ARGS += ` -U${RUN_USER}`;
     if ( WEB_PORT ) OPT_ARGS += ` -W${WEB_PORT}`;
-    exec(`${APP_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -n${PROJECT.name} -N${APP_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${VERSION} ${OPT_ARGS}`);
+    exec(`${APP_HOME}/bin/run.sh -Z${DAEMONIZE ? 1 : 0} -D${DEBUG ? 1 : 0} -S${DEBUG_SUSPEND ? 'y' : 'n'} -P${DEBUG_PORT} -n${PROJECT.name} -N${APP_HOME} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER ? 1 : 0} -J${PROFILER_PORT} -F${FS} -V${TIMESTAMP_VERSION} ${OPT_ARGS}`);
   } else {
     MESSAGE = `Starting NANOS ${INSTANCE}`;
 
@@ -659,7 +666,8 @@ buildEnv({
   DOCUMENT_HOME:     () => `${APP_HOME}/documents`,
   LOG_HOME:          () => `${APP_HOME}/logs`,
 
-  JAR_OUT:           () => ( PACKAGE ? `${PROJECT_HOME}/${BUILD_DIR}` : `${APP_HOME}` ) + `/lib/${PROJECT.name}-${VERSION}.jar`,
+  JAR_LIB_DIR:       () => ( PACKAGE ? `${PROJECT_HOME}/${BUILD_DIR}` : `${APP_HOME}` ) + `/lib/`,
+  JAR_OUT:           () => `${JAR_LIB_DIR}/${PROJECT.name}-${TIMESTAMP_VERSION}.jar`,
 
   // Project resources path
   PROJECT_HOME:      PWD,

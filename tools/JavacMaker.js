@@ -12,7 +12,7 @@ exports.args = [
   {
     name: 'javacParams',
     description: 'parameters to pass to javac',
-    value: '--release 11'
+    value: '-proc:none'
   }
 ];
 

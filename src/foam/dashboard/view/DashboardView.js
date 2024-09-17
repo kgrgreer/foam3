@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'DashboardView',
   extends: 'foam.dashboard.view.Dashboard',
+  mixins: ['foam.u2.layout.ContainerWidth'],
 
   imports: [
     'menuDAO',
@@ -26,7 +27,8 @@ foam.CLASS({
       flex-direction: column;
     }
     ^main {
-      height: min(600px,100%);
+      height: fit-content;
+      min-height: 600px;
       padding: 24px 32px;
     }
     ^widget-container {
@@ -57,9 +59,9 @@ foam.CLASS({
     {
       name: 'width',
       documentation: 'The fixed number of grid columns for the dashboard.',
-      expression: function(displayWidth) {
-        if ( ! displayWidth ) return 'repeat(12, 1fr)';
-        return `repeat(${displayWidth.cols}, 1fr)`;
+      expression: function(containerWidth) {
+        if ( ! containerWidth ) return 'repeat(12, 1fr)';
+        return `repeat(${containerWidth.cols}, 1fr)`;
       }
     },
     {
@@ -85,7 +87,7 @@ foam.CLASS({
   methods: [
     function render() {
       this.SUPER();
-
+      this.initContainerWidth();
       var widgetContainer = this.E()
         .addClass(this.myClass('widget-container'))
         .style({
@@ -94,12 +96,12 @@ foam.CLASS({
           'grid-gap': this.gap$
         });
 
-      Object.keys(this.widgets).map( async menuId => {
+      Object.keys(this.widgets).map(async menuId => {
         let menu = await this.menuDAO.find(menuId);
         if ( menu ) {
           let aspectRatio = this.widgets[menu.id];
           widgetContainer.startContext().start(menu.handler.view).style({
-            'grid-column': this.displayWidth$.map(v => {
+            'grid-column': this.containerWidth$.map(v => {
               return 'span ' + (v?.cols ? Math.min(aspectRatio.split('/')[0], v?.cols) : aspectRatio.split('/')[0]);
             }),
             'grid-row': 'span ' + aspectRatio.split('/')[1]

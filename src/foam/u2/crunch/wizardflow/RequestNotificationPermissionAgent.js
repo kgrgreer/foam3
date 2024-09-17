@@ -12,10 +12,24 @@ foam.CLASS({
     Requests user for push notification permissions based on a predicate. Does nothing if already granted on device.
   `,
 
-  imports: ['pushRegistryAgent', 'wizardController?'],
+  imports: [
+    'pushRegistryAgent',
+    'wizardController?',
+    'currentMenu',
+    'logAnalyticEvent?'
+  ],
+
+  exports: ['logAnalytics'],
 
   requires: [
     'foam.u2.dialog.StyledModal'
+  ],
+
+  constants: [
+    {
+      name: 'LAST_SHOWN_TIME',
+      value: 'notification-shownTimestamp'
+    }
   ],
 
   classes: [
@@ -45,11 +59,6 @@ foam.CLASS({
         {
           class: 'String',
           name: 'prefix'
-        },
-        {
-          class: 'Boolean',
-          name: 'dontShowAgain',
-          help: 'Do not show this again'
         }
       ],
       methods: [
@@ -59,11 +68,11 @@ foam.CLASS({
           .start().add(this.prefix).end()
           .start().add(this.PERMISSION_REASON).end()
           .startContext({ controllerMode: 'EDIT', data: this })
-            .start().add(this.DONT_SHOW_AGAIN).end()
             .start()
               .addClass(this.myClass('buttons'))
               .tag(this.ALLOW_NOTIFICATIONS)
               .tag(this.NOT_NOW)
+              .tag(this.DONT_SHOW_AGAIN)
             .end()
           .endContext();
         }
@@ -75,14 +84,23 @@ foam.CLASS({
           code: async function(X) {
             X.closeDialog();
             await X.pushRegistryAgent.requestNotificationPermission();
+            X.logAnalytics('ALLOW');
           }
         },
         {
           name: 'notNow',
           buttonStyle: 'TEXT',
           code: function(X) {
-            if ( this.dontShowAgain )
-              localStorage.setItem('refusedNotification', true);
+            X.logAnalytics('NOT_NOW');
+            X.closeDialog();
+          }
+        },
+        {
+          name: 'dontShowAgain',
+          buttonStyle: 'TEXT',
+          code: function(X) {
+            X.logAnalytics('DONT_SHOW_AGAIN');
+            localStorage.setItem('refusedNotification', true);
             X.closeDialog();
           }
         }
@@ -109,7 +127,13 @@ foam.CLASS({
       name: 'desc',
       documentation: 'Useful for displaying context about why this agent got executed (eg. due to sign up/completing a flow)'
     },
-    'popup'
+    'popup',
+    {
+      class: 'Boolean',
+      name: 'affectUserChecks',
+      description: 'If set to false, all user checks are ignored',
+      value: true
+    }
   ],
 
   methods: [
@@ -117,13 +141,26 @@ foam.CLASS({
       // If the wizard didnt complete, return
       if ( this.wizardController && this.wizardController.status != 'COMPLETED' ) return;
       // If this agent ever needs to enable or disable this behaviour for the user it should start using a capability to render this view, but for now, this is per device so it doesnt
-      let currentState = await this.pushRegistryAgent.currentState;
-      if ( currentState != 'DEFAULT' || ! this.pushRegistryAgent.supportsNotifications || localStorage.getItem('refusedNotification') ) return;
+      let currentState = await this.pushRegistryAgent.currentState.promise;
+      let systemCheck = currentState != 'DEFAULT' || ! this.pushRegistryAgent.supportsNotifications;
+      let userCheck = this.affectUserChecks && localStorage.getItem('refusedNotification');
+      if ( systemCheck || userCheck ) return;
+
+      // Using timestamps as it allows us to set this to an interval later if we need to
+      this.affectUserChecks && localStorage.setItem(this.LAST_SHOWN_TIME, Date.now());
 
       this.popup = this.StyledModal.create({ title$: this.title$, closeable: false }).tag(this.RequestPermissionView, { prefix$: this.desc$ });
       this.popup.open();
 
       return;
+    },
+    async function logAnalytics(result) {
+      this.logAnalyticEvent({
+        name: `NOTIFICATION_PERMISSION_${result}`,
+        extra: foam.json.stringify({
+          fromMenu: this.currentMenu.id
+        })
+      });
     }
   ]
 });
