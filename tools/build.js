@@ -243,7 +243,7 @@ Manifest-Version: 1.0
 Main-Class: foam.nanos.boot.Boot
 Class-Path: ${jars}
 Implementation-Title: ${PROJECT.name}
-Implementation-Version: ${VERSION}
+Implementation-Version: ${TIMESTAMP_VERSION}
 Specification-Version: ${PROJECT_REVISION}
 Implementation-Timestamp: ${TIMESTAMP}
 ${PROJECT.name}-Revision: ${PROJECT_REVISION}
