@@ -180,7 +180,6 @@ foam.CLASS({
       section: 'userInformation',
       validationPredicates: [
         {
-          args: ['userName', 'type'],
           query: 'type!="User"||userName!=""',
           errorMessage: 'USERNAME_REQUIRED'
         }
