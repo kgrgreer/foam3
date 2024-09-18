@@ -29,6 +29,7 @@ foam.CLASS({
       var self = this;
 
       return Promise.resolve().then(function a() {
+        if ( obj.dataString ) return obj;
         var prop = props[i++];
 
         if ( ! prop ) return obj;
