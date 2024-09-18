@@ -10,7 +10,8 @@ foam.RELATIONSHIP({
     permissionRequired: true,
     columnPermissionRequired: true,
     createVisibility: 'HIDDEN',
-    updateVisibility: 'RO'
+    updateVisibility: 'RO',
+    tableCellFormatter: { class: 'foam.u2.view.ReferenceToSummaryCellFormatter' }
   }
 });
 
