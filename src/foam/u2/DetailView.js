@@ -254,10 +254,13 @@ foam.CLASS({
         if ( route ) {
           self.currentData = self.data;
           var axiom = self.of.getAxiomByName(route);
-          if ( axiom ) this.br().add(axiom.__);
-        } else {
-          self.renderDetailView();
+          if ( axiom ) {
+            this.br().add(axiom.__);
+            return;
+          }
         }
+
+        self.renderDetailView();
       });
     },
 
