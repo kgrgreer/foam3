@@ -79,12 +79,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['repeat'],
           query: 'repeat<100',
           errorMessage: 'INVALID_REPEAT_100'
         },
         {
-          args: ['repeat'],
           query: 'repeat>=1',
           errorMessage: 'INVALID_REPEAT_1'
         }
@@ -624,20 +622,7 @@ foam.CLASS({
     {
       name: 'calculateNextDate',
       type: 'Date',
-      args: [
-        {
-          name: 'x',
-          type: 'foam.core.X'
-        },
-        {
-          name: 'date',
-          type: 'Date'
-        },
-        {
-          name: 'useDateAsMinimumDate',
-          type: 'boolean'
-        }
-      ],
+      args: 'foam.core.X x, Date date, boolean userDateAsMinimum',
       javaCode: `
         LocalDate startDate = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate minimumDate = null;

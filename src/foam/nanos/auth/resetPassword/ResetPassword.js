@@ -48,7 +48,6 @@ foam.CLASS({
       minLength: 10,
       validationPredicates: [
         {
-          args: ['newPassword'],
           query: 'newPassword.len>=10',
           errorMessage: 'PASSWORD_LENGTH_10_ERROR'
         }
@@ -66,7 +65,6 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['newPassword', 'confirmationPassword'],
           query: 'newPassword==confirmationPassword',
           errorMessage: 'PASSWORD_NOT_MATCH'
         }

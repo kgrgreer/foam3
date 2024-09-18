@@ -18,7 +18,6 @@ foam.CLASS({
       class: 'Boolean',
       validationPredicates: [
         {
-          args: ['reviewed'],
           query: 'reviewed==true',
           errorMessage: 'REVIEW_REQUIRED_ERROR'
         }

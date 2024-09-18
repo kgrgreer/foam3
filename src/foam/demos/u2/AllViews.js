@@ -11,14 +11,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id'
-    }, 
-    'name', 
+    },
+    'name',
     'value'
   ],
   methods: [
     function toSummary() { return this.id + ' ' + this.value; }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.demos.u2',
@@ -31,7 +32,6 @@ foam.CLASS({
       gridColumns: 6,
       xxxvalidationPredicates: [
         {
-          args: ['firstName'],
           query: 'firstName.len>0',
           errorString: 'Please enter a first name.'
         }
@@ -44,7 +44,6 @@ foam.CLASS({
       gridColumns: 6,
       xxxvalidationPredicates: [
         {
-          args: ['lastName'],
           query: 'lastName.len>0',
           errorString: 'Please enter a last name'
         }
@@ -52,6 +51,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.demos.u2',
@@ -66,6 +66,7 @@ foam.CLASS({
     }
   ],
 });
+
 
 foam.CLASS({
   package: 'foam.demos.u2',
@@ -881,5 +882,5 @@ foam.CLASS({
         return errs.get();
       }
     }
-  ],
+  ]
 })
