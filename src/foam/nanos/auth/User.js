@@ -54,7 +54,8 @@ foam.CLASS({
     'id',
     'type',
     'group.id',
-    'email'
+    'email',
+    'referralCode.referrer'
   ],
 
   searchColumns: [

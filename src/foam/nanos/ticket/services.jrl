@@ -80,6 +80,9 @@ p({
     "cache": false,
     "decorators": [
       {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
         "class":"foam.nanos.fs.FileArrayDAODecorator"
       }
     ]
