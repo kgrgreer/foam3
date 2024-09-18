@@ -158,6 +158,10 @@ foam.CLASS({
       name: 'of'
     },
     {
+      name: 'argSet',
+      factory: function() { return {}; }
+    },
+    {
       // The core query parser. Needs a fieldname symbol added to function
       // properly.
       name: 'baseGrammar_',
@@ -415,9 +419,10 @@ foam.CLASS({
           unary: function(v) {
             var lhs = v[0];
             var op  = v[2];
+            /*
             if ( foam.mlang.predicate.Not.isInstance(op) ) {
 
-            }
+            }*/
             return op.call(self, lhs);
           },
 
@@ -431,6 +436,7 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
+            self.argSet[expr.name] = true;
             if ( v[1] ) {
               var parts = v[1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
