@@ -21,6 +21,7 @@ foam.CLASS({
       name: 'size'
     }
   ],
+
   methods: [
     function getSize() { return this.size; }
   ]
