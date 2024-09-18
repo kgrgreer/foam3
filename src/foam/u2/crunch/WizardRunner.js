@@ -26,6 +26,11 @@ foam.CLASS({
     },
     {
       name: 'source',
+      adapt: function(o, n) {
+        if ( foam.String.isInstance(n) ) return n;
+        if ( foam.core.FObject.isInstance(n) ) return n;
+        return foam.json.parse(n);
+      },
       documentation: `
         Either a capability, string, or WizardFlow
       `
