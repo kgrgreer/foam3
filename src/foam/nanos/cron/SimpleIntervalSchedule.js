@@ -622,7 +622,7 @@ foam.CLASS({
     {
       name: 'calculateNextDate',
       type: 'Date',
-      args: 'foam.core.X x, Date date, boolean userDateAsMinimum',
+      args: 'foam.core.X x, Date date, boolean useDateAsMinimumDate',
       javaCode: `
         LocalDate startDate = getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate minimumDate = null;
