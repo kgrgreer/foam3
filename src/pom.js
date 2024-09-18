@@ -411,7 +411,7 @@ foam.POM({
     { name: "foam/blob/AbstractBlobService",                          flags: "js|java" },
     { name: "foam/blob/ProxyBlobService",                             flags: "js|java" },
     { name: "foam/blob/SubBlob",                                      flags: "js|java" },
-    { name: "foam/blob/BlobBlob",                                     flags: "js|java" },
+    { name: "foam/blob/BlobBlob",                                     flags: "web" },
     { name: "foam/blob/IdentifiedBlob",                               flags: "js|java" },
     { name: "foam/blob/ClientBlob",                                   flags: "js|java" },
     { name: "foam/blob/RestBlobService",                              flags: "js|java" },

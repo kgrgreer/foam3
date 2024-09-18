@@ -8,7 +8,6 @@ foam.CLASS({
   package: 'foam.blob',
   name: 'BlobBlob',
   extends: 'foam.blob.AbstractBlob',
-  flags: ['web'],
 
   properties: [
     {
