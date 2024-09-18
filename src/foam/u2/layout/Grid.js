@@ -15,13 +15,24 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.GUnit'
   ],
-
+  exports: ['contextData as data'],
   css: `
     ^ {
       display: grid;
       grid-gap: 24px 12px;
     }
   `,
+
+  properties: [
+    {
+      name: 'contextData',
+      documentation: "See the comment in 'exports' above as to why this is necessary.",
+      factory: function() {
+        return this.__context__.data;
+      }
+    }
+  ],
+
 
   methods: [
     async function render() {
