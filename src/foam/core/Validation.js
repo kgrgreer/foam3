@@ -142,7 +142,10 @@ foam.CLASS({
       documentation: 'ValidationPredicates supplied by Property types for internal constrains like min/max.'
     },
     {
-      name: 'validateObj',
+      name: 'validateObj'
+    },
+    {
+      name: 'internalValidateObj',
       factory: function(prop) {
         var name     = this.name;
         var label    = this.label;
@@ -157,11 +160,12 @@ foam.CLASS({
             if ( required && self_.isDefaultValue(this[name]) ) {
               return `${self.REQUIRED}`;
             }
+            var err = null;
             for ( var i = 0 ; i < vps.length ; i++ ) {
               var vp = vps[i];
-              if ( vp.jsFunc.call(self, this) ) return vp.jsErr.call(this, this);
+              if ( vp.jsFunc.call(self, this) ) err = (err ? err + ' ' : '') + vp.jsErr.call(this, this);
             }
-            return null;
+            return err;
           }];
         }
 
@@ -295,7 +299,7 @@ foam.CLASS({
       name: 'autoValidate'
     },
     {
-      name: 'validateObj',
+      name: 'internalValidateObj',
       expression: function(name, label, autoValidate) {
         if ( autoValidate ) {
           var self = this;
@@ -333,7 +337,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'validateObj',
+      name: 'internalValidateObj',
       expression: function(name, label, autoValidate) {
         if ( autoValidate ) {
           return [
@@ -443,23 +447,21 @@ foam.CLASS({
     },
 
     function createErrorSlot_(obj) {
-      var args = [];
-      var ps   = obj.cls_.getAxiomsByClass(foam.core.Property).
-        filter(function(a) { return a.validateObj; });
+      var validators = []; // [ property, errorSlot ] pairs
 
-      for ( var i = 0 ; i < ps.length ; i++ ) {
-        var p = ps[i];
-        args.push(obj.slot(p.validateObj));
-      }
+      obj.cls_.getAxiomsByClass(foam.core.Property).forEach(p => {
+        if ( p.validateObj         ) validators.push([p, obj.slot(p.validateObj)]);
+        if ( p.internalValidateObj ) validators.push([p, obj.slot(p.internalValidateObj)]);
+      });
 
       function validateObject() {
         var ret;
 
-        for ( var i = 0 ; i < ps.length ; i++ ) {
-          var p   = ps[i];
-          var err = args[i].get();
-          if ( err ) (ret || (ret = [])).push([p, err]);
-        }
+        validators.forEach(v => {
+          var prop = v[0];
+          var err  = v[1].get();
+          if ( err ) (ret || (ret = [])).push([prop, err]);
+        });
 
         return ret;
       }
