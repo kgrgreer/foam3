@@ -246,8 +246,10 @@ foam.CLASS({
         This is intended for use with WizardFlow (Fluent/DSL for wizards).
       `,
       code: function createWizardFlowSequence(x) {
+        // for non-inline wizard only, clear old capas and wizardlets from x
+        var newX = x.createSubContext({ capabilities: [], wizardlets: []});
         return this.toWizardFlowSequence(
-          this.createTransientWizardSequence(x)
+          this.createTransientWizardSequence(newX)
         );
       }
     },
