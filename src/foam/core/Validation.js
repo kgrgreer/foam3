@@ -154,10 +154,11 @@ foam.CLASS({
         var vps      = [ ...this.internalValidationPredicates, ...this.validationPredicates ];
 
         if ( vps.length ) {
+          // args: property to ExpressionSlot, which is an array of slots
           var args = foam.Array.unique(vps.map(vp => vp.args).flat());
 
           return [args, function() {
-            if ( required && self_.isDefaultValue(this[name]) ) {
+            if ( required && self.isDefaultValue(this[name]) ) {
               return `${self.REQUIRED}`;
             }
             var err = null;
@@ -194,9 +195,10 @@ foam.CLASS({
     { name: 'AND',               message: 'and' },
     { name: 'CHARACTER',         message: 'character' },
     { name: 'CHARACTERS',        message: 'characters' },
+
     // To be populated by locale where required
-    { name: 'LOCALE_VALIDATION_REGEX', message: '' },
-    { name: 'LOCALE_VALIDATION_ERROR_MESSAGE', message: '' }
+    { name: 'LOCALE_VALIDATION_REGEX',          message: '' },
+    { name: 'LOCALE_VALIDATION_ERROR_MESSAGE',  message: '' }
   ],
 
   properties: [
