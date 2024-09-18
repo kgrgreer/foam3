@@ -17,7 +17,7 @@ foam.CLASS({
       2. Display Units, if set in Property's units:
       3. Show/Hide the View based on the Property's visibility:
       4. Change the underlying View's Visibility to RO/RW/etc based on visibility:
-      5. Display error messages based on teh Property's validateObj: & validationPredicates:
+      5. Display error messages based on the Property's validateObj: & validationPredicates:
       6. Add Property's help
   `,
 
