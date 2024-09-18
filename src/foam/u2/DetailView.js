@@ -254,7 +254,7 @@ foam.CLASS({
         if ( route ) {
           self.currentData = self.data;
           var axiom = self.of.getAxiomByName(route);
-          this.br().add(axiom.__);
+          if ( axiom ) this.br().add(axiom.__);
         } else {
           self.renderDetailView();
         }
