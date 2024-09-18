@@ -344,6 +344,13 @@ foam.CLASS({
   name: 'IntPropertyValidationRefinement',
   refines: 'foam.core.Int',
 
+  messages: [
+    { name: 'AND',        message: 'and' },
+    { name: 'SHOULD_BE',  message: 'should be' },
+    { name: 'GTE',        message: 'greater than or equal to' },
+    { name: 'LTE',        message: 'less than or equal to' }
+  ],
+
   properties: [
     {
       name: 'validationPredicates',
@@ -354,19 +361,19 @@ foam.CLASS({
           a.push({
             args: [ this.name ],
             query: "thisValue>=" + this.min + "&&thisValue<=" + this.max,
-            errorString: `Please enter ${this.label.toLowerCase()} greater than or equal to ${this.min} and less than or equal to ${this.max}.`
+            errorString: `${this.label} ${this.SHOULD_BE} ${this.GTE} ${this.min} ${this.AND} ${this.LTE} ${this.max}.`
           });
         } else if ( foam.Number.isInstance(this.min) ) {
           a.push({
             args: [ this.name ],
             query: "thisValue>=" + this.min,
-            errorString: `Please enter ${this.label.toLowerCase()} greater than or equal to ${this.min}.`
+            errorString: `${this.label} ${this.SHOULD_BE} ${this.GTE} ${this.min}.`
           });
         } else if ( foam.Number.isInstance(this.max) ) {
           a.push({
             args: [ this.name ],
             query: "thisValue<=" + this.max,
-            errorString: `Please enter ${this.label.toLowerCase()} less than or equal to ${this.max}.`
+            errorString: `${this.label} ${this.SHOULD_BE} ${this.LTE} ${this.max}.`
           });
         }
 
