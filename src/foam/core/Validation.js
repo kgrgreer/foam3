@@ -104,6 +104,25 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.core',
+  name: 'ValidationPredicateArray',
+  extends: 'foam.core.FObjectArray',
+
+  properties: [
+    [ 'of', 'foam.core.ValidationPredicate' ],
+    [ 'postSet', function(o, n) { n && n.forEach(vp => vp.prop = this); } ],
+    // We override 'compare' here because we need to avoid infinite recursion
+    // that occurs when a validation predicate for a given property contains a
+    // reference to the property itself.
+    // This is an incorrect implementation of compare since it will always
+    // return a match, even if the validation predicates are different. It
+    // would be preferable to find a way to deal with circular references.
+    [ 'compare', function() { return 0; } ]
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.core',
   name: 'PropertyValidationRefinement',
   refines: 'foam.core.Property',
 
@@ -113,19 +132,14 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectArray',
-      of: 'foam.core.ValidationPredicate',
+      class: 'ValidationPredicateArray',
       name: 'validationPredicates',
-      postSet: function(o, n) {
-        n && n.forEach(vp => vp.prop = this);
-      },
-      // We override 'compare' here because we need to avoid infinite recursion
-      // that occurs when a validation predicate for a given property contains a
-      // reference to the property itself.
-      // This is an incorrect implementation of compare since it will always
-      // return a match, even if the validation predicates are different. It
-      // would be preferable to find a way to deal with circular references.
-      compare: function() { return 0; }
+      documentation: 'Developer supplied validationPredicates.'
+    },
+    {
+      class: 'ValidationPredicateArray',
+      name: 'internalValidationPredicates',
+      documentation: 'ValidationPredicates supplied by Property types for internal constrains like min/max.'
     },
     {
       name: 'validateObj',
@@ -134,7 +148,7 @@ foam.CLASS({
         var label    = this.label;
         var required = this.required;
         var self     = this;
-        var vps      = this.validationPredicates;
+        var vps      = [ ...this.internalValidationPredicates, ...this.validationPredicates ];
 
         if ( vps.length ) {
           var args = foam.Array.unique(vps.map(vp => vp.args).flat());
@@ -144,7 +158,7 @@ foam.CLASS({
               return `${self.REQUIRED}`;
             }
             for ( var i = 0 ; i < vps.length ; i++ ) {
-              var vp   = vps[i];
+              var vp = vps[i];
               if ( vp.jsFunc.call(self, this) ) return vp.jsErr.call(this, this);
             }
             return null;
@@ -187,17 +201,13 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
-      adapt: function(o, a, prop) {
-        a = foam.core.FObjectArray.ADAPT.value.call(this, o, a, prop);
-        if ( ! this.localeValidationPredicate || a.find(v => v == this.localeValidationPredicate ) ) {
-          return a;
-        }
-        a.unshift(this.localeValidationPredicate);
-        return a;
-      },
+      name: 'internalValidationPredicates',
       factory: function() {
         var a = [];
+
+        if ( this.localeValidationPredicate ) {
+          a.push(this.localeValidationPredicate);
+        }
 
         // TODO: internationalize error messages
         if ( foam.Number.isInstance(this.minLength) && foam.Number.isInstance(this.maxLength) ) {
@@ -219,6 +229,7 @@ foam.CLASS({
             errorString: `${this.label} ${foam.core.String.SHOULD_BE_MOST} ${this.maxLength} ${this.maxLength > 1 ? foam.core.String.CHARACTERS : foam.core.String.CHARACTER}`
           });
         }
+
         return a;
       }
     },
@@ -285,7 +296,7 @@ foam.CLASS({
     },
     {
       name: 'validateObj',
-      expression: function(name, label, required, validationPredicates, autoValidate) {
+      expression: function(name, label, autoValidate) {
         if ( autoValidate ) {
           var self = this;
           return [
@@ -323,7 +334,7 @@ foam.CLASS({
     },
     {
       name: 'validateObj',
-      expression: function(name, label, required, validationPredicates, autoValidate) {
+      expression: function(name, label, autoValidate) {
         if ( autoValidate ) {
           return [
             [`${name}$errors`],
@@ -353,31 +364,28 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
-        var a = [];
-
-        if ( foam.Number.isInstance(this.min) && foam.Number.isInstance(this.max) ) {
-          a.push({
+        if ( foam.Number.isInstance(this.min) && foam.Number.isInstance(this.max) )
+          return [{
             args: [ this.name ],
             query: "thisValue>=" + this.min + "&&thisValue<=" + this.max,
             errorString: `${this.label} ${this.SHOULD_BE} ${this.GTE} ${this.min} ${this.AND} ${this.LTE} ${this.max}.`
-          });
-        } else if ( foam.Number.isInstance(this.min) ) {
-          a.push({
+          }];
+        if ( foam.Number.isInstance(this.min) )
+          return [{
             args: [ this.name ],
             query: "thisValue>=" + this.min,
             errorString: `${this.label} ${this.SHOULD_BE} ${this.GTE} ${this.min}.`
-          });
-        } else if ( foam.Number.isInstance(this.max) ) {
-          a.push({
+          }];
+        if ( foam.Number.isInstance(this.max) )
+          return [{
             args: [ this.name ],
             query: "thisValue<=" + this.max,
             errorString: `${this.label} ${this.SHOULD_BE} ${this.LTE} ${this.max}.`
-          });
-        }
+          }];
 
-        return a;
+        return [];
       }
     }
   ]
@@ -470,9 +478,7 @@ foam.CLASS({
   name: 'ValidationFObjectRefinement',
   refines: 'foam.core.FObject',
 
-  axioms: [
-    foam.core.internal.Errors.create()
-  ]
+  axioms: [ foam.core.internal.Errors.create() ]
 });
 
 
@@ -490,7 +496,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
         var a = [];
         if ( this.required ) {
@@ -549,9 +555,7 @@ foam.CLASS({
     {
       name: 'ALPHA_CHAR_CHECK',
       factory: () => /^\d*$/,
-      javaFactory: `
-        return "^\d*$";
-      `
+      javaFactory: '  return "^\d*$";'
     }
   ],
 
@@ -559,7 +563,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
         return [
           {
@@ -588,7 +592,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
         return [
           {
@@ -616,7 +620,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
         var urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
         return [
@@ -645,7 +649,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'foam.core.ValidationPredicate',
-      name: 'validationPredicates',
+      name: 'internalValidationPredicates',
       factory: function() {
         var websiteRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
         return [

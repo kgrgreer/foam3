@@ -215,12 +215,31 @@ foam.CLASS({
       name: 'age',
       validationPredicates: [
         {
-          args: [ 'age' ],
           query: 'age>=18&&age<=25',
           errorString: 'Age must be between 18 and 25'
           // errorMessage:
         }
       ]
+    },
+    {
+      class: 'Int',
+      name: 'small'
+    },
+    {
+      class: 'Int',
+      name: 'large',
+      // combines Property constraints and validationPredicates
+      min: 1,
+      max: 10,
+      validationPredicates: [
+        {
+          query: 'large>small',
+          errorString: 'Large must be larger than small.'
+        }
+      ]
     }
   ]
 });
+var d = ValidationPredicatesTest.create();
+add(foam.u2.DetailView.create({data: d}));
+add(foam.u2.detail.SectionedDetailView.create({data: d}));
