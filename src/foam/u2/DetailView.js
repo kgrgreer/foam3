@@ -57,7 +57,7 @@ foam.CLASS({
         ^errorText {
           align-items: center;
           display: flex;
-          font-size: smaller;
+          font-size: small;
           gap: 0.2rem;
           justify-content: flex-start;
           min-height: 1.25em;
