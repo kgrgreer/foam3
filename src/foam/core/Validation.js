@@ -312,7 +312,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
       }
     }
   ]
