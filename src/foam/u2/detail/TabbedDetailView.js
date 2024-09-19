@@ -55,18 +55,26 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(this.slot(function(sections, data) {
+        .add(this.slot(function(sections) {
           var arraySlot = foam.core.ArraySlot.create({
             slots: sections.map((s) => s.createIsAvailableFor(self.data$, self.__subContext__.controllerMode$))
           });
 
+
+          let stableSlot = foam.core.SimpleSlot.create({ value: arraySlot.get() }, this);
+          this.onDetach(arraySlot.map(vis => {
+            if ( ! foam.util.equals(stableSlot.get(), vis) ) {
+              stableSlot.set(vis);
+            }
+          }));
+
           return self.E()
-            .add(arraySlot.map(visibilities => {
+            .add(stableSlot.map(visibilities => {
               var availableSections = visibilities.length == sections.length ? sections.filter((s, i) => s.title && visibilities[i]) : sections;
               var availableSectionsWithoutTitle = visibilities.length == sections.length ? sections.filter((s, i) => !s.title && visibilities[i]) : sections;
               
               // Check available sections with a title
-              if ( ( !availableSections || availableSections.length == 0 ) && availableSectionsWithoutTitle && availableSectionsWithoutTitle.length > 0) {
+              if ( ( ! availableSections || availableSections.length == 0 ) && availableSectionsWithoutTitle && availableSectionsWithoutTitle.length > 0 ) {
                 availableSections = availableSectionsWithoutTitle;
               } else {
                 console.warn('No visible sections in tabbed view for entity: ', self.of ? self.of.id : 'unknown');
