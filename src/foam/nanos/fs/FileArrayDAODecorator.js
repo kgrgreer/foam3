@@ -41,6 +41,12 @@ foam.CLASS({
         return Promise.resolve(obj);
       }
       if ( this.fileDAO ) newObj = await this.arrayRecursion(newObj);
+
+      if ( this.skipToData ) {
+        obj.data = newObj;
+        newObj = obj;
+      }
+
       return Promise.resolve(newObj);
     },
 
