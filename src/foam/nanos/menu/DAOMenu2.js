@@ -35,10 +35,11 @@ foam.CLASS({
 
   methods: [
     function createView(X) {
+      var config = this.config$create({}, X);
       return {
-        ...this.config$create({}, X).browseController,
-        data: this.config.dao,
-        config: this.config
+        ...config.browseController,
+        data: config.dao,
+        config: config
       };
     }
   ]
