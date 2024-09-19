@@ -203,25 +203,39 @@ add(foam.u2.detail.SectionedDetailView.create({data: f}));
 add(foam.u2.DetailView.create({data: f}));
 
 ## ValidationPredicates
-The problem with
+The problem with with validateObj is that it is JS specific. To provide the same validation for Java, you would need to also supply java validation code with
+the javaValidateObj property (and with the swiftValidateObj property for Swift).
+Validation Predicates provide a cross-language methor for specifying validation constraints. Constrains are specified with the FScript language.
+The implementations of FScript can be found in foam.parse.FScriptParser.(js|java).
+More than one validationPredicate can be specified per Property.
+A validationPredicate needs a query:, which specifies the FScript predicate which must return true for a valid object, and either errorString: to specify
+a literal String message in case the predicate fails, or else the name of an i18n message with errorMessage:.  The use of errorMessage: instead of errorString:
+makes i18n easier.
+
 --
 foam.CLASS({
   name: 'ValidationPredicatesTest',
   messages: [
-    { name: 'FIRST_NAME_REQUIRED',    message: 'First name required' },
-    { name: 'LAST_NAME_REQUIRED',     message: 'Last name required' },
-    { name: 'PHONE_NUMBER_REQUIRED',  message: 'Phone number required' },
-    { name: 'ADDRESS_REQUIRED',       message: 'Address required' }
+    { name: 'AGE_LIMIT', message: 'Age must be between 18 and 25 (internationalized).' }
   ],
   properties: [
     {
       class: 'Int',
-      name: 'age',
+      name: 'age1',
       validationPredicates: [
         {
           query: 'age>=18&&age<=25',
-          errorString: 'Age must be between 18 and 25'
-          // errorMessage:
+          errorString: 'Age must be between 18 and 25.'
+        }
+      ]
+    },
+    {
+      class: 'Int',
+      name: 'age2',
+      validationPredicates: [
+        {
+          query: 'age>=18&&age<=25',
+          errorMessage: 'AGE_LIMIT'
         }
       ]
     },
