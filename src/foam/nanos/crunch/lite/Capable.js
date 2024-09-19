@@ -200,6 +200,7 @@ foam.INTERFACE({
       name: 'capablePayloads',
       class: 'FObjectArray',
       of: 'CapabilityJunctionPayload',
+      autoValidate: true,
       externalTransient: true,
       createVisibility: 'HIDDEN',
       readVisibility: 'RO',
