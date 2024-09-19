@@ -159,7 +159,7 @@ foam.CLASS({
 
           return [args, function() {
             if ( required && self.isDefaultValue(this[name]) ) {
-              return `${self.REQUIRED}`;
+              return self.REQUIRED;
             }
             var err = null;
             for ( var i = 0 ; i < vps.length ; i++ ) {
