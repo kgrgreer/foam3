@@ -450,11 +450,14 @@ foam.CLASS({
 
     function createErrorSlot_(obj) {
       var validators = []; // [ property, errorSlot ] pairs
+      var args = new Set();
 
       obj.cls_.getAxiomsByClass(foam.core.Property).forEach(p => {
         if ( p.validateObj         ) validators.push([p, obj.slot(p.validateObj)]);
         if ( p.internalValidateObj ) validators.push([p, obj.slot(p.internalValidateObj)]);
       });
+
+      validators.forEach(v => args.add(v[1]));
 
       function validateObject() {
         var ret;
@@ -470,7 +473,8 @@ foam.CLASS({
 
       return foam.core.ExpressionSlot.create({
         obj:  obj,
-        code: validateObject
+        code: validateObject,
+        args: args.size ? [...args] : null
       });
     }
   ]
