@@ -50,8 +50,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(this.slot(function(sections, data) {
-          if ( ! data ) return;
+        .add(this.slot(function(sections) {
           var grid = self.Grid.create()
             .forEach(sections, function(s) {
               // TODO: figure out why importing controllerMode breaks
