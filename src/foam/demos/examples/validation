@@ -120,7 +120,7 @@ foam.CLASS({
 var f = Flight.create();
 
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
-add(foam.u2.DetailView.create({data: f}));
+// add(foam.u2.DetailView.create({data: f}));
 
 f.errors_$.dedup().sub(() => {
   log('Sub:', f.errors_ || 'no errors');
@@ -193,7 +193,7 @@ foam.CLASS({
 });
 var t = PropertyValidationTest.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
-add(foam.u2.DetailView.create({data: t}));
+// add(foam.u2.DetailView.create({data: t}));
 
 ## Validation Errors in GUI
 Property and validateObj validations can be seen in the GUI:
@@ -259,5 +259,40 @@ foam.CLASS({
   ]
 });
 var d = ValidationPredicatesTest.create();
-add(foam.u2.DetailView.create({data: d}));
 add(foam.u2.detail.SectionedDetailView.create({data: d}));
+// add(foam.u2.DetailView.create({data: d}));
+
+
+## Combining Validation Methods
+All three types of validations: Property constraints, validateObj, and validationPredicates can be combined in a single Property
+--
+foam.CLASS({
+  name: 'CombinedTest',
+
+  properties: [
+    { class: 'Int',    name: 'odd', validateObj: function(odd) { if ( odd % 2 == 0 ) return 'Number should be odd.'; } },
+    { class: 'Int',    name: 'minMaxOdd', min: 1, max: 10, validateObj: function(minMaxOdd) { if ( minMaxOdd % 2 == 0 ) return 'Number should be odd.'; } },
+    { class: 'String', name: 'evenLengthRequired', required: true, validateObj: function(evenLengthRequired) { if ( evenLengthRequired.length % 2 ) return 'Length should be even.'; } },
+    {
+      class: 'Int',
+      name: 'value',
+      max: 10,
+      validateObj: function(value) {
+        if ( value == 5 ) throw 'Value must not be 5.';
+      },
+      validationPredicates: [
+        {
+          query: 'value>1',
+          errorString: 'Value must be greater than 1.'
+        },
+        {
+          query: 'value!=4',
+          errorString: 'Value must not be 4.'
+        }
+      ]
+    }
+  ]
+});
+var t = CombinedTest.create();
+add(foam.u2.detail.SectionedDetailView.create({data: t}));
+// add(foam.u2.DetailView.create({data: t}));
