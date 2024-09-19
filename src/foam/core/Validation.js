@@ -349,7 +349,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
       }
     }
   ]
@@ -474,7 +474,7 @@ foam.CLASS({
       return foam.core.ExpressionSlot.create({
         obj:  obj,
         code: validateObject,
-        args: args.size ? [...args] : null
+        args: args.size ? [...args] : undefined
       });
     }
   ]
