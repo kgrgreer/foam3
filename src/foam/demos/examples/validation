@@ -42,7 +42,7 @@ The simplest form of validation is to specify an assertValue property on a prope
 The assertValue function receives the old and new values of the property and if
 it throws an exception the new value is refused. Asserts do not provide GUI validation
 because they aren't externally visible as the object never actually transitions to
-the invalid value. (But could be added to errors_. Would that be a good idea?)
+the invalid value.
 --
 foam.CLASS({
   name: 'Test',
