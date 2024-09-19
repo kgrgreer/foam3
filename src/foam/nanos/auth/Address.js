@@ -72,8 +72,7 @@ foam.CLASS({
       ],
       expression: function(suite, streetNumber, streetName) {
         return [suite, streetNumber, streetName].filter(Boolean).join(' ');
-      },
-      hidden: true
+      }
     },
     {
       class: 'String',
@@ -83,7 +82,6 @@ foam.CLASS({
       displayWidth: 50,
       gridColumns: 6,
       documentation: 'An unstructured field for the sub postal address.',
-      hidden: true
     },
     {
       class: 'Reference',
@@ -221,7 +219,7 @@ foam.CLASS({
       name: 'city',
       documentation: 'The city of the postal address.',
       required: true,
-      gridColumns: { columns: 4, xsColumns: 6, xxsColumns: 6 },
+      gridColumns: { columns: 4, xsColumns: 6, xxsColumns: 6 }
     },
     {
       class: 'String',
