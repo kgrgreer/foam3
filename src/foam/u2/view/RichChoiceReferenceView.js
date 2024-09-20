@@ -27,10 +27,11 @@ foam.CLASS({
   methods: [
     function fromProperty(prop) {
       if ( this.sections?.length == 0 ) {
-        let dao = this.__context__[prop.targetDAOKey] || this.__context__[foam.String.daoize(prop.of.name)];
+        // name$dao is added by foam.core.Reference
+        let dao = this.__context__[prop.targetDAOKey] || this.__context__[foam.String.daoize(prop.of.name)] || this.__context__.data[prop.name + '$dao'];
         this.sections = [ this.RichChoiceViewSection.create({ heading: (prop.of?.model_?.plural || 'Selections'), dao: dao }) ];
       }
-      this.SUPER(prop);
+      this.SUPER(prop); // has to go second
     }
   ]
 });
