@@ -333,7 +333,7 @@ foam.CLASS({
             this.start('tr').start('td').setAttribute('colspan', '2').add(tabs).end().end();
           }).
         end().
-        callIf(this.showActions && this.actions.length, function() {
+        callIf(self.showActions && self.actions.length, function() {
           this.start('div').addClass(self.myClass('toolbar')).add(self.actions).end();
         });
       })); // add
