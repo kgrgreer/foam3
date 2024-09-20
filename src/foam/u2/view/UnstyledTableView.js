@@ -272,7 +272,7 @@ foam.CLASS({
         // but had no effect on stack if the acction is called from context menu.
         // so if such an action is called from DAOSummaryView we go back to TableView
         // but if such an action is called from TableView we stay on the TableView screen
-        return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
+        return foam.u2.view.NoBackStack.create({delegate: this.stack});
       }
     },
     'currentMemento_',
