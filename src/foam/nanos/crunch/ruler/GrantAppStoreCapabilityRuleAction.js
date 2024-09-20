@@ -43,7 +43,7 @@ foam.CLASS({
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             CrunchService crunchService = (CrunchService) x.get("crunchService");
             User user = ucj.findSourceId(x);
-            if ( getCapability == null ) {
+            if ( foam.util.SafetyUtil.isEmpty(getCapability()) ) {
               logger.error("Capability is not provided for GrantAppStoreCapabilityRuleAction");
               return;
             }
