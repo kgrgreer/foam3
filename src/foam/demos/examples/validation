@@ -224,7 +224,7 @@ foam.CLASS({
       name: 'age1',
       validationPredicates: [
         {
-          query: 'age>=18&&age<=25',
+          query: 'age1>=18&&age1<=25',
           errorString: 'Age must be between 18 and 25.'
         }
       ]
@@ -234,7 +234,7 @@ foam.CLASS({
       name: 'age2',
       validationPredicates: [
         {
-          query: 'age>=18&&age<=25',
+          query: 'age2>=18&&age2<=25',
           errorMessage: 'AGE_LIMIT'
         }
       ]
