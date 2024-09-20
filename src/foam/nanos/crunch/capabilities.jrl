@@ -1,0 +1,9 @@
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"foam.nanos.crunch.AppStore",
+  "name":"App Store",
+  "isInternalCapability": true,
+  "permissionsGranted": [
+    "menu.read.appStore"
+  ]
+})
