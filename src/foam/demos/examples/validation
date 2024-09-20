@@ -241,6 +241,18 @@ foam.CLASS({
     },
     {
       class: 'Int',
+      name: 'age3',
+      validationPredicates: [
+        {
+          // Instead of revering to the property name directly, 'age3' in this case,
+          // we can access this properties value as 'thisValue'.
+          query: 'thisValue>=18&&thisValue<=25',
+          errorString: 'Age must be between 18 and 25.'
+        }
+      ]
+    },
+    {
+      class: 'Int',
       name: 'small'
     },
     {
