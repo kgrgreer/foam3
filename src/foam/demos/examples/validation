@@ -119,16 +119,20 @@ foam.CLASS({
 
 var f = Flight.create();
 
+function errorsToString(errors) {
+  return errors ? errors.map(e => `[${e[0].name}, ${e[1]}]`).join(', ') : 'no errors';
+}
+
 add(foam.u2.detail.SectionedDetailView.create({data: f}));
 // add(foam.u2.DetailView.create({data: f}));
 
 f.errors_$.dedup().sub(() => {
-  log('Sub:', f.errors_ || 'no errors');
+  log('Sub:', errorsToString(f.errors_));
 });
 
 function validateFlight() {
   if ( f.errors_ ) {
-    log('Errors: ', (f.errors_ || []).map(e => e[1]).join(', '));
+    log('Errors: ', errorsToString(f.errors_));
   } else {
     log('No Errors');
   }
@@ -137,24 +141,29 @@ function validateFlight() {
 f.departureDate = new Date('2021/04/14');
 validateFlight();
 
-f.passengerName = 'John Doe';
+log();
 log('Validation 1');
+f.passengerName = 'John Doe';
 validateFlight();
 
-f.email = 'john@doe.com';
+log();
 log('Validation 2');
+f.email = 'john@doe.com';
 validateFlight();
 
-f.returnFlight = true;
+log();
 log('Validation 3');
+f.returnFlight = true;
 validateFlight();
 
-f.returnDate = new Date('2021/04/13');
+log();
 log('Validation 4');
+f.returnDate = new Date('2021/04/13');
 validateFlight();
 
-f.returnDate = new Date('2021/04/15');
+log();
 log('Validation 5');
+f.returnDate = new Date('2021/04/15');
 validateFlight();
 
 ## Type Validation
