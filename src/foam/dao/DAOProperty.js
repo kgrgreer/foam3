@@ -63,7 +63,7 @@ foam.CLASS({
           return result;
         }
         if ( foam.Array.isInstance(v) && v.length ) {
-          var dao = new foam.dao.MDAO.create({of: v[0].cls})
+          var dao = foam.dao.MDAO.create({of: v[0].cls_}, this);
 
           v.forEach(i => dao.put(i));
 
