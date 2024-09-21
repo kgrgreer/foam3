@@ -80,7 +80,7 @@ foam.CLASS({
     function toE() { return this; },
 
     function isLiteral(o) {
-      return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
+      return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o) || foam.Date.isInstance(o);
     }
   ]
 });
