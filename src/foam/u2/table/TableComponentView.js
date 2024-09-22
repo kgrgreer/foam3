@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.column.ExpressionForArrayOfNestedPropertiesBuilder'
   ],
 
-  imports: ['columnConfigToPropertyConverter as importedColumnConfigConverter'],
+  imports: ['columnConfigToPropertyConverter? as importedColumnConfigConverter'],
 
   properties: [
     {
