@@ -171,7 +171,7 @@ foam.CLASS({
           if ( ! regionError ) {
             regionError = this.translationService.getTranslation(foam.locale, `*.foam.nanos.auth.Address.REGION.error`);
           }
-          return regionError ? regionError : this.REGION_REQUIRED;
+          return regionError;
         }
       }
     },

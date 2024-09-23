@@ -247,11 +247,6 @@ foam.CLASS({
       trim: true,
       tableWidth: 160,
       validateObj: function(firstName) {
-        if ( ! firstName.trim() ) {
-          if ( this.FIRST_NAME.required ) return this.FIRST_NAME.REQUIRED;
-          return;
-        }
-
         var invalidMatcher = new RegExp(foam.nanos.auth.User.INVALID_MATCHER, 'ug');
         var invalidMatch = firstName.match(invalidMatcher)
         if ( invalidMatch ) {
@@ -324,11 +319,6 @@ foam.CLASS({
       trim: true,
       tableWidth: 160,
       validateObj: function(lastName) {
-        if ( ! lastName.trim() ) {
-          if ( this.LAST_NAME.required ) return this.LAST_NAME.REQUIRED;
-          return;
-        }
-
         var invalidMatcher = new RegExp(foam.nanos.auth.User.INVALID_MATCHER, 'ug');
         var invalidMatch = lastName.match(invalidMatcher)
         if ( invalidMatch ) {

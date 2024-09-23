@@ -94,7 +94,7 @@ foam.CLASS({
           if ( prop.validateObj && prop.internalValidateObj ) {
             slot = foam.core.ExpressionSlot.create({
               args: [ this.data.slot(prop.validateObj), this.data.slot(prop.internalValidateObj) ],
-              code: function (e1, e2) { return e1 ? e1 + ' ' + ( e2 || '' ) : e2; }
+              code: function (e1, e2) { return e2 ? e2 : e1; }
             });
           } else {
             slot = prop.validateObj ?
