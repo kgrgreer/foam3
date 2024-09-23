@@ -344,7 +344,11 @@ foam.CLASS({
 var t = NestedTest.create();
 // add(foam.u2.detail.SectionedDetailView.create({data: t}));
 add(foam.u2.DetailView.create({data: t}));
+function errorsToString(errors) {
+  return errors ? errors.map(e => `[${e[0].name}, ${e[1]}]`).join(', ') : 'no errors';
+}
 t.errors_$.sub(() => {
-  console.log('Nested: ', t.errors_);
-  log('Nested:', errorsToString(t.errors_));
+  console.log('Nested: ', t.errors_ || 'no errors');
+  log('Nested:', errorsToString(t.errors_ || 'no errors'));
 });
+t.errors_;
