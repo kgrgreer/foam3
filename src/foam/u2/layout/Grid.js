@@ -15,7 +15,7 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.GUnit'
   ],
-  exports: ['contextData as data'],
+  imports: [ 'data as importedData' ],
   css: `
     ^ {
       display: grid;
@@ -23,18 +23,17 @@ foam.CLASS({
     }
   `,
 
-  properties: [
-    {
-      name: 'contextData',
-      documentation: "See the comment in 'exports' above as to why this is necessary.",
-      factory: function() {
-        return this.__context__.data;
-      }
-    }
-  ],
 
 
   methods: [
+    function init() {
+      // Override the behaviour of 'foam.u2.View' by exporting the __context__'s
+      // data as 'data' instead of this view's data. We do this because we don't
+      // want this view to change the context data, which child views might want to
+      // access.
+      this.data$ = this.importedData$;
+      this.SUPER();
+    },
     async function render() {
       this.SUPER();
       this.addClass();
@@ -65,7 +64,6 @@ foam.CLASS({
           if ( this.state == this.OUTPUT ) return;
 
         this.shown = false;
-        var currentWidth = 0;
         this.children.forEach(ret => {
           var cols = 12, width = 12;
           if ( this.containerWidth ) {

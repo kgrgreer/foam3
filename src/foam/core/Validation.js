@@ -312,7 +312,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.INTERNAL_VALIDATE_OBJ);
       }
     }
   ]
@@ -349,7 +349,7 @@ foam.CLASS({
             }
           ];
         }
-        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.VALIDATE_OBJ);
+        return foam.core.Property.INTERNAL_VALIDATE_OBJ.factory.apply(this, this.INTERNAL_VALIDATE_OBJ);
       }
     }
   ]
@@ -434,6 +434,13 @@ foam.CLASS({
         configurable: true,
         enumerable:   false
       });
+      
+      proto.describeErrors =  function() {
+        let a = (self.toSlot(this).get())?.map(a => { 
+          return { name: a[0].name, error: a[1], value: a[0].f(this) } 
+        }) ?? [];
+        console.table(a);
+      };
     },
 
     function toSlot(obj) {
