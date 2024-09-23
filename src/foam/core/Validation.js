@@ -434,10 +434,10 @@ foam.CLASS({
         configurable: true,
         enumerable:   false
       });
-      
+
       proto.describeErrors =  function() {
-        let a = (self.toSlot(this).get())?.map(a => { 
-          return { name: a[0].name, error: a[1], value: a[0].f(this) } 
+        let a = (self.toSlot(this).get())?.map(a => {
+          return { name: a[0].name, error: a[1], value: a[0].f(this) }
         }) ?? [];
         console.table(a);
       };
