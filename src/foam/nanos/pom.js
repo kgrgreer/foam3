@@ -288,6 +288,7 @@ foam.POM({
     { name: "menu/TreeGraphAltView",                                                      flags: "js" },
     { name: "security/KeyStoreManager",                                                   flags: "js|java" },
     { name: "benchmark/UUIDBenchmark",                                                    flags: "js|java" },
+    { name: "u2/ButtonRefinement",                                                        flags: "web" },
     { name: "u2/navigation/TopNavigation",                                                flags: "web" },
     { name: "u2/navigation/ResponsiveTopNav",                                             flags: "web" },
     { name: "u2/navigation/ApplicationSideNav",                                           flags: "web" },
