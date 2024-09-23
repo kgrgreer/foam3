@@ -318,3 +318,30 @@ foam.CLASS({
 var t = CombinedTest.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
+
+## Nested Validation
+--
+foam.CLASS({
+  name: 'NestedTest',
+
+  properties: [
+    {
+      class: 'FObjectProperty',
+      name: 'noAutoValidation',
+      of: 'CombinedTest'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'autoValidation',
+      of: 'CombinedTest',
+      autoValidate: true
+    }
+  ]
+});
+
+var t = NestedTest.create();
+add(foam.u2.detail.SectionedDetailView.create({data: t}));
+t.errors_$.sub(() => {
+  console.log('Nested: ', t.errors_);
+  log('Nested:', errorsToString(t.errors_));
+});
