@@ -15,7 +15,14 @@ foam.CLASS({
     'foam.u2.DisplayMode'
   ],
 
-  imports: ['data as importedData'],
+  exports: [
+    // Override the behaviour of 'foam.u2.View' by exporting the __context__'s
+    // data as 'data' instead of this view's data. We do this because we don't
+    // want this view to change the context data, which child views might want to
+    // access.
+    'contextData as data'
+  ],
+
 
   properties: [
     [ 'nodeName', 'span' ],
@@ -28,7 +35,14 @@ foam.CLASS({
       name: 'writeView'
     },
     'prop',
-    'args'
+    'args',
+    {
+      name: 'contextData',
+      documentation: "See the comment in 'exports' above as to why this is necessary.",
+      factory: function() {
+        return this.__context__.data;
+      }
+    }
   ],
 
   methods: [
@@ -42,15 +56,6 @@ foam.CLASS({
       } else {
         this.args = {};
       }
-    },
-
-    function init() {
-      // Override the behaviour of 'foam.u2.View' by exporting the __context__'s
-      // data as 'data' instead of this view's data. We do this because we don't
-      // want this view to change the context data, which child views might want to
-      // access.
-      this.data$ = this.importedData$;
-      this.SUPER();
     },
 
     function render() {
