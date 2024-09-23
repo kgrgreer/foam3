@@ -320,6 +320,8 @@ add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
 
 ## Nested Validation
+Validation errors from nested FObjects can propagate up if the autoValidate: property
+of FObjectProperty is set to true.
 --
 foam.CLASS({
   name: 'NestedTest',
