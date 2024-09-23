@@ -435,7 +435,7 @@ foam.CLASS({
         enumerable:   false
       });
 
-      proto.describeErrors =  function() {
+      proto.describeErrors = function() {
         let a = (self.toSlot(this).get())?.map(a => {
           return { name: a[0].name, error: a[1], value: a[0].f(this) }
         }) ?? [];
