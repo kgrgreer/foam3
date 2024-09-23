@@ -96,7 +96,7 @@ foam.CLASS({
     {
       name: 'theme',
       factory: function() {
-        return foam.u2.theme.StandaloneTheme.create({}, this);
+        return foam.u2.theme.StandaloneTheme.create({ id: 'standalone-foam', name: 'standalone-foam' }, this);
       }
     }
   ],
