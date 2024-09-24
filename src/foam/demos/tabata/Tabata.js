@@ -39,12 +39,14 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'currentRound',
+      visibility: 'RO',
       value: 1
     },
     {
       class: 'Int',
       name: 'seconds',
-      label: 'Total time',
+      label: 'Total Time',
+      visibility: 'RO',
       postSet: function() {
         this.elapsed = this.seconds - this.roundStart;
         this.remaining = this.roundLength - this.elapsed;
@@ -72,7 +74,8 @@ if newValue == 0 {
     },
     {
       class: 'String',
-      name: 'action'
+      name: 'action',
+      visibility: 'RO'
     },
     {
       class: 'Int',
