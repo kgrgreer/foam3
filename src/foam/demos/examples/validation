@@ -347,7 +347,7 @@ add(foam.u2.DetailView.create({data: t}));
 function errorsToString(errors) {
   return errors ? errors.map(e => `[${e[0].name}, ${e[1]}]`).join(', ') : 'no errors';
 }
-t.errors_$.sub(() => {
+t.errors_$.dedup().sub(() => {
   console.log('Nested: ', t.errors_ || 'no errors');
   log('Nested:', errorsToString(t.errors_ || 'no errors'));
 });
