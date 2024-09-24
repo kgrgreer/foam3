@@ -38,7 +38,7 @@
     },
     {
       name: 'INFO',
-      color: '$success400',
+      color: '$primary400',
       glyph: 'checkmark'
     },
     {
