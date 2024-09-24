@@ -360,6 +360,11 @@ foam.CLASS({
             value: prop
           }));
         }
+
+        // CONSTANTS are regarded as fields that resolve to the constant value
+        // so it can be used directly in FScript query.
+        // Eg. query: 'accountNumber~ACC_NUM_REGEX' to match the accountNumber
+        // with ACC_NUM_REGEX constant defined in the same model.
         for ( var i = 0 ; i < constants.length ; i++ ) {
           var con = constants[i];
           fields.push(this.Literal.create({
@@ -436,7 +441,11 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
-            self.argSet[expr.name] = true;
+
+            // CONSTANT field is not a property and does not have a name so
+            // no need to be added to the validation predicate argSet
+            if ( expr.name ) self.argSet[expr.name] = true;
+
             if ( v[1] ) {
               var parts = v[1];
               for ( var i = 0 ; i < parts.length ; i++ ) {
