@@ -37,6 +37,11 @@
       glyph: 'exclamation'
     },
     {
+      name: 'INFO',
+      color: '$success400',
+      glyph: 'checkmark'
+    },
+    {
       name: 'SUCCESS',
       color: '$success400',
       glyph: 'checkmark'
