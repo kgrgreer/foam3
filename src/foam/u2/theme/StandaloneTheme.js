@@ -25,33 +25,16 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id',
-      includeInDigest: true,
-      section: 'infoSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      name: 'id'
     },
     {
       class: 'String',
-      name: 'name',
-      writePermissionRequired: true
+      name: 'name'
     },
     {
       class: 'Image',
       name: 'logo',
-      documentation: 'The logo to display in the application.',
-      displayWidth: 60,
-      view: {
-        class: 'foam.u2.MultiView',
-        views: [
-          {
-            class: 'foam.u2.tag.TextArea',
-            rows: 4, cols: 80
-          },
-          { class: 'foam.u2.view.ImageView' },
-        ]
-      },
-      writePermissionRequired: true
+      documentation: 'The logo to display in the application.'
     },
     {
       class: 'FObjectProperty',
