@@ -50,22 +50,22 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
+      var oldCreate  = cls.create;
+      var axiom      = this;
+      var isFirstCSS = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
-      cls.create = function(args, opt_parent) {
+      cls.create = function(args, opt_parent, opt_skipCSS) {
         var X = opt_parent ?
           ( opt_parent.__subContext__ || opt_parent.__context__ || opt_parent ) :
           foam.__context__;
 
         // Call through to the original create
         try {
-          return oldCreate.call(this, args, cls.model_.inheritCSS ? X : X.createSubContext({skipCSSInstall: true}));
+          return oldCreate.call(this, args, X, opt_skipCSS || ! cls.model_.inheritCSS);
         } finally {
-          if ( ! X.skipCSSInstall ) {
+          if ( ! opt_skipCSS ) {
             // Install CSS if not already installed in this document for this cls
             axiom.maybeInstallInDocument(X, this);
           }
