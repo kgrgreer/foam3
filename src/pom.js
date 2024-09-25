@@ -1083,6 +1083,8 @@ foam.POM({
     { name: "foam/u2/layout/MDNotificationMessage",                   flags: "web" },
     { name: "foam/u2/md/tag/PaperDropdown",                           flags: "web" },
     { name: "foam/u2/md/tag/PaperInput",                              flags: "web" },
+    { name: "foam/u2/theme/ThemeGlyphs",                              flags: "js|java" },
+    { name: "foam/u2/theme/StandaloneTheme",                          flags: "js" },
     { name: "foam/counter/Counter",                                   flags: "js|java" },
     { name: "foam/dashboard/view/DashboardCitationView",              flags: "js" },
     { name: "foam/dashboard/view/DateRangeChoiceView",                flags: "js" },

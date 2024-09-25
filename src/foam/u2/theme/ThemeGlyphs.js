@@ -6,7 +6,7 @@
 
 
 foam.CLASS({
-  package: 'foam.nanos.theme',
+  package: 'foam.u2.theme',
   name: 'ThemeGlyphs',
 
   documentation: `
