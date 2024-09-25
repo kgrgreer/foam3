@@ -205,8 +205,6 @@ foam.CLASS({
     'minLength',
     'maxLength',
     {
-      class: 'FObjectArray',
-      of: 'foam.core.ValidationPredicate',
       name: 'internalValidationPredicates',
       factory: function() {
         var a = [];
