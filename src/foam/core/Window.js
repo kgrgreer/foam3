@@ -65,6 +65,7 @@ foam.CLASS({
     'returnExpandedCSS',
     'setInterval',
     'setTimeout',
+    'theme',
     'warn',
     'params',
     'window'
@@ -90,6 +91,12 @@ foam.CLASS({
           m[a[0]] = a[1];
         });
         return m;
+      }
+    },
+    {
+      name: 'theme',
+      factory: function() {
+        return foam.u2.theme.StandaloneTheme.create({ id: 'standalone-foam', name: 'standalone-foam' }, this);
       }
     }
   ],
