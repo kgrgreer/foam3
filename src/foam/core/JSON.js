@@ -741,11 +741,7 @@ foam.LIB({
   methods: [
     {
       name: 'parse',
-      args: [
-        { type: 'Any',     name: 'o' },
-        { type: 'Class',   name: 'opt_class' },
-        { type: 'Context', name: 'opt_ctx' }
-      ],
+      args: 'Any o, Class opt_class, Context opt_ctx',
       code: foam.mmethod({
         Array: function(o, opt_class, opt_ctx) {
           if ( foam.String.isInstance(opt_class) ) opt_class = ( opt_ctx || foam ).lookup(opt_class);
