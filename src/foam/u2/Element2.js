@@ -163,7 +163,9 @@ foam.CLASS({
             return;
           } /* else if ( foam.core.FObject.isInstance(val) ) {
             n = foam.u2.DetailView.create({data: val}, this);
-          } */ else {
+          } */ else if ( val.toE ) {
+            n = val.toE({}, this);
+          } else {
             console.log('Unknown slot type: ', typeof val);
             debugger;
           }
