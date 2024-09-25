@@ -1,0 +1,15 @@
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"Update IPGeolocationInfoDAO Cron",
+  description:"Update ipgeolocationinfodao with new db info every tuesday and friday",
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "second":0,
+    "minute":59,
+    "hours":"23",
+    "daysOfWeek":[{"class":"foam.time.DayOfWeek",ordinal:2},{"class":"foam.time.DayOfWeek",ordinal:5}]
+  },
+  code:"""
+    new foam.net.ipgeo.UpdateIPGeolocationInfoAgent().execute(x);
+  """
+})
