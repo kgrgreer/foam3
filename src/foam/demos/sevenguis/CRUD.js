@@ -53,14 +53,14 @@ foam.CLASS({
 
   css: `
     ^ { padding: 10px; }
-    ^ .detailView { border: none; background-color:$white; }
     ^ .content { width: 1000px; }
-    ^ .detailPane { width: 45%; display: inline-block; margin-left: 50px; }
+    ^ .detailPane { width: 45%; display: inline-block; margin-left: 50px; margin-top: 16px; }
     ^ .label { color: #039; padding-top: 6px; }
     ^ .prefix { margin-left: 10px; }
     ^ button { margin-top: 16px; }
     ^ .summaryPane { width: 49%; display: inline-block; vertical-align: top; }
     ^ .foam-u2-view-ScrollTableView { height: 227px; outline: none; margin-top: 16px; }
+    ^ .foam-u2-DetailView-title { background: none; border: none; }
   `,
 
   properties: [
