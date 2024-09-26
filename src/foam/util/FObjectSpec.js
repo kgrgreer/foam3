@@ -31,6 +31,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Class',
+      name: 'of',
+      value: 'foam.core.FObject'
+    },
     [
       'fromJSON',
       function fromJSON(value, ctx, prop, json) {
@@ -57,6 +62,9 @@ foam.CLASS({
             if ( ! spec ) {
               foam.assert(false, 'Called $create on empty FObjectSpec');
               return;
+            }
+            if ( ! spec.class ) {
+              spec.class = self.of.id;
             }
             return self.cls_.createFObject(spec, args, this, x);
           }
