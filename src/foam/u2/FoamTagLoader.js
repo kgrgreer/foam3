@@ -44,6 +44,7 @@ foam.CLASS({
           this.installView(el, obj.toE({}, obj));
         } else if ( ! foam.u2.Element.isInstance(obj) )  {
           // happens for U3
+//           var view = foam.u2.detail.SectionedDetailView.create({data: obj, showActions: true});
           var view = foam.u2.DetailView.create({data: obj, showActions: true});
           el.appendChild(view.element_);
           view.load();
