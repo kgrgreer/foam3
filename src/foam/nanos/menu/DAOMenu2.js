@@ -28,18 +28,24 @@ foam.CLASS({
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create();
+        return { class: 'foam.comics.v2.DAOControllerConfig' }
+      }
+    },
+    {
+      name: 'config_',
+      factory: function() {
+        return this.config$create({}, this);
       }
     }
   ],
 
   methods: [
     function createView(X) {
-      var config = this.config$create({}, X);
+      this.config_ = this.config$create({}, X);
       return {
-        ...config.browseController,
-        data: config.dao,
-        config: config
+        ...this.config_.browseController,
+        data: this.config_.dao,
+        config: this.config_
       };
     }
   ]

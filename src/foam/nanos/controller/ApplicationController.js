@@ -1003,7 +1003,7 @@ foam.CLASS({
       // Check if current menu has object
       if ( id && foam.nanos.menu.DAOMenu2.isInstance(this.currentMenu.handler) ) {
         try {
-          let result = await this.currentMenu.handler.config.dao.find(id);
+          let result = await this.currentMenu.handler.config_.dao.find(id);
           if ( result ) {
             this.routeTo(this.currentMenu.id + '/' + id);
             return;
@@ -1013,12 +1013,12 @@ foam.CLASS({
       // Finds the correct menu for a given dao and optionally an object
       let menuDAOs = (await this.__subContext__.menuDAO.select())
         .array?.filter(v => foam.nanos.menu.DAOMenu2.isInstance(v.handler));
-      menuDAOs = menuDAOs.filter(m => m.handler.config.dao.of?.isSubClass(dao.of) );
+      menuDAOs = menuDAOs.filter(m => m.handler.config_.dao.of?.isSubClass(dao.of) );
       if ( ! id ) {
         return this.routeTo(menuDAOs[0].id);
       }
       for ( var i = 0; i < menuDAOs.length; i++ ) {
-        var result = await menuDAOs[i].handler.config.dao.find(id);
+        var result = await menuDAOs[i].handler.config_.dao.find(id);
         if ( result ) {
           this.routeTo(menuDAOs[i].id + (id ? '/' + id : ''))
           return;

@@ -18,7 +18,6 @@ foam.CLASS({
       flex-direction: column;
       flex-wrap: nowrap;
       align-items: center;
-      background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
       border-radius: 8px;
     }
     ^image-one {
@@ -39,7 +38,7 @@ foam.CLASS({
       class: 'String',
       name: 'imgPath',
       expression: function(loginVariables) {
-        return loginVariables.imgPath || (this.theme.largeLogo ?? this.theme.logo);
+        return loginVariables.imgPath || (this.theme?.largeLogo || this.theme?.logo);
       }
     },
     {
