@@ -11,17 +11,17 @@ foam.CLASS({
 
   documentation: 'A single radio button. Logic implemented in RadioView.js',
 
-  imports: ['theme?'],
+  imports: [ 'theme?' ],
 
   css: `
-  ^innerCircle.selected{
+  ^innerCircle.selected {
     r: 5px;
   }
-  ^innerCircle{
+  ^innerCircle {
     transition: 0.1s ease;
     transform-origin: center center;
     transform-box: stroke-box;
-    r: 0px;
+    r: 0;
   }
   `,
 
@@ -30,12 +30,8 @@ foam.CLASS({
     {
       name: 'selectedColor',
       expression: function(isSelected, isDisabled) {
-        if ( isDisabled ) {
-          return '$grey100';
-        }
-        if ( isSelected ) {
-          return '$primary400';
-        }
+        if ( isDisabled ) return '$grey100';
+        if ( isSelected ) return '$primary400';
         return '$grey500';
       }
     },
