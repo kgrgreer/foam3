@@ -51,7 +51,7 @@ foam.CLASS({
       `,
       javaFactory: `
         return new String[]{
-          "street_address",  "room", "street_number"
+          "address"
         };
       `
     },
