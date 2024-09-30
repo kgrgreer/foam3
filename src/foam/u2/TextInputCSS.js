@@ -32,7 +32,7 @@ foam.CLASS({
           color: $black;
           background-color:$white;
           border-color: $grey400;
-          // width: 100%;
+          width: 100%;
         }
 
         ^:hover {
