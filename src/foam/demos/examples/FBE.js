@@ -360,7 +360,7 @@ foam.CLASS({
         self.testData += await fetch(section).then(response => response.text()).catch(x => { debugger; });
       }
 
-      var modules = (this.params?.modules || 'u2all,u2,faq,validation,examples,dao').split(',');
+      var modules = (this.params?.modules || 'views,u2all,u2,faq,validation,examples,dao').split(',');
 
       for ( const m of modules ) await load(m);
 
