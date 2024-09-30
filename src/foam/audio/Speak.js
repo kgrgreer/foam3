@@ -138,6 +138,19 @@ foam.CLASS({
       u.pitch  = this.pitch;
 
       synth.speak(u);
-    }
+    },
+
+    function playNextVoice() {
+      if ( ! this.voices ) return;
+
+      var i = this.voices.indexOf(this.voice);
+      if ( i == -1 || i == this.voices.length -1 ) {
+        this.voice = this.voices[0];
+      } else {
+        this.voice = this.voices[i+1];
+      }
+
+      this.play();
+    },
   ]
 });
