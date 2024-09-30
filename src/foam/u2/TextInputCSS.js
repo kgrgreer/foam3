@@ -22,6 +22,7 @@ foam.CLASS({
       name: 'code',
       value: `
         ^ {
+          box-sizing: border-box;
           min-width: 64px;
           height: $inputHeight;
           padding-left: $inputHorizontalPadding;
@@ -31,7 +32,7 @@ foam.CLASS({
           color: $black;
           background-color:$white;
           border-color: $grey400;
-          width: 100%;
+          // width: 100%;
         }
 
         ^:hover {
