@@ -159,6 +159,9 @@ foam.CLASS({
       margin-bottom: 10px;
       padding: 6px;
     }
+
+    ^toolbar { margin-top: 4px; }
+    ^toolbar .foam-u2-ActionView { margin-right: 4px; }
   `,
 
   properties: [
