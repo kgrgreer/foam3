@@ -563,7 +563,7 @@ foam.CLASS({
       intercept.capables.forEach(capable => {
         // Create one capable wizard per capable requirement listed in capable.capabilityIds.
         capable.capabilityIds.forEach((c) => {
-          var seq = this.toGraphAgentWizard(this.createCapableWizardSequence(intercept, capable, c, x));
+          var seq = this.createCapableWizardSequence(intercept, capable, c, x);
           p = p.then((x) => {
             // Halt launching subsequent capable wizards if users closed the wizard.
             return x?.wizardController?.status == 'DISCARDED' ? x
