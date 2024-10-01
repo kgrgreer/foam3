@@ -30,6 +30,8 @@ foam.CLASS({
       height: fit-content;
       min-height: 600px;
       padding: 24px 32px;
+      max-width: 160rem;
+      margin: auto;
     }
     ^widget-container {
       width: 100%;
