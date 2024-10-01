@@ -58,7 +58,7 @@ foam.CLASS({
     }
     ^:checked:after{
       position:relative;
-      top:1;
+      top: 1px;
       content: url("/images/checkmark-white.svg");
     }
     ^ input:focus + label::before {
