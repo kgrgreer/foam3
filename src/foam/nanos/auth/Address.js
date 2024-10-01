@@ -77,7 +77,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'address2',
-      label: 'Address Line 2',
+      label: 'Address Line 2 (Apt, suite, etc.)',
       width: 70,
       displayWidth: 50,
       gridColumns: 6,

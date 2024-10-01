@@ -35,6 +35,7 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       gap: 12px;
+      container: addressView / inline-size;
     }
 
     ^three-column {
@@ -55,9 +56,14 @@ foam.CLASS({
       css: `
         ^two-column {
           display: grid;
-          grid-template-columns: 3fr 1fr;
+          grid-template-columns: 1fr;
           grid-gap: 8px;
           align-items: start;
+        }
+        @container addressView (width > 768px) {
+          ^two-column {
+            grid-template-columns: 2fr 1fr;
+          }
         }
       `,
       methods: [
@@ -77,13 +83,12 @@ foam.CLASS({
               }
             } 
           })
-            .style({ 'grid-column': self.data$.dot('structured').map(v => v ? 'span 1' :'span 2') })
+            // .style({ 'grid-column': self.data$.dot('structured').map(v => v ? 'span 1' :'span 2') })
           .end()
           .add(self.slot(function(data$structured) {
-            if ( ! data$structured ) return this.E().hide();
+            if ( data$structured ) console.warn('Using autocompleter with structured addresses may cause validation issues');
             return this.E().style({ display: 'contents' })
-            .start(self.data.SUITE.__)
-            .end()
+            .tag(data$structured ? self.data.SUITE.__ : self.data.ADDRESS2.__)
           }))
         .end();
         }
