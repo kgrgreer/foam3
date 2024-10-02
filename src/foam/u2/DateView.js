@@ -19,7 +19,7 @@ foam.CLASS({
 
   css: `
     ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); margin-left: -8px; }
-    ^ { height: $inputHeight; width: 100%; }
+    ^ { height: $inputHeight; min-width: 130px; }
   `,
 
   messages: [
