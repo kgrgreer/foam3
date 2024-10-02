@@ -746,8 +746,12 @@ foam.CLASS({
       var defaultMenu = await this.findDefaultMenu(this.client.menuDAO);
       defaultMenu = defaultMenu != null ? defaultMenu : '';
       if ( defaultMenu ) {
-        await this.pushMenu_('', defaultMenu.id ?? '');
-        this.route = '';
+        if ( defaultMenu.authenticate ) {
+          this.routeTo(defaultMenu.id);
+        } else {
+          await this.pushMenu_('', defaultMenu.id ?? '');
+          this.memento_.str = '';
+        }
         return defaultMenu;
       }
       await this.fetchSubject();
