@@ -147,7 +147,7 @@ foam.CLASS({
       width: 100%;
     }
     ^value-view-container {
-      display: contents;
+      display: block;
     }
     .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
       margin: 5px 0px;
