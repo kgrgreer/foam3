@@ -102,8 +102,8 @@ foam.CLASS({
           if ( group !== curGroup ) {
             this.start().
               addClass('h300', this.myClass('group-title')).
-              translate(group)
-            .end();
+              translate(group).
+            end();
           }
           curGroup = group;
 
