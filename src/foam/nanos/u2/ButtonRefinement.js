@@ -12,7 +12,7 @@ foam.CLASS({
   properties: [
     {
       name: 'buttonStyle',
-      factory: function() { return 'TERTIARY'; }
+      factory: function() { return foam.u2.ButtonStyle.TERTIARY; }
     }
   ]
 });
