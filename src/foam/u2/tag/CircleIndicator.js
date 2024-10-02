@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.tag',
   name: 'CircleIndicator',
   extends: 'foam.u2.Element',
+
   documentation: `
     Displays a coloured circle containing a number or icon.
   `,
@@ -129,8 +130,7 @@ foam.CLASS({
         .attr('border');
 
       if ( this.glyph || this.icon ) {
-        this.start(this.Image, { data: this.icon, glyph: this.glyph })
-        .end();
+        this.tag(this.Image, { data: this.icon, glyph: this.glyph, displayWidth: size, displayHeight: size});
       }
 
       if ( this.indicateProcessing ) {
@@ -143,4 +143,3 @@ foam.CLASS({
     }
   ]
 });
-
