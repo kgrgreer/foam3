@@ -1190,7 +1190,7 @@ foam.CLASS({
         return this.add(translation);
       }
 //      console.warn('Missing Translation Service in ', this.cls_.name);
-//      opt_default = opt_default || 'NO TRANSLATION SERVICE OR DEFAULT';
+      if ( opt_default === undefined ) opt_default = source;
       return this.add(opt_default);
     },
 
