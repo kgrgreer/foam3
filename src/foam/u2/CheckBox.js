@@ -35,7 +35,7 @@ foam.CLASS({
       -webkit-appearance: none;
       appearance: none;
       border-radius: 2px;
-      border: solid 2px $grey600;
+      border: solid 1px $grey600;
       height: 1.275em;
       margin: 7px 0;
       padding: 0px;
