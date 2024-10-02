@@ -15,13 +15,11 @@ foam.CLASS({
 
   documentation: 'View for editing Date values.',
 
-  axioms: [
-    { class: 'foam.u2.TextInputCSS' }
-  ],
+  mixins: [ 'foam.u2.TextInputCSS' ],
 
   css: `
     ^:read-only:not(:disabled) { border: none; background: rgba(0,0,0,0); margin-left: -8px; }
-    ^ { width: 100%; }
+    ^ { height: $inputHeight; width: 100%; }
   `,
 
   messages: [

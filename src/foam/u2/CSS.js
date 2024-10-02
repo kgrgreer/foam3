@@ -24,7 +24,7 @@ foam.CLASS({
       name: 'expands_',
       documentation: 'True if the CSS contains a ^ which needs to be expanded.',
       expression: function(code) {
-        return code.includes('^') || code.includes(foam.u2.Element.CSS_SELF);
+        return code.includes('^') || code.includes(foam.u2.Element.CSS_SELF) /* << */;
       }
     }
   ],
@@ -71,24 +71,26 @@ foam.CLASS({
     },
 
     function expandCSS(cls, text, ctx) {
-      if ( ! this.expands_ ) return text;
+      if ( this.expands_ ) {
+        /* Performs expansion of the ^ shorthand on the CSS. */
+        // TODO(braden): Parse and validate the CSS.
+        // TODO(braden): Add the automatic prefixing once we have the parser.
+        var base = '.' + foam.String.cssClassize(cls.id);
+        text = text.replace(/\^(.)/g, function(match, next) {
+          var c = next.charCodeAt(0);
+          // Check if the next character is an uppercase or lowercase letter,
+          // number, - or _. If so, add a - because this is a modified string.
+          // If not, there's no extra -.
+          if ( (65 <= c && c <= 90) || (97 <= c && c <= 122) ||
+              (48 <= c && c <= 57) || c === 45 || c === 95 ) {
+            return base + '-' + next;
+          }
 
-      /* Performs expansion of the ^ shorthand on the CSS. */
-      // TODO(braden): Parse and validate the CSS.
-      // TODO(braden): Add the automatic prefixing once we have the parser.
-      var base = '.' + foam.String.cssClassize(cls.id);
-      text = text.replace(/\^(.)/g, function(match, next) {
-        var c = next.charCodeAt(0);
-        // Check if the next character is an uppercase or lowercase letter,
-        // number, - or _. If so, add a - because this is a modified string.
-        // If not, there's no extra -.
-        if ( (65 <= c && c <= 90) || (97 <= c && c <= 122) ||
-            (48 <= c && c <= 57) || c === 45 || c === 95 ) {
-          return base + '-' + next;
-        }
+          return base + next;
+        });
+      }
 
-        return base + next;
-      });
+      // CSS Tokens should expand even if expands_ is false
       return foam.CSS.replaceTokens(text, cls, ctx);
     }
   ]

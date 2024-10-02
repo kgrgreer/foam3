@@ -162,12 +162,18 @@ foam.CLASS({
 
     ^toolbar { margin-top: 4px; }
     ^toolbar .foam-u2-ActionView { margin-right: 4px; }
+
+    ^.collapsePropertyViews .foam-u2-TextInputCSS { width: auto; }
   `,
 
   properties: [
     {
       name: 'route',
       memorable: true
+    },
+    {
+      class: 'Boolean',
+      name: 'expandPropertyViews'
     },
     {
       name: 'data',
@@ -289,6 +295,7 @@ foam.CLASS({
         var tabs;
 
         return this.start('table').
+          enableClass('collapsePropertyViews', this.expandPropertyViews$, true).
           attrs({'cellpadding': 2}).
           addClass(self.myClass()).
           callIf(self.title, function() {

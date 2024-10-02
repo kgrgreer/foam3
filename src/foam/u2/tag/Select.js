@@ -9,9 +9,7 @@ foam.CLASS({
   name: 'Select',
   extends: 'foam.u2.View',
 
-  axioms: [
-    { class: 'foam.u2.TextInputCSS' }
-  ],
+  mixins: [ 'foam.u2.TextInputCSS' ],
 
   css: `
     ^:disabled {
@@ -27,6 +25,7 @@ foam.CLASS({
       background-position: right 0.5em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
+      height: $inputHeight;
       max-width: 100%;
       overflow: hidden;
       padding-top: 1px;

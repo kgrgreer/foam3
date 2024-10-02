@@ -11,12 +11,11 @@ foam.CLASS({
 
   documentation: 'View for editing Time values.',
 
-  axioms: [
-    { class: 'foam.u2.TextInputCSS' }
-  ],
+  mixins: [ 'foam.u2.TextInputCSS' ],
 
   css: `
     ^ {
+      height: $inputHeight;
       width: fit-content;
     }
   `,
