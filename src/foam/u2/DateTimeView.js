@@ -29,17 +29,15 @@ foam.CLASS({
   css: `
     ^ {
       height: $inputHeight;
-      width: fit-content;
     }
   `,
 
-  methods: [
-    function render() {
-      this.SUPER();
-      this.setAttribute('type', 'datetime-local');
-      this.setAttribute('placeholder', 'yyyy/mm/dd hh:mm');
-    },
+  properties: [
+    [ 'placeholder', 'yyyy/mm/dd hh:mm' ],
+    [ 'type', 'datetime-local' ]
+  ],
 
+  methods: [
     function link() {
       if ( this.linked ) return;
       this.linked = true;

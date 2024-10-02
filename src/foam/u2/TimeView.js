@@ -16,14 +16,9 @@ foam.CLASS({
   css: `
     ^ {
       height: $inputHeight;
-      width: fit-content;
+      min-width: 116px;
     }
   `,
 
-  methods: [
-    function render() {
-      this.SUPER();
-      this.setAttribute('type', 'time');
-    }
-  ]
+  properties: [ ['type', 'time'] ]
 });
