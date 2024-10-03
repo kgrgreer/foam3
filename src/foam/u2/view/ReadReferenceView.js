@@ -179,7 +179,7 @@ foam.CLASS({
       // set link config properties
       // first figure out where these properties were provided (i.e., set to reference property or passed to this view)
       this.enableLink = this.prop.enableLink && this.enableLink;
-      this.menuKeys = this.prop.menuKeys || this.menuKeys;
+      this.menuKeys   = this.prop.menuKeys || this.menuKeys;
 
       this.configLink();
     },
