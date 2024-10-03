@@ -27,9 +27,11 @@ foam.CLASS({
   messages: [
     { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
+    { name: 'ENDS_AFTER_ERROR', message: 'Occurrences must be greater than 0' },
     { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
     { name: 'INVALID_REPEAT_100', message: 'Please chose a value less than 100' },
-    { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' }
+    { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' },
+    { name: 'MUST_CHOOSE', message: 'Please make atleast one selection' }
 ],
 
   requires: [
@@ -141,6 +143,10 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.DayOfWeekView',
       },
+      validateObj: function(frequency, dayOfWeek) {
+        if ( frequency != this.TimeUnit.WEEK ) return;
+        if ( ! dayOfWeek?.length ) return this.MUST_CHOOSE;
+      },
       visibility: function(frequency) {
         if ( frequency != this.TimeUnit.WEEK )
           return foam.u2.DisplayMode.HIDDEN;
@@ -185,6 +191,10 @@ foam.CLASS({
         if ( monthlyChoice != this.MonthlyChoice.EACH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      validateObj: function(frequency, monthlyChoice, dayOfMonth) {
+        if ( frequency != this.TimeUnit.MONTH || monthlyChoice != this.MonthlyChoice.EACH ) return;
+        if ( ! dayOfMonth?.length ) return this.MUST_CHOOSE;
       },
       tableCellFormatter: function(values) {
         if ( ! values ) return;
@@ -279,7 +289,8 @@ foam.CLASS({
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       },
-      validateObj: function(endsOn) {
+      validateObj: function(ends, endsOn) {
+        if ( ends != this.ScheduleEnd.ON ) return;
         if ( ! endsOn ) return this.INVALID_DATE_ERROR;
         // check against start date
         if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
@@ -296,7 +307,11 @@ foam.CLASS({
       label: 'Occurrences',
       columnLabel: 'Ends',
       gridColumns: 6,
-      min: 1,
+      validateObj: function(ends, endsAfter) {
+        if ( ends != this.ScheduleEnd.AFTER ) return;
+        // check against start date
+        if ( endsAfter < 1 ) return this.ENDS_AFTER_ERROR;
+      },
       visibility: function(ends) {
         if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
@@ -600,7 +615,7 @@ foam.CLASS({
         case 'SUNDAY':
           return 0;
         case 'MONDAY':
-          return 1
+          return 1;
         case 'TUESDAY':
           return 2;
         case 'WEDNESDAY':

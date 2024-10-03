@@ -34,8 +34,8 @@ foam.CLASS({
     }
     ^ > .note {
       white-space: pre;
-      padding: 2rem 0rem;
-      padding-left: 6rem;
+      width: 100%;
+      text-align: center;
     }
   `,
 

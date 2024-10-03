@@ -85,6 +85,7 @@ foam.CLASS({
       name: 'schedule',
       label: '',
       section: 'scheduling',
+      autoValidate: true,
       postSet: function(_, v) {
         if ( ! v ) return;
         this.frequency = v.frequency;
@@ -145,12 +146,15 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       section: 'summary',
-      createVisibility: 'HIDDEN',
       gridColumns: 4,
       order: 1,
-      factory: function() {
-        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
-      }
+      javaFactory: `
+        return getObjectToSchedule().getClass().getSimpleName() 
+        + " " + getObjectToSchedule().getProperty("id")
+        + (
+          getNextScheduledDate() == null ? "" : ( " - " + getNextScheduledDate() )
+        );
+      `
     },
     {
       class: 'Date',
@@ -206,6 +210,22 @@ foam.CLASS({
       name: 'endsOn',
       visibility: 'HIDDEN',
       transient: true
+    },
+    {
+      name: 'reattemptSchedule',
+      hidden: true
+    },
+    {
+      class: 'String',
+      name: 'schedulableNote',
+      label: '',
+      section: 'scheduling',
+      view: function(_, X) {
+        return X.E()
+          .start(foam.u2.borders.BackgroundCard, { backgroundColor: '#DADDE2' })
+            .start(foam.u2.HTMLView, { data: X.data.schedulableNote }).end()
+          .end();
+      }
     }
   ],
 
