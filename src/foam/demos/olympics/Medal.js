@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 foam.ENUM({
   package: 'foam.demos.olympics',
   name: 'MedalColor',
+
   values: [
     {
       name: 'GOLD',
@@ -32,6 +34,7 @@ foam.ENUM({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.demos.olympics',

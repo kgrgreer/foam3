@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.u2.search.FilterController'
   ],
 
-
   properties: [
     {
       name: 'data',
@@ -52,8 +51,8 @@ foam.CLASS({
           responseType: 'json',
           method: 'GET'
         });
-        xhr.fromUrl('https://raw.githubusercontent.com/foam-framework/foam/' +
-                    'master/js/foam/demos/olympics/MedalData.json');
+//        xhr.fromUrl('http://localhost:8080/foam3/src/foam/demos/olympics/MedalData.json');
+        xhr.fromUrl(window.location.href.replace('index.html', 'MedalData.json'));
         var self = this;
         xhr.send().then(function(res) {
           return res.payload;
@@ -96,29 +95,25 @@ foam.CLASS({
     }
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: `
-        ^ {
-          display: flex;
-          flex-grow: 1;
-          width: 100%;
-        }
+  css: `
+    ^ {
+      display: flex;
+      flex-grow: 1;
+      width: 100%;
+    }
 
-        .Gold {
-          color: #c98910;
-        }
-        .Silver {
-          color: #a8a8a8;
-        }
-        .Bronze {
-          color: #965a38;
-        }
+    .Gold {
+      color: #c98910;
+    }
+    .Silver {
+      color: #a8a8a8;
+    }
+    .Bronze {
+      color: #965a38;
+    }
 
-        td {
-          padding: 8px;
-        }
-      `
-    })
-  ]
+    td {
+      padding: 8px;
+    }
+  `
 });

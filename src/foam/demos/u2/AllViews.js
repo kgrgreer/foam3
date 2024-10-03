@@ -513,7 +513,6 @@ foam.CLASS({
         class: 'foam.u2.MultiView',
         views: [
           { class: 'foam.u2.view.DateView', onKey: true },
-          { class: 'foam.u2.view.ValueView' },
           { class: 'foam.u2.view.DateView', onKey: true },
           { class: 'foam.u2.view.DateView', mode: foam.u2.DisplayMode.RO }
         ]

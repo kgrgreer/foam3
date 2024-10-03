@@ -1113,20 +1113,6 @@ foam.LIB({
 
 (function() {
   var typeOf = foam.typeOf;
-  /*
-  var typeOf = mmethod({
-    Undefined: () => foam.Undefined,
-    Null:      () => foam.Null,
-    String:    () => foam.String,
-    Number:    () => foam.Number,
-    Boolean:   () => foam.Boolean,
-    Date:      () => foam.Date,
-    Function:  () => foam.Function,
-    FObject:   () => foam.FObject,
-    Array:     () => foam.Array,
-    Object:    () => foam.Object
-  });
-  */
 
   foam.LIB({
     name: 'foam.util',
@@ -1285,6 +1271,7 @@ foam.LIB({
     }
   ]
 });
+
 
 foam.LIB({
   name: 'foam.CSS',

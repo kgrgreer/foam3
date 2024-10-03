@@ -138,7 +138,7 @@ function validateFlight() {
   }
 }
 
-f.departureDate = new Date('2021/04/14');
+f.departureDate = new Date('2025/04/14');
 validateFlight();
 
 log();
@@ -158,12 +158,12 @@ validateFlight();
 
 log();
 log('Validation 4');
-f.returnDate = new Date('2021/04/13');
+f.returnDate = new Date('2025/04/13');
 validateFlight();
 
 log();
 log('Validation 5');
-f.returnDate = new Date('2021/04/15');
+f.returnDate = new Date('2025/04/15');
 validateFlight();
 
 ## Type Validation

@@ -80,9 +80,10 @@ foam.CLASS({
     function render() {
       this.SUPER()
       this
-          .addClass(this.myClass())
-          .enableClass(this.myClass('horizontal-radio'), this.isHorizontal);
+        .addClass(this.myClass())
+        .enableClass(this.myClass('horizontal-radio'), this.isHorizontal);
     },
+
     function renderContent() {
       var self = this
 
@@ -93,38 +94,37 @@ foam.CLASS({
           });
           var id = 'u' + c.$UID; // TODO: the 'u' + is for U2 compatibility, remove when all moved to U3
           return self.E('div')
-              .addClass('p-md', 'choice')
-              .callIf(this.columns != -1, function () {
-                this.style({'flex-basis': (100 / self.columns) + '%'})
+            .addClass('p-md', 'choice')
+            .callIf(this.columns != -1, function () {
+              this.style({'flex-basis': (100 / self.columns) + '%'})
+            })
+            .start('input', {id: id})
+              .attrs({
+                type:     'radio',
+                name:     self.getAttribute('name') + self.$UID,
+                value:    c[1],
+                checked:  isChecked,
+                disabled: self.isDisabled$
               })
-              .start('input', {id: id})
-                .attrs({
-                  type: 'radio',
-                  name: self.getAttribute('name') + self.$UID,
-                  value: c[1],
-                  checked: isChecked,
-                  disabled: self.isDisabled$
-                })
-                .on('change', function (evt) {
-                  self.data = c[0];
-                })
+              .on('change', function (evt) { self.data = c[0]; })
+            .end()
+            .start('label')
+              .attrs({for: id})
+              .start()
+                .addClass(self.myClass('radio-outer'))
+                .add(self.RadioButton.create({
+                  isSelected$: isChecked,
+                  isDisabled$: self.isDisabled$
+                }))
               .end()
-              .start('label')
-                .attrs({for: id})
-                .start()
-                  .addClass(self.myClass('radio-outer'))
-                  .add(self.RadioButton.create({
-                    isSelected$: isChecked,
-                    isDisabled$: self.isDisabled$
-                  }))
-                .end()
-                .start('span')
-                  .add(c[1])
-                .end()
-              .end();
+              .start('span')
+                .add(c[1])
+              .end()
+            .end();
         })
       }))
     },
+
     function updateMode_(mode) {
       this.isDisabled =
         mode === this.DisplayMode.RO || mode === this.DisplayMode.DISABLED;

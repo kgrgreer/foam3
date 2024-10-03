@@ -7,9 +7,11 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'NoBackStack',
+
   properties: [
     'delegate'
   ],
+
   methods: [
     function push(v, parent, opt_id) {
       this.delegate.push(v, parent, opt_id);

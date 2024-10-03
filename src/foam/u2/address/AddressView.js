@@ -23,7 +23,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'useAutocompleter'
+      name: 'useAutocompleter',
+      value: true
     },
     {
       class: 'Enum',

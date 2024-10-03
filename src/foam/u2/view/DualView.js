@@ -25,7 +25,6 @@ foam.CLASS({
   css: `
     ^viewa, ^viewb { padding: 2px 0; }
     ^viewa { margin-right: 8px; }
-    ^container { width: 50% }
   `,
 
   properties: [

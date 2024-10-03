@@ -50,6 +50,7 @@ foam.CLASS({
       width: 100%;
     }
     ^row {
+      display: flow-root;
       padding-left: 4px;
     }
     .foam-u2-ActionView-medium {
@@ -61,9 +62,11 @@ foam.CLASS({
       color: white;
       left-margin: 4px;
     }
-    .foam-u2-ProgressView {
-      margin-right: 2px;
-      height: 40px;
+    ^ .foam-u2-ProgressView {
+      width: 250px;
+      background: white;
+      margin-right: 4px;
+      height: 8px;
       vertical-align: middle;
     }
     .property-duration input {
@@ -173,25 +176,24 @@ foam.CLASS({
         .add('Minutes: ')
         .tag({class: foam.u2.ProgressView, data$: this.timer.minute$.map(m=>100*(m+1)/this.duration)})
         .start('span')
-          .style({width: '10px', display: 'inline-block', 'padding-left': '4px', 'vertical-align': 'middle'})
+          .style({width: '32px', display: 'inline-block', 'padding-left': '4px', 'vertical-align': 'middle'})
           .start('span')
-            .style({'margin-left':'-110px', color: '#aaa'})
+            .style({color: '#aaa'})
             .add(this.timer.minute$.map(m=>m+1))
           .end()
         .end()
 
         .add('Seconds: ')
         .tag({class: foam.u2.ProgressView, data$: this.timer.second$.map(s=>100*s/60)})
-        .tag()
         .start('span')
-          .style({width: '10px', display: 'inline-block', 'padding-left': '4px', 'vertical-align': 'middle'})
+          .style({width: '32px', display: 'inline-block', 'padding-left': '4px', 'vertical-align': 'middle'})
           .start('span')
-            .style({'margin-left':'-110px', color: '#aaa'})
+            .style({color: '#aaa'})
             .add(this.timer.second$)
           .end()
         .end()
-
         .add(' ', this.START_TIMER, ' ', this.PAUSE, this.NEXT)
+        .tag()
         .tag('hr')
         .forEach(this.program$, function(e, i) {
           if ( i == 0 ) startTime = 0;

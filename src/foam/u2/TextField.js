@@ -20,11 +20,13 @@ foam.CLASS({
   name: 'TextField',
   extends: 'foam.u2.tag.Input',
 
-  axioms: [
-    { class: 'foam.u2.TextInputCSS' }
-  ],
+  mixins: [ 'foam.u2.TextInputCSS' ],
 
   css: `
+    ^ {
+      height: $inputHeight;
+    }
+
     input[type="search"] {
       -webkit-appearance: textfield;
     }

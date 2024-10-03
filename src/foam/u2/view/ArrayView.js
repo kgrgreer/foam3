@@ -136,6 +136,13 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 4px;
+    }
     ^value-view {
       flex: 1;
       max-width: 100%;
@@ -147,10 +154,7 @@ foam.CLASS({
       width: 100%;
     }
     ^value-view-container {
-      display: contents;
-    }
-    .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
-      margin: 5px 0px;
+      gap:4px;
     }
   `,
 
@@ -185,7 +189,8 @@ foam.CLASS({
                         // because then the GUI updates without flickering
                         themeIcon: 'close',
                         icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%23d9170e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z'/%3E%3C/svg%3E",
-                        buttonStyle: 'TERTIARY'
+                        buttonStyle: 'TERTIARY',
+                        size: 'SMALL'
                       })
                     .end()
                   .endContext();

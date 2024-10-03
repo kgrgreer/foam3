@@ -103,7 +103,7 @@ foam.CLASS({
     async function eToObj(event) {
       /** Find the object associated with a DOM element. **/
       var me = await this.el();
-      var e = event.target;
+      var e  = event.target;
       while ( e.nodeName !== 'TR' && e !== me )
         e = e.parentNode;
 
@@ -115,11 +115,12 @@ foam.CLASS({
     },
 
     function addObj(obj) {
-      var e = this.start('tr')
-          .enableClass(this.tableView.myClass('selected'),
-              this.tableView.selection$.map(function(sel) {
-                return sel === obj;
-              }));
+      // Need to set id for U3 because it is used as key into rows_
+      var e = this.start('tr', {id: {}.$UID})
+        .enableClass(this.tableView.myClass('selected'),
+            this.tableView.selection$.map(function(sel) {
+              return sel === obj;
+            }));
 
       if ( this.selectionQuery$ ) {
         var cb;
@@ -137,6 +138,7 @@ foam.CLASS({
         e = e.start('td').add(prop.tableCellView(obj, e)).end();
       }
       e.end();
+
       this.rows_[e.id] = obj;
     }
   ],

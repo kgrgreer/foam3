@@ -137,7 +137,6 @@ foam.POM({
     { name: "auth/CreatedAware",                                                          flags: "js|java" },
     { name: "auth/Language",                                                              flags: "js|java" },
     { name: "theme/Theme",                                                                flags: "js|java" },
-    { name: "theme/ThemeGlyphs",                                                          flags: "js|java" },
     { name: "theme/ThemeDomain",                                                          flags: "js|java" },
     { name: "theme/ThemeDomainHasAllCapabilitiesGrantedPredicate",                        flags: "js|java" },
     { name: "theme/SubdomainAware",                                                       flags: "js|java" },

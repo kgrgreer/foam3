@@ -11,20 +11,14 @@ foam.CLASS({
 
   documentation: 'View for editing Time values.',
 
-  axioms: [
-    { class: 'foam.u2.TextInputCSS' }
-  ],
+  mixins: [ 'foam.u2.TextInputCSS' ],
 
   css: `
     ^ {
-      width: fit-content;
+      height: $inputHeight;
+      min-width: 116px;
     }
   `,
 
-  methods: [
-    function render() {
-      this.SUPER();
-      this.setAttribute('type', 'time');
-    }
-  ]
+  properties: [ ['type', 'time'] ]
 });

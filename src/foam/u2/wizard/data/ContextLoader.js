@@ -45,8 +45,9 @@ foam.CLASS({
           initialData = this.of.create({}, this);
         }
 
-        this.loadIntoPath$set(initialData, val);
-
+        if ( val !== undefined ) {
+          this.loadIntoPath$set(initialData, val);
+        }
         return initialData;
       }
 
