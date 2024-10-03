@@ -178,7 +178,7 @@ foam.CLASS({
       overflow-y: auto;
       box-sizing: border-box;
       width: 100%;
-      border-radius: 3px;
+      border-radius: 4px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       z-index: 1000;
     }
@@ -240,7 +240,7 @@ foam.CLASS({
     }
 
     ^search input {
-      border-bottom: none;
+      border: none;
       width: 100%;
       border: none;
       padding-left: $inputHorizontalPadding;
@@ -248,15 +248,18 @@ foam.CLASS({
       height: $inputHeight;
     }
 
+    ^search input:focus-visible {
+      border: none;
+      outline: none;
+    }
+
     ^search img {
-      top: 8px;
-      width: 15px;
+      padding: 0 10px;
     }
 
     ^search {
       border-bottom: 1px solid #f4f4f9;
       display: flex;
-      padding: 0rem 1.6rem;
     }
 
     ^ .disabled {

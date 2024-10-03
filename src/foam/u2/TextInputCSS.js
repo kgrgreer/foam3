@@ -42,9 +42,9 @@ foam.CLASS({
         color: $grey500;
       }
 
-      .foam-u2-TextInputCSS:focus {
+      .foam-u2-TextInputCSS:focus-visible {
         outline: none;
-        border-color: $primary400;
+        border: 1px solid $primary400;
       }
 
       .foam-u2-TextInputCSS:disabled {

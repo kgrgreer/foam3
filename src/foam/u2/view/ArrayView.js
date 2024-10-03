@@ -156,9 +156,6 @@ foam.CLASS({
     ^value-view-container {
       gap:4px;
     }
-    .foam-u2-view-ArrayView-value-view-container.foam-u2-layout-Cols {
-      margin: 5px 0px;
-    }
   `,
 
   methods: [
