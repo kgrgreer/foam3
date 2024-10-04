@@ -29,7 +29,6 @@ foam.CLASS({
   implements: ['foam.mlang.Expressions'],
 
   imports: [
-    'auth',
     'stack'
   ],
 
@@ -159,6 +158,7 @@ foam.CLASS({
       name: 'showViewMore'
     }
   ],
+
   methods: [
     function init() {
       this.data = undefined;
@@ -168,11 +168,13 @@ foam.CLASS({
       this.updateCount();
       this.updateData();
     },
+
     function fromProperty(p) {
       this.SUPER(p);
       if ( ! this.dao && p.data ) this.dao = p.data;
       if ( this.dao.of ) this.of = this.dao.of;
     },
+
     function addAction(showCreate, addView) {
       if ( showCreate )
         return this.E()
@@ -195,6 +197,7 @@ foam.CLASS({
       }
     }
   ],
+
   listeners: [
     function updateCount() {
       this.dao.select(this.Count.create()).then(s => this.DAOCount = s.value);
@@ -218,6 +221,7 @@ foam.CLASS({
       this.showCreate = false;
     }
   ],
+
   actions: [
     {
       name: 'addRow',
@@ -249,5 +253,5 @@ foam.CLASS({
           }, parent: this.__subContext__.createSubContext({ controllerMode: 'CREATE' }) }));
       }
     }
-  ],
+  ]
 });
