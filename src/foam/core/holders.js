@@ -86,6 +86,20 @@ foam.CLASS({
   properties: [
     {
       name: 'value',
+      class: 'Map'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'RawMapHolder',
+
+  documentation: 'Map items are stored as raw json objects without being parsed to fobjects.',
+
+  properties: [
+    {
+      name: 'value',
       class: 'Map',
       fromJSON: function fromJSON(value) {
         return value;
