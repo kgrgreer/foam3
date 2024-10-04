@@ -31,7 +31,7 @@ foam.CLASS({
     { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
     { name: 'INVALID_REPEAT_100', message: 'Please chose a value less than 100' },
     { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' },
-    { name: 'MUST_CHOOSE', message: 'Please make atleast one selection' }
+    { name: 'MUST_CHOOSE', message: 'Please make at least one selection' }
 ],
 
   requires: [
