@@ -86,7 +86,10 @@ foam.CLASS({
   properties: [
     {
       name: 'value',
-      class: 'Map'
+      class: 'Map',
+      fromJSON: function fromJSON(value) {
+        return value;
+      }
     }
   ]
 });
