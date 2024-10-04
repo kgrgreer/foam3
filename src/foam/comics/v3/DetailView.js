@@ -186,7 +186,7 @@ foam.CLASS({
           actionsOverrides[v] = defaultAction;
           return;
         }
-        actionsOverrides[v] = defaultAction.clone(self).copyFrom({ ...actionsOverrides[v], size: 'SMALL' });
+        actionsOverrides[v] = defaultAction.clone(self).copyFrom(actionsOverrides[v]);
       })
       this.onDetach(this.dynamic(function(data){
         d?.detach?.();
