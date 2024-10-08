@@ -81,8 +81,6 @@ public class SessionWebAgent
       }
 
       // check permissions
-      Subject subject = new Subject.Builder(x).setUser(user).build();
-      session.setContext(session.getContext().put("subject", subject));
       var applyX = session.applyTo(x);
       if ( ! auth.check(applyX, permission_) ) {
         throw new AuthorizationException();
