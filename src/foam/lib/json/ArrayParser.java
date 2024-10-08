@@ -17,12 +17,16 @@ public class ArrayParser
   public static Parser instance() { return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
 
   public ArrayParser() {
+    this(AnyParser.instance());
+  }
+
+  public ArrayParser(Parser valueParser) {
     super(new Seq1(3,
       Whitespace.instance(),
       Literal.create("["),
       Whitespace.instance(),
       new Repeat(
-        AnyParser.instance(),
+        valueParser,
         new Seq0(Whitespace.instance(), Literal.create(","), Whitespace.instance())),
       Whitespace.instance(),
       Literal.create("]")));
