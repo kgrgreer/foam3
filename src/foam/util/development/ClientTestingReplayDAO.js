@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'ClientTestingReplayDAO',
   extends: 'foam.dao.OrDAO',
   javaExtends: '',
+
   documentation: `
     /!\ warning: production use not advised /!\
 
@@ -64,12 +65,14 @@ foam.CLASS({
       this.primary.array = this.loadedDAO.array.map(o => o.clone());
       return await SUPER.bind(this)(...a);
     },
+
     async function select_(...a) {
       var SUPER = this.SUPER;
       if ( ! this.initialized ) await this.initialize();
       this.primary.array = this.loadedDAO.array.map(o => o.clone());
       return await SUPER.bind(this)(...a);
     },
+
     async function initialize () {
       var promises = [];
       // syntax highlighter may say 'path' is unused; this is inaccurate.
