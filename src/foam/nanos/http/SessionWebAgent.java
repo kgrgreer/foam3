@@ -90,7 +90,7 @@ public class SessionWebAgent
 
       // execute delegate
       // Update session context with support setup from earlier WebAgents.
-      getDelegate().execute(applyX.put(HttpServletResponse.class, resp).put(HttpServletRequest.class, req));
+      getDelegate().execute(applyX);
 
     } catch ( AuthorizationException e ) {
       // report permission issues
