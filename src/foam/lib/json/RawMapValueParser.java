@@ -13,7 +13,7 @@ public class RawMapValueParser
 {
   private final static Parser instance__ = new RawMapValueParser();
 
-  public static Parser instance() { return instance__; }
+  public static Parser instance() { return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
 
   private RawMapValueParser() {
     setDelegate(new Alt(
