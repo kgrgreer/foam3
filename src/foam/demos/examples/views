@@ -316,3 +316,42 @@ foam.CLASS({
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
 add(data.defaultDateTime$);
+
+
+## Colours
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Color',
+      name: 'defaultColor'
+    },
+    {
+      class: 'Color',
+      name: 'readOnlyColor',
+      value: 'orange',
+      view: 'foam.u2.view.ReadColorView'
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
+
+
+## Passwords
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Password',
+      name: 'defaultPassword',
+      value: 'secret'
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
