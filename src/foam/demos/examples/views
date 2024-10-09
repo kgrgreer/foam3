@@ -525,3 +525,88 @@ foam.CLASS({
 
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
+
+## DAOs
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
+
+## Rich Text
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'htmlView',
+      value: '<b>bold</b><br/><i>italic</i>',
+      view: 'foam.u2.HTMLView'
+    },
+    /*
+    {
+      class: 'FObjectProperty',
+      of: 'foam.flow.laminar.Document',
+      name: 'laminar',
+      value: {
+        class: 'foam.flow.laminar.Document',
+        doclets: [
+          {
+            class: 'foam.flow.laminar.MarkdownDoclet',
+            text: `
+              Lets learn about **foam.util.async.Sequence** and
+              **foam.flow.laminar.AutoDefinitionDoclet**
+            `
+          },
+          {
+            class: 'foam.flow.laminar.PrintDoclet',
+            key: 'definitionWords',
+            showMeta: true
+          },
+          {
+            class: 'foam.flow.laminar.AutoDefinitionDoclet'
+          }
+        ]
+      },
+      view: {
+        class: 'foam.flow.laminar.DocumentView'
+      }
+    },
+    */
+    {
+      class: 'String',
+      name: 'markdownView',
+      value: `
+        # Heading 1
+        ## Heading 2
+        ### Heading 3
+        #### Heading 4
+        ##### Heading 5
+        ###### Heading 6
+        text # not a heading
+
+        [a link](https://github.com/kgrgreer/foam3)
+
+        normal _italics_ **bold** \`code\`
+        \`\`\`
+        a block of code
+        \`\`\`
+      `,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.tag.TextArea', onKey: true, rows: 8, cols: 80 },
+          'foam.u2.view.MarkdownView'
+        ]
+      }
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
