@@ -10,14 +10,15 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.lib.parse.*'
+    'foam.lib.parse.*',
+    'java.util.Map'
   ],
 
   methods: [
     {
       name: 'runTest',
       javaCode: `
-        var input = "{\\"class\\":\\"User\\"}";
+        var input = "{\\"test\\":{\\"class\\":\\"User\\"}}";
 
         // setup parser
         var parser  = RawMapParser.instance();
@@ -26,11 +27,16 @@ foam.CLASS({
 
         // parse
         ps = (StringPStream) ps.apply(parser, psx);
-        test ( ps != null && ps.value() != null, "RawMapParser parsed successfully" );
+        var success = ps != null && ps.value() != null;
+        test ( success, "RawMapParser parsed successfully" );
 
-        // test output
-        var output = (java.util.Map) ps.value();
-        test ( "User".equals(output.get("class")) , "Parsed data should be a map");
+        if ( success ) {
+          // test output
+          var output = (Map) ps.value();
+          test ( output.get("test") instanceof Map
+            && "User".equals(((Map) output.get("test")).get("class"))
+          , "Parsed data should be a raw map");
+        }
       `
     }
   ]

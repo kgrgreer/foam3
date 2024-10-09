@@ -13,7 +13,7 @@ public class RawMapParser
 {
   private final static Parser instance__ = new RawMapParser();
 
-  public static Parser instance() { return instance__; }
+  public static Parser instance() { return instance__ == null ? new ProxyParser() { public Parser getDelegate() { return instance__; } } : instance__; }
 
   public RawMapParser() {
     setDelegate(
