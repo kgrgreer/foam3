@@ -69,6 +69,7 @@ foam.POM({
     { name: "axiom/AlternateFlowAction",               flags: "web" },
     { name: "axiom/GoToMenuAction",                    flags: "web" },
     { name: "axiom/WizardletDataAction",               flags: "web" },
+    { name: "axiom/CloseWindowWizardAction",           flags: "web" },
     { name: "WizardStatus",                            flags: "web" },
     { name: "WizardletIndicator",                      flags: "js|java" },
     { name: "DynamicActionWizardlet",                  flags: "js|java" },
