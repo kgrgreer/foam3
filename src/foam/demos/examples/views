@@ -264,6 +264,47 @@ foam.CLASS({
       }
     },
     */
+    {
+      class: 'Byte',
+      name: 'defaultByte'
+    },
+    {
+      class: 'Short',
+      name: 'defaultShort'
+    },
+    {
+      class: 'Long',
+      name: 'defaultLong'
+    },
+    {
+      class: 'Float',
+      name: 'defaultFloat'
+    },
+    {
+      class: 'Float',
+      name: 'floatWithPrecision',
+      precision: 2,
+      value: 3.1415926
+    },
+    {
+      class: 'Double',
+      name: 'defaultDouble'
+    },
+    {
+      class: 'Float',
+      name: 'multiViewFloat',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.TextField', placeholder: 'textfield', onKey: true },
+          { class: 'foam.u2.FloatView', placeholder: 'floatview', onKey: true },
+          { class: 'foam.u2.TextField', onKey: false },
+          { class: 'foam.u2.FloatView', onKey: false },
+          { class: 'foam.u2.FloatView', onKey: false, precision: 2 },
+          { class: 'foam.u2.FloatView', onKey: false, precision: 2, trimZeros: false }
+        ]
+      }
+    }
   ]
 });
 
@@ -346,6 +387,18 @@ foam.CLASS({
       name: 'readOnlyColor',
       value: 'orange',
       view: 'foam.u2.view.ReadColorView'
+    },
+    {
+      class: 'Color',
+      name: 'multiView',
+      value: 'orange',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          'foam.u2.view.ColorEditView',
+          'foam.u2.view.ReadColorView'
+        ]
+      }
     }
   ]
 });
