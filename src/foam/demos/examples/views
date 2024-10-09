@@ -509,3 +509,19 @@ foam.CLASS({
 
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
+
+## Enums
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Enum',
+      of: 'foam.u2.layout.DisplayWidth',
+      name: 'displayWidth'
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
