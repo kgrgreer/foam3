@@ -254,3 +254,65 @@ foam.CLASS({
 });
 
 add(foam.u2.DetailView.create({data: Example.create()}));
+
+## Dates and Times
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Date',
+      name: 'defaultDate',
+    },
+    {
+      class: 'Date',
+      name: 'dateRWAndRO',
+      factory: function() { return new Date(); },
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.view.DateView', onKey: false },
+          { class: 'foam.u2.view.DateView', onKey: false },
+          { class: 'foam.u2.view.DateView', mode: foam.u2.DisplayMode.RO }
+        ]
+      }
+    },
+    {
+      class: 'Date',
+      name: 'dateRWAndROOnKey',
+      factory: function() { return new Date(); },
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.view.DateView', onKey: true },
+          { class: 'foam.u2.view.DateView', onKey: true },
+          { class: 'foam.u2.view.DateView', mode: foam.u2.DisplayMode.RO }
+        ]
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'defaultDateTime',
+    },
+    {
+      class: 'DateTime',
+      name: 'defaultDateTime2',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.view.DateTimeView', onKey: true },
+          { class: 'foam.u2.view.DateTimeView', onKey: true },
+          { class: 'foam.u2.view.DateView', onKey: true }
+        ]
+      }
+    },
+    {
+      class: 'Time',
+      name: 'defaultTime'
+    },
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
+add(data.defaultDateTime$);
