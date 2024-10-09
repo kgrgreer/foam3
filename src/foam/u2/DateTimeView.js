@@ -50,7 +50,10 @@ foam.CLASS({
         if ( ! date ) {
           slot.set('');
         } else {
-          slot.set(date ? date.toISOString().substring(0,16) : '');
+          if ( ! date.toISOString )
+            date = new Date(date);
+
+          slot.set(date.toISOString().substring(0,16));
         }
       }
 
