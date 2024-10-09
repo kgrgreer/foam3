@@ -103,7 +103,8 @@ foam.CLASS({
       class: 'Map',
       fromJSON: function fromJSON(value) {
         return value;
-      }
+      },
+      javaJSONParser: 'foam.lib.json.RawMapParser.instance()'
     }
   ]
 });
