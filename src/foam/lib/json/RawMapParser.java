@@ -8,6 +8,28 @@ package foam.lib.json;
 
 import foam.lib.parse.*;
 
+/**
+ * RawMapParser supports parsing JSON as plain map object with elements of only
+ * primitive values. Unlike its relative MapParser where elements can be an
+ * FObject, class reference and property reference, etc..., RawMapParser will
+ * produce a nested map as a result.
+ *
+ * Eg. RawMapParser will parse the following JSON
+ *    {
+ *      "view": {
+ *        "class": "MyView"
+ *      }
+ *    }
+ *
+ * As:
+ *    map.get("view");                // a map object
+ *    map.get("view").get("class");   // "MyView"
+ *
+ *
+ * RawMapParser allows the server to treat the JSON object sent from the client
+ * or coded in the build journal as raw map.
+ *
+ */
 public class RawMapParser
   extends MapParser
 {
