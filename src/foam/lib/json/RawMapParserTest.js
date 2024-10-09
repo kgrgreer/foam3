@@ -30,13 +30,33 @@ foam.CLASS({
         var success = ps != null && ps.value() != null;
         test ( success, "RawMapParser parsed successfully" );
 
-        if ( success ) {
-          // test output
-          var output = (Map) ps.value();
-          test ( output.get("test") instanceof Map
-            && "User".equals(((Map) output.get("test")).get("class"))
-          , "Parsed data should be a raw map");
-        }
+        var output = success ? (Map) ps.value() : null;
+        var target = output != null ? output.get("test") : null;
+
+        // test output
+        test ( target instanceof Map && "User".equals(((Map) target).get("class")), "Parsed data should be a raw map");
+
+        // more test cases
+        parse_array_raw_map();
+      `
+    },
+    {
+      name: 'parse_array_raw_map',
+      javaCode: `
+        var input = "{\\"array\\":[{\\"class\\":\\"User\\"}]}";
+
+        // setup parser
+        var parser  = RawMapParser.instance();
+        var ps      = new StringPStream(new Reference<>(input));
+        var psx     = new ParserContextImpl();
+
+        ps = (StringPStream) ps.apply(parser, psx);
+
+        var output = ps != null ? (Map) ps.value() : null;
+        var array  = output != null ? (Object[]) output.get("array") : null;
+
+        // test output
+        test ( array != null && array.length == 1 && "User".equals(((Map) array[0]).get("class")), "Parse array raw map");
       `
     }
   ]
