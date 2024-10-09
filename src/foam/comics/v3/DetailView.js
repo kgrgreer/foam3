@@ -178,7 +178,7 @@ foam.CLASS({
       let comicsActions = this.config.of.getAxiomsByClass(foam.comics.v3.ComicsAction);
       let actionsOverrides = {};
       if ( comicsActions.length ) {
-        comicsActions?.map(v => {actionsOverrides[v.name] = v});
+        comicsActions?.forEach(v => {actionsOverrides[v.name] = v});
       }
       ['edit', 'delete', 'copy'].forEach(v => {
         let defaultAction = this[v.toUpperCase()];

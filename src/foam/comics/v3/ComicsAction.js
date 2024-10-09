@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * Copyright 2024 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -11,12 +11,43 @@ foam.CLASS({
   documentation: `
     Creates a distinction for actions that are used by comics. Can be used to override default
     CRUD behaviour. 
+
+    ComicsAction adds two properties called internalIsEnabled and internalIsAvailable in order to provide
+    permission checks for model CRUD operations
+
     Any action property not overriden explicitly will be copied over from the defaul implementation.
+    
+    All action override functions are run in the context of the data obj so they can also be used outside comics if needed.
+
     Any Comics actions with the following names will replace default behaviour in comics v3:
-    1. create
-    2. edit
-    3. delete
-    4. copy
+    1. create (Default behaviour implemented in: comics/v3/DAOView)
+    2. edit (Default behaviour implemented in: comics/v3/DetailView)
+    3. delete (Default behaviour implemented in: comics/v3/DetailView)
+    4. copy (Default behaviour implemented in: comics/v3/DetailView)
+
+    -- How to configure actions --
+    The following code changes the isEnabled and code from the default implementation for an imaginary model named 'Flight'.
+    The action will now also check for a 'isCompleted' property before enabling edit
+    and the edit action will instead launch a menu called editFlightInfo.
+    {
+      name: 'Flight',
+      ....
+      actions: [
+        ...
+        {
+          class: 'foam.comics.v3.ComicsAction',
+          name: 'edit',
+          isEnabled: function(isCompleted) {
+            return ! isCompleted;
+          },
+          code: function(X) {
+            X.routeTo('editFlightInfo');
+          }
+        }
+        ...
+      ]
+    }
+
   `,
   properties: [
     {
@@ -35,6 +66,7 @@ foam.CLASS({
     }
   ],
   methods: [
+    // Concat both isEnabled and interalIsEnabled checks
     function createIsEnabled$(x, data) {
       var running      = this.getRunning$(data);
       var internalSlot = this.createSlotFor_(x, data, this.internalIsEnabled, 'enabled');
@@ -52,6 +84,7 @@ foam.CLASS({
       });
     },
 
+    // Concat both isAvailable and interalIsAvailable checks
     function createIsAvailable$(x, data) {
       var internalSlot = this.createSlotFor_(x, data, this.internalIsAvailable, 'available');
       let slot         = data.data ? this.createSlotFor_(x, data.data, this.isAvailable, 'available') :
