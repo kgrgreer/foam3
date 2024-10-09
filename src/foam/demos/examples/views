@@ -16,30 +16,35 @@ foam.CLASS({
       required: true,
       placeholder: 'placeholder',
       help: 'Help text.'
-    }
+    },
+    {
+      class: 'String',
+      name: 'stringWithDisplayWidth',
+      displayWidth: 4
+    },
+    {
+      class: 'String',
+      name: 'stringWithTextFieldWithSize',
+      displayWidth: 4,
+      view: {
+        class: 'foam.u2.TextField',
+        maxLength: 4
+      }
+    },
+    {
+      class: 'String',
+      name: 'stringWithTextArea',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        rows: 8, cols: 80,
+      }
+    },
   ]
 });
 
 add(foam.u2.DetailView.create({data: Example.create()}));
 
-## CheckBox
---
-foam.CLASS({
-  name: 'Example',
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'default'
-    }
-  ]
-});
-
-add(foam.u2.CheckBox.create());
-var t = Example.create();
-add(foam.u2.detail.SectionedDetailView.create({data: t}));
-// add(foam.u2.DetailView.create({data: t}));
-
-## Choices
+## String with Choices
 --
 foam.CLASS({
   name: 'Example',
@@ -62,9 +67,190 @@ foam.CLASS({
         isHorizontal: true
       }
     },
+    {
+      class: 'String',
+      name: 'textField',
+      value: 'Yes',
+      view: {
+        class: 'foam.u2.TextField',
+        choices: ['Yes', 'No', 'Maybe']
+      }
+    },
+    {
+      class: 'String',
+      name: 'choiceView',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: ['Yes', 'No', 'Maybe']
+      }
+    },
+    {
+      class: 'String',
+      name: 'choiceViewWithSize',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        size: 3,
+        choices: ['Yes', 'No', 'Maybe']
+      }
+    },
+    {
+      class: 'String',
+      name: 'choiceViewWithPlaceholder',
+      value: 'Yes',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'placeholder',
+        choices: ['Yes', 'No', 'Maybe']
+      }
+    },
+    {
+      class: 'String',
+      name: 'choiceViewWithMultipleViews',
+      value: 'Yes',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.view.ChoiceView',
+            size: 10,
+            choices: ['Yes', 'No', 'Maybe']
+          },
+          {
+            class: 'foam.u2.view.ChoiceView',
+            size: 3,
+            choices: ['Yes', 'No', 'Maybe']
+          },
+          {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'placeholder',
+            choices: ['Yes', 'No', 'Maybe']
+          },
+          'foam.u2.TextField'
+        ]
+      }
+    },
+    {
+      class: 'String',
+      name: 'choiceViewWithValues',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [ [1, 'Yes'], [0, 'No'], [0.5, 'Maybe']]
+      }
+    },
   ]
 });
 
 var t = Example.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
+
+## CheckBox
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'default'
+    }
+  ]
+});
+
+add(foam.u2.CheckBox.create());
+var t = Example.create();
+add(foam.u2.detail.SectionedDetailView.create({data: t}));
+// add(foam.u2.DetailView.create({data: t}));
+
+
+## Numbers
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Int',
+      name: 'default'
+    },
+    {
+      class: 'Int',
+      name: 'help',
+      help: 'Help text.'
+    },
+    {
+      class: 'Int',
+      name: 'tooltip',
+      view: { class: 'foam.u2.view.IntView', tooltip: 'Please enter a number.' }
+    },
+    {
+      class: 'Int',
+      name: 'intWithIntView',
+      view: {
+        class: 'foam.u2.view.IntView',
+        onKey: true,
+        displayWidth: 50
+      }
+    },
+    {
+      class: 'Int',
+      name: 'intWithMinAndMax',
+      min: 1,
+      max: 5,
+      value: 3,
+      units: 'rating (1-5)'
+    },
+    {
+      class: 'Int',
+      name: 'intWithRangeView',
+      view: {
+        class: 'foam.u2.RangeView'
+      }
+    },
+    /*
+    {
+      class: 'Int',
+      name: 'intWithTemperatureView',
+      view: {
+        class: 'foam.nanos.pm.TemperatureCView'
+      }
+    },
+    */
+    {
+      class: 'Int',
+      name: 'intWithProgressView',
+      view: {
+        class: 'foam.u2.ProgressView'
+      },
+      value: 42
+    },
+    {
+      class: 'Int',
+      name: 'intWithMultiView',
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [ 'foam.u2.RangeView', 'foam.u2.IntView' ]
+      }
+    },
+    {
+      class: 'Int',
+      name: 'intWithMultiViewVertical',
+      view: {
+        class: 'foam.u2.MultiView',
+        horizontal: false,
+        views: [ 'foam.u2.RangeView', { class: 'foam.u2.view.IntView', onKey: true } ]
+      }
+    },
+    /*
+    {
+      class: 'Int',
+      name: 'intWithDualView2',
+      view: {
+        class: 'foam.u2.view.DualView',
+        viewa: 'foam.u2.RangeView',
+        viewb: 'foam.u2.ProgressView'
+      }
+    },
+    */
+  ]
+});
+
+add(foam.u2.DetailView.create({data: Example.create()}));
