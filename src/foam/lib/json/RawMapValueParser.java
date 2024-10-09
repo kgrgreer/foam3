@@ -29,6 +29,6 @@ public class RawMapValueParser
       StringArrayParser.instance(),
       new StringDoubleArrayParser(),
       new ArrayParser(instance()),
-      MapParser.instance()));
+      RawMapParser.instance()));
   }
 }

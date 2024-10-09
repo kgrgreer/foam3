@@ -1210,6 +1210,7 @@ foam.POM({
     { name: "foam/u2/view/ClassCompleterView",                        flags: "web" },
     { name: "foam/css/TokenUtils",                                    flags: "web" },
     { name: "foam/demos/u2/AllViews",                                 flags: "web" },
-    { name: "foam/lib/json/StringToStringArrayParserTest",            flags: "js|java" }
+    { name: "foam/lib/json/StringToStringArrayParserTest",            flags: "js|java" },
+    { name: "foam/lib/json/RawMapParserTest",                         flags: "js|java" }
   ]
 });
