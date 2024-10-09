@@ -1,10 +1,31 @@
 ## Views
 --
 
+## String
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'default'
+    },
+    {
+      class: 'String',
+      name: 'featured',
+      required: true,
+      placeholder: 'placeholder',
+      help: 'Help text.'
+    }
+  ]
+});
+
+add(foam.u2.DetailView.create({data: Example.create()}));
+
 ## CheckBox
 --
 foam.CLASS({
-  name: 'BooleanExample',
+  name: 'Example',
   properties: [
     {
       class: 'Boolean',
@@ -14,14 +35,14 @@ foam.CLASS({
 });
 
 add(foam.u2.CheckBox.create());
-var t = BooleanExample.create();
+var t = Example.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
 
 ## Choices
 --
 foam.CLASS({
-  name: 'ChoicesExample',
+  name: 'Example',
   properties: [
     {
       class: 'String',
@@ -44,6 +65,6 @@ foam.CLASS({
   ]
 });
 
-var t = ChoicesExample.create();
+var t = Example.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
