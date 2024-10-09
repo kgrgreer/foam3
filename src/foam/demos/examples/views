@@ -7,7 +7,7 @@ foam.CLASS({
   name: 'Example',
   properties: [
     {
-      class: 'Boolean',
+      class: 'String',
       name: 'default'
     },
     {
@@ -144,7 +144,7 @@ var t = Example.create();
 add(foam.u2.detail.SectionedDetailView.create({data: t}));
 // add(foam.u2.DetailView.create({data: t}));
 
-## CheckBox
+## Boolean
 --
 foam.CLASS({
   name: 'Example',
@@ -152,6 +152,20 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'default'
+    },
+    {
+      class: 'Boolean',
+      name: 'booleanWithRadio',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, 'Yes'],
+            [false, 'No']
+          ],
+          isHorizontal: true
+        };
+      }
     }
   ]
 });
