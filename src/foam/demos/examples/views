@@ -460,3 +460,52 @@ foam.CLASS({
 
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
+
+
+## Arrays
+--
+foam.CLASS({
+  package: 'foam.demos.u2',
+  name: 'SampleData',
+  properties: [
+    {
+      class: 'String',
+      name: 'id'
+    },
+    'name',
+    'value'
+  ],
+  methods: [
+    function toSummary() { return this.id + ' ' + this.value; }
+  ]
+});
+
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'defaultStringArray'
+    },
+    {
+      class: 'StringArray',
+      name: 'stringArrayRowView',
+      view: 'foam.u2.view.StringArrayRowView',
+      factory: function() { return ['row1', 'row2', 'row3']; }
+    },
+    {
+      class: 'FObjectArray',
+      name: 'FObjectArrayMultiView',
+      of: 'foam.demos.u2.SampleData',
+      view: { class: 'foam.u2.MultiView',
+        views: [
+          { class: 'foam.u2.view.TitledArrayView'  },
+          { class: 'foam.u2.view.FObjectArrayView' }
+        ]
+      }
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
