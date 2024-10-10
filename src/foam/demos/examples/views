@@ -677,14 +677,29 @@ add(foam.u2.DetailView.create({data: data}));
 --
 var data = foam.util.Timer.create();
 
-add(foam.u2.DetailView.create({data: data, title: 'Default DetailView'}));
+start('h2').add('DetailView').end();
+add(foam.u2.DetailView.create({data: data}));
 tag('p');
-add(foam.u2.DetailView.create({data: data, title: 'expandPropertyViews: false', expandPropertyViews: false}));
+
+start('h2').add('DetailView with expandPropertyViews: false').end();
+add(foam.u2.DetailView.create({data: data, expandPropertyViews: false}));
 tag('p');
-add(foam.u2.DetailView.create({data: data, title: 'showActions: false', showActions: false}));
+
+start('h2').add('DetailView with title: \'\'').end();
+add(foam.u2.DetailView.create({data: data, expandPropertyViews: false}));
 tag('p');
-add(foam.u2.DetailView.create({data: data, title: 'visibility: RO', visibility: 'RO'}));
+
+start('h2').add('DetailView with showActions: false').end();
+add(foam.u2.DetailView.create({data: data, showActions: false}));
 tag('p');
+
+start('h2').add('DetailView with visibility: \'RO\'').end();
+add(foam.u2.DetailView.create({data: data, visibility: 'RO'}));
+tag('p');
+
+start('h2').add('SectionedDetailView').end();
 add(foam.u2.detail.SectionedDetailView.create({data: data, title: 'SectionedDetailView'}));
 tag('p');
+
+start('h2').add('VerticalDetailView').end();
 add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
