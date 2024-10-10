@@ -539,6 +539,13 @@ add(foam.u2.DetailView.create({data: data}));
 
 ## Rich Text
 --
+
+var code = `
+if ( true ) {
+  console.log('true');
+}
+`;
+
 foam.CLASS({
   name: 'Example',
   properties: [
@@ -578,6 +585,18 @@ foam.CLASS({
       }
     },
     */
+    {
+      class: 'Code',
+      name: 'roCode',
+      label: 'RO Code',
+      view: 'foam.u2.view.PreView',
+      value: code
+    },
+    {
+      class: 'Code',
+      name: 'code',
+      value: code
+    },
     {
       class: 'String',
       name: 'markdownView',
