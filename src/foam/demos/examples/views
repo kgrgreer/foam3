@@ -219,15 +219,6 @@ foam.CLASS({
         class: 'foam.u2.RangeView'
       }
     },
-    /*
-    {
-      class: 'Int',
-      name: 'intWithTemperatureView',
-      view: {
-        class: 'foam.nanos.pm.TemperatureCView'
-      }
-    },
-    */
     {
       class: 'Int',
       name: 'intWithProgressView',
@@ -289,6 +280,15 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'defaultDouble'
+    },
+    {
+      class: 'Float',
+      name: 'temperature',
+      value: 1,
+      view: {
+        class: 'foam.nanos.pm.TemperatureCView',
+        width: 300
+      }
     },
     {
       class: 'Float',
@@ -637,6 +637,21 @@ foam.CLASS({
     {
       name: 'any',
       view: 'foam.u2.view.AnyView'
+    },
+    {
+      name: 'fobject',
+      view: 'foam.u2.view.FObjectView',
+      value: { class: 'foam.util.Timer' }
+    },
+    {
+      name: 'detailView',
+      value: { class: 'foam.util.Timer' },
+      view: { class: 'foam.u2.DetailView', of: 'foam.util.Timer' }
+    },
+    {
+      name: 'sectionedDetailView',
+      value: { class: 'foam.util.Timer' },
+      view: { class: 'foam.u2.detail.SectionedDetailView', of: 'foam.util.Timer' }
     }
   ]
 });
