@@ -510,6 +510,21 @@ foam.CLASS({
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
 
+## Maps
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Map',
+      name: 'map'
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
+
 ## Enums
 --
 foam.CLASS({
