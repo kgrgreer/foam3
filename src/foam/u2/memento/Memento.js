@@ -297,7 +297,7 @@ foam.CLASS({
     The top-level Memento in the system should be a WindowHashMemento.
   `,
 
-  imports: [ 'window', 'breadcrumbs', 'document' ],
+  imports: [ 'window', 'breadcrumbs?', 'document' ],
 
   properties: [
     {
