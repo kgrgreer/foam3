@@ -240,7 +240,10 @@ foam.CLASS({
       name: 'execute',
       javaCode: `
         try {
-          ((DAO) x.get(getObjectDAOKey())).put(getObjectToSchedule());
+          foam.core.FObject obj = getObjectToSchedule();
+          if ( obj instanceof SchedulableObject )
+            obj = ((SchedulableObject) obj).beforeScheduledPut(x);
+          ((DAO) x.get(getObjectDAOKey())).put(obj);
         } catch (Exception e){
           ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
             .setName("Failed to execute schedulable event")

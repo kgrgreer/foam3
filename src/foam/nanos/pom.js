@@ -348,6 +348,8 @@ foam.POM({
     { name: "cron/test/TimeOfDayScheduleTest",                                            flags: "js|java" },
     { name: "cron/test/OrScheduleTest",                                                   flags: "js|java" },
     { name: "cron/ui/SchedulableSuccessWizardletView",                                    flags: "web" },
+    { name: "cron/ScheduleSchedulableRuleAction",                                         flags: "js|java" },
+    { name: "cron/SchedulableObject",                                                     flags: "js|java" },
     { name: "export/ClientGoogleSheetsExportService",                                     flags: "js|java" },
     { name: "export/CSVTableExportDriver",                                                flags: "js" },
     { name: "export/ExportDriverRegistry",                                                flags: "js|java" },
