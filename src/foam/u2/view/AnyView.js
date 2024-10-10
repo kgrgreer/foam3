@@ -19,6 +19,10 @@ foam.CLASS({
     'foam.u2.view.MapView'
   ],
 
+  css: `
+    ^ select { margin-right: 8px; padding-right: 24px; }
+  `,
+
   classes: [
     {
       name: 'Choice',
@@ -157,13 +161,13 @@ foam.CLASS({
     function render() {
       var self = this;
       this
+        .addClass()
         .start(self.Cols)
           .callIf(this.enableChoice, function() {
             this.start(self.ChoiceView, {
               choices$: self.types$.map(types => types.map(t => [t, t.label])),
               data$: self.selected$
             })
-            .style({'margin-right': '8px'})
             .end()
           })
           .start()
