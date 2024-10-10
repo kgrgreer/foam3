@@ -596,11 +596,12 @@ foam.CLASS({
         \`\`\`
         a block of code
         \`\`\`
-      `,
+      `.split('\n').map(l => l.trim() + '\n').join(''),
       view: {
         class: 'foam.u2.MultiView',
+        horizontal: false,
         views: [
-          { class: 'foam.u2.tag.TextArea', onKey: true, rows: 8, cols: 80 },
+          { class: 'foam.u2.tag.TextArea', onKey: true, rows: 16, cols: 80 },
           'foam.u2.view.MarkdownView'
         ]
       }
