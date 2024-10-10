@@ -310,6 +310,22 @@ foam.CLASS({
 
 add(foam.u2.DetailView.create({data: Example.create()}));
 
+## Enums
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'Enum',
+      of: 'foam.u2.layout.DisplayWidth',
+      name: 'displayWidth'
+    }
+  ]
+});
+
+var data = Example.create();
+add(foam.u2.DetailView.create({data: data}));
+
 ## Dates and Times
 --
 foam.CLASS({
@@ -365,6 +381,10 @@ foam.CLASS({
       class: 'Time',
       name: 'defaultTime'
     },
+    {
+      class: 'Duration',
+      name: 'duration'
+    }
   ]
 });
 
@@ -525,22 +545,6 @@ foam.CLASS({
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
 
-## Enums
---
-foam.CLASS({
-  name: 'Example',
-  properties: [
-    {
-      class: 'Enum',
-      of: 'foam.u2.layout.DisplayWidth',
-      name: 'displayWidth'
-    }
-  ]
-});
-
-var data = Example.create();
-add(foam.u2.DetailView.create({data: data}));
-
 ## DAOs
 --
 foam.CLASS({
@@ -654,22 +658,33 @@ foam.CLASS({
       view: 'foam.u2.view.AnyView'
     },
     {
-      name: 'fobject',
+      name: 'fobjectView',
       view: 'foam.u2.view.FObjectView',
       value: { class: 'foam.util.Timer' }
     },
     {
+      class: 'FObjectProperty',
       name: 'detailView',
-      value: { class: 'foam.util.Timer' },
-      view: { class: 'foam.u2.DetailView', of: 'foam.util.Timer' }
-    },
-    {
-      name: 'sectionedDetailView',
-      value: { class: 'foam.util.Timer' },
-      view: { class: 'foam.u2.detail.SectionedDetailView', of: 'foam.util.Timer' }
+      of: 'foam.util.Timer',
     }
   ]
 });
 
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
+
+## DetailViews
+--
+var data = foam.util.Timer.create();
+
+add(foam.u2.DetailView.create({data: data, title: 'Default DetailView'}));
+tag('p');
+add(foam.u2.DetailView.create({data: data, title: 'expandPropertyViews: false', expandPropertyViews: false}));
+tag('p');
+add(foam.u2.DetailView.create({data: data, title: 'showActions: false', showActions: false}));
+tag('p');
+add(foam.u2.DetailView.create({data: data, title: 'visibility: RO', visibility: 'RO'}));
+tag('p');
+add(foam.u2.detail.SectionedDetailView.create({data: data, title: 'SectionedDetailView'}));
+tag('p');
+add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
