@@ -758,7 +758,9 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.show(this.on$);
+      // this.show(this.on$);
+      // This works better than previous line because it doesn't cause the output to grow and shrink
+      this.style({visibility: this.on$.map(s => s ? '' : 'hidden')});
       this.toggle();
     }
   ],
@@ -773,7 +775,6 @@ foam.CLASS({
   ]
 });
 
-// TODO: doesn't work
 foam.__context__.registerElement(Blink, 'blink');
 start('blink').add('blinking').end();
 
