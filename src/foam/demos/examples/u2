@@ -18,7 +18,7 @@ The advantages of a Virtual-DOM are:
 Improved security was the primary motivation for U2.
 Simplified use over U2, without losing any of U2's security benefits, was the primary motivation for U3.
 
-All 32 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
+All U2/3 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
 --
 add('testing');
 
