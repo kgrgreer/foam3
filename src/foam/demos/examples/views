@@ -720,12 +720,12 @@ start('h2').add('DetailView').end();
 add(foam.u2.DetailView.create({data: data}));
 tag('p');
 
-start('h2').add('DetailView with expandPropertyViews: false').end();
-add(foam.u2.DetailView.create({data: data, expandPropertyViews: false}));
+start('h2').add('DetailView with expandPropertyViews: true').end();
+add(foam.u2.DetailView.create({data: data, expandPropertyViews: true}));
 tag('p');
 
 start('h2').add('DetailView with title: \'\'').end();
-add(foam.u2.DetailView.create({data: data, expandPropertyViews: false}));
+add(foam.u2.DetailView.create({data: data, title: ''}));
 tag('p');
 
 start('h2').add('DetailView with showActions: false').end();
@@ -733,7 +733,11 @@ add(foam.u2.DetailView.create({data: data, showActions: false}));
 tag('p');
 
 start('h2').add('DetailView with visibility: \'RO\'').end();
-add(foam.u2.DetailView.create({data: data, visibility: 'RO'}));
+add(foam.u2.DetailView.create({data: data, mode: 'RO'}));
+tag('p');
+
+start('h2').add('DetailView with visibility: \'DISABLED\'').end();
+add(foam.u2.DetailView.create({data: data, mode: 'DISABLED'}));
 tag('p');
 
 start('h2').add('SectionedDetailView').end();
