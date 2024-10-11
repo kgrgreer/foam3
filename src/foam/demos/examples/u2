@@ -100,7 +100,7 @@ tag('input');
 ##   ControllerMode
 ##   DisplayMode
 ##   Borders
-A Border is a component meant to be a container for other elements. Examples might inluce
+A Border is a component meant to be a container for other elements. Examples might include
 a card, a shadow border, a tab-control, etc.
 If an element has a 'content' element, then when children are add()'ed to the element,
 they will be inserted into the 'content' element, rather that at the end of the element,
