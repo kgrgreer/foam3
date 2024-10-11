@@ -451,7 +451,7 @@ foam.CLASS({
   css: '^ { color: red; }',
   methods: [
     function render() {
-      this.addClass().add('No-inheritCSS: ', this.model_.inheritCSS);
+      this.addClass().add('No-inheritCSS: ', '' + this.model_.inheritCSS);
     }
   ]
 });
@@ -546,7 +546,7 @@ start()
 ##    callIfElse
 --
 start()
-  .callIfElse(true,  function() { this.add('true'); }, function() { this.add('false'); })
+  .callIfElse(true,  function() { this.add('true');  }, function() { this.add('false'); })
   .br()
   .callIfElse(false, function() { this.add('false'); }, function() { this.add('false'); })
 .end();
@@ -585,32 +585,34 @@ tag(RemoveEventListenerDemo);
 --
 foam.CLASS({
   name: 'OnKeyDemo',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.Controller',
 
   properties: [
     {
       class: 'String',
       name: 'value1',
+      value: 'value1',
       onKey: true
     },
     {
       class: 'String',
       name: 'value2',
+      value: 'value2',
       // onKey: false // not needed, as false is the default
     }
   ],
 
   methods: [
     function render() {
-      this.add(this.VALUE1, this.value1$, this.VALUE2, this.value2$);
+      this.add(this.VALUE1, this.VALUE2);
       this.tag(this.VALUE2, { onKey: true});
-      this.tag({class: 'foam.u2.TextField', onKey: true, data: this.value1$});
-      this.tag({class: 'foam.u2.TextField', onKey: false, data: this.value1$});
+      this.tag({class: 'foam.u2.TextField', onKey: true,  data$: this.value1$});
+      this.tag({class: 'foam.u2.TextField', onKey: false, data$: this.value1$});
+      this.br().add('value1: ', this.value1$).br().add('value2: ', this.value2$);
     }
   ]
 });
 
-// TODO: fix
 tag({class: 'OnKeyDemo'});
 
 ##    DAOs
