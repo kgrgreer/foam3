@@ -237,9 +237,7 @@ foam.CLASS({
   name: 'KeyboardTest',
   extends: 'foam.u2.Controller',
   properties: [
-    // TODO: view: shouldn't be required, remove when fixed.
-    // appears to be issue with ModeAltView
-    { class: 'Int', name: 'count', value: 5, view: 'foam.u2.IntView' }
+    { class: 'Int', name: 'count', value: 5 }
   ],
   methods: [
     function render() { this.add(this.COUNT, ' ', this.INCR); }
