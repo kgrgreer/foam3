@@ -688,7 +688,7 @@ var t = Test.create();
 
 start().
   startContext({data: t}).
-    add('A: ', t.A, ' B: ', t.B).
+    add('A: ', t.A).br().add(' B: ', t.B).
   endContext().
 end();
 
