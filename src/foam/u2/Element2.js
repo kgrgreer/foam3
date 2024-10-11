@@ -1010,7 +1010,7 @@ foam.CLASS({
 
     function setID(id) {
       /* Explicitly set Element's id. */
-      this.id = id;
+      this.id = this.element_.id = id;
       return this;
     },
 
