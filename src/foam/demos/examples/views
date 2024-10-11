@@ -548,13 +548,52 @@ add(foam.u2.DetailView.create({data: data}));
 ## DAOs
 --
 foam.CLASS({
+  name: 'DAOSampleData',
+  properties: [
+    { class: 'Int', name: 'id' }, 'name', 'value'
+  ],
+  methods: [
+    function toSummary() { return this.id + ' ' + this.value; }
+  ]
+});
+
+var dao = foam.dao.EasyDAO.create({
+  of: DAOSampleData,
+  daoType: 'MDAO',
+  testData: [
+    { id: 1, name: 'John',  value: 'value1' },
+    { id: 2, name: 'John',  value: 'value2' },
+    { id: 3, name: 'Kevin', value: 'value3' },
+    { id: 4, name: 'Kevin', value: 'value4' },
+    { id: 5, name: 'Larry', value: 'value5' },
+    { id: 6, name: 'Linda', value: 'value6' }
+  ]
+});
+
+foam.CLASS({
   name: 'Example',
   properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'dao',
+      visibility: 'RW',
+      value: dao
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'daoList',
+      value: dao,
+      visibility: 'RW',
+      view: 'foam.u2.DAOList'
+    }
   ]
 });
 
 var data = Example.create();
 add(foam.u2.DetailView.create({data: data}));
+add(foam.u2.detail.SectionedDetailView.create({data: data}));
 
 ## Rich Text
 --
