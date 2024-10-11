@@ -1487,67 +1487,6 @@ foam.CLASS({
 });
 
 
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'U2Context',
-
-  documentation: 'Context which includes U2 functionality. Replaces foam.__context__.',
-
-  exports: [
-    'E',
-    'registerElement',
-    'elementForName'
-  ],
-
-  properties: [
-    {
-      name: 'elementMap',
-      documentation: 'Map of registered Elements.',
-      factory: function() { return {}; }
-    }
-  ],
-
-  methods: [
-    {
-      // A Method which has the call-site context added as the first arg
-      // when exported.
-      class: 'foam.core.ContextMethod',
-      name: 'E',
-      code: function E(ctx, opt_nodeName) {
-        var nodeName = (opt_nodeName || 'div').toLowerCase();
-
-        // Check if a class has been registered for the specified nodeName
-        return (ctx.elementForName(nodeName) || foam.u2.Element).
-          create({nodeName: nodeName}, ctx);
-      }
-    },
-
-    function registerElement(elClass, opt_elName) {
-      /* Register a View class against an abstract node name. */
-      var key = opt_elName || elClass.name;
-      this.elementMap[key.toUpperCase()] = elClass;
-    },
-
-    function elementForName(nodeName) {
-      /* Find an Element Class for the specified node name. */
-      return this.elementMap[nodeName];
-    }
-  ]
-});
-
-
-foam.SCRIPT({
-  package: 'foam.u2',
-  name: 'U2ContextScript',
-
-  requires: [ 'foam.u2.U2Context' ],
-  flags: ['web'],
-
-  code: function() {
-    foam.__context__ = foam.u2.U2Context.create().__subContext__;
-  }
-});
-
 /*
 foam.CLASS({
   package: 'foam.u2',

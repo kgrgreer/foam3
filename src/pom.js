@@ -228,6 +228,7 @@ foam.POM({
     { name: "foam/u2/CSS",                                            flags: "web" },
     { name: "foam/u2/Element",                                        predicate: function() { return ! foam.flags.u3; }, flags: "web" },
     { name: "foam/u2/Element2",                                       flags: "u3" },
+    { name: "foam/u2/U2Context",                                      flags: "web" },
     { name: "foam/u2/Router",                                         flags: "web" },
     { name: "foam/u2/MNRowFormatter",                                 flags: "web" },
     { name: "foam/u2/ProgressView",                                   flags: "web" },
