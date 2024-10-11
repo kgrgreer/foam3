@@ -400,7 +400,12 @@ foam.CLASS({
           end().
           start().
             addClass(this.myClass('body')).
-            add(this.DATA).
+            // add(this.DATA).
+            // Replace above with lower-level version to avoid adding empty rows when params.id is set
+            // and most rows aren't shown.
+            select(this.data, function (e) {
+              this.tag({class: 'foam.demos.examples.Example.CitationView', data: e});
+            }).
           end().
         end();
     },
