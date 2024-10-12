@@ -827,7 +827,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.add(this.FIRST_NAME, this.LAST_NAME);
+      this.add('First Name:', this.FIRST_NAME, this.LAST_NAME);
 
       this.tag('hr');
 
