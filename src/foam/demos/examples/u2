@@ -779,6 +779,12 @@ foam.__context__.registerElement(Blink, 'blink');
 start('blink').add('blinking').end();
 
 ##    elementForName
+ElementForName is the reverse of registerElement. It is used internally in FOAM
+to determine if a node/tag name has a registered class associated with it.
+Isn't used directly by application developers.
+--
+add(foam.__context__.elementForName('blink').id);
+
 ##   View
 The foam.u2.View class extends Element and adds a property named 'data', which it exports.
 Views act as the display component (view) for their data. This is the standard MVC
