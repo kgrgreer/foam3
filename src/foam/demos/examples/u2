@@ -793,7 +793,7 @@ pattern where the View is the View, and the 'data' is the Model.
 When Elements are used to view Property values, the fromProperty() method is called
 and provided the Property object that the view is being associated with.
 This allows the view to optionally configure itself based on Property values.
-Examples properties that may be taken from the property include:
+Examples of properties that may be taken from the property include:
 onKey, placeholder, displayWidth, size, min, max, of, daoKey, etc.
 --
 foam.CLASS({
