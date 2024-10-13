@@ -1487,7 +1487,6 @@ foam.CLASS({
 });
 
 
-/*
 foam.CLASS({
   package: 'foam.u2',
   name: 'FObjectToERefinement',
@@ -1500,7 +1499,6 @@ foam.CLASS({
     }
   ]
 });
-*/
 
 
 foam.CLASS({
