@@ -746,3 +746,21 @@ tag('p');
 
 start('h2').add('VerticalDetailView').end();
 add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
+
+## ReadWriteView
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value',
+      value: 'value',
+      view: 'foam.u2.ReadWriteView'
+    }
+  ]
+});
+
+tag(Example.create());
+add(Example.create());
+--
