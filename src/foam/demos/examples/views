@@ -748,6 +748,10 @@ start('h2').add('VerticalDetailView').end();
 add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
 
 ## ReadWriteView
+The ReaWriteView composes two different views, one for displaying the data
+when it is not being edited, and another when it is. Like a spreadsheet cell
+which normally appears as a label until it is selected and then becomes a
+text field for editing.
 --
 foam.CLASS({
   name: 'Example',
