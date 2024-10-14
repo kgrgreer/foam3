@@ -765,6 +765,22 @@ foam.CLASS({
   ]
 });
 
-tag(Example.create());
 add(Example.create());
---
+
+foam.CLASS({
+  name: 'TextView',
+  extends: 'foam.u2.ReadWriteView',
+
+  methods: [
+    function toReadE() {
+      return foam.u2.HTMLView.create({data$: this.data$}, this);
+    },
+
+    function toWriteE() {
+      this.data$.sub(this.onDataLoad);
+      return foam.u2.tag.TextArea.create({rows: 20, cols: 120, escapeTextArea: false, data$: this.data$}, this);
+    }
+  ]
+});
+
+tag(TextView.create({data: '<b>bold</b> <i>italic</it>'}));
