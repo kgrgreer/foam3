@@ -854,7 +854,7 @@ tag(foam.u2.DetailView.create({data: timer}));
 add(timer.time$);
 tag('hr');
 tag(av);
-tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
+tag(foam.u2.ActionView.create({data: timer, action: timer.STOP}));
 this.startContext({data: timer}).add(timer.I);
 
 ##   StackView
