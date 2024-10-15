@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'Label',
   extends: 'foam.u2.View',
 
-  imports: ['theme?'],
+  imports: [ 'theme?' ],
 
   documentation: `
     Generic implementation for a view that renders a label and icon
