@@ -402,6 +402,7 @@ foam.CLASS({
       }
     }
   ],
+
   methods: [
     function initArgs(args, opt_parent) {
       this.SUPER(null, opt_parent);
