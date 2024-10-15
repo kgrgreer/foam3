@@ -27,7 +27,15 @@ foam.CLASS({
     'foam.util.async.AdvanceToAgent'
   ],
   properties: [
-    ['initialized_', false]
+    ['initialized_', false],
+    {
+      class: 'String',
+      name: 'name',
+      documentation: 'Wizard flow name when serving as wizard step context agent in a wizard',
+      factory: function() {
+        return this.toSummary();
+      }
+    }
   ],
   methods: [
     async function install (...a) {

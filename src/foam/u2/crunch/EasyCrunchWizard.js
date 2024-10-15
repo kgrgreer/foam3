@@ -27,6 +27,14 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'name',
+      documentation: 'EasyCrunchWizard name when serving as a wizard step context agent in a wizard',
+      factory:  function() {
+        return this.cls_.name;
+      }
+    },
+    {
       class: 'Boolean',
       name: 'allowSkipping',
       documentation: `
