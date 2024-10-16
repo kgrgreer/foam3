@@ -49,6 +49,11 @@ foam.CLASS({
     {
       class: 'String',
       generateJava: false,
+      name: 'size'
+    },
+    {
+      class: 'String',
+      generateJava: false,
       name: 'label',
       expression: function(name) { return foam.String.labelize(name); }
     },
@@ -278,6 +283,12 @@ If empty then no permissions are required.`
       return running;
     },
 
+    function checkIsEnabledIsAvailable(data) {
+      if ( ( this.isAvailable && ! foam.Function.withArgs(this.isAvailable, data) ) ||
+           ( this.isEnabled   && ! foam.Function.withArgs(this.isEnabled, data) ) )
+      return true;
+    },
+
     function maybeCall(x, data) {
       var self = this;
       async function call() {
@@ -306,10 +317,7 @@ If empty then no permissions are required.`
         return ret;
       }
 
-      if ( ( this.isAvailable && ! foam.Function.withArgs(this.isAvailable, data) ) ||
-           ( this.isEnabled   && ! foam.Function.withArgs(this.isEnabled, data) ) )
-        return;
-
+      if ( this.checkIsEnabledIsAvailable(data) ) return;
       // No permission check if no auth service or no permissions to check.
       if ( ! x.auth ||
            ! ( this.availablePermissions.length || this.enabledPermissions.length ) ) {
@@ -354,7 +362,7 @@ foam.CLASS({
       adaptArrayElement: function(o, prop) {
         return typeof o === 'function' ?
             foam.core.Action.create({name: o.name, code: o}) :
-            this.__context__.lookup(prop.of).create(o) ;
+            this.__context__.lookup(o.class || prop.of).create(o) ;
       }
     }
   ]

@@ -76,8 +76,14 @@ foam.CLASS({
             .callIfElse(v, function() {
               this.startContext({ data: self }).tag(v, { buttonStyle: 'PRIMARY', size: 'LARGE' }).endContext();
             }, function() {
+              let createAction = self.config.of.getAxiomByName('create');
+              if ( createAction && foam.comics.v3.ComicsAction.isInstance(createAction) ) {
+                createAction = self.CREATE.clone(self).copyFrom({ ...createAction })
+              } else {
+                createAction = self.CREATE;
+              }
               this.startContext({ data: self })
-                .tag(self.CREATE, { label$: self.config$.dot('createTitle'), size: 'LARGE' })
+                .tag(createAction, { label$: self.config$.dot('createTitle'), size: 'LARGE' })
               .endContext()
             })
         ))
@@ -95,9 +101,10 @@ foam.CLASS({
 
   actions: [
     {
+      class: 'foam.comics.v3.ComicsAction',
       name: 'create',
       buttonStyle: 'PRIMARY',
-      isEnabled: function(config, data) {
+      internalIsEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.CREATE, data);
@@ -109,7 +116,7 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config) {
+      internalIsAvailable: function(config) {
         try {
           return config.createPredicate.f();
         } catch(e) {

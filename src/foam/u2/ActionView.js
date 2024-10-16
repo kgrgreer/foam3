@@ -124,6 +124,10 @@ foam.CLASS({
       }
     },
     {
+      name: 'size',
+      factory: function() { return this.action.size || foam.u2.ButtonSize.MEDIUM; }
+    },
+    {
       name: 'mementoName',
       factory: function() { return this.action.mementoName; }
     }
