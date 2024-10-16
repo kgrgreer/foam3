@@ -587,13 +587,30 @@ foam.CLASS({
       value: dao,
       visibility: 'RW',
       view: 'foam.u2.DAOList'
+    },
+    /*
+    Not a real view because it does't bind properly to data.
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'daoListWithCreateView',
+      value: dao,
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.DAOListWithCreateView',
+        dao: dao,
+        data: [],
+        of: 'DAOSampleData'
+      }
     }
+    */
   ]
 });
 
 var data = Example.create();
-add(foam.u2.DetailView.create({data: data}));
-add(foam.u2.detail.SectionedDetailView.create({data: data}));
+add(data);
+// add(foam.u2.DetailView.create({data: data}));
+// add(foam.u2.detail.SectionedDetailView.create({data: data}));
 
 ## Rich Text
 --
@@ -747,11 +764,16 @@ tag('p');
 start('h2').add('VerticalDetailView').end();
 add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
 
-## ReadWriteView
+## Misc. Views
+Less frequently used views.
+
+##  ReadWriteView
 The ReaWriteView composes two different views, one for displaying the data
 when it is not being edited, and another when it is. Like a spreadsheet cell
 which normally appears as a label until it is selected and then becomes a
 text field for editing.
+The read and write views used can be changed to subclassing ReadWriteView
+and overriding the toReadE() and toWriteE() methods.
 --
 foam.CLASS({
   name: 'Example',
@@ -784,3 +806,26 @@ foam.CLASS({
 });
 
 tag(TextView.create({data: '<b>bold</b> <i>italic</it>'}));
+
+##  ValueView
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      onKey: true,
+      value: 'value'
+    },
+    {
+      class: 'String',
+      name: 'value2',
+      view: 'foam.u2.view.ValueView'
+    }
+  ]
+});
+
+var e = Example.create();
+e.value1$ = e.value2$;
+add(e);
