@@ -136,7 +136,7 @@ exports.end = function() {
 if ( ! foam.flags.skipStage1 ) {
   var next = () => foam.loadJSLibs([{name:'/${fn('1')}.js'}]);
 
-  if ( window.location.hash ) {
+  if ( window.location.hash || window.location.search.indexOf('otltoken') != -1 ) {
     next();
   } else if ( globalThis.requestIdleCallback ) {
     window.setTimeout(() =>
