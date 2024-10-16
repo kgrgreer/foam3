@@ -72,16 +72,7 @@ foam.CLASS({
       var internalSlot = this.createSlotFor_(x, data, this.internalIsEnabled, 'enabled');
       var slot         = data.data ? this.createSlotFor_(x, data.data, this.isEnabled, 'enabled') :
                          foam.core.ConstantSlot.create({ value: false });
-      return foam.core.ExpressionSlot.create({
-        args: [
-          running,
-          internalSlot,
-          slot
-        ],
-        code: function(a, b, c) {
-          return (! a) && b && c;
-        }
-      });
+      return running.not().and(internalSlot).and(slot);
     },
 
     // Concat both isAvailable and interalIsAvailable checks
@@ -89,15 +80,7 @@ foam.CLASS({
       var internalSlot = this.createSlotFor_(x, data, this.internalIsAvailable, 'available');
       let slot         = data.data ? this.createSlotFor_(x, data.data, this.isAvailable, 'available') :
                          foam.core.ConstantSlot.create({ value: false });
-      return foam.core.ExpressionSlot.create({
-        args: [
-          internalSlot,
-          slot
-        ],
-        code: function(a, b) {
-          return a && b;
-        }
-      });
+      return internalSlot.and(slot);
     },
 
     function checkIsEnabledIsAvailable(data) {
