@@ -8,14 +8,15 @@ foam.CLASS({
   package: 'foam.u2.layout',
   name: 'Grid',
   extends: 'foam.u2.View',
-  mixins: ['foam.u2.layout.ContainerWidth'],
+
+  mixins: [ 'foam.u2.layout.ContainerWidth' ],
 
   documentation: 'A grid of responsive elements',
 
-  requires: [
-    'foam.u2.layout.GUnit'
-  ],
-  imports: [ 'data as importedData' ],
+  requires: [ 'foam.u2.layout.GUnit' ],
+
+  imports: [ 'data? as importedData' ],
+
   css: `
     ^ {
       display: grid;
@@ -23,15 +24,14 @@ foam.CLASS({
     }
   `,
 
-
-
   methods: [
     function init() {
       // Override the behaviour of 'foam.u2.View' by exporting the __context__'s
       // data as 'data' instead of this view's data. We do this because we don't
       // want this view to change the context data, which child views might want to
       // access.
-      this.data$ = this.importedData$;
+      if ( this.importedData )
+        this.data$ = this.importedData$;
       this.SUPER();
     },
     async function render() {
