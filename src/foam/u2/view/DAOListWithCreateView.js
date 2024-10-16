@@ -6,6 +6,8 @@
 
 /**
  * TODO:
+ * - NOT A REAL VIEW BECAUSE IT DOESN"T BIND PROPERLY TO 'DATA'. Only used by CrunchLab.
+ *   Fix before trying to use elsewhere.
  * - Add using RichChoiceView does not work, why??
  * - Improve UX when adding objects to larger 1:* relationships/larger screens using a full table view
  * - How to handle broken relationships (destroy, rebound/reassign, orphan)
@@ -26,7 +28,7 @@ foam.CLASS({
     'foam.comics.v2.DAOBrowseControllerView'
   ],
 
-  implements: ['foam.mlang.Expressions'],
+  implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
     'stack'
