@@ -995,6 +995,7 @@ foam.POM({
     { name: "foam/comics/v2/CRUDEnabledActionsAuth",                  flags: "js|java" },
     { name: "foam/comics/v2/DAOBrowseControllerView",                 flags: "js" },
     { name: "foam/comics/v2/DAOBrowserView",                          flags: "js" },
+    { name: "foam/comics/v3/ComicsAction",                            flags: "js" },
     { name: "foam/comics/v3/DetailView",                              flags: "js" },
     { name: "foam/comics/v3/DAOController",                           flags: "js" },
     { name: "foam/comics/v3/CreateView",                              flags: "js" },

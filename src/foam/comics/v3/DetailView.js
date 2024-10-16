@@ -175,11 +175,26 @@ foam.CLASS({
       this.stack?.setTitle(this.viewTitle$, this);
       this.SUPER();
       let d;
+      let comicsActions = this.config.of.getAxiomsByClass(foam.comics.v3.ComicsAction);
+      let actionsOverrides = {};
+      if ( comicsActions.length ) {
+        comicsActions?.forEach(v => {actionsOverrides[v.name] = v});
+      }
+      ['edit', 'delete', 'copy'].forEach(v => {
+        let defaultAction = this[v.toUpperCase()];
+        if ( ! actionsOverrides[v] ) {
+          actionsOverrides[v] = defaultAction;
+          return;
+        }
+        actionsOverrides[v] = defaultAction.clone(self).copyFrom(actionsOverrides[v]);
+      })
       this.onDetach(this.dynamic(function(data){
         d?.detach?.();
         d = self.stack.setTrailingContainer(
-          this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { overrides: { size: 'SMALL' }, overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg',
-              showDropdownIcon: false  }}, this.buttonGroup_$)
+          this.E().style({ display: 'contents' }).start(foam.u2.ButtonGroup, { 
+              // overrides: { size: 'SMALL' }, 
+              overlaySpec: { obj: self, icon: '/images/Icon_More_Resting.svg', showDropdownIcon: false  }
+            }, this.buttonGroup_$)
             .addClass(this.myClass('buttonGroup'))
             .add(self.slot(function(primary) {
               return this.E()
@@ -189,13 +204,13 @@ foam.CLASS({
                 .endContext();
             }))
             .startContext({ data: self })
-              .tag(self.EDIT)
+              .tag(actionsOverrides.edit)
               .tag(self.CANCEL_EDIT)
               .tag(self.SAVE, { buttonStyle: 'PRIMARY'})
             .endContext()
             .startOverlay()
-              .tag(self.COPY)
-              .tag(self.DELETE)
+              .tag(actionsOverrides.copy)
+              .tag(actionsOverrides.delete)
             .endOverlay()
             .callIf(data, function() { self.populatePrimaryAction(self.config.of, self.data) })
           .end()
@@ -232,7 +247,7 @@ foam.CLASS({
     },
     async function populatePrimaryAction(of, data) {
       var self = this;
-      var allActions = of.getAxiomsByClass(foam.core.Action);
+      var allActions = of.getAxiomsByClass(foam.core.Action).filter(v => ! foam.comics.v3.ComicsAction.isInstance(v));
       var defaultAction = allActions.filter((a) => a.isDefault);
       var acArray = [...defaultAction, ...allActions];
       this.actionArray = allActions;
@@ -285,10 +300,12 @@ foam.CLASS({
 
   actions: [
     {
+      class: 'foam.comics.v3.ComicsAction',
       name: 'edit',
       themeIcon: 'edit',
       icon: 'images/edit-icon.svg',
-      isEnabled: function(config, data) {
+      size: 'SMALL',
+      internalIsEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.UPDATE, data);
@@ -300,7 +317,7 @@ foam.CLASS({
         }
         return this.data;
       },
-      isAvailable: function(config, controllerMode, data) {
+      internalIsAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
           return config.editPredicate.f(data);
@@ -313,8 +330,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.comics.v3.ComicsAction',
       name: 'copy',
-      isEnabled: function(config, data) {
+      size: 'SMALL',
+      internalIsEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.CREATE, data);
@@ -326,7 +345,7 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config, controllerMode, data) {
+      internalIsAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
           return config.copyPredicate.f(data);
@@ -350,6 +369,7 @@ foam.CLASS({
     },
     {
       name: 'save',
+      size: 'SMALL',
       isEnabled: function(workingData$errors_) {
         return ! workingData$errors_;
       },
@@ -396,6 +416,7 @@ foam.CLASS({
     {
       name: 'cancelEdit',
       label: 'Cancel',
+      size: 'SMALL',
       isAvailable: function(controllerMode) {
         return controllerMode == 'EDIT';
       },
@@ -404,8 +425,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.comics.v3.ComicsAction',
       name: 'delete',
-      isEnabled: function(config, data) {
+      size: 'SMALL',
+      internalIsEnabled: function(config, data) {
         if ( config.CRUDEnabledActionsAuth && config.CRUDEnabledActionsAuth.isEnabled ) {
           try {
             let permissionString = config.CRUDEnabledActionsAuth.enabledActionsAuth.permissionFactory(foam.nanos.dao.Operation.REMOVE, data);
@@ -417,7 +440,7 @@ foam.CLASS({
         }
         return true;
       },
-      isAvailable: function(config, controllerMode, data) {
+      internalIsAvailable: function(config, controllerMode, data) {
         if ( controllerMode == 'EDIT' ) return false;
         try {
           return config.deletePredicate.f(data);
