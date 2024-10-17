@@ -673,7 +673,6 @@ foam.POM({
     { name: "foam/u2/view/EnumView",                                  flags: "web" },
     { name: "foam/u2/view/ColorView",                                 flags: "web" },
     { name: "foam/u2/view/ReadColorView",                             flags: "web" },
-    { name: "foam/u2/view/SimpleAltView",                             flags: "web" },
     { name: "foam/u2/view/DualView",                                  flags: "web" },
     { name: "foam/u2/view/ColorEditView",                             flags: "web" },
     { name: "foam/u2/view/ColorPicker",                               flags: "web" },
