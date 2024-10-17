@@ -769,14 +769,20 @@ foam.CLASS({
           return null;
         }
         nextDate = minDate.with(TemporalAdjusters.next(getWeekday(days[0])));
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
         for ( int i=1; i < days.length; i++ ) {
           LocalDate temp = minDate.with(TemporalAdjusters.next(getWeekday(days[i])));
-          if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
+          if ( temp.isAfter(minimumDate) && 
+              (
+                temp.isBefore(nextDate) && ! temp.isBefore(startDate) ||
+                ( includeToday ? nextDate.isBefore(minimumDate) : ! nextDate.isAfter(minimumDate) ) || 
+                ( includeToday ? nextDate.isBefore(startDate) : ! nextDate.isAfter(startDate) )
+              ) 
+            ) {
             nextDate = temp;
           }
         }
 
-        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
         var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
         if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(endOfWeek) ) {
           return nextDate;
@@ -816,13 +822,20 @@ foam.CLASS({
         }
         LocalDate start = nextDate.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate end = nextDate.with(TemporalAdjusters.lastDayOfMonth());
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
 
         if ( getMonthlyChoice() == MonthlyChoice.EACH ) {
           nextDate = LocalDate.now();
 
           for ( Object day : getDayOfMonth() ) {
             LocalDate temp = start.plusDays(((long)day)-1);
-            if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
+            if ( temp.isAfter(minimumDate) &&
+              (
+                temp.isBefore(nextDate) && ! temp.isBefore(startDate) ||
+                ( includeToday ? nextDate.isBefore(minimumDate) : ! nextDate.isAfter(minimumDate) ) || 
+                ( includeToday ? nextDate.isBefore(startDate) : ! nextDate.isAfter(startDate) )
+              ) 
+            ) {
               nextDate = temp;
             }
           }
@@ -846,7 +859,6 @@ foam.CLASS({
               break;
           }
         }
-        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
         var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
         if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(end) ) {
           return nextDate;
