@@ -18,6 +18,7 @@ foam.CLASS({
     ^ { margin: auto; }
     ^ .foam-u2-view-RadioView.foam-u2-view-RadioView-horizontal-radio .choice {
     }
+    ^ .property-selectedView { margin-bottom: 6px; }
   `,
 
   properties: [
@@ -72,7 +73,7 @@ foam.CLASS({
         this.selectedView = this.views[0][0];
       }
 
-      this.addClass()
+      this.addClass();
       this.startContext({data: this})
         this.start()
           .add(this.SELECTED_VIEW)
