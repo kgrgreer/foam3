@@ -8,18 +8,37 @@ foam.CLASS({
   package: 'foam.dashboard.view',
   name: 'Card',
   extends: 'foam.u2.View',
-  requires: [
-    'foam.u2.view.SimpleAltView'
-  ],
+
   imports: [
     'dashboardController'
   ],
+
   exports: [
     'contentWidth as visualizationWidth',
     'contentHeight as visualizationHeight',
     'visualizationColors',
     'dataof as of',
   ],
+
+  css: `
+    ^ {
+      border-radius: 10px;
+      background: $white;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    ^header {
+      padding-left: 20px;
+      padding-right: 16px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  `,
+
   constants: [
     {
       name: 'SIZES',
@@ -30,10 +49,11 @@ foam.CLASS({
         MEDIUM:  [424, 356],
         LMEDIUM: [570, 450],
         LARGE:   [936, 528],
-        XLARGE:  [1580, 698],
+        XLARGE:  [1580, 698]
       }
     }
   ],
+
   properties: [
     {
       name: 'width',
@@ -77,24 +97,7 @@ foam.CLASS({
       }
     },
   ],
-  css: `
-    ^ {
-      border-radius: 10px;
-      background: $white;
-      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
-    }
 
-    ^header {
-      padding-left: 20px;
-      padding-right: 16px;
-      padding-top: 20px;
-      padding-bottom: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  `,
   methods: [
     function init() {
       this.onDetach(this.dashboardController.sub('dashboard', 'update', function() {
