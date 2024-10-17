@@ -4,13 +4,14 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// Not currently included in src/pom.js because not used anywhere.
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'SimpleAltView',
   extends: 'foam.u2.Element',
-  requires: [
-    'foam.u2.view.ChoiceView'
-  ],
+
+  requires: [ 'foam.u2.view.ChoiceView' ],
+
   properties: [
     {
       name: 'choices'
@@ -19,6 +20,7 @@ foam.CLASS({
       name: 'selected'
     }
   ],
+
   methods: [
     function render() {
       var view = this;

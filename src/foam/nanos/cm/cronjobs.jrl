@@ -4,6 +4,7 @@ p({
   reattemptSchedule:{class:"foam.nanos.cron.IntervalSchedule",duration:{class:"foam.nanos.cron.TimeHMS",minute:5},start:1708022013552},
   id:"updateCMs",
   description:"Update expired CMs.",
+  clusterable: false,
   priority:4,
   code:"""
 import foam.nanos.cm.CM;

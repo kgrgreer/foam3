@@ -587,13 +587,52 @@ foam.CLASS({
       value: dao,
       visibility: 'RW',
       view: 'foam.u2.DAOList'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'altDao',
+      value: dao,
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.AltView',
+        views: [
+          [ 'foam.u2.view.TableView',         'Table' ],
+          [ 'foam.u2.view.EmbeddedTableView', 'Embedded Table' ],
+          [
+            {
+              // Can specify a full ViewSpec
+              class: 'foam.u2.DAOList'
+            },
+            'List'
+          ],
+        ],
+        selectedViewLabel: 'Table' // select default view by name
+      }
+    },
+    /*
+    Not a real view because it does't bind properly to data.
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'daoListWithCreateView',
+      value: dao,
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.DAOListWithCreateView',
+        dao: dao,
+        data: [],
+        of: 'DAOSampleData'
+      }
     }
+    */
   ]
 });
 
 var data = Example.create();
-add(foam.u2.DetailView.create({data: data}));
-add(foam.u2.detail.SectionedDetailView.create({data: data}));
+add(data);
+// add(foam.u2.DetailView.create({data: data}));
+// add(foam.u2.detail.SectionedDetailView.create({data: data}));
 
 ## Rich Text
 --
@@ -747,11 +786,16 @@ tag('p');
 start('h2').add('VerticalDetailView').end();
 add(foam.u2.detail.VerticalDetailView.create({data: data, title: 'VerticalDetailView'}));
 
-## ReadWriteView
+## Misc. Views
+Less frequently used views.
+
+##  ReadWriteView
 The ReaWriteView composes two different views, one for displaying the data
 when it is not being edited, and another when it is. Like a spreadsheet cell
 which normally appears as a label until it is selected and then becomes a
 text field for editing.
+The read and write views used can be changed to subclassing ReadWriteView
+and overriding the toReadE() and toWriteE() methods.
 --
 foam.CLASS({
   name: 'Example',
@@ -784,3 +828,112 @@ foam.CLASS({
 });
 
 tag(TextView.create({data: '<b>bold</b> <i>italic</it>'}));
+
+##  ValueView
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      onKey: true,
+      value: 'value'
+    },
+    {
+      class: 'String',
+      name: 'value2',
+      view: 'foam.u2.view.ValueView'
+    }
+  ]
+});
+
+var e = Example.create();
+e.value1$ = e.value2$;
+add(e);
+
+
+##  ModeAltView
+A view that shows one of several views, depending on the display mode.
+Often, for views that need to support different RO vs RW views, it is easier
+to create two separate views that only handle one of those modes, rather than
+a single view that handles both.
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      onKey: true,
+      value: 'value',
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: 'foam.u2.view.ValueView',
+        writeView: 'foam.u2.TextField'
+      },
+    },
+    {
+      class: 'String',
+      name: 'value2',
+      visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: 'foam.u2.view.ValueView',
+        writeView: 'foam.u2.TextField'
+      }
+    }
+  ]
+});
+
+var e = Example.create();
+e.value1$ = e.value2$;
+add(e);
+
+
+##  AltView
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      value: 'No',
+      view: {
+        // class: 'foam.u2.view.ObjAltView',
+        class: 'foam.u2.view.AltView',
+        views: [
+          [
+            {
+              class: 'foam.u2.view.RadioView',
+              choices: ['Yes', 'No', 'Maybe']
+            },
+            'Radio'
+          ],
+          [
+            {
+              class: 'foam.u2.view.ChoiceView',
+              choices: ['Yes', 'No', 'Maybe']
+            },
+            'Choice'
+          ],
+          [
+            { class: 'foam.u2.TextField' },
+            'Text'
+          ]
+        ],
+        selectedViewLabel: 'Radio' // select default view by name
+      }
+    },
+    {
+      name: 'value2'
+    }
+  ]
+});
+
+var e = Example.create();
+e.value2$ = e.value1$;
+add(e);
+add(e.value1$);
