@@ -398,7 +398,9 @@ foam.CLASS({
       for ( let i = 0; i < ends; i++ ) {
         if ( date == null ) break;
         dates[i] = date;
-        date = this.calculateNextDate_(date, true);
+        var nextDate = new Date(date);
+        nextDate.setDate(nextDate.getDate() + 1);
+        date = this.calculateNextDate_(nextDate, true);
       }
       return dates;
     },
@@ -444,10 +446,11 @@ foam.CLASS({
     // Get next scheduled date, based on the n repeat Year
     // e.g., if repeat is 2 and startDate is Oct 06 2022, the next scheduled date is Oct 06, 2024
     function calculateNextYear_( nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setFullYear(nextDate.getFullYear() + this.repeat);
       }
-      if ( nextDate > minimumDate && nextDate > startDate ) {
+      if ( nextDate >= minimumDate && nextDate >= startDate ) {
         return nextDate;
       }
       return this.calculateNextYear_( nextDate, true, startDate, minimumDate);
@@ -455,6 +458,7 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Month(s) and monthlyChoice(ON_THE or EACH)
     function calculateNextMonth_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         // Add n repeat month(s)
         nextDate = new Date(nextDate.setMonth(nextDate.getMonth() + this.repeat));
@@ -511,6 +515,7 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Week(s) and day(s) of the week
     function calculateNextWeek_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setDate(nextDate.getDate() + (this.repeat * 7));
       }
@@ -529,12 +534,12 @@ foam.CLASS({
       for ( var i  = 1; i < days.length; i++ ) {
         dateVal = this.getWeekDayVal(days[i].name);
         let temp = this.getNextDayOfWeek(minDate, dateVal);
-        if ( temp > minimumDate && temp < nextDate && temp > startDate || nextDate <= minimumDate ) {
+        if ( temp > minimumDate && temp < nextDate && temp > startDate || nextDate < minimumDate ) {
           nextDate = temp;
         }
       }
 
-      if ( nextDate > startDate && nextDate > minimumDate && nextDate < endOfWeek ) {
+      if ( nextDate >= startDate && nextDate >= minimumDate && nextDate < endOfWeek ) {
         return nextDate;
       } else {
         return this.calculateNextWeek_(endOfWeek, true, startDate, minimumDate);
@@ -543,13 +548,18 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Day(s)
     function calculateNextDay_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setDate(nextDate.getDate() + this.repeat);
       }
-      if ( nextDate > minimumDate && nextDate > startDate ) {
+      if ( nextDate >= minimumDate && nextDate >= startDate ) {
         return nextDate;
       }
       return this.calculateNextDay_(nextDate, true, startDate, minimumDate);
+    },
+
+    function clearHours() {
+      for ( var i = 0; i < arguments.length; i++ ) { arguments[i].setHours(0, 0, 0, 0) }
     },
 
     // Helper function for calculateNextMonth_()
