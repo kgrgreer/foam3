@@ -282,7 +282,7 @@ foam.CLASS({
     },
 
     function render() {
-      if ( ! this.data ) this.data = this.of.create({}, this);
+//      if ( ! this.data && this.of ) this.data = this.of.create({}, this);
       var self = this;
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
