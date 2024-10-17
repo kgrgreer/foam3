@@ -119,7 +119,7 @@ foam.CLASS({
           var slot = this[slotName];
           if ( slot ) return slot.get();
           if ( required ) {
-            console.warn('Access missing import:', name);
+            console.warn('Access missing import:', name, 'in class:', this.cls_.id);
           }
           return undefined;
         },
