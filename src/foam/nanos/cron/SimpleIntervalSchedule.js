@@ -473,9 +473,9 @@ foam.CLASS({
         var days = this.dayOfMonth;
         for ( var i = 0; i < days.length; i++ ) {
           let temp = this.getPlusDays(start, (days[i] - 1));
-          if ( temp > minimumDate && temp < nextDate && temp > startDate ||
-            nextDate <= minimumDate || nextDate < startDate ) {
+          if ( temp >= minimumDate && temp >= startDate ) {
             nextDate = temp;
+            break;
           }
         }
       } else {
@@ -507,7 +507,7 @@ foam.CLASS({
             break;
         }
       }
-      if ( nextDate > startDate && nextDate > minimumDate ) {
+      if ( nextDate >= startDate && nextDate >= minimumDate ) {
         return nextDate;
       }
       return this.calculateNextMonth_(start, true, startDate, minimumDate);
@@ -590,8 +590,7 @@ foam.CLASS({
       let month = date.getMonth();
 
       date = new Date(year, month - 1, 7 * (nth - 1) + 1);
-      let nthMonthDate =  new Date(date.setMonth(date.getMonth() + this.repeat));
-      return this.getNextDayOfWeek(nthMonthDate, weekDayVal);
+      return this.getNextDayOfWeek(date, weekDayVal);
     },
 
     /*
@@ -602,7 +601,7 @@ foam.CLASS({
     */
     function getLastInMonth_(date, weekDayVal) {
       let year = date.getFullYear();
-      let month = date.getMonth() + 1 + this.repeat;// getMonth() starts with 0
+      let month = date.getMonth() + 1// getMonth() starts with 0
       date = new Date(year, month, 1);
       // Subtract dateDiff from the first day of the next month
       // e.g., date(Jan 1 2023) - dateDiff(6) = Dec 26 2022
