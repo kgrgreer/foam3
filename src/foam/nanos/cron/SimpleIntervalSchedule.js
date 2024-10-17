@@ -30,8 +30,8 @@ foam.CLASS({
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
     { name: 'ENDS_AFTER_ERROR', message: 'Occurrences must be greater than 0' },
     { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
-    { name: 'INVALID_REPEAT_100', message: 'Please chose a value less than 100' },
-    { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' },
+    { name: 'INVALID_REPEAT_100', message: 'Please choose a value less than 100' },
+    { name: 'INVALID_REPEAT_1', message: 'Please choose a value greater than 0' },
     { name: 'MUST_CHOOSE', message: 'Please make at least one selection' }
 ],
 
