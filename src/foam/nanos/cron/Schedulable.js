@@ -66,6 +66,12 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'name',
+    'startDate',
+    'scheduledTime'
+  ],
+
   properties: [
     {
       name: 'daoKey',
@@ -78,6 +84,7 @@ foam.CLASS({
     },
     {
       name: 'scheduledTime',
+      label: 'Next Scheduled Time',
       storageTransient: false
     },
     {
@@ -93,6 +100,12 @@ foam.CLASS({
         this.startDate = v.startDate;
         this.endsOn = v.endsOn;
       },
+      javaPostSet: `
+        if ( val == null ) return;
+        setFrequency(((SimpleIntervalSchedule)val).getFrequency());
+        setStartDate(((SimpleIntervalSchedule)val).getStartDate());
+        setEndsOn(((SimpleIntervalSchedule)val).getEndsOn());
+      `,
       factory: function() {
         var ret = foam.nanos.cron.SimpleIntervalSchedule.create();
         this.SCHEDULE.postSet(null, ret);
@@ -150,12 +163,7 @@ foam.CLASS({
       gridColumns: 4,
       order: 1,
       javaFactory: `
-      return ((SimpleIntervalSchedule)getSchedule()).getName();
-        // return getObjectToSchedule().getClass().getSimpleName() 
-        // + " " + getObjectToSchedule().getProperty("id")
-        // + (
-        //   getNextScheduledDate() == null ? "" : ( " - " + getNextScheduledDate() )
-        // );
+      return ((SimpleIntervalSchedule) getSchedule()).getName();
       `
     },
     {
@@ -193,13 +201,6 @@ foam.CLASS({
       name: 'lastRun',
       label: 'Last Occurrence',
       storageTransient: false
-      // javaPostSet: `
-      //   if ( val != null ) {
-      //     var schedule = ((SimpleIntervalSchedule) getSchedule());
-      //     schedule.setStartToday(false);
-      //     setSchedule(schedule);
-      //   }
-      // `
     },
     {
       class: 'Enum',
@@ -212,8 +213,7 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       label: 'Start On',
-      createVisibility: 'HIDDEN',
-      transient: true
+      createVisibility: 'HIDDEN'
     },
     {
       class: 'Date',
@@ -244,7 +244,7 @@ foam.CLASS({
       name: 'runScript',
       javaCode: `
         ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
-        setLastRun(new Date()); //moved from scriptrunnerdao
+        setLastRun(new Date());
         getSchedule().postExecution();
         setStatus(foam.nanos.script.ScriptStatus.UNSCHEDULED);
         // save a copy to schedulabledao
@@ -331,8 +331,6 @@ foam.CLASS({
         var alreadyRanToday = DateUtils.isSameDay(lastRun, today);
 
         if ( schedule.getEnds() == ScheduleEnd.AFTER ) {
-          System.out.println(">>>ALREADY RAN TODAY: " + alreadyRanToday);
-          System.out.println(">>>ENDS AFTER: " + schedule.getEndsAfter());
           return ! alreadyRanToday && schedule.getEndsAfter() > 0;
         } else if ( schedule.getEnds() == ScheduleEnd.ON ) {
           if ( ! DateUtils.isSameDay(schedule.getEndsOn(), today) ) return today.before(schedule.getEndsOn());
