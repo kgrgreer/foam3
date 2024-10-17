@@ -588,6 +588,28 @@ foam.CLASS({
       visibility: 'RW',
       view: 'foam.u2.DAOList'
     },
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'DAOSampleData',
+      name: 'altDao',
+      value: dao,
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.AltView',
+        views: [
+          [ 'foam.u2.view.TableView',         'Table' ],
+          [ 'foam.u2.view.EmbeddedTableView', 'Embedded Table' ],
+          [
+            {
+              // Can specify a full ViewSpec
+              class: 'foam.u2.DAOList'
+            },
+            'List'
+          ],
+        ],
+        selectedViewLabel: 'Table' // select default view by name
+      }
+    },
     /*
     Not a real view because it does't bind properly to data.
     {
@@ -880,6 +902,7 @@ foam.CLASS({
       name: 'value1',
       value: 'No',
       view: {
+        // class: 'foam.u2.view.ObjAltView',
         class: 'foam.u2.view.AltView',
         views: [
           [
