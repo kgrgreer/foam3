@@ -868,3 +868,49 @@ foam.CLASS({
 var e = Example.create();
 e.value1$ = e.value2$;
 add(e);
+
+
+##  AltView
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      value: 'No',
+      view: {
+        class: 'foam.u2.view.AltView',
+        views: [
+          [
+            {
+              class: 'foam.u2.view.RadioView',
+              choices: ['Yes', 'No', 'Maybe']
+            },
+            'Radio'
+          ],
+          [
+            {
+              class: 'foam.u2.view.ChoiceView',
+              choices: ['Yes', 'No', 'Maybe']
+            },
+            'Choice'
+          ],
+          [
+            { class: 'foam.u2.TextField' },
+            'Text'
+          ]
+        ],
+        selectedViewLabel: 'Radio' // select default view by name
+      }
+    },
+    {
+      name: 'value2'
+    }
+  ]
+});
+
+var e = Example.create();
+e.value2$ = e.value1$;
+add(e);
+add(e.value1$);
