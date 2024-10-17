@@ -829,3 +829,42 @@ foam.CLASS({
 var e = Example.create();
 e.value1$ = e.value2$;
 add(e);
+
+
+##  ModeAltView
+A view that shows one of several views, depending on the display mode.
+Often, for views that need to support different RO vs RW views, it is easier
+to create two separate views that only handle one of those modes, rather than
+a single view that handles both.
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    {
+      class: 'String',
+      name: 'value1',
+      onKey: true,
+      value: 'value',
+      visibility: 'RW',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: 'foam.u2.view.ValueView',
+        writeView: 'foam.u2.TextField'
+      },
+    },
+    {
+      class: 'String',
+      name: 'value2',
+      visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: 'foam.u2.view.ValueView',
+        writeView: 'foam.u2.TextField'
+      }
+    }
+  ]
+});
+
+var e = Example.create();
+e.value1$ = e.value2$;
+add(e);
