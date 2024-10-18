@@ -86,7 +86,10 @@ foam.CLASS({
       name: 'params',
       factory: function() {
         var m = {};
-        this.window.location.search.substring(1).split('&').forEach(p => {
+        var str = this.window.location.search || this.window.location.hash;
+        var pos = str.indexOf('?');
+
+        pos > -1 && str.substring(pos + 1).split('&').forEach(p => {
           var a = p.split('=');
           m[a[0]] = a[1];
         });
