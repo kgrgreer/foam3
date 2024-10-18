@@ -4,6 +4,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+// TODO: Joystick
+
 foam.CLASS({
   package: 'com.google.flow',
   name: 'Clock',
@@ -201,8 +203,8 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         this.children.
-            filter(function(c) { return ! com.google.flow.Halo.isInstance(c); }).
-            forEach(this.remove.bind(this));
+          filter(function(c) { return ! com.google.flow.Halo.isInstance(c); }).
+          forEach(this.remove.bind(this));
 
         this.updateCellSize();
         this.width  = this.width;
@@ -211,8 +213,10 @@ foam.CLASS({
 
         for ( var i = 0 ; i < this.rows ; i++ ) {
           for ( var j = 0 ; j < this.columns ; j++ ) {
-            var o = this.of.create(null, this.__subContext__);
-            o.x = w  * j;
+            var o = this.of.create(null, this.__subContext__.createSubContext({
+              i: i, j: j
+            }));
+            o.x = w * j;
             o.y = h * i;
             this.add(o);
           }
@@ -235,11 +239,9 @@ foam.CLASS({
   properties: [
     [ 'mass', foam.physics.Physical.INFINITE_MASS ],
     [ 'border', null ],
-    [ 'color', 'red' ],
+    [ 'color',  'red' ],
     [ 'start',  Math.PI ],
     [ 'radius', 20 ],
-    [ 'width', 42 ],
-    [ 'height', 45 ],
     { name: 'stem', hidden: true/*, view: 'foam.u2.DetailView'*/ }
   ],
 
@@ -1290,6 +1292,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 // foam.json.stringify(flow.memento.map(function(o) { var v = o.value; var r = {name: o.name, factory: 'function() { return ' + v.cls_.id + '.create(' + foam.json.stringify(v.instance_) + ')}'};  return r;})).replace(/\"/g,"'").replace(/\\/g,'');
 
