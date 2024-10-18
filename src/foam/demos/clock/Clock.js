@@ -22,8 +22,6 @@ foam.CLASS({
 
   properties: [
     [ 'radius',   100 ],
-    [ 'x',        120 ],
-    [ 'y',        120 ],
     [ 'color',    '#ffffff' ],
     [ 'arcWidth', 5 ],
     {
@@ -66,6 +64,8 @@ foam.CLASS({
 
     function paintSelf(c) {
       this.SUPER(c);
+
+      this.width = this.height = 0;
 
       var date = new Date();
 
