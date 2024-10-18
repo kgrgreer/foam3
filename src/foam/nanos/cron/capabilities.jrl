@@ -13,16 +13,36 @@ p({
   of:  "foam.nanos.cron.Schedulable",
   wizardlet: {
     class: 'foam.u2.wizard.wizardlet.SuccessWizardlet',
-    message: 'Scheduled successfully!',
+    title: '',
     of: 'foam.nanos.cron.Schedulable',
     combinedSection: true,
     isLastWizardlet: true,
+    sections: [
+      {
+        class: 'foam.u2.wizard.wizardlet.WizardletSection',
+        customView: {
+          class: 'foam.nanos.cron.ui.SchedulableSuccessWizardletView',
+          firstDateLabel: 'First Transaction Date',
+          logoSpec: {
+            class: 'foam.u2.tag.Image',
+            data: 'images/checkmark-small-green.svg'
+          }
+        }
+      }
+    ],
     wao: {
       class: "foam.u2.wizard.wao.PrerequisiteWAO",
       of: "foam.nanos.cron.Schedulable",
       prerequisiteCapabilityId: "schedulable-dao-put",
       delegate: { class: 'foam.u2.wizard.wao.NullWAO' }
-    }
+    },
+    dynamicActions: [
+      {
+        class: 'foam.u2.wizard.axiom.WizardAction',
+        name: 'goNext',
+        label: 'Return to Dashboard'
+      }
+    ]
   }
 })
 
@@ -56,7 +76,7 @@ p({
   of: 'foam.core.MapHolder',
   wizardlet: {
     class: 'foam.u2.wizard.wizardlet.ReviewWizardlet',
-    title: "Review Your Schedule",
+    title: "Review Schedule",
     showTitles: false,
     of: 'foam.core.MapHolder',
     items: [
@@ -65,11 +85,47 @@ p({
         name: 'objectToSchedule',
         border: {
           class: 'foam.u2.borders.TopBorderCard',
-          color: '#406dea'
+          color: '$primary400'
         },
         view: {
-          class: 'foam.u2.detail.VerticalDetailView',
-          showTitle: false
+          class: 'foam.u2.detail.SectionedDetailView',
+          of: 'net.nanopay.transfer.TransactionPlanInfo',
+          showTitle: false,
+          borders: {
+            sender: {
+              class: 'foam.u2.borders.SpacingBorder',
+              padding: '0 0 1rem 0'
+            },
+            receiver: {
+              class: 'foam.u2.borders.NullBorder'
+            }
+          },
+          sections: [
+            {
+              name: 'sender',
+              view: {
+                class: 'net.nanopay.transfer.SenderReceiverTransactionSummaryView',
+                heroProp: 'sourceAmount'
+              },
+              title: 'You Send',
+              properties: [
+                { name: 'payerSummary', order: 1 },
+                { name: 'sourceAccountSummary', order: 2 }
+              ]
+            },
+            {
+              name: 'receiver',
+              view: {
+                class: 'net.nanopay.transfer.SenderReceiverTransactionSummaryView',
+                heroProp: 'destinationAmount'
+              },
+              title: 'Recipient Receives',
+              properties: [
+                { name: 'payeeSummary', order: 1 },
+                { name: 'destinationAccountSummary', order: 2 }
+              ]
+            }
+          ]
         }
       },
       {
@@ -86,16 +142,14 @@ p({
       },
       {
         class: 'foam.u2.wizard.wizardlet.ReviewItem',
-        name: 'note',
+        name: 'schedulableNote',
         border: {
           class: 'foam.u2.borders.NullBorder',
           cssClasses: ['p']
         },
         view: {
-          class: 'foam.u2.HTMLView',
-          data: "<span> Charges will be <span class=\'p-semiBold\' > automatically debited </span> from your account <span class=\'p-semiBold\' > on the scheduled day or the next business day </span> if it falls on a weekend or statutory holiday. Expect an X day delay to see your wallet funding.</span>"
-        },
-        predicate: {"class":"foam.mlang.predicate.True"}
+          class: 'foam.u2.HTMLView'
+        }
       }
     ],
     wao: {
@@ -115,6 +169,14 @@ p({
           minMaxCapabilityId: 'schedulable-xorminmax',
           loadFromPath: 'schedule',
           loadIntoPath: 'value.schedule'
+        },
+        {
+          class: 'foam.u2.wizard.wao.XORMinMaxWAO',
+          of: 'foam.core.StringHolder',
+          minMaxCapabilityId: 'schedulable-xorminmax',
+          loadFromPath: 'schedulableNote',
+          loadIntoPath: 'value.schedulableNote',
+          cloneValue: false
         }
       ]
     }
