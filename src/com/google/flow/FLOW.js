@@ -213,7 +213,7 @@ foam.CLASS({
       ^ .foam-u2-ActionView { margin: 10px; }
       ^cmd { box-shadow: 3px 3px 6px 0 gray; width: 100%; margin-bottom: 8px; }
       ^properties { margin-right: 8px; height: auto; }
-      ^properties .foam-u2-view-TreeViewRow { position: relative; }
+      ^properties .foam-u2-view-TreeViewRow { position: relative; width: 200px; }
       ^properties .foam-u2-ActionView, ^properties .foam-u2-ActionView:hover {
         background: none;
         border: none;
@@ -228,8 +228,9 @@ foam.CLASS({
         right: 0;
         top: 12px;
       }
+      ^ .foam-u2-RangeView { width: 200px; }
       .foam-u2-Tabs { padding-top: 0 !important; margin-right: -8px; }
-      input[type="range"] { width: 60px; height: 15px; }
+//      input[type="range"] { width: 60px; }
       input[type="color"] { width: 60px; }
 `,
 
@@ -404,6 +405,7 @@ foam.CLASS({
       view: function(args, x) {
         return {
           class: 'com.google.flow.TreeView',
+          draggable: true,
           relationship: com.google.flow.PropertyPropertyChildrenRelationship,
           startExpanded: true,
           formatter: function(data) {
