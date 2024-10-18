@@ -36,11 +36,15 @@ foam.CLASS({
 
   methods: [
     function initCView() {
-      this.SUPER();
+      this.SUPER
+
+      var self = this;
+
+      const WIDTH = 20, HEIGHT = 30;
 
       var body = this.Rectangle.create({
-        width:  20,
-        height: 30,
+        width:  WIDTH,
+        height: HEIGHT,
         color:  '#ccc'
       });
       this.add(body);
@@ -91,6 +95,9 @@ foam.CLASS({
       // animate
       var timer = this.timer;
       timer.time$.sub(function() {
+        body.scaleX = self.width / WIDTH;
+        body.scaleY = self.height / HEIGHT;
+
         var t = timer.time/16;
         body.y        = 10 * Math.cos(t/9);
         body.rotation = Math.PI / 8 * Math.cos(t/30);
