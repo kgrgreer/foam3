@@ -20,21 +20,22 @@ foam.CLASS({
   name: 'RangeView',
   extends: 'foam.u2.tag.Input',
 
-  css: '^ { width: 300px; vertical-align: middle }',
+  css: '^ { width: 300px; vertical-align: middle; height: 100%; }',
 
   properties: [
-    [ 'type',     'range' ],
-    [ 'step',     0 ],
-    [ 'minValue', 0 ],
-    [ 'maxValue', 100 ],
-    [ 'onKey',    true ]
+    [ 'type',         'range' ],
+    [ 'step',         0 ],
+    [ 'minValue',     0 ],
+    [ 'maxValue',     100 ],
+    [ 'onKey',        true ],
+    [ 'autocomplete', false ]
   ],
 
   methods: [
     function render() {
-      this.SUPER();
       if ( this.step ) this.attrs({step: this.step});
       this.attrs({min: this.minValue, max: this.maxValue$});
+      this.SUPER();
     },
 
     function updateMode_(mode) {
