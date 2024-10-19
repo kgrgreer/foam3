@@ -68,18 +68,126 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'com.google.flow',
-  name: 'ReactiveDetailView',
-  extends: 'foam.u2.DetailView',
+  name: 'PropertyBorder',
+  extends: 'foam.u2.DetailView.PropertyBorder',
 
-  requires: [ 'com.google.flow.DetailPropertyView' ],
+  imports: [ 'scope' ],
 
   css: `
-    ^ { margin: inherit !important; }
-    ^ table { width: auto !important; }
-  `
+    ^switch { color: #ccc; width: 12px !important; }
+    ^switch.reactive {
+      font-weight: 600;
+      color: red !important;
+    }
+    ^formulaInput input:focus {
+      outline: 1px solid red !important;
+    }
+    ^label { width: 10%; }
+  `,
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'reactive',
+      postSet: function(_, r) {
+        if ( ! r && this.data ) {
+          delete this.data.reactions_[this.prop.name];
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'formula',
+      displayWidth: 50,
+      factory: function() {
+        return this.data && this.data.reactions_[this.prop.name];
+      },
+      postSet: function(_, f) {
+        if ( f ) this.setFormula(f);
+      }
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.data$.sub(this.onDataChange);
+      this.onDataChange();
+
+      this.SUPER();
+    },
+
+    function layoutView(self, prop, viewSlot) {
+      this.start().
+        addClass(self.myClass('switch')).
+        enableClass('reactive', self.reactive$).
+        on('click', self.toggleMode).
+        add(' = ').
+      end();
+
+      this.add(
+        self.dynamic(function(reactive) {
+          if ( reactive ) {
+            this.start(self.FORMULA, {data$: self.formula$}).
+              addClass(self.myClass('formulaInput')).
+              on('blur', function() { self.reactive = !! self.formula; }).
+              focus().
+            end();
+          } else {
+            this.add(viewSlot);
+          }
+        })
+      );
+    },
+
+    function setFormula(formula) {
+      this.data.startReaction_(this.prop.name, formula);
+    }
+  ],
+
+  listeners: [
+    function toggleMode() {
+      this.reactive = ! this.reactive;
+    },
+
+    function onDataChange() {
+      if ( this.data ) {
+        var f = this.data.reactions_[this.prop.name];
+        this.formula  = f ? f.toString() : '';
+        this.reactive = !! f;
+      }
+    }
+  ]
 });
 
 
+
+foam.CLASS({
+  package: 'com.google.flow',
+  name: 'ReactiveDetailView',
+  extends: 'foam.u2.DetailView',
+
+  requires: [ 'com.google.flow.PropertyBorder' ],
+
+  css: `
+   // ^ { margin: inherit !important; }
+   // ^ table { width: auto !important; }
+   ^collapsePropertyViews .com-google-flow-PropertyBorder-propHolder { width: auto; display: inline-flex; }
+  `,
+
+  properties: [
+    [ 'showActions', true ],
+    [ 'expandPropertyViews', false ]
+  ],
+
+  methods: [
+    /*
+    function init() {
+      this.SUPER();
+    }*/
+  ]
+});
+
+/*
 // TODO: Isn't used by DetailView anymore. Should be a PropertyBorder.
 foam.CLASS({
   package: 'com.google.flow',
@@ -194,3 +302,4 @@ foam.CLASS({
     }
   ]
 });
+*/
