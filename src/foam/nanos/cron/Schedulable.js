@@ -29,7 +29,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.Subject',
-    'java.util.Date'
+    'java.util.Date',
+    'org.apache.commons.lang3.time.DateUtils'
   ],
 
   requires: [
@@ -68,7 +69,7 @@ foam.CLASS({
   properties: [
     {
       name: 'daoKey',
-      value: 'schedulableDAO'
+      value: 'cronJobDAO'
     },
     {
       class: 'String',
@@ -149,11 +150,12 @@ foam.CLASS({
       gridColumns: 4,
       order: 1,
       javaFactory: `
-        return getObjectToSchedule().getClass().getSimpleName() 
-        + " " + getObjectToSchedule().getProperty("id")
-        + (
-          getNextScheduledDate() == null ? "" : ( " - " + getNextScheduledDate() )
-        );
+      return ((SimpleIntervalSchedule)getSchedule()).getName();
+        // return getObjectToSchedule().getClass().getSimpleName() 
+        // + " " + getObjectToSchedule().getProperty("id")
+        // + (
+        //   getNextScheduledDate() == null ? "" : ( " - " + getNextScheduledDate() )
+        // );
       `
     },
     {
@@ -189,7 +191,15 @@ foam.CLASS({
     },
     {
       name: 'lastRun',
-      label: 'Last Occurrence'
+      label: 'Last Occurrence',
+      storageTransient: false
+      // javaPostSet: `
+      //   if ( val != null ) {
+      //     var schedule = ((SimpleIntervalSchedule) getSchedule());
+      //     schedule.setStartToday(false);
+      //     setSchedule(schedule);
+      //   }
+      // `
     },
     {
       class: 'Enum',
@@ -234,6 +244,11 @@ foam.CLASS({
       name: 'runScript',
       javaCode: `
         ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
+        setLastRun(new Date()); //moved from scriptrunnerdao
+        getSchedule().postExecution();
+        setStatus(foam.nanos.script.ScriptStatus.UNSCHEDULED);
+        // save a copy to schedulabledao
+        ((DAO) x.get("schedulableDAO")).put_(x, fclone());
       `
     },
     {
@@ -251,7 +266,7 @@ foam.CLASS({
             .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
             .setNote(getId() + " " + e.getMessage())
             .build());
-        }
+        } 
       `
     },
     {
@@ -301,6 +316,31 @@ foam.CLASS({
         if ( auth.check(x, "schedulabe." + action + ".*") ) return;
 
         throw new AuthorizationException("You do not have permission to " + action + " this Schedulable");
+      `
+    },
+    {
+      name: 'canRun',
+      args: 'Context x',
+      type: 'Boolean',
+      javaCode: `
+        var schedule = (SimpleIntervalSchedule) getSchedule();
+        var lastRun = getLastRun();
+        var today = new Date();
+
+        if ( lastRun == null ) return true;
+        var alreadyRanToday = DateUtils.isSameDay(lastRun, today);
+
+        if ( schedule.getEnds() == ScheduleEnd.AFTER ) {
+          System.out.println(">>>ALREADY RAN TODAY: " + alreadyRanToday);
+          System.out.println(">>>ENDS AFTER: " + schedule.getEndsAfter());
+          return ! alreadyRanToday && schedule.getEndsAfter() > 0;
+        } else if ( schedule.getEnds() == ScheduleEnd.ON ) {
+          if ( ! DateUtils.isSameDay(schedule.getEndsOn(), today) ) return today.before(schedule.getEndsOn());
+          return ! alreadyRanToday;
+        } else {
+          return ! alreadyRanToday;
+        }
+
       `
     }
   ]

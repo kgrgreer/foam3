@@ -17,7 +17,8 @@ foam.CLASS({
     'java.time.ZoneId',
     'java.time.temporal.ChronoUnit',
     'java.time.temporal.TemporalAdjusters',
-    'java.util.Date'
+    'java.util.Date',
+    'org.apache.commons.lang3.time.DateUtils'
   ],
 
   implements: [
@@ -59,13 +60,26 @@ foam.CLASS({
 
         if ( ! startDate ) return this.INVALID_DATE_ERROR;
         // check against current date
-        if ( startDate <= new Date() ) return this.START_DATE_ERROR;
+        var isToday = (new Date()).toDateString() === startDate.toDateString();
+        if ( ! isToday && startDate < new Date() ) return this.START_DATE_ERROR;
       },
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj  ) return;
         this.style({ 'font-weight': '600' }).add(obj.formatDate(value));
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'startToday',
+      hidden: true,
+      expression: function(startDate) {
+        return (new Date()).toDateString() === startDate.toDateString();
+      },
+      javaFactory: `
+        if ( startTodayIsSet_ ) return startToday_;
+        return DateUtils.isSameDay(new Date(), getStartDate());
+      `
     },
     {
       class: 'Int',
@@ -95,6 +109,11 @@ foam.CLASS({
         let ret = value + ' ' + obj.frequency.label;
         this.style({ 'font-weight': '600' }).add( value > 1 ? ret + 's' : ret );
       }
+    },
+    {
+      class: 'String',
+      name: 'name',
+      label: 'name'
     },
     {
       class: 'Enum',
@@ -650,7 +669,7 @@ foam.CLASS({
         LocalDate nextDate = startDate;
 
         // Check if schedule has ended
-        if ( getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0 || getEnds() == ScheduleEnd.ON && ! minimumDate.isBefore(endsOn) ) {
+        if ( (getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0) || (getEnds() == ScheduleEnd.ON && ! minimumDate.isBefore(endsOn)) ) {
           return null;
         }
 
@@ -706,7 +725,9 @@ foam.CLASS({
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
         }
-        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( minCheck && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
         return calculateNextDay(x, nextDate, true, startDate, minimumDate);
@@ -754,7 +775,10 @@ foam.CLASS({
             nextDate = temp;
           }
         }
-        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(endOfWeek) ) {
+
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(endOfWeek) ) {
           return nextDate;
         } else {
           return calculateNextWeek(x, endOfWeek, true, startDate, minimumDate);
@@ -822,7 +846,9 @@ foam.CLASS({
               break;
           }
         }
-        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(end) ) {
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(end) ) {
           return nextDate;
         }
         return calculateNextMonth(x, start, true, startDate, minimumDate);
@@ -857,7 +883,9 @@ foam.CLASS({
         if ( applyWait ) {
           nextDate = nextDate.plusYears(getRepeat());
         }
-        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( minCheck && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
         return calculateNextYear(x, nextDate, true, startDate, minimumDate);
@@ -918,6 +946,7 @@ foam.CLASS({
         if ( endsAfter > 0 ) {
           setEndsAfter(--endsAfter);
         }
+        if ( getStartToday() ) setStartToday(false);
       `
     },
     {
