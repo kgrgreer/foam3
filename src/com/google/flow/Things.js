@@ -332,8 +332,8 @@ foam.CLASS({
     {
       name: 'onMouseMove',
       code: function(evt) {
-        this.x = evt.layerX;
-        this.y = evt.layerY;
+        this.x = evt.offsetX;
+        this.y = evt.offsetY;
       }
     }
   ]
@@ -785,11 +785,13 @@ foam.CLASS({
     },
 
     function ss() {
+      /* Save Stack */
       this.mementoStack_.push(this.memento);
       return this;
     },
 
     function rs() {
+      /* Restore Stack */
       this.memento = this.mementoStack_.pop();
       return this;
     },
@@ -826,8 +828,8 @@ foam.CLASS({
     function fd(d) {
       /* ForwarD */
       return this.gt(
-          this.x + d * Math.cos(this.rotation+Math.PI/2),
-          this.y - d * Math.sin(this.rotation+Math.PI/2));
+        this.x + d * Math.cos(this.rotation+Math.PI/2),
+        this.y - d * Math.sin(this.rotation+Math.PI/2));
     },
 
     function gt(x, y) {
