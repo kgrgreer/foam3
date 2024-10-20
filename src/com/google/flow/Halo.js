@@ -67,7 +67,7 @@ foam.CLASS({
 
       listeners: [
         function onMouseDown(evt) {
-          console.log('AnchorMouseDown: ', evt);
+          // console.log('AnchorMouseDown: ', evt);
           if ( ! this.view ) return;
           this.viewStart = {
             x: this.view.x,
@@ -234,17 +234,17 @@ foam.CLASS({
         var r = this.anchorRadius;
 
         if ( v.radius ) {
-          this.height = this.width = (v.radius + v.arcWidth + 3 + r*2) * 2;
-          this.x        = - v.radius - v.arcWidth - r*2 - 3;
-          this.y        = - v.radius - v.arcWidth - r*2 - 3;
+          this.height  = this.width = (v.radius + v.arcWidth + 3 + r*2) * 2;
+          this.x       = - v.radius - v.arcWidth - r*2 - 3;
+          this.y       = - v.radius - v.arcWidth - r*2 - 3;
           this.originX = v.x-this.x;
           this.originY = v.y-this.y;
         } else {
           this.x = this.y = -2*r-4;
-          this.width    = v.scaleX * v.width  + 2 * ( r * 2 + 4 );
-          this.height   = v.scaleY * v.height + 2 * ( r * 2 + 4 );
-          this.originX  = v.originX+2*r+4
-          this.originY  = v.originY+2*r+4;
+          this.width      = v.scaleX * v.width  + 2 * ( r * 2 + 4 );
+          this.height     = v.scaleY * v.height + 2 * ( r * 2 + 4 );
+          this.originX    = v.originX+2*r+4
+          this.originY    = v.originY+2*r+4;
         }
 
         this.haloBorder.x      = r;
@@ -258,10 +258,10 @@ foam.CLASS({
 
     function onMouseDown(evt) {
       if ( ! this.view ) return;
-      this.startX = this.view.x;
-      this.startY = this.view.y;
-      this.mouseStartX = evt.offsetX;
-      this.mouseStartY = evt.offsetY;
+      this.startX       = this.view.x;
+      this.startY       = this.view.y;
+      this.mouseStartX  = evt.offsetX;
+      this.mouseStartY  = evt.offsetY;
     },
 
     function onMouseMove(evt) {
