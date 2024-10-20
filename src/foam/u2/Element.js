@@ -1374,7 +1374,7 @@ foam.CLASS({
       if ( foam.core.Slot.isInstance(enabled) ) {
         var self = this;
         var value = enabled;
-        var l = function() { if (self.state == self.OUTPUT) return; self.enableClass(cls, value.get(), opt_negate); };
+        var l = function() { self.enableClass(cls, value.get(), opt_negate); };
         this.onDetach(value.dedup().sub(l));
         l();
       } else {
@@ -1912,17 +1912,17 @@ foam.CLASS({
         // Convert e or e[0] into a SPAN if needed,
         // So that it can be located later.
         if ( e === undefined || e === null || e === '' ) {
-          e = self.E('SPAN');
+          e = self.E('span');
         } else if ( Array.isArray(e) ) {
           if ( e.length ) {
             if ( typeof e[0] === 'string' ) {
-              e[0] = self.E('SPAN').add(e[0]);
+              e[0] = self.E('span').add(e[0]);
             }
           } else {
-            e = self.E('SPAN');
+            e = self.E('span');
           }
         } else if ( ! foam.u2.Element.isInstance(e) ) {
-          e = self.E('SPAN').add(e);
+          e = self.E('span').add(e);
         }
 
         self.__subSubContext__ = oldCtx;
@@ -2062,67 +2062,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'U2Context',
-
-  documentation: 'Context which includes U2 functionality. Replaces foam.__context__.',
-
-  exports: [
-    'E',
-    'registerElement',
-    'elementForName'
-  ],
-
-  properties: [
-    {
-      name: 'elementMap',
-      documentation: 'Map of registered Elements.',
-      factory: function() { return {}; }
-    }
-  ],
-
-  methods: [
-    {
-      // A Method which has the call-site context added as the first arg
-      // when exported.
-      class: 'foam.core.ContextMethod',
-      name: 'E',
-      code: function E(ctx, opt_nodeName) {
-        var nodeName = (opt_nodeName || 'DIV').toUpperCase();
-
-        return (ctx.elementForName(nodeName) || foam.u2.Element).
-          create({nodeName: nodeName}, ctx);
-      }
-    },
-
-    function registerElement(elClass, opt_elName) {
-      /* Register a View class against an abstract node name. */
-      var key = opt_elName || elClass.name;
-      this.elementMap[key.toUpperCase()] = elClass;
-    },
-
-    function elementForName(nodeName) {
-      /* Find an Element Class for the specified node name. */
-      return this.elementMap[nodeName];
-    }
-  ]
-});
-
-
-foam.SCRIPT({
-  package: 'foam.u2',
-  name: 'U2ContextScript',
-
-  requires: [ 'foam.u2.U2Context' ],
-  flags: ['web'],
-
-  code: function() {
-    foam.__context__ = foam.u2.U2Context.create().__subContext__;
-  }
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'FObjectToERefinement',
   refines: 'foam.core.FObject',
   methods: [
@@ -2212,8 +2151,7 @@ foam.CLASS({
       // Without wrapping in a PropertyBorder
       name: '__',
       transient: true,
-      factory: function() { return { __proto__: this, toE: this.toPropertyView }; },
-      comparePropertyValues: function() { return 0; }
+      factory: function() { return { __proto__: this, toE: this.toPropertyView }; }
     },
     {
       class: 'Boolean',

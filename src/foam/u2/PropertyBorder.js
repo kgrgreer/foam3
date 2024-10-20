@@ -203,8 +203,9 @@ foam.CLASS({
     ^view {
       flex-grow: 1;
       max-width: 100%;
+      min-height: 34px;
     }
-    ^helper-icon svg{
+    ^helper-icon svg {
       fill: currentColor;
     }
   `,

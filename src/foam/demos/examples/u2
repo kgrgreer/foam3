@@ -18,7 +18,7 @@ The advantages of a Virtual-DOM are:
 Improved security was the primary motivation for U2.
 Simplified use over U2, without losing any of U2's security benefits, was the primary motivation for U3.
 
-All 32 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
+All U2/3 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
 --
 add('testing');
 
@@ -100,7 +100,7 @@ tag('input');
 ##   ControllerMode
 ##   DisplayMode
 ##   Borders
-A Border is a component meant to be a container for other elements. Examples might inluce
+A Border is a component meant to be a container for other elements. Examples might include
 a card, a shadow border, a tab-control, etc.
 If an element has a 'content' element, then when children are add()'ed to the element,
 they will be inserted into the 'content' element, rather that at the end of the element,
@@ -237,9 +237,7 @@ foam.CLASS({
   name: 'KeyboardTest',
   extends: 'foam.u2.Controller',
   properties: [
-    // TODO: view: shouldn't be required, remove when fixed.
-    // appears to be issue with ModeAltView
-    { class: 'Int', name: 'count', value: 5, view: 'foam.u2.IntView' }
+    { class: 'Int', name: 'count', value: 5 }
   ],
   methods: [
     function render() { this.add(this.COUNT, ' ', this.INCR); }
@@ -453,7 +451,7 @@ foam.CLASS({
   css: '^ { color: red; }',
   methods: [
     function render() {
-      this.addClass().add('No-inheritCSS: ', this.model_.inheritCSS);
+      this.addClass().add('No-inheritCSS: ', '' + this.model_.inheritCSS);
     }
   ]
 });
@@ -548,7 +546,7 @@ start()
 ##    callIfElse
 --
 start()
-  .callIfElse(true,  function() { this.add('true'); }, function() { this.add('false'); })
+  .callIfElse(true,  function() { this.add('true');  }, function() { this.add('false'); })
   .br()
   .callIfElse(false, function() { this.add('false'); }, function() { this.add('false'); })
 .end();
@@ -587,32 +585,34 @@ tag(RemoveEventListenerDemo);
 --
 foam.CLASS({
   name: 'OnKeyDemo',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.Controller',
 
   properties: [
     {
       class: 'String',
       name: 'value1',
+      value: 'value1',
       onKey: true
     },
     {
       class: 'String',
       name: 'value2',
+      value: 'value2',
       // onKey: false // not needed, as false is the default
     }
   ],
 
   methods: [
     function render() {
-      this.add(this.VALUE1, this.value1$, this.VALUE2, this.value2$);
+      this.add(this.VALUE1, this.VALUE2);
       this.tag(this.VALUE2, { onKey: true});
-      this.tag({class: 'foam.u2.TextField', onKey: true, data: this.value1$});
-      this.tag({class: 'foam.u2.TextField', onKey: false, data: this.value1$});
+      this.tag({class: 'foam.u2.TextField', onKey: true,  data$: this.value1$});
+      this.tag({class: 'foam.u2.TextField', onKey: false, data$: this.value1$});
+      this.br().add('value1: ', this.value1$).br().add('value2: ', this.value2$);
     }
   ]
 });
 
-// TODO: fix
 tag({class: 'OnKeyDemo'});
 
 ##    DAOs
@@ -688,7 +688,7 @@ var t = Test.create();
 
 start().
   startContext({data: t}).
-    add('A: ', t.A, ' B: ', t.B).
+    add('A: ', t.A).br().add(' B: ', t.B).
   endContext().
 end();
 
@@ -758,7 +758,9 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.show(this.on$);
+      // this.show(this.on$);
+      // This works better than previous line because it doesn't cause the output to grow and shrink
+      this.style({visibility: this.on$.map(s => s ? '' : 'hidden')});
       this.toggle();
     }
   ],
@@ -773,11 +775,16 @@ foam.CLASS({
   ]
 });
 
-// TODO: doesn't work
 foam.__context__.registerElement(Blink, 'blink');
 start('blink').add('blinking').end();
 
 ##    elementForName
+ElementForName is the reverse of registerElement. It is used internally in FOAM
+to determine if a node/tag name has a registered class associated with it.
+Isn't used directly by application developers.
+--
+add(foam.__context__.elementForName('blink').id);
+
 ##   View
 The foam.u2.View class extends Element and adds a property named 'data', which it exports.
 Views act as the display component (view) for their data. This is the standard MVC
@@ -786,7 +793,7 @@ pattern where the View is the View, and the 'data' is the Model.
 When Elements are used to view Property values, the fromProperty() method is called
 and provided the Property object that the view is being associated with.
 This allows the view to optionally configure itself based on Property values.
-Examples properties that may be taken from the property include:
+Examples of properties that may be taken from the property include:
 onKey, placeholder, displayWidth, size, min, max, of, daoKey, etc.
 --
 foam.CLASS({
@@ -820,7 +827,7 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this.add(this.FIRST_NAME, this.LAST_NAME);
+      this.add('First Name:', this.FIRST_NAME, this.LAST_NAME);
 
       this.tag('hr');
 
@@ -847,7 +854,7 @@ tag(foam.u2.DetailView.create({data: timer}));
 add(timer.time$);
 tag('hr');
 tag(av);
-tag( foam.u2.ActionView.create({data: timer, action: timer.STOP}));
+tag(foam.u2.ActionView.create({data: timer, action: timer.STOP}));
 this.startContext({data: timer}).add(timer.I);
 
 ##   StackView

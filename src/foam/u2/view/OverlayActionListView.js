@@ -319,8 +319,8 @@ foam.CLASS({
           slots: availSlots
         }, this)
           .map(async arr => {
-            arr = await Promise.all(arr) 
-            return ! arr.reduce((l, r) => l || r, false)
+            arr = await Promise.all(arr);
+            return ! arr.reduce((l, r) => l || r, false);
           })
         );
       }
@@ -343,9 +343,7 @@ foam.CLASS({
     function onKeyDown(e) {
       var isTabPressed = (e.key === 'Tab' || e.keyCode === 9);
 
-      if ( ! isTabPressed ) {
-        return;
-      }
+      if ( ! isTabPressed ) return;
 
       if ( e.shiftKey ) {
         if ( this.document.activeElement === this.firstEl_.el_() ) {

@@ -12,7 +12,7 @@ foam.CLASS({
 
   requires: ['foam.u2.view.DraftDetailView'],
 
-  documentation: `RichChoiceView with support for inline create, 
+  documentation: `RichChoiceView with support for inline create,
   ideally should be used with reference props that only reqire a few props to create a new object`,
 
   css: `
@@ -25,7 +25,7 @@ foam.CLASS({
     }
   `,
 
-  imports: ['auth'],
+  imports: [ 'auth?' ],
 
   exports: [
     'cancel as onCancel',
@@ -46,7 +46,7 @@ foam.CLASS({
     {
       name: 'workingData',
       factory: function() {
-        return this.of.create(this.baseArgs, this); 
+        return this.of.create(this.baseArgs, this);
       }
     },
     {
@@ -72,9 +72,9 @@ foam.CLASS({
 
   methods: [
     function addAction(showCreate, createView) {
-      if ( ! createView ) 
-        return this.E(); 
-      if ( showCreate ) 
+      if ( ! createView )
+        return this.E();
+      if ( showCreate )
         return this.E()
           .addClass(this.myClass('createWrapper'))
           .start(this.DraftDetailView, {
@@ -102,7 +102,7 @@ foam.CLASS({
     //     var el = self.document.querySelector('.' + self.myClass('container'));
     //     if ( ! el ) return;
     //     el.scrollTop = el.scrollHeight;
-    //   }) 
+    //   })
     // },
     function saveToDAO() {
       if ( this.feedback_ ) return;
@@ -114,7 +114,7 @@ foam.CLASS({
         this.showCreate = false;
         this.feedback_ = false;
       }, e => {
-        this.feedback_ = false; 
+        this.feedback_ = false;
         ctrl.notify('Something went wrong', e.message, 'ERROR', true)
       });
     },
@@ -130,7 +130,7 @@ foam.CLASS({
     {
       name: 'addRow',
       isAvailable: function(of) {
-        return this.auth.check(this, `${of.name}.create`);
+        return this.auth ? this.auth.check(this, `${of.name}.create`) : true;
       },
       code: function() { this.showCreate = true; }
     }

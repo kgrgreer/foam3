@@ -57,9 +57,9 @@ foam.CLASS({
         If this array is not empty, only the properties listed in it will be
         included in the detail view.
 
-        NOTE: Setting propertyWhitelist is almost like creating a transient section, thus the order property for all 
+        NOTE: Setting propertyWhitelist is almost like creating a transient section, thus the order property for all
         properties in this list is overriden to be in the order they appear in the array/object.
-        If the order needs to be changed it can be overriden like any other property property but it would be in reference to 
+        If the order needs to be changed it can be overriden like any other property property but it would be in reference to
         this new order added to this whitelist.
       `,
       factory: null,
@@ -102,7 +102,7 @@ foam.CLASS({
           return obj.Section.create().fromSectionAxiom(axiom, obj.of);
         }
         return o;
-      },  
+      },
       expression: function(of, useSections, propertyWhitelist) {
         if ( ! of ) return [];
 
@@ -172,6 +172,14 @@ foam.CLASS({
 
         return sections;
       }
+    }
+  ],
+
+  methods: [
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      if ( ! this.of && p.of ) this.of = p.of;
     }
   ]
 });

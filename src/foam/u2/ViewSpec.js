@@ -38,13 +38,7 @@ foam.CLASS({
           if ( FObject.isInstance(ctx) ) ctx = ctx.__subContext__;
 
           if ( ! spec || Str.isInstance(spec) ) {
-            if ( args ) {
-              if ( spec ) args.nodeName = spec;
-              return Element.create(args, ctx);
-            }
-            var e = Element.create(null, ctx);
-            if ( spec ) e.nodeName = spec;
-            return e;
+            return ctx.E(spec, args);
           }
 
           if ( Element.isInstance(spec) ) {

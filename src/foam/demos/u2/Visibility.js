@@ -148,7 +148,8 @@ foam.CLASS({
   requires: [
     'foam.demos.u2.VisibilityTest',
     'foam.u2.ControllerMode',
-    'foam.u2.detail.VerticalDetailView as DetailView',
+    'foam.u2.DetailView',
+    // 'foam.u2.detail.VerticalDetailView as DetailView',
     'foam.u2.layout.DisplayWidth',
     'foam.u2.layout.Grid',
     'foam.u2.layout.GUnit'
@@ -228,26 +229,18 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'userHasReadPermission',
-      label: 'User Has Read Permission?',
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'userHasReadWritePermission',
-      label: 'User Has Read/Write Permission?',
-      value: true
+      class: 'String',
+      name: 'permission',
+      view: { class: 'foam.u2.view.ChoiceView', choices: [ '--', 'RO', 'RW' ] },
+      value: 'RW'
     },
     {
       name: 'mockAuthService',
       factory: function() {
         return {
           check: async (_, permission) => {
-            if ( permission.includes('.ro.') ) {
-              return this.userHasReadPermission;
-            }
-            return this.userHasReadWritePermission;
+            if ( permission.includes('.ro.') && this.permission == 'RO' ) return true;
+            return this.permission == 'RW';
           }
         }
       }
@@ -362,7 +355,7 @@ foam.CLASS({
           .add('.')
         .end()
 
-        .add(this.slot(function(userHasReadPermission, userHasReadWritePermission) {
+        .add(this.slot(function(permission) {
           return this.E()
             .start(this.Grid)
               .start(this.GUnit, { columns: 4 })
@@ -390,8 +383,7 @@ foam.CLASS({
           .add('Control Permissions')
         .end()
         .startContext({ data: this })
-          .start().add(this.USER_HAS_READ_PERMISSION.__).end()
-          .start().add(this.USER_HAS_READ_WRITE_PERMISSION.__).end()
+          .start().add(this.PERMISSION.__).end()
         .end();
     }
   ]

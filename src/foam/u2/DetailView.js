@@ -46,10 +46,11 @@ foam.CLASS({
         }
 
         ^label {
-          vertical-align: top;
-          padding-top: 4px;
-          white-space: nowrap;
+          min-height: 28px;
           padding-right: 20px;
+          padding-top: 4px;
+          vertical-align: top;
+          white-space: nowrap;
         }
 
         ^view { display: inline; }
@@ -67,6 +68,25 @@ foam.CLASS({
         ^errorText svg {
           width: 1rem;
           height: 1rem;
+        }
+
+        ^propHolder {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          gap: 0.2rem
+        }
+        ^propHolder > :first-child {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          gap: 0.4rem;
+          width: 100%;
+        }
+        ^view {
+          flex-grow: 1;
+          max-width: 100%;
         }
 
         ^helper-icon { display: inline; vertical-align: middle; margin-left: 4px; }
@@ -163,7 +183,7 @@ foam.CLASS({
     ^toolbar { margin-top: 4px; }
     ^toolbar .foam-u2-ActionView { margin-right: 4px; }
 
-    ^.collapsePropertyViews .foam-u2-TextInputCSS { width: auto; }
+    ^collapsePropertyViews .foam-u2-DetailView-PropertyBorder-propHolder { width: auto; display: inline-flex; }
   `,
 
   properties: [
@@ -255,7 +275,14 @@ foam.CLASS({
   ],
 
   methods: [
+    function fromProperty(p) {
+      this.SUPER(p);
+
+      if ( ! this.of && p.of ) this.of = p.of;
+    },
+
     function render() {
+      if ( ! this.data ) this.data = this.of.create({}, this);
       var self = this;
       this.dynamic(function(route) {
         self.removeAllChildren(); // TODO: not needed in U3
@@ -295,7 +322,7 @@ foam.CLASS({
         var tabs;
 
         return this.start('table').
-          enableClass('collapsePropertyViews', this.expandPropertyViews$, true).
+          enableClass(self.myClass('collapsePropertyViews'), self.expandPropertyViews$, true).
           attrs({'cellpadding': 2}).
           addClass(self.myClass()).
           callIf(self.title, function() {

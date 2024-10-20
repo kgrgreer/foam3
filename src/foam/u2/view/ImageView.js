@@ -22,16 +22,14 @@ foam.CLASS({
 
   methods: [
     function render() {
-      this
-        .start({
-          class: 'foam.u2.tag.Image',
-          embedSVG: true,
-          data$: this.slot(function(data) {
-            return foam.nanos.fs.File.isInstance(data)
-              ? this.getImagePath(data) : data;
-          })
+      this.tag({
+        class: 'foam.u2.tag.Image',
+        embedSVG: true,
+        data$: this.slot(function(data) {
+          return foam.nanos.fs.File.isInstance(data)
+            ? this.getImagePath(data) : data;
         })
-        .end();
+      });
     },
 
     function getImagePath(file) {

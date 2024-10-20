@@ -81,15 +81,14 @@ public class SessionWebAgent
       }
 
       // check permissions
-      Subject subject = new Subject.Builder(x).setUser(user).build();
-      session.setContext(session.getContext().put("subject", subject));
-      if ( ! auth.check(session.getContext(), permission_) ) {
+      var applyX = session.applyTo(x);
+      if ( ! auth.check(applyX, permission_) ) {
         throw new AuthorizationException();
       }
 
       // execute delegate
       // Update session context with support setup from earlier WebAgents.
-      getDelegate().execute(session.getContext().put(HttpServletResponse.class, resp).put(HttpServletRequest.class, req));
+      getDelegate().execute(applyX);
 
     } catch ( AuthorizationException e ) {
       // report permission issues
