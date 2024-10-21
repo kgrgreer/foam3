@@ -146,6 +146,11 @@
       if ( this.autocompleter )
         this.autocompleter.partial$ = this.data$;
 
+      this.onDetach(this.data$.sub(function() {
+        if ( self.data )
+          self.inputFocused = true;
+      }));
+
       this.onDetach(this.onload.sub(this.loaded));
       this
       .addClass()
@@ -179,8 +184,10 @@
               .on('mousedown', function(e) {
               // using mousedown not click since mousedown is fired before blur is fired so we can intercept rowClick
               // otherwise when using click the blur gets fired first and the row listener is never called
-                self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
-                self.inputFocused = false;
+                let fn = self.onRowSelect ? self.onRowSelect(obj) : self.onSelect.call(self, obj);
+                fn.then(() => {
+                  self.inputFocused = false;
+                });
 
                 e.preventDefault();
               })

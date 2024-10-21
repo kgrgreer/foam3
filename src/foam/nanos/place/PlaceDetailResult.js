@@ -124,10 +124,16 @@ foam.CLASS({
 
         map.put("streetName", findType("route", false));
 
+        map.put("neighborhood", findType("neighborhood", false));
+        
+        map.put("sublocality_level_1", findType("sublocality_level_1", false));
+
+        map.put("sublocality", findType("sublocality", false));
+
         map.put("city", findType("locality", false));
-        if (map.get("city") == "") map.put("city", findType("sublocality", false));
-        if (map.get("city") == "") map.put("city", findType("sublocality_level_1", false));
-        if (map.get("city") == "") map.put("city", findType("neighborhood", false));
+        if (map.get("city") == "") map.put("city", map.get("sublocality"));
+        if (map.get("city") == "") map.put("city", map.get("sublocality_level_1"));
+        if (map.get("city") == "") map.put("city", map.get("neighborhood"));
         if (map.get("city") == "") map.put("city", findType("administrative_area_level_3", false));
         if (map.get("city") == "") map.put("city", findType("administrative_area_level_2", false));
 
@@ -135,11 +141,25 @@ foam.CLASS({
 
         map.put("postalCode", findType("postal_code", false));
 
-        // Fix before using addresses for PK
         // Kinda jank but it works
-        String[] a = getFormattedAddress().split((String) ", " + map.get("city"));
-        map.put("address1", a[0]);
-        
+        String[] comp = new String[]{"streetNumber", "streetName", "neighborhood", "sublocality_level_1", "sublocality"};
+        String a1 = "";
+        String lastAppend = "";
+        for ( String a : comp ) {
+          String value = (String) map.get(a);
+          if ( value != "" ) {
+            if ( value == map.get("city") || (lastAppend != "" && value.startsWith(lastAppend)) ) {
+              break;
+            }
+            if ( a1 != "" && a != "streetNumber" ) {
+              a1 += ", ";
+            }
+            a1 += value;
+            lastAppend = value;
+          }
+        }
+        map.put("address1", a1);
+      
         // Region is fetched from dao because Google doesn't provide ISO codes
         var regionShort = findType("administrative_area_level_1", true);
         var regionLong = findType("administrative_area_level_1", false);
@@ -158,4 +178,4 @@ foam.CLASS({
       `
     }
   ]
-})
+}) 
