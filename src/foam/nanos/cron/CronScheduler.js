@@ -58,6 +58,14 @@ foam.CLASS({
       value: 'cronDAO',
     },
     {
+      name: 'schedulableDAO',
+      class: 'String',
+      value: 'schedulableDAO',
+      documentation: `
+        move existing schedulables to cronJobDAO
+      `
+    },
+    {
       name: 'cronJobDAO',
       class: 'String',
       value: 'localCronJobDAO'
@@ -118,12 +126,24 @@ foam.CLASS({
       // copy all entries to from cronjob to localCronDAO for execution
       final DAO cronDAO = (DAO) getX().get(getCronDAO());
       final DAO cronJobDAO = (DAO) getX().get(getCronJobDAO());
+      final DAO schedulableDAO = (DAO) getX().get(getSchedulableDAO());
       cronDAO.where(MLang.EQ(Cron.ENABLED, true)).
         select(new Sink() {
           public void put(Object obj, Detachable sub) {
             Cron cron = (Cron) ((FObject) obj).fclone();
             cron.setScheduledTime(cron.getNextScheduledTime(getX()));
             cronJobDAO.put(cron);
+          }
+          public void remove(Object obj, Detachable sub) {}
+          public void eof() {}
+          public void reset(Detachable sub) {}
+        });
+      schedulableDAO.where(MLang.EQ(Schedulable.ENABLED, true)).
+        select(new Sink() {
+          public void put(Object obj, Detachable sub) {
+            Schedulable schedulable = (Schedulable) ((FObject) obj).fclone();
+            schedulable.setScheduledTime(schedulable.getNextScheduledTime(getX()));
+            cronJobDAO.put(schedulable);
           }
           public void remove(Object obj, Detachable sub) {}
           public void eof() {}

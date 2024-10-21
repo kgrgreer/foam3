@@ -17,7 +17,8 @@ foam.CLASS({
     'java.time.ZoneId',
     'java.time.temporal.ChronoUnit',
     'java.time.temporal.TemporalAdjusters',
-    'java.util.Date'
+    'java.util.Date',
+    'org.apache.commons.lang3.time.DateUtils'
   ],
 
   implements: [
@@ -27,9 +28,11 @@ foam.CLASS({
   messages: [
     { name: 'START_DATE_ERROR', message: 'Start Date must be after today' },
     { name: 'ENDS_ON_ERROR', message: 'End Date must be after start date' },
+    { name: 'ENDS_AFTER_ERROR', message: 'Occurrences must be greater than 0' },
     { name: 'INVALID_DATE_ERROR', message: 'Please provide the date' },
-    { name: 'INVALID_REPEAT_100', message: 'Please chose a value less than 100' },
-    { name: 'INVALID_REPEAT_1', message: 'Please chose a value greater than 0' }
+    { name: 'INVALID_REPEAT_100', message: 'Please choose a value less than 100' },
+    { name: 'INVALID_REPEAT_1', message: 'Please choose a value greater than 0' },
+    { name: 'MUST_CHOOSE', message: 'Please make at least one selection' }
 ],
 
   requires: [
@@ -57,13 +60,26 @@ foam.CLASS({
 
         if ( ! startDate ) return this.INVALID_DATE_ERROR;
         // check against current date
-        if ( startDate <= new Date() ) return this.START_DATE_ERROR;
+        var isToday = (new Date()).toDateString() === startDate.toDateString();
+        if ( ! isToday && startDate < new Date() ) return this.START_DATE_ERROR;
       },
       projectionSafe: false,
       tableCellFormatter: function(value, obj) {
         if ( ! value || ! obj  ) return;
         this.style({ 'font-weight': '600' }).add(obj.formatDate(value));
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'startToday',
+      hidden: true,
+      expression: function(startDate) {
+        return (new Date()).toDateString() === startDate.toDateString();
+      },
+      javaFactory: `
+        if ( startTodayIsSet_ ) return startToday_;
+        return DateUtils.isSameDay(new Date(), getStartDate());
+      `
     },
     {
       class: 'Int',
@@ -93,6 +109,11 @@ foam.CLASS({
         let ret = value + ' ' + obj.frequency.label;
         this.style({ 'font-weight': '600' }).add( value > 1 ? ret + 's' : ret );
       }
+    },
+    {
+      class: 'String',
+      name: 'name',
+      label: 'name'
     },
     {
       class: 'Enum',
@@ -141,6 +162,10 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.DayOfWeekView',
       },
+      validateObj: function(frequency, dayOfWeek) {
+        if ( frequency != this.TimeUnit.WEEK ) return;
+        if ( ! dayOfWeek?.length ) return this.MUST_CHOOSE;
+      },
       visibility: function(frequency) {
         if ( frequency != this.TimeUnit.WEEK )
           return foam.u2.DisplayMode.HIDDEN;
@@ -185,6 +210,10 @@ foam.CLASS({
         if ( monthlyChoice != this.MonthlyChoice.EACH )
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
+      },
+      validateObj: function(frequency, monthlyChoice, dayOfMonth) {
+        if ( frequency != this.TimeUnit.MONTH || monthlyChoice != this.MonthlyChoice.EACH ) return;
+        if ( ! dayOfMonth?.length ) return this.MUST_CHOOSE;
       },
       tableCellFormatter: function(values) {
         if ( ! values ) return;
@@ -279,7 +308,8 @@ foam.CLASS({
           return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RW;
       },
-      validateObj: function(endsOn) {
+      validateObj: function(ends, endsOn) {
+        if ( ends != this.ScheduleEnd.ON ) return;
         if ( ! endsOn ) return this.INVALID_DATE_ERROR;
         // check against start date
         if ( endsOn <= this.startDate ) return this.ENDS_ON_ERROR;
@@ -296,7 +326,11 @@ foam.CLASS({
       label: 'Occurrences',
       columnLabel: 'Ends',
       gridColumns: 6,
-      min: 1,
+      validateObj: function(ends, endsAfter) {
+        if ( ends != this.ScheduleEnd.AFTER ) return;
+        // check against start date
+        if ( endsAfter < 1 ) return this.ENDS_AFTER_ERROR;
+      },
       visibility: function(ends) {
         if ( ends != this.ScheduleEnd.AFTER )
           return foam.u2.DisplayMode.HIDDEN;
@@ -364,7 +398,9 @@ foam.CLASS({
       for ( let i = 0; i < ends; i++ ) {
         if ( date == null ) break;
         dates[i] = date;
-        date = this.calculateNextDate_(date, true);
+        var nextDate = new Date(date);
+        nextDate.setDate(nextDate.getDate() + 1);
+        date = this.calculateNextDate_(nextDate, true);
       }
       return dates;
     },
@@ -410,10 +446,11 @@ foam.CLASS({
     // Get next scheduled date, based on the n repeat Year
     // e.g., if repeat is 2 and startDate is Oct 06 2022, the next scheduled date is Oct 06, 2024
     function calculateNextYear_( nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setFullYear(nextDate.getFullYear() + this.repeat);
       }
-      if ( nextDate > minimumDate && nextDate > startDate ) {
+      if ( nextDate >= minimumDate && nextDate >= startDate ) {
         return nextDate;
       }
       return this.calculateNextYear_( nextDate, true, startDate, minimumDate);
@@ -421,6 +458,7 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Month(s) and monthlyChoice(ON_THE or EACH)
     function calculateNextMonth_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         // Add n repeat month(s)
         nextDate = new Date(nextDate.setMonth(nextDate.getMonth() + this.repeat));
@@ -435,9 +473,9 @@ foam.CLASS({
         var days = this.dayOfMonth;
         for ( var i = 0; i < days.length; i++ ) {
           let temp = this.getPlusDays(start, (days[i] - 1));
-          if ( temp > minimumDate && temp < nextDate && temp > startDate ||
-            nextDate <= minimumDate || nextDate < startDate ) {
+          if ( temp >= minimumDate && temp >= startDate ) {
             nextDate = temp;
+            break;
           }
         }
       } else {
@@ -469,7 +507,7 @@ foam.CLASS({
             break;
         }
       }
-      if ( nextDate > startDate && nextDate > minimumDate ) {
+      if ( nextDate >= startDate && nextDate >= minimumDate ) {
         return nextDate;
       }
       return this.calculateNextMonth_(start, true, startDate, minimumDate);
@@ -477,6 +515,7 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Week(s) and day(s) of the week
     function calculateNextWeek_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setDate(nextDate.getDate() + (this.repeat * 7));
       }
@@ -495,12 +534,12 @@ foam.CLASS({
       for ( var i  = 1; i < days.length; i++ ) {
         dateVal = this.getWeekDayVal(days[i].name);
         let temp = this.getNextDayOfWeek(minDate, dateVal);
-        if ( temp > minimumDate && temp < nextDate && temp > startDate || nextDate <= minimumDate ) {
+        if ( temp > minimumDate && temp < nextDate && temp > startDate || nextDate < minimumDate ) {
           nextDate = temp;
         }
       }
 
-      if ( nextDate > startDate && nextDate > minimumDate && nextDate < endOfWeek ) {
+      if ( nextDate >= startDate && nextDate >= minimumDate && nextDate < endOfWeek ) {
         return nextDate;
       } else {
         return this.calculateNextWeek_(endOfWeek, true, startDate, minimumDate);
@@ -509,13 +548,18 @@ foam.CLASS({
 
     // Get next scheduled date, based on the n repeat Day(s)
     function calculateNextDay_(nextDate, applyWait, startDate, minimumDate) {
+      this.clearHours(nextDate, startDate, minimumDate);
       if ( applyWait ) {
         nextDate.setDate(nextDate.getDate() + this.repeat);
       }
-      if ( nextDate > minimumDate && nextDate > startDate ) {
+      if ( nextDate >= minimumDate && nextDate >= startDate ) {
         return nextDate;
       }
       return this.calculateNextDay_(nextDate, true, startDate, minimumDate);
+    },
+
+    function clearHours() {
+      for ( var i = 0; i < arguments.length; i++ ) { arguments[i].setHours(0, 0, 0, 0) }
     },
 
     // Helper function for calculateNextMonth_()
@@ -546,8 +590,7 @@ foam.CLASS({
       let month = date.getMonth();
 
       date = new Date(year, month - 1, 7 * (nth - 1) + 1);
-      let nthMonthDate =  new Date(date.setMonth(date.getMonth() + this.repeat));
-      return this.getNextDayOfWeek(nthMonthDate, weekDayVal);
+      return this.getNextDayOfWeek(date, weekDayVal);
     },
 
     /*
@@ -558,7 +601,7 @@ foam.CLASS({
     */
     function getLastInMonth_(date, weekDayVal) {
       let year = date.getFullYear();
-      let month = date.getMonth() + 1 + this.repeat;// getMonth() starts with 0
+      let month = date.getMonth() + 1// getMonth() starts with 0
       date = new Date(year, month, 1);
       // Subtract dateDiff from the first day of the next month
       // e.g., date(Jan 1 2023) - dateDiff(6) = Dec 26 2022
@@ -600,7 +643,7 @@ foam.CLASS({
         case 'SUNDAY':
           return 0;
         case 'MONDAY':
-          return 1
+          return 1;
         case 'TUESDAY':
           return 2;
         case 'WEDNESDAY':
@@ -635,7 +678,7 @@ foam.CLASS({
         LocalDate nextDate = startDate;
 
         // Check if schedule has ended
-        if ( getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0 || getEnds() == ScheduleEnd.ON && ! minimumDate.isBefore(endsOn) ) {
+        if ( (getEnds() == ScheduleEnd.AFTER && getEndsAfter() == 0) || (getEnds() == ScheduleEnd.ON && ! minimumDate.isBefore(endsOn)) ) {
           return null;
         }
 
@@ -691,7 +734,9 @@ foam.CLASS({
         if ( applyWait ) {
           nextDate = nextDate.plusDays(getRepeat());
         }
-        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( minCheck && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
         return calculateNextDay(x, nextDate, true, startDate, minimumDate);
@@ -733,13 +778,22 @@ foam.CLASS({
           return null;
         }
         nextDate = minDate.with(TemporalAdjusters.next(getWeekday(days[0])));
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
         for ( int i=1; i < days.length; i++ ) {
           LocalDate temp = minDate.with(TemporalAdjusters.next(getWeekday(days[i])));
-          if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
+          if ( temp.isAfter(minimumDate) && 
+              (
+                temp.isBefore(nextDate) && ! temp.isBefore(startDate) ||
+                ( includeToday ? nextDate.isBefore(minimumDate) : ! nextDate.isAfter(minimumDate) ) || 
+                ( includeToday ? nextDate.isBefore(startDate) : ! nextDate.isAfter(startDate) )
+              ) 
+            ) {
             nextDate = temp;
           }
         }
-        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(endOfWeek) ) {
+
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(endOfWeek) ) {
           return nextDate;
         } else {
           return calculateNextWeek(x, endOfWeek, true, startDate, minimumDate);
@@ -777,13 +831,20 @@ foam.CLASS({
         }
         LocalDate start = nextDate.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate end = nextDate.with(TemporalAdjusters.lastDayOfMonth());
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
 
         if ( getMonthlyChoice() == MonthlyChoice.EACH ) {
           nextDate = LocalDate.now();
 
           for ( Object day : getDayOfMonth() ) {
             LocalDate temp = start.plusDays(((long)day)-1);
-            if ( temp.isAfter(minimumDate) && (temp.isBefore(nextDate) && ! temp.isBefore(startDate) || ! nextDate.isAfter(minimumDate) || nextDate.isBefore(startDate)) ) {
+            if ( temp.isAfter(minimumDate) &&
+              (
+                temp.isBefore(nextDate) && ! temp.isBefore(startDate) ||
+                ( includeToday ? nextDate.isBefore(minimumDate) : ! nextDate.isAfter(minimumDate) ) || 
+                ( includeToday ? nextDate.isBefore(startDate) : ! nextDate.isAfter(startDate) )
+              ) 
+            ) {
               nextDate = temp;
             }
           }
@@ -807,7 +868,8 @@ foam.CLASS({
               break;
           }
         }
-        if ( ! nextDate.isBefore(startDate) && nextDate.isAfter(minimumDate) && ! nextDate.isAfter(end) ) {
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( ! nextDate.isBefore(startDate) && minCheck && ! nextDate.isAfter(end) ) {
           return nextDate;
         }
         return calculateNextMonth(x, start, true, startDate, minimumDate);
@@ -842,7 +904,9 @@ foam.CLASS({
         if ( applyWait ) {
           nextDate = nextDate.plusYears(getRepeat());
         }
-        if ( nextDate.isAfter(minimumDate) && ! nextDate.isBefore(startDate) ) {
+        var includeToday = ( getStartToday() && minimumDate.isEqual(LocalDate.now()) ) ? true : false;
+        var minCheck = ( includeToday && nextDate.isEqual(minimumDate) ) || nextDate.isAfter(minimumDate);
+        if ( minCheck && ! nextDate.isBefore(startDate) ) {
           return nextDate;
         }
         return calculateNextYear(x, nextDate, true, startDate, minimumDate);
@@ -903,6 +967,7 @@ foam.CLASS({
         if ( endsAfter > 0 ) {
           setEndsAfter(--endsAfter);
         }
+        if ( getStartToday() ) setStartToday(false);
       `
     },
     {
