@@ -107,7 +107,10 @@ In your HTML file, you can customize the flags by setting FOAM_FLAGS before load
   &lt;script language="javascript" src="../../../foam.js">&lt;/script>
 </pre>
 The set of flags isn't fixed, and you can make up your own for your own purposes.
-
+--
+Object.keys(foam.flags).forEach(k => {
+  add(k + ': ' + foam.flags[k]).br();
+});
 ##  References
 How do I use References?
 <br>
