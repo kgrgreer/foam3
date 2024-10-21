@@ -105,6 +105,10 @@ foam.CLASS({
       `,
 
       methods: [
+        function layoutView(self, prop, viewSlot) {
+          this.add(viewSlot);
+        },
+
         function layout(prop, visibilitySlot, modeSlot, labelSlot, viewSlot, colorSlot, errorSlot) {
           var self = this;
 
@@ -117,7 +121,7 @@ foam.CLASS({
               addClass(this.myClass('propHolder')).
               start('span').
                 addClass(this.myClass('propHolderInner')).
-                add(viewSlot).
+                call(this.layoutView, [self, prop, viewSlot]).
               end().
               callIf(prop.help, function() {
                 this.start().addClass(self.myClass('helper-icon'))
