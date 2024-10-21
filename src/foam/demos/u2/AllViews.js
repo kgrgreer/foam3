@@ -398,7 +398,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'choiceViewWithPlaceholder',
-      value: 'Yes',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'placeholder',
@@ -478,6 +477,12 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         maxLength: 4
       }
+    },
+    {
+      class: 'String',
+      name: 'stringWithTextFieldWithSize2',
+      displayWidth: 4,
+      maxLength: 4
     },
     {
       class: 'String',
@@ -757,20 +762,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'booleanWithRadio',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RadioView',
-          choices: [
-            [true, 'Yes'],
-            [false, 'No']
-          ],
-          isHorizontal: true
-        };
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'booleanWithRadio2',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RadioView',
