@@ -163,6 +163,7 @@ foam.CLASS({
     'com.google.flow.Ellipse',
     'com.google.flow.FLOW',
     'com.google.flow.Halo',
+    'com.google.flow.LineHalo',
     'com.google.flow.Property',
     'foam.dao.EasyDAO',
     'foam.demos.sevenguis.Cells',
@@ -514,14 +515,18 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this;
+
       this.timer.start();
 
       this.properties.on.put.sub(this.onPropertyPut);
       this.properties.on.remove.sub(this.onPropertyRemove);
 
       var halo = this.Halo.create();
-      var self = this;
       halo.selected$.linkFrom(this.selected$);
+
+      var lineHalo = this.LineHalo.create();
+      lineHalo.selected$.linkFrom(this.selected$);
 
       this.memento$.sub(this.onMemento);
 
@@ -705,7 +710,8 @@ foam.CLASS({
       var x = evt.offsetX, y = evt.offsetY;
       var c = this.canvas.findFirstChildAt(x, y);
 
-      if ( this.Halo.isInstance(c) ) return;
+      if ( this.Halo.isInstance(c)     ) return;
+      if ( this.LineHalo.isInstance(c) ) return;
 
       if ( c === this.canvas ) {
         var tool = this.currentTool;

@@ -80,7 +80,8 @@ foam.CLASS({
 foam.CLASS({
   package: 'com.google.flow',
   name: 'Line',
-  extends: 'foam.graphics.Line'
+  extends: 'foam.graphics.Line',
+ properties: [ [ 'endX', 500], [ 'endY', 500 ] ]
 });
 
 

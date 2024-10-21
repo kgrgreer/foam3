@@ -74,6 +74,8 @@ foam.CLASS({
             y: this.view.y,
             width: this.view.width,
             height: this.view.height,
+            endX: this.view.endX,
+            endY: this.view.endY,
             rotation: this.view.rotation
           };
           this.mouseStartX = evt.offsetX;
