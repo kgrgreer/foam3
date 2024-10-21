@@ -230,10 +230,10 @@ foam.CLASS({
         start(FoldingSection, {title: 'Employee Information'}).
           show(data.isEmployee$).
           add(data.JOB_TITLE.__).
-          tag(data.JOB_TITLE.__, { config: { label: 'somthing', units: '123' } }).
+          tag(data.JOB_TITLE.__, { config: { label: 'something', units: '123' } }).
           // How to add a Property view without wrapping in a PropertyBorder
           add(data.JOB_TITLE).
-          add(data.JOB_TITLE.toE_({}, this.__subSubContext__)).
+          add(data.JOB_TITLE.toE({}, this.__subSubContext__)).
           tag(self.PropertyBorder, {
             prop: data.SALARY,
             config: {
