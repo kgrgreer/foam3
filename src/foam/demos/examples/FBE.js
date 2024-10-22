@@ -164,9 +164,9 @@ foam.CLASS({
             add(this.Example.TEXT).
             br().
             add(this.Example.CODE).
-            br().
             start().
               show(self.showOutput$).
+              br().
               start('span').style({'font-weight': 500}).add('Output:').end().
               start().
                 style({border: '1px solid black', padding: '8px'}).
