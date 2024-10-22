@@ -804,6 +804,32 @@ add(foam.__context__.elementForName('blink').id);
 The foam.u2.View class extends Element and adds a property named 'data', which it exports.
 Views act as the display component (view) for their data. This is the standard MVC
 pattern where the View is the View, and the 'data' is the Model.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'a', 'b' ]
+});
+
+var t = Test.create();
+
+start().
+  startContext({data: t}).
+    add('A: ', t.A).br().add(' B: ', t.B).
+  endContext().
+end();
+
+foam.CLASS({
+  name: 'TestView',
+  extends: 'foam.u2.View',
+  methods: [
+    function render() {
+      this. add('A: ', this.data.A).br().add(' B: ', this.data.B);
+    }
+  ]
+});
+
+tag(TestView.create({data: t}));
+
 ##    fromProperty()
 When Elements are used to view Property values, the fromProperty() method is called
 and provided the Property object that the view is being associated with.
