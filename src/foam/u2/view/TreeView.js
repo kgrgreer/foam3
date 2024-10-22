@@ -20,6 +20,7 @@ foam.CLASS({
 
   imports: [
     'dblclick?',
+    'draggable',
     'onObjDrop',
     'returnExpandedCSS?',
     'selection',
@@ -30,9 +31,10 @@ foam.CLASS({
 
   css: `
     ^ {
-      white-space: nowrap;
-      inset: none;
       cursor: pointer;
+      inset: none;
+      padding-left: 12px;
+      white-space: nowrap;
     }
 
     ^label-container {
@@ -47,12 +49,21 @@ foam.CLASS({
       // padding: 0 8px;
     }
 
-    button^button{
+    button^button {
       padding: 8px;
       width: 100%;
       justify-content: flex-start;
     }
 
+    ^selected ^LabelView-select-level {
+      // background: #ddd;
+    }
+
+    ^selected .child-menu {
+      // background: white;
+    }
+
+    ^ svg { fill: #999; }
   `,
 
   classes: [
@@ -84,10 +95,11 @@ foam.CLASS({
           transition: 0.2s linear;
         }
 
-        ^toggle-icon svg{
+        ^toggle-icon svg {
           width: 0.75em;
           height: 0.75em;
         }
+        .p-semiBold { font-weight: bold; }
       `,
 
       properties: [
@@ -147,11 +159,6 @@ foam.CLASS({
     {
       class: 'Function',
       name: 'formatter'
-    },
-    {
-      class: 'Boolean',
-      name: 'draggable',
-      documentation: 'Enable to allow drag&drop editing.'
     },
     {
       class: 'Boolean',
@@ -268,7 +275,7 @@ foam.CLASS({
         start().
           addClass(self.myClass('heading')).
           style({
-            'padding-left': ((( self.level - 1) * 16 ) + 'px')
+            'padding-left': (((self.level - 1) * 16 ) + 'px')
           }).
           startContext({ data: self }).
             start(self.ON_CLICK_FUNCTIONS, {
@@ -344,7 +351,7 @@ foam.CLASS({
         // We currently have to because the FLOW editor is not updating properly
         // on a put event for an object that it already has.
         dao.remove(obj).then(function() {
-          self.data[self.relationship.forwardName].dao.put(obj).then(function(obj) {
+          self.data[self.relationship.forwardName].put(obj).then(function(obj) {
             self.onObjDrop(obj, id);
           });
         });
@@ -395,6 +402,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'draggable',
     'onObjDrop',
     'selection',
     'startExpanded',
@@ -441,6 +449,11 @@ foam.CLASS({
       Format: { menuId: viewSpec }
       ex: { notifications: {class: 'NotificationMenuItem' } }
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'draggable',
+      documentation: 'Enable to allow drag&drop editing.'
     },
     [ 'defaultRoot', '' ]
   ],
