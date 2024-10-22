@@ -105,6 +105,8 @@ Object level.
 CREATE means a new objects is being created.
 VIEW means an objects is being viewed, but not edited.
 EDIT means an existing object is being updated.
+Some fields, like the primary keys, don't make sense to be edited after an
+object is created.
 --
 foam.CLASS({
   name: 'Example',
@@ -127,6 +129,38 @@ foam.u2.ControllerMode.VALUES.forEach(m => {
 });
 
 ##   DisplayMode
+Display modes are assigned to individual property views to control if they're shown,
+and if they are, if they're read-only, read-write or disabled.
+DisplayMode can be further restricted by the ControllerMode. For example,
+even if a Property has a RW (Read-Write) display mode, it will still be in
+read-only mode when the VIEW ControllerMode is selected.
+TODO: debug
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    { name: 'default',  value: 'default' },
+    { name: 'rw',       value: 'rw',       visibility: 'RW' },
+    { name: 'disabled', value: 'disabled', visibility: 'DISABLED' },
+    { name: 'ro',       value: 'ro',       visibility: 'RO'},
+    { name: 'hidden',   value: 'hiden',    visibility: 'HIDDEN' },
+    { name: 'hidden2',  hidden: true }
+  ]
+});
+
+var e = Example.create();
+
+add(e);
+
+foam.u2.ControllerMode.VALUES.forEach(m => {
+  start().
+    start('h3').add(m.name).end().
+    startContext({controllerMode: m}).
+      add(e).
+    endContext().
+  end();
+});
+
 ##   Borders
 A Border is a component meant to be a container for other elements. Examples might include
 a card, a shadow border, a tab-control, etc.
