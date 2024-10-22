@@ -311,20 +311,28 @@ foam.CLASS({
 add(foam.u2.DetailView.create({data: Example.create()}));
 
 ## Enums
+TODO: show enum colours in RO mode
 --
 foam.CLASS({
   name: 'Example',
   properties: [
     {
       class: 'Enum',
+      name: 'displayWidth',
+      of: 'foam.u2.layout.DisplayWidth'
+    },
+    {
+      class: 'Enum',
+      name: 'displayWidth2',
       of: 'foam.u2.layout.DisplayWidth',
-      name: 'displayWidth'
+      visibility: 'RO'
     }
   ]
 });
 
 var data = Example.create();
-add(foam.u2.DetailView.create({data: data}));
+data.displayWidth$ = data.displayWidth2$;
+add(data);
 
 ## Dates and Times
 --
