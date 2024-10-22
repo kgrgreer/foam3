@@ -121,18 +121,12 @@ foam.CLASS({
           icon: 'images/checkmark-small-green.svg',
           isAvailable$: X.data.emailAvailable$,
           type: 'email',
-          // TODO: Move to validation predicated when validation is fixed
           inputValidation: /\S+@\S+\.\S+/,
           displayMode: X.data.disableEmail_ ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         };
       },
       required: true,
       validationPredicates: [
-        {
-          args: ['emailAvailable', 'email'],
-          query: 'emailAvailable!="invalid"',
-          errorMessage: 'EMAIL_INVALID_ERR'
-        },
         {
           args: ['emailAvailable', 'email'],
           query: 'emailAvailable!="unavailable"',

@@ -512,15 +512,6 @@ foam.CLASS({
       name: 'internalValidationPredicates',
       factory: function() {
         var a = [];
-        if ( this.required ) {
-          a.push(
-            {
-              args: [ this.name ],
-              query: 'thisValue!=""',
-              errorString: this.EMAIL_REQUIRED
-            }
-          );
-        }
         a.push(
           {
             args: [ this.name ],
