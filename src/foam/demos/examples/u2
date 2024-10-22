@@ -228,7 +228,6 @@ foam.CLASS({
 
 add(CardBorder.create().add('content').tag('br').add('more content').tag('br').add('even more content'));
 
-##    content
 ##   ViewSpec
 ##   Tooltips
 You can set the tooltip for an element by setting the 'tooltip' property
@@ -277,7 +276,7 @@ foam.CLASS({
   `,
 
   properties: [
-    [ 'nodeName', 'i' ],
+    [ 'nodeName', 'i' ] // defaults to 'div'
   ],
 
   methods: [
@@ -304,6 +303,8 @@ foam.CLASS({
 });
 
 tag({class:'ExampleElement'});
+// Or:
+// tag(ExampleElement)
 
 ##    render()
 The render() method is where an Element's DOM/HTML is rendered/created.
@@ -403,6 +404,64 @@ start('div')
 end();
 ##    remove()
 ##    add()
+--
+foam.CLASS({
+  name: 'Example',
+  extends: 'foam.u2.Controller',
+
+  properties: [
+    { name: 'p1', value: 'p1' },
+    { name: 'p2', value: 'p2' }
+  ],
+
+  methods: [
+    function render() {
+      // Add Properties
+      this.add('P1: ', this.P1).br();
+      this.add('P2: ', this.P2).br();
+
+      // Add a String to the DOM:
+      this.add('foo').br();
+
+      // Or add multiple Strings at once:
+      this.add('foo', ' bar', ' baz').br();
+
+      // Or add multiple Literals at once:
+      this.add('foo ', 42, ' ', true).br();
+
+      // Or add an Array of values, including other Arrays
+      this.add(['foo ', 42, ' ', 1, ' ', 2, ' ', 3]).br();
+
+      // Or add multiple values, including Arrays:
+      this.add('foo', ' bar ', [ 1, ' ', 2, ' ', 3]).br();
+
+      // Slot
+      this.add('p1: ', this.p1$).br();
+      this.add('p2: ', this.p2$).br();
+
+      // Function
+      this.add(function(p1, p2) { this.add('function: ' + p1 + ' ' + p2); }).br();
+
+      // Dynamic Function
+      this.add(this.dynamic(function(p1, p2) { this.add('dynamic: ' + p1 + ' ' + p2); })).br();
+
+      // Promise
+      var promise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("resolved");
+        }, 1000);
+      });
+      this.add('Promise: ', promise).br().br();
+
+      // FObject
+      this.add(foam.util.Timer.create()).br();
+
+      add('END');
+    }
+  ]
+});
+tag(Example);
+
 ##     adding properties
 ##     toE()
 ##     view:
