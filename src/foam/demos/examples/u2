@@ -214,6 +214,7 @@ foam.CLASS({
 tag({class:'ExampleElement'});
 
 ##    render()
+The render() method is where an Element's DOM/HTML is rendered/created.
 --
 foam.CLASS({
   name: 'Sample',
@@ -271,11 +272,23 @@ You can set an element's id, but keep in mind that it isn't normally a good idea
 it prevents you from instantiating two instances of your component.
 --
 start('b', {id: 'myId1'}).add('inspect me to see my id').end();
+add().br();
 start('i').setID('myId2').add('this method also works').end();
 
 ##   E()
 ##   Children
 ##    start() / end()
+start() starts a new tag and end() closes it. So start('b').<stuff>.end() is the
+equivalent of <b>stuff</b>.
+--
+start('b').add('bold text').end().br().start('i').add('italic text').end();
+start().
+  style({background: 'pink'}).
+  on('click', function() { window.alert('clicked'); }).
+  add('text').
+  start('pre').add('nested').end().
+end();
+
 ##    br()
 br() is just short form for tag('br'), the html line-break element.
 --
@@ -360,7 +373,7 @@ add(`
 Notice that it also has a pink background and
 black border. CSS has leaked from CSSExample into CSSExample2.
 This happens because CSS has a global namespace and names can leak between
-components. Two component writers might choose common CSS classnames like:
+components. Two component authors might choose common CSS classnames like:
 'important', 'left-panel', 'content', 'header', 'section', etc. and the result
 would be the corruption of both of their components.
 
@@ -480,7 +493,7 @@ foam.CLASS({
        name: 'SubTest',
        extends: 'foam.u2.Element',
        css: `
-         ^ { background: pink; }
+         ^ { background: lightGreen; }
        `,
        methods: [
          function render() {
