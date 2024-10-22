@@ -29,17 +29,26 @@ foam.CLASS({
       name: 'objectId',
       label: 'Updated Object',
       documentation: 'Id of object related to history record.',
+      visibility: 'RO',
       tableWidth: 150,
       tableCellFormatter: function(value, _) {
         if ( !value ) return;
         this.add(!!value.toSummary ? value.toSummary() : value);
+      },
+      javaCompare: `
+      if ( o1 != null && o2 != null ) {
+        return o1.toString().compareTo(o2.toString());
       }
+      if ( o1 == null && o2 == null) return 0;
+      return o1 == null ? -1 : 1;
+      `
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Subject',
       name: 'subject',
       documentation: `References subject that made update. TODO: remove references when subject becomes serializable`,
+      visibility: 'RO',
       postSet: function(o, n) {
         this.userId = n.user.id;
         this.agentId = n.realUser.id;
@@ -58,30 +67,35 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'userId'
+      name: 'userId',
+      visibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'agentId',
+      visibility: 'RO'
     },
     {
       class: 'String',
       name: 'user',
       label: 'Updated By',
       documentation: 'User that made the update.',
+      visibility: 'RO',
       tableWidth: 200
     },
     {
       class: 'String',
       name: 'agent',
       label: 'Updated By',
-      documentation: 'Agent that made the update'
+      documentation: 'Agent that made the update',
+      visibility: 'RO'
     },
     {
       class: 'DateTime',
       name: 'timestamp',
       documentation: 'Date and time history record was created.',
+      visibility: 'RO',
       tableWidth: 200
     },
     {
@@ -89,7 +103,8 @@ foam.CLASS({
       of: 'foam.dao.history.PropertyUpdate',
       name: 'updates',
       label: 'Updated Properties',
-      documentation: 'Properties updated, contains new and old values.'
+      documentation: 'Properties updated, contains new and old values.',
+      visibility: 'RO'
     }
   ]
 });
