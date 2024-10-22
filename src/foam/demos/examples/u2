@@ -641,7 +641,7 @@ foam.CLASS({
   ]
 });
 
-var dao = foam.dao.EasyDAO.create({
+globalThis.dao = foam.dao.EasyDAO.create({
   of: DAOSampleData,
   daoType: 'MDAO',
   testData: [
@@ -654,6 +654,9 @@ var dao = foam.dao.EasyDAO.create({
   ]
 });
 
+##     select
+--
+var dao = globalThis.dao;
 // Now, to add the data to our view, we can just call dao.select():
 add('Example 1');
 start('ul').call(function() {
@@ -689,7 +692,6 @@ start('a').add('click to add more data').on('click', function() {
   }
 }).end();
 
-##    select()
 ##   startContext() / endContext()
 --
 foam.CLASS({
