@@ -818,6 +818,10 @@ start().
   endContext().
 end();
 
+// The above code is the same as the startContext() / endContext() example, but
+now let's create a View for Test objects so we have the same functionality
+as a reusable component without having to use start/endContext explicitly:
+
 foam.CLASS({
   name: 'TestView',
   extends: 'foam.u2.View',
@@ -885,6 +889,22 @@ tag({class: 'LabelledTextFieldExample'});
 The foam.u2.Controller class extends Element and exports itself as 'data'. Unlike Views, which
 provide a view for some other piece of data, a Controller provides a view for itself. It may
 however create sub-Views which it includes in its own rendering.
+Lets revisit the same example from startContext() / endContext() and Views above,
+but instead of having separate classes for Test and TestView, we'll combine the
+two into a single TestController class:
+--
+foam.CLASS({
+  name: 'TestController',
+  extends: 'foam.u2.Controller',
+  properties: [ 'a', 'b' ],
+  methods: [
+    function render() {
+      this.add('A: ', this.A).br().add(' B: ', this.B);
+    }
+  ]
+});
+
+tag({class: 'TestController'});
 ##   Views
 ##    ActionView
 Create an ActionView directly.
