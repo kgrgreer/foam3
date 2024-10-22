@@ -22,13 +22,20 @@
       of: 'foam.u2.wizard.wizardlet.FacadeWizardletSpec'
     },
     {
+      class: 'foam.util.FObjectSpec',
+      name: 'loader',
+      factory: function() {
+        return {
+          class: 'foam.u2.wizard.data.CreateLoader'
+        }
+      }
+    },
+    {
       name: 'wao',
       factory: function () {
         var splitWAO = this.SplitWAO.create(
           {
-            loader: {
-              class: 'foam.u2.wizard.data.CreateLoader'
-            },
+            loader: this.loader,
             saver: {
               class: 'foam.u2.wizard.data.FacadeWizardletSaver',
               facadeWizardletSpecs$: this.facadeWizardletSpecs$
