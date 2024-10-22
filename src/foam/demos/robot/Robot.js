@@ -95,8 +95,10 @@ foam.CLASS({
       // animate
       var timer = this.timer;
       timer.time$.sub(function() {
-        body.scaleX = self.width / WIDTH;
-        body.scaleY = self.height / HEIGHT;
+        console.log('x', body.scaleX, self.width,self.x,WIDTH);
+        console.log('y', body.scaleY, self.height,self.y,HEIGHT);
+        body.scaleX = (self.width) / WIDTH;
+        body.scaleY = (self.height) / HEIGHT;
 
         var t = timer.time/16;
         body.y        = 10 * Math.cos(t/9);
@@ -106,6 +108,15 @@ foam.CLASS({
         neck.y        = -13 - 10* Math.cos(t/15);
       });
       timer.start();
+    },
+
+    // Make the holding Canvas larger than normal to give space for the
+    // robot when it's animated outside of the regular rectangle.
+    function toE(args, X) {
+      return this.Canvas.create({ cview: this }, X).attrs({
+        width:  this.slot(function(x, width,  scaleX) { return x + width*scaleX*2; }),
+        height: this.slot(function(y, height, scaleY) { return y + height*scaleY*1.6; })
+      });
     }
   ]
 });
