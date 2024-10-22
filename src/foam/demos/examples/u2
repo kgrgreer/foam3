@@ -143,7 +143,7 @@ foam.CLASS({
     { name: 'rw',       value: 'rw',       visibility: 'RW' },
     { name: 'disabled', value: 'disabled', visibility: 'DISABLED' },
     { name: 'ro',       value: 'ro',       visibility: 'RO'},
-    { name: 'hidden',   value: 'hiden',    visibility: 'HIDDEN' },
+    { name: 'hidden',   value: 'hidden',   visibility: 'HIDDEN' },
     { name: 'hidden2',  hidden: true }
   ]
 });
@@ -160,6 +160,36 @@ foam.u2.ControllerMode.VALUES.forEach(m => {
     endContext().
   end();
 });
+
+##   Hidden Properties
+From the previous example, we could see that there are two different ways to
+hide a Property:
+  visibility: 'HIDDEN
+  hidden: true
+The difference is that with visibility: it just means that a property is
+currently hidden, but something could change so that you could see it,
+whereas hidden: true means the view will never be shown. From the point of
+view of views like DetailView, hidden: true properties don't exist.
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    { class: 'Boolean', name: 'enable', value: '' },
+    { name: 'prop1', hidden: true },
+    { name: 'prop2', visibility: 'HIDDEN' },
+    {
+      name: 'prop3',
+      value: 'here I am',
+      visibility: function(enable) {
+        return enable ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN ;
+      }
+    }
+  ]
+});
+
+tag(Example);
 
 ##   Borders
 A Border is a component meant to be a container for other elements. Examples might include
