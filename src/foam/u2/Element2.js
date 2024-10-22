@@ -1218,7 +1218,7 @@ foam.CLASS({
         return
       }
       if ( foam.Function.isInstance(c) ) {
-        this.add((this.__context__.data || this).dynamic(c));
+        this.addChild_((this.__subContext__.data || this).dynamic(c), parentNode);
         return;
       }
       if ( foam.core.Slot.isInstance(c) ) {
