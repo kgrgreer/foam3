@@ -95,8 +95,6 @@ foam.CLASS({
       // animate
       var timer = this.timer;
       timer.time$.sub(function() {
-        console.log('x', body.scaleX, self.width,self.x,WIDTH);
-        console.log('y', body.scaleY, self.height,self.y,HEIGHT);
         body.scaleX = (self.width) / WIDTH;
         body.scaleY = (self.height) / HEIGHT;
 
