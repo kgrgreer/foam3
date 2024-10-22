@@ -64,6 +64,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function layoutView(self, prop, viewSlot) {
+      this.add(viewSlot);
+    },
+
     function render() {
       var self = this;
       var prop = this.prop = this.prop.clone(this.__subContext__).copyFrom(this.config);
@@ -225,9 +229,7 @@ foam.CLASS({
           addClass(this.myClass('propHolder')).
           start('span').
             addClass(this.myClass('propHolderInner')).
-            add(viewSlot).
-            // Not needed anymore since is now handled by TextField
-//            start('span').addClass(self.myClass('units')).add(prop.units$).end().
+            call(this.layoutView, [self, prop, viewSlot]).
           end().
           callIf(prop.help, function() {
             this.start().addClass(self.myClass('helper-icon'))
