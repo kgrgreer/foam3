@@ -163,6 +163,7 @@ foam.CLASS({
   css: `
     body {
       line-height: 1.5;
+      zoom: 70%;
     }
 
     kbd {
