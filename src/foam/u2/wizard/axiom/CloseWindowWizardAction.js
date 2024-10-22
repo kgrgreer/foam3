@@ -9,7 +9,13 @@ foam.CLASS({
   name: 'CloseWindowWizardAction',
   extends: 'foam.u2.wizard.axiom.WizardAction',
 
-  documentation: 'WizardAction that closes the current window',
+  documentation: `
+    WizardAction that closes the current window.
+
+    WARNING:
+    This action will close the window immediately therefore the wizard sequence's
+    context agents and wizardlets that come after the action will not be run.
+  `,
 
   imports: [
     'window'
