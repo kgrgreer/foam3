@@ -456,3 +456,19 @@ p({
     `,
   "client":"{\"of\":\"foam.box.sf.SFTestObject\"}"
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"nspecLookupDAO",
+  "lazy":false,
+  "serviceScript":`
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.NSpecLookup.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("nspeclookups")
+      .setSAF(false)
+      .setCluster(false)
+      .setRuler(false)
+      .build();
+    `
+})
