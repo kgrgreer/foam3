@@ -215,6 +215,9 @@ foam.CLASS({
               add: function() {
                 return self.dom.add.apply(self.dom, arguments);
               },
+              br: function() {
+                return self.dom.br();
+              },
               start: function() {
                 return self.dom.start.apply(self.dom, arguments);
               },
