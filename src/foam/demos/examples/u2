@@ -780,6 +780,29 @@ foam.CLASS({
 });
 add(some.good.package.Test.create());
 ##    removeClass()
+RemoveClass() removes a CSS class.
+--
+foam.CLASS({
+  name: 'Example',
+  extends: 'foam.u2.Controller',
+  css: `
+    .important { color: red }
+  `,
+  methods: [
+    function render() {
+      this.addClass('important').add('status ').add(this.REMOVE_CLS);
+    }
+  ],
+  actions: [
+    {
+      name: 'removeCls', // Don't name removeClass to avoid name conflict
+      labe: 'Remove Class',
+      code: function() { this.removeClass('important'); }
+    }
+  ]
+});
+
+tag(Example);
 
 ##   Attributes
 ##    attr() & setAttribute()
