@@ -572,6 +572,9 @@ start('b').
 end();
 
 ##    setChildren()
+TODO: Is this needed? Is it used anywhere?
+--
+
 ##   Styling
 CSS styling can be added to your elements in two ways:
 <ol>
