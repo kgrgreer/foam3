@@ -484,6 +484,28 @@ tag(Example);
 
 ##     adding properties
 ##     toE()
+If an object implements the toE(args, X) function, it can control which
+view is used to when add()-ing it to a U3 Element.
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [ 'p1', 'p2', 'p3' ]
+});
+// Will be added as a foam.u2.DetailView, since that's what FObject.toE() returns.
+add(Example.create());
+
+// Now let's create a sub-class which overrides toE() to return a SectionedDetailView:
+foam.CLASS({
+  name: 'Example2',
+  extends: 'Example',
+  methods: [
+    function toE(args, X) {
+      return foam.u2.detail.SectionedDetailView({data: this});
+    }
+  ]
+});
+add(Example2.create());
+
 ##     view:
 It is the purpose of the view: Property Property to specify which View should be used for
 viewing or editing this property inside a DetailView or custom View when the property is added
