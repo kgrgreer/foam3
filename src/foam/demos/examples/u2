@@ -449,7 +449,7 @@ foam.CLASS({
       var promise = new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve("resolved");
-        }, 1000);
+        }, 3000);
       });
       this.add('Promise: ', promise).br().br();
 
