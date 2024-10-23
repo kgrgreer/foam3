@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.csv.CSVOutputterImpl',
+    'foam.log.LogLevel',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.IN',
@@ -217,6 +218,7 @@ foam.CLASS({
         loggerFilter.setLogDebug(getDebugLoggingEnabled());
         loggerFilter.setLogInfo(getInfoLoggingEnabled());
 
+        er(x, "start", LogLevel.INFO, null);
         execute(x.put(RUNNER, this));
       } finally {
         setLastRun(new java.util.Date());
@@ -232,6 +234,7 @@ foam.CLASS({
         event.setClusterable(this.getClusterable());
         ((DAO) x.get(getEventDaoKey())).put(event);
 
+        er(x, "end", LogLevel.INFO, null);
         loggerFilter.setLogDebug(savedDebugLoggingEnabled);
         loggerFilter.setLogInfo(savedInfoLoggingEnabled);
       }
