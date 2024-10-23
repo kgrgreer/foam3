@@ -944,26 +944,35 @@ configuration for contacting the primary node.`,
         // getLogger().debug("mdao", "cache", serviceName);
         return dao;
       }
+
       String key = serviceName;
       PM pm = PM.create(x, this.getClass().getSimpleName(), "getMdao");
       try {
-        if ( obj != null &&
-             ! ( obj instanceof DAO ) ) {
-          getLogger().error("getMdao" ,serviceName, "not instance of dao", obj.getClass().getSimpleName());
-        }
-        dao = (DAO) x.get(serviceName);
-        // look for 'bare' and 'local' versions first
-        if ( ! key.startsWith("bare") ) {
-          key = "bare" + serviceName.substring(0,1).toUpperCase()+serviceName.substring(1);
-          if ( x.get(key) != null ) {
-            dao = (DAO) x.get(key);
-            getLogger().debug("mdao", "bare", serviceName, key);
+        // support dao replacement/refactoring
+        NSpecLookup lookup = (NSpecLookup) ((DAO) x.get("nspecLookupDAO")).find(serviceName);
+        if ( lookup != null ) {
+          getLogger().info("getMdao,NSpecLookup", serviceName, lookup.getReplacement());
+          serviceName = lookup.getReplacement();
+          dao = (DAO) x.get(serviceName);
+          if ( dao == null ) {
+            getLogger().warning("getMdao,NSpecLookup,NSpec not found", lookup.getId(), lookup.getReplacement());
           }
-        } else if ( ! key.startsWith("local") ) {
-          key = "local" + serviceName.substring(0,1).toUpperCase()+serviceName.substring(1);
-          if ( x.get(key) != null ) {
-            dao = (DAO) x.get(key);
-            getLogger().debug("mdao", "local", serviceName, key);
+        }
+        if ( dao == null ) {
+          dao = (DAO) x.get(serviceName);
+          // look for 'bare' and 'local' versions first
+          if ( ! key.startsWith("bare") ) {
+            key = "bare" + serviceName.substring(0,1).toUpperCase()+serviceName.substring(1);
+            if ( x.get(key) != null ) {
+              dao = (DAO) x.get(key);
+              getLogger().debug("mdao", "bare", serviceName, key);
+            }
+          } else if ( ! key.startsWith("local") ) {
+            key = "local" + serviceName.substring(0,1).toUpperCase()+serviceName.substring(1);
+            if ( x.get(key) != null ) {
+              dao = (DAO) x.get(key);
+              getLogger().debug("mdao", "local", serviceName, key);
+            }
           }
         }
         if ( dao != null ) {

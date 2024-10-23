@@ -138,6 +138,8 @@ foam.POM({
       flags: "js|java" },
     { name: "NodeCView",
       flags: "js" },
+    { name: "NSpecLookup",
+      flags: "js|java" },
     { name: "PredicatedPutDAO",
       flags: "js|java" },
     { name: "PrimaryMediatorDAO",
