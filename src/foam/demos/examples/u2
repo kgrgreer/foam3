@@ -406,10 +406,21 @@ end();
 ##    remove()
 Calling remove() on an Element will remove it from the DOM.
 --
+/*
+  TODO: Fix
+  This version doesn't work because 'this' in the callback binds to the real
+  DOM element rather that the U2/U3 Element.
 start().
   start().add('1 remove me X').on('click', function() { this.remove(); }).end().
   start().add('2 remove me X').on('click', function() { this.remove(); }).end().
   start().add('3 remove me X').on('click', function() { this.remove(); }).end().
+end();
+*/
+// This works by capturing the correct 'this'
+start().
+  start().add('1 remove me X').call(function() { this.on('click', () => this.remove()); }).end().
+  start().add('2 remove me X').call(function() { this.on('click', () => this.remove()); }).end().
+  start().add('3 remove me X').call(function() { this.on('click', () => this.remove()); }).end().
 end();
 
 ##    add()
