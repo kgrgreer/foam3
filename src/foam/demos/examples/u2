@@ -445,18 +445,18 @@ foam.CLASS({
       // Dynamic Function
       this.add(this.dynamic(function(p1, p2) { this.add('dynamic: ' + p1 + ' ' + p2); })).br();
 
-      // Promise
+      // Promises
+      this.add('A Resolved Promise: ', Promise.resolve('already resolved')).br();
+
       var promise = new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve("resolved");
+          resolve("resolved in future");
         }, 3000);
       });
-      this.add('Promise: ', promise).br().br();
+      this.add('An Unresolved Promise: ', promise).br().br();
 
       // FObject
       this.add(foam.util.Timer.create()).br();
-
-      add('END');
     }
   ]
 });
