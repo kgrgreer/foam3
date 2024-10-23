@@ -524,6 +524,20 @@ foam.CLASS({
 tag({class: 'ExampleView', data: e});
 
 ##    removeAllChildren()
+Calling removeAllChilfen() will remove all of an Element's children.
+--
+start('b').
+  add('Remove All Children').
+  start().add('child1').end().
+  start().add('child2').end().
+  start().add('child3').end().
+  call(function() {
+    // Use => instead of function() so that 'this' is the U2/U3 Element
+    // rather than the DOM element
+    this.on('click', () => this.removeAllChildren());
+  }).
+end();
+
 ##    setChildren()
 ##   Styling
 CSS styling can be added to your elements in two ways:
