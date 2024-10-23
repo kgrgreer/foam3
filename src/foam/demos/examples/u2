@@ -402,7 +402,16 @@ start('div')
   .add('Breaking space').br()
   .add('NonBreaking').nbsp().add('space').br().
 end();
+
 ##    remove()
+Calling remove() on an Element will remove it from the DOM.
+--
+start().
+  start().add('1 remove me X').on('click', function() { this.remove(); }).end().
+  start().add('2 remove me X').on('click', function() { this.remove(); }).end().
+  start().add('3 remove me X').on('click', function() { this.remove(); }).end().
+end();
+
 ##    add()
 --
 foam.CLASS({
