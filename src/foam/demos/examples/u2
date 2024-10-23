@@ -465,6 +465,55 @@ tag(Example);
 ##     adding properties
 ##     toE()
 ##     view:
+It is the purpose of the view: Property Property to specify which View should be used for
+viewing or editing this property inside a DetailView or custom View when the property is added
+to the DOM with either cls.PROPERTY_CONSTANT or cls.PROPERTY_CONSTANT.__.
+Normally, when you specify a Property's class:, a suitable default view: is automatically provided.
+If however you would like to use a different View class, or even the same View class, but with a
+different configuration, then you can specify your desired view with view:.
+
+--
+foam.CLASS({
+  name: 'Example',
+  properties: [
+    { class: 'String', name: 'prop1', required: true, help: 'Some help' },
+    { class: 'String', name: 'prop2', view: 'foam.u2.TextField' },
+    { class: 'String', name: 'prop3', view: 'foam.u2.view.ValueView', value: 'read-only' },
+    { class: 'String', name: 'prop4', view: { class: 'foam.u2.tag.TextArea', rows: 3, cols: 40 } },
+    { class: 'String', name: 'prop5', view: { class: 'foam.u2.view.ChoiceView', choices: ['Yes', 'No'] } },
+    { class: 'String', name: 'prop6', view: { class: 'foam.u2.view.RadioView', choices: ['Yes', 'No'] } }
+  ]
+});
+
+var e = Example.create();
+tag({class: 'foam.u2.DetailView', data: e});
+
+
+// Now create a custom View
+// Adding this.data.PROP1 adds just the View
+// Adding this.data.PROP1.__ add the View wrapped in a PropertyBorder, which adds:
+//  1. Display a Label from Property's label:
+//  2. Display Units, if set in Property's units:
+//  3. Show/Hide the View based on the Property's visibility:
+//  4. Change the underlying View's Visibility to RO/RW/etc based on visibility:
+//  5. Display error messages based on the Property's validateObj: & validationPredicates:
+//  6. Add Property's help
+
+foam.CLASS({
+  name: 'ExampleView',
+  extends: 'foam.u2.View',
+  methods: [
+    function render() {
+      this.add('Prop1: ', this.data.PROP1);
+      this.add('Prop2: ', this.data.PROP2);
+      this.add(this.data.PROP1.__);
+      this.add(this.data.PROP2.__);
+    }
+  ]
+});
+
+tag({class: 'ExampleView', data: e});
+
 ##    removeAllChildren()
 ##    setChildren()
 ##   Styling
