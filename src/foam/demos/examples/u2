@@ -56,6 +56,37 @@ test2()
 console.profileEnd('p2');
 
 ##   DSL
+The U3 library is structured as a Fluent Internal Domain Specific Language (DSL).
+<br>
+It is Domain-Specific because, rather than being a general all-purpose language,
+it is designed for the specific domain of creating DOM User Interfaces.
+<br>
+It is an Internal DSL (Domain Specific Language) because rather than inventing
+a whole new (and probably limited) language, it reuses a host language (Javascript, in our case).
+This means that there is no new syntax to learn, just new methods. Also, it means that you
+have the full power of our host language at your disposal.
+<br>
+It is Fluent because each method return's 'this' so that they can be chained.
+So instead of doing:
+--
+var tag = this.start('blockquote');
+tag.add('foo');
+var tag2 = tag.start('blockquote');
+tag2.add('bar');
+tag.add('baz');
+
+// You can just do:
+this.start('blockquote').
+  add('foo').
+  start('blockquote').
+    add('bar').
+  end().
+  add('baz').
+end();
+
+// The Fluent style more closely models the nested structure of HTML without requireming
+// the creation of temporary variables for each intermediate Element.
+--
 ##   Intro1
 ##   Hello World!
 Let's use U3 to say hello
