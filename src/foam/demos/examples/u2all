@@ -159,7 +159,7 @@ foam.CLASS({
 
       this.
       // This will match the ^ { ... } CSS rule above.
-      addClass(this.myClass()).
+      addClass(this.myClass()). // same as addClass().
       start('div').
         start('h2').add('ID').end().
         start('div', {id: 123}).
