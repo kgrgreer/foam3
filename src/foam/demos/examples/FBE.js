@@ -232,8 +232,8 @@ foam.CLASS({
                   eval(self.data.code);
                   if ( self.dom.children.length ) self.showOutput = true;
                 } catch (x) {
-                  self.data.error = true;
                   scope.log(x.toString());
+                  self.data.error = true;
                 }
               }
             }
