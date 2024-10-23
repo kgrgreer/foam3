@@ -937,9 +937,6 @@ configuration for contacting the primary node.`,
       // getLogger().debug("mdao", serviceName);
       Object obj = getMdaos().get(serviceName);
       DAO dao;
-// REVIEW: periodically the result returned from get is a Map.
-//      DAO dao = (DAO) getMdaos().get(serviceName);
-//      if ( dao != null ) {
       if ( obj != null &&
            obj instanceof DAO ) {
         dao = (DAO) obj;

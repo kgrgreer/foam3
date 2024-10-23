@@ -129,7 +129,7 @@ This is the heart of Medusa.`,
         }
 
         if ( entry.getIndex() % 10000 == 0 ) {
-          getLogger().info("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), "from", entry.getNode());
+          getLogger().info("put", dagger.getGlobalIndex(x), replaying.getIndex(), replaying.getReplayIndex(), entry.toSummary(), entry.getCreated(), "from", entry.getNode());
         }
 
         synchronized ( entry.getId().toString().intern() ) {

@@ -548,7 +548,7 @@ NOTE: when using the java client, the first call to a newly started instance may
     @Override
     protected HttpClient initialValue() {
       HttpClient.Builder builder = HttpClient.newBuilder()
-        .version(HttpClient.Version.HTTP_1_1)
+        .version(HttpClient.Version.HTTP_2)
         .followRedirects(HttpClient.Redirect.NORMAL)
         .connectTimeout(Duration.ofMillis(getConnectionTimeout()));
 
