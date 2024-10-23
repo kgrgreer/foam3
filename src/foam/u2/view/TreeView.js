@@ -33,7 +33,6 @@ foam.CLASS({
     ^ {
       cursor: pointer;
       inset: none;
-      padding-left: 12px;
       white-space: nowrap;
     }
 
@@ -46,7 +45,6 @@ foam.CLASS({
       min-height: 40px;
       display: flex;
       align-items: center;
-      // padding: 0 8px;
     }
 
     button^button {
@@ -55,15 +53,7 @@ foam.CLASS({
       justify-content: flex-start;
     }
 
-    ^selected ^LabelView-select-level {
-      // background: #ddd;
-    }
-
-    ^selected .child-menu {
-      // background: white;
-    }
-
-    ^ svg { fill: #999; }
+    ^button svg { fill: currentColor; }
   `,
 
   classes: [
@@ -99,7 +89,6 @@ foam.CLASS({
           width: 0.75em;
           height: 0.75em;
         }
-        .p-semiBold { font-weight: bold; }
       `,
 
       properties: [

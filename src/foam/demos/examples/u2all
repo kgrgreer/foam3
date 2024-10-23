@@ -358,7 +358,7 @@ foam.CLASS({
 
         start('h2').add('DAOList').end().
         start({class: 'foam.u2.DAOList', data: this.users, rowView: foam.u2.DetailView }).
-          style({width: '800px'}).
+          style({width: '800px', height: 'min-content'}).
         end().
 
         start('h2').add('DAOBrowserView').end().
