@@ -35,6 +35,7 @@ foam.CLASS({
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
+    height: 100%;
   }
   ^wrapper{
     /*Scroll*/
