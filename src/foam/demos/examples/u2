@@ -1039,7 +1039,10 @@ This is typically only used for debugging purposes, not in production code.
 foam.u2.Element.create().start().add('Here I am, way at the bottom of the page!').end().write();
 
 ##   Tags
-##    attributes
+Tags let you register U3 Elements to replace regular DOM tags.
+For example, you might have a custom ImageView that you would like
+to use as a replacement whenever regular <img> tags are added.
+--
 ##    registerElement
 The Context method 'registerElement' can be used to declare that a specified
 Element subclass should be transparently used whenever an tag is created
@@ -1081,6 +1084,16 @@ to determine if a node/tag name has a registered class associated with it.
 Isn't used directly by application developers.
 --
 add(foam.__context__.elementForName('blink').id);
+
+##    attributes
+If a property has 'attribute: true' it is treated as a psedo-attribute and can
+be set with with the setAttribute(), attr(), and attrs() methods.
+This is done for DOM compatibility.
+For example, if we had registered an ImageView to replace <img> tags, then:
+start('img').attr('src', 'http://acme.com/logo.png').end()
+when we set the 'src' attribute, it would instead set the value of the
+'src' Property.
+--
 
 ##   View
 The foam.u2.View class extends Element and adds a property named 'data', which it exports.
