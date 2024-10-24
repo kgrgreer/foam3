@@ -1,8 +1,24 @@
-## Introduction
+## Start
+## FOAM By Example
+--
 
 ##  Lib
+foam.LIB() is used to creates static libraries of constants and functions.
+--
+foam.LIB({
+  name: 'network',
+  constants: {
+    PORT: 4000
+  },
+  methods: [ function sendPacket() { log('sending packet'); }  ]
+});
+
+log(network.PORT);
+network.sendPacket();
 
 ##  Models
+foam.CLASS() is used to create a "class model", but because this is the most common
+type of model created by FOAM, it isusually just referred to as a "model".
 
 ##   Properties
 
@@ -58,7 +74,7 @@
 
 ## DAOs
 
-## FOAM By Example
+## Usage
 ##  Test Class
 Define a new class with foam.CLASS
 --
