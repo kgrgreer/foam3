@@ -8,7 +8,7 @@
 foam.CLASS({
   package: 'foam.nanos.notification',
   name: 'NotificationSetting',
-  label: 'In-App Notifications',
+  label: 'In-App Notification Setting',
 
   implements: [
     'foam.nanos.auth.Authorizable',
@@ -30,6 +30,13 @@ foam.CLASS({
     'foam.nanos.theme.Themes',
     'foam.util.Auth',
     'java.util.HashSet'
+  ],
+
+  tableColumns: [
+    'id',
+    'enabled',
+    'type',
+    'spid'
   ],
 
   messages: [
@@ -60,6 +67,19 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       value: true
+    },
+    {
+      class: 'String',
+      name: 'type',
+      documentation: 'Notification settings are identified by their class, this property exposes that in UI.',
+      visibility: 'RO',
+      transient: true,
+      getter: function() {
+        return this.cls_.nane;
+      },
+      javaGetter: `
+        return getClass().getSimpleName();
+      `
     },
     {
       class: 'Reference',
@@ -129,32 +149,40 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_CREATE_PERMISSION);
-      if ( ! checkOwnership(x) && ! auth.check(x, "notificationsetting.create") )  throw new AuthorizationException(LACKS_CREATE_PERMISSION);
+      if ( ! checkSpid(x) &&
+           ! checkOwnership(x) &&
+           ! auth.check(x, "notificationsetting.create") )
+        throw new AuthorizationException(LACKS_CREATE_PERMISSION);
       `
     },
     {
       name: 'authorizeOnUpdate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("update")) ) throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
+      if ( ! checkSpid(x) &&
+           ! checkOwnership(x) &&
+           ! auth.check(x, createPermission("update")) )
+        throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       `
     },
     {
       name: 'authorizeOnDelete',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("remove")) ) throw new AuthorizationException(LACKS_DELETE_PERMISSION);
+      if ( ! checkSpid(x) &&
+           ! checkOwnership(x) &&
+           ! auth.check(x, createPermission("remove")) )
+        throw new AuthorizationException(LACKS_DELETE_PERMISSION);
       `
     },
     {
       name: 'authorizeOnRead',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkSpid(x) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("read")) ) throw new AuthorizationException(LACKS_READ_PERMISSION);
+      if ( ! checkSpid(x) &&
+           ! checkOwnership(x) &&
+           ! auth.check(x, createPermission("read")) )
+        throw new AuthorizationException(LACKS_READ_PERMISSION);
       `
     },
     {

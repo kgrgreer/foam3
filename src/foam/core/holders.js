@@ -109,6 +109,18 @@ foam.CLASS({
   ]
 });
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'StringArrayHolder',
+
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'value'
+    }
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.core',

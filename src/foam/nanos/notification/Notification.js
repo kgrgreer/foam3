@@ -40,7 +40,8 @@ foam.CLASS({
     'notificationType',
     'broadcasted',
     'userId.id',
-    'groupId.id'
+    'groupId.id',
+    'emailName'
   ],
 
   sections: [
@@ -83,22 +84,43 @@ foam.CLASS({
       class: 'Boolean',
       name: 'read',
       documentation: 'Determines if notification has been read.',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Long',
       name: 'id',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
       name: 'hostname',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updteVisibility: 'RO',
       javaFactory: 'return System.getProperty("hostname", "localhost");'
     },
     {
       class: 'String',
-      name: 'template'
+      name: 'template',
+      label: 'Notification Template',
+      view: function(_, X) {
+        var dao = X.notificationTemplateDAO;
+        return {
+          class: 'foam.u2.view.ModeAltView',
+          readView: { class: 'foam.u2.view.StringView' },
+          writeView: {
+            class: 'foam.u2.view.RichChoiceView',
+            sections: [
+              {
+                heading: 'Notification Templates',
+                dao: dao
+              }
+            ],
+            placeholder: '--'
+          }
+        };
+      }
     },
     {
       class: 'String',
@@ -117,7 +139,9 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: 'User that created the Notification.'
+      documentation: 'User that created the Notification.',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
     },
     {
       class: 'Reference',
@@ -125,7 +149,9 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: 'Agent user that created the Notification.',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
     },
     {
       class: 'Date',
@@ -154,13 +180,16 @@ foam.CLASS({
     {
       class: 'Enum',
       name: 'toastState',
-      of: 'foam.nanos.notification.ToastState'
+      of: 'foam.nanos.notification.ToastState',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
     },
     {
       class: 'Enum',
       name: 'severity',
       of: 'foam.log.LogLevel',
-      documentation: 'Severity of notification being displayed (eg. INFO, WARNING, ERROR)'
+      documentation: 'Severity of notification being displayed (eg. INFO, WARNING, ERROR)',
+      value: 'INFO'
     },
     {
       class: 'Boolean',
@@ -204,9 +233,11 @@ foam.CLASS({
       javaFactory: 'return new java.util.HashMap<String, Object>();'
     },
     {
-      class: 'String',
       name: 'emailName',
-      label: 'Email template name',
+      class: 'Reference',
+      of: 'foam.nanos.notification.email.EmailTemplate',
+      targetDAOKey: 'emailTemplateDAO',
+      label: 'Email Template',
       documentation: 'Email template name.'
     },
     {
@@ -264,7 +295,9 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("create", true)) && ! getTransient() ) throw new AuthorizationException("You don't have permission to create this notification.");
+      if ( ! checkOwnership(x) && ! auth.check(x, createPermission("create", true)) && ! getTransient() ) {
+        throw new AuthorizationException("You don't have permission to create this notification.");
+      }
       `
     },
     {
@@ -306,6 +339,9 @@ foam.CLASS({
       name: 'resendNotification',
       label: 'Resend Notification',
       availablePermissions:['notification.notify'],
+      isAvailable: function() {
+        return this.id;
+      },
       code: function(X) {
         var self = this;
         X.resendNotificationService.resend(X, this.userId, this).then(function() {
