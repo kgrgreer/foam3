@@ -445,6 +445,7 @@ foam.POM({
     { name: "notification/email/EmailMessageStatusRuleAction",                            flags: "js|java" },
     { name: "notification/email/EmailServiceConfig",                                      flags: "js|java" },
     { name: "notification/email/EmailTemplate",                                           flags: "js|java" },
+    { name: "notification/email/EmailTemplateCitationView",                               flags: "js" },
     { name: "notification/email/EmailTemplateSource",                                     flags: "js|java" },
     { name: "notification/email/SMTPAgent",                                               flags: "js|java" },
     { name: "notification/email/SMTPConfig",                                               flags: "js|java" },
