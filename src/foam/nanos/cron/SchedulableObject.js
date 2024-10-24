@@ -20,6 +20,20 @@ foam.INTERFACE({
           type: 'foam.core.X'
         }
       ]
+    },
+    {
+      name: 'scheduleExecute',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        }
+      ],
+      documentation: `
+        schedulableobject can implement their own scheduleExecute instead of
+        just putting to the schedulable daokey
+      `
     }
   ]
 });
