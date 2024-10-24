@@ -909,9 +909,7 @@ foam.CLASS({
     {
       name: 'doNotify',
       javaCode: `
-        HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
-
-        settingsMap = getImpliedNotificationSettings(x);
+        HashMap<String, NotificationSetting> settingsMap = getImpliedNotificationSettings(x);
         for ( NotificationSetting setting : settingsMap.values() ) {
           setting.doNotify(x, this, notification);
         }
