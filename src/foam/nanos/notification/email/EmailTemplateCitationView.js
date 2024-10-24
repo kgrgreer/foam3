@@ -33,7 +33,7 @@ foam.CLASS({
   methods: [
     function render() {
       this
-        .addClass(this.myClass())
+        .addClass()
         .start()
           .start()
             .addClass('p-legal-light', this.myClass('summary'))
