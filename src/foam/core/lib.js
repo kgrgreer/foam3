@@ -45,10 +45,10 @@ foam.LIB({
   methods: [ function sendPacket() { ... }  ]
 });
 </pre>
-Produces <code>foam.network</code>:
+Produces <code>network</code>:
 <pre>
-console.log(foam.network.PORT); // outputs 4000
-foam.network.sendPacket();
+console.log(network.PORT); // outputs 4000
+network.sendPacket();
 </pre>
  * @method LIB
  * @memberof module:foam
