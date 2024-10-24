@@ -29,7 +29,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.Subject',
-    'java.util.Date'
+    'java.util.Date',
+    'org.apache.commons.lang3.time.DateUtils'
   ],
 
   requires: [
@@ -65,10 +66,16 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'name',
+    'startDate',
+    'scheduledTime'
+  ],
+
   properties: [
     {
       name: 'daoKey',
-      value: 'schedulableDAO'
+      value: 'cronJobDAO'
     },
     {
       class: 'String',
@@ -77,6 +84,7 @@ foam.CLASS({
     },
     {
       name: 'scheduledTime',
+      label: 'Next Scheduled Time',
       storageTransient: false
     },
     {
@@ -85,12 +93,19 @@ foam.CLASS({
       name: 'schedule',
       label: '',
       section: 'scheduling',
+      autoValidate: true,
       postSet: function(_, v) {
         if ( ! v ) return;
         this.frequency = v.frequency;
         this.startDate = v.startDate;
         this.endsOn = v.endsOn;
       },
+      javaPostSet: `
+        if ( val == null ) return;
+        setFrequency(((SimpleIntervalSchedule)val).getFrequency());
+        setStartDate(((SimpleIntervalSchedule)val).getStartDate());
+        setEndsOn(((SimpleIntervalSchedule)val).getEndsOn());
+      `,
       factory: function() {
         var ret = foam.nanos.cron.SimpleIntervalSchedule.create();
         this.SCHEDULE.postSet(null, ret);
@@ -145,12 +160,11 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       section: 'summary',
-      createVisibility: 'HIDDEN',
       gridColumns: 4,
       order: 1,
-      factory: function() {
-        return `${this.objectToSchedule?.toSummary()} ${this.objectToSchedule?.toSummary() && this.nextScheduleDate ? '-' : ''} ${this.nextScheduledDate}`;
-      }
+      javaFactory: `
+      return ((SimpleIntervalSchedule) getSchedule()).getName();
+      `
     },
     {
       class: 'Date',
@@ -185,7 +199,8 @@ foam.CLASS({
     },
     {
       name: 'lastRun',
-      label: 'Last Occurrence'
+      label: 'Last Occurrence',
+      storageTransient: false
     },
     {
       class: 'Enum',
@@ -198,14 +213,29 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       label: 'Start On',
-      createVisibility: 'HIDDEN',
-      transient: true
+      createVisibility: 'HIDDEN'
     },
     {
       class: 'Date',
       name: 'endsOn',
       visibility: 'HIDDEN',
       transient: true
+    },
+    {
+      name: 'reattemptSchedule',
+      hidden: true
+    },
+    {
+      class: 'String',
+      name: 'schedulableNote',
+      label: '',
+      section: 'scheduling',
+      view: function(_, X) {
+        return X.E()
+          .start(foam.u2.borders.BackgroundCard, { backgroundColor: '#DADDE2' })
+            .start(foam.u2.HTMLView, { data: X.data.schedulableNote }).end()
+          .end();
+      }
     }
   ],
 
@@ -214,13 +244,24 @@ foam.CLASS({
       name: 'runScript',
       javaCode: `
         ((Agency) x.get("threadPool")).submit(x, (ContextAgent) this, "");
+        setLastRun(new Date());
+        getSchedule().postExecution();
+        setStatus(foam.nanos.script.ScriptStatus.UNSCHEDULED);
+        // save a copy to schedulabledao
+        ((DAO) x.get("schedulableDAO")).put_(x, fclone());
       `
     },
     {
       name: 'execute',
       javaCode: `
         try {
-          ((DAO) x.get(getObjectDAOKey())).put(getObjectToSchedule());
+          foam.core.FObject obj = getObjectToSchedule();
+          if ( obj instanceof SchedulableObject ) {
+            obj = ((SchedulableObject) obj).beforeScheduledPut(x);
+            ((SchedulableObject) obj).scheduleExecute(x);
+          } else {
+            ((DAO) x.get(getObjectDAOKey())).put(obj);
+          }
         } catch (Exception e){
           ((foam.dao.DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
             .setName("Failed to execute schedulable event")
@@ -228,7 +269,7 @@ foam.CLASS({
             .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
             .setNote(getId() + " " + e.getMessage())
             .build());
-        }
+        } 
       `
     },
     {
@@ -278,6 +319,29 @@ foam.CLASS({
         if ( auth.check(x, "schedulabe." + action + ".*") ) return;
 
         throw new AuthorizationException("You do not have permission to " + action + " this Schedulable");
+      `
+    },
+    {
+      name: 'canRun',
+      args: 'Context x',
+      type: 'Boolean',
+      javaCode: `
+        var schedule = (SimpleIntervalSchedule) getSchedule();
+        var lastRun = getLastRun();
+        var today = new Date();
+
+        if ( lastRun == null ) return true;
+        var alreadyRanToday = DateUtils.isSameDay(lastRun, today);
+
+        if ( schedule.getEnds() == ScheduleEnd.AFTER ) {
+          return ! alreadyRanToday && schedule.getEndsAfter() > 0;
+        } else if ( schedule.getEnds() == ScheduleEnd.ON ) {
+          if ( ! DateUtils.isSameDay(schedule.getEndsOn(), today) ) return today.before(schedule.getEndsOn());
+          return ! alreadyRanToday;
+        } else {
+          return ! alreadyRanToday;
+        }
+
       `
     }
   ]

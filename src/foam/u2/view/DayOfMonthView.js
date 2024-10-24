@@ -8,6 +8,12 @@ foam.CLASS({
   name: 'DayOfMonthView',
   extends: 'foam.u2.view.MultiChoiceView',
 
+  css: `
+    ^flexer .foam-u2-view-DateChoiceView {
+      width: 100% !important;
+    }
+  `,
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',

@@ -13,8 +13,11 @@ foam.CLASS({
   ],
 
   css: `
-    ^flexer > div {
-      width: fit-content !important;
+    ^flexer {
+      width: 100%;
+    }
+    ^flexer .foam-u2-view-DayChoiceView {
+      width: 100% !important;
     }
   `,
 
