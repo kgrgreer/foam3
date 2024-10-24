@@ -26,6 +26,8 @@ the notification will be handled. `,
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.Loggers',
@@ -62,7 +64,11 @@ the notification will be handled. `,
         if ( ! foam.util.SafetyUtil.isEmpty(notification.getTemplate()) ) {
           List templates = ((ArraySink) ((DAO) x.get("notificationTemplateDAO"))
             .limit(2)
-            .where(foam.mlang.MLang.EQ(Notification.TEMPLATE, notification.getTemplate()))
+            .where(
+              OR(
+                EQ(Notification.ID, notification.getTemplate()),
+                EQ(Notification.TEMPLATE, notification.getTemplate())
+              ))
             .select(new ArraySink()))
             .getArray();
 
