@@ -1,0 +1,30 @@
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "NotificationSetting-EmailSetting",
+  "desiredModelId": "foam.nanos.notification.NotificationSetting",
+  "strategy": "foam.nanos.notification.EmailSetting"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "NotificationSetting-SlackSetting",
+  "desiredModelId": "foam.nanos.notification.NotificationSetting",
+  "strategy": "foam.nanos.notification.SlackSetting"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "NotificationSetting-GoolgeChatSetting",
+  "desiredModelId": "foam.nanos.notification.NotificationSetting",
+  "strategy": "foam.nanos.notification.GoogleChatSetting"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "NotificationSetting-SMSSetting",
+  "desiredModelId": "foam.nanos.notification.NotificationSetting",
+  "strategy": "foam.nanos.notification.sms.SMSSetting"
+})
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "NotificationSetting-PushSetting",
+  "desiredModelId": "foam.nanos.notification.NotificationSetting",
+  "strategy": "foam.nanos.notification.push.PushSetting"
+})
