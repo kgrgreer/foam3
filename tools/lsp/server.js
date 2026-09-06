@@ -273,16 +273,8 @@ function start() {
         }
         return hoverHandler.buildClassHover(classId);
       }
-      case 'references': {
-        // Class.member: return the member's call-site lines when the member
-        // scan recognizes it (own property/message/constant); null falls
-        // back to class references (methods go through callHierarchy).
-        if ( info.memberName ) {
-          var mLocs = referencesHandler.memberReferencesForClassId(classId, info.memberName);
-          if ( mLocs ) return mLocs;
-        }
+      case 'references':
         return referencesHandler.referencesForClassId(classId);
-      }
       case 'implementation': {
         var targets = index.isInterface(classId) ?
           index.getImplementors(classId) : index.getSubclasses(classId);
@@ -407,6 +399,14 @@ function start() {
         changedClassIds.push(classId);
         if ( typeof index.invalidate === 'function' ) index.invalidate(classId);
       }
+    }
+
+    // A journal save re-registers no classes (the branch above never runs),
+    // but it does change journal references — drop the jrl usage index so
+    // find-references sees the edit without an LSP restart. The uri lets
+    // the index also drop the string-usage index for a services.jrl save.
+    if ( isJrlFile(uri) && typeof index.invalidateJrlUsageIndex === 'function' ) {
+      index.invalidateJrlUsageIndex(uri);
     }
 
     // Compute the dependency closure — files whose diagnostics could be

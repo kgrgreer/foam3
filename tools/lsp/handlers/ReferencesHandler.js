@@ -135,6 +135,29 @@ foam.CLASS({
           locations.push(loc);
         }
       }
+
+      // Journal references (#5264): jrl positions come straight from the
+      // index — no class file to scan, so they bypass buildLocations_ and
+      // feed the same position dedup.
+      try {
+        var jrlUses = this.index.getJrlUsages(classId);
+        for ( var i = 0 ; i < jrlUses.length ; i++ ) {
+          var ju   = jrlUses[i];
+          var jUri = 'file://' + ju.file;
+          var jKey = jUri + ':' + ju.line + ':' + ju.character;
+          if ( seenLoc[jKey] ) continue;
+          seenLoc[jKey] = true;
+          locations.push({
+            uri: jUri,
+            range: {
+              start: { line: ju.line, character: ju.character },
+              end:   { line: ju.line, character: ju.character + ju.length }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('[foam-lsp] getJrlUsages failed for ' + classId + ': ' + e.message);
+      }
       return locations;
     },
 
@@ -155,34 +178,8 @@ foam.CLASS({
       var classId = this.cache.getClassId(model);
       if ( ! classId ) return null;
 
-      return this.memberScanLocations_(classId, word);
-    },
-
-    function memberReferencesForClassId(classId, memberName) {
-      /**
-       * By-id member references — the name-addressed (foam/byName) twin of
-       * propertyReferences_/axiomReferences_. Returns call-site Locations
-       * when memberName is an own property, message, or constant of classId;
-       * null otherwise so the caller falls back to class references
-       * (methods stay on callHierarchy, which already has call sites).
-       */
-      var cls = typeof this.index.getClass === 'function' ?
-        this.index.getClass(classId) : null;
-      var model = cls && cls.model_;
-      if ( ! model ) return null;
-      if ( ! ( this.isOwnPropertyName_(model, memberName) ||
-               this.isOwnMessageName_(model, memberName)  ||
-               this.isOwnConstantName_(model, memberName) ) ) return null;
-      return this.memberScanLocations_(classId, memberName);
-    },
-
-    function memberScanLocations_(classId, word) {
-      /**
-       * Collect files to scan — the defining class + every subclass (they
-       * inherit the member and commonly reference it) + classes that REQUIRE
-       * or have `of: classId` (they access it through a typed variable) —
-       * then emit every call-site Location for `word` across that set.
-       */
+      // Collect files to scan: the defining class + every subclass (they
+      // inherit the property and commonly reference it).
       var seen = {};
       var filesToScan = [];
       function addFile(id) {
@@ -193,6 +190,9 @@ foam.CLASS({
       addFile(classId);
       var subs = this.transitiveSubclasses_(classId);
       for ( var i = 0 ; i < subs.length ; i++ ) addFile(subs[i]);
+
+      // Also include classes that REQUIRE or have `of: classId` — they likely
+      // access the property through a typed variable.
       var reqs = this.index.getRequirers(classId);
       var ofs  = this.index.getOfUsers(classId);
       for ( var i = 0 ; i < reqs.length ; i++ ) addFile(reqs[i]);
@@ -232,7 +232,25 @@ foam.CLASS({
 
       // Same scoping as property references — own class + transitive
       // subclasses + requirers + of-users.
-      return this.memberScanLocations_(classId, word);
+      var seen = {};
+      var files = [];
+      function addFile(id) {
+        if ( ! id || seen[id] ) return;
+        seen[id] = true; files.push(id);
+      }
+      addFile(classId);
+      var subs = this.transitiveSubclasses_(classId);
+      for ( var i = 0 ; i < subs.length ; i++ ) addFile(subs[i]);
+      var reqs = this.index.getRequirers(classId);
+      var ofs  = this.index.getOfUsers(classId);
+      for ( var i = 0 ; i < reqs.length ; i++ ) addFile(reqs[i]);
+      for ( var i = 0 ; i < ofs.length ; i++ )   addFile(ofs[i]);
+
+      var locations = [];
+      for ( var i = 0 ; i < files.length ; i++ ) {
+        this.scanPropertyRefs_(files[i], word, locations);
+      }
+      return locations;
     },
 
     function isOwnMessageName_(model, word) {
@@ -589,11 +607,9 @@ foam.CLASS({
         }
         if ( path === targetClassId && alias ) out[alias] = true;
       }
-      // Normalized by FoamIndex.javaImportPaths — never unwrap shapes here.
-      var ji = typeof this.index.javaImportPaths === 'function' ?
-        this.index.javaImportPaths(cls) : [];
+      var ji = cls.model_.javaImports || [];
       for ( var i = 0 ; i < ji.length ; i++ ) {
-        var imp = ji[i];
+        var imp = typeof ji[i] === 'string' ? ji[i] : ( ji[i] && ji[i].path );
         if ( imp === targetClassId ) {
           var sh = imp.split('.').pop();
           if ( sh ) out[sh] = true;
