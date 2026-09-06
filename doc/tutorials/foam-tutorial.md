@@ -45,7 +45,7 @@
   - [Build and Verify](#build-and-verify)
 - [Custom Views](#custom-views)
   - [The FOAM UI Library](#the-foam-ui-library)
-  - [Core DSL Methods](#core-dsl-methods)
+  - [Layer 1: Low-Level UI Components](#layer-1-low-level-ui-components)
     - [`start()` and `end()`](#start-and-end)
     - [`tag()`](#tag)
     - [`add()`](#add)
@@ -54,11 +54,20 @@
       - [`addClass()`](#addclass)
       - [`attrs()`](#attrs)
       - [`on()`](#on)
-  - [CSS Scoping with `^`](#css-scoping-with-%5E)
-  - [View vs Controller](#view-vs-controller)
-  - [Reactive Slots](#reactive-slots)
-  - [Creating a Recipe Detail View](#creating-a-recipe-detail-view)
-  - [Faceted Views and Menu Configuration](#faceted-views-and-menu-configuration)
+      - [`style()`](#style)
+    - [CSS Scoping with `^`](#css-scoping-with-%5E)
+  - [Layer 2: Data Binding & Reactive Slots](#layer-2-data-binding--reactive-slots)
+    - [View vs Controller](#view-vs-controller)
+    - [Reactive Slots](#reactive-slots)
+  - [Layer 3: Model-Driven Components (Comics)](#layer-3-model-driven-components-comics)
+  - [Customizing the IngredientAmount View](#customizing-the-ingredientamount-view)
+    - [The problem with the default reference view](#the-problem-with-the-default-reference-view)
+    - [A picker for `alternative`](#a-picker-for-alternative)
+    - [Customizing a relationship-generated reference: `targetProperty`](#customizing-a-relationship-generated-reference-targetproperty)
+  - [The Generated CRUD Screen: Browse and Detail](#the-generated-crud-screen-browse-and-detail)
+    - [Browse: the table and `tableCellFormatter`](#browse-the-table-and-tablecellformatter)
+    - [Detail: view and edit modes](#detail-view-and-edit-modes)
+    - [Faceted views: menus vs. naming conventions](#faceted-views-menus-vs-naming-conventions)
   - [Creating a Custom Controller — RecipeCreateView](#creating-a-custom-controller--recipecreateview)
 - [Nano Services (Coming Soon)](#nano-services-coming-soon)
 - [Notifications (Coming Soon)](#notifications-coming-soon)
@@ -1778,6 +1787,10 @@ A few things worth calling out — each maps back to a layer concept:
 > - **Free extras** — confirmation dialogs, an async "running" state, and keyboard shortcuts are opt-in flags on the action, not per-button plumbing you re-implement.
 > - **One definition, many placements** — the same action can appear as a button here, a menu item or toolbar item elsewhere, or be invoked directly in code. The behaviour lives with the model, decoupled from where it's rendered.
 
+Here's the result — on the **Alternative** tab, the picker offers a searchable dropdown *and* a **New alternative** button whose popup reuses IngredientAmount's own `main` section (amount / unit / ingredient):
+
+![Creating an alternative in place — the popup reuses the main section][app-screen-5]
+
 Register the view in `pom.js`:
 
 ```javascript
@@ -1833,6 +1846,10 @@ Two of these overrides answer the "foreign key is useless" problem directly:
 - **`tableCellFormatter`** — without it, an `ingredient` table column would print the raw id; this resolves the reference and prints `ingredient.toSummary()` (its name) instead.
 
 > **Note:** `IngredientPickerView` is line-for-line the same shape as `AlternativePickerView` — extend `ReferencePropertyView`, add a create-in-place action — only its popup builds an `Ingredient` (name + category) and saves to `ingredientDAO`. Read one and you've read both. Register it in `pom.js` the same way.
+
+On the **Ingredient** tab, the `ingredient` reference now renders with the same picker — a searchable dropdown plus a **New ingredient** button that opens a create-in-place popup, all without leaving the form:
+
+![The ingredient picker — creating a new ingredient in place][app-screen-4]
 
 With these two views in place, `IngredientAmount` goes from a form full of meaningless ids to one where every reference is a searchable dropdown you can extend on the spot — and none of it required hand-writing a dropdown or a create dialog.
 
@@ -1923,7 +1940,7 @@ So how do we tell Comics to use a *particular* form for a screen — like the ta
 - **Explicit menu / config.** When a screen has its own menu entry, you can point that menu (or its `DAOControllerConfig`) at specific views — `createView`, `detailView`, `browseView`, and so on. This is the right tool when you want *one named screen* wired a particular way.
 - **Facets by naming convention.** Comics is **faceted**: when it needs a create or detail view for a model, it first looks for a class *named after that model* — `{Model}CreateView`, `{Model}DetailView` — and uses it automatically if it exists, falling back to the generic view otherwise. No menu, no config, no wiring: define the class and *every* create/detail screen for that model picks it up, everywhere it's used.
 
-The tabbed create form is exactly this second route. We never touched a menu — we created **`IngredientAmountCreateView.js`**, a `foam.comics.v3.CreateView` subclass that renders its form as tabs:
+The tabbed create form is exactly this second route — and it's what gave the create screens in the screenshots earlier their **Ingredient** and **Alternative** tabs (instead of the default stacked cards). We never touched a menu — we created **`IngredientAmountCreateView.js`**, a `foam.comics.v3.CreateView` subclass that renders its form as tabs:
 
 ```javascript
 foam.CLASS({
@@ -3061,6 +3078,8 @@ Visibility can be a static value or a function that returns a DisplayMode based 
 [app-screen-1]: images/screen1.png
 [app-screen-2]: images/screen2.png
 [app-screen-3]: images/screen3.png
+[app-screen-4]: images/screen4.png
+[app-screen-5]: images/screen5.png
 [recipe-schema]: images/RecipeDBSchema.png
 [github-ssh]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 [foam-dao]: https://github.com/kgrgreer/foam3/blob/development/src/foam/dao/DAO.js
