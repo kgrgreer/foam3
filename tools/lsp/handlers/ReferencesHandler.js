@@ -90,13 +90,13 @@ foam.CLASS({
         var jsUses = this.index.getJsUsages(classId);
         for ( var i = 0 ; i < jsUses.length ; i++ ) add(jsUses[i].sourceClassId);
       } catch (e) {
-        console.error('[foam-lsp] getJsUsages failed for ' + classId + ': ' + e.message);
+        require('../logError').logLspError('getJsUsages for ' + classId, e);
       }
       try {
         var javaUses = this.index.getJavaUsages(classId);
         for ( var i = 0 ; i < javaUses.length ; i++ ) add(javaUses[i].sourceClassId);
       } catch (e) {
-        console.error('[foam-lsp] getJavaUsages failed for ' + classId + ': ' + e.message);
+        require('../logError').logLspError('getJavaUsages for ' + classId, e);
       }
       // Class-name strings ARE valid context keys too (e.g. CSpec id matches
       // the dotted class id of its result type) — pick those up via the
@@ -104,11 +104,16 @@ foam.CLASS({
       try {
         var shortName = classId.split('.').pop();
         var strUses   = this.index.getStringUsages(shortName);
+        // CSpec entries key by full dotted id — probe both, as the comment
+        // above always claimed.
+        if ( shortName !== classId ) {
+          strUses = strUses.concat(this.index.getStringUsages(classId));
+        }
         for ( var i = 0 ; i < strUses.length ; i++ ) {
           if ( strUses[i].sourceClassId ) add(strUses[i].sourceClassId);
         }
       } catch (e) {
-        console.error('[foam-lsp] getStringUsages failed for ' + classId + ': ' + e.message);
+        require('../logError').logLspError('getStringUsages for ' + classId, e);
       }
       // Classes that reference the target ONLY inside a view spec
       // (`view: { class: 'X' }`, searchView, rowView, defaultNewItem, …)
@@ -118,24 +123,45 @@ foam.CLASS({
         var viewUses = this.index.getViewSpecUsers(classId);
         for ( var i = 0 ; i < viewUses.length ; i++ ) add(viewUses[i].sourceClassId);
       } catch (e) {
-        console.error('[foam-lsp] getViewSpecUsers failed for ' + classId + ': ' + e.message);
+        require('../logError').logLspError('getViewSpecUsers for ' + classId, e);
       }
 
-      // Dedup by position: a file defining several classes is scanned once
-      // per class, so identical rows repeat without this. Order-preserving.
-      var locations = [];
-      var seenLoc   = {};
+      // All collectors below feed one deduping sink: a file defining several
+      // classes is scanned once per class, so identical rows repeat without
+      // this — and a future collector pushed through the sink can't
+      // reintroduce them. Order-preserving.
+      var sink = this.locationSink_();
       for ( var i = 0 ; i < refs.length ; i++ ) {
         var locs = this.buildLocations_(refs[i], classId);
-        for ( var j = 0 ; j < locs.length ; j++ ) {
-          var loc = locs[j];
-          var key = loc.uri + ':' + loc.range.start.line + ':' + loc.range.start.character;
-          if ( seenLoc[key] ) continue;
-          seenLoc[key] = true;
-          locations.push(loc);
-        }
+        for ( var j = 0 ; j < locs.length ; j++ ) sink.push(locs[j]);
       }
-      return locations;
+
+      return sink.locations;
+    },
+
+    function locationSink_() {
+      /**
+       * Order-preserving Location collector that dedups by position. Every
+       * collector feeding one result set pushes through the same sink, so a
+       * new collector can't silently reintroduce duplicate rows — the guard
+       * lives in the sink, not at each call site. `push` returns whether the
+       * location was kept.
+       */
+      var seen = {};
+      var locations = [];
+      return {
+        locations: locations,
+        // Kept-row count, so collectors with a result cap (scanPropertyRefs_)
+        // can treat the sink like the array they used to receive.
+        get length() { return locations.length; },
+        push: function(loc) {
+          var key = loc.uri + ':' + loc.range.start.line + ':' + loc.range.start.character;
+          if ( seen[key] ) return false;
+          seen[key] = true;
+          locations.push(loc);
+          return true;
+        }
+      };
     },
 
     function propertyReferences_(text, position, word, opt_uri) {
@@ -198,11 +224,14 @@ foam.CLASS({
       for ( var i = 0 ; i < reqs.length ; i++ ) addFile(reqs[i]);
       for ( var i = 0 ; i < ofs.length ; i++ )   addFile(ofs[i]);
 
-      var locations = [];
+      // Ids are deduped above, but several ids can map to ONE file, which
+      // then gets scanned once per id and would repeat every row — the sink
+      // dedups by position as the scans push into it.
+      var sink = this.locationSink_();
       for ( var i = 0 ; i < filesToScan.length ; i++ ) {
-        this.scanPropertyRefs_(filesToScan[i], word, locations);
+        this.scanPropertyRefs_(filesToScan[i], word, sink);
       }
-      return locations;
+      return sink.locations;
     },
 
     function axiomReferences_(text, position, word, opt_uri) {
@@ -505,7 +534,9 @@ foam.CLASS({
             push(hits[i].startPos, targetClassId.length);
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        require('../logError').logLspError('grammar classRef scan for ' + targetClassId, e);
+      }
 
       // === B. Word-bounded full-id text scan ===
       var escapedFull = targetClassId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -559,7 +590,9 @@ foam.CLASS({
             }
           });
         }
-      } catch (e) {}
+      } catch (e) {
+        require('../logError').logLspError('short-name axiom scan for ' + targetClassId, e);
+      }
 
       return out.length > 0 ? out : fallback;
     },

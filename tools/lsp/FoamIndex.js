@@ -436,7 +436,11 @@ foam.CLASS({
           var props = cls.model_.properties;
           for ( var j = 0 ; j < props.length ; j++ ) {
             var p = props[j];
-            if ( p && typeof p === 'object' && p.of === classId ) {
+            if ( ! p || typeof p !== 'object' ) continue;
+            // `of` may be the declared string OR an adapted class object
+            // whose id carries the dotted name — match either.
+            var ofId = typeof p.of === 'string' ? p.of : ( p.of && p.of.id );
+            if ( ofId === classId ) {
               result.push(ids[i]);
               break;
             }
@@ -853,7 +857,9 @@ foam.CLASS({
             pomEntryName: pomEntryName
           };
         }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('indexFileClasses ' + filePath, e);
+      }
     },
 
     function getPomLocationForClass(classId) {
@@ -1018,9 +1024,13 @@ foam.CLASS({
 
             var subPom = { path: projPomPath, location: projLocation };
             this.walkSkippedProjects_(subPom, path_, fs_, visited);
-          } catch (e) {}
+          } catch (e) {
+            require('./logError').logLspError('POM sub-project walk ' + (projPomPath || ''), e);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        require('./logError').logLspError('POM walk', e);
+      }
     },
 
     function parsePomProjects_(content) {
@@ -1033,7 +1043,9 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.projects || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('POM eval (projects)', e);
+      }
       return captured;
     },
 
@@ -1046,7 +1058,9 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.files || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('POM eval (files)', e);
+      }
       return captured;
     },
 
@@ -1089,13 +1103,21 @@ foam.CLASS({
       if ( entry && entry.mtimeMs === mtime ) return entry.posMap;
 
       var map = null;
+      var failed = false;
       try {
         var content = fs_.readFileSync(filePath, 'utf8');
         if ( content.length <= 2 * 1024 * 1024 ) {
           map = this.getGrammar().collectAxiomPositions(content);
         }
-      } catch ( e ) {}
-      this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
+      } catch ( e ) {
+        failed = true;
+        require('./logError').logLspError('grammar position parse ' + filePath, e);
+      }
+      // A failed parse is transient state, not a fact about the file: caching
+      // null against mtime would pin every member of this file to line 0
+      // until the next edit. Oversized files DO cache null — that skip is
+      // deliberate and permanent for the mtime.
+      if ( ! failed ) this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
       return map;
     },
 
@@ -2124,9 +2146,13 @@ foam.CLASS({
                 line:          entries[e].line
               });
             }
-          } catch (e) {}
+          } catch (e) {
+            require('./logError').logLspError('services.jrl cspec scan ' + services[s], e);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        require('./logError').logLspError('cspec scan', e);
+      }
 
       this.stringUsageIndex_ = { byName: byName };
     },

@@ -460,3 +460,99 @@ try {
 } catch (err) {
   test(false, 'member references section threw: ' + err.message);
 }
+
+
+// === memberScanLocations_ — dedup when multiple classes share a file ===
+//
+// Same dup shape as referencesForClassId's fix, but for the member scan:
+// filesToScan can list several class ids (the defining class + a subclass +
+// a requirer) that all resolve to the SAME source file, and each id is
+// scanned unconditionally — every real call-site row then repeats once per
+// class id that maps to that file.
+
+section('memberScanLocations_ — dedup when multiple classes share a file');
+
+(function() {
+  var os = require('os'), fs = require('fs'), path = require('path');
+  var dir = fs.mkdtempSync(path.join(os.tmpdir(), 'member-dedup-'));
+  var f = path.join(dir, 'Pair.js');
+  // TwoA extends lsptest.dedup.Base and TwoB requires it — BOTH ids resolve
+  // to this one file, which without dedup is scanned once per id, doubling
+  // every `.payload` row.
+  fs.writeFileSync(f, [
+    "foam.CLASS({ package: 'lsptest.dedup', name: 'TwoA', extends: 'lsptest.dedup.Base',",
+    "  methods: [ function m() { return this.payload; } ] });",
+    "foam.CLASS({ package: 'lsptest.dedup', name: 'TwoB',",
+    "  requires: [ 'lsptest.dedup.Base' ],",
+    "  methods: [ function n() { var b = this.Base.create(); return b.payload; } ] });"
+  ].join('\n'));
+
+  foam.CLASS({ package: 'lsptest.dedup', name: 'Base', properties: [ 'payload' ] });
+  foam.CLASS({ package: 'lsptest.dedup', name: 'TwoA', extends: 'lsptest.dedup.Base' });
+  foam.CLASS({ package: 'lsptest.dedup', name: 'TwoB', requires: [ 'lsptest.dedup.Base' ] });
+
+  // Point all three classes' fileIndex entries at the one fixture file:
+  index.fileIndex_ = index.fileIndex_ || {};
+  index.fileIndex_['lsptest.dedup.Base'] = { path: f, line: 0 };
+  index.fileIndex_['lsptest.dedup.TwoA'] = { path: f, line: 0 };
+  index.fileIndex_['lsptest.dedup.TwoB'] = { path: f, line: 2 };
+
+  var dedupMemberHandler = foam.parse.lsp.handlers.ReferencesHandler.create({
+    index: index, cache: cache, analyzer: analyzer
+  });
+  var locs = dedupMemberHandler.memberScanLocations_('lsptest.dedup.Base', 'payload');
+  var keys = {};
+  var dups = 0;
+  for ( var i = 0 ; i < locs.length ; i++ ) {
+    var k = locs[i].uri + ':' + locs[i].range.start.line + ':' + locs[i].range.start.character;
+    if ( keys[k] ) dups++;
+    keys[k] = true;
+  }
+  test(locs.length > 0, 'memberScanLocations_: member scan found rows in the fixture');
+  test(dups === 0, 'memberScanLocations_: no duplicate member rows for a shared file, found ' + dups + ' dups');
+})();
+
+
+// === logLspError helper ===
+//
+// Single logging idiom for degraded-but-not-fatal LSP failures — every
+// catch-and-fallback site routes through this so a broken feature is never
+// silently indistinguishable from an empty result.
+
+section('logLspError helper');
+
+(function() {
+  var leLogLspError = require('../../lsp/logError').logLspError;
+  var leOrigErr = console.error;
+  var leCaptured = [];
+  console.error = function(msg) { leCaptured.push(msg); };
+  try {
+    leLogLspError('test op for X', new Error('boom'));
+  } finally {
+    console.error = leOrigErr;
+  }
+  test(leCaptured.length === 1 && leCaptured[0] === '[foam-lsp] test op for X: boom',
+    'logLspError formats [foam-lsp] context: message');
+})();
+
+// === locationSink_ — the dedup guard lives in the sink, not the call sites ===
+// Every collector feeding one references result pushes through this sink, so
+// a future collector can't silently reintroduce duplicate rows.
+section('ReferencesHandler.locationSink_ — gated dedup');
+
+try {
+  var sinkHandler = foam.parse.lsp.handlers.ReferencesHandler.create({
+    index: index, analyzer: analyzer, cache: cache
+  });
+  var sk = sinkHandler.locationSink_();
+  var mkLoc = function(line) {
+    return { uri: 'file:///x.js', range: { start: { line: line, character: 2 }, end: { line: line, character: 5 } } };
+  };
+  test(sk.push(mkLoc(1)) === true,  'first push of a location is kept (returns true)');
+  test(sk.push(mkLoc(1)) === false, 'second push of the same position is dropped (returns false)');
+  test(sk.push(mkLoc(2)) === true,  'different position is kept');
+  test(sk.locations.length === 2 && sk.length === 2,
+    'sink.locations holds kept rows and sink.length mirrors it (for capped collectors)');
+} catch (err) {
+  test(false, 'locationSink_ section threw: ' + err.message);
+}
