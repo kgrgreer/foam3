@@ -44,8 +44,6 @@ foam.CLASS({
   `,
 
   exports: [
-    'getElementsByClassName',
-    'getElementById',
     'async',
     'cancelAnimationFrame',
     'clearInterval',
@@ -57,11 +55,14 @@ foam.CLASS({
     'document',
     'error',
     'framed',
+    'getElementById',
+    'getElementsByClassName',
     'idled',
     'info',
     'installCSS',
     'log',
     'merged',
+    'params',
     'populateDefaultThemeVariants',
     'requestAnimationFrame',
     'returnExpandedCSS',
@@ -69,7 +70,6 @@ foam.CLASS({
     'setTimeout',
     'theme',
     'warn',
-    'params',
     'window'
   ],
 
@@ -92,7 +92,7 @@ foam.CLASS({
       name: 'params',
       getter: function() { // Changed to a getter so that it will run whenever a change is made
         var m = {};
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(this.window.location.search);
         for ( const element of params.keys() ) {
           m[element] = params.get(element);
         }
@@ -127,10 +127,10 @@ foam.CLASS({
     function populateDefaultThemeVariants(theme, ctx) {
       // WARNING: IN DEVELOPMENT
       // SET useVariants TO TRUE ON THEME TO ENABLE MODE SWITCHING
-      let colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      let colorSchemeQuery = this.window.matchMedia('(prefers-color-scheme: dark)');
       let fn = () => {
         if ( ! theme.useVariants ) return;
-        if ( window.matchMedia('(prefers-color-scheme: dark)').matches ) {
+        if ( this.window.matchMedia('(prefers-color-scheme: dark)').matches ) {
           theme.activeVariants$set('color', 'dark');
         } else {
           theme.activeVariants$remove('color');
@@ -140,7 +140,7 @@ foam.CLASS({
       colorSchemeQuery.removeEventListener('change', fn);
       if ( this.getPrivate_('currentWindowThemeListener' ) ) this.getPrivate_('currentWindowThemeListener').detach();
       if ( ! theme.useVariants ) return;
-      if ( window.matchMedia ) {
+      if ( this.window.matchMedia ) {
         colorSchemeQuery.addEventListener('change', fn);
         fn();
         let themeListener = theme.onDetach(theme.activeVariants$.sub(() => { foam.u2.CSS.reloadStyles(ctx); }))
