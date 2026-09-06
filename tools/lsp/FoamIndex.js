@@ -2231,8 +2231,25 @@ foam.CLASS({
     },
 
     function findWorkspaceJrlFiles_() {
-      /** Every *.jrl under the workspace root; node_modules, build and
-          dot-directories skipped. */
+      /**
+       * Every *.jrl under the workspace root; node_modules, build and
+       * dot-directories skipped.
+       *
+       * Deliberately NOT getJournalDirs(). That one answers "which
+       * directories hold a pom or an indexed source", which is the right
+       * question for resolving a service name to its services.jrl row, and
+       * JournalEntryIndex shares it so those two cannot drift. It is a
+       * different question from "where is every journal in the workspace":
+       * measured on this repo, the directory answer reaches 110 journals and
+       * this walk reaches 367, a strict superset — the 257 it adds are almost
+       * all of deployment/, which holds no indexed source and no pom.
+       *
+       * Cost of the gap: 5ms for the directory scan against 91ms cold / 81ms
+       * warm here. Widening journal discovery to this walk would give
+       * go-to-definition the deployment journals too, at the price of every
+       * JournalEntryIndex lookup reading 367 files instead of 110 — worth
+       * doing, worth measuring, and not part of restoring this index.
+       */
       var fs_   = require('fs');
       var path_ = require('path');
       var SKIP  = { node_modules: true, build: true };

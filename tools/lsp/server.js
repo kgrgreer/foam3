@@ -401,14 +401,6 @@ function start() {
       }
     }
 
-    // A journal save re-registers no classes (the branch above never runs),
-    // but it does change journal references — drop the jrl usage index so
-    // find-references sees the edit without an LSP restart. The uri lets
-    // the index also drop the string-usage index for a services.jrl save.
-    if ( isJrlFile(uri) && typeof index.invalidateJrlUsageIndex === 'function' ) {
-      index.invalidateJrlUsageIndex(uri);
-    }
-
     // Compute the dependency closure — files whose diagnostics could be
     // impacted by this change. Empty list for non-FOAM saves; JRLs only
     // affect the open-file loop below.
@@ -843,14 +835,20 @@ function start() {
 
       case 'textDocument/didSave':
         reindexFile(params.textDocument.uri);
-        if ( params.textDocument.uri && params.textDocument.uri.endsWith('.jrl') ) {
+        // Every index a journal feeds, dropped in one place. reindexFile
+        // reaches index.invalidate only for a file that classifies as a
+        // class, so a journal save reaches none of these on its own:
+        //   - journalEntryIndex — entry positions for go-to-definition
+        //   - symbol + string-usage indexes — these carry the services.jrl
+        //     rows, and a renamed service kept answering workspace symbol
+        //     search under its old name until an unrelated .js save
+        //   - jrl usage index — journal references in find-references
+        if ( isJrlFile(params.textDocument.uri) ) {
           journalEntryIndex.invalidate();
-          // reindexFile only reaches index.invalidate for a file that
-          // classifies as a class, so a journal save left the symbol and
-          // string-usage indexes untouched — and those now carry the
-          // services.jrl rows. A renamed service kept answering workspace
-          // symbol search under its old name until an unrelated .js save.
           index.invalidateSymbolIndex_();
+          if ( typeof index.invalidateJrlUsageIndex === 'function' ) {
+            index.invalidateJrlUsageIndex(params.textDocument.uri);
+          }
         }
         break;
 
