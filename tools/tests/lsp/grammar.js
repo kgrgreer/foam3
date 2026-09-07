@@ -918,17 +918,34 @@ var REAL_MODEL = 'foam.CLASS({ package: ' + Q + 'com.example' + Q +
 test(classifier.classify('file:///GateProbe.js', REAL_MODEL) === 'class',
   'gate probe: the real model classifies as a class file');
 
-var refusingClassifier = { classify: function() { return 'other'; } };
+// classify is the gate. significantCalls is reached only past it, from
+// DiagnosticsHandler's model-offset scan, so a stub carrying classify alone
+// still passes every test below — but a handler sabotaged to ignore the gate
+// then dies on the missing method instead of answering, and the red run that
+// is supposed to prove these tests proves nothing. Both stay.
+var refusingClassifier = {
+  classify:         function() { return 'other'; },
+  significantCalls: function() { return []; }
+};
 
 var gateSymbol = foam.parse.lsp.handlers.SymbolHandler.create({
   cache: cache, fileClassifier: refusingClassifier });
 test(gateSymbol.handle(REAL_MODEL, 'file:///GateProbe.js').length === 0,
   'SymbolHandler asks the classifier, not a regex of its own');
 
-var gateHover = foam.parse.lsp.handlers.HoverHandler.create({
-  index: index, cache: cache, typeTracker: typeTracker,
-  cssTokenResolver: cssTokenResolver, fileClassifier: refusingClassifier });
-test(gateHover.handle(REAL_MODEL, { line: 0, character: 6 }, 'file:///GateProbe.js') === null,
+// Character 6 sits where hover answers null whichever gate is in force, so
+// the refusing half alone passed against a handler with no gate at all.
+// Character 13 answers, which makes the pair mean something.
+var hoverArgs = { index: index, cache: cache, typeTracker: typeTracker,
+  cssTokenResolver: cssTokenResolver };
+var gateHoverOn = foam.parse.lsp.handlers.HoverHandler.create(
+  Object.assign({ fileClassifier: classifier }, hoverArgs));
+var gateHover = foam.parse.lsp.handlers.HoverHandler.create(
+  Object.assign({ fileClassifier: refusingClassifier }, hoverArgs));
+var HOVER_AT = { line: 0, character: 13 };
+test(gateHoverOn.handle(REAL_MODEL, HOVER_AT, 'file:///GateProbe.js') !== null,
+  'gate probe: Hover answers on the real model through the shared classifier');
+test(gateHover.handle(REAL_MODEL, HOVER_AT, 'file:///GateProbe.js') === null,
   'HoverHandler asks the classifier, not a regex of its own');
 
 var gateCodeLens = foam.parse.lsp.handlers.CodeLensHandler.create({
@@ -936,10 +953,23 @@ var gateCodeLens = foam.parse.lsp.handlers.CodeLensHandler.create({
 test(gateCodeLens.handle(REAL_MODEL, 'file:///GateProbe.js').length === 0,
   'CodeLensHandler asks the classifier, not a regex of its own');
 
-var gateMember = foam.parse.lsp.handlers.MemberCompletionHandler.create({
-  index: index, cache: cache, typeTracker: typeTracker,
-  fileClassifier: refusingClassifier });
-test(gateMember.handle(REAL_MODEL, { line: 0, character: 6 }, 'file:///GateProbe.js')
+// REAL_MODEL has no member to complete, so both gates answered with an empty
+// list and the refusing half passed against a handler with no gate at all.
+// This fixture is the one the completion category already proves answers.
+var MEMBER_MODEL = 'foam.CLASS({\n  package: ' + Q + 'test' + Q + ',\n  name: ' +
+  Q + 'Foo' + Q + ',\n  requires: [\n    ' + Q + 'foam.parse.Suggestion' + Q +
+  '\n  ],\n  imports: [\n    ' + Q + 'userDAO' + Q + '\n  ],\n  properties: [\n    { class: ' +
+  Q + 'String' + Q + ', name: ' + Q + 'bar' + Q + ' }\n  ],\n  methods: [\n    function doStuff() {\n      this.\n    }\n  ]\n})';
+var MEMBER_AT = { line: 14, character: 11 };
+var memberArgs = { index: index, cache: cache, typeTracker: typeTracker };
+var gateMemberOn = foam.parse.lsp.handlers.MemberCompletionHandler.create(
+  Object.assign({ fileClassifier: classifier }, memberArgs));
+var gateMember = foam.parse.lsp.handlers.MemberCompletionHandler.create(
+  Object.assign({ fileClassifier: refusingClassifier }, memberArgs));
+test(gateMemberOn.handle(MEMBER_MODEL, MEMBER_AT, 'file:///GateProbe.js')
+  .items.length > 0,
+  'gate probe: MemberCompletion answers on the real model through the shared classifier');
+test(gateMember.handle(MEMBER_MODEL, MEMBER_AT, 'file:///GateProbe.js')
   .items.length === 0,
   'MemberCompletionHandler asks the classifier, not a regex of its own');
 
