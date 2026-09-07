@@ -1213,8 +1213,12 @@ if ( require('fs').existsSync(realJrlPath) ) {
   for ( var rl = 0 ; rl < realLines.length ; rl++ ) {
     var m = realLines[rl].indexOf('.setPm(');
     if ( m === -1 ) continue;
-    var h = jrlH3.handleHover(realText, { line: rl, character: m + 3 });
-    test(h && h.contents && h.contents.value && /setPm|pm/i.test(h.contents.value),
+    // Not `h`: that is the harness at the top of this file, and the lane test
+    // near the end of the file still needs it. This block only runs when a host
+    // app's journals/ sits four levels up, so reusing the name went unnoticed
+    // until then — where it left `h.withServerLane` reading off a hover result.
+    var hovPm = jrlH3.handleHover(realText, { line: rl, character: m + 3 });
+    test(hovPm && hovPm.contents && hovPm.contents.value && /setPm|pm/i.test(hovPm.contents.value),
       'Real services.jrl: hover on .setPm at line ' + rl + ' resolves (setPm or pm in output)');
     break;
   }
