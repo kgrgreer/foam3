@@ -15,17 +15,9 @@ foam.CLASS({
     // Generic on purpose — any extension (FSM, future model types) is picked up
     // without changes here. POM is excluded from the default form because
     // diagnostics aren't meaningful on POM bodies; the _POM variant includes it.
-    FOAM_CALL_REGEX: /foam\.(?!POM\b)[A-Z][A-Z0-9_]*\s*\(/,
-    FOAM_CALL_REGEX_POM: /foam\.[A-Z][A-Z0-9_]*\s*\(/
   },
 
   methods: [
-    function isFoamFile(text, opt_includePom) {
-      /** True if the text contains any foam.<UPPER>(...) model-defining call. */
-      var re = opt_includePom ? this.FOAM_CALL_REGEX_POM : this.FOAM_CALL_REGEX;
-      return re.test(text);
-    },
-
     function classIdOf(model) {
       /** Mirror of FileModelCache.getClassId — for use where cache isn't injected. */
       if ( ! model ) return null;

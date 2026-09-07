@@ -16,6 +16,14 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'fileClassifier',
+      documentation: `The one answer to "is this a FOAM class file". server.js
+        wires its own shared instance so guard and handler cannot disagree and
+        the per-uri memo stays warm; the factory keeps handler-direct tests
+        working unwired.`,
+      factory: function() { return foam.parse.lsp.FileClassifier.create(); }
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.parse.lsp.FoamIndex',
       name: 'index',
@@ -59,7 +67,7 @@ foam.CLASS({
       var classToPomJump = this.handleClassToPom_(text, position, uri);
       if ( classToPomJump ) return classToPomJump;
 
-      if ( ! this.analyzer.isFoamFile(text) ) return null;
+      if ( this.fileClassifier.classify(uri || '', text) !== 'class' ) return null;
 
       var word = this.analyzer.getDottedWordAtPosition(text, position);
       if ( ! word ) return null;

@@ -17,6 +17,7 @@ var completionHandler = h.completionHandler, memberHandler = h.memberHandler;
 var hoverHandler = h.hoverHandler, diagHandler = h.diagHandler;
 var defHandler = h.defHandler, semanticHandler = h.semanticHandler;
 var cssTokenResolver = h.cssTokenResolver;
+var classifier = foam.parse.lsp.FileClassifier.create();
 var path = h.path, fs = h.fs, Q = h.Q;
 var TEST_FILES = h.TEST_FILES;
 var passes = h.counters.passes, failures = h.counters.failures;  // legacy references; counters live on h.counters
@@ -539,8 +540,8 @@ section('Grammar: generic foam.<X> top-level call');
   ['foam.ENUM({ package: ' + Q + 'com.example' + Q + ', name: ' + Q + 'E' + Q + ', values: [{name: ' + Q + 'A' + Q + '}] });', 'ENUM', 'com.example.E']
 ].forEach(function(row) {
   var src = row[0], expectedType = row[1], expectedClassId = row[2];
-  test(analyzer.isFoamFile(src),
-    'isFoamFile recognizes foam.' + expectedType + '(...)');
+  test(classifier.classify('file:///probe.js', src) === 'class',
+    'classify recognizes foam.' + expectedType + '(...) as a class file');
   var models = cache.parseFileModels(src);
   test(models.length === 1,
     'parseFileModels captures one model from foam.' + expectedType);
@@ -555,18 +556,28 @@ section('Grammar: generic foam.<X> top-level call');
 // Hypothetical custom model type — proves the LSP doesn't need to know
 // the call name to track the file. Use a name unlikely to clash.
 var customSrc = "foam.NEWMODELTYPE_X9({ package: " + Q + "com.example.x9" + Q + ", name: " + Q + "Demo" + Q + " });";
-test(analyzer.isFoamFile(customSrc),
-  'isFoamFile recognizes any uppercase foam.<X> call');
+test(classifier.classify('file:///probe.js', customSrc) === 'class',
+  'classify recognizes any uppercase foam.<X> call as a class file');
 var customModels = cache.parseFileModels(customSrc);
 test(customModels.length === 1 && customModels[0].type_ === 'NEWMODELTYPE_X9',
   'Generic capture preserves the call name as type_');
 
-// POM is excluded from default isFoamFile (different body shape, no diagnostics)
+// A pom is its own kind, not a class: the handlers that used to sniff with a
+// POM-excluding regex now compare against 'class', and completion, the one
+// caller that wanted poms too, accepts 'class' or 'pom'.
 var pomSrc = "foam.POM({ name: " + Q + "test" + Q + ", projects: [] });";
-test(! analyzer.isFoamFile(pomSrc),
-  'isFoamFile() (default) excludes foam.POM');
-test(analyzer.isFoamFile(pomSrc, true),
-  'isFoamFile(text, true) includes foam.POM for completion paths');
+test(classifier.classify('file:///probe.js', pomSrc) === 'pom',
+  'classify calls a foam.POM body a pom, not a class');
+
+// The gain over the regex the handlers used: it matched inside comments and
+// strings, so a plain .js file mentioning foam.CLASS( in prose opened every
+// class-only feature on a file with no model in it.
+var commentOnly = '// see foam.CLASS( for the pattern\nmodule.exports = {};\n';
+test(classifier.classify('file:///notamodel.js', commentOnly) === 'other',
+  'a foam.CLASS( mention in a comment is not a class file (the regex said it was)');
+var stringOnly = 'var s = "foam.CLASS(";\n';
+test(classifier.classify('file:///notamodel2.js', stringOnly) === 'other',
+  'a foam.CLASS( inside a string literal is not a class file either');
 
 // === Class-id slot recognition (axiom-driven) ===
 section('Grammar: class-id slot recognition');
@@ -883,3 +894,51 @@ var viewStrMap = axiomGrammar.collectAxiomPositions(
 );
 test((( viewStrMap.classRef && viewStrMap.classRef[viewObjClsId] ) || []).length >= 1,
   'Grammar axiom-pos: view string form still emits classRef');
+
+
+// === the class-file gate is the shared classifier, not a private regex ===
+//
+// The handlers below used to sniff with their own FOAM_CALL_REGEX. That regex
+// ran over raw text, so a foam.CLASS( in a comment, in a string, or inside a
+// .jrl value opened every class-only feature on a file with no model in it.
+// Measured on the three inputs above: the regex admitted all three, the
+// classifier admits none.
+//
+// Those inputs produce an empty answer either way, so they cannot tell the two
+// gates apart from the outside. What can: give a handler a classifier that
+// disagrees with any regex, and see whether the handler obeys it. A handler
+// that went back to the private regex would ignore this stub and answer.
+
+section('class-file gate routes through the injected classifier');
+
+var REAL_MODEL = 'foam.CLASS({ package: ' + Q + 'com.example' + Q +
+                 ', name: ' + Q + 'GateProbe' + Q + ', properties: [] });';
+
+// Sanity: the shared classifier does call this a class file.
+test(classifier.classify('file:///GateProbe.js', REAL_MODEL) === 'class',
+  'gate probe: the real model classifies as a class file');
+
+var refusingClassifier = { classify: function() { return 'other'; } };
+
+var gateSymbol = foam.parse.lsp.handlers.SymbolHandler.create({
+  cache: cache, fileClassifier: refusingClassifier });
+test(gateSymbol.handle(REAL_MODEL, 'file:///GateProbe.js').length === 0,
+  'SymbolHandler asks the classifier, not a regex of its own');
+
+var gateHover = foam.parse.lsp.handlers.HoverHandler.create({
+  index: index, cache: cache, typeTracker: typeTracker,
+  cssTokenResolver: cssTokenResolver, fileClassifier: refusingClassifier });
+test(gateHover.handle(REAL_MODEL, { line: 0, character: 6 }, 'file:///GateProbe.js') === null,
+  'HoverHandler asks the classifier, not a regex of its own');
+
+var gateCodeLens = foam.parse.lsp.handlers.CodeLensHandler.create({
+  index: index, cache: cache, fileClassifier: refusingClassifier });
+test(gateCodeLens.handle(REAL_MODEL, 'file:///GateProbe.js').length === 0,
+  'CodeLensHandler asks the classifier, not a regex of its own');
+
+var gateMember = foam.parse.lsp.handlers.MemberCompletionHandler.create({
+  index: index, cache: cache, typeTracker: typeTracker,
+  fileClassifier: refusingClassifier });
+test(gateMember.handle(REAL_MODEL, { line: 0, character: 6 }, 'file:///GateProbe.js')
+  .items.length === 0,
+  'MemberCompletionHandler asks the classifier, not a regex of its own');
