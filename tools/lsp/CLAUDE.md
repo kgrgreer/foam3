@@ -13,6 +13,7 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 ### Core
 | File | Purpose | Key Functions |
 |---|---|---|
+| `logError.js` | The one logging idiom for a degraded-but-not-fatal failure — see "A fallback leaves a trace" below | `logLspError(context, err)` |
 | `FileModelCache.js` | Eval-intercept model extraction + caching | `getModels()`, `getModelAt()`, `parseFileModels()`. `sourceLine_` on each model comes from `FileClassifier.significantCalls()` |
 | `FoamIndex.js` | Query layer over FOAM registry | `getAllClassIds()`, `getProperties()`, `getFilePath()`, `getClassLine()`, `getSymbolPosition()`, `resolveSymbol()`, `buildFileIndex()` |
 | `FoamClassGrammar.js` | Grammar parser for completion `sug()` only | Skip-and-match pattern, dynamic `sug()` from registry |
@@ -237,6 +238,25 @@ a journal save, since it invalidates only for a file that classifies as a class.
 - POM file entries have `flags: "js|java"` or `flags: "js&test|java&test"`
 - Test/swift/node classes aren't loaded by default but ARE in the file index
 - File index stores per-class flag metadata for filtering
+
+### A fallback leaves a trace
+
+Anything that catches an error and falls back calls
+`require('./logError').logLspError(context, err)` on the way. The reason is
+diagnosis, not tidiness: a silent catch makes a broken index and a class
+nobody references produce the same answer, an empty list, and no editor shows
+the difference. `context` names the operation and its subject
+(`'getStringUsages for ' + classId`), so the trace says which file or class
+dropped out.
+
+The same rule shapes the counters: `WorkspaceAnalyzer` reports a file it could
+not analyze as `filesFailed` rather than counting it scanned, and a failed
+grammar parse retries instead of caching a null position map, since a cached
+null is a permanent silent empty.
+
+Reference rows all push through `ReferencesHandler.locationSink_()`, which
+dedups by position. The guard sits in the sink rather than at each call site,
+so a collector added later cannot reintroduce duplicate rows.
 
 ### Property Types
 - All subclasses of `foam.lang.Property` (76 types: String, Long, FObjectProperty, etc.)
