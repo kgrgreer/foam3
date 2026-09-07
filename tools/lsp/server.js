@@ -246,7 +246,19 @@ function start() {
         // buildMethodHover_ returns a raw markdown string (wrap it);
         // buildClassHover already returns a { contents: {...} } hover (pass
         // it through). Don't double-wrap.
-        if ( info.memberName && info.kind === 6 ) {
+        //
+        // Any member name is tried here, not only kind 6. Gated on methods,
+        // a property fell past every branch to buildClassHover, so asking
+        // about one property answered with the whole class — 34 properties
+        // for User, with the asked-for one somewhere inside. The cursor path
+        // has always answered from getPropertyDoc; this is the same call.
+        // Each lookup below identifies its own axiom kind and returns null
+        // otherwise, so the order is a preference, not a gate: an action or
+        // an enum member still reaches buildClassHover as before.
+        if ( info.memberName ) {
+          var propMd = index.getPropertyDoc(classId, info.memberName);
+          if ( propMd ) return { contents: { kind: 'markdown', value: propMd } };
+
           var cls = index.getClass(classId);
           var methodAxiom = null;
           if ( cls ) {
