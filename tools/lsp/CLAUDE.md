@@ -66,8 +66,11 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `getJrlUsages(classId)` | journal rows referencing the class: `"class"` / `"of"` values, and dotted ids inside embedded blocks (`serviceScript`, `javaCode`, client JSON) | `scanJrlClassRefs` over every `*.jrl` under the workspace root, registry-filtered so an unregistered dotted word is not a reference; embedded text is scanned, never evaluated |
 | `getMemberUsages(classId, memberName)` | per-class `this.X` usages of an own / inherited property or method | Reuses `scanFunctions_` axiom walk |
 
-All four indexes share the same invalidation hook (`invalidateSymbolIndex_`)
-so the LSP's reindexFile on save keeps them coherent.
+The class-keyed indexes share one invalidation hook (`invalidateSymbolIndex_`)
+so the LSP's reindexFile on save keeps them coherent. The jrl usage index keys
+off journal text rather than the class registry, so it carries its own
+(`invalidateJrlUsageIndex`) — see the journal section below for the save path
+that drops all of them together.
 
 ### VS Code Extension
 | File | Purpose |
