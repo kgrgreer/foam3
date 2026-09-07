@@ -33,22 +33,27 @@ function start() {
   cssTokenResolver.loadFromJournals();
   console.error('[LSP] ' + cssTokenResolver.getAllTokenNames().length + ' CSS tokens loaded.');
 
-  var completionHandler  = foam.parse.lsp.handlers.CompletionHandler.create({ index: index, grammar: grammar, cache: fileModelCache, cssTokenResolver: cssTokenResolver });
-  var hoverHandler       = foam.parse.lsp.handlers.HoverHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
+  // The one "is this a FOAM class file" answer, shared by every handler that
+  // gates on it and by the request guards, so they cannot disagree and the
+  // per-uri memo stays warm. Declared above its first reader for the reason
+  // journalEntryIndex is: a `var` further down is hoisted but undefined here.
+  var fileClassifier = foam.parse.lsp.FileClassifier.create();
+
+  var completionHandler  = foam.parse.lsp.handlers.CompletionHandler.create({ fileClassifier: fileClassifier, index: index, grammar: grammar, cache: fileModelCache, cssTokenResolver: cssTokenResolver });
+  var hoverHandler       = foam.parse.lsp.handlers.HoverHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
   // Created before definitionHandler because that handler takes it: a `var`
   // declared further down is hoisted but still undefined here.
   var journalEntryIndex  = foam.parse.lsp.JournalEntryIndex.create({ index: index });
-  var definitionHandler  = foam.parse.lsp.handlers.DefinitionHandler.create({ index: index, journalEntryIndex: journalEntryIndex });
+  var definitionHandler  = foam.parse.lsp.handlers.DefinitionHandler.create({ fileClassifier: fileClassifier, index: index, journalEntryIndex: journalEntryIndex });
   var i18nHandler        = foam.parse.lsp.handlers.I18nHandler.create({ index: index, cache: fileModelCache });
   // Translation provider: created here (server-start scope) so `provider` is
   // reachable from the 'initialize' case below, where config actually
   // arrives (the client's options are message-scoped, not available here).
   var provider = foam.parse.lsp.HttpChatProvider.create();
   i18nHandler.provider = provider;
-  var fileClassifier = foam.parse.lsp.FileClassifier.create();
   var diagnosticsHandler = foam.parse.lsp.handlers.DiagnosticsHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, cssTokenResolver: cssTokenResolver, i18nHandler: i18nHandler, featureConfig: featureConfig });
-  var symbolHandler      = foam.parse.lsp.handlers.SymbolHandler.create({ cache: fileModelCache });
-  var memberHandler      = foam.parse.lsp.handlers.MemberCompletionHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker });
+  var symbolHandler      = foam.parse.lsp.handlers.SymbolHandler.create({ fileClassifier: fileClassifier, cache: fileModelCache });
+  var memberHandler      = foam.parse.lsp.handlers.MemberCompletionHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, typeTracker: typeTracker });
 
   var semanticTokenHandler = foam.parse.lsp.handlers.SemanticTokenHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
   var referencesHandler = foam.parse.lsp.handlers.ReferencesHandler.create({ index: index });
@@ -64,7 +69,7 @@ function start() {
   var signatureHelpHandler   = foam.parse.lsp.handlers.SignatureHelpHandler.create({ index: index, cache: fileModelCache });
   var foldingRangeHandler    = foam.parse.lsp.handlers.FoldingRangeHandler.create();
   var codeActionHandler      = foam.parse.lsp.handlers.CodeActionHandler.create({ index: index, cssTokenResolver: cssTokenResolver, i18nHandler: i18nHandler, featureConfig: featureConfig });
-  var codeLensHandler        = foam.parse.lsp.handlers.CodeLensHandler.create({ index: index, cache: fileModelCache, i18nHandler: i18nHandler, featureConfig: featureConfig });
+  var codeLensHandler        = foam.parse.lsp.handlers.CodeLensHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, i18nHandler: i18nHandler, featureConfig: featureConfig });
   var workspaceSymbolHandler = foam.parse.lsp.handlers.WorkspaceSymbolHandler.create({ index: index });
   var typeHierarchyHandler   = foam.parse.lsp.handlers.TypeHierarchyHandler.create({ index: index, cache: fileModelCache });
   var implementationHandler  = foam.parse.lsp.handlers.ImplementationHandler.create({ index: index, cache: fileModelCache });
