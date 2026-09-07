@@ -10,13 +10,6 @@ foam.CLASS({
 
   documentation: 'Shared text analysis utilities for LSP handlers.',
 
-  constants: {
-    // Matches the opening of any FOAM model call: foam.<UPPER_IDENT>( ... ).
-    // Generic on purpose — any extension (FSM, future model types) is picked up
-    // without changes here. POM is excluded from the default form because
-    // diagnostics aren't meaningful on POM bodies; the _POM variant includes it.
-  },
-
   methods: [
     function classIdOf(model) {
       /** Mirror of FileModelCache.getClassId — for use where cache isn't injected. */

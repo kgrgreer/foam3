@@ -942,3 +942,60 @@ var gateMember = foam.parse.lsp.handlers.MemberCompletionHandler.create({
 test(gateMember.handle(REAL_MODEL, { line: 0, character: 6 }, 'file:///GateProbe.js')
   .items.length === 0,
   'MemberCompletionHandler asks the classifier, not a regex of its own');
+
+// The three below answer with something on a real model, so each pair pins the
+// gate from both sides: the shared classifier lets the answer through, the
+// refusing stub takes the same answer away. A one-sided assertion would pass
+// on a handler that had simply stopped answering.
+
+// Completion takes two values ('class' and 'pom'), the only gate here that
+// does, so a handler that kept a private single-value regex would diverge on
+// exactly this one.
+var completionArgs = { index: index, grammar: grammar, cache: cache,
+  cssTokenResolver: cssTokenResolver };
+var gateCompletionOn = foam.parse.lsp.handlers.CompletionHandler.create(
+  Object.assign({ fileClassifier: classifier }, completionArgs));
+var gateCompletionOff = foam.parse.lsp.handlers.CompletionHandler.create(
+  Object.assign({ fileClassifier: refusingClassifier }, completionArgs));
+var COMPLETE_AT = { line: 0, character: REAL_MODEL.indexOf('GateProbe') + 11 };
+test(gateCompletionOn.handle(REAL_MODEL, COMPLETE_AT, 'file:///GateProbe.js')
+  .items.length > 0,
+  'gate probe: Completion answers on the real model through the shared classifier');
+test(gateCompletionOff.handle(REAL_MODEL, COMPLETE_AT, 'file:///GateProbe.js')
+  .items.length === 0,
+  'CompletionHandler asks the classifier, not a regex of its own');
+
+// Diagnostics routes three ways ('pom' to the pom scan, 'class' to the model
+// scan, anything else to nothing), so it needs a model that actually reports
+// something for the shared-classifier half to mean anything.
+var BAD_MODEL = 'foam.CLASS({ package: ' + Q + 'com.example' + Q +
+                ', name: ' + Q + 'GateProbe' + Q + ', properties: [ { class: ' +
+                Q + 'NoSuchClassAtAll' + Q + ', name: ' + Q + 'x' + Q + ' } ] });';
+var diagArgs = { index: index, cache: cache, cssTokenResolver: cssTokenResolver,
+  i18nHandler: h.i18nHandler };
+var gateDiagOn = foam.parse.lsp.handlers.DiagnosticsHandler.create(
+  Object.assign({ fileClassifier: classifier }, diagArgs));
+var gateDiagOff = foam.parse.lsp.handlers.DiagnosticsHandler.create(
+  Object.assign({ fileClassifier: refusingClassifier }, diagArgs));
+test(gateDiagOn.handle(BAD_MODEL, 'file:///GateProbe.js').some(function(d) {
+    return d.message.indexOf('NoSuchClassAtAll') !== -1;
+  }),
+  'gate probe: Diagnostics reports the unknown property type through the shared classifier');
+test(gateDiagOff.handle(BAD_MODEL, 'file:///GateProbe.js').length === 0,
+  'DiagnosticsHandler asks the classifier, not a regex of its own');
+
+// Definition resolves the extends target, so the shared half lands on a real
+// file location rather than an empty list.
+var EXT_MODEL = 'foam.CLASS({ package: ' + Q + 'com.example' + Q + ', name: ' +
+                Q + 'GateProbe' + Q + ', extends: ' + Q + 'foam.lang.FObject' +
+                Q + ', properties: [] });';
+var EXT_AT = { line: 0, character: EXT_MODEL.indexOf('foam.lang.FObject') + 3 };
+var gateDefOn = foam.parse.lsp.handlers.DefinitionHandler.create({
+  index: index, fileClassifier: classifier });
+var gateDefOff = foam.parse.lsp.handlers.DefinitionHandler.create({
+  index: index, fileClassifier: refusingClassifier });
+var defHit = gateDefOn.handle(EXT_MODEL, EXT_AT, 'file:///GateProbe.js');
+test(defHit && defHit.uri && defHit.uri.indexOf('FObject.js') !== -1,
+  'gate probe: Definition resolves the extends target through the shared classifier');
+test(gateDefOff.handle(EXT_MODEL, EXT_AT, 'file:///GateProbe.js') === null,
+  'DefinitionHandler asks the classifier, not a regex of its own');

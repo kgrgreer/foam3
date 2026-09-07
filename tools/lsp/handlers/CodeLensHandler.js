@@ -41,10 +41,6 @@ foam.CLASS({
     regex, no dependency on i18nHandler being wired at all).
   `,
 
-  requires: [
-    'foam.parse.lsp.CursorAnalyzer'
-  ],
-
   properties: [
     {
       name: 'fileClassifier',
@@ -63,12 +59,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.parse.lsp.FileModelCache',
       name: 'cache'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.parse.lsp.CursorAnalyzer',
-      name: 'analyzer',
-      factory: function() { return this.CursorAnalyzer.create(); }
     },
     {
       class: 'FObjectProperty',
