@@ -26,6 +26,12 @@ globalThis.DRY_RUN = false; globalThis.HELP = false; globalThis.NOP = '';
 // the real error in the output.
 var counters = { passes: 0, failures: 0 };
 
+// Flipped once the boot below has been stripped. The detach in the handler is
+// right only during that boot: afterwards withServerLane has its own live
+// server on stdin, and detaching there kills the lane the surviving tests are
+// still talking to.
+var booted_ = false;
+
 process.on('unhandledRejection', function(e) {});
 process.on('uncaughtException', function(e) {
   // Installing a listener at all suppresses node's default crash, so an error
@@ -34,13 +40,13 @@ process.on('uncaughtException', function(e) {
   // testFoamLSP.js's summary, so the FAIL line below would otherwise be
   // printed by a process that still exits 0.
   process.exitCode = 1;
-  // ...and detach stdin in the same breath. server.js's start() installs an
-  // 'end' listener that calls process.exit(0), and a throw during the boot
-  // below lands BEFORE the detach down there ever runs. That listener then
-  // fires on the first event-loop turn and its exit(0) overrides the code set
-  // one line up, so the run reports green with the FAIL line right there in
-  // the log.
-  detachStdin_();
+  // ...and, for a boot-time throw only, detach stdin in the same breath.
+  // server.js's start() installs an 'end' listener that calls process.exit(0),
+  // and a throw during the boot below lands BEFORE the detach down there ever
+  // runs. That listener then fires on the first event-loop turn and its
+  // exit(0) overrides the code set one line up, so the run reports green with
+  // the FAIL line right there in the log.
+  if ( ! booted_ ) detachStdin_();
   test(false, 'uncaught exception — ' + ( e && e.stack ? e.stack : e ));
 });
 
@@ -71,6 +77,7 @@ function detachStdin_() {
   process.stdin.pause();
 }
 detachStdin_();
+booted_ = true;
 
 // Test helpers
 function test(condition, message) {
