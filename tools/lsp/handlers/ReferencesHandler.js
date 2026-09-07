@@ -136,6 +136,25 @@ foam.CLASS({
         for ( var j = 0 ; j < locs.length ; j++ ) sink.push(locs[j]);
       }
 
+      // Journal references (#5264): jrl positions come straight from the
+      // index — no class file to scan, so they bypass buildLocations_ and
+      // push through the same sink, which is the whole point of having one.
+      try {
+        var jrlUses = this.index.getJrlUsages(classId);
+        for ( var i = 0 ; i < jrlUses.length ; i++ ) {
+          var ju = jrlUses[i];
+          sink.push({
+            uri: 'file://' + ju.file,
+            range: {
+              start: { line: ju.line, character: ju.character },
+              end:   { line: ju.line, character: ju.character + ju.length }
+            }
+          });
+        }
+      } catch (e) {
+        require('../logError').logLspError('getJrlUsages for ' + classId, e);
+      }
+
       return sink.locations;
     },
 

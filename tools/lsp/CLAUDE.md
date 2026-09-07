@@ -39,7 +39,7 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `SymbolHandler.js` | `textDocument/documentSymbol` | Document outline via model objects |
 | `WorkspaceAnalyzer.js` | `foam/analyzeWorkspace` | Full codebase scan |
 | `SemanticTokenHandler.js` | `textDocument/semanticTokens/full` | Highlights resolved class refs and typed variables |
-| `ReferencesHandler.js` | `textDocument/references` | Subclasses, implementors, requires, of-users + JS/Java/string usages |
+| `ReferencesHandler.js` | `textDocument/references` | Subclasses, implementors, requires, of-users + JS/Java/string/journal usages |
 | `SignatureHelpHandler.js` | `textDocument/signatureHelp` | Method parameter hints inside `(...)` |
 | `FoldingRangeHandler.js` | `textDocument/foldingRange` | Folds `properties:`/`methods:`/`requires:`/etc. arrays |
 | `CodeActionHandler.js` | `textDocument/codeAction` | Quick-fixes: "Did you mean X?", single-quote conversion, raw-color → $token, wrong-Java-package, i18n extract/translate |
@@ -64,10 +64,14 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `getJsUsages(classId)` | classes whose JS code references the class: `this.<Short>` via requires, `.create()` receivers, `.tag(X, {})` args, `{ class: 'dotted.Id' }` spec strings | Grammar `collectAxiomPositions` per source file (memberRef / instCreateReceiver / instTagClass / instClassRef); registry `fn.toString()` scan only for file-less (runtime-registered) classes |
 | `getJavaUsages(classId)` | classes whose javaCode / javaPostSet / etc. reference the type | Same axiom walk, `javaImports` resolves short→full |
 | `getStringUsages(name)` | classes importing the name + Producer classes exporting it + services.jrl CSpec entries | `cls.getOwnAxiomsByClass(foam.lang.Import/Export)` + `loadStringWithLines()` over the `services.jrl` in every `getJournalDirs()` directory |
+| `getJrlUsages(classId)` | journal rows referencing the class: `"class"` / `"of"` values, and dotted ids inside embedded blocks (`serviceScript`, `javaCode`, client JSON) | `scanJrlClassRefs` over every `*.jrl` under the workspace root, registry-filtered so an unregistered dotted word is not a reference; embedded text is scanned, never evaluated |
 | `getMemberUsages(classId, memberName)` | per-class `this.X` usages of an own / inherited property or method | Reuses `scanFunctions_` axiom walk |
 
-All four indexes share the same invalidation hook (`invalidateSymbolIndex_`)
-so the LSP's reindexFile on save keeps them coherent.
+The class-keyed indexes share one invalidation hook (`invalidateSymbolIndex_`)
+so the LSP's reindexFile on save keeps them coherent. The jrl usage index keys
+off journal text rather than the class registry, so it carries its own
+(`invalidateJrlUsageIndex`) — see the journal section below for the save path
+that drops all of them together.
 
 ### VS Code Extension
 | File | Purpose |
@@ -203,9 +207,15 @@ handlers share one copy of the convention.
 The `services.jrl` walk asks `FoamIndex.getJournalDirs()` — pom locations ∪
 indexed-source directories — the same set `JournalEntryIndex.findJournalFiles_`
 reads. A walk of indexed sources alone misses `src/services.jrl`, whose
-directory holds no class file. A `.jrl` save invalidates both indexes:
-`journalEntryIndex.invalidate()` and `index.invalidateSymbolIndex_()`, since
-`reindexFile` only reaches the latter for a file that classifies as a class.
+directory holds no class file. That walk answers a different question from
+`findWorkspaceJrlFiles_`, which the jrl usage index uses: directories holding a
+pom or an indexed source (110 journals here) against every journal in the
+workspace (367, the extra being almost all of `deployment/`).
+
+A `.jrl` save invalidates three indexes, gathered in the `didSave` case behind
+`isJrlFile`: `journalEntryIndex.invalidate()`, `index.invalidateSymbolIndex_()`
+and `index.invalidateJrlUsageIndex(uri)`. `reindexFile` reaches none of them on
+a journal save, since it invalidates only for a file that classifies as a class.
 
 ### Interfaces
 - FOAM interfaces (`foam.INTERFACE`) define properties/methods

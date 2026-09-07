@@ -888,9 +888,8 @@ function main() {
             'foam_* tools answer FOAM structure questions from the live registry: ' +
             'hierarchy (subclasses/implementors), definitions (even when filename != ' +
             'class name), substring symbol search, hover docs/types, javaCode usages, ' +
-            'member call-site lines. Blind spots — ' +
-            'grep instead for: .jrl string references, ' +
-            'property-usage sweeps, refined property types. ' +
+            'member call-site lines, journal (.jrl) class references. Blind spots — ' +
+            'grep instead for: property-usage sweeps, refined property types. ' +
             'Name-addressable: symbol: "DetailView", a class id, or ' +
             '"Class.member". First call boots the LSP (~10-15s). Index reflects the ' +
             'checkout, not uncommitted edits — read changed files directly.'
