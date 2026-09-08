@@ -2146,6 +2146,30 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
+  name: 'GlyphViewRefinement',
+  refines: 'foam.lang.GlyphProperty',
+
+  requires: [
+    'foam.u2.view.FObjectView',
+    'foam.u2.view.GlyphView',
+    'foam.u2.view.ModeAltView'
+  ],
+
+  properties: [
+    {
+      name: 'view',
+      value: {
+        class: 'foam.u2.view.ModeAltView',
+        readView: { class: 'foam.u2.view.GlyphView' },
+        writeView: { class: 'foam.u2.view.FObjectView', of: 'foam.lang.Glyph' }
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
   name: 'FObjectArrayViewRefinement',
   refines: 'foam.lang.FObjectArray',
 
