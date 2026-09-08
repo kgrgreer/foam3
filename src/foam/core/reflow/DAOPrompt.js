@@ -89,12 +89,10 @@ foam.CLASS({
   ]
 });
 
-
 foam.CLASS({
   package: 'foam.core.reflow',
   name: 'DAOPrompt',
 
-  constants: { BLOCK_KIND: 'dao' },
 
   mixins: [ 'foam.core.reflow.DAOResolverMixin' ],
 

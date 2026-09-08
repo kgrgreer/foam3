@@ -41,6 +41,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'commands_',
     'selectFromTree',
     'serializeBlocks',
     'pasteBlocks',
@@ -633,11 +634,13 @@ foam.CLASS({
       if ( ! this.focusRoot_ ) this.scene_.centerOn(cv.x + s[0] / 2, cv.y + s[1] / 2, 1);
     },
 
-    function kindOf(node) {
-      /** A value class names the kind of block it makes in its BLOCK_KIND
-          constant, which a subclass inherits. Anything else is a plain block. */
-      var cls = node.cls && foam.maybeLookup(node.cls);
-      return ( cls && cls.BLOCK_KIND ) || 'block';
+    function commandOf(node) {
+      /** The Command the block's cmd text names -- its leading identifier,
+          the same token Console resolves the command by -- or null when
+          the text is free JavaScript. The node's kind and colour are the
+          command's category and color. */
+      var m = /^\s*([A-Za-z_$][\w$]*)/.exec(node.cmd || '');
+      return ( m && this.commands_[m[1]] ) || null;
     },
 
     function summaryOf(node) {
@@ -873,7 +876,7 @@ foam.CLASS({
       var sig = JSON.stringify({
         f: this.focusRoot_,
         x: Object.keys(this.expanded_).sort(),
-        n: nodes.map(function(n) { return [ n.id, n.parent, n.cls ]; }),
+        n: nodes.map(function(n) { return [ n.id, n.parent, n.cmd ]; }),
         e: edges.map(function(e) { return [ e.source, e.target, e.kind ]; })
       });
 
@@ -972,11 +975,13 @@ foam.CLASS({
           self.sizes_[n.id] = [ self.NODE_W, self.COLLAPSED_H ];
         } else {
           var summary = self.summaryOf(n);
+          var cmd     = self.commandOf(n);
           var ncv = self.GraphNodeCView.create({
             id: n.id,
             block: n.block,
             name: n.name,
-            kind: self.kindOf(n),
+            kind: ( cmd && cmd.category ) || 'block',
+            color: cmd ? cmd.color : '',
             summary: summary,
             theme: self.theme_,
             renders: !! ( n.block && n.block.rendersOutput ),

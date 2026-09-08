@@ -29,8 +29,6 @@ foam.CLASS({
   package: 'foam.core.reflow',
   name: 'Doc',
 
-  constants: { BLOCK_KIND: 'doc' },
-
   properties: [
     {
       class: 'String',

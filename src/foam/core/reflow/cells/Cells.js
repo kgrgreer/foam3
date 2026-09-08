@@ -155,8 +155,6 @@ foam.CLASS({
   name: 'Cells',
   extends: 'foam.u2.Element',
 
-  constants: { BLOCK_KIND: 'transform' },
-
   requires: [
     'foam.core.reflow.cells.CellParser',
     'foam.u2.tag.Input'

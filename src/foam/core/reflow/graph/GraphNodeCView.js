@@ -43,7 +43,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'kind',
-      documentation: 'The value class\'s BLOCK_KIND, or "block" when it has none. Picks the GraphTheme.kinds colour; a kind the theme does not name takes the block colour.'
+      documentation: 'The category of the Command that made the block, or "block" when it has none; the first header badge.'
+    },
+    {
+      class: 'String',
+      name: 'color',
+      documentation: 'The Command\'s color, a CSS token or literal, resolved through the theme for the kind bar. Empty takes the theme\'s block colour.'
     },
     {
       class: 'StringArray',
@@ -117,7 +122,7 @@ foam.CLASS({
       ctx.save();
       this.roundRect(ctx, 0, 0, w, h, 6);
       ctx.clip();
-      ctx.fillStyle = ( t.kinds && ( t.kinds[this.kind] || t.kinds.block ) ) || t.nodeBorder;
+      ctx.fillStyle = ( theme && this.color ) ? theme.token_(this.color) : ( t.block || t.nodeBorder );
       ctx.fillRect(0, 0, w, this.BAR_H);
       ctx.restore();
 

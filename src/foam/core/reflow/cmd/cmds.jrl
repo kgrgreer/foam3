@@ -32,6 +32,7 @@ p({
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "api",
+  "category": "doc",
   "description": "API documentation for a DAO",
   "parserClass": "foam.core.reflow.parser.DAOTargetParser",
   "script": """
@@ -52,54 +53,64 @@ p({"class":"foam.core.reflow.cmd.Command", "id": "today", "description": "Today'
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "h",
+  "category": "doc",
   "description": "Header",
   "script": """addValue(foam.core.reflow.Header.create({text: args.join(' ')}, this));"""
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "h1",
+  "category": "doc",
   "description": "Header 1",
   "script": "addValue(foam.core.reflow.Header.create({type:'h1', text: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "h2",
+  "category": "doc",
   "description": "Header 2",
   "script": "addValue(foam.core.reflow.Header.create({type:'h2', text: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "h3",
+  "category": "doc",
   "description": "Header 3",
   "script": "addValue(foam.core.reflow.Header.create({type:'h3', text: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "h4",
+  "category": "doc",
   "description": "Header 4",
   "script": "addValue(foam.core.reflow.Header.create({type:'h4', text: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "doc",
+  "category": "doc",
   "description": "Document rich text block",
   "script": "addValue(foam.core.reflow.Doc.create({richText: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "markdown",
+  "category": "doc",
   "description": "Markdown document",
   "script": "addValue(foam.core.reflow.Markdown.create({markdown: args.join(' ')}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "image",
+  "category": "doc",
   "description": "Image",
   "script": "addValue(foam.core.reflow.Image.create({}, this));"
 })
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "upload",
+  "category": "dao",
+  "color": "$primary400",
   "description": "Upload data to a DAO",
   "parserClass": "foam.core.reflow.parser.DAOTargetParser",
   linkable: false,
@@ -123,6 +134,8 @@ p({
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "script",
+  "category": "script",
+  "color": "$orange400",
   "description": "Script an editable JavaScript block",
   "script": """
     var code = args.join(' ');
@@ -132,6 +145,8 @@ p({
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "function",
+  "category": "script",
+  "color": "$orange400",
   "description": "Script an editable JavaScript block whose return value is the block's value",
   "script": """
     var code = args.join(' ');

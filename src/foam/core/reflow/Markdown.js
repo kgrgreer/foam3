@@ -8,8 +8,6 @@ foam.CLASS({
   package: 'foam.core.reflow',
   name: 'Markdown',
 
-  constants: { BLOCK_KIND: 'doc' },
-
   properties: [
     {
       class: 'Boolean',

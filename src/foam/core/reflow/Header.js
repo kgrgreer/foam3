@@ -4,7 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
 foam.CLASS({
   package: 'foam.core.reflow',
   name: 'HeaderView',
@@ -41,7 +40,6 @@ foam.CLASS({
   package: 'foam.core.reflow',
   name: 'Header',
 
-  constants: { BLOCK_KIND: 'doc' },
 
   sections: [
     {

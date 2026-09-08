@@ -32,6 +32,13 @@ foam.CLASS({
       name: 'fonts',
       documentation: 'Plain object of CSS font strings: title, body, badge, count.',
       factory: function() { return this.fontsFor_(); }
+    },
+    {
+      name: 'tokenCache_',
+      documentation: 'token name -> resolved value, for token_(); cleared by refresh.',
+      hidden: true,
+      transient: true,
+      factory: function() { return {}; }
     }
   ],
 
@@ -44,12 +51,16 @@ foam.CLASS({
 
     function token_(name) {
       /* Resolves a $token to its CSS value, falling back to the raw
-         token name if resolution fails. */
+         token name if resolution fails. A literal colour passes through.
+         Memoized until the theme's variants change, so a CView may call
+         it on every paint. */
+      var cache = this.tokenCache_;
+      if ( name in cache ) return cache[name];
       var v = foam.CSS.returnTokenValue(name, null, this.__context__);
       if ( ! v || ( foam.String.isInstance(v) && v.indexOf('/* failed') === 0 ) ) {
-        return name;
+        v = name;
       }
-      return v;
+      return cache[name] = v;
     },
 
     function fontsFor_() {
@@ -82,15 +93,7 @@ foam.CLASS({
         dependent: this.token_('$orange400'),
         error:     this.token_('$destructive400'),
 
-        kinds: {
-          dao:       this.token_('$primary400'),
-          transform: this.token_('$purple400'),
-          script:    this.token_('$orange400'),
-          input:     this.token_('$success400'),
-          doc:       this.token_('$grey500'),
-          block:     this.token_('$grey500'),
-          layout:    this.token_('$grey500')
-        },
+        block: this.token_('$grey500'),
 
         containerFill:   this.token_('$backgroundTertiary'),
         containerStroke: this.token_('$borderDefault'),
@@ -115,6 +118,7 @@ foam.CLASS({
     {
       name: 'refresh',
       code: function() {
+        this.tokenCache_ = {};
         this.colors = this.resolve_();
         this.fonts  = this.fontsFor_();
       }

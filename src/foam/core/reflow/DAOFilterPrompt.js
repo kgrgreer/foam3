@@ -53,8 +53,6 @@ foam.CLASS({
   package: 'foam.core.reflow',
   name: 'DAOFilterPrompt',
 
-  constants: { BLOCK_KIND: 'dao' },
-
   requires: [
     'foam.dao.ProxyDAO',
     'foam.u2.filter.FilterView',

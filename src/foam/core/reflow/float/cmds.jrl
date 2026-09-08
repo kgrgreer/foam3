@@ -13,6 +13,8 @@ p({
 p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "test",
+  "category": "script",
+  "color": "$orange400",
   "description": "Test an expectation",
   "help": "",
   "script": """

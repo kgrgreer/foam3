@@ -8,8 +8,6 @@ foam.CLASS({
   package: 'foam.core.reflow',
   name: 'Script',
 
-  constants: { BLOCK_KIND: 'script' },
-
   imports: [
     'data as block',
     'eval_',

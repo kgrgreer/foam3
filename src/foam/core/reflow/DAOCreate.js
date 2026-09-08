@@ -9,8 +9,6 @@ foam.CLASS({
   name: 'DAOCreate',
   extends: 'foam.u2.Controller',
 
-  constants: { BLOCK_KIND: 'dao' },
-
   implements: [
     'foam.mlang.Expressions'
   ],

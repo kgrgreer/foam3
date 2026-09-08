@@ -882,6 +882,7 @@ foam.CLASS({
   exports: [
     'addToScope',
     'clearFlow',
+    'commands_',
     'copyChild',
     'createFlowChildName',
     'currentBlock',
@@ -1098,6 +1099,13 @@ foam.CLASS({
       expression: function(showPrompts, graphMode, graphAllowed_) {
         return !! showPrompts && graphMode && graphAllowed_;
       }
+    },
+    {
+      name: 'commands_',
+      documentation: 'Every Command from commandDAO keyed by id, filled once on load. The graph asks it for a block\'s category.',
+      hidden: true,
+      transient: true,
+      factory: function() { return {}; }
     },
     {
       class: 'StringArray',
@@ -1505,6 +1513,7 @@ foam.CLASS({
       }
 
       cmds.forEach(c => {
+        this.commands_[c.id] = c;
         this.localScope[c.id] = async (...args) => {
           var cmd = c.clone(this.currentBlock);
           return await cmd.execute.apply(cmd, args);
