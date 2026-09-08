@@ -72,7 +72,6 @@ an operation which will eventually set a completed flag.
     'java.io.InputStreamReader',
     'java.io.OutputStreamWriter',
     'java.net.URI',
-    'java.net.URLEncoder',
     'java.util.concurrent.CompletableFuture',
     'java.util.concurrent.TimeUnit',
     'java.util.ArrayList',
@@ -274,17 +273,9 @@ new BrowserAgent(...) {
           for ( int i = 0; i < params.size(); i++ ) {
             if ( i == 0 )
               sb.append("?");
-            else
+            else 
               sb.append("&");
-            String param = (String) params.get(i);
-            int eq = param.indexOf('=');
-            if ( eq >= 0 ) {
-              sb.append(URLEncoder.encode(param.substring(0, eq), "UTF-8"));
-              sb.append("=");
-              sb.append(URLEncoder.encode(param.substring(eq + 1), "UTF-8"));
-            } else {
-              sb.append(URLEncoder.encode(param, "UTF-8"));
-            }
+            sb.append(params.get(i));
           }
         }
         return URI.create(sb.toString()).toString();

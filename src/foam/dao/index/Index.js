@@ -135,15 +135,7 @@ foam.CLASS({
       <p>Note: order checking has replaced selectReverse().  */
     function select(sink, skip, limit, order, predicate, cache) { },
 
-    /** Loads an array of objects, or a sink holding one, into the index.
-
-        Only meaningful on an empty index: the contents are built rather than
-        merged into what is there. The default puts one row at a time, so an
-        index with no faster construction is still correct and no caller has to
-        know which kind it holds. */
-    function bulkLoad(a) {
-      a = a.array || a;
-      for ( var i = 0 ; i < a.length ; i++ ) this.put(a[i]);
-    }
+    /** Efficiently (if possible) loads the contents of the given DAO into the index */
+    function bulkLoad(dao) {}
   ]
 });

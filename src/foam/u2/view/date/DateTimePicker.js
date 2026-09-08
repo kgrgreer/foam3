@@ -10,33 +10,14 @@ foam.CLASS({
   extends: 'foam.u2.view.date.AbstractDateView',
 
   documentation: `
-  A hand-rolled date/time picker for browsers with no native <input type="date">.
-
-  DEAD CODE as of 2026. DateView and DateTimeView select it only when a test
-  input reports type 'text' instead of 'date'; every current browser supports
-  the native type, Safari since 14.1 (2021), so this widget no longer renders
-  anywhere. It has rotted accordingly - the popup dismisses itself as soon as
-  it opens, undiagnosed.
-
-  TODO: decide whether to delete this class along with the feature-detect
-  branches in DateView.js and DateTimeView.js, or restore it to working order.
-  Do not assume it works; nothing exercises it.`,
+  This is a simple date time picker for browsers that do not have their own implementation.
+  The date picker will automatically be used if it a browser does not support date, see Element.js`,
 
   requires: [
     'foam.u2.view.date.CalendarDatePicker',
     'foam.u2.view.date.Month',
     'foam.u2.view.ChoiceView'
   ],
-
-  constants: {
-    // The trailing adornment doubles as the clear affordance: it becomes an X
-    // once a date is set and the picker is open. Named so the icon expression,
-    // the CSS toggle and clearDate cannot drift apart - clearDate previously
-    // compared against a copy of this path that was missing its leading slash,
-    // so it never cleared.
-    CALENDAR_ICON: '/images/calendar.svg',
-    CANCEL_ICON:   '/images/cancel-round.svg'
-  },
 
   css: `
     ^next_btn, ^prev_btn {
@@ -272,7 +253,7 @@ foam.CLASS({
       class: 'String',
       name: 'icon',
       expression: function(isOpen_) {
-        return this.data && isOpen_ ? this.CANCEL_ICON : this.CALENDAR_ICON;
+        return this.data && isOpen_ ? '/images/cancel-round.svg' : '/images/calendar.svg';
       }
     }
   ],
@@ -306,7 +287,7 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('date-display-image').enableClass('date-display-image-cancel', self.slot(function(icon) {
-                  return icon === self.CANCEL_ICON;
+                  return icon === '/images/cancel-round.svg';
                 }))
                 .start('img')
                   .attrs({ src: self.icon$ })
@@ -432,7 +413,7 @@ foam.CLASS({
     },
 
     function clearDate(event) {
-      if ( this.icon === this.CANCEL_ICON ) {
+      if ( this.icon === 'images/cancel-round.svg' ) {
         event.stopPropagation();
         this.data    = null;
         this.isOpen_ = false;

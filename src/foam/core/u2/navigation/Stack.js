@@ -8,13 +8,10 @@ foam.CLASS({
   package: 'foam.core.u2.navigation',
   name: 'Stack',
   extends: 'foam.u2.View',
-
   documentation: `
     A simple stack view for use with nested dao controllers and detailViews
   `,
-
   exports: ['as controlBorder'],
-
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.WrapperNode'
@@ -112,7 +109,7 @@ foam.CLASS({
     {
       name: 'current',
       expression: function(stack_, pos) {
-        return stack_[pos] || null;
+        return stack_[pos];
       }
     },
     'trailingContainer',
@@ -244,12 +241,6 @@ foam.CLASS({
       this.stack_.splice(p + 1);
       this.pos = p;
       this.posUpdated.pub('jump');
-    },
-    function pop() {
-      // Convenience: remove the top view, revealing the one below it. The Stack models
-      // navigation by position, so a "pop" is just jumping one position back. Delegates
-      // through jump(), so the delegate_ case is handled there.
-      return this.jump(this.pos - 1);
     },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);

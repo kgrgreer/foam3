@@ -73,15 +73,14 @@ foam.CLASS({
       name: 'subTitle'
     },
     {
-      class: 'I18NString',
       name: 'navTitle',
       expression: function (title) {
         return title;
       }
     },
     {
-      name: 'help',
-      documentation: 'function and string'
+      documentation: 'function and string',
+      name: 'help'
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -141,7 +140,7 @@ foam.CLASS({
       // If a isnt already a section axiom, make it one
       if ( ! this.SectionAxiom.isInstance(a) ) {
         a = this.SectionAxiom.create(a);
-
+        
       }
       this.copyFrom(a);
       // copyFrom() skips 'view' here: Section and SectionAxiom are different classes, so

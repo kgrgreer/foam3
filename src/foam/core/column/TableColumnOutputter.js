@@ -64,28 +64,17 @@ foam.CLASS({
           if ( foam.lang.Time.isInstance(prop) ) {
             return this.timeToString(val);
           }
-          return await this.valueToString(val, addUnitPropValueToStr);
+          return await this.valueToString(val);
         }
         return '';
       }
     },
 
-    async function valueToString(val, opt_addUnits) {
+    async function valueToString(val) {
       // JS RefSummary.f() returns a Promise resolving to { id, summary }.
       if ( val && typeof val.then === 'function' ) {
         val = await val;
         if ( val == null ) return '';
-      }
-      // Export with 'Add Units' unchecked: a reference column (e.g. a CurrencyCode
-      // like transactionCurrency) carries a { id, summary } RefSummary map. The
-      // summary is a display label ("USD - US Dollar"); the id is the bare,
-      // spreadsheet-parseable code ("USD"). Emit the id in plain mode, mirroring
-      // how DoubleUnitValue drops its unit. Only when addUnits is explicitly false
-      // (opt_addUnits === false) — the flag is absent on other call paths, which
-      // keep the summary so existing exports are unchanged.
-      if ( opt_addUnits === false && foam.Object.isInstance(val) &&
-           val.id !== undefined && val.summary !== undefined ) {
-        return val.id == null ? '' : val.id.toString();
       }
       if ( val.toSummary ) {
         if ( val.toSummary() instanceof Promise )
@@ -129,7 +118,7 @@ foam.CLASS({
                 continue;
               }
             }
-            stringArrayForValue.push(await this.returnStringValueForProperty(x, props[i], value[i], undefined, addUnitPropValueToStr));
+            stringArrayForValue.push(await this.returnStringValueForProperty(x, props[i], value[i]));
           }
           stringValues.push(stringArrayForValue);
         }

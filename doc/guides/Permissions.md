@@ -176,9 +176,9 @@ boolean foam.core.auth.AuthService.check(X x, String permission)
 - **Note:** Defined within individual action models
 
 ### 6. UI Section Visibility
-- **Pattern:** `<model>.section.<section>`, both lowercased like the `ro`/`rw`/`column` families
-- **Examples:** `schedulable.section.history`, `flow.section.scriptsection`
-- **Implementer:** SectionAxiom.js
+- **Pattern:** `<modelname.toLowerCase()>.section.<sectionName>`
+- **Example:** `foam.core.cron.schedulable.section.history`
+- **Implementer:** Unknown/undocumented
 - **Note:** Sections are not permissioned by default. To enable permission include: `permissionRequired: true` in the section.
 
 ### 7. Table Column Visibility

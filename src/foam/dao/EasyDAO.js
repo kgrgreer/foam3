@@ -545,7 +545,7 @@ foam.CLASS({
       // Unloadable-by-default is intended: SINGLE_JOURNAL EasyDAOs get memory
       // management via lazy journal reload (NotPartitionedDAO) unless explicitly
       // opted out; wrappers that can't safely rebuild (e.g. fixedSize) exclude themselves.
-      value: true
+      value: false
     },
     {
       documentation: 'Sets the inner dao to a nullDAO',
@@ -598,11 +598,6 @@ foam.CLASS({
         var plural = getOf().getPlural().replaceAll(" ","");
         return plural.substring(0,1).toLowerCase() + plural.substring(1);
       `
-    },
-    {
-      documentation: 'Write journal entries multi-line: nested structures indented and multiline strings as triple-quoted blocks. Enable per DAO for journals a human reads or diffs (scripts, flows).',
-      class: 'Boolean',
-      name: 'multiLineOutput'
     },
     {
       documentation: `See JDAO.  Force caller to wait on nspec initailzation. The first call to 'get' for an nspec (x.get(servicename)) will have the calling thread wait on reply of service. This is the default behaviour and should be used for all essential services.  Also this should be used if the model is using SeqNo or NUID for id generation.`,
@@ -1092,7 +1087,6 @@ dao loading, which improves overall startup time.`,
         jdao.setCluster(getCluster() && !getSaf());
         jdao.setWaitReplay(getWaitReplay());
         jdao.setNdiff(getNdiff());
-        jdao.setMultiLineOutput(getMultiLineOutput());
         // Setting of delegate must be last as it triggers replay
         jdao.setDelegate(delegate);
         return jdao;

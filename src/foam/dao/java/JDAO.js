@@ -17,7 +17,6 @@ In this current implementation setDelegate must be called last.`,
     'foam.lang.Agency',
     'foam.lang.ContextAgent',
     'foam.lang.X',
-    'foam.dao.BulkLoadDAO',
     'foam.dao.CompositeJournal',
     'foam.dao.DAO',
     'foam.dao.F3FileJournal',
@@ -103,11 +102,6 @@ In this current implementation setDelegate must be called last.`,
       name: 'writeVersionOnFirstPut'
     },
     {
-      documentation: 'Write the runtime journal multi-line. Set before delegate; passed to the journal at creation.',
-      class: 'Boolean',
-      name: 'multiLineOutput'
-    },
-    {
       name: 'delegate',
       javaFactory: 'return new MDAO(getOf());',
       javaPostSet: `
@@ -130,7 +124,6 @@ In this current implementation setDelegate must be called last.`,
                   .setDao(delegate)
                   .setFilename(getFilename())
                   .setCreateFile(false)
-                  .setMultiLineOutput(getMultiLineOutput())
                   .build());
               }
             }
@@ -181,16 +174,12 @@ In this current implementation setDelegate must be called last.`,
               .build();
 
             if ( getWaitReplay() ) {
-              // Replay into a plain map rather than the MDAO, so the index is
-              // built from every row at once instead of one put per row. Only
-              // on this branch: it runs before the DAO is published, so nothing
-              // else can read or write it while the rows are collected.
-              MDAO        mdao    = delegate instanceof MDAO ? (MDAO) delegate : null;
-              BulkLoadDAO staging = mdao == null ? null : new BulkLoadDAO(getX(), getOf());
-
+              // Speedup replay to MDAOs by disabling safe mode which clones
+              // the incoming object for safety, but isn't needed here.
+              try { ((MDAO) delegate).setSafeMode(false); } catch (Throwable t) {}
               try {
                 F3FileJournal runtimeJrl = getJournal() instanceof F3FileJournal ? (F3FileJournal) getJournal() : null;
-                jnl.replay(getX(), staging == null ? delegate : staging);
+                jnl.replay(getX(), delegate);
                 if ( runtimeJrl != null ) {
                   String lastVersion = runtimeJrl.getLastReplayVersion();
                   if ( SafetyUtil.isEmpty(lastVersion) || isCurrentVersionNewer(lastVersion, currentVersion) ) {
@@ -198,9 +187,7 @@ In this current implementation setDelegate must be called last.`,
                   }
                 }
               } finally {
-                // Whatever was collected before a replay threw is what the DAO
-                // would have held had each row been put as it was read.
-                if ( staging != null ) mdao.bulkLoad(staging.rows());
+                try { ((MDAO) delegate).setSafeMode(true); } catch (Throwable t) {}
               }
             } else {
               final String name = getFilename();

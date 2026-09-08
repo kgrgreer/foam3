@@ -190,16 +190,7 @@ foam.CLASS({
             '\n'
           ),
 
-          // A wrapped paragraph is one paragraph: a newline continues it unless
-          // the next line opens a different block.
-          paragraph: repeat(sym('inlineContent'), sym('softBreak'), 1),
-
-          softBreak: seq0('\n', not(sym('blockLineStart'))),
-
-          blockLineStart: alt(
-            '\n', '#', '```', '> ', '- ', '* ', '+ ', '|', '---', '***', '___',
-            seq(repeat(range('0', '9'), null, 1), '. ')
-          ),
+          paragraph: sym('inlineContent'),
 
           blankLine: peek('\n'),
 
@@ -436,12 +427,7 @@ foam.CLASS({
         },
 
         function paragraph(v) {
-          return function() {
-            this.start().addClass('p','mdParagraph').call(function() {
-              // Wrapped lines rejoin with a space, not a line break.
-              v.forEach((line, i) => { if ( i ) this.add(' '); line.call(this); });
-            });
-          };
+          return function() { this.start().addClass('p','mdParagraph').call(v); };
         },
 
         function blankLine(v) {
@@ -481,15 +467,7 @@ foam.CLASS({
         },
 
         function htmlText(v) {
-          // Multi-line content inside a tag is block markdown -- the <details>
-          // case -- so parse it. A single line stays plain text, or <b>x</b>
-          // would render its text as a paragraph.
-          if ( v.indexOf('\n') == -1 ) return function() { this.add(v); };
-
-          let fs = this.markdownGrammar.parseString(v);
-          if ( ! fs ) return function() { this.add(v); };
-
-          return function() { fs.forEach(f => this.call(f)); };
+          return function() { this.add(v); };
         },
 
         function text(v) {

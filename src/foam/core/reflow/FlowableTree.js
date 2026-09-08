@@ -344,7 +344,7 @@ foam.CLASS({
       themeIcon: 'close',
       buttonStyle: 'TERTIARY',
       size: 'SMALL',
-      code: function() { this.flowRoot().deleteFlowChild(this); }
+      code: function() { this.flowParent.removeFlowChild(this); }
     },
     {
       name: 'menuControl',

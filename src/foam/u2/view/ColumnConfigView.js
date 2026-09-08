@@ -92,9 +92,9 @@ foam.CLASS({
       class: 'String',
       name: 'menuSearch',
       view: {
-        class: 'foam.u2.ClearableSearchField',
+        class: 'foam.u2.SearchField',
         onKey: true,
-        autocomplete: 'off'
+        autocomplete: false
       },
       value: '',
       postSet: function() {

@@ -121,7 +121,7 @@ foam.CLASS({
   name: 'UnstyledTableRowComponent',
   extends: 'foam.u2.table.TableComponentView',
 
-  requires: ['foam.u2.util.CopyButton'],
+  mixins: ['foam.u2.util.ClipboardAccess'],
 
   imports: [
     'colWidthUpdated',
@@ -143,8 +143,16 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
     ^copy-button {
+      background: none;
+      border: none;
+      cursor: pointer;
       flex-shrink: 0;
       margin-left: auto;
+      padding: 0 4px;
+    }
+    ^copy-button img {
+      width: 14px;
+      height: 14px;
     }
     /* Only hide the copy button behind hover on devices that can hover;
        on touch devices it stays visible. */
@@ -153,6 +161,10 @@ foam.CLASS({
       ^:hover ^copy-button, ^copy-button:focus-visible { opacity: 1; }
     }
   `,
+
+  messages: [
+    { name: 'COPY', message: 'Copy' }
+  ],
 
   properties: [
     {
@@ -215,17 +227,28 @@ foam.CLASS({
             prop
           );
           cell.end();
-          wrapper.start(self.CopyButton, {
-            label: prop.columnLabel || prop.label || prop.name,
-            textProvider: function() {
+          wrapper.start('button')
+            .addClass(self.myClass('copy-button'))
+            .attrs({
+              type: 'button',
+              title: self.COPY,
+              'aria-label': self.COPY + ' ' + (prop.columnLabel || prop.label || prop.name)
+            })
+            .on('click', function(e) {
+              // Keep the click from also triggering the row's
+              // open-detail-view handler.
+              e.stopPropagation();
+              e.preventDefault();
               if ( foam.Function.isInstance(prop.copyable) ) {
-                return prop.copyable.call(objReturned, prop.f ? prop.f(objReturned) : null, objReturned);
+                self.copy(String(prop.copyable.call(objReturned, prop.f ? prop.f(objReturned) : null, objReturned) ?? ''));
+                return;
               }
               var node = cell.el_();
-              return node ? node.innerText.trim() : '';
-            }
-          })
-            .addClass(self.myClass('copy-button'))
+              self.copy(node ? node.innerText.trim() : '');
+            })
+            .start('img')
+              .attrs({ src: '/images/copy-icon.svg', alt: '' })
+            .end()
           .end();
           wrapper.end();
         })

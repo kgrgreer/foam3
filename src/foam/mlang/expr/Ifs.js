@@ -22,12 +22,8 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'toString',
-      code: function() {
-        return this.cond + ' => ' + this.expr;
-      },
-      javaCode: 'return getCond().toString() + " => " + getExpr().toString();'
+    function toString() {
+      return this.cond + ' => ' + this.expr;
     }
   ]
 });
@@ -39,10 +35,6 @@ foam.CLASS({
   extends: 'foam.mlang.AbstractExpr',
 
   documentation: 'Excel "ifs" or Lisp "cond" like expression for multi-part if statements.',
-
-  javaImports: [
-    'foam.util.StringUtil'
-  ],
 
   properties: [
     {
@@ -79,7 +71,7 @@ foam.CLASS({
       code: function() {
         return foam.String.constantize(this.cls_.name) + '(' + this.clauses.join(', ') + ')';
       },
-      javaCode: 'return StringUtil.constantize(getClass().getSimpleName()) + "(" + StringUtil.join(getClauses(), ", ") + ")";'
+      javaCode: 'return String.format("Ifs");'
     }
   ]
 });

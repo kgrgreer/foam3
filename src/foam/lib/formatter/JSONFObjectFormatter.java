@@ -111,27 +111,14 @@ public class JSONFObjectFormatter
   }
 
   public void output(String s) {
-    if ( multiLineOutput_ && s != null && s.indexOf('\n') >= 0 ) {
-      append('\n');
-      append("\"\"\"");
-      append(escapeMultiline(s));
-      append("\"\"\"");
-    } else {
-      append('"');
-      escapeAppend(s);
-      append('"');
-    }
+    append('"');
+    escapeAppend(s);
+    append('"');
   }
 
   public void escapeAppend(String s) {
     if ( s == null ) return;
     foam.lib.json.Util.escape(s, builder());
-  }
-
-  public String escapeMultiline(String s) {
-    // Same as foam.lib.json.Outputter.escapeMultiline(): only backslashes are
-    // doubled; the parser's escape handling halves them again on replay.
-    return s.replace("\\", "\\\\");
   }
 
   public void output(short val) { append(val); }
@@ -206,9 +193,6 @@ public class JSONFObjectFormatter
     if ( map == null ) return;
 
     append('{');
-    depth_++;
-    if ( map.size() > 1 ) addInnerNewline();
-
     Iterator keys = map.keySet().iterator();
     while ( keys.hasNext() ) {
       Object key   = keys.next();
@@ -216,14 +200,8 @@ public class JSONFObjectFormatter
       output(key == null ? "" : key.toString());
       append(':');
       output(value);
-      if ( keys.hasNext() ) {
-        append(COMMA);
-        addInnerNewline();
-      }
+      if ( keys.hasNext() ) append(COMMA);
     }
-
-    depth_--;
-    if ( map.size() > 1 ) addInnerNewline();
     append('}');
   }
 
@@ -237,10 +215,7 @@ public class JSONFObjectFormatter
     Iterator iter = list.iterator();
     while ( iter.hasNext() ) {
       output(iter.next());
-      if ( iter.hasNext() ) {
-        append(COMMA);
-        addInnerNewline();
-      }
+      if ( iter.hasNext() ) append(COMMA);
     }
 
     depth_--;

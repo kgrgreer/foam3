@@ -114,11 +114,8 @@ return false
   Object lhs = getArg1().f(obj);
   Object rhs = getArg2().f(obj);
 
-  // Fast path when arg2 holds a constant Object[]. ArrayConstant is a sibling
-  // of Constant, not a subclass, and it is what MLang.prepare() builds for an
-  // Object[] - so both have to be named or every MLang.IN caller keeps paying
-  // the O(n) compareTo loop below.
-  if ( getArg2() instanceof Constant || getArg2() instanceof ArrayConstant ) {
+  // Fast path when arg2 is a Constant of Object[]
+  if ( getArg2() instanceof Constant ) {
     if ( rhs instanceof Object[] ) {
       Set set = getArg2AsSet();
       if ( set == null ) {

@@ -54,7 +54,7 @@ foam.CLASS({
 
     function newAcc_() {
       /** Fresh accumulator for a scan (shared by sync + async drivers). */
-      return { filesScanned: 0, filesFailed: 0, filesWithIssues: 0, warnings: 0, errors: 0,
+      return { filesScanned: 0, filesWithIssues: 0, warnings: 0, errors: 0,
                infos: 0, fileResults: {}, patternCounts: {}, slowest: [] };
     },
 
@@ -89,9 +89,7 @@ foam.CLASS({
           }
         }
       } catch (e) {
-        require('../logError').logLspError('workspace scan of ' + filePath, e);
-        acc.filesFailed++;
-        return;
+        // File read or parse error — skip silently
       }
       acc.filesScanned++;
     },
@@ -110,7 +108,6 @@ foam.CLASS({
       patterns.sort(function(a, b) { return b.count - a.count; });
       return {
         filesScanned:    acc.filesScanned,
-        filesFailed:     acc.filesFailed,
         filesWithIssues: acc.filesWithIssues,
         warnings:        acc.warnings,
         errors:          acc.errors,
@@ -186,7 +183,6 @@ foam.CLASS({
       }
 
       var filesScanned    = 0;
-      var filesFailed     = 0;
       var filesWithIssues = 0;
       var warnings        = 0;
       var errors          = 0;
@@ -211,17 +207,12 @@ foam.CLASS({
               else infos++;
             }
           }
-        } catch ( e ) {
-          require('../logError').logLspError('diagnostics for ' + filePath, e);
-          filesFailed++;
-          continue;
-        }
+        } catch ( e ) {}
         filesScanned++;
       }
 
       return {
         filesScanned:    filesScanned,
-        filesFailed:     filesFailed,
         filesWithIssues: filesWithIssues,
         warnings:        warnings,
         errors:          errors,

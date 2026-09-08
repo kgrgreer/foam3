@@ -61,11 +61,11 @@ public class FileWebAgent
 
     try {
       path = req.getRequestURI().replaceFirst("/?service/" + nspec_.getName() + "/?", "") + path_;
-      File cwdFile = new File(SafetyUtil.isEmpty(cwd_) ? System.getProperty("user.dir") : cwd_).getCanonicalFile();
-      File src = new File(cwdFile, SafetyUtil.isEmpty(path) ? "./" : path).getCanonicalFile();
+      File src = new File(SafetyUtil.isEmpty(path) ? "./" : path);
 
-      // Ensure that the canonical path stays within cwd to prevent path escaping
-      if ( ! src.toPath().startsWith(cwdFile.toPath()) ) {
+      // Checking that it starts with the CanonicalPath prevents path escaping
+      boolean pathStartsWithCwd = src.getAbsolutePath().startsWith(cwd_);
+      if ( ! pathStartsWithCwd ) {
         throw new FileNotFoundException("File not found: " + path);
       }
 
@@ -80,13 +80,10 @@ public class FileWebAgent
                 "<ul style=\"list-style-type:disc\">");
 
         File[] files = src.listFiles();
-        if ( files != null ) {
-          for ( File file : files ) {
-            String escapedName = StringEscapeUtils.escapeHtml4(file.getName());
-            pw.write("<li>" + "<a href=\"/service/" + StringEscapeUtils.escapeHtml4(nspec_.getName()) + "/" + StringEscapeUtils.escapeHtml4(path)
-                + ( ! path.isEmpty() && ! path.endsWith("/") ? "/" : "" )
-                + escapedName + "\">" + escapedName + "</a></li>");
-          }
+        for ( File file : files ) {
+          pw.write("<li>" + "<a href=\"/service/" + StringEscapeUtils.escapeHtml4(nspec_.getName()) + "/" + path
+              + ( ! path.isEmpty() && ! path.endsWith("/") ? "/" : "" )
+              + file.getName() + "\"?>" + file.getName() + "</a></li>");
         }
 
         pw.write("</ul></body></html>");

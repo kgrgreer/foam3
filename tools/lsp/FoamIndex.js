@@ -10,20 +10,6 @@ foam.CLASS({
 
   documentation: 'Query layer over the FOAM runtime class registry for LSP handlers.',
 
-  constants: {
-    JAVA_EMBED_KEYS_: {
-      javaCode: true, javaFactory: true, javaGetter: true, javaSetter: true,
-      javaPreSet: true, javaPostSet: true, javaAdapt: true, javaCompare: true,
-      javaComparePropertyToObject: true, javaComparePropertyToValue: true,
-      javaCloneProperty: true, javaDiffProperty: true,
-      javaFormatJSON: true, javaJSONParser: true, javaCSVParser: true,
-      javaQueryParser: true, javaToCSV: true, javaToCSVLabel: true,
-      javaFromCSVLabelMapping: true, javaAssertValue: true,
-      javaValidateObj: true, javaCondition: true, javaValue: true,
-      javaImports: true, code: true, serviceScript: true
-    }
-  },
-
   properties: [
     {
       name: 'cache_',
@@ -49,10 +35,6 @@ foam.CLASS({
     {
       name: 'filePosCache_',
       documentation: 'filePath → grammar.collectAxiomPositions(content) map. Lazy, per-file; lets getSymbolPosition resolve a member line with one parse per file. Dropped on reindex via invalidateSymbolIndex_.'
-    },
-    {
-      name: 'refinementIndex_',
-      documentation: 'Refined class ID → array of { path, line, endLine } — every file that refines that class, with the refining model\'s own line range. Built alongside fileIndex_. A refined class keeps its own file as its definition site, so without this a member DECLARED in a refinement resolves back to the refined class\'s declaration line instead of to the line that declares it.'
     }
   ],
 
@@ -450,11 +432,7 @@ foam.CLASS({
           var props = cls.model_.properties;
           for ( var j = 0 ; j < props.length ; j++ ) {
             var p = props[j];
-            if ( ! p || typeof p !== 'object' ) continue;
-            // `of` may be the declared string OR an adapted class object
-            // whose id carries the dotted name — match either.
-            var ofId = typeof p.of === 'string' ? p.of : ( p.of && p.of.id );
-            if ( ofId === classId ) {
+            if ( p && typeof p === 'object' && p.of === classId ) {
               result.push(ids[i]);
               break;
             }
@@ -750,19 +728,6 @@ foam.CLASS({
       this.cache_ = {};
     },
 
-    function invalidateJrlUsageIndex(savedPath) {
-      /** A journal save changes journal references but re-registers no
-          classes, so reindexFile calls this instead of the full
-          invalidateSymbolIndex_ drop — the class-keyed indexes stay warm.
-          A services.jrl additionally feeds the string-usage index (its
-          CSpec entries are read through JrlLoader in
-          buildStringUsageIndex_), so that index drops with it. */
-      this.jrlUsageIndex_ = null;
-      if ( savedPath && /(^|[\/\\])services\.jrl$/.test(savedPath) ) {
-        this.stringUsageIndex_ = null;
-      }
-    },
-
     function buildFileIndex() {
       /**
        * Build class ID → { path, flags } mapping by walking ALL POMs
@@ -779,7 +744,6 @@ foam.CLASS({
        */
       this.fileIndex_ = {};
       this.libIndex_ = {};
-      this.refinementIndex_ = {};
       var path_ = require('path');
       var fs_ = require('fs');
 
@@ -831,12 +795,11 @@ foam.CLASS({
         var content = fs_.readFileSync(filePath, 'utf8');
         if ( ! this.libIndex_ ) this.libIndex_ = {};
         var models = foam.parse.lsp.FileModelCache.create().parseFileModels(content);
-        if ( ! this.refinementIndex_ ) this.refinementIndex_ = {};
         for ( var i = 0 ; i < models.length ; i++ ) {
           var m = models[i];
+          if ( ! m.name ) continue;
 
           if ( m.type_ === 'LIB' ) {
-            if ( ! m.name ) continue;
             this.libIndex_[m.name] = {
               path:      filePath,
               line:      m.sourceLine_ || 0,
@@ -846,35 +809,9 @@ foam.CLASS({
             continue;
           }
 
-          // A refinement's own `name:` is optional — `foam.CLASS({ refines:
-          // 'x.Y', properties: [...] })` is legal, and the name guard used to
-          // run before this, so a nameless one was dropped along with every
-          // member it declares. Rare (two files across foam3 and the app repo)
-          // but the guard was in the wrong place, not doing a job.
-          if ( m.refines ) {
-            var next    = models[i + 1];
-            var endLine = next && typeof next.sourceLine_ === 'number'
-              ? next.sourceLine_ : Infinity;
-            var refs = this.refinementIndex_[m.refines];
-            if ( ! refs ) refs = this.refinementIndex_[m.refines] = [];
-            refs.push({ path: filePath, line: m.sourceLine_ || 0, endLine: endLine });
-
-            // The refined class keeps its own file as its definition site;
-            // this only fills in when nothing else claims the id.
-            if ( ! this.fileIndex_[m.refines] ) {
-              this.fileIndex_[m.refines] = {
-                path:         filePath,
-                line:         m.sourceLine_ || 0,
-                flags:        fileFlags,
-                pomFile:      pomFile,
-                pomEntryName: pomEntryName
-              };
-            }
-          }
-
-          if ( ! m.name ) continue;
-
-          // Index the model's own identity (package + name).
+          // Index the model's own identity (package + name). Refinements also
+          // index under their target class so lookups of the refined type find
+          // the refining file.
           var ownId = m.package ? m.package + '.' + m.name : m.name;
           if ( ownId ) this.fileIndex_[ownId] = {
             path:         filePath,
@@ -883,10 +820,17 @@ foam.CLASS({
             pomFile:      pomFile,
             pomEntryName: pomEntryName
           };
+          if ( m.refines && ! this.fileIndex_[m.refines] ) {
+            this.fileIndex_[m.refines] = {
+              path:         filePath,
+              line:         m.sourceLine_ || 0,
+              flags:        fileFlags,
+              pomFile:      pomFile,
+              pomEntryName: pomEntryName
+            };
+          }
         }
-      } catch ( e ) {
-        require('./logError').logLspError('indexFileClasses ' + filePath, e);
-      }
+      } catch ( e ) {}
     },
 
     function getPomLocationForClass(classId) {
@@ -1051,13 +995,9 @@ foam.CLASS({
 
             var subPom = { path: projPomPath, location: projLocation };
             this.walkSkippedProjects_(subPom, path_, fs_, visited);
-          } catch (e) {
-            require('./logError').logLspError('POM sub-project walk ' + (projPomPath || ''), e);
-          }
+          } catch (e) {}
         }
-      } catch (e) {
-        require('./logError').logLspError('POM walk', e);
-      }
+      } catch (e) {}
     },
 
     function parsePomProjects_(content) {
@@ -1070,9 +1010,7 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.projects || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {
-        require('./logError').logLspError('POM eval (projects)', e);
-      }
+      } catch ( e ) {}
       return captured;
     },
 
@@ -1085,9 +1023,7 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.files || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {
-        require('./logError').logLspError('POM eval (files)', e);
-      }
+      } catch ( e ) {}
       return captured;
     },
 
@@ -1130,21 +1066,13 @@ foam.CLASS({
       if ( entry && entry.mtimeMs === mtime ) return entry.posMap;
 
       var map = null;
-      var failed = false;
       try {
         var content = fs_.readFileSync(filePath, 'utf8');
         if ( content.length <= 2 * 1024 * 1024 ) {
           map = this.getGrammar().collectAxiomPositions(content);
         }
-      } catch ( e ) {
-        failed = true;
-        require('./logError').logLspError('grammar position parse ' + filePath, e);
-      }
-      // A failed parse is transient state, not a fact about the file: caching
-      // null against mtime would pin every member of this file to line 0
-      // until the next edit. Oversized files DO cache null — that skip is
-      // deliberate and permanent for the mtime.
-      if ( ! failed ) this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
+      } catch ( e ) {}
+      this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
       return map;
     },
 
@@ -1161,77 +1089,27 @@ foam.CLASS({
       var character = 0;
 
       if ( memberName && filePath ) {
-        var rec = this.memberBucket_(this.getFilePosMap_(filePath), memberName, kind);
+        var posMap = this.getFilePosMap_(filePath);
+        var rec = null;
+        if ( posMap ) {
+          // 7=Property, 6=Method, 22=EnumMember, 24=Action/Listener (method-ish).
+          var bucket =
+            kind === 7  ? posMap.property :
+            kind === 22 ? posMap.value    :
+            posMap.method;
+          rec = bucket && bucket[memberName];
+          // 24 (Action/Listener) is not msg-tagged; fall back to method bucket.
+          if ( ! rec && kind === 24 && posMap.method ) rec = posMap.method[memberName];
+        }
         if ( rec ) {
           line = rec.line; character = rec.col || 0;
-        } else {
-          // Not in the class's own file. A member is just as often declared in
-          // a refinement of the class, living in another file entirely —
-          // User.twoFactorEnabled is declared in UserRefinements.js, not in
-          // User.js. Falling back to the class line sent every one of those to
-          // the top of the wrong file.
-          var refPos = this.refinementMemberPosition_(classId, memberName, kind);
-          if ( refPos ) return refPos;
-
-          if ( kind === 6 ) {
-            // Method absent from the .js model — resolve to its Java impl.
-            var jp = this.getJavaMemberPosition_(classId, memberName);
-            if ( jp ) return jp;
-          }
+        } else if ( kind === 6 ) {
+          // Method absent from the .js model — resolve to its Java impl.
+          var jp = this.getJavaMemberPosition_(classId, memberName);
+          if ( jp ) return jp;
         }
       }
       return { uri: uri, line: line, character: character };
-    },
-
-    function memberBucket_(posMap, memberName, kind) {
-      /**
-       * The position-map record for a member, or null. Bucket by LSP symbol
-       * kind: 7=Property, 6=Method, 22=EnumMember, 24=Action/Listener — 24 is
-       * not msg-tagged by the grammar, so it reads the method bucket.
-       */
-      if ( ! posMap ) return null;
-      var bucket =
-        kind === 7  ? posMap.property :
-        kind === 22 ? posMap.value    :
-        posMap.method;
-      var rec = bucket && bucket[memberName];
-      if ( ! rec && kind === 24 && posMap.method ) rec = posMap.method[memberName];
-      return rec || null;
-    },
-
-    function refinementMemberPosition_(classId, memberName, kind) {
-      /**
-       * { uri, line, character } of a member declared in a REFINEMENT of
-       * `classId`, or null. Refinements are indexed by target at file-index
-       * build time; each carries the line range of its own model.
-       *
-       * The range matters. A position map covers a whole file, and a
-       * refinement usually shares its file with the class that motivated it —
-       * ActionView.js holds both `ActionEnumRefinement` (refining
-       * foam.lang.Action) and `ActionView` itself, and both declare
-       * `buttonStyle`. Without the range check the first name-match in the
-       * file wins, which is how you get an answer that is in the right file
-       * and on the wrong line.
-       */
-      if ( ! this.fileIndex_ ) this.buildFileIndex();
-      var refs = this.refinementIndex_ && this.refinementIndex_[classId];
-      if ( ! refs || ! refs.length ) return null;
-
-      for ( var i = 0 ; i < refs.length ; i++ ) {
-        var r   = refs[i];
-        var rec = this.memberBucket_(this.getFilePosMap_(r.path), memberName, kind);
-        if ( ! rec ) continue;
-        // A name declared once per refinement in the same file yields one
-        // record plus its `also` siblings; only one of them is in this
-        // refinement's range.
-        var sightings = rec.also ? [ rec ].concat(rec.also) : [ rec ];
-        for ( var s = 0 ; s < sightings.length ; s++ ) {
-          var sr = sightings[s];
-          if ( sr.line < r.line || sr.line >= r.endLine ) continue;
-          return { uri: 'file://' + r.path, line: sr.line, character: sr.col || 0 };
-        }
-      }
-      return null;
     },
 
     function getJavaMemberPosition_(classId, memberName) {
@@ -1606,48 +1484,8 @@ foam.CLASS({
         }
       }
 
-      this.pushServiceSymbols_(out);
-
       this.symbolIndex_ = out;
       return out;
-    },
-
-    function pushServiceSymbols_(out) {
-      /**
-       * Registered services (`services.jrl` CSpec rows) as workspace symbols.
-       *
-       * A service name is not an axiom of any class, so nothing above finds
-       * it: searching `localUserDAO` returned no symbol at all while
-       * `services.jrl` registered it on line 409. They are the names an
-       * `imports:` entry is written against, which makes them exactly the
-       * kind of thing a symbol search is for.
-       *
-       * Kind 13 (Variable) — a service is a name in the context, not a type.
-       * The entry carries its own file and line because there is no class to
-       * resolve a position from.
-       */
-      var byName;
-      try {
-        if ( ! this.stringUsageIndex_ ) this.buildStringUsageIndex_();
-        byName = this.stringUsageIndex_ && this.stringUsageIndex_.byName;
-      } catch ( e ) { return; }
-      if ( ! byName ) return;
-
-      for ( var name in byName ) {
-        var recs = byName[name];
-        for ( var i = 0 ; i < recs.length ; i++ ) {
-          var r = recs[i];
-          if ( r.kind !== 'cspec' || ! r.file ) continue;
-          out.push({
-            name:          name,
-            kind:          13,
-            classId:       '',
-            containerName: 'services.jrl',
-            filePath:      r.file,
-            line:          r.line || 0
-          });
-        }
-      }
     },
 
     function searchSymbols(query, opts) {
@@ -1676,9 +1514,7 @@ foam.CLASS({
         var s = symbols[i];
         if ( ! s.filePath )                                      continue;
         if ( kindFilter    && s.kind !== kindFilter )            continue;
-        // A service symbol has no class id, so a package filter cannot match
-        // it — it is filtered out rather than crashing on an empty string.
-        if ( packagePrefix && ( ! s.classId || s.classId.indexOf(packagePrefix) !== 0 ) ) continue;
+        if ( packagePrefix && s.classId.indexOf(packagePrefix) !== 0 ) continue;
 
         if ( ! q ) {
           scored.push({ s: s, score: 1 });
@@ -1708,9 +1544,6 @@ foam.CLASS({
           classId:       e.s.classId,
           containerName: e.s.containerName,
           filePath:      e.s.filePath,
-          // Carried through only when the entry brought one — a services.jrl
-          // row has no class to resolve a position from later.
-          line:          e.s.line,
           score:         e.score
         };
       });
@@ -1742,7 +1575,6 @@ foam.CLASS({
       this.stringUsageIndex_   = null;
       this.memberUsageIndex_   = null;
       this.viewSpecUsageIndex_ = null;
-      this.jrlUsageIndex_      = null;
       // filePosCache_ is deliberately NOT dropped here: collectAxiomPositions
       // output is a pure function of file text, and each entry carries the
       // file's mtime, so the guard in getFilePosMap_ re-parses only files that
@@ -2075,246 +1907,6 @@ foam.CLASS({
     // reader), then answers `getStringUsages(name)` — every class that
     // imports the name + every services.jrl entry that registers it.
 
-    function scanJrlClassRefs(text) {
-      /**
-       * Registry-verified class references in .jrl text, offset-based.
-       * Single shared implementation behind JrlHandler's semantic tokens and
-       * the jrl usage index (#5264). Kinds: 'classValue' ("class":"…" values,
-       * top level), 'javaEmbed' (dotted ids inside serviceScript/javaCode/…
-       * blocks, longest registered prefix), 'jsonEmbed' ("class":"…" inside
-       * embedded client JSON, literal or escaped).
-       */
-      var out = [];
-
-      // 1. "class":"…" / class:'…' values, line-by-line; // lines skipped.
-      var lineStart = 0;
-      var lines = text.split('\n');
-      for ( var lineNum = 0 ; lineNum < lines.length ; lineNum++ ) {
-        var line = lines[lineNum];
-        if ( line.trim() && ! /^\s*\/\//.test(line) ) {
-          var classRegex = /(?:"class"|(?<=[{,])\s*class)\s*:\s*(?:"([^"]+)"|'([^']+)')/g;
-          var cm;
-          while ( ( cm = classRegex.exec(line) ) !== null ) {
-            var classVal = cm[1] || cm[2];
-            if ( classVal && this.classExists(classVal) ) {
-              var valIdx = line.indexOf(classVal, cm.index);
-              if ( valIdx !== -1 ) {
-                out.push({ classId: classVal, offset: lineStart + valIdx, length: classVal.length, kind: 'classValue' });
-              }
-            }
-          }
-        }
-        lineStart += line.length + 1;
-      }
-
-      // 2. Embedded value blocks (serviceScript/javaCode/… and client JSON).
-      var blocks = this.findEmbeddedBlocks_(text);
-      for ( var i = 0 ; i < blocks.length ; i++ ) {
-        var b = blocks[i];
-        var content = text.substring(b.contentStart, b.contentEnd);
-        if ( this.JAVA_EMBED_KEYS_[b.key] ) {
-          var dottedRe = /\b([a-z][\w$]*(?:\.[a-zA-Z_][\w$]*)+)\b/g;
-          var dm;
-          while ( ( dm = dottedRe.exec(content) ) !== null ) {
-            var hit = this.resolveRegisteredPrefix_(dm[1]);
-            if ( ! hit ) continue;
-            out.push({ classId: dm[1].substring(0, hit.length), offset: b.contentStart + dm.index, length: hit.length, kind: 'javaEmbed' });
-          }
-        } else if ( b.key === 'client' ) {
-          var litRe = /"class"\s*:\s*"([^"\n]+)"/g;
-          var lm;
-          while ( ( lm = litRe.exec(content) ) !== null ) {
-            var cid = lm[1];
-            if ( ! this.classExists(cid) ) continue;
-            var vIdx = content.indexOf(cid, lm.index);
-            if ( vIdx !== -1 ) out.push({ classId: cid, offset: b.contentStart + vIdx, length: cid.length, kind: 'jsonEmbed' });
-          }
-          var escRe = /\\"class\\"\s*:\s*\\"([^"\\\n]+)\\"/g;
-          var em;
-          while ( ( em = escRe.exec(content) ) !== null ) {
-            var ecid = em[1];
-            if ( ! this.classExists(ecid) ) continue;
-            var eIdx = content.indexOf(ecid, em.index);
-            if ( eIdx !== -1 ) out.push({ classId: ecid, offset: b.contentStart + eIdx, length: ecid.length, kind: 'jsonEmbed' });
-          }
-        }
-      }
-      return out;
-    },
-
-    function findEmbeddedBlocks_(text) {
-      /**
-       * Scan the full text for every triple-quote and backtick embedded
-       * value. Returns array of { key, contentStart, contentEnd, delim }
-       * where delim is '"""' or '`'. Skips `//` line comments.
-       *
-       * Approach: find `"key":` then the opening delimiter right after.
-       * Matches BOTH quoted-key (`"javaCode"`) and unquoted-key (`javaCode`).
-       */
-      var out = [];
-      var keyDelimRe = /(?:"([a-zA-Z_][\w$]*)"|([a-zA-Z_][\w$]*))\s*:\s*("""|`)/g;
-      var m;
-      while ( ( m = keyDelimRe.exec(text) ) !== null ) {
-        var key = m[1] || m[2];
-        if ( ! key ) continue;
-        var delim = m[3];
-        var openStart = m.index + m[0].length - delim.length;
-        var contentStart = openStart + delim.length;
-        var contentEnd = text.indexOf(delim, contentStart);
-        if ( contentEnd === -1 ) break;
-        out.push({ key: key, contentStart: contentStart, contentEnd: contentEnd, delim: delim });
-        keyDelimRe.lastIndex = contentEnd + delim.length;
-      }
-
-      // Escaped-in-double-quote form: `"client": "…"` where inner quotes
-      // are `\"`. Only honor `client` (FObject JSON); serviceScript also
-      // uses this form but we leave Java highlighting to grammar injection
-      // there since escaping makes it hard to detect reliably.
-      var escRe = /"(client)"\s*:\s*"(?!"")((?:\\.|[^"\\\n])*)"/g;
-      var em;
-      while ( ( em = escRe.exec(text) ) !== null ) {
-        var vStart = em.index + em[0].length - em[2].length - 1;
-        out.push({
-          key: em[1],
-          contentStart: vStart + 1,
-          contentEnd: vStart + 1 + em[2].length,
-          delim: '"',
-          escaped: true
-        });
-      }
-      return out;
-    },
-
-    function resolveRegisteredPrefix_(dottedId) {
-      /**
-       * Given `foo.X.Builder`, return the longest prefix that exists in the
-       * FOAM registry. Returns { length } (char length of the matched
-       * prefix) or null.
-       */
-      if ( ! dottedId ) return null;
-      var cand = dottedId;
-      while ( cand ) {
-        if ( this.classExists(cand) ) return { length: cand.length };
-        var dot = cand.lastIndexOf('.');
-        if ( dot === -1 ) return null;
-        cand = cand.substring(0, dot);
-      }
-      return null;
-    },
-
-    function getJrlUsages(classId) {
-      /** Journal references (#5264): [{ file, line, character, length, kind: 'usage-jrl' }].
-          Full-id matching only — short names inside serviceScript bodies via
-          embedded imports are out of scope (grep covers those). */
-      if ( ! this.jrlUsageIndex_ ) this.buildJrlUsageIndex_();
-      return this.jrlUsageIndex_.byTarget[classId] || [];
-    },
-
-    function buildJrlUsageIndex_(opt_files) {
-      var fs_      = require('fs');
-      var byTarget = {};
-      var files    = opt_files || this.findWorkspaceJrlFiles_();
-
-      for ( var f = 0 ; f < files.length ; f++ ) {
-        var text;
-        try {
-          if ( fs_.statSync(files[f]).size > 2 * 1024 * 1024 ) {
-            console.error('[foam-lsp] jrl usage index: skipping >2MB journal ' + files[f]);
-            continue;
-          }
-          text = fs_.readFileSync(files[f], 'utf8');
-        } catch (e) { continue; }
-
-        var refs = this.scanJrlClassRefs(text);
-        if ( ! refs.length ) continue;
-
-        var lineOffs = [ 0 ];
-        for ( var c = 0 ; c < text.length ; c++ ) {
-          if ( text.charCodeAt(c) === 10 ) lineOffs.push(c + 1);
-        }
-        for ( var r = 0 ; r < refs.length ; r++ ) {
-          var ref = refs[r];
-          var lo = 0, hi = lineOffs.length - 1;
-          while ( lo < hi ) {
-            var mid = (lo + hi + 1) >> 1;
-            if ( lineOffs[mid] <= ref.offset ) lo = mid; else hi = mid - 1;
-          }
-          var arr = byTarget[ref.classId] || (byTarget[ref.classId] = []);
-          arr.push({
-            file:      files[f],
-            line:      lo,
-            character: ref.offset - lineOffs[lo],
-            length:    ref.length,
-            kind:      'usage-jrl'
-          });
-        }
-      }
-      this.jrlUsageIndex_ = { byTarget: byTarget };
-    },
-
-    function findWorkspaceJrlFiles_() {
-      /**
-       * Every *.jrl under the workspace root; node_modules, build and
-       * dot-directories skipped.
-       *
-       * Deliberately NOT getJournalDirs(). That one answers "which
-       * directories hold a pom or an indexed source", which is the right
-       * question for resolving a service name to its services.jrl row, and
-       * JournalEntryIndex shares it so those two cannot drift. It is a
-       * different question from "where is every journal in the workspace":
-       * measured on this repo, the directory answer reaches 110 journals and
-       * this walk reaches 367, a strict superset — the 257 it adds are almost
-       * all of deployment/, which holds no indexed source and no pom.
-       *
-       * Cost of the gap: 5ms for the directory scan against 91ms cold / 81ms
-       * warm here. Widening journal discovery to this walk would give
-       * go-to-definition the deployment journals too, at the price of every
-       * JournalEntryIndex lookup reading 367 files instead of 110 — worth
-       * doing, worth measuring, and not part of restoring this index.
-       */
-      var fs_   = require('fs');
-      var path_ = require('path');
-      var SKIP  = { node_modules: true, build: true };
-      var out   = [];
-      // Dedupe by resolved path rather than skipping symlinks outright:
-      // foam3's root `foam3 -> .` cycle resolves to an already-visited
-      // directory and stops, while journals reachable only through a
-      // symlinked tree are still indexed (once). Only directories and
-      // journals are resolved — realpath on every plain file nearly
-      // doubles the cold walk and bloats seenReal for no dedupe value.
-      var seenReal = {};
-      function walk(dir) {
-        var names;
-        try { names = fs_.readdirSync(dir); } catch (e) { return; }
-        for ( var i = 0 ; i < names.length ; i++ ) {
-          var name = names[i];
-          if ( SKIP[name] || name.charAt(0) === '.' ) continue;
-          var p = path_.join(dir, name);
-          var st;
-          try { st = fs_.statSync(p); } catch (e) { continue; }   // broken symlink
-          if ( st.isDirectory() ) {
-            var real;
-            try { real = fs_.realpathSync(p); } catch (e) { continue; }
-            if ( seenReal[real] ) continue;
-            seenReal[real] = true;
-            walk(p);
-          } else if ( name.length > 4 && name.lastIndexOf('.jrl') === name.length - 4 ) {
-            // Push the resolved path so a journal reachable both directly
-            // and through a symlink reports one canonical row, independent
-            // of readdir order.
-            var jrlReal;
-            try { jrlReal = fs_.realpathSync(p); } catch (e) { continue; }
-            if ( seenReal[jrlReal] ) continue;
-            seenReal[jrlReal] = true;
-            out.push(jrlReal);
-          }
-        }
-      }
-      try { seenReal[fs_.realpathSync(process.cwd())] = true; } catch (e) {}
-      walk(process.cwd());
-      return out;
-    },
-
     function getStringUsages(name) {
       if ( ! this.stringUsageIndex_ ) this.buildStringUsageIndex_();
       return this.stringUsageIndex_.byName[name] || [];
@@ -2381,100 +1973,37 @@ foam.CLASS({
         var jrlLoader = foam.parse.lsp.JrlLoader.create();
         var fs_       = require('fs');
         var path_     = require('path');
-        // getJournalDirs, not getIndexedDirs: src/services.jrl — 38 rows,
-        // `file`, `blobStore`, `httpServer` among them — sits in a directory
-        // holding no class file at all, so a walk of indexed sources never
-        // reaches it. The pom locations do.
-        var services = [];
-        var svcDirs  = this.getJournalDirs();
-        for ( var d = 0 ; d < svcDirs.length ; d++ ) {
-          var svc = path_.join(svcDirs[d], 'services.jrl');
+        var fileIndex = this.fileIndex_ || {};
+        var seenDirs  = {};
+        var services  = [];
+        for ( var id in fileIndex ) {
+          var entry = fileIndex[id];
+          var p     = typeof entry === 'string' ? entry : entry.path;
+          if ( ! p ) continue;
+          var dir = path_.dirname(p);
+          if ( seenDirs[dir] ) continue;
+          seenDirs[dir] = true;
+          var svc = path_.join(dir, 'services.jrl');
           if ( fs_.existsSync(svc) ) services.push(svc);
         }
         for ( var s = 0 ; s < services.length ; s++ ) {
           try {
-            // With lines, because a CSpec row is worth pointing AT: it is the
-            // one place the service is registered.
-            var entries = jrlLoader.loadStringWithLines(
-              fs_.readFileSync(services[s], 'utf8'));
+            var entries = jrlLoader.loadFile(services[s]);
             for ( var e = 0 ; e < entries.length ; e++ ) {
-              var ent = entries[e].obj;
-              if ( ! ent ) continue;
-              // A CSpec's identity is its `name`, not `id` — that is what an
-              // import key is matched against. Requiring `id` skipped every
-              // row in every services.jrl in the repo.
-              var entId = typeof ent.id === 'string' ? ent.id
-                        : ( typeof ent.name === 'string' ? ent.name : null );
-              if ( ! entId ) continue;
-              record(entId, {
+              var ent = entries[e];
+              if ( ! ent || typeof ent.id !== 'string' ) continue;
+              record(ent.id, {
                 sourceClassId: null,
                 axiomName:     'services.jrl',
                 kind:          'cspec',
-                file:          services[s],
-                line:          entries[e].line
+                file:          services[s]
               });
             }
-          } catch (e) {
-            require('./logError').logLspError('services.jrl cspec scan ' + services[s], e);
-          }
+          } catch (e) {}
         }
-      } catch (e) {
-        require('./logError').logLspError('cspec scan', e);
-      }
+      } catch (e) {}
 
       this.stringUsageIndex_ = { byName: byName };
-    },
-
-    function getJournalDirs() {
-      /**
-       * Every directory a .jrl may live in: the pom locations plus the
-       * directories of indexed sources. THE one answer to that question —
-       * JournalEntryIndex asks it for journal discovery and
-       * buildStringUsageIndex_ asks it for services.jrl, and when those two
-       * were separate walks they disagreed: the index missed the 38
-       * registrations in src/services.jrl that the journal lookup found.
-       *
-       * Not cached: foam.poms is mutable at runtime.
-       */
-      var seen = {};
-      var dirs = [];
-      var poms = ( typeof foam !== 'undefined' && foam.poms ) || [];
-      for ( var p = 0 ; p < poms.length ; p++ ) {
-        var loc = poms[p] && poms[p].location;
-        if ( ! loc || seen[loc] ) continue;
-        seen[loc] = true;
-        dirs.push(loc);
-      }
-      var indexed = this.getIndexedDirs();
-      for ( var i = 0 ; i < indexed.length ; i++ ) {
-        if ( seen[indexed[i]] ) continue;
-        seen[indexed[i]] = true;
-        dirs.push(indexed[i]);
-      }
-      return dirs;
-    },
-
-    function getIndexedDirs() {
-      /**
-       * Unique directories containing indexed source files. Used by
-       * JournalEntryIndex to discover journal (.jrl) files alongside
-       * sources — the same walk buildStringUsageIndex_ does for
-       * services.jrl, exposed as an interface.
-       */
-      var path_ = require('path');
-      var fileIndex = this.fileIndex_ || {};
-      var seen = {};
-      var dirs = [];
-      for ( var id in fileIndex ) {
-        var entry = fileIndex[id];
-        var p = typeof entry === 'string' ? entry : entry.path;
-        if ( ! p ) continue;
-        var dir = path_.dirname(p);
-        if ( seen[dir] ) continue;
-        seen[dir] = true;
-        dirs.push(dir);
-      }
-      return dirs;
     },
 
     // ----- Java usage index -----------------------------------------------
@@ -2485,25 +2014,6 @@ foam.CLASS({
     // through the class's javaImports, gives a per-target-class index of
     // every Java-side reference. Same fact pattern as the JS usage scan,
     // different axiom slots.
-
-    function javaImportPaths(cls) {
-      /**
-       * The class's javaImports as plain path strings, whichever form the
-       * model holds: raw strings (FileModelCache / pre-refinement) or
-       * foam.java.JavaImport objects ({ import: 'full.path', name: generated
-       * 'javaimport_'+import label }) — what a real boot's java refinements
-       * produce. Single normalization point: do NOT unwrap javaImports
-       * shapes anywhere else.
-       */
-      var ji  = cls && cls.model_ && cls.model_.javaImports || [];
-      var out = [];
-      for ( var i = 0 ; i < ji.length ; i++ ) {
-        var e = ji[i];
-        if ( typeof e === 'string' )                  out.push(e);
-        else if ( e && typeof e.import === 'string' ) out.push(e.import);
-      }
-      return out;
-    },
 
     function getJavaUsages(classId) {
       if ( ! this.javaUsageIndex_ ) this.buildJavaUsageIndex_();
@@ -2531,12 +2041,13 @@ foam.CLASS({
         var cls      = this.getClass(sourceId);
         if ( ! cls ) continue;
 
-        var javaImports = this.javaImportPaths(cls);
+        var javaImports = cls.model_ && cls.model_.javaImports || [];
         if ( javaImports.length === 0 && ! (cls.model_ && cls.model_.package) ) continue;
 
         var importLookup = {};
         for ( var x = 0 ; x < javaImports.length ; x++ ) {
           var imp = javaImports[x];
+          if ( typeof imp !== 'string' ) continue;
           if ( imp.indexOf('*') !== -1 ) continue;
           var parts = imp.split('.');
           importLookup[parts[parts.length - 1]] = imp;

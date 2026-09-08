@@ -8,16 +8,13 @@ foam.CLASS({
   package: 'foam.u2.stack',
   name: 'BreadcrumbManager',
   documentation: ``,
-
   imports: [
     'document',
     'stack',
     'theme',
     'memento_'
   ],
-
   requires: ['foam.u2.memento.WindowHashMemento'],
-
   classes: [
     {
       name: 'Breadcrumb',
@@ -26,8 +23,7 @@ foam.CLASS({
       methods: [
         async function go() {
           try {
-            if ( this.stack?.jump )
-              await this.stack?.jump(this.view.__subContext__.stackPos);
+            await this.stack?.jump(this.view.__subContext__.stackPos);
             this.view.routeToMe();
             this.parent.pos = this.position;
           } catch {
@@ -43,7 +39,6 @@ foam.CLASS({
       ]
     }
   ],
-
   properties: [
     {
       class: 'Array',
@@ -54,10 +49,9 @@ foam.CLASS({
       name: 'current'
     }
   ],
-
   methods: [
     function init() {
-      this.stack.stackReset?.sub(() => { this.crumbs = []; this.pos = -1; });
+      this.stack.stackReset.sub(() => { this.crumbs = []; this.pos = -1; });
     },
     function setDocumentTitleLink() {
       // Hook up the document title listener in case the memento doesnt update

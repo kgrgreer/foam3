@@ -9,11 +9,6 @@ foam.CLASS({
   name: 'Example',
   extends: 'foam.u2.Controller',
 
-  requires: [
-    'foam.core.u2.navigation.Stack',
-    'foam.u2.stack.BreadcrumbManager'
-  ],
-
   imports: [ 'scope as globalScope' ],
 
   exports: ['stack_ as stack', 'breadcrumbs_ as breadcrumbs'],
@@ -66,13 +61,13 @@ foam.CLASS({
     {
       name: 'stack_',
       factory: function() {
-        return this.Stack.create();
+        return foam.core.u2.navigation.Stack.create({}, this.__subContext__);
       }
     },
     {
       name: 'breadcrumbs_',
       factory: function() {
-        return this.BreadcrumbManager.create();
+        return foam.u2.stack.BreadcrumbManager.create({}, this.__subContext__);
       }
     }
   ],
@@ -90,8 +85,7 @@ foam.CLASS({
         add(this.stack_).
         end();
       this.stack_.addClass(this.myClass('output'));
-      // Set the parentMemento_ instead of setting memento_ to null so that it doesn't install a new WindowMemento() and break navigation.
-      this.stack_.push(this.E().startContext({ stack: this.stack_, breadcrumbs: this.breadcrumbs_, parentMemento_: foam.u2.memento.Memento.create() }).
+      this.stack_.push(this.E().startContext({ stack: this.stack_, breadcrumbs: this.breadcrumbs_, memento_: null }).
         tag('div', {}, this.dom$)).endContext();
       this.runListener();
       this.onDetach(this.code$.sub(this.runListener));

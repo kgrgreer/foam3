@@ -213,14 +213,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'javaFieldInitializer',
-      documentation: `Initial value of the backing field. Needed when
-        javaFieldType is a primitive whose Java default is a legal value of the
-        property rather than its absence, so the field has to start at whatever
-        the property reserves for "no value".`
-    },
-    {
-      class: 'String',
       name: 'javaJSONParser',
       // Set to the String literal 'null' if no JSONParser desired
       value: 'foam.lib.json.AnyParser.instance()'
@@ -479,18 +471,12 @@ if ( ! ((foam.mlang.predicate.Predicate) parser.parse(sps,px).value()).f(obj) ) 
       var isSet       = this.name + 'IsSet_';
       var factoryName = capitalized + 'Factory_';
 
-      // An empty initializer can't be passed through: CodeProperty adapts the
-      // empty string into a Code object, which Field then reads as truthy and
-      // emits as a bare '='.
-      var privateField = {
-        name: privateName,
-        type: this.javaFieldType,
-        visibility: 'protected'
-      };
-      if ( this.javaFieldInitializer ) privateField.initializer = this.javaFieldInitializer;
-
       cls.
-        field(privateField).
+        field({
+          name: privateName,
+          type: this.javaFieldType,
+          visibility: 'protected'
+        }).
         field({
           name: isSet,
           type: 'boolean',
@@ -1728,7 +1714,6 @@ foam.CLASS({
   properties: [
     ['javaType',        'java.util.Date' ],
     ['javaFieldType',   'long' ],
-    ['javaFieldInitializer', 'Long.MIN_VALUE;'],
     ['javaInfoType',    'foam.lang.AbstractDatePropertyInfo'],
     ['javaJSONParser',  'foam.lib.json.DateParser.instance()'],
     ['sqlType',         'TIMESTAMP WITHOUT TIME ZONE'],
@@ -1770,7 +1755,6 @@ foam.CLASS({
   properties: [
     ['javaType',        'java.util.Date' ],
     ['javaFieldType',   'long' ],
-    ['javaFieldInitializer', 'Long.MIN_VALUE;'],
     ['javaInfoType',    'foam.lang.AbstractDatePropertyInfo'],
     ['javaJSONParser',  'foam.lib.json.DateParser.instance()'],
     ['sqlType',         'DATE'],

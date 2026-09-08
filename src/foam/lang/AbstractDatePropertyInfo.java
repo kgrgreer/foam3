@@ -101,20 +101,7 @@ public abstract class AbstractDatePropertyInfo
   }
 
   public int comparePropertyToObject(Object key, Object o) {
-    // cast() returns null for a null key, so getTime() would NPE here. A null
-    // key is normal - an Indexer over an unset date property produces one, and
-    // nullableDateToLong encodes it as the same reserved long the backing field
-    // holds while unset.
-    return foam.util.SafetyUtil.compare(
-      foam.util.DateUtil.nullableDateToLong(cast(key)), get__(o));
-  }
-
-  public boolean hasLongKey() {
-    return true;
-  }
-
-  public long keyAsLong(Object key) {
-    return foam.util.DateUtil.nullableDateToLong(cast(key));
+    return foam.util.SafetyUtil.compare(cast(key).getTime(), get__(o));
   }
 
   public int comparePropertyToValue(Object key, Object value) {

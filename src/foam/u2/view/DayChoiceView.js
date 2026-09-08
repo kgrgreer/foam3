@@ -3,7 +3,6 @@
  * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'DayChoiceView',
@@ -30,7 +29,6 @@ foam.CLASS({
     line-height: 1.5;
   }
   `,
-
   methods: [
     function render() {
       this

@@ -126,10 +126,11 @@ foam.CLASS({
           class: 'String',
           name: 'search',
           view: {
-           class: 'foam.u2.ClearableSearchField',
+           class: 'foam.u2.SearchField',
            onKey: true
           },
-          memorable: true
+          memorable: true,
+          preSet: function(o, n) { this.daoCount = 0; return n; }
         }
       ],
 
@@ -144,7 +145,6 @@ foam.CLASS({
           this.onDetach(this.stack.setTrailingContainer(this.E().start(this.SEARCH).focus().end()));
           this.addClass();
           var updateSections = [];
-          var entries        = [];
           var i = 0;
 
           this.filteredDAO.select().then(function(specs) {
@@ -184,6 +184,7 @@ foam.CLASS({
                 lSection = section;
               }
 
+              var localI    = i.valueOf();
               var localShow = foam.lang.SimpleSlot.create({value: true});
 
               section
@@ -196,32 +197,26 @@ foam.CLASS({
                     self.route = spec.id;
                   });
 
-              entries.push({label: label, spec: spec, show: localShow});
+                  self.search$.sub(function() {
+                    var contains = false;
+                    if ( ! self.search ) {
+                      contains = true;
+                    } else if ( label.toLowerCase().includes(self.search.toLowerCase()) ) {
+                      contains =  true;
+                    } else if ( ! contains && spec.keywords && spec.keywords.length > 0 ) {
+                      for ( var k in spec.keywords ) {
+                        if ( k.toLowerCase().includes(self.search.toLowerCase()) ) {
+                          contains  = true;
+                          break;
+                        }
+                      }
+                    }
+
+                    if ( contains ) self.daoCount++;
+                    localShow.set(contains);
+                    updateSections[localI].set(! updateSections[localI].get());
+                  });
             });
-
-            // One listener for the whole list: a per-row listener that incremented
-            // a shared counter left the count wrong whenever 'search' was set to
-            // the value it already had, since that publishes no propertyChange.
-            self.onDetach(self.search$.sub(function() {
-              var q     = self.search.toLowerCase();
-              var count = 0;
-
-              entries.forEach(function(e) {
-                var contains =
-                  ! q ||
-                  e.label.toLowerCase().includes(q) ||
-                  ( e.spec.keywords || [] ).some(function(k) { return k.toLowerCase().includes(q); });
-
-                if ( contains ) count++;
-                e.show.set(contains);
-              });
-
-              self.daoCount = count;
-
-              // Sections re-check their rows only once every row has settled.
-              updateSections.forEach(function(s) { s.set(! s.get()); });
-            }));
-
             self.start().addClass(self.myClass('footer')).add(self.daoCount$, ' of ', self.totalDAOCount$, ' shown').end();
           });
         }

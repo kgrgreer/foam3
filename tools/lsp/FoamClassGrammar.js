@@ -82,30 +82,18 @@ foam.CLASS({
       var self = this;
       var map = {
         message:     {}, value:    {}, property: {}, method:  {},
-        pomFileName: {}, pomFlagValue: {}, pomJavaFileName: {},
-        classRef: {}, comment:  {}, documentation: {},
+        pomFileName: {}, classRef: {}, comment:  {}, documentation: {},
         instCall: {}, instCreateReceiver: {}, instTagClass: {}, instClassRef: {},
         instKey: {}, instValue: {}, memberRef: {}
       };
       // Kinds that allow multiple occurrences per name. Single-occurrence
       // kinds (message, value, property, method, pomFileName) keep their
-      // first sighting as the record — a model defines each name once. Class
+      // first sighting only — a model defines each name once. Class
       // references DO repeat (requires + extends + ofs + raw strings + …),
       // so collect every position.
-      //
-      // "Once" is true per MODEL, and this map covers a FILE. A file of
-      // refinements declares the same member once per refinement:
-      // src/foam/core/reflow/FromCsvRefines.js declares `fromCSV` six times,
-      // for six different classes. So a single-occurrence record also carries
-      // `also` — the later sightings — which a caller that knows which model
-      // it is asking about can pick from. Readers that just want a position
-      // see the same first record they always did.
       var MULTI = { classRef: true, comment: true, documentation: true,
         instCall: true, instCreateReceiver: true, instTagClass: true,
-        instClassRef: true, instKey: true, instValue: true, memberRef: true,
-        // pom scalar values repeat across entries ('js' in ten files:
-        // rows), so unlike pomFileName these keep every span.
-        pomFlagValue: true, pomJavaFileName: true };
+        instClassRef: true, instKey: true, instValue: true, memberRef: true };
 
       // Line-start offsets, computed once (O(n)), so each msg match resolves
       // line/col by binary search (O(log n)). Scanning text from offset 0 per
@@ -141,20 +129,8 @@ foam.CLASS({
               if ( MULTI[m.kind] ) {
                 var arr = map[m.kind][name] || (map[m.kind][name] = []);
                 arr.push(rec);
-              } else {
-                var first = map[m.kind][name];
-                if ( ! first ) {
-                  map[m.kind][name] = rec;
-                } else if ( first.startPos !== startPos ) {
-                  // Backtracking re-runs apply at the same offset, so the same
-                  // sighting can arrive more than once — dedupe on startPos.
-                  if ( ! first.also ) first.also = [];
-                  var dup = false;
-                  for ( var a = 0 ; a < first.also.length ; a++ ) {
-                    if ( first.also[a].startPos === startPos ) { dup = true; break; }
-                  }
-                  if ( ! dup ) first.also.push(rec);
-                }
+              } else if ( ! map[m.kind][name] ) {
+                map[m.kind][name] = rec;
               }
             }
           }
@@ -777,9 +753,9 @@ foam.CLASS({
         // value parser from running past its closing quote into the next
         // entry. Adding a new POM scalar value is a one-liner now.
         pomFileName:     stringValueRule({ category: 'pomFileName',     hint: 'file name',          msgKind: 'pomFileName' }),
-        pomJavaFileName: stringValueRule({ category: 'pomJavaFileName', hint: 'Java file name',     msgKind: 'pomJavaFileName' }),
+        pomJavaFileName: stringValueRule({ category: 'pomJavaFileName', hint: 'Java file name' }),
         pomProjectPath:  stringValueRule({ category: 'pomProjectPath',  hint: 'subproject path' }),
-        pomFlagValue:    stringValueRule({ category: 'pomFlagValue',    hint: 'flag combination',   msgKind: 'pomFlagValue' }),
+        pomFlagValue:    stringValueRule({ category: 'pomFlagValue',    hint: 'flag combination' }),
         pomJavaDep:      stringValueRule({ category: 'pomJavaDep',      hint: 'Java dependency' }),
 
         // Skip one character — catch-all that lets START consume the whole file
@@ -983,40 +959,28 @@ foam.CLASS({
         // Real suggestions come from the model (this class's properties).
         tableColumnsEntry: P.seq(topKey('tableColumns'), wsc, P.literal(':'), wsc,
           P.literal('['), wsc,
-          repeatList(P.seq(wsc, P.literal("'"), P.sym('tableColumnName'),
+          repeatList(P.seq(wsc, P.literal("'"), P.sym('columnName'),
             P.optional(P.literal("'")), wsc)),
           wsc, P.optional(P.literal(']'))),
         searchColumnsEntry: P.seq(topKey('searchColumns'), wsc, P.literal(':'), wsc,
           P.literal('['), wsc,
-          repeatList(P.seq(wsc, P.literal("'"), P.sym('searchColumnName'),
+          repeatList(P.seq(wsc, P.literal("'"), P.sym('columnName'),
             P.optional(P.literal("'")), wsc)),
           wsc, P.optional(P.literal(']'))),
 
         // Context marker: the sug here always fails (matches \u0002 which
         // doesn't appear in source) so it fires during suggestion collection.
         // The id-shaped fallback is msg-wrapped so validation can flag
-        // unknown column names. tableColumns and searchColumns emit distinct
-        // msg types because tableColumns also accepts action names (rendered
-        // as row buttons — see foam.u2.table.UnstyledTableView) while
-        // searchColumns filters on properties only.
-        columnNameMarker: P.sug(P.literal('\u0002'), foam.parse.Suggestion.create({
-          text: '__ctx_columnName__', category: 'columnName', hint: 'property name'
-        })),
-        tableColumnName: P.alt(
-          P.sym('columnNameMarker'),
+        // unknown column names (property names not on the class).
+        columnName: P.alt(
+          P.sug(P.literal('\u0002'), foam.parse.Suggestion.create({
+            text: '__ctx_columnName__', category: 'columnName', hint: 'property name'
+          })),
           P.msg(
-            P.sym('columnNameIdent'),
-            { type: 'tableColumnName' }
+            P.str(P.repeat(P.alt(alphaNum, P.chars('_.')), null, 1)),
+            { type: 'columnName' }
           )
         ),
-        searchColumnName: P.alt(
-          P.sym('columnNameMarker'),
-          P.msg(
-            P.sym('columnNameIdent'),
-            { type: 'searchColumnName' }
-          )
-        ),
-        columnNameIdent: P.str(P.repeat(P.alt(alphaNum, P.chars('_.')), null, 1)),
 
         importsEntry: P.seq(key('imports', topHint('imports')), wsc, P.literal(':'), wsc, P.sym('array')),
 

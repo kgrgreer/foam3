@@ -12,15 +12,17 @@ foam.CLASS({
   documentation: 'Implementation of Token Service used for reset password',
 
   imports: [
-    'DAO tokenDAO',
-    'DAO userDAO'
+    'appConfig',
+    'Email email',
+    'DAO userDAO',
+    'DAO tokenDAO'
   ],
 
   javaImports: [
-    'foam.comics.v2.userfeedback.UserFeedbackException',
-    'foam.comics.v2.userfeedback.UserFeedback',
-    'foam.comics.v2.userfeedback.UserFeedbackAlertType',
-    'foam.comics.v2.userfeedback.UserFeedbackStatus',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.dao.Sink',
+    'foam.mlang.MLang',
     'foam.core.app.AppConfig',
     'foam.core.auth.LifecycleState',
     'foam.core.auth.Subject',
@@ -28,14 +30,7 @@ foam.CLASS({
     'foam.core.auth.UserNotFoundException',
     'foam.core.auth.token.Token',
     'foam.core.notification.Notification',
-    'foam.core.theme.Theme',
-    'foam.dao.DAO',
-    'foam.lang.X',
-    'foam.mlang.MLang',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.OR',
-    'static foam.mlang.MLang.STARTS_WITH_IC',
+    'foam.core.notification.email.EmailMessage',
     'foam.util.Email',
     'foam.util.Password',
     'foam.util.SafetyUtil',
@@ -56,46 +51,61 @@ foam.CLASS({
     {
       name: 'generateTokenWithParameters',
       javaCode: `
-        String email = user.getEmail();
-        if ( ! Email.isValid(email) )
-          throw new RuntimeException("Invalid Email");
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        String url = appConfig.getUrl().replaceAll("/$", "");
 
-        String spid = null;
-        Theme theme = (Theme) x.get("theme");
-        if ( theme != null )
-          spid = theme.getSpid();
-        else {
-          User anonymous = ((Subject) x.get("subject")).getUser();
-          if ( anonymous != null )
-            spid = anonymous.getSpid();
+        // The context passed to us won't have a user in it because obviously the user
+        // isn't logged in if they're resetting their password. However, decorators on
+        // DAOs we access down the line from here will want to use the user from the
+        // context. Therefore we put the system user in the context here so that
+        // decorators down the line won't throw NPEs when trying to access the user in
+        // the context.
+        User systemUser = ((Subject) getX().get("subject")).getUser();
+        Subject subject = new Subject.Builder(x).setUser(systemUser).build();
+        x = x.put("subject", subject);
+
+        DAO userDAO = (DAO) getUserDAO();
+        DAO tokenDAO = (DAO) getTokenDAO();
+
+        // check if email invalid
+        if ( user == null || ! Email.isValid(user.getEmail()) ) {
+          throw new RuntimeException("Invalid Email");
         }
-        if ( spid == null )
-          throw new RuntimeException("Invalid Email");
 
-        User found = (User) getUserDAO().find(
-          AND(
-            EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE),
-            EQ(User.LOGIN_ENABLED, true),
-            OR(
-              EQ(User.SPID, spid),
-              STARTS_WITH_IC(User.SPID, spid)
-            ),
-            EQ(User.EMAIL, email)
-          ));
-        if ( found == null )
+        String spid = user.getSpid();
+        if ( SafetyUtil.isEmpty(spid) ) {
+          spid = (String) x.get("spid");
+        }
+
+        Sink sink = new ArraySink();
+        sink = userDAO.where(
+          MLang.AND(
+            MLang.EQ(User.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+            MLang.EQ(User.LOGIN_ENABLED, true),
+            MLang.EQ(User.SPID, spid),
+            MLang.EQ(User.EMAIL, user.getEmail())
+          ))
+          .limit(1).select(sink);
+
+        List list = ((ArraySink) sink).getArray();
+        if ( list == null || list.size() == 0 ) {
           throw new UserNotFoundException();
+        }
+
+        var found = (User) list.get(0);
+        if ( found == null || found.getId() != user.getId() ) {
+          throw new UserNotFoundException();
+        }
 
         Token token = new Token();
         token.setUserId(found.getId());
         token.setExpiry(generateExpiryDate());
         token.setData(UUID.randomUUID().toString());
         token.setParameters(parameters);
-        token = (Token) getTokenDAO().put(token);
+        token = (Token) tokenDAO.put(token);
 
         HashMap<String, Object> args = new HashMap<>();
         args.put("name", found.getLegalName());
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-        String url = appConfig.getUrl().replaceAll("/$", "");
         args.put("link", url +"?token=" + token.getData() + getParameter(parameters, "menu", "#reset"));
         args.put("templateSource", this.getClass().getName());
         String templateName = getParameter(parameters, "templateName", "reset-password");
@@ -104,8 +114,7 @@ foam.CLASS({
         notification.setEmailArgs(args);
         notification.setBody("Password reset requested.");
 
-        // use system context as anonymous user has no priviledges
-        found.doNotify(getX(), notification);
+        user.doNotify(x, notification);
         return true;
       `
     },
@@ -113,24 +122,43 @@ foam.CLASS({
       name: 'processToken',
       javaCode: `
         if ( user == null || SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
-          throw new RuntimeException("Password Required");
+          throw new RuntimeException("Cannot leave new password field empty");
         }
 
-        String newPassword = user.getDesiredPassword();
+        // The context passed to us won't have a user in it because obviously the user
+        // isn't logged in if they're resetting their password. However, decorators on
+        // DAOs we access down the line from here will want to use the user from the
+        // context. Therefore we put the system user in the context here so that
+        // decorators down the line won't throw NPEs when trying to access the user in
+        // the context.
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        User systemUser = ((Subject) getX().get("subject")).getUser();
+        Subject subject = new Subject.Builder(x).setUser(systemUser).build();
+        x = x.put("subject", subject);
 
-        Calendar calendar = Calendar.getInstance();
+
+        String newPassword = user.getDesiredPassword();
+        String url = appConfig.getUrl().replaceAll("/$", "");
+
+        DAO userDAO = (DAO) getUserDAO();
         DAO tokenDAO = (DAO) getTokenDAO();
-        Token tokenResult = (Token) tokenDAO.find(
-          MLang.AND(
-            MLang.EQ(Token.PROCESSED, false),
-            MLang.GT(Token.EXPIRY, calendar.getTime()),
-            MLang.EQ(Token.DATA, token)
-          ));
-        if ( tokenResult == null )
+        Calendar calendar = Calendar.getInstance();
+
+        Sink sink = new ArraySink();
+        sink = tokenDAO.where(MLang.AND(
+          MLang.EQ(Token.PROCESSED, false),
+          MLang.GT(Token.EXPIRY, calendar.getTime()),
+          MLang.EQ(Token.DATA, token)
+        )).limit(1).select(sink);
+
+        List data = ((ArraySink) sink).getArray();
+        if ( data == null || data.size() == 0 ) {
           throw new RuntimeException("Token not found");
+        }
 
         // find user from token
-        User userResult = (User) getUserDAO().find(tokenResult.getUserId());
+        Token tokenResult = (Token) data.get(0);
+        User userResult = (User) userDAO.find(tokenResult.getUserId());
         if ( userResult == null ) {
           throw new UserNotFoundException();
         }
@@ -143,7 +171,7 @@ foam.CLASS({
         userResult = (User) userResult.fclone();
         userResult.setDesiredPassword(newPassword);
         user.setPasswordExpiry(null);
-        userResult = (User) getUserDAO().put(userResult);
+        userDAO.put(userResult);
 
         // set token processed to true
         tokenResult = (Token) tokenResult.fclone();
@@ -153,8 +181,6 @@ foam.CLASS({
         HashMap<String, Object> args = new HashMap<>();
         args.put("name", userResult.getLegalName());
         args.put("sendTo", userResult.getEmail());
-        AppConfig appConfig = (AppConfig) x.get("appConfig");
-        String url = appConfig.getUrl().replaceAll("/$", "");
         args.put("link", url);
         args.put("templateSource", this.getClass().getName());
         Notification notification = new Notification();
@@ -162,7 +188,7 @@ foam.CLASS({
         notification.setEmailArgs(args);
         notification.setBody("Password updated.");
 
-        userResult.doNotify(getX(), notification);
+        userResult.doNotify(x, notification);
         return true;
       `
     },

@@ -2150,30 +2150,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'GlyphViewRefinement',
-  refines: 'foam.lang.GlyphProperty',
-
-  requires: [
-    'foam.u2.view.FObjectView',
-    'foam.u2.view.GlyphView',
-    'foam.u2.view.ModeAltView'
-  ],
-
-  properties: [
-    {
-      name: 'view',
-      value: {
-        class: 'foam.u2.view.ModeAltView',
-        readView: { class: 'foam.u2.view.GlyphView' },
-        writeView: { class: 'foam.u2.view.FObjectView', of: 'foam.lang.Glyph' }
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'FObjectArrayViewRefinement',
   refines: 'foam.lang.FObjectArray',
 
@@ -2446,17 +2422,6 @@ foam.CLASS({
       // Template method, to be implemented in sub-models
     },
 
-    // Hands the view the property it belongs to. A view spec does not know
-    // which property it was declared on, so this is where the view picks up
-    // the property's name, placeholder and width. Called once, right after the
-    // view is built and before render().
-    //
-    // An input applies it to itself. A view that only wraps an input passes it
-    // down to that input instead - see foam.u2.ClearableSearchField.
-    //
-    // When overriding, copy only what the view does not already have, so
-    // anything set in the view spec still wins. foam.u2.TextField is the
-    // example.
     function fromProperty(p) {
       this.attr('name', p.name);
     }
