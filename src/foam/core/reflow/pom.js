@@ -8,6 +8,7 @@ foam.POM({
     { name: "canvas/pom" },
     { name: "ai/pom" },
     { name: "perf/pom" },
+    { name: "function/pom" },
     { name: "test/pom", flags: "test" }
   ],
   files: [
@@ -104,5 +105,8 @@ foam.POM({
     { name: 'cells/Cells',             flags: 'js' },
     { name: 'cells/CellsDAOAgent',     flags: 'js' },
     { name: 'cells/CellsSink',         flags: 'js|java' }
+  ],
+  javaFiles: [
+    { name: 'ScriptParser' }
   ]
 });
