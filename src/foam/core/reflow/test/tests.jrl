@@ -3,11 +3,10 @@ p({
   "id": "ColumnParserTest",
   "language": 0
 })
-
 p({
-  "class": "foam.core.reflow.test.BezierArrowLineTest",
-  "id": "BezierArrowLineTest",
-  "language": 0
+  "class": "foam.core.reflow.test.FlowScriptShapeTest",
+  "id": "FlowScriptShapeTest",
+  "description": "Flow.script parses from escaped-string, triple-quoted and JSON-structure shapes"
 })
 
 p({
@@ -19,5 +18,11 @@ p({
 p({
   "class": "foam.core.reflow.test.FlowGraphLayoutTest",
   "id": "FlowGraphLayoutTest",
+  "language": 0
+})
+
+p({
+  "class": "foam.core.reflow.test.BezierArrowLineTest",
+  "id": "BezierArrowLineTest",
   "language": 0
 })
