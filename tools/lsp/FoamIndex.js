@@ -10,6 +10,20 @@ foam.CLASS({
 
   documentation: 'Query layer over the FOAM runtime class registry for LSP handlers.',
 
+  constants: {
+    JAVA_EMBED_KEYS_: {
+      javaCode: true, javaFactory: true, javaGetter: true, javaSetter: true,
+      javaPreSet: true, javaPostSet: true, javaAdapt: true, javaCompare: true,
+      javaComparePropertyToObject: true, javaComparePropertyToValue: true,
+      javaCloneProperty: true, javaDiffProperty: true,
+      javaFormatJSON: true, javaJSONParser: true, javaCSVParser: true,
+      javaQueryParser: true, javaToCSV: true, javaToCSVLabel: true,
+      javaFromCSVLabelMapping: true, javaAssertValue: true,
+      javaValidateObj: true, javaCondition: true, javaValue: true,
+      javaImports: true, code: true, serviceScript: true
+    }
+  },
+
   properties: [
     {
       name: 'cache_',
@@ -436,7 +450,11 @@ foam.CLASS({
           var props = cls.model_.properties;
           for ( var j = 0 ; j < props.length ; j++ ) {
             var p = props[j];
-            if ( p && typeof p === 'object' && p.of === classId ) {
+            if ( ! p || typeof p !== 'object' ) continue;
+            // `of` may be the declared string OR an adapted class object
+            // whose id carries the dotted name — match either.
+            var ofId = typeof p.of === 'string' ? p.of : ( p.of && p.of.id );
+            if ( ofId === classId ) {
               result.push(ids[i]);
               break;
             }
@@ -732,6 +750,19 @@ foam.CLASS({
       this.cache_ = {};
     },
 
+    function invalidateJrlUsageIndex(savedPath) {
+      /** A journal save changes journal references but re-registers no
+          classes, so reindexFile calls this instead of the full
+          invalidateSymbolIndex_ drop — the class-keyed indexes stay warm.
+          A services.jrl additionally feeds the string-usage index (its
+          CSpec entries are read through JrlLoader in
+          buildStringUsageIndex_), so that index drops with it. */
+      this.jrlUsageIndex_ = null;
+      if ( savedPath && /(^|[\/\\])services\.jrl$/.test(savedPath) ) {
+        this.stringUsageIndex_ = null;
+      }
+    },
+
     function buildFileIndex() {
       /**
        * Build class ID → { path, flags } mapping by walking ALL POMs
@@ -853,7 +884,9 @@ foam.CLASS({
             pomEntryName: pomEntryName
           };
         }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('indexFileClasses ' + filePath, e);
+      }
     },
 
     function getPomLocationForClass(classId) {
@@ -1018,9 +1051,13 @@ foam.CLASS({
 
             var subPom = { path: projPomPath, location: projLocation };
             this.walkSkippedProjects_(subPom, path_, fs_, visited);
-          } catch (e) {}
+          } catch (e) {
+            require('./logError').logLspError('POM sub-project walk ' + (projPomPath || ''), e);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        require('./logError').logLspError('POM walk', e);
+      }
     },
 
     function parsePomProjects_(content) {
@@ -1033,7 +1070,9 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.projects || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('POM eval (projects)', e);
+      }
       return captured;
     },
 
@@ -1046,7 +1085,9 @@ foam.CLASS({
       try {
         var ctx = { foam: { POM: function(m) { captured = m.files || null; } } };
         with ( ctx ) { eval(content); }
-      } catch ( e ) {}
+      } catch ( e ) {
+        require('./logError').logLspError('POM eval (files)', e);
+      }
       return captured;
     },
 
@@ -1089,13 +1130,21 @@ foam.CLASS({
       if ( entry && entry.mtimeMs === mtime ) return entry.posMap;
 
       var map = null;
+      var failed = false;
       try {
         var content = fs_.readFileSync(filePath, 'utf8');
         if ( content.length <= 2 * 1024 * 1024 ) {
           map = this.getGrammar().collectAxiomPositions(content);
         }
-      } catch ( e ) {}
-      this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
+      } catch ( e ) {
+        failed = true;
+        require('./logError').logLspError('grammar position parse ' + filePath, e);
+      }
+      // A failed parse is transient state, not a fact about the file: caching
+      // null against mtime would pin every member of this file to line 0
+      // until the next edit. Oversized files DO cache null — that skip is
+      // deliberate and permanent for the mtime.
+      if ( ! failed ) this.filePosCache_[filePath] = { mtimeMs: mtime, posMap: map };
       return map;
     },
 
@@ -1693,6 +1742,7 @@ foam.CLASS({
       this.stringUsageIndex_   = null;
       this.memberUsageIndex_   = null;
       this.viewSpecUsageIndex_ = null;
+      this.jrlUsageIndex_      = null;
       // filePosCache_ is deliberately NOT dropped here: collectAxiomPositions
       // output is a pure function of file text, and each entry carries the
       // file's mtime, so the guard in getFilePosMap_ re-parses only files that
@@ -2025,6 +2075,246 @@ foam.CLASS({
     // reader), then answers `getStringUsages(name)` — every class that
     // imports the name + every services.jrl entry that registers it.
 
+    function scanJrlClassRefs(text) {
+      /**
+       * Registry-verified class references in .jrl text, offset-based.
+       * Single shared implementation behind JrlHandler's semantic tokens and
+       * the jrl usage index (#5264). Kinds: 'classValue' ("class":"…" values,
+       * top level), 'javaEmbed' (dotted ids inside serviceScript/javaCode/…
+       * blocks, longest registered prefix), 'jsonEmbed' ("class":"…" inside
+       * embedded client JSON, literal or escaped).
+       */
+      var out = [];
+
+      // 1. "class":"…" / class:'…' values, line-by-line; // lines skipped.
+      var lineStart = 0;
+      var lines = text.split('\n');
+      for ( var lineNum = 0 ; lineNum < lines.length ; lineNum++ ) {
+        var line = lines[lineNum];
+        if ( line.trim() && ! /^\s*\/\//.test(line) ) {
+          var classRegex = /(?:"class"|(?<=[{,])\s*class)\s*:\s*(?:"([^"]+)"|'([^']+)')/g;
+          var cm;
+          while ( ( cm = classRegex.exec(line) ) !== null ) {
+            var classVal = cm[1] || cm[2];
+            if ( classVal && this.classExists(classVal) ) {
+              var valIdx = line.indexOf(classVal, cm.index);
+              if ( valIdx !== -1 ) {
+                out.push({ classId: classVal, offset: lineStart + valIdx, length: classVal.length, kind: 'classValue' });
+              }
+            }
+          }
+        }
+        lineStart += line.length + 1;
+      }
+
+      // 2. Embedded value blocks (serviceScript/javaCode/… and client JSON).
+      var blocks = this.findEmbeddedBlocks_(text);
+      for ( var i = 0 ; i < blocks.length ; i++ ) {
+        var b = blocks[i];
+        var content = text.substring(b.contentStart, b.contentEnd);
+        if ( this.JAVA_EMBED_KEYS_[b.key] ) {
+          var dottedRe = /\b([a-z][\w$]*(?:\.[a-zA-Z_][\w$]*)+)\b/g;
+          var dm;
+          while ( ( dm = dottedRe.exec(content) ) !== null ) {
+            var hit = this.resolveRegisteredPrefix_(dm[1]);
+            if ( ! hit ) continue;
+            out.push({ classId: dm[1].substring(0, hit.length), offset: b.contentStart + dm.index, length: hit.length, kind: 'javaEmbed' });
+          }
+        } else if ( b.key === 'client' ) {
+          var litRe = /"class"\s*:\s*"([^"\n]+)"/g;
+          var lm;
+          while ( ( lm = litRe.exec(content) ) !== null ) {
+            var cid = lm[1];
+            if ( ! this.classExists(cid) ) continue;
+            var vIdx = content.indexOf(cid, lm.index);
+            if ( vIdx !== -1 ) out.push({ classId: cid, offset: b.contentStart + vIdx, length: cid.length, kind: 'jsonEmbed' });
+          }
+          var escRe = /\\"class\\"\s*:\s*\\"([^"\\\n]+)\\"/g;
+          var em;
+          while ( ( em = escRe.exec(content) ) !== null ) {
+            var ecid = em[1];
+            if ( ! this.classExists(ecid) ) continue;
+            var eIdx = content.indexOf(ecid, em.index);
+            if ( eIdx !== -1 ) out.push({ classId: ecid, offset: b.contentStart + eIdx, length: ecid.length, kind: 'jsonEmbed' });
+          }
+        }
+      }
+      return out;
+    },
+
+    function findEmbeddedBlocks_(text) {
+      /**
+       * Scan the full text for every triple-quote and backtick embedded
+       * value. Returns array of { key, contentStart, contentEnd, delim }
+       * where delim is '"""' or '`'. Skips `//` line comments.
+       *
+       * Approach: find `"key":` then the opening delimiter right after.
+       * Matches BOTH quoted-key (`"javaCode"`) and unquoted-key (`javaCode`).
+       */
+      var out = [];
+      var keyDelimRe = /(?:"([a-zA-Z_][\w$]*)"|([a-zA-Z_][\w$]*))\s*:\s*("""|`)/g;
+      var m;
+      while ( ( m = keyDelimRe.exec(text) ) !== null ) {
+        var key = m[1] || m[2];
+        if ( ! key ) continue;
+        var delim = m[3];
+        var openStart = m.index + m[0].length - delim.length;
+        var contentStart = openStart + delim.length;
+        var contentEnd = text.indexOf(delim, contentStart);
+        if ( contentEnd === -1 ) break;
+        out.push({ key: key, contentStart: contentStart, contentEnd: contentEnd, delim: delim });
+        keyDelimRe.lastIndex = contentEnd + delim.length;
+      }
+
+      // Escaped-in-double-quote form: `"client": "…"` where inner quotes
+      // are `\"`. Only honor `client` (FObject JSON); serviceScript also
+      // uses this form but we leave Java highlighting to grammar injection
+      // there since escaping makes it hard to detect reliably.
+      var escRe = /"(client)"\s*:\s*"(?!"")((?:\\.|[^"\\\n])*)"/g;
+      var em;
+      while ( ( em = escRe.exec(text) ) !== null ) {
+        var vStart = em.index + em[0].length - em[2].length - 1;
+        out.push({
+          key: em[1],
+          contentStart: vStart + 1,
+          contentEnd: vStart + 1 + em[2].length,
+          delim: '"',
+          escaped: true
+        });
+      }
+      return out;
+    },
+
+    function resolveRegisteredPrefix_(dottedId) {
+      /**
+       * Given `foo.X.Builder`, return the longest prefix that exists in the
+       * FOAM registry. Returns { length } (char length of the matched
+       * prefix) or null.
+       */
+      if ( ! dottedId ) return null;
+      var cand = dottedId;
+      while ( cand ) {
+        if ( this.classExists(cand) ) return { length: cand.length };
+        var dot = cand.lastIndexOf('.');
+        if ( dot === -1 ) return null;
+        cand = cand.substring(0, dot);
+      }
+      return null;
+    },
+
+    function getJrlUsages(classId) {
+      /** Journal references (#5264): [{ file, line, character, length, kind: 'usage-jrl' }].
+          Full-id matching only — short names inside serviceScript bodies via
+          embedded imports are out of scope (grep covers those). */
+      if ( ! this.jrlUsageIndex_ ) this.buildJrlUsageIndex_();
+      return this.jrlUsageIndex_.byTarget[classId] || [];
+    },
+
+    function buildJrlUsageIndex_(opt_files) {
+      var fs_      = require('fs');
+      var byTarget = {};
+      var files    = opt_files || this.findWorkspaceJrlFiles_();
+
+      for ( var f = 0 ; f < files.length ; f++ ) {
+        var text;
+        try {
+          if ( fs_.statSync(files[f]).size > 2 * 1024 * 1024 ) {
+            console.error('[foam-lsp] jrl usage index: skipping >2MB journal ' + files[f]);
+            continue;
+          }
+          text = fs_.readFileSync(files[f], 'utf8');
+        } catch (e) { continue; }
+
+        var refs = this.scanJrlClassRefs(text);
+        if ( ! refs.length ) continue;
+
+        var lineOffs = [ 0 ];
+        for ( var c = 0 ; c < text.length ; c++ ) {
+          if ( text.charCodeAt(c) === 10 ) lineOffs.push(c + 1);
+        }
+        for ( var r = 0 ; r < refs.length ; r++ ) {
+          var ref = refs[r];
+          var lo = 0, hi = lineOffs.length - 1;
+          while ( lo < hi ) {
+            var mid = (lo + hi + 1) >> 1;
+            if ( lineOffs[mid] <= ref.offset ) lo = mid; else hi = mid - 1;
+          }
+          var arr = byTarget[ref.classId] || (byTarget[ref.classId] = []);
+          arr.push({
+            file:      files[f],
+            line:      lo,
+            character: ref.offset - lineOffs[lo],
+            length:    ref.length,
+            kind:      'usage-jrl'
+          });
+        }
+      }
+      this.jrlUsageIndex_ = { byTarget: byTarget };
+    },
+
+    function findWorkspaceJrlFiles_() {
+      /**
+       * Every *.jrl under the workspace root; node_modules, build and
+       * dot-directories skipped.
+       *
+       * Deliberately NOT getJournalDirs(). That one answers "which
+       * directories hold a pom or an indexed source", which is the right
+       * question for resolving a service name to its services.jrl row, and
+       * JournalEntryIndex shares it so those two cannot drift. It is a
+       * different question from "where is every journal in the workspace":
+       * measured on this repo, the directory answer reaches 110 journals and
+       * this walk reaches 367, a strict superset — the 257 it adds are almost
+       * all of deployment/, which holds no indexed source and no pom.
+       *
+       * Cost of the gap: 5ms for the directory scan against 91ms cold / 81ms
+       * warm here. Widening journal discovery to this walk would give
+       * go-to-definition the deployment journals too, at the price of every
+       * JournalEntryIndex lookup reading 367 files instead of 110 — worth
+       * doing, worth measuring, and not part of restoring this index.
+       */
+      var fs_   = require('fs');
+      var path_ = require('path');
+      var SKIP  = { node_modules: true, build: true };
+      var out   = [];
+      // Dedupe by resolved path rather than skipping symlinks outright:
+      // foam3's root `foam3 -> .` cycle resolves to an already-visited
+      // directory and stops, while journals reachable only through a
+      // symlinked tree are still indexed (once). Only directories and
+      // journals are resolved — realpath on every plain file nearly
+      // doubles the cold walk and bloats seenReal for no dedupe value.
+      var seenReal = {};
+      function walk(dir) {
+        var names;
+        try { names = fs_.readdirSync(dir); } catch (e) { return; }
+        for ( var i = 0 ; i < names.length ; i++ ) {
+          var name = names[i];
+          if ( SKIP[name] || name.charAt(0) === '.' ) continue;
+          var p = path_.join(dir, name);
+          var st;
+          try { st = fs_.statSync(p); } catch (e) { continue; }   // broken symlink
+          if ( st.isDirectory() ) {
+            var real;
+            try { real = fs_.realpathSync(p); } catch (e) { continue; }
+            if ( seenReal[real] ) continue;
+            seenReal[real] = true;
+            walk(p);
+          } else if ( name.length > 4 && name.lastIndexOf('.jrl') === name.length - 4 ) {
+            // Push the resolved path so a journal reachable both directly
+            // and through a symlink reports one canonical row, independent
+            // of readdir order.
+            var jrlReal;
+            try { jrlReal = fs_.realpathSync(p); } catch (e) { continue; }
+            if ( seenReal[jrlReal] ) continue;
+            seenReal[jrlReal] = true;
+            out.push(jrlReal);
+          }
+        }
+      }
+      try { seenReal[fs_.realpathSync(process.cwd())] = true; } catch (e) {}
+      walk(process.cwd());
+      return out;
+    },
+
     function getStringUsages(name) {
       if ( ! this.stringUsageIndex_ ) this.buildStringUsageIndex_();
       return this.stringUsageIndex_.byName[name] || [];
@@ -2124,9 +2414,13 @@ foam.CLASS({
                 line:          entries[e].line
               });
             }
-          } catch (e) {}
+          } catch (e) {
+            require('./logError').logLspError('services.jrl cspec scan ' + services[s], e);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        require('./logError').logLspError('cspec scan', e);
+      }
 
       this.stringUsageIndex_ = { byName: byName };
     },

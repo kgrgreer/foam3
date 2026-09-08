@@ -13,6 +13,7 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 ### Core
 | File | Purpose | Key Functions |
 |---|---|---|
+| `logError.js` | The one logging idiom for a degraded-but-not-fatal failure — see "A fallback leaves a trace" below | `logLspError(context, err)` |
 | `FileModelCache.js` | Eval-intercept model extraction + caching | `getModels()`, `getModelAt()`, `parseFileModels()`. `sourceLine_` on each model comes from `FileClassifier.significantCalls()` |
 | `FoamIndex.js` | Query layer over FOAM registry | `getAllClassIds()`, `getProperties()`, `getFilePath()`, `getClassLine()`, `getSymbolPosition()`, `resolveSymbol()`, `buildFileIndex()` |
 | `FoamClassGrammar.js` | Grammar parser for completion `sug()` only | Skip-and-match pattern, dynamic `sug()` from registry |
@@ -21,7 +22,7 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `JrlLoader.js` | Load and parse .jrl (journal) files containing FOAM FObject records | `loadString()`, `loadStringWithLines()`, `sliceEntries()`, `filterByClass()`. **A journal is not valid JavaScript** — FOAM's triple-quoted values are a syntax error, so the content is cut into entries on the grammar's entry starts and each is evaluated alone with its triple-quoted spans blanked. Evaluating the whole file as one body threw at construction and returned nothing: 68 of 78 `services.jrl` and 119 of 365 journals were silently empty |
 | `JrlGrammar.js` | Position-harvesting grammar for .jrl files (entry heads, embedded class refs, triple-string spans) | `collectJrlPositions()` |
 | `JournalEntryIndex.js` | Query-driven journal lookup: service name / model-entry id → journal file + line. Entry slicing is `JrlLoader.sliceEntries()`; this class only adds ordered ops + a per-entry key. Service lookups touch only services.jrl; journals over maxFileSize skipped; raw-text pre-gate skips parsing non-matching files; per-entry eval isolates malformed entries; per-file parses cached by mtime+size; invalidated on .jrl save | `getServiceLocations()`, `getEntryLocations()`, `invalidate()` |
-| `FileClassifier.js` | The ONE answer to "what kind of file is this", and the ONE scan for where a file's `foam.<X>(` calls are | `classify(uri, text)`. `.jrl` and `pom.js` are decided by FILENAME; everything else by PARSE — the first significant `foam.UPPERCASE(` call, where significant means outside comments and string literals. Both the server dispatch and `DiagnosticsHandler` route through one shared instance, which is also what makes its per-URI memo effective. `significantCalls(text)` returns every such call as `{ name, offset, line }` — see "Model positions" below |
+| `FileClassifier.js` | The ONE answer to "what kind of file is this", and the ONE scan for where a file's `foam.<X>(` calls are | `classify(uri, text)`. `.jrl` and `pom.js` are decided by FILENAME; everything else by PARSE — the first significant `foam.UPPERCASE(` call, where significant means outside comments and string literals. Every gate routes through one shared instance — server dispatch, `DiagnosticsHandler`, and the six handlers that used to sniff with their own regex (CodeLens, Completion, Definition, Hover, MemberCompletion, Symbol), which is also what makes its per-URI memo effective. `significantCalls(text)` returns every such call as `{ name, offset, line }` — see "Model positions" below |
 | `server.js` | JSON-RPC main loop | Message dispatch, handler creation, helper functions |
 | `lsp-start.js` | Entry point | Console redirect, buildlib globals, pmake invocation |
 | `LSPMaker.js` | Build Maker for pmake | Sets flags, builds file index, starts server |
@@ -38,7 +39,7 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `SymbolHandler.js` | `textDocument/documentSymbol` | Document outline via model objects |
 | `WorkspaceAnalyzer.js` | `foam/analyzeWorkspace` | Full codebase scan |
 | `SemanticTokenHandler.js` | `textDocument/semanticTokens/full` | Highlights resolved class refs and typed variables |
-| `ReferencesHandler.js` | `textDocument/references` | Subclasses, implementors, requires, of-users + JS/Java/string usages |
+| `ReferencesHandler.js` | `textDocument/references` | Subclasses, implementors, requires, of-users + JS/Java/string/journal usages |
 | `SignatureHelpHandler.js` | `textDocument/signatureHelp` | Method parameter hints inside `(...)` |
 | `FoldingRangeHandler.js` | `textDocument/foldingRange` | Folds `properties:`/`methods:`/`requires:`/etc. arrays |
 | `CodeActionHandler.js` | `textDocument/codeAction` | Quick-fixes: "Did you mean X?", single-quote conversion, raw-color → $token, wrong-Java-package, i18n extract/translate |
@@ -63,10 +64,14 @@ The LSP boots the FOAM runtime via `pmake` (same as `build.sh`), loading all mod
 | `getJsUsages(classId)` | classes whose JS code references the class: `this.<Short>` via requires, `.create()` receivers, `.tag(X, {})` args, `{ class: 'dotted.Id' }` spec strings | Grammar `collectAxiomPositions` per source file (memberRef / instCreateReceiver / instTagClass / instClassRef); registry `fn.toString()` scan only for file-less (runtime-registered) classes |
 | `getJavaUsages(classId)` | classes whose javaCode / javaPostSet / etc. reference the type | Same axiom walk, `javaImports` resolves short→full |
 | `getStringUsages(name)` | classes importing the name + Producer classes exporting it + services.jrl CSpec entries | `cls.getOwnAxiomsByClass(foam.lang.Import/Export)` + `loadStringWithLines()` over the `services.jrl` in every `getJournalDirs()` directory |
+| `getJrlUsages(classId)` | journal rows referencing the class: `"class"` / `"of"` values, and dotted ids inside embedded blocks (`serviceScript`, `javaCode`, client JSON) | `scanJrlClassRefs` over every `*.jrl` under the workspace root, registry-filtered so an unregistered dotted word is not a reference; embedded text is scanned, never evaluated |
 | `getMemberUsages(classId, memberName)` | per-class `this.X` usages of an own / inherited property or method | Reuses `scanFunctions_` axiom walk |
 
-All four indexes share the same invalidation hook (`invalidateSymbolIndex_`)
-so the LSP's reindexFile on save keeps them coherent.
+The class-keyed indexes share one invalidation hook (`invalidateSymbolIndex_`)
+so the LSP's reindexFile on save keeps them coherent. The jrl usage index keys
+off journal text rather than the class registry, so it carries its own
+(`invalidateJrlUsageIndex`) — see the journal section below for the save path
+that drops all of them together.
 
 ### VS Code Extension
 | File | Purpose |
@@ -202,9 +207,15 @@ handlers share one copy of the convention.
 The `services.jrl` walk asks `FoamIndex.getJournalDirs()` — pom locations ∪
 indexed-source directories — the same set `JournalEntryIndex.findJournalFiles_`
 reads. A walk of indexed sources alone misses `src/services.jrl`, whose
-directory holds no class file. A `.jrl` save invalidates both indexes:
-`journalEntryIndex.invalidate()` and `index.invalidateSymbolIndex_()`, since
-`reindexFile` only reaches the latter for a file that classifies as a class.
+directory holds no class file. That walk answers a different question from
+`findWorkspaceJrlFiles_`, which the jrl usage index uses: directories holding a
+pom or an indexed source (110 journals here) against every journal in the
+workspace (367, the extra being almost all of `deployment/`).
+
+A `.jrl` save invalidates three indexes, gathered in the `didSave` case behind
+`isJrlFile`: `journalEntryIndex.invalidate()`, `index.invalidateSymbolIndex_()`
+and `index.invalidateJrlUsageIndex(uri)`. `reindexFile` reaches none of them on
+a journal save, since it invalidates only for a file that classifies as a class.
 
 ### Interfaces
 - FOAM interfaces (`foam.INTERFACE`) define properties/methods
@@ -227,6 +238,25 @@ directory holds no class file. A `.jrl` save invalidates both indexes:
 - POM file entries have `flags: "js|java"` or `flags: "js&test|java&test"`
 - Test/swift/node classes aren't loaded by default but ARE in the file index
 - File index stores per-class flag metadata for filtering
+
+### A fallback leaves a trace
+
+Anything that catches an error and falls back calls
+`require('./logError').logLspError(context, err)` on the way. The reason is
+diagnosis, not tidiness: a silent catch makes a broken index and a class
+nobody references produce the same answer, an empty list, and no editor shows
+the difference. `context` names the operation and its subject
+(`'getStringUsages for ' + classId`), so the trace says which file or class
+dropped out.
+
+The same rule shapes the counters: `WorkspaceAnalyzer` reports a file it could
+not analyze as `filesFailed` rather than counting it scanned, and a failed
+grammar parse retries instead of caching a null position map, since a cached
+null is a permanent silent empty.
+
+Reference rows all push through `ReferencesHandler.locationSink_()`, which
+dedups by position. The guard sits in the sink rather than at each call site,
+so a collector added later cannot reintroduce duplicate rows.
 
 ### Property Types
 - All subclasses of `foam.lang.Property` (76 types: String, Long, FObjectProperty, etc.)
