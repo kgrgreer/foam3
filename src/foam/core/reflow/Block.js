@@ -61,8 +61,11 @@ foam.CLASS({
     ^hidePrompts:has(> ^content > .foam-u2-Element-hidden) {
       display: none;
     }
-    ^element-row-icon {
+    ^element-row-icon , ^element-row-icon svg {
       color: $textBrand;
+      fill: currentColor;
+      width: 24px;
+      height: 24px;
     }
   `,
 
@@ -157,6 +160,7 @@ foam.CLASS({
         this.commandDAO.find(this.cmd).then(c => {
           if ( c ) this.blockIcon = c.icon;
         });
+        if ( this.cmd.includes('dao') ) return 'database';
         return 'rectangle';
       }
     }
@@ -227,10 +231,17 @@ foam.CLASS({
     function treeCellFormatter(e) {
       // Add the command's icon
       e.add(this.slot(function(blockIcon) {
-        return this.E().start(foam.u2.tag.Image, {
-          glyph: blockIcon,
-          embedSVG: true
-        }).addClass(this.myClass('element-row-icon')).end();
+        if ( blockIcon.startsWith("/images") ) {
+          return this.E().start(foam.u2.tag.Image, {
+            data: blockIcon,
+            embedSVG: true
+          }).addClass(this.myClass('element-row-icon')).end();
+        } else {
+          return this.E().start(foam.u2.tag.Image, {
+            glyph: blockIcon,
+            embedSVG: true
+          }).addClass(this.myClass('element-row-icon')).end();
+        }
       }));
     }
   ],
