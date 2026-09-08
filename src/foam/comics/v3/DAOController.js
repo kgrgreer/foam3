@@ -15,9 +15,6 @@ foam.CLASS({
     // TODO
   `,
 
-  css: `
-    ^content, ^content > *  { height: 100%; }
-  `,
   imports: [
     'auth',
     'currentMenu?',
@@ -30,6 +27,7 @@ foam.CLASS({
     'config',
     'click'
   ],
+
   requires: [
     'foam.comics.v2.DAOBrowserView',
     'foam.u2.borders.CardBorder',
@@ -37,6 +35,10 @@ foam.CLASS({
     'foam.u2.stack.Stack',
     'foam.u2.stack.DesktopStackView'
   ],
+
+  css: `
+    ^content, ^content > *  { height: 100%; }
+  `,
 
   properties: [
     {
