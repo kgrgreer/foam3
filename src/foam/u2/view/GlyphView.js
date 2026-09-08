@@ -15,8 +15,8 @@ foam.CLASS({
 
   css: `
     ^ svg {
-      fill: currentColor;
-      height: 2.4rem;
+      fill: var(--glyph-fill, currentColor);
+      height: var(--glyph-size, 2.4rem);
       width: auto;
     }
   `,
