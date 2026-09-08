@@ -20,17 +20,26 @@ foam.CLASS({
   `,
 
   axioms: [
-    foam.pattern.Faceted.create()
+    // Faceting is intentionally disabled here. Faceted keys off the bare, unqualified
+    // model name ('{Model}CreateView'), which collides with the detail-view faceting a
+    // model author actually wants: a '{Model}CreateView' they write to customize the
+    // create *form* would instead get substituted in as this comics create *controller*,
+    // the same wrong-layer problem as DetailView (see the note there). Because the name
+    // isn't namespaced/qualified, the two facet spaces can't be told apart. Nothing in the
+    // codebase currently relies on faceting this class, so it's left commented out until
+    // more thought is put into a qualified facet key.
+    // foam.pattern.Faceted.create()
   ],
 
   requires: [
     'foam.log.LogLevel',
+    'foam.u2.ButtonGroup',
     'foam.u2.ControllerMode'
   ],
 
   imports: [
     'currentMenu?',
-    'daoController',
+    'daoController?',
     'notify',
     'stack',
     'translationService'
@@ -43,6 +52,12 @@ foam.CLASS({
   messages: [
     { name: 'CREATED', message: 'Created' }
   ],
+
+  css: `
+    ^buttonGroup {
+      justify-content: flex-end;
+    }
+  `,
 
   properties: [
     {
@@ -122,6 +137,28 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      name: 'cancel',
+      code: async function() {
+        // NOTE: ideally, if the user has made any changes, Cancel would prompt a
+        // "changes will be lost — confirm?" dialog before discarding. The comics Edit
+        // flow doesn't do this either, so it's best tackled as a separate issue and
+        // applied consistently to both.
+        //
+        // The new object was never put to the DAO, so there's nothing to clean up.
+        // Return to the browse list by clearing the controller's route — the controller
+        // now pops the pushed create view on that route change.
+        //
+        // Use routeToMe() rather than `route = ''`: an EMPTY route also triggers the
+        // Router's routeChange → crumb.go() breadcrumb navigation, which races with the
+        // controller's own route dynamic and makes cancel intermittent. routeToMe()
+        // clears the route under the routingFeedback_ guard, so routeChange early-returns
+        // and only the controller's route dynamic runs. (daoController is optional — save
+        // guards it too — so pop the stack directly without it.)
+        if ( this.daoController ) this.daoController.routeToMe();
+        else await this.stack.pop();
+      }
     }
   ],
 
@@ -130,7 +167,7 @@ foam.CLASS({
       var self = this;
       this.SUPER();
       this.stack.setTitle(self.slot('config$createTitle'), this);
-      this.onDetach(this.stack.setTrailingContainer(this.E().startContext({ data: this }).tag(this.SAVE).endContext()));
+      this.onDetach(this.stack.setTrailingContainer(this.ButtonGroup.create({}, this).addClass(this.myClass('buttonGroup')).startContext({ data: this }).tag(this.SAVE).tag(this.CANCEL).endContext()));
 
       this
         .addClass(this.myClass())
