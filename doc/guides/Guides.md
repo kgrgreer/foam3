@@ -105,6 +105,9 @@ Documents `foam.core.controller.ApplicationController`, the top-level client she
 **[Comics](Comics.md)**
 Explains `foam.comics.v3` (Context-Oriented MIcro ControllerS): how the DAOController state machine composes three micro-controllers (DAOView, CreateView, DetailView) to generate a full CRUD UI — table, search, detail form, create form, sorting, export — automatically from one model declaration. Covers DAOControllerConfig knobs, CRUD predicates, ComicsAction overrides, and canned queries.
 
+**[Memento](Memento.md)**
+Explains `foam.u2.memento.Memento`, FOAM's hierarchical URL-hash state sync (`memorable: true` properties, the parent/tail Memento chain, and the special-cased `route` property that becomes a path segment instead of a `key=value` param), `WindowHashMemento`'s browser-hash binding, and the `foam.u2.Router` mixin built on top for route-driven view switching. Includes a gotchas section (stale tail bindings, a duplicate `Router` class definition).
+
 **[U3](U3.md)**
 Documents U3 (`foam.u2`), FOAM's wrapped-DOM reactive GUI library: history (U1 templates → U2 virtual DOM → U3 direct DOM), the Node class hierarchy (Text/SlotNode/FunctionNode/Element), DOM building via `start`/`end`/`add`/`tag`, `add()` polymorphism, CSS scoping with `^`, reactive slots, ControllerMode/DisplayMode/visibility pipeline, `onDetach` cleanup, and the `render()` method contract.
 
