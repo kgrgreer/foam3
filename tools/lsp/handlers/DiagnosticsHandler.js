@@ -78,6 +78,13 @@ foam.CLASS({
       documentation: 'Optional (server.js wires it). When set, handle() runs entry-level pom checks (validateEntries) on texts containing foam.POM(, gated by diagnostics.pom; null-safe no-op otherwise.'
     },
     {
+      name: 'fileClassifier',
+      documentation: `Routes handle() by file kind. server.js wires its own
+        shared instance so dispatch and handler can never disagree; the
+        factory keeps handler-direct tests working unwired.`,
+      factory: function() { return foam.parse.lsp.FileClassifier.create(); }
+    },
+    {
       name: 'validTypes_',
       factory: function() {
         var types = {};
@@ -98,17 +105,14 @@ foam.CLASS({
     },
 
     function handle(text, opt_uri) {
-      // The line-anchored foam.POM( test routes to the pom lane FIRST.
-      // Both lanes' gates are text sniffs: isFoamFile trips on a pom whose
-      // comment merely mentions a foam call (a real downstream pom does,
-      // via foam.FSM(), and would sniff as a class file and get no pom
-      // validation), while the anchored test can't false-positive on a
-      // "// foam.POM(" comment — the anchored test is the reliable one,
-      // so it outranks.
-      if ( /^\s*foam\.POM\(/m.test(text) ) {
-        return this.pomDiagnostics_(text, opt_uri);
-      }
-      if ( ! this.analyzer.isFoamFile(text) ) return [];
+      // One classifier, shared with the server dispatch, decides the lane —
+      // never a local sniff (a local regex here and a different one in
+      // dispatch is exactly how the pom lane shipped unreachable). The
+      // classifier parses, so foam.POM( in a comment or string can't
+      // misroute; the first significant foam call wins.
+      var kind = this.fileClassifier.classify(opt_uri || '', text);
+      if ( kind === 'pom' ) return this.pomDiagnostics_(text, opt_uri);
+      if ( kind !== 'class' ) return [];
 
       var uri = opt_uri || '';
       this.uri_ = uri;
@@ -556,7 +560,7 @@ foam.CLASS({
        * Framework and product views are NOT exempt.
        */
       if ( ! uri ) return false;
-      if ( /(?:^|\/)(?:test|tests|demos|mock|mocks)\//i.test(uri) ) return true;
+      if ( /(?:^|\/)(?:test|tests|demo|demos|mock|mocks)\//i.test(uri) ) return true;
       if ( /Test\.js$/.test(uri) ) return true;
       if ( /Mock[^\/]*\.js$/.test(uri) ) return true;
       return false;
@@ -606,6 +610,31 @@ foam.CLASS({
       }
     },
 
+    function cssTokenEntries_(tokens) {
+      /**
+       * Normalize a raw-file cssTokens declaration to [{name, value}].
+       * CSSTokenModelRefinement's adapt accepts three author forms — the
+       * LSP reads pre-adapt file models, so it must accept the same three:
+       *   1. [ { name, value } ]   (object array; also the registry form)
+       *   2. { name: value }       (plain map)
+       *   3. [ ['name', value] ]   (pair array)
+       */
+      if ( ! tokens ) return [];
+      var out = [];
+      if ( ! Array.isArray(tokens) ) {
+        if ( typeof tokens !== 'object' ) return [];
+        for ( var key in tokens ) out.push({ name: key, value: tokens[key] });
+        return out;
+      }
+      for ( var i = 0 ; i < tokens.length ; i++ ) {
+        var t = tokens[i];
+        if ( ! t ) continue;
+        if ( Array.isArray(t) )     out.push({ name: t[0], value: t[1] });
+        else if ( t.name )          out.push({ name: t.name, value: t.value });
+      }
+      return out;
+    },
+
     function collectLocalCssTokens_(model) {
       /**
        * Build a set of CSS token names declared on the model itself or
@@ -613,12 +642,10 @@ foam.CLASS({
        * unknown ancestors are silently skipped.
        */
       var set = Object.create(null);
+      var self = this;
       var addFrom = function(tokens) {
-        if ( ! tokens || ! tokens.length ) return;
-        for ( var i = 0 ; i < tokens.length ; i++ ) {
-          var t = tokens[i];
-          if ( t && t.name ) set[t.name] = true;
-        }
+        var entries = self.cssTokenEntries_(tokens);
+        for ( var i = 0 ; i < entries.length ; i++ ) set[entries[i].name] = true;
       };
       addFrom(model.cssTokens);
 
@@ -696,13 +723,12 @@ foam.CLASS({
         }
         return s;
       };
+      var self = this;
       var addFrom = function(tokens) {
-        if ( ! tokens || ! tokens.length ) return;
-        for ( var i = 0 ; i < tokens.length ; i++ ) {
-          var t = tokens[i];
-          if ( ! t || ! t.name ) continue;
-          var n = normalize(t.value);
-          if ( n && ! map[n] ) map[n] = t.name;
+        var entries = self.cssTokenEntries_(tokens);
+        for ( var i = 0 ; i < entries.length ; i++ ) {
+          var n = normalize(entries[i].value);
+          if ( n && ! map[n] ) map[n] = entries[i].name;
         }
       };
       addFrom(model.cssTokens);
@@ -821,13 +847,31 @@ foam.CLASS({
        * enclosing scope and validates against that scope's properties.
        */
       var classId = this.cache.getClassId(m);
-      var modelOffset = m.sourceLine_ ? this.analyzer.positionToOffset(text, { line: m.sourceLine_, character: 0 }) : 0;
 
-      // Determine end of this model's text
-      var nextModelRegex = new RegExp(this.analyzer.FOAM_CALL_REGEX.source, 'g');
-      nextModelRegex.lastIndex = modelOffset + 1;
-      var nextMatch = nextModelRegex.exec(text);
-      var modelEnd = nextMatch ? nextMatch.index : text.length;
+      // Where this model's text starts and ends, both taken from the same scan
+      // that decides what kind of file this is. Two things used a raw regex
+      // over the source here, and a regex cannot tell a real call from one
+      // written in a comment: the end came from re-scanning, so a
+      // `// see foam.CLASS( for the pattern` cut the model off at that line and
+      // every expression below it stopped being checked at all.
+      //
+      // The start used to be the start of the model's LINE, which is not the
+      // same as the start of its call. One space of indentation put the model's
+      // own call after its start offset, so the model matched as its own next
+      // model and its text became the indentation. Matching the call by line
+      // gives the offset directly. No call on the model's line — which should
+      // not happen — falls back to the whole file: a noisy diagnostic rather
+      // than a silently missing one.
+      var calls = this.fileClassifier.significantCalls(text);
+      var modelOffset = 0;
+      var modelEnd    = text.length;
+      for ( var ci = 0 ; ci < calls.length ; ci++ ) {
+        if ( calls[ci].line === m.sourceLine_ ) {
+          modelOffset = calls[ci].offset;
+          modelEnd    = ci + 1 < calls.length ? calls[ci + 1].offset : text.length;
+          break;
+        }
+      }
       var modelText = text.substring(modelOffset, modelEnd);
 
       // Build property scopes: outer model + each inner class
