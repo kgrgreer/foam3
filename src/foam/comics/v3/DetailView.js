@@ -13,16 +13,7 @@ foam.CLASS({
   documentation: `Detail view for displaying objects in comics 3 controller`,
 
   axioms: [
-    // Faceting is intentionally disabled here — it was plain wrong for this class.
-    // Faceted substitutes '{Model}DetailView' (e.g. RecipeDetailView) in wherever a
-    // 'foam.comics.v3.DetailView' is requested. But this class is the comics *controller*
-    // (it owns the VIEW/EDIT lifecycle, Edit/Save/Cancel, the working-copy clone) and is
-    // handed 'idOfRecord', not 'data'. A model author writing a '{Model}DetailView' means
-    // "customize the form shown for my record" — i.e. the inner view (Sectioned/Vertical
-    // DetailView) — not "replace the controller". So the facet grabbed the wrong layer:
-    // the custom view got faceted in as the controller and never received its data.
-    // Left commented until the facet target is reworked to the inner view.
-    // foam.pattern.Faceted.create()
+    foam.pattern.Faceted.create()
   ],
 
   requires: [

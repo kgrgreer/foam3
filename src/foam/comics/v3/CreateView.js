@@ -20,15 +20,7 @@ foam.CLASS({
   `,
 
   axioms: [
-    // Faceting is intentionally disabled here. Faceted keys off the bare, unqualified
-    // model name ('{Model}CreateView'), which collides with the detail-view faceting a
-    // model author actually wants: a '{Model}CreateView' they write to customize the
-    // create *form* would instead get substituted in as this comics create *controller*,
-    // the same wrong-layer problem as DetailView (see the note there). Because the name
-    // isn't namespaced/qualified, the two facet spaces can't be told apart. Nothing in the
-    // codebase currently relies on faceting this class, so it's left commented out until
-    // more thought is put into a qualified facet key.
-    // foam.pattern.Faceted.create()
+    foam.pattern.Faceted.create()
   ],
 
   requires: [
