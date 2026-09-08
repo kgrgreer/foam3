@@ -245,6 +245,12 @@ foam.CLASS({
       this.pos = p;
       this.posUpdated.pub('jump');
     },
+    function pop() {
+      // Convenience: remove the top view, revealing the one below it. The Stack models
+      // navigation by position, so a "pop" is just jumping one position back. Delegates
+      // through jump(), so the delegate_ case is handled there.
+      return this.jump(this.pos - 1);
+    },
     function setTitle(title, view) {
       if ( this.delegate_ ) return this.delegate_.setTitle(...arguments);
       this.setSpec_('title', title, view);
