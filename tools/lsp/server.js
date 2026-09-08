@@ -33,24 +33,32 @@ function start() {
   cssTokenResolver.loadFromJournals();
   console.error('[LSP] ' + cssTokenResolver.getAllTokenNames().length + ' CSS tokens loaded.');
 
-  var completionHandler  = foam.parse.lsp.handlers.CompletionHandler.create({ index: index, grammar: grammar, cache: fileModelCache, cssTokenResolver: cssTokenResolver });
-  var hoverHandler       = foam.parse.lsp.handlers.HoverHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
-  var definitionHandler  = foam.parse.lsp.handlers.DefinitionHandler.create({ index: index });
+  // The one "is this a FOAM class file" answer, shared by every handler that
+  // gates on it and by the request guards, so they cannot disagree and the
+  // per-uri memo stays warm. Declared above its first reader for the reason
+  // journalEntryIndex is: a `var` further down is hoisted but undefined here.
+  var fileClassifier = foam.parse.lsp.FileClassifier.create();
+
+  var completionHandler  = foam.parse.lsp.handlers.CompletionHandler.create({ fileClassifier: fileClassifier, index: index, grammar: grammar, cache: fileModelCache, cssTokenResolver: cssTokenResolver });
+  var hoverHandler       = foam.parse.lsp.handlers.HoverHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
+  // Created before definitionHandler because that handler takes it: a `var`
+  // declared further down is hoisted but still undefined here.
+  var journalEntryIndex  = foam.parse.lsp.JournalEntryIndex.create({ index: index });
+  var definitionHandler  = foam.parse.lsp.handlers.DefinitionHandler.create({ fileClassifier: fileClassifier, index: index, journalEntryIndex: journalEntryIndex });
   var i18nHandler        = foam.parse.lsp.handlers.I18nHandler.create({ index: index, cache: fileModelCache });
   // Translation provider: created here (server-start scope) so `provider` is
   // reachable from the 'initialize' case below, where config actually
   // arrives (the client's options are message-scoped, not available here).
   var provider = foam.parse.lsp.HttpChatProvider.create();
   i18nHandler.provider = provider;
-  var diagnosticsHandler = foam.parse.lsp.handlers.DiagnosticsHandler.create({ index: index, cache: fileModelCache, cssTokenResolver: cssTokenResolver, i18nHandler: i18nHandler, featureConfig: featureConfig });
-  var symbolHandler      = foam.parse.lsp.handlers.SymbolHandler.create({ cache: fileModelCache });
-  var memberHandler      = foam.parse.lsp.handlers.MemberCompletionHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker });
+  var diagnosticsHandler = foam.parse.lsp.handlers.DiagnosticsHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, cssTokenResolver: cssTokenResolver, i18nHandler: i18nHandler, featureConfig: featureConfig });
+  var symbolHandler      = foam.parse.lsp.handlers.SymbolHandler.create({ fileClassifier: fileClassifier, cache: fileModelCache });
+  var memberHandler      = foam.parse.lsp.handlers.MemberCompletionHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, typeTracker: typeTracker });
 
   var semanticTokenHandler = foam.parse.lsp.handlers.SemanticTokenHandler.create({ index: index, cache: fileModelCache, typeTracker: typeTracker, cssTokenResolver: cssTokenResolver });
   var referencesHandler = foam.parse.lsp.handlers.ReferencesHandler.create({ index: index });
   var documentHighlightHandler = foam.parse.lsp.handlers.DocumentHighlightHandler.create();
   var renameHandler = foam.parse.lsp.handlers.RenameHandler.create({ index: index });
-  var journalEntryIndex = foam.parse.lsp.JournalEntryIndex.create({ index: index });
   var jrlHandler = foam.parse.lsp.handlers.JrlHandler.create({
     index: index,
     journalEntryIndex: journalEntryIndex
@@ -61,7 +69,7 @@ function start() {
   var signatureHelpHandler   = foam.parse.lsp.handlers.SignatureHelpHandler.create({ index: index, cache: fileModelCache });
   var foldingRangeHandler    = foam.parse.lsp.handlers.FoldingRangeHandler.create();
   var codeActionHandler      = foam.parse.lsp.handlers.CodeActionHandler.create({ index: index, cssTokenResolver: cssTokenResolver, i18nHandler: i18nHandler, featureConfig: featureConfig });
-  var codeLensHandler        = foam.parse.lsp.handlers.CodeLensHandler.create({ index: index, cache: fileModelCache, i18nHandler: i18nHandler, featureConfig: featureConfig });
+  var codeLensHandler        = foam.parse.lsp.handlers.CodeLensHandler.create({ fileClassifier: fileClassifier, index: index, cache: fileModelCache, i18nHandler: i18nHandler, featureConfig: featureConfig });
   var workspaceSymbolHandler = foam.parse.lsp.handlers.WorkspaceSymbolHandler.create({ index: index });
   var typeHierarchyHandler   = foam.parse.lsp.handlers.TypeHierarchyHandler.create({ index: index, cache: fileModelCache });
   var implementationHandler  = foam.parse.lsp.handlers.ImplementationHandler.create({ index: index, cache: fileModelCache });
@@ -243,7 +251,19 @@ function start() {
         // buildMethodHover_ returns a raw markdown string (wrap it);
         // buildClassHover already returns a { contents: {...} } hover (pass
         // it through). Don't double-wrap.
-        if ( info.memberName && info.kind === 6 ) {
+        //
+        // Any member name is tried here, not only kind 6. Gated on methods,
+        // a property fell past every branch to buildClassHover, so asking
+        // about one property answered with the whole class — 34 properties
+        // for User, with the asked-for one somewhere inside. The cursor path
+        // has always answered from getPropertyDoc; this is the same call.
+        // Each lookup below identifies its own axiom kind and returns null
+        // otherwise, so the order is a preference, not a gate: an action or
+        // an enum member still reaches buildClassHover as before.
+        if ( info.memberName ) {
+          var propMd = index.getPropertyDoc(classId, info.memberName);
+          if ( propMd ) return { contents: { kind: 'markdown', value: propMd } };
+
           var cls = index.getClass(classId);
           var methodAxiom = null;
           if ( cls ) {
@@ -313,16 +333,15 @@ function start() {
     }
   }
 
-  function isFoamFile(text) {
-    return foam.parse.lsp.CursorAnalyzer.FOAM_CALL_REGEX.test(text);
+  function isClassDoc(uri, doc) {
+    // Request-guard predicate: the doc exists and classifies as a FOAM
+    // class file — through the same shared classifier the push lanes use,
+    // so guards and lanes cannot drift apart.
+    return !! doc && fileClassifier.classify(uri, doc.text) === 'class';
   }
 
   function isJrlFile(uri) {
     return uri && uri.endsWith('.jrl');
-  }
-
-  function isPomFile(uri) {
-    return uri && /pom\.js$/.test(uri);
   }
 
   function pushDiagnostics(uri, text) {
@@ -366,16 +385,20 @@ function start() {
     if ( ! doc ) return;
     fileModelCache.invalidate(uri);
 
-    // POM saves don't go through the foam.CLASS reindex path (POM is excluded
-    // from FOAM_CALL_REGEX). Drop the cached entry positions for this pom so
-    // class→pom navigation reflects the edit on the next request.
-    if ( isPomFile(uri) && typeof index.invalidatePomCache === 'function' ) {
+    // POM saves don't go through the foam.CLASS reindex path. Drop the cached
+    // entry positions for this pom so class→pom navigation reflects the edit
+    // on the next request. Asked of the classifier, like every other kind
+    // question here — asking the URI here and the classifier below split on a
+    // pom.js whose foam.POM( was broken mid-edit, invalidating the cache but
+    // never re-pushing the diagnostics.
+    var savedKind = fileClassifier.classify(uri, doc.text);
+    if ( savedKind === 'pom' && typeof index.invalidatePomCache === 'function' ) {
       var pomPath = uriToPath_(uri);
       if ( pomPath ) index.invalidatePomCache(pomPath);
     }
 
     var changedClassIds = [];
-    if ( isFoamFile(doc.text) ) {
+    if ( savedKind === 'class' ) {
       var models = fileModelCache.getModels(uri, doc.text);
 
       // Re-register the classes via real foam.CLASS. Wrap each model block
@@ -418,15 +441,24 @@ function start() {
     // state didn't change relative to them.
     for ( var ouri in documents ) {
       var otext = documents[ouri].text;
+      var rkind = fileClassifier.classify(ouri, otext);
       if ( ouri === uri ) {
         fileModelCache.invalidate(ouri);
-        if ( isJrlFile(ouri) ) pushJrlDiagnostics(ouri, otext);
-        else if ( isFoamFile(otext) ) pushDiagnostics(ouri, otext);
+        if ( rkind === 'jrl' ) pushJrlDiagnostics(ouri, otext);
+        else if ( rkind === 'class' || rkind === 'pom' ) pushDiagnostics(ouri, otext);
         continue;
       }
-      if ( isJrlFile(ouri) ) {
+      if ( rkind === 'jrl' ) {
         pushJrlDiagnostics(ouri, otext);
-      } else if ( isFoamFile(otext) ) {
+      } else if ( rkind === 'pom' ) {
+        // An open pom is re-pushed on EVERY save, not gated on the affected
+        // set: its diagnostics are disk checks (pom-file-missing resolves each
+        // entry with existsSync), and the save that clears one is the save
+        // CREATING a file the pom names — a file whose class the pom's own
+        // axiom state knows nothing about, so getAffectedFiles can never
+        // report it. Cost is one text parse plus one existsSync per entry.
+        pushDiagnostics(ouri, otext);
+      } else if ( rkind === 'class' ) {
         // Only re-diagnose if this file's path is in the affected set.
         var opath = uriToPath_(ouri);
         if ( opath && affectedPathsSet[opath] ) {
@@ -492,6 +524,64 @@ function start() {
   var LSP_TIMING_MIN_MS = process.env.LSP_TIMING_MS !== undefined ?
     Number(process.env.LSP_TIMING_MS) : 5;
 
+  // Document-scoped requests, as data rather than as twelve near-identical
+  // cases. Each one is answered the same way: look up the open document,
+  // answer the empty value if it is not a document this request applies to,
+  // call one handler inside a try, and answer the empty value again on a
+  // throw. Only three things actually differ between them — which handler to
+  // call, whether the empty answer is [] or null, and whether the request
+  // needs a FOAM class file or merely any open document — so only those three
+  // are written per request. The shape itself is written once, in
+  // answerDocRequest_. Adding a request of this kind is one row.
+  //
+  //   list:   true  -> the empty answer is a fresh [], otherwise null
+  //   anyDoc: true  -> any open document will do; the default demands a class
+  var DOC_REQUESTS = {
+    'textDocument/documentSymbol':       { list: true,
+      run: function(doc, p) { return symbolHandler.handle(doc.text, p.textDocument.uri); } },
+    'textDocument/references':           { list: true,
+      run: function(doc, p) { return referencesHandler.handle(doc.text, p.position, p.textDocument.uri); } },
+    'textDocument/codeLens':             { list: true,
+      run: function(doc, p) { return codeLensHandler.handle(doc.text, p.textDocument.uri); } },
+    'textDocument/implementation':       { list: true,
+      run: function(doc, p) { return implementationHandler.handle(doc.text, p.position, p.textDocument.uri); } },
+    'textDocument/foldingRange':         { list: true, anyDoc: true,
+      run: function(doc)    { return foldingRangeHandler.handle(doc.text); } },
+    'textDocument/codeAction':           { list: true, anyDoc: true,
+      run: function(doc, p) { return codeActionHandler.handle(doc.text, p.range, p.context, p.textDocument.uri); } },
+    'textDocument/documentHighlight':    { list: true, anyDoc: true,
+      run: function(doc, p) { return documentHighlightHandler.handle(doc.text, p.position); } },
+    'textDocument/signatureHelp':        {
+      run: function(doc, p) { return signatureHelpHandler.handle(doc.text, p.position, p.textDocument.uri); } },
+    'textDocument/prepareRename':        {
+      run: function(doc, p) { return renameHandler.prepare(doc.text, p.position); } },
+    'textDocument/rename':               {
+      run: function(doc, p) { return renameHandler.handle(doc.text, p.position, p.newName, p.textDocument.uri); } },
+    'textDocument/prepareTypeHierarchy': {
+      run: function(doc, p) { return typeHierarchyHandler.prepare(doc.text, p.position, p.textDocument.uri); } },
+    'textDocument/typeDefinition':       {
+      run: function(doc, p) { return typeDefinitionHandler.handle(doc.text, p.position, p.textDocument.uri); } },
+    'textDocument/prepareCallHierarchy': {
+      run: function(doc, p) { return callHierarchyHandler.prepare(doc.text, p.position, p.textDocument.uri); } }
+  };
+
+  function answerDocRequest_(method, route, params, id) {
+    var uri = params.textDocument.uri;
+    var doc = documents[uri];
+    // A fresh [] per call: the answer is handed to respond() and serialised,
+    // but one shared array reachable from twelve routes is a mutation waiting
+    // to happen.
+    var empty = route.list ? [] : null;
+
+    if ( ! ( route.anyDoc ? !! doc : isClassDoc(uri, doc) ) ) { respond(id, empty); return; }
+    try {
+      respond(id, route.run(doc, params));
+    } catch (e) {
+      console.error('[LSP] ' + method.split('/').pop() + ' error:', e.message);
+      respond(id, empty);
+    }
+  }
+
   function handleMessage(msg) {
     var method = msg.method;
     var params = msg.params;
@@ -511,6 +601,12 @@ function start() {
 
     var timerStart = process.hrtime.bigint();
     try {
+    // Table first, switch second: everything DOC_REQUESTS covers is answered
+    // identically, so those methods never reach the switch below. What is left
+    // in the switch is the set of methods that genuinely differ.
+    var docRequest = DOC_REQUESTS[method];
+    if ( docRequest ) { answerDocRequest_(method, docRequest, params, id); return; }
+
     switch ( method ) {
       case 'initialize':
         watchClientProcess(params && params.processId);
@@ -746,8 +842,9 @@ function start() {
         var tdoc = params.textDocument;
         console.error('[LSP] didOpen: ' + tdoc.uri + ' lang=' + tdoc.languageId);
         documents[tdoc.uri] = { text: tdoc.text, version: tdoc.version || 0 };
-        if ( isFoamFile(tdoc.text) ) pushDiagnostics(tdoc.uri, tdoc.text);
-        if ( isJrlFile(tdoc.uri) ) pushJrlDiagnostics(tdoc.uri, tdoc.text);
+        var okind = fileClassifier.classify(tdoc.uri, tdoc.text);
+        if ( okind === 'class' || okind === 'pom' ) pushDiagnostics(tdoc.uri, tdoc.text);
+        if ( okind === 'jrl' ) pushJrlDiagnostics(tdoc.uri, tdoc.text);
         break;
 
       case 'textDocument/didChange':
@@ -755,15 +852,28 @@ function start() {
         if ( params.contentChanges.length > 0 ) {
           documents[uri] = { text: params.contentChanges[0].text, version: params.textDocument.version || 0 };
           fileModelCache.invalidate(uri);
-          if ( isFoamFile(documents[uri].text) ) pushDiagnostics(uri, documents[uri].text);
-          if ( isJrlFile(uri) ) pushJrlDiagnostics(uri, documents[uri].text);
+          var ckind = fileClassifier.classify(uri, documents[uri].text);
+          if ( ckind === 'class' || ckind === 'pom' ) pushDiagnostics(uri, documents[uri].text);
+          if ( ckind === 'jrl' ) pushJrlDiagnostics(uri, documents[uri].text);
         }
         break;
 
       case 'textDocument/didSave':
         reindexFile(params.textDocument.uri);
-        if ( params.textDocument.uri && params.textDocument.uri.endsWith('.jrl') ) {
+        // Every index a journal feeds, dropped in one place. reindexFile
+        // reaches index.invalidate only for a file that classifies as a
+        // class, so a journal save reaches none of these on its own:
+        //   - journalEntryIndex — entry positions for go-to-definition
+        //   - symbol + string-usage indexes — these carry the services.jrl
+        //     rows, and a renamed service kept answering workspace symbol
+        //     search under its old name until an unrelated .js save
+        //   - jrl usage index — journal references in find-references
+        if ( isJrlFile(params.textDocument.uri) ) {
           journalEntryIndex.invalidate();
+          index.invalidateSymbolIndex_();
+          if ( typeof index.invalidateJrlUsageIndex === 'function' ) {
+            index.invalidateJrlUsageIndex(params.textDocument.uri);
+          }
         }
         break;
 
@@ -785,7 +895,7 @@ function start() {
           }
           break;
         }
-        if ( ! doc || ! isFoamFile(doc.text) ) {
+        if ( ! isClassDoc(params.textDocument.uri, doc) ) {
           respond(id, { isIncomplete: false, items: [] });
           break;
         }
@@ -823,7 +933,7 @@ function start() {
           }
           break;
         }
-        if ( ! isFoamFile(doc.text) ) { respond(id, null); break; }
+        if ( ! isClassDoc(params.textDocument.uri, doc) ) { respond(id, null); break; }
         try {
           var result = hoverHandler.handle(doc.text, params.position, params.textDocument.uri);
           console.error('[LSP] hover: success');
@@ -848,10 +958,11 @@ function start() {
           }
           break;
         }
-        // pom.js doesn't match FOAM_CALL_REGEX (POM is excluded), but the
-        // DefinitionHandler has a dedicated pom→class branch that needs to
-        // run. Let pom.js through; other non-FOAM .js files still bail.
-        if ( ! isFoamFile(doc.text) && ! isPomFile(params.textDocument.uri) ) {
+        // The DefinitionHandler has a dedicated pom->class branch, so pom
+        // docs are allowed through alongside class docs; everything else
+        // still bails.
+        var defKind = fileClassifier.classify(params.textDocument.uri, doc.text);
+        if ( defKind !== 'class' && defKind !== 'pom' ) {
           respond(id, null); break;
         }
         try {
@@ -860,30 +971,6 @@ function start() {
           respond(id, result);
         } catch (e) {
           console.error('[LSP] definition error:', e.message);
-          respond(id, null);
-        }
-        break;
-
-      case 'textDocument/documentSymbol':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, []); break; }
-        try {
-          var result = symbolHandler.handle(doc.text, params.textDocument.uri);
-          console.error('[LSP] documentSymbol: success');
-          respond(id, result);
-        } catch (e) {
-          console.error('[LSP] documentSymbol error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/signatureHelp':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, signatureHelpHandler.handle(doc.text, params.position, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] signatureHelp error:', e.message);
           respond(id, null);
         }
         break;
@@ -1022,39 +1109,6 @@ function start() {
         }
         break;
 
-      case 'textDocument/foldingRange':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc ) { respond(id, []); break; }
-        try {
-          respond(id, foldingRangeHandler.handle(doc.text));
-        } catch (e) {
-          console.error('[LSP] foldingRange error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/codeLens':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, []); break; }
-        try {
-          respond(id, codeLensHandler.handle(doc.text, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] codeLens error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/codeAction':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc ) { respond(id, []); break; }
-        try {
-          respond(id, codeActionHandler.handle(doc.text, params.range, params.context, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] codeAction error:', e.message);
-          respond(id, []);
-        }
-        break;
-
       // The promise-aware case. Two commands ride it:
       //   foam.i18n.*          — translating is a network round trip, so the
       //                          edit can't be built inside this synchronous
@@ -1157,7 +1211,7 @@ function start() {
           }
           break;
         }
-        if ( ! isFoamFile(doc.text) ) { respond(id, { data: [] }); break; }
+        if ( ! isClassDoc(params.textDocument.uri, doc) ) { respond(id, { data: [] }); break; }
         try {
           var result = semanticTokenHandler.handle(doc.text, params.textDocument.uri);
           console.error('[LSP] semanticTokens: ' + (result.data.length / 5) + ' tokens');
@@ -1165,62 +1219,6 @@ function start() {
         } catch (e) {
           console.error('[LSP] semanticTokens error:', e.message, e.stack);
           respond(id, { data: [] });
-        }
-        break;
-
-      case 'textDocument/references':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, []); break; }
-        try {
-          var result = referencesHandler.handle(doc.text, params.position, params.textDocument.uri);
-          respond(id, result);
-        } catch (e) {
-          console.error('[LSP] references error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/documentHighlight':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc ) { respond(id, []); break; }
-        try {
-          respond(id, documentHighlightHandler.handle(doc.text, params.position));
-        } catch (e) {
-          console.error('[LSP] documentHighlight error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/prepareRename':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, renameHandler.prepare(doc.text, params.position));
-        } catch (e) {
-          console.error('[LSP] prepareRename error:', e.message);
-          respond(id, null);
-        }
-        break;
-
-      case 'textDocument/rename':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, renameHandler.handle(doc.text, params.position, params.newName, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] rename error:', e.message);
-          respond(id, null);
-        }
-        break;
-
-      case 'textDocument/prepareTypeHierarchy':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, typeHierarchyHandler.prepare(doc.text, params.position, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] prepareTypeHierarchy error:', e.message);
-          respond(id, null);
         }
         break;
 
@@ -1242,28 +1240,6 @@ function start() {
         }
         break;
 
-      case 'textDocument/implementation':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, []); break; }
-        try {
-          respond(id, implementationHandler.handle(doc.text, params.position, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] implementation error:', e.message);
-          respond(id, []);
-        }
-        break;
-
-      case 'textDocument/typeDefinition':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, typeDefinitionHandler.handle(doc.text, params.position, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] typeDefinition error:', e.message);
-          respond(id, null);
-        }
-        break;
-
       case 'textDocument/diagnostic':
         // LSP 3.17 pull-diagnostic model. Caller asks for the diagnostics
         // of an arbitrary file without first didOpen-ing it. We read the
@@ -1282,9 +1258,12 @@ function start() {
           }
           if ( ! dText ) { respond(id, { kind: 'full', items: [] }); break; }
           var items;
-          if ( isJrlFile(dUri) ) {
+          var dKind = fileClassifier.classify(dUri, dText);
+          if ( dKind === 'jrl' ) {
             items = jrlHandler.handleDiagnostics(dText, dUri);
-          } else if ( isFoamFile(dText) ) {
+          } else if ( dKind === 'class' || dKind === 'pom' ) {
+            // 'pom' included: the pull path used to share the push lanes'
+            // unreachable-pom bug (isFoamFile excludes POM by design).
             items = diagnosticsHandler.handle(dText, dUri);
           } else {
             items = [];
@@ -1293,17 +1272,6 @@ function start() {
         } catch (e) {
           console.error('[LSP] textDocument/diagnostic error:', e.message);
           respond(id, { kind: 'full', items: [] });
-        }
-        break;
-
-      case 'textDocument/prepareCallHierarchy':
-        var doc = documents[params.textDocument.uri];
-        if ( ! doc || ! isFoamFile(doc.text) ) { respond(id, null); break; }
-        try {
-          respond(id, callHierarchyHandler.prepare(doc.text, params.position, params.textDocument.uri));
-        } catch (e) {
-          console.error('[LSP] prepareCallHierarchy error:', e.message);
-          respond(id, null);
         }
         break;
 
