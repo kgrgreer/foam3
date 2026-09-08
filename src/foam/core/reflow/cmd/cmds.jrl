@@ -1,4 +1,4 @@
-p({"class":"foam.core.reflow.cmd.Cells", "id": "cells", permissionRequired: true })
+p({"class":"foam.core.reflow.cmd.Cells", "id": "cells", "icon": "/images/matrix.svg", permissionRequired: true })
 p({"class":"foam.core.reflow.cmd.Clear", "id": "clear"})
 p({"class":"foam.core.reflow.cmd.DAO", "id": "dao", "icon": "database"})
 p({"class":"foam.core.reflow.cmd.From", "id": "FROM", "icon": "/images/ic-search.svg", permissionRequired: true})
