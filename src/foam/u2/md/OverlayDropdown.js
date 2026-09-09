@@ -4,7 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: Investigate if we can autoclose on scroll
 
 foam.CLASS({
   package: 'foam.u2.md',
@@ -142,6 +141,10 @@ foam.CLASS({
       this.internalResizeObserver_?.observe(this.dropdownE_.el_())
       this.opened = true;
       this.window.addEventListener('resize', this.onResize);
+      // Capture phase: scroll events do not bubble, so this is the only way
+      // to hear an ancestor scroll container (a wizard body, a modal) move
+      // the parentEl out from under the dropdown.
+      this.window.addEventListener('scroll', this.onScroll, true);
     },
 
     function setPosition() {
@@ -194,6 +197,7 @@ foam.CLASS({
       this.opened = false;
       this.ro_?.unobserve(this.parentEl);
       this.internalResizeObserver_?.unobserve(this.dropdownE_.el_())
+      this.window.removeEventListener('scroll', this.onScroll, true);
     },
 
     function render() {
@@ -218,6 +222,7 @@ foam.CLASS({
           this.setHeight();
       });
       this.onDetach(() => { this.internalResizeObserver_?.disconnect(); })
+      this.onDetach(() => { this.window.removeEventListener('scroll', this.onScroll, true); })
 
       this.addClass(this.slot(function(opened) {
         this.shown = opened;
@@ -292,6 +297,13 @@ foam.CLASS({
     function onResize(e) {
       this.setPosition();
       window.removeEventListener('resize', onResize);
+    },
+
+    function onScroll(e) {
+      // The dropdown's own list scrolling does not move the parentEl.
+      if ( ! this.opened || this.dropdownE_.el_()?.contains(e.target) ) return;
+      this.setPosition();
+      this.setHeight();
     }
   ]
 });
