@@ -82,7 +82,7 @@ foam.CLASS({
 
           SourceWatcher off = new SourceWatcher.Builder(sx).setWatchDir("").build();
           off.start();
-          test(! off.getRunning().get(), "start() without core.webroot does not run");
+          test(! off.getRunning().get(), "start() without -Dcore.reload does not run");
         } catch ( Exception e ) {
           throw new RuntimeException(e);
         } finally {

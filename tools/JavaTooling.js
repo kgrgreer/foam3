@@ -45,6 +45,7 @@ foam.POM({
     javaManifestVendor: ['', 'java-manifest-vendor', 'JAVA_MANIFEST_VENDOR', 'Java Manifest Vendor', () => APP_NAME ? `${APP_NAME}` : 'APP_NAME', args => JAVA_MANIFEST_VENDOR = args ],
     javaManifestVendorId: ['', 'java-manifiest-vendor-id', 'JAVA_MANIFEST_VENDOR_ID', 'Java Manifest Vendor ID', '', args => JAVA_MANIFEST_VENDOR_ID = args ],
     javaOpts: ['', 'java-opts', 'JAVA_OPTS', 'Additional JVM options','', arg => JAVA_OPTS = ' '+arg ],
+    liveReload: [ 'l', 'live-reload', 'LIVE_RELOAD', 'Watch the source tree and push .js edits to open browsers, which reload the changed class in place without a page reload (foam.u2.ViewReloader). Source runs only; a jar ignores it.', false, function(arg) { LIVE_RELOAD = arg ? this.bool(arg) : true; } ],
     logLevel: ['L', 'log-level', 'LOG_LEVEL', 'Set JVM Log level for TEST cases. Defaults to ERROR. example: --log-level:INFO',null, arg => LOG_LEVEL = arg.toUpperCase() ],
     javaMainClass: ['', 'java-main-class', 'JAVA_MAIN_CLASS', 'Java \'main\' class', 'foam.core.boot.Boot', arg => JAVA_MAIN_CLASS = arg ],
     javaMainArgs: ['', 'java-main-args', 'JAVA_MAIN_ARGS', 'Comma separated key[:value] arguments passed to the Java \'main\' class', '', function(arg) { JAVA_MAIN_ARGS = this.comma(JAVA_MAIN_ARGS, arg); } ],
@@ -140,6 +141,8 @@ foam.POM({
       JAVA_OPTS += ` -DDOCUMENT_HOME=${DOCUMENT_HOME}`;
       if ( WEB_PORT )
         JAVA_OPTS += ` -Dhttp.port=${WEB_PORT}`;
+      if ( LIVE_RELOAD )
+        JAVA_OPTS += ' -Dcore.reload=true';
       if ( SYSTEM_PROPERTY )
         JAVA_OPTS += ` -${SYSTEM_PROPERTY.split(',').join(' -')}`;
     }],

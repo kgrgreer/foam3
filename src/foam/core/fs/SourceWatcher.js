@@ -9,11 +9,7 @@ foam.CLASS({
   name: 'SourceWatcher',
   extends: 'foam.core.fs.Watcher',
 
-  documentation: `Reports every changed .js under core.webroot as a SourceChange
-    in sourceChangeDAO, for foam.u2.ViewReloader. Runs only when core.webroot
-    is set: JavaTooling sets it for source runs and never for a jar, so a
-    deployment never watches anything. The source tree is large, so the tree
-    walk runs every 30s and the 500ms tick only stats the known files.`,
+  documentation: `Reports every changed .js under core.webroot as a SourceChange in sourceChangeDAO, for foam.u2.ViewReloader. Opt-in: runs only when the JVM has -Dcore.reload=true, which ./build.sh -l (--live-reload) sets for a source run; without it start() logs once and returns, and a jar has no core.webroot to watch anyway. The source tree is large, so the tree walk runs every 30s and the 500ms tick only stats the known files.`,
 
   javaImports: [
     'foam.dao.DAO',
@@ -23,7 +19,7 @@ foam.CLASS({
   properties: [
     {
       name: 'watchDir',
-      javaFactory: 'return System.getProperty("core.webroot", "");'
+      javaFactory: 'return Boolean.getBoolean("core.reload") ? System.getProperty("core.webroot", "") : "";'
     },
     {
       name: 'recursive',
