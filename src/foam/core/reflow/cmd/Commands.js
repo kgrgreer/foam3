@@ -35,6 +35,7 @@ foam.CLASS({
       name: 'color',
       documentation: 'Colour of the graph node\'s kind bar: a CSS token ($primary400) or a literal. Unset takes the theme\'s block colour.'
     },
+    { class: 'String',  name: 'icon', value: 'rectangle' },
     { class: 'Code',    name: 'script' },
     { class: 'Boolean', name: 'linkable', value: true },
     { class: 'Boolean', name: 'permissionRequired' },

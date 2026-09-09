@@ -12,9 +12,12 @@ foam.CLASS({
 
   mixins: [ 'foam.u2.StyleConfigurator' ],
 
-  requires: [ 'foam.u2.WrapperNode' ],
+  requires: [ 
+    'foam.u2.WrapperNode',
+    'foam.core.reflow.TreeCellFormatter'
+  ],
 
-  imports: [ 'data', 'showPrompts', 'addToScope', 'selected', 'graphFocus', 'graphMode', 'selectFromTree' ],
+  imports: [ 'data', 'showPrompts', 'addToScope', 'selected', 'graphFocus', 'graphMode', 'selectFromTree', 'commandDAO' ],
 
   exports: [ 'addValue', 'log', 'out', 'as block' ],
 
@@ -63,6 +66,12 @@ foam.CLASS({
     }
     ^hidePrompts:has(> ^content > .foam-u2-Element-hidden) {
       display: none;
+    }
+    ^element-row-icon , ^element-row-icon svg {
+      color: $textBrand;
+      fill: currentColor;
+      width: 24px;
+      height: 24px;
     }
   `,
 
@@ -172,6 +181,23 @@ foam.CLASS({
       name: 'configViewSpec',
       hidden: true,
       documentation: `Passed on to the ReactiveSectionedDetailView as config, see AbstractSectionedDetailView to learn more about configuring detail views`
+    },
+    {
+      class: 'String',
+      name: 'blockIcon',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        // Split on space or parentheses to parse commands like "dao accountBalanceDAO"
+        let char = this.cmd.includes("(") ? "(" : " ";
+        const cmdSplit = this.cmd.split(char)
+        
+        this.commandDAO.find(cmdSplit[0]).then(c => {
+          if ( c ) this.blockIcon = c.icon; // Get icon from the command
+        });
+
+        return 'rectangle'; // Default to rectangle
+      }
     }
   ],
 
@@ -251,6 +277,28 @@ foam.CLASS({
         this.FLOW_NAME, this.CMD, this.VALUE, this.FLOW_CHILDREN, this.REACTIONS_, this.ALLOW_LIMITED_EDIT, this.BORDER,
         this.SHOWN, ...foam.u2.StyleConfigurator.getAxiomsByClass(foam.lang.Property).filter(p => ! p.hidden && ! p.transient)
       ]);
+    },
+
+    function treeCellFormatter(e) {
+      // If it exists, delegate to value's treeCellFormatter
+      if ( this.TreeCellFormatter.isInstance(this.value) ) {
+        this.value.treeCellFormatter(e);
+
+      } else { // Otherwise, get the block's icon from its command
+        e.add(this.slot(function(blockIcon) {
+          if ( blockIcon.startsWith("/images") ) {
+            return this.E().start(foam.u2.tag.Image, {
+              data: blockIcon,
+              embedSVG: true
+            }).addClass(this.myClass('element-row-icon')).end();
+          } else {
+            return this.E().start(foam.u2.tag.Image, {
+              glyph: blockIcon,
+              embedSVG: true
+            }).addClass(this.myClass('element-row-icon')).end();
+          }
+        }));
+      }
     }
   ],
 
