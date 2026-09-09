@@ -818,6 +818,8 @@ foam.CLASS({
     this.add(self.Console.create({route: 'name of flow to load', flowMode: foam.core.reflow.FlowMode.PRESENTATION_ONLY});
   `,
 
+  implements: [ 'foam.core.reflow.TreeCellFormatter' ],
+
   requires: [
     'foam.core.ai.ConversationalLLMService',
     'foam.core.reflow.BadBlock',
@@ -948,6 +950,12 @@ foam.CLASS({
     }
     .foam-core-reflow-FlowableTree-element-row.locked .foam-u2-ActionView-close {
       color: $orange500 !important;
+    }
+    ^element-row-icon , ^element-row-icon svg {
+      color: $textBrand;
+      fill: currentColor;
+      width: 24px;
+      height: 24px;
     }
   `,
 
@@ -1923,6 +1931,16 @@ foam.CLASS({
         modal.add('There are unsaved changes. Do you want to load them?');
         self.add(modal);
       });
+    },
+
+    function treeCellFormatter(e) {
+      // Add icon for the flow "block"
+      e.add(this.slot(function() {
+        return this.E().start(foam.u2.tag.Image, {
+          glyph: 'flow',
+          embedSVG: true
+        }).addClass(this.myClass('element-row-icon')).end();
+      }));
     }
   ],
 
