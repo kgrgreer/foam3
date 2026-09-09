@@ -12,7 +12,10 @@ foam.CLASS({
 
   mixins: [ 'foam.u2.StyleConfigurator' ],
 
-  requires: [ 'foam.u2.WrapperNode' ],
+  requires: [ 
+    'foam.u2.WrapperNode',
+    'foam.core.reflow.TreeCellFormatter'
+  ],
 
   imports: [ 'data', 'showPrompts', 'addToScope', 'selected', 'commandDAO' ],
 
@@ -157,11 +160,15 @@ foam.CLASS({
       hidden: true,
       transient: true,
       factory: function() {
-        this.commandDAO.find(this.cmd).then(c => {
-          if ( c ) this.blockIcon = c.icon;
+        // Split on space or parentheses to parse commands like "dao accountBalanceDAO"
+        let char = this.cmd.includes("(") ? "(" : " ";
+        const cmdSplit = this.cmd.split(char)
+        
+        this.commandDAO.find(cmdSplit[0]).then(c => {
+          if ( c ) this.blockIcon = c.icon; // Get icon from the command
         });
-        if ( this.cmd.includes('dao') ) return 'database';
-        return 'rectangle';
+
+        return 'rectangle'; // Default to rectangle
       }
     }
   ],
@@ -229,20 +236,25 @@ foam.CLASS({
     },
 
     function treeCellFormatter(e) {
-      // Add the command's icon
-      e.add(this.slot(function(blockIcon) {
-        if ( blockIcon.startsWith("/images") ) {
-          return this.E().start(foam.u2.tag.Image, {
-            data: blockIcon,
-            embedSVG: true
-          }).addClass(this.myClass('element-row-icon')).end();
-        } else {
-          return this.E().start(foam.u2.tag.Image, {
-            glyph: blockIcon,
-            embedSVG: true
-          }).addClass(this.myClass('element-row-icon')).end();
-        }
-      }));
+      // If it exists, delegate to value's treeCellFormatter
+      if ( this.TreeCellFormatter.isInstance(this.value) ) {
+        this.value.treeCellFormatter(e);
+
+      } else { // Otherwise, get the block's icon from its command
+        e.add(this.slot(function(blockIcon) {
+          if ( blockIcon.startsWith("/images") ) {
+            return this.E().start(foam.u2.tag.Image, {
+              data: blockIcon,
+              embedSVG: true
+            }).addClass(this.myClass('element-row-icon')).end();
+          } else {
+            return this.E().start(foam.u2.tag.Image, {
+              glyph: blockIcon,
+              embedSVG: true
+            }).addClass(this.myClass('element-row-icon')).end();
+          }
+        }));
+      }
     }
   ],
 

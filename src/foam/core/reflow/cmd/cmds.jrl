@@ -104,6 +104,7 @@ p({
   "class":"foam.core.reflow.cmd.Command",
   "id": "image",
   "description": "Image",
+  "icon": "image",
   "script": "addValue(foam.core.reflow.Image.create({}, this));"
 })
 p({

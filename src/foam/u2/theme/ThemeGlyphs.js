@@ -1147,12 +1147,12 @@ foam.CLASS({
       }
     },
     {
-      name: 'test',
+      name: 'pipette', // Formerly 'test'
       class: 'GlyphProperty',
       of: 'foam.lang.Glyph',
       factory: () => {
         return { template: `
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="/*%FILL%*/ #ffffff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pipette-icon lucide-pipette"><path d="m12 9-8.414 8.414A2 2 0 0 0 3 18.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 3.828 21h1.344a2 2 0 0 0 1.414-.586L15 12"/><path d="m18 9 .4.4a1 1 0 1 1-3 3l-3.8-3.8a1 1 0 1 1 3-3l.4.4 3.4-3.4a1 1 0 1 1 3 3z"/><path d="m2 22 .414-.414"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pipette-icon lucide-pipette"><path d="m12 9-8.414 8.414A2 2 0 0 0 3 18.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 3.828 21h1.344a2 2 0 0 0 1.414-.586L15 12" fill="none"/><path d="m18 9 .4.4a1 1 0 1 1-3 3l-3.8-3.8a1 1 0 1 1 3-3l.4.4 3.4-3.4a1 1 0 1 1 3 3z" fill="none"/><path d="m2 22 .414-.414" fill="none"/></svg>
         `}
       }
     },
@@ -1336,6 +1336,38 @@ foam.CLASS({
             xmlns="http://www.w3.org/2000/svg">
           <path d="M3.5 14.5c.6-6.5 2.3-10 4-9.5 1.6.5 1.1 4.4-.3 7.9-1.1 2.7-1.6 4.2-.4 4.5 2 .5 3.9-3.8 6-4 1.5-.2 1.2 1.9 2.6 1.9 1.1 0 2.1-.7 2.7-1.6" fill="none"/>
           <path d="M3.5 20.5h17" fill="none"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'test',
+      class: 'GlyphProperty',
+      of: 'foam.lang.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.5 3.5v5.7L4.3 18.5A1.7 1.7 0 0 0 5.8 21h12.4a1.7 1.7 0 0 0 1.5-2.5L14.5 9.2V3.5" fill="none"/>
+          <path d="M8 3.5h8" fill="none"/>
+          <path d="M6.6 14.6h10.8" fill="none"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'image',
+      class: 'GlyphProperty',
+      of: 'foam.lang.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg">
+          <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="2.6" fill="none"/>
+          <circle cx="8.9" cy="8" r="1.7" fill="none"/>
+          <path d="M4 17.6l4.4-4.4a1.4 1.4 0 0 1 2 0l3.3 3.3 1.9-1.9a1.4 1.4 0 0 1 2 0l2.4 2.4" fill="none"/>
         </svg>
         ` };
       }
