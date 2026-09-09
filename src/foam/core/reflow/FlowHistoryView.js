@@ -81,14 +81,14 @@ foam.CLASS({
       }
       this.load_();
 
-      this.dynamic(function(records_) {
+      this.add(this.dynamic(function(records_) {
         if ( ! records_ ) return;
         if ( ! records_.length ) {
           self.renderEmpty(this);
           return;
         }
         records_.forEach(record => self.itemView.outputRecord(this, record));
-      });
+      }));
     },
 
     function renderEmpty(parent) {
