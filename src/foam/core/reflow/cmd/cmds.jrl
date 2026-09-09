@@ -219,7 +219,7 @@ p({
   "class":"foam.core.reflow.cmd.Example",
   "id": "example",
   "description": "Example code snippet",
-  "icon": "script",
+  "icon": "script"
 })
 
 p({
