@@ -231,7 +231,7 @@ foam.CLASS({
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssBase', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/CssBase.js',
-          css: '^ { color: red; }'
+          css: '^ { opacity: 0.1; }'
         });
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssChild', extends: 'foam.u2.test.CssBase',
@@ -258,7 +258,7 @@ foam.CLASS({
           'swapCSS adds and removes no <style> elements, got ' + after.length);
         var texts = Array.from(after).map(el => el.textContent);
         x.test(texts.some(t => t.includes('margin: 1px')), 'the child rule was rewritten to the new css');
-        x.test(texts.some(t => t.includes('color: red')), 'the inherited parent rule survived the child edit');
+        x.test(texts.some(t => t.includes('opacity: 0.1')), 'the inherited parent rule survived the child edit');
 
         // --- swapCSS: a second css-only edit of the same class is picked
         //     up too, not stuck on the first. Copying the new code onto the
@@ -311,13 +311,13 @@ foam.CLASS({
           package: 'foam.u2.test', name: 'MixA', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/MixA.js',
           mixins: [ 'foam.u2.test.CssMixinProbe' ],
-          css: '^ { color: blue; }'
+          css: '^ { opacity: 0.2; }'
         });
         foam.CLASS({
           package: 'foam.u2.test', name: 'MixB', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/MixB.js',
           mixins: [ 'foam.u2.test.CssMixinProbe' ],
-          css: '^ { color: green; }'
+          css: '^ { opacity: 0.3; }'
         });
         var mixAId = 'foam.u2.test.MixA';
         var mixBId = 'foam.u2.test.MixB';
@@ -333,7 +333,7 @@ foam.CLASS({
           package: 'foam.u2.test', name: 'MixA', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/MixA.js?t=2',
           mixins: [ 'foam.u2.test.CssMixinProbe' ],
-          css: '^ { color: red; }'
+          css: '^ { opacity: 0.1; }'
         });
         r.swapCSS(oldMixA, foam.lookup(mixAId));
 
@@ -347,7 +347,7 @@ foam.CLASS({
         var mixATexts =
           Array.from(document.querySelectorAll('style[owner="' + mixAId + '"]'))
             .map(el => el.textContent);
-        x.test(mixATexts.some(t => t.includes('color: red')), 'MixA\'s own block picked up the new css');
+        x.test(mixATexts.some(t => t.includes('opacity: 0.1')), 'MixA\'s own block picked up the new css');
         x.test(mixATexts.some(t => t.includes('padding: 0')), 'MixA\'s mixin block still has the shared rule');
 
         var oldMixinProbe = foam.lookup('foam.u2.test.CssMixinProbe');
@@ -386,7 +386,7 @@ foam.CLASS({
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssGrowView', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/CssGrowView.js?t=2',
-          css: '^ { color: teal; }'
+          css: '^ { opacity: 0.4; }'
         });
         x.test(! rrGrow.isCssOnly(oldGrow, foam.lookup(growId)),
           'gaining a css: block where there was none is not css-only (via isCssOnly)');
@@ -407,7 +407,7 @@ foam.CLASS({
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssCodeView', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCodeView.js',
-          css: '^ { color: navy; }',
+          css: '^ { opacity: 0.5; }',
           methods: [ function version() { return 1; } ]
         });
         var codeId   = 'foam.u2.test.CssCodeView';
@@ -420,7 +420,7 @@ foam.CLASS({
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssCodeView', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCodeView.js?t=2',
-          css: '^ { color: maroon; }',
+          css: '^ { opacity: 0.6; }',
           methods: [ function version() { return 2; } ]
         });
         x.test(! rrCode.isCssOnly(oldCode, foam.lookup(codeId)),
@@ -436,9 +436,9 @@ foam.CLASS({
         x.test(codeBlocks.length === 1,
           'no duplicate <style> block after a css+code rebuild, got ' + codeBlocks.length);
         var codeTexts = Array.from(codeBlocks).map(el => el.textContent);
-        x.test(codeTexts.some(t => t.includes('color: maroon')),
+        x.test(codeTexts.some(t => t.includes('opacity: 0.6')),
           'the existing block shows the new css');
-        x.test(! codeTexts.some(t => t.includes('color: navy')),
+        x.test(! codeTexts.some(t => t.includes('opacity: 0.5')),
           'the old css text is gone, not layered underneath');
 
         // --- integration: an axiom-count change in the rebuild path is
@@ -446,7 +446,7 @@ foam.CLASS({
         foam.CLASS({
           package: 'foam.u2.test', name: 'CssCountView', extends: 'foam.u2.Element',
           source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCountView.js',
-          css: '^ { color: navy; }'
+          css: '^ { opacity: 0.5; }'
         });
         var countId  = 'foam.u2.test.CssCountView';
         var oldCount = foam.lookup(countId);
