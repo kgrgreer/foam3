@@ -52,7 +52,10 @@ foam.CLASS({
       name: 'handleRequest',
       javaCode: `
       ((DAO) x.get("sourceChangeDAO")).inX(x).put(
-        new SourceChange.Builder(x).setId("/" + request).setModified(new Date()).build());
+        new SourceChange.Builder(x)
+          .setId("/" + request)
+          .setModified(new Date())
+          .build());
       `
     },
     {

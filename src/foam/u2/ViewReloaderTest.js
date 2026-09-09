@@ -13,14 +13,21 @@ foam.CLASS({
     came from it, a css-only edit is told apart from a code edit, a reloaded
     base class drags its subclasses and refinements along, an on-screen
     view is replaced by an instance of the new class with its data link kept,
-    a subclass's css-only edit rewrites its own block in place without
-    dropping an inherited one, a second css-only edit of the same class is
-    picked up too rather than stuck on the first, restore() after a
+    a class/style/attribute the parent put on that view from outside its own
+    render survives the swap, a subclass's css-only edit rewrites its own
+    block in place without dropping an inherited one, a second css-only
+    edit of the same class is picked up too rather than stuck on the
+    first, restore() after a
     css-only reload puts the pre-edit class back as both the live
     registration and the global accessor, a mixin's shared css reaches
     every class that mixes it in without a sibling's own edit leaking onto
-    it, and a reload that fails to load restores the class it cleared
-    instead of leaving it unregistered.`,
+    it, gaining a first css: block is not treated as css-only and instead
+    rebuilds so a fresh instance installs its own style block, a css+code
+    edit reuses the existing style block for the rebuilt instance instead
+    of leaving a stale one behind and installing a duplicate, an axiom-
+    count change in the rebuild path is skipped rather than force-matched,
+    and a reload that fails to load restores the class it cleared instead
+    of leaving it unregistered.`,
 
   requires: [ 'foam.u2.ViewReloader' ],
 
@@ -52,6 +59,13 @@ foam.CLASS({
         x.test(r.isCssOnly(c1, c2),   'a css-only edit is css-only');
         x.test(! r.isCssOnly(c1, c3), 'a css edit plus a property edit is not css-only');
         x.test(! r.isCssOnly(c1, c1), 'an unchanged model is not css-only');
+
+        var noCss = { package: 'foam.u2.test', name: 'CssProbe',
+                      extends: 'foam.u2.Element', properties: [ 'a' ] };
+        var c4    = build(noCss);
+        var c5    = build({ ...noCss, css: '^ { color: $primary500; }' });
+        x.test(! r.isCssOnly(c4, c5),
+          'gaining a css: block where there was none is not css-only');
 
         // --- cascade: subclass rebuilt, refinement from another file re-applied ---
         foam.CLASS({
@@ -118,6 +132,35 @@ foam.CLASS({
         holder.data = 'third';
         x.test(newV.data === 'third', 'a holder write reaches the new view');
         x.test(! root.element_.contains(oldV.element_), 'old element left the DOM');
+
+        // --- rebuild: what old's PARENT put on the host node -- a class,
+        //     an inline style, a DOM attribute -- survives too, since
+        //     replace() only knows old's own render, not what the parent
+        //     did to it from outside (a dashboard's per-widget grid-column,
+        //     for example) ---
+        var root5 = foam.u2.Element.create(null, x);
+        root5.start(foam.u2.test.ReloaderView, { data$: holder.data$ })
+            .addClass('from-parent')
+            .style({ 'grid-column': '3 / span 2' })
+            .setAttribute('data-slot', 'a')
+          .end();
+        var rr5 = this.ViewReloader.create({ root: root5 }, x);
+
+        delete foam.__context__.__cache__['foam.u2.test.ReloaderView'];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'ReloaderView', extends: 'foam.u2.View',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/ReloaderView.js?t=4',
+          methods: [ function version() { return 4; }, function render() { this.add(this.data$); } ]
+        });
+
+        rr5.rebuild([ 'foam.u2.test.ReloaderView' ]);
+        var newV5 = root5.childNodes[0];
+        x.test(newV5.classes['from-parent'] === true,
+          'a class the parent added survives a rebuild');
+        x.test(newV5.element_.style['grid-column'] === '3 / span 2',
+          'an inline style the parent set survives a rebuild');
+        x.test(newV5.element_.getAttribute('data-slot') === 'a',
+          'a DOM attribute the parent set survives a rebuild');
 
         // an instance under a SlotNode is reported, not replaced
         var root2 = foam.u2.Element.create(null, x);
@@ -250,8 +293,7 @@ foam.CLASS({
         r.restore(childId, oldChildCls);
         x.test(foam.u2.test.CssChild === oldChildCls &&
           foam.lookup('foam.u2.test.CssChild') === oldChildCls,
-          'a css-only reload keeps the old class registered in both the ' +
-          'context and the package global');
+          'a css-only reload keeps the old class registered in both the context and the package global');
 
         // --- swapCSS: a class that mixes in a shared css axiom, and a
         //     reload of the mixin's own file reaching every class that
@@ -326,6 +368,96 @@ foam.CLASS({
           'a mixin-file edit reaches the mixin block under MixA\'s owner');
         x.test(mixBTextsAfterMixinEdit.some(t => t.includes('padding: 1px')),
           'a mixin-file edit reaches the mixin block under MixB\'s owner too');
+
+        // --- integration: a class gaining a css: block is rebuilt (not
+        //     silently dropped as a no-op "swap"), and the rebuilt
+        //     instance installs a fresh style block ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssGrowView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssGrowView.js'
+        });
+        var growId   = 'foam.u2.test.CssGrowView';
+        var oldGrow  = foam.lookup(growId);
+        var rootGrow = foam.u2.Element.create(null, x);
+        rootGrow.add(oldGrow.create({}, x));
+        var rrGrow = this.ViewReloader.create({ root: rootGrow }, x);
+
+        delete foam.__context__.__cache__[growId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssGrowView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssGrowView.js?t=2',
+          css: '^ { color: teal; }'
+        });
+        x.test(! rrGrow.isCssOnly(oldGrow, foam.lookup(growId)),
+          'gaining a css: block where there was none is not css-only (via isCssOnly)');
+
+        var growOrder = rrGrow.cascade([ growId ],
+          '/foam3/src/foam/u2/test/CssGrowView.js');
+        x.test(growOrder.includes(growId), 'the class is rebuilt, not skipped as a css swap');
+        x.test(rrGrow.reinstallCSS(oldGrow, foam.lookup(growId)),
+          'reinstallCSS is a no-op (returns true) when the old class had no css to reconcile');
+        rrGrow.rebuild(growOrder);
+
+        x.test(document.querySelectorAll('style[owner="' + growId + '"]').length === 1,
+          'the rebuilt instance installs a fresh style block');
+
+        // --- integration: a css+code edit reuses the existing <style>
+        //     block for the rebuilt instance instead of leaving the
+        //     pre-edit block live and installing a duplicate ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssCodeView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCodeView.js',
+          css: '^ { color: navy; }',
+          methods: [ function version() { return 1; } ]
+        });
+        var codeId   = 'foam.u2.test.CssCodeView';
+        var oldCode  = foam.lookup(codeId);
+        var rootCode = foam.u2.Element.create(null, x);
+        rootCode.add(oldCode.create({}, x));
+        var rrCode = this.ViewReloader.create({ root: rootCode }, x);
+
+        delete foam.__context__.__cache__[codeId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssCodeView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCodeView.js?t=2',
+          css: '^ { color: maroon; }',
+          methods: [ function version() { return 2; } ]
+        });
+        x.test(! rrCode.isCssOnly(oldCode, foam.lookup(codeId)),
+          'a css edit plus a code edit is not css-only');
+
+        var codeOrder = rrCode.cascade([ codeId ],
+          '/foam3/src/foam/u2/test/CssCodeView.js');
+        x.test(rrCode.reinstallCSS(oldCode, foam.lookup(codeId)),
+          'matching axiom counts: reinstallCSS handles the edit in place');
+        rrCode.rebuild(codeOrder);
+
+        var codeBlocks = document.querySelectorAll('style[owner="' + codeId + '"]');
+        x.test(codeBlocks.length === 1,
+          'no duplicate <style> block after a css+code rebuild, got ' + codeBlocks.length);
+        var codeTexts = Array.from(codeBlocks).map(el => el.textContent);
+        x.test(codeTexts.some(t => t.includes('color: maroon')),
+          'the existing block shows the new css');
+        x.test(! codeTexts.some(t => t.includes('color: navy')),
+          'the old css text is gone, not layered underneath');
+
+        // --- integration: an axiom-count change in the rebuild path is
+        //     skipped by reinstallCSS, not force-matched ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssCountView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCountView.js',
+          css: '^ { color: navy; }'
+        });
+        var countId  = 'foam.u2.test.CssCountView';
+        var oldCount = foam.lookup(countId);
+        delete foam.__context__.__cache__[countId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssCountView', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssCountView.js?t=2',
+          methods: [ function extra() { return true; } ]
+        });
+        x.test(! rrCode.reinstallCSS(oldCount, foam.lookup(countId)),
+          'reinstallCSS returns false, doing nothing, when the axiom count changed');
 
         // --- reload: a failed load restores the old class instead of
         //     leaving the id unregistered ---

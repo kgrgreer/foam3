@@ -27,8 +27,9 @@ foam.CLASS({
         Path dir  = null;
         Path root = null;
         Path root2 = null;
+        Path legacyDir = null;
         try {
-          // flat directory: a new file is a request, handled by name, then deleted
+          // poll() (recursive: true) on a flat directory: a new file is a request, handled by name, then deleted
           dir = Files.createTempDirectory("watcher");
           Path sentinel = dir.resolve("warmup");
           Path req1     = dir.resolve("req1");
@@ -36,6 +37,7 @@ foam.CLASS({
           Files.writeString(sentinel, "0");
           RecordingWatcher w = new RecordingWatcher.Builder(x)
             .setWatchDir(dir.toString())
+            .setRecursive(true)
             .setPollInterval(50)
             .build();
           w.getRunning().set(true);
@@ -117,12 +119,43 @@ foam.CLASS({
             n.stop();
             nt.join(2000);
           }
+
+          // legacy watch() (recursive unset, the default): java.nio.WatchService: a new file is detected and deleted, and so is a rejected one -- the old behaviour
+          legacyDir = Files.createTempDirectory("watcher-legacy");
+          Path legacyReq1 = legacyDir.resolve("req1");
+          Path legacySkip = legacyDir.resolve("skip.txt");
+          RecordingWatcher lw = new RecordingWatcher.Builder(x)
+            .setWatchDir(legacyDir.toString())
+            .build();
+          lw.getRunning().set(true);
+          Thread lt = new Thread(() -> lw.execute(x));
+          lt.start();
+          try {
+            // watch() has no observable "ready" signal like the poller's baseline scan warmup() waits on --
+            // give the WatchService registration time to complete before writing.
+            Thread.sleep(500);
+            Files.writeString(legacyReq1, "1");
+            Files.writeString(legacySkip, "junk");
+            // macOS WatchService (PollingWatchService) default sensitivity is ~10s; Linux inotify is effectively instant.
+            // Wait for the full end state (handled AND both files gone), not just handled: postCleanup
+            // runs after handleRequest, so checking handled alone can race the gap between the two.
+            boolean seen = await(() ->
+              lw.getHandled().contains("req1") && ! Files.exists(legacyReq1) && ! Files.exists(legacySkip), 15000);
+            test(seen, "the legacy WatchService path detects a new file by name, got " + lw.getHandled());
+            test(! Files.exists(legacyReq1), "postCleanup deleted the accepted file");
+            test(! Files.exists(legacySkip), "postCleanup deletes a rejected file too -- the legacy behaviour");
+          } finally {
+            lw.stop();
+            lt.join(3000);
+          }
+          test(! lt.isAlive(), "stop() closes the WatchService so a blocked take() returns and the loop ends");
         } catch ( Exception e ) {
           throw new RuntimeException(e);
         } finally {
-          if ( dir   != null ) deleteTree(dir);
-          if ( root  != null ) deleteTree(root);
-          if ( root2 != null ) deleteTree(root2);
+          if ( dir       != null ) deleteTree(dir);
+          if ( root      != null ) deleteTree(root);
+          if ( root2     != null ) deleteTree(root2);
+          if ( legacyDir != null ) deleteTree(legacyDir);
         }
       `
     },
@@ -154,7 +187,12 @@ foam.CLASS({
           if ( System.currentTimeMillis() >= deadline ) {
             throw new IllegalStateException("watcher never became active within 2000ms");
           }
-          Files.setLastModifiedTime(sentinel, FileTime.fromMillis(System.currentTimeMillis()));
+          // writeString, not setLastModifiedTime: postCleanup may have
+          // deleted sentinel between the isEmpty() check above and here
+          // (it is a normal accepted request too, handled and cleaned up
+          // like any other), and setLastModifiedTime throws
+          // NoSuchFileException on a missing file where a write recreates it.
+          Files.writeString(sentinel, "0");
           Thread.sleep(20);
         }
         w.getHandled().clear();

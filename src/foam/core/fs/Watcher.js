@@ -13,18 +13,21 @@ foam.CLASS({
     'foam.core.COREService'
   ],
 
-  documentation: `Poll a directory for files that appear or change. Each one's
+  documentation: `Watch a directory for files that appear or change. Each one's
 path relative to watchDir is a 'request': handleRequest gets it when
 acceptRequest agrees, then postCleanup runs, which by default deletes the file.
 
-Detection is a stat poll, not java.nio.WatchService. On macOS WatchService is
-sun.nio.fs.PollingWatchService, 10s per directory by default, and with
-recursive:true it would register every directory: measured on a 3245-directory
-source tree that cost 19.5% of one core. A stat of the 5715 known files every
-500ms costs 5%. rescanInterval:0 (the default) walks watchDir every tick, which a
-single request directory needs to see new files; a large recursive tree sets
-it to seconds and pays the walk that often. acceptRequest is applied at scan
-time, so a file it rejects is never tracked.`,
+Two modes, chosen by recursive. recursive: false, the default and every existing
+subclass before SourceWatcher, runs watch(): java.nio.WatchService on watchDir
+itself, event-driven and the right tool for one request directory; this is the
+original implementation and its behaviour is kept as-is for backward
+compatibility, including that postCleanup runs for a rejected request too, not
+only an accepted one. recursive: true, SourceWatcher only, runs poll(): a stat
+poll instead, because on macOS WatchService is sun.nio.fs.PollingWatchService,
+10s per directory by default, and registering one per directory on a
+3245-directory source tree measured 19.5% of one core against 5% for a stat of
+the 5715 known files every 500ms. poll() never deletes a rejected file, since
+acceptRequest is applied at scan time and a rejected file is never tracked.`,
 
   javaImports: [
     'foam.core.app.AppConfig',
@@ -35,12 +38,17 @@ time, so a file it rejects is never tracked.`,
     'foam.util.SafetyUtil',
     'java.io.File',
     'java.io.IOException',
+    'java.nio.file.ClosedWatchServiceException',
     'java.nio.file.FileSystems',
     'java.nio.file.FileVisitResult',
     'java.nio.file.Files',
     'java.nio.file.Path',
     'java.nio.file.Paths',
     'java.nio.file.SimpleFileVisitor',
+    'java.nio.file.StandardWatchEventKinds',
+    'java.nio.file.WatchEvent',
+    'java.nio.file.WatchKey',
+    'java.nio.file.WatchService',
     'java.nio.file.attribute.BasicFileAttributes',
     'java.util.Arrays',
     'java.util.HashMap',
@@ -77,12 +85,12 @@ time, so a file it rejects is never tracked.`,
       `
     },
     {
-      documentation: 'Walk subdirectories of watchDir.',
+      documentation: 'Walk subdirectories of watchDir, and switch execute() from the legacy watch() to the stat-poll poll(). See the class documentation.',
       name: 'recursive',
       class: 'Boolean'
     },
     {
-      documentation: 'Directory names not walked when recursive.',
+      documentation: 'Directory names not walked when recursive. Applies to poll() (recursive: true) only.',
       name: 'skipDirs',
       class: 'StringArray'
     },
@@ -96,13 +104,13 @@ time, so a file it rejects is never tracked.`,
       networkTransient: true
     },
     {
-      documentation: 'Milliseconds between stats of the known files.',
+      documentation: 'Milliseconds between stats of the known files. Applies to poll() (recursive: true) only.',
       name: 'pollInterval',
       class: 'Long',
       value: 500
     },
     {
-      documentation: 'Milliseconds between walks of watchDir that pick up new and deleted files. 0 walks every tick.',
+      documentation: 'Milliseconds between walks of watchDir that pick up new and deleted files. 0 walks every tick. Applies to poll() (recursive: true) only.',
       name: 'rescanInterval',
       class: 'Long'
     },
@@ -127,7 +135,15 @@ time, so a file it rejects is never tracked.`,
       name: 'running',
       class: 'Object',
       javaType: 'java.util.concurrent.atomic.AtomicBoolean',
-      javaFactory: 'return new AtomicBoolean(false);',
+      javaFactory: 'return new AtomicBoolean();',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    },
+    {
+      documentation: 'Set by watch() (recursive: false) so stop() can close it, which unblocks a WatchService.take() that is currently waiting. Unused, stays null, in poll() (recursive: true).',
+      name: 'watchService',
+      class: 'Object',
+      javaType: 'java.nio.file.WatchService',
       visibility: 'HIDDEN',
       networkTransient: true
     }
@@ -155,6 +171,13 @@ time, so a file it rejects is never tracked.`,
       javaCode: `
       getRunning().set(false);
       if ( getTimer() != null ) ((Timer) getTimer()).cancel();
+      if ( getWatchService() != null ) {
+        try {
+          getWatchService().close();
+        } catch (IOException e) {
+          // already closing
+        }
+      }
       `
     },
     {
@@ -169,50 +192,12 @@ time, so a file it rejects is never tracked.`,
         mkdirs(x, getWatchDir());
         preCleanup(x);
 
-        Map<Path, String> requests = new HashMap<>();
-        Map<Path, Long>   known    = scan(x, root, requests);
-        long              lastScan = System.currentTimeMillis();
-
-        while ( getRunning().get() ) {
-          try {
-            Thread.sleep(getPollInterval());
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            break;
-          }
-
-          if ( System.currentTimeMillis() - lastScan >= getRescanInterval() ) {
-            Map<Path, String> freshRequests = new HashMap<>();
-            Map<Path, Long>   fresh         = scan(x, root, freshRequests);
-            for ( Map.Entry<Path, Long> e : fresh.entrySet() ) {
-              if ( known.putIfAbsent(e.getKey(), e.getValue()) == null ) {
-                requests.put(e.getKey(), freshRequests.get(e.getKey()));
-                request(x, freshRequests.get(e.getKey()));
-              }
-            }
-            known.keySet().retainAll(fresh.keySet());
-            requests.keySet().retainAll(fresh.keySet());
-            lastScan = System.currentTimeMillis();
-          }
-
-          for ( Iterator<Map.Entry<Path, Long>> it = known.entrySet().iterator() ; it.hasNext() ; ) {
-            Map.Entry<Path, Long> e = it.next();
-            long mt;
-            try {
-              mt = Files.getLastModifiedTime(e.getKey()).toMillis();
-            } catch (IOException ex) {
-              // gone: postCleanup deleted it, or the user did
-              it.remove();
-              requests.remove(e.getKey());
-              continue;
-            }
-            if ( mt == e.getValue() ) continue;
-            e.setValue(mt);
-            request(x, requests.get(e.getKey()));
-          }
+        if ( getRecursive() ) {
+          poll(x, root);
+        } else {
+          watch(x, root);
         }
       } catch (Throwable t) {
-        logger.error("execute", t);
         throw t;
       } finally {
         logger.info("exit");
@@ -220,14 +205,111 @@ time, so a file it rejects is never tracked.`,
       `
     },
     {
-      documentation: 'mtime of every accepted file under root; subdirectories only when recursive, never skipDirs. requests receives, for each key this returns, the same string acceptRequest was asked about, so callers do not recompute it. requests is Map, not Map<Path, String>: a comma inside a generic in a string-form args: breaks the genJava argument split.',
-      name: 'scan',
-      args: 'X x, Path root, Map requests',
-      javaType: 'Map<Path, Long>',
+      documentation: 'Stat-poll mode (recursive: true, SourceWatcher only). See the class documentation for why this is a poll and not a WatchService per directory.',
+      name: 'poll',
+      args: 'X x, Path root',
       javaCode: `
-      Map<Path, Long>    files      = new HashMap<>();
-      Map<Path, String>  reqsByPath = requests;
-      Set<String>        skip       = getSkipDirSet();
+      Map<String, Long> known    = scan(x, root);
+      long              lastScan = System.currentTimeMillis();
+
+      while ( getRunning().get() ) {
+        try {
+          Thread.sleep(getPollInterval());
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
+
+        if ( System.currentTimeMillis() - lastScan >= getRescanInterval() ) {
+          Map<String, Long> fresh = scan(x, root);
+          for ( Map.Entry<String, Long> e : fresh.entrySet() ) {
+            if ( known.putIfAbsent(e.getKey(), e.getValue()) == null ) {
+              request(x, e.getKey());
+            }
+          }
+          known.keySet().retainAll(fresh.keySet());
+          lastScan = System.currentTimeMillis();
+        }
+
+        Iterator<Map.Entry<String, Long>> it = known.entrySet().iterator();
+        while ( it.hasNext() ) {
+          Map.Entry<String, Long> e = it.next();
+          long mt = root.resolve(e.getKey()).toFile().lastModified();
+          if ( mt == 0 ) {
+            // gone: postCleanup deleted it, or the user did
+            it.remove();
+            continue;
+          }
+          if ( mt == e.getValue() ) continue;
+          e.setValue(mt);
+          request(x, e.getKey());
+        }
+      }
+      `
+    },
+    {
+      documentation: 'The original implementation (recursive: false, the default; every existing subclass before SourceWatcher). java.nio.WatchService on root, ENTRY_CREATE only; unlike request(), postCleanup runs for a rejected request too -- the legacy behaviour, kept as-is for backward compatibility.',
+      name: 'watch',
+      args: 'X x, Path root',
+      javaCode: `
+      Logger logger = Loggers.logger(x, this);
+      try {
+        WatchService ws = FileSystems.getDefault().newWatchService();
+        setWatchService(ws);
+        try {
+          root.register(ws, StandardWatchEventKinds.ENTRY_CREATE);
+
+          while ( getRunning().get() ) {
+            WatchKey key;
+            try {
+              key = ws.take();
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+              break;
+            } catch (ClosedWatchServiceException e) {
+              // stop() closed ws to unblock this take()
+              break;
+            }
+            if ( ! getRunning().get() ) break;
+
+            for ( WatchEvent<?> event : key.pollEvents() ) {
+              if ( event.kind() == StandardWatchEventKinds.ENTRY_CREATE ) {
+                String request = event.context().toString();
+                logger.info("Detected", request);
+                try {
+                  if ( acceptRequest(x, request) ) {
+                    handleRequest(x, request);
+                  } else {
+                    logger.warning("Rejected", request);
+                  }
+                  postCleanup(x, request);
+                } catch (Throwable t) {
+                  logger.warning(t);
+                }
+              }
+            }
+            key.reset();
+          }
+        } finally {
+          try {
+            ws.close();
+          } catch (IOException e) {
+            // already closing
+          }
+        }
+      } catch (IOException e) {
+        logger.error("watch", e);
+      }
+      `
+    },
+    {
+      documentation: 'mtime of every accepted file under root, keyed by its request string; subdirectories only when recursive, never skipDirs.',
+      name: 'scan',
+      args: 'X x, Path root',
+      javaType: 'Map<String, Long>',
+      javaCode: `
+      Map<String, Long> files = new HashMap<>();
+      Set<String>       skip  = getSkipDirSet();
       try {
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
           @Override
@@ -241,13 +323,13 @@ time, so a file it rejects is never tracked.`,
           public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
             String req = toRequest(root, file);
             if ( acceptRequest(x, req) ) {
-              files.put(file, attrs.lastModifiedTime().toMillis());
-              reqsByPath.put(file, req);
+              files.put(req, attrs.lastModifiedTime().toMillis());
             }
             return FileVisitResult.CONTINUE;
           }
           @Override
           public FileVisitResult visitFileFailed(Path file, IOException e) {
+            Loggers.logger(x, this).debug("scan visitFileFailed", file, e);
             return FileVisitResult.CONTINUE;
           }
         });
