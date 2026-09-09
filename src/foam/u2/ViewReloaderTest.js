@@ -11,8 +11,16 @@ foam.CLASS({
 
   documentation: `ViewReloader (#5403): a changed path maps to the models that
     came from it, a css-only edit is told apart from a code edit, a reloaded
-    base class drags its subclasses and refinements along, and an on-screen
-    view is replaced by an instance of the new class with its data link kept.`,
+    base class drags its subclasses and refinements along, an on-screen
+    view is replaced by an instance of the new class with its data link kept,
+    a subclass's css-only edit rewrites its own block in place without
+    dropping an inherited one, a second css-only edit of the same class is
+    picked up too rather than stuck on the first, restore() after a
+    css-only reload puts the pre-edit class back as both the live
+    registration and the global accessor, a mixin's shared css reaches
+    every class that mixes it in without a sibling's own edit leaking onto
+    it, and a reload that fails to load restores the class it cleared
+    instead of leaving it unregistered.`,
 
   requires: [ 'foam.u2.ViewReloader' ],
 
@@ -171,6 +179,170 @@ foam.CLASS({
         x.test(newCM !== oldCM && newCM.version() === 2, 'CMProbe was rebuilt');
         x.test(newCM.controllerMode === foam.u2.ControllerMode.VIEW,
           'a redeclared Element-level property name is excluded by name, not sourceCls_, got ' + newCM.controllerMode);
+
+        // --- swapCSS: a css-only edit of a subclass keeps the parent's
+        //     installed style instead of dropping it. installInClass
+        //     (CSS.js:87-107) installs the PARENT's css axiom under the
+        //     CREATING subclass's owner, so an owner=id query can't tell
+        //     the two blocks apart ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssBase', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssBase.js',
+          css: '^ { color: red; }'
+        });
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssChild', extends: 'foam.u2.test.CssBase',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssChild.js',
+          css: '^ { margin: 0; }'
+        });
+        var childId = 'foam.u2.test.CssChild';
+        var oldChildCls = foam.u2.test.CssChild;
+        oldChildCls.create({}, x);
+        var before = document.querySelectorAll('style[owner="' + childId + '"]');
+        x.test(before.length === 2,
+          'setup: base and child css both installed under the child owner, got ' + before.length);
+
+        delete foam.__context__.__cache__[childId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssChild', extends: 'foam.u2.test.CssBase',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssChild.js?t=2',
+          css: '^ { margin: 1px; }'
+        });
+        r.swapCSS(oldChildCls, foam.lookup(childId));
+
+        var after = document.querySelectorAll('style[owner="' + childId + '"]');
+        x.test(after.length === before.length,
+          'swapCSS adds and removes no <style> elements, got ' + after.length);
+        var texts = Array.from(after).map(el => el.textContent);
+        x.test(texts.some(t => t.includes('margin: 1px')), 'the child rule was rewritten to the new css');
+        x.test(texts.some(t => t.includes('color: red')), 'the inherited parent rule survived the child edit');
+
+        // --- swapCSS: a second css-only edit of the same class is picked
+        //     up too, not stuck on the first. Copying the new code onto the
+        //     EXISTING axiom object (rather than swapping the entry to the
+        //     new axiom) keeps entry.axiom identity-equal to oldChildCls's
+        //     own axiom across edits -- oldChildCls is reused unchanged
+        //     here, matching what reload_ does: it keeps the pre-edit class
+        //     registered for a css-only id, so the next edit's "old" is
+        //     still this same object ---
+        delete foam.__context__.__cache__[childId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssChild', extends: 'foam.u2.test.CssBase',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/CssChild.js?t=3',
+          css: '^ { margin: 2px; }'
+        });
+        r.swapCSS(oldChildCls, foam.lookup(childId));
+
+        var repeatTexts = Array.from(
+          document.querySelectorAll('style[owner="' + childId + '"]'))
+          .map(el => el.textContent);
+        x.test(repeatTexts.some(t => t.includes('margin: 2px')),
+          'a second css-only edit of the same class is picked up');
+        x.test(! repeatTexts.some(t => t.includes('margin: 1px')),
+          'the second edit replaces the first, not appends to it');
+
+        // --- restore: after a css-only reload -- swapCSS above left
+        //     foam.lookup(childId) and the global foam.u2.test.CssChild
+        //     both pointing at the freshly redefined class, same as
+        //     reload_ would see before calling restore() -- restore puts
+        //     oldChildCls back as BOTH: the cache (Context.register) and
+        //     the global accessor (Object.defineProperty), not just one ---
+        r.restore(childId, oldChildCls);
+        x.test(foam.u2.test.CssChild === oldChildCls &&
+          foam.lookup('foam.u2.test.CssChild') === oldChildCls,
+          'a css-only reload keeps the old class registered in both the ' +
+          'context and the package global');
+
+        // --- swapCSS: a class that mixes in a shared css axiom, and a
+        //     reload of the mixin's own file reaching every class that
+        //     mixes it in. Mixin.installInClass (Mixin.js:27-34) installs
+        //     the SAME axiom object into every class that mixes it in, so
+        //     a match on one mixer's entry during another mixer's reload
+        //     rewrites it with the mixin file's current (unedited) text --
+        //     a no-op -- while a reload of the mixin file itself needs
+        //     that same match to reach every mixer ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssMixinProbe',
+          css: '^ { padding: 0; }'
+        });
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'MixA', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/MixA.js',
+          mixins: [ 'foam.u2.test.CssMixinProbe' ],
+          css: '^ { color: blue; }'
+        });
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'MixB', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/MixB.js',
+          mixins: [ 'foam.u2.test.CssMixinProbe' ],
+          css: '^ { color: green; }'
+        });
+        var mixAId = 'foam.u2.test.MixA';
+        var mixBId = 'foam.u2.test.MixB';
+        var oldMixA = foam.lookup(mixAId);
+        oldMixA.create({}, x);
+        foam.lookup(mixBId).create({}, x);
+
+        var mixBBefore = document.querySelectorAll('style[owner="' + mixBId + '"]');
+        var mixBTextsBefore = Array.from(mixBBefore).map(el => el.textContent);
+
+        delete foam.__context__.__cache__[mixAId];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'MixA', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/MixA.js?t=2',
+          mixins: [ 'foam.u2.test.CssMixinProbe' ],
+          css: '^ { color: red; }'
+        });
+        r.swapCSS(oldMixA, foam.lookup(mixAId));
+
+        var mixBAfter = document.querySelectorAll('style[owner="' + mixBId + '"]');
+        x.test(mixBAfter.length === mixBBefore.length,
+          'a MixA reload adds and removes no <style> element from MixB, got ' + mixBAfter.length);
+        var mixBTextsAfter = Array.from(mixBAfter).map(el => el.textContent);
+        x.test(JSON.stringify(mixBTextsAfter) === JSON.stringify(mixBTextsBefore),
+          'MixB\'s own and mixin blocks are unchanged by a MixA reload');
+
+        var mixATexts =
+          Array.from(document.querySelectorAll('style[owner="' + mixAId + '"]'))
+            .map(el => el.textContent);
+        x.test(mixATexts.some(t => t.includes('color: red')), 'MixA\'s own block picked up the new css');
+        x.test(mixATexts.some(t => t.includes('padding: 0')), 'MixA\'s mixin block still has the shared rule');
+
+        var oldMixinProbe = foam.lookup('foam.u2.test.CssMixinProbe');
+        delete foam.__context__.__cache__['foam.u2.test.CssMixinProbe'];
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'CssMixinProbe',
+          css: '^ { padding: 1px; }'
+        });
+        r.swapCSS(oldMixinProbe, foam.lookup('foam.u2.test.CssMixinProbe'));
+
+        var mixATextsAfterMixinEdit = Array.from(
+          document.querySelectorAll('style[owner="' + mixAId + '"]'))
+          .map(el => el.textContent);
+        var mixBTextsAfterMixinEdit = Array.from(
+          document.querySelectorAll('style[owner="' + mixBId + '"]'))
+          .map(el => el.textContent);
+        x.test(mixATextsAfterMixinEdit.some(t => t.includes('padding: 1px')),
+          'a mixin-file edit reaches the mixin block under MixA\'s owner');
+        x.test(mixBTextsAfterMixinEdit.some(t => t.includes('padding: 1px')),
+          'a mixin-file edit reaches the mixin block under MixB\'s owner too');
+
+        // --- reload: a failed load restores the old class instead of
+        //     leaving the id unregistered ---
+        foam.CLASS({
+          package: 'foam.u2.test', name: 'ReloadFailProbe', extends: 'foam.u2.Element',
+          source: 'http://localhost:8080/foam3/src/foam/u2/test/NoSuchFile.js'
+        });
+        var beforeFail = foam.lookup('foam.u2.test.ReloadFailProbe');
+        var threw = false;
+        try {
+          await r.reload('/foam3/src/foam/u2/test/NoSuchFile.js', new Date());
+        } catch ( e ) {
+          threw = true;
+        }
+        x.test(! threw, 'reload does not throw when the file fails to load');
+        x.test(foam.lookup('foam.u2.test.ReloadFailProbe') === beforeFail,
+          'a failed reload restores the old class instead of leaving the cache empty');
       }
     }
   ]

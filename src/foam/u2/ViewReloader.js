@@ -19,11 +19,22 @@ foam.CLASS({
     foam.SCRIPT, a class in foam.lang, and an instance rendered through a
     SlotNode all ask for a page reload.`,
 
+  imports: [
+    'document',
+    'sourceChangeDAO?'
+  ],
+
   properties: [
     {
       name: 'root',
       documentation: 'Element whose subtree holds the views to rebuild; ' +
           'the ApplicationController in an app.'
+    },
+    {
+      name: 'queue_',
+      documentation: 'Promise chain serializing overlapping reload() calls, ' +
+          'so two rapid saves run one after another instead of racing.',
+      factory: function() { return Promise.resolve(); }
     }
   ],
 
@@ -139,6 +150,183 @@ foam.CLASS({
       // dev-only tool. Do not add old.detach() here.
       parent.replaceChild(newCls.create(args, old.__context__), old);
       return true;
+    },
+
+    function init() {
+      if ( ! this.sourceChangeDAO ) return;
+      this.onDetach(this.sourceChangeDAO.listen(this.onChange));
+    },
+
+    function load(path, modified) {
+      /* Re-run the file as a <script> tag so foam.CLASS sees
+         document.currentScript.src and Model.source stays matchable. */
+      return new Promise((resolve, reject) => {
+        var s = this.document.createElement('script');
+        s.src     = path + '?t=' + modified.getTime();
+        s.onload  = () => { s.remove(); resolve(); };
+        s.onerror = () => {
+          s.remove();
+          reject(new Error('reload failed to load ' + path));
+        };
+        this.document.head.appendChild(s);
+      });
+    },
+
+    function swapCSS(oldCls, newCls) {
+      /* Rewrite every installed <style> block that traces to one of
+         oldCls's own css axioms, in place -- the same walk as
+         CSS.reloadStyles (CSS.js:14-43) -- instead of matching by owner=id
+         (installInClass installs a PARENT's axiom under the CREATING
+         subclass's owner, CSS.js:87-107, so that drops an inherited block
+         for good on a subclass edit and never reaches one on a base-class
+         edit) or by sourceCls_ (a mixin installs the SAME axiom object into
+         every class that mixes it in, Mixin.js:27-34, restamping
+         sourceCls_ to whichever installed last -- it names no one class
+         reliably).
+
+         oldCls.getOwnAxiomsByClass(CSS) lists the css axioms actually
+         installed into oldCls's own axiom map, in declaration order,
+         whether from oldCls's own css: or a mixin it declares; newCls
+         (freshly reloaded) lists the same axioms in the same order, so an
+         entry's index in the old list is where its replacement lives in
+         the new one. A shared mixin axiom sits at that same index in every
+         class that mixes it in, so a match on a sibling's entry rewrites it
+         with the text the mixin's own file currently holds -- identical
+         unless that file is what got reloaded, in which case every mixer's
+         block SHOULD move together. No entry is excluded by which class
+         created it.
+
+         The matched axiom's code (and expands_, an expression: derived from
+         it -- CSS.js:55-61 -- recomputes on its own) is copied onto the
+         EXISTING axiom object rather than swapping in newAxioms[i]: reload_
+         keeps oldCls registered for a css-only id (nothing rebuilds), so a
+         second edit's own-axiom list is still oldCls's -- if entry.axiom
+         had been swapped to the first edit's new object, that second edit
+         would find no match at all. No <style> element is added or
+         removed. */
+      var oldAxioms = oldCls.getOwnAxiomsByClass(foam.u2.CSS);
+      var newAxioms = newCls.getOwnAxiomsByClass(foam.u2.CSS);
+      if ( ! oldAxioms.length ) return;
+      if ( oldAxioms.length !== newAxioms.length ) {
+        console.warn('[reload] ' + newCls.id + ': css axiom count changed, ' +
+          'skipping swapCSS');
+        return;
+      }
+
+      var X      = this.__subContext__;
+      var expand = X.returnExpandedCSS;
+      var styles = this.document.installedStyles || {};
+
+      Object.values(styles).forEach(map => {
+        if ( Array.isArray(map) ) {
+          var i = oldAxioms.indexOf(map[1]);
+          if ( i < 0 ) return;
+          var el = this.document.getElementById(map[0]);
+          if ( el ) {
+            el.textContent =
+              expand(newAxioms[i].expandCSS(map[2], newAxioms[i].code, X));
+          }
+          map[1].code = newAxioms[i].code;
+        } else {
+          Object.values(map).forEach(entry => {
+            var i = oldAxioms.indexOf(entry.axiom);
+            if ( i < 0 ) return;
+            var el = this.document.getElementById(entry.id);
+            if ( el ) {
+              el.textContent = expand(
+                newAxioms[i].expandCSS(entry.cls, newAxioms[i].code, X));
+            }
+            entry.axiom.code = newAxioms[i].code;
+          });
+        }
+      });
+    },
+
+    function restore(id, cls) {
+      /* Put cls back as the live registration for id, and as the global
+         accessor foam.<pkg>.<Name>: registerClassFactory (stdlib.js:
+         1229-1246) defines that as a getter with no setter, so the plain
+         assignment inside registerClass (stdlib.js:1214-1222) -- what
+         register() below triggers -- is silently dropped once a lazy
+         registration got there first. register() itself asserts when the
+         cache already holds a different, non-factory value for the name
+         (Context.js:157-164), so the entry a re-run foam.CLASS left behind
+         is cleared first. */
+      delete foam.__context__.__cache__[id];
+      foam.__context__.register(cls);
+      Object.defineProperty(
+        foam.package.ensurePackage(globalThis, cls.package), cls.name,
+        { value: cls, configurable: true });
+    },
+
+    async function reload_(path, modified) {
+      var models = this.modelsFor(path);
+      if ( ! models.length ) {
+        console.info('[reload] ' + path + ': no loaded class came from ' +
+          'this file');
+        return;
+      }
+
+      var ids  = models.filter(m => ! m.refines).map(m => m.id);
+      var olds = {};
+      ids.forEach(id => {
+        olds[id] = foam.__context__.isDefined(id) ? foam.lookup(id) : null;
+        delete foam.__context__.__cache__[id];
+      });
+      var scripts = foam.__SCRIPTS__.length;
+
+      try {
+        await this.load(path, modified);
+
+        var cssOnly = ids.filter(id =>
+          olds[id] && this.isCssOnly(olds[id], foam.lookup(id)));
+        cssOnly.forEach(id => this.swapCSS(olds[id], foam.lookup(id)));
+        cssOnly.forEach(id => this.restore(id, olds[id]));
+
+        var order  =
+          this.cascade(ids.filter(id => ! cssOnly.includes(id)), path);
+        var result = this.rebuild(order);
+
+        var hints = [];
+        if ( foam.__SCRIPTS__.length > scripts ) {
+          hints.push('the file defines a foam.SCRIPT');
+        }
+        ids.filter(id => id.startsWith('foam.lang.'))
+          .forEach(id => hints.push(id + ' is a boot class'));
+        if ( result.skipped ) {
+          hints.push(result.skipped + ' instance(s) render through a SlotNode');
+        }
+
+        console.info('[reload] ' + path + ': ' + order.length +
+          ' class(es) redefined, ' + cssOnly.length +
+          ' stylesheet(s) swapped, ' + result.rebuilt + ' view(s) rebuilt' +
+          ( hints.length ? '. Reload the page: ' + hints.join('; ') : '' ));
+      } catch ( e ) {
+        // A 404 or a throw partway leaves a reloaded id with nothing in the
+        // cache; put back what reload_ found there before it ran.
+        ids.forEach(id => {
+          if ( olds[id] ) this.restore(id, olds[id]);
+          else delete foam.__context__.__cache__[id];
+        });
+        console.error('[reload] ' + path + ' failed, old classes restored: ' +
+          e.message + '. Reload the page.');
+      }
+    },
+
+    function reload(path, modified) {
+      /* Serializes overlapping reload() calls -- e.g. two rapid saves --
+         through one promise chain instead of racing them. reload_ handles
+         its own errors, so this chain never rejects and never drops a
+         later call. */
+      this.queue_ = this.queue_.then(() => this.reload_(path, modified));
+      return this.queue_;
+    }
+  ],
+
+  listeners: [
+    function onChange(op, change) {
+      /* FnSink shape from dao.listen(fn): (op, obj, sub). */
+      if ( op === 'put' ) this.reload(change.id, change.modified);
     }
   ]
 });
