@@ -633,7 +633,8 @@ foam.CLASS({
   imports: [ 'flow', 'flowDAO', 'mementoMgr', 'selected' ],
 
   properties: [
-    [ 'description', 'Load a specified flow' ]
+    [ 'description', 'Load a specified flow' ],
+    [ 'parserClass', 'foam.core.reflow.parser.FlowNameParser' ]
   ],
 
   methods: [

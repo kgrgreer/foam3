@@ -518,6 +518,7 @@ foam.CLASS({
       isMerged: true,
       delay: 16,
       code: async function() {
+        console.log('expand', this.maxPos, JSON.stringify(this.preview.substring(this.maxPos)), Object.keys(this.suggestions));
         let a     = [];
         let ss    = this.suggestions;
         let keys  = Object.keys(ss);
