@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'foam.u2',
+  package: 'foam.u2.test',
   name: 'ViewReloaderTest',
   extends: 'foam.core.test.JSTest',
 
