@@ -33,9 +33,10 @@ foam.CLASS({
       });
     },
 
-    function grammar() {
+    function grammar(seq1, sym) {
       return {
-        START: this.alt
+        START: seq1(1, ' ', sym('flows')),
+        flows: this.alt
       };
     }
   ]
