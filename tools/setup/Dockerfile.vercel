@@ -16,6 +16,6 @@ WORKDIR /app
 COPY . .
 
 # Compile FOAM and {App}; journals and documents land under build/.
-RUN ./build.sh -o -Jdemo
+RUN ./build.sh -o
 
 CMD ["bash", "deployment/vercel/run.sh"]
