@@ -25,6 +25,7 @@ export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} \
  -DDOCUMENT_HOME=${APP_HOME}/documents \
  -Dhttp.port=${PORT:-80} \
  -Dapp.name={app} \
+ -Dhostname=$(hostname) \
  -Dcore.webroot=/app \
  -Duser.timezone=GMT"
 
