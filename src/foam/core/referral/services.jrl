@@ -25,6 +25,7 @@ p({
   name:"referralCodeGenerationService",
   serve:false,
   lazy:false,
+  lazyOrder:-1,
   authenticate:false,
   service:{
     class:"foam.core.referral.IdReferralCodeGenerationService"
