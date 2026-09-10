@@ -283,7 +283,6 @@ p({
   "class":"foam.core.boot.CSpec",
   "name":"addressParser",
   "lazy":false,
-  "lazyOrder":-1,
   "serve":false,
   "serviceScript": """
     return new foam.core.geocode.GoogleMapsAddressParser.Builder(x).build();
@@ -293,7 +292,6 @@ p({
   "class":"foam.core.boot.CSpec",
   "name":"googleMapsCredentials",
   "lazy":false,
-  "lazyOrder":-1,
   "serve":false,
   "service":{
     "class": "foam.core.geocode.GoogleMapsCredentials"

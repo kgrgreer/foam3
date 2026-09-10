@@ -149,7 +149,7 @@ foam.CLASS({
       class: 'Int',
       name: 'lazyOrder',
       tableWidth: 65,
-      documentation: 'Order non-lazy service invocation from low to high. Boot submits non-lazy services to the threadPool in this order, so a service submitted after the pool is full waits for a running one to finish. Framework services (http, logger, threadPools, ...) use -1 so they always start ahead of application data; application services default to 0; anything that must load after other data uses a higher value.'
+      documentation: 'Order non-lazy service invocation from low to high. Boot submits non-lazy services to the threadPool in this order; once every pool thread is busy, the remaining services wait for a running one to finish. Framework services (http, logger, threadPools, ...) use -1 so they always start ahead of application data; application services default to 0; anything that must load after other data uses a higher value.'
     },
     {
       class: 'Boolean',
