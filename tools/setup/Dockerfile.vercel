@@ -1,0 +1,21 @@
+# Runs {App} as a Vercel Function.
+#
+# Vercel detects this file at the repository root, builds the image on every
+# push and routes all traffic to the port named by $PORT.
+# See https://vercel.com/docs/functions/container-images
+#
+# Build locally with:  docker build -f Dockerfile.vercel -t {app} .
+# Run locally with:    docker run --rm -p 8080:8080 -e PORT=8080 {app}
+FROM eclipse-temurin:21
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends nodejs maven \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY . .
+
+# Compile FOAM and {App}; journals and documents land under build/.
+RUN ./build.sh -o -Jdemo
+
+CMD ["bash", "deployment/vercel/run.sh"]

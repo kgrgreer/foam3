@@ -115,6 +115,12 @@ foam.POM({
       this.execSync(`chmod u+x ${PROJECT_DIR}/build.sh`);
       templateMerge(TEMPLATE_DIR, 'gitignore', `${PROJECT_DIR}`, '.gitignore');
 
+      // Vercel deployment, see https://vercel.com/docs/functions/container-images
+      templateMerge(TEMPLATE_DIR, 'Dockerfile.vercel', `${PROJECT_DIR}`, 'Dockerfile.vercel');
+      templateMerge(TEMPLATE_DIR, 'dockerignore', `${PROJECT_DIR}`, '.dockerignore');
+      templateMerge(TEMPLATE_DIR, 'vercelRun.sh', `${PROJECT_DIR}/deployment/vercel`, 'run.sh');
+      this.execSync(`chmod u+x ${PROJECT_DIR}/deployment/vercel/run.sh`);
+
       // gitignore.execSync('sudo chown -R $USER /opt')
     }],
 

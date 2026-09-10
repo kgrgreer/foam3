@@ -83,6 +83,19 @@ See [INSTALL.md](INSTALL.md) for more detailed installation notes.
 
 * visit: http:/localhost:8080 and login with admin / badpassword
 
+### Deploy to Vercel
+
+Every project created this way includes a `Dockerfile.vercel`, so it runs on
+[Vercel](https://vercel.com/docs/functions/container-images) as is. Try the
+live demo at https://foam3-demo.vercel.app, or deploy your own copy of the
+template repository into your GitHub account with one click:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/foam-foundation/foam3-template&project-name=foam3-demo&repository-name=foam3-demo)
+
+Add your models under `src/` and push; Vercel rebuilds and redeploys. The
+function scales to zero after 5 minutes without traffic and only `/tmp` is
+writable, so the demo cold-starts on the next visit with seed data only.
+
 <!--
 ## Running Application Controller
 
