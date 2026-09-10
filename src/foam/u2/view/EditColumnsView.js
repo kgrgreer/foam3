@@ -75,6 +75,7 @@ foam.CLASS({
     },
     'columnConfigPropView',
     'parentEl',
+    'dropdownAnchorEl_',
     'parentId',
     { class: 'Int', name: 'refreshIdx', value: 0 }
   ],
@@ -90,24 +91,69 @@ foam.CLASS({
       this.onDetach(this.overlay_.opened$.sub(() => {
         if ( this.selectColumnsExpanded !== this.overlay_.opened )
           this.selectColumnsExpanded = this.overlay_.opened;
+        if ( ! this.overlay_.opened ) this.removeDropdownAnchor_();
       }));
+      this.onDetach(() => this.removeDropdownAnchor_());
     },
     function closeDropDown(e) {
       e?.stopPropagation();
       this.columnConfigPropView?.onClose?.();
       this.selectColumnsExpanded = false;
+      this.removeDropdownAnchor_();
     },
     function openDropDown() {
-      var parentEl = this.parentEl;
-      if ( ! parentEl && this.parentId )
-        parentEl = this.window.document.getElementById(this.parentId);
+      var parentEl = this.resolveParentEl_();
+      if ( ! parentEl && this.dropdownAnchorEl_?.isConnected )
+        parentEl = this.dropdownAnchorEl_;
       if ( ! parentEl && this.table && this.table.tableEl_ )
         parentEl = this.table.tableEl_.el_ ? this.table.tableEl_.el_() : this.table.tableEl_;
       if ( ! parentEl || parentEl.nodeType !== 1 ) return;
 
-      this.overlay_.parentEl = parentEl;
+      this.overlay_.parentEl = this.ensureDropdownAnchor_(parentEl);
       this.refresh();
       this.overlay_.open();
+    },
+    function resolveParentEl_() {
+      var parentEl = this.parentEl;
+      if ( parentEl && parentEl.el_ ) parentEl = parentEl.el_();
+      if ( parentEl && parentEl.nodeType === 1 && parentEl.isConnected )
+        return parentEl;
+
+      if ( this.parentId ) {
+        parentEl = this.window.document.getElementById(this.parentId);
+        if ( parentEl && parentEl.nodeType === 1 && parentEl.isConnected )
+          return parentEl;
+      }
+
+      return null;
+    },
+    function ensureDropdownAnchor_(parentEl) {
+      var doc = this.window.document;
+      var anchor = this.dropdownAnchorEl_;
+      if ( ! anchor ) {
+        anchor = doc.createElement('span');
+        anchor.setAttribute('aria-hidden', 'true');
+        anchor.style.position = 'fixed';
+        anchor.style.pointerEvents = 'none';
+        anchor.style.opacity = '0';
+        anchor.style.zIndex = '-1';
+        doc.body.appendChild(anchor);
+        this.dropdownAnchorEl_ = anchor;
+      }
+
+      var rect = parentEl.getBoundingClientRect();
+      anchor.style.left = rect.left + 'px';
+      anchor.style.top = rect.top + 'px';
+      anchor.style.width = rect.width + 'px';
+      anchor.style.height = rect.height + 'px';
+
+      return anchor;
+    },
+    function removeDropdownAnchor_() {
+      if ( this.dropdownAnchorEl_ ) {
+        this.dropdownAnchorEl_.remove();
+        this.dropdownAnchorEl_ = null;
+      }
     },
     function render() {
       this.SUPER();
