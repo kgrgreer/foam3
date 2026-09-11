@@ -129,6 +129,8 @@ foam.POM({
       templateMerge(TEMPLATE_DIR, 'Dockerfile', `${PROJECT_DIR}`, 'Dockerfile');
       templateMerge(TEMPLATE_DIR, 'Dockerfile.vercel', `${PROJECT_DIR}`, 'Dockerfile.vercel');
       templateMerge(TEMPLATE_DIR, 'dockerignore', `${PROJECT_DIR}`, '.dockerignore');
+      // Cloud Run Button settings, see https://github.com/GoogleCloudPlatform/cloud-run-button
+      templateMerge(TEMPLATE_DIR, 'app.json', `${PROJECT_DIR}`, 'app.json');
       templateMerge(TEMPLATE_DIR, 'vercelRun.sh', `${PROJECT_DIR}/deployment/vercel`, 'run.sh');
       this.execSync(`chmod u+x ${PROJECT_DIR}/deployment/vercel/run.sh`);
 
