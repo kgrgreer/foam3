@@ -106,10 +106,11 @@ Add your models under `src/` and push; the host rebuilds and redeploys.
 Vercel runs the container as a function: it scales to zero after 5 minutes
 without traffic, only `/tmp` is writable, and requests are spread over several
 instances that share no memory. FOAM keeps sessions in the JVM, so a login on
-one instance is unknown to the next. The template therefore signs every
-visitor in as the admin through the service provider's `anonymousUser`, which
-suits a demo and nothing else. Cloud Run keeps one instance
-(`max-instances` in `app.json`), so sessions and logins work as usual there.
+one instance is unknown to the next. `Dockerfile.vercel` therefore sets
+`SESSION_DEFAULT_USER` to the admin, and `-Dsession.defaultUser` signs every
+new session in as that user, which suits a demo and nothing else. Cloud Run
+keeps one instance (`max-instances` in `app.json`), so sessions and logins
+work as usual there.
 
 <!--
 ## Running Application Controller

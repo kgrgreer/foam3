@@ -24,6 +24,14 @@ done
 # the Vercel project settings to size the heap differently.
 export JAVA_OPTS="${JAVA_OPTS:--Xms256m -Xmx1200m}"
 
+# Vercel spreads requests over several instances that share no memory, so a
+# login on one instance is unknown to the next. SESSION_DEFAULT_USER (set in
+# Dockerfile.vercel) signs every new session in as that user instead; unset
+# it in the Vercel project settings to get the login page.
+if [ -n "${SESSION_DEFAULT_USER}" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Dsession.defaultUser=${SESSION_DEFAULT_USER}"
+fi
+
 exec "${INSTALL_HOME}/bin/run-docker.sh" \
   -A "${APP_HOME}" \
   -N {app} \

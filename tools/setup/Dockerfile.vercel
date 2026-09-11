@@ -48,4 +48,8 @@ RUN mkdir -p /tmp/extract \
 
 COPY deployment/vercel/run.sh /opt/{app}/bin/run-vercel.sh
 
+# Every visitor is signed in as this user, see run.sh. A demo setting: Vercel
+# gives each request any of several instances, and FOAM sessions live in one.
+ENV SESSION_DEFAULT_USER={adminUserId}
+
 CMD ["bash", "/opt/{app}/bin/run-vercel.sh"]
