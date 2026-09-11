@@ -39,11 +39,10 @@ foam.CLASS({
     ^ {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      /* A flex item will not shrink below its content by default, so when this
-         view is itself a flex item sharing a container with anything else — a
-         dialog title, say — a question with many choices makes it taller than
-         its share and the footer lands past the container's bottom edge. */
+      /* No height here: the embedder gives this view its footprint. A flex item
+         will not shrink below its content by default, so min-height: 0 is what
+         lets it accept a height smaller than a long question and scroll it,
+         rather than growing and carrying its footer off the bottom. */
       min-height: 0;
       background: $backgroundDefault;
     }
