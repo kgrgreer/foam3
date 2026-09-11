@@ -1,13 +1,14 @@
-# Runs {App} as a Vercel Function.
+# Runs {App} in a container.
 #
-# Vercel detects this file at the repository root, builds the image on every
-# push and routes all traffic to the port named by $PORT.
-# See https://vercel.com/docs/functions/container-images
+# Build:  docker build -t {app} .
+# Run:    docker run --rm -p 8080:8080 -v {app}-journals:/opt/{app}/journals {app}
 #
-# Build locally with:  docker build -f Dockerfile.vercel -t {app} .
-# Run locally with:    docker run --rm -p 8080:8080 -e PORT=8080 {app}
+# Journals, logs and documents live under /opt/{app} and are declared as
+# volumes so data survives the container. The heap defaults to 75% of the
+# container memory (conf/shrc.custom); set JAVA_OPTS to override, e.g.
+#   docker run -e JAVA_OPTS="-Xms4g -Xmx4g" ...
 #
-# Dockerfile shares the builder stage; keep the two in step.
+# Dockerfile.vercel shares the builder stage; keep the two in step.
 
 # Stage 1: build the binary and resources JARs and package them as tarballs.
 FROM eclipse-temurin:21 AS builder
@@ -37,8 +38,13 @@ RUN mkdir -p /tmp/extract \
  && for t in /tmp/package/*.tar.gz; do tar -xzf "$t" -C /tmp/extract; done \
  && /tmp/extract/bin/install-docker.sh -A /opt/{app} -E /tmp/extract -N {app} -V "$(cat /tmp/package/VERSION)" \
  && cp /tmp/package/VERSION /opt/{app}/VERSION \
+ && mkdir -p /opt/{app}/journals /opt/{app}/documents /opt/{app}/logs \
  && rm -rf /tmp/extract /tmp/package
 
-COPY deployment/vercel/run.sh /opt/{app}/bin/run-vercel.sh
+VOLUME ["/opt/{app}/journals", "/opt/{app}/documents", "/opt/{app}/logs"]
 
-CMD ["bash", "/opt/{app}/bin/run-vercel.sh"]
+ENV WEB_PORT=8080
+EXPOSE 8080
+
+WORKDIR /opt/{app}
+CMD ["bash", "-c", "exec bin/run-docker.sh -A /opt/{app} -N {app} -V \"$(cat VERSION)\" -W \"${WEB_PORT}\""]
