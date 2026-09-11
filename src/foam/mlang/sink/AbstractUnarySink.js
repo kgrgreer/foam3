@@ -31,14 +31,7 @@ foam.CLASS({
 
   methods: [
     function toString() {
-      return foam.String.constantize(this.cls_.name) + '(' + this.arg1.toString() + this.precisionSuffix() + ')';
-    },
-
-    function precisionSuffix() {
-      /* Part of toString() because TTLSelectCachingDAO keys its select cache on
-         the sink's toString(); without it a precision change reuses the cached
-         result computed at the old precision. */
-      return this.precision < 0 ? '' : ', p' + this.precision;
+      return foam.String.constantize(this.cls_.name) + '(' + this.arg1.toString() + ')';
     },
 
     function applyPrecision(val) {
