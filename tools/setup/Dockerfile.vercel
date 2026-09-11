@@ -6,16 +6,37 @@
 #
 # Build locally with:  docker build -f Dockerfile.vercel -t {app} .
 # Run locally with:    docker run --rm -p 8080:8080 -e PORT=8080 {app}
-FROM eclipse-temurin:21
+
+# Stage 1: build the binary and resources JARs and package them as tarballs.
+FROM eclipse-temurin:21 AS builder
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends nodejs maven \
+ && apt-get install -y --no-install-recommends nodejs npm maven \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY . .
+RUN cd foam3 && npm install
 
-# Compile FOAM and {App}; journals and documents land under build/.
-RUN ./build.sh -o
+RUN ./build.sh --build-docker-tar \
+ && ./build.sh --build-resources-tar \
+ && grep -m1 "version:" pom.js | sed "s/.*'\(.*\)'.*/\1/" > build/package/VERSION
 
-CMD ["bash", "deployment/vercel/run.sh"]
+# Stage 2: runtime. JDK rather than JRE: foam.core.script.Script runs JShell
+# in-process and needs jdk.jshell and jdk.compiler.
+FROM eclipse-temurin:21
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends unzip \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/build/package/ /tmp/package/
+RUN mkdir -p /tmp/extract \
+ && for t in /tmp/package/*.tar.gz; do tar -xzf "$t" -C /tmp/extract; done \
+ && /tmp/extract/bin/install-docker.sh -A /opt/{app} -E /tmp/extract -N {app} -V "$(cat /tmp/package/VERSION)" \
+ && cp /tmp/package/VERSION /opt/{app}/VERSION \
+ && rm -rf /tmp/extract /tmp/package
+
+COPY deployment/vercel/run.sh /opt/{app}/bin/run-vercel.sh
+
+CMD ["bash", "/opt/{app}/bin/run-vercel.sh"]

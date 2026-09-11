@@ -2,31 +2,30 @@
 #
 # Starts {App} inside the Vercel container.
 #
-# Mirrors what `./build.sh` does before it launches the JVM
-# (foam3/tools/JavaTooling.js, startCORE): copy the built journals and
-# documents into a writable application home, then start foam.core.boot.Boot
-# from the compiled classes. On Vercel only /tmp is writable, so runtime
-# journals start from the seed data on every cold start.
+# Dockerfile.vercel installs the JARs under /opt/{app} with install-docker.sh.
+# On Vercel only /tmp is writable, so the application home run-docker.sh
+# expects is assembled there on every cold start: the installed bin, etc, lib
+# and conf directories are linked in, and journals, documents and logs are
+# fresh directories. Runtime data therefore starts from the seed journals in
+# the resources JAR on each cold start.
 set -e
 
+INSTALL_HOME=/opt/{app}
 APP_HOME=/tmp/{app}
 
 mkdir -p "${APP_HOME}/journals" "${APP_HOME}/documents" "${APP_HOME}/logs"
-cp -r build/journals/. "${APP_HOME}/journals/"
-if [ -d build/documents ]; then
-  cp -r build/documents/. "${APP_HOME}/documents/"
-fi
+for d in bin etc lib conf; do
+  ln -sfn "${INSTALL_HOME}/${d}" "${APP_HOME}/${d}"
+done
 
-# MaxRAMPercentage sizes the heap from the container limit (2 GB on the
-# Vercel Hobby plan) instead of the 4 GB the deploy scripts assume.
-export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} \
- -XX:MaxRAMPercentage=60 \
- -DJOURNAL_HOME=${APP_HOME}/journals \
- -DDOCUMENT_HOME=${APP_HOME}/documents \
- -Dhttp.port=${PORT:-80} \
- -Dapp.name={app} \
- -Dhostname=$(hostname) \
- -Dcore.webroot=/app \
- -Duser.timezone=GMT"
+# install-docker.sh seeds conf/shrc.custom with a 75% initial and maximum heap,
+# which commits 1.5 GB of the 2 GB a Vercel Hobby function has. An explicit
+# -Xms/-Xmx in JAVA_OPTS takes precedence in run-docker.sh; set JAVA_OPTS in
+# the Vercel project settings to size the heap differently.
+export JAVA_OPTS="${JAVA_OPTS:--Xms256m -Xmx1200m}"
 
-exec java -cp "build/classes:build/lib/*" foam.core.boot.Boot "boot.script:main"
+exec "${INSTALL_HOME}/bin/run-docker.sh" \
+  -A "${APP_HOME}" \
+  -N {app} \
+  -V "$(cat "${INSTALL_HOME}/VERSION")" \
+  -W "${PORT:-80}"
