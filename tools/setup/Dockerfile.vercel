@@ -27,8 +27,8 @@ RUN [ -f foam3/pom.js ] || git clone --depth 1 \
       "$(git config -f .gitmodules submodule.foam3.url)" foam3
 RUN cd foam3 && npm install
 
-RUN ./build.sh --build-docker-tar \
- && ./build.sh --build-resources-tar \
+RUN ./build.sh -Jdocker --build-docker-tar \
+ && ./build.sh -Jdocker --build-resources-tar \
  && grep -m1 "version:" pom.js | sed "s/.*'\(.*\)'.*/\1/" > build/package/VERSION
 
 # Stage 2: runtime. JDK rather than JRE: foam.core.script.Script runs JShell
