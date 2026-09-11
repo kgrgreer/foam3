@@ -13,11 +13,18 @@
 FROM eclipse-temurin:21 AS builder
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends nodejs npm maven \
+ && apt-get install -y --no-install-recommends git nodejs npm maven \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY . .
+
+# A checkout made without --recursive, or a copy of the repository such as the
+# one the Vercel Deploy button creates, has no foam3/ content. Fetch the branch
+# named in .gitmodules in that case.
+RUN [ -f foam3/pom.js ] || git clone --depth 1 \
+      -b "$(git config -f .gitmodules submodule.foam3.branch)" \
+      "$(git config -f .gitmodules submodule.foam3.url)" foam3
 RUN cd foam3 && npm install
 
 RUN ./build.sh --build-docker-tar \
