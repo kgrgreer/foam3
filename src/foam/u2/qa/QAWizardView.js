@@ -59,9 +59,6 @@ foam.CLASS({
     }
     ^content {
       flex: 1;
-      /* Same rule, one level in: without this the question area grows to fit its
-         choices instead of scrolling, pushing the footer out of the view. */
-      min-height: 0;
       padding: 24px;
       overflow-y: auto;
       display: flex;
