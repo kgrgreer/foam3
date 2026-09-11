@@ -40,6 +40,11 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       height: 100%;
+      /* A flex item will not shrink below its content by default, so when this
+         view is itself a flex item sharing a container with anything else — a
+         dialog title, say — a question with many choices makes it taller than
+         its share and the footer lands past the container's bottom edge. */
+      min-height: 0;
       background: $backgroundDefault;
     }
     ^header {
@@ -54,6 +59,9 @@ foam.CLASS({
     }
     ^content {
       flex: 1;
+      /* Same rule, one level in: without this the question area grows to fit its
+         choices instead of scrolling, pushing the footer out of the view. */
+      min-height: 0;
       padding: 24px;
       overflow-y: auto;
       display: flex;
